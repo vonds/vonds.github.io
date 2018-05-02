@@ -1009,7 +1009,7 @@ Overlays
 .bg-dark-30 h1, .bg-dark-30 h2, .bg-dark-30 h3, .bg-dark-30 h4, .bg-dark-30 h5, .bg-dark-30 h6,
 .bg-dark-60 h1, .bg-dark-60 h2, .bg-dark-60 h3, .bg-dark-60 h4, .bg-dark-60 h5, .bg-dark-60 h6,
 .bg-dark-90 h1, .bg-dark-90 h2, .bg-dark-90 h3, .bg-dark-90 h4, .bg-dark-90 h5, .bg-dark-90 h6 {
-	color: #fff;
+	color: #333;
 }
 
 .bg-film:before,
