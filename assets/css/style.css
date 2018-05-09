@@ -1395,7 +1395,7 @@ Modules
 
 .module,
 .module-small {
-	padding: 140px 0;
+	padding: 100px 0;
 	position: relative;
 	background-repeat: no-repeat;
 	background-position: center center;
@@ -2354,9 +2354,9 @@ Multi-columns-row
 	float: right;
 }
 
-.container {
+/*.container {
 	padding-bottom: 30px;
-}
+}*/
 
 span {
 	vertical-align:  center;
