@@ -2,10 +2,10 @@
 
 	// Mail settings
 	$to      = "vonds13@gmail.com";
-	$subject = "From Your Website";
+	$subject = "site email";
 
 	// You can put here your email
-	$header = "From: noreply@vortex.com\r\n";
+	$header = "From: vonds13@gmail.com\r\n";
 	$header.= "MIME-Version: 1.0\r\n";
 	$header.= "Content-Type: text/plain; charset=utf-8\r\n";
 	$header.= "X-Priority: 1\r\n";
