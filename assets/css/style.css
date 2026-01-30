@@ -2377,12 +2377,6 @@ span {
    Less zoom + 70% overlay
    ========================== */
 
-/* Less zoom than cover (tweak 85% as needed) */
-#hero.module-hero {
-  background-size: 100% auto !important;
-  background-position: center center !important;
-  background-repeat: no-repeat !important;
-}
 
 /* Your template uses .bg-light-30:before for overlay.
    Override it ONLY for the hero and make it 70% DARK. */
