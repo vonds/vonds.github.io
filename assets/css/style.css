@@ -1397,7 +1397,7 @@ Modules
 
 .module,
 .module-small {
-	padding: 100px 0;
+	padding: 25px 0;
 	position: relative;
 	background-repeat: no-repeat;
 	background-position: center center;
@@ -1886,6 +1886,10 @@ Widgets
 	color: #eee;
 }
 
+.small-space {
+	padding-right: 20px;
+}
+
 /* Recent posts */
 
 .widget-posts li {
@@ -2366,4 +2370,36 @@ span {
 
 .white{
 	color: #fff
+}
+
+/* ==========================
+   HERO OVERRIDES (Vonds)
+   Less zoom + 70% overlay
+   ========================== */
+
+/* Less zoom than cover (tweak 85% as needed) */
+#hero.module-hero {
+  background-size: 100% auto !important;
+  background-position: center center !important;
+  background-repeat: no-repeat !important;
+}
+
+/* Your template uses .bg-light-30:before for overlay.
+   Override it ONLY for the hero and make it 70% DARK. */
+#hero.bg-light-30:before {
+  background: rgba(255, 255, 255, 0.8) !important;
+  content: "" !important;
+  left: 0;
+  top: 0;
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  z-index: 0;
+}
+
+/* Ensure hero text sits above overlay */
+#hero .hero-caption,
+#hero .hero-text {
+  position: relative;
+  z-index: 1;
 }
