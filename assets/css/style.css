@@ -1534,7 +1534,7 @@ Works item
 
 .work-descr {
 	font-size: 11px;
-	color: rgba(255, 255, 255, 0.75);
+	color: rgba(255, 255, 255, 0.85);
 }
 
 /* White hover */
@@ -1557,7 +1557,7 @@ Works item hover
 }
 
 .works-hover-w .work-item:hover a:after {
-	background: rgba(255, 255, 255, 0.8);
+	background: rgba(255, 255, 255, 0.95);
 }
 
 .work-item:hover .work-caption {
