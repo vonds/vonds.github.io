@@ -1,0 +1,172 @@
+/* lab.css */
+/* Self-contained styles for lab write-up pages (safe alongside your existing docs.css/style.css) */
+
+.lab-doc {
+	padding-top: 10px;
+}
+
+.lab-summary {
+	color: #333;
+	max-width: 900px;
+}
+
+.lab-section {
+	padding: 20px 0;
+	border-top: 1px solid #f7f7f7;
+}
+
+.lab-section:first-of-type {
+	border-top: 0;
+	padding-top: 0;
+}
+
+.lab-section-title {
+	margin: 0 0 12px;
+	font-size: 18px;
+	letter-spacing: 2px;
+	text-transform: uppercase;
+	font-weight: bold;
+}
+
+.alt-background {
+	background: #f7f7f7;
+	padding: 20px;
+}
+
+.lab-chips {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 8px;
+	margin: 8px 0 0;
+}
+
+.lab-chip {
+	display: inline-flex;
+	align-items: center;
+	gap: 8px;
+	padding: 5px 10px;
+	border-radius: 999px;
+	background: #f2f2f2;
+	color: #333;
+	font-size: 12px;
+	line-height: 1.2;
+}
+
+.lab-chip-key {
+	font-size: 11px;
+	letter-spacing: 1px;
+	text-transform: uppercase;
+	color: #333;
+	font-weight: 600;
+}
+
+.lab-callout {
+	border: 1px solid #e8e8e8;
+	border-left: 4px solid #333;
+	background: #fff;
+	border-radius: 6px;
+	padding: 12px 12px;
+	margin: 12px 0 14px;
+}
+
+.lab-callout-label {
+	font-size: 12px;
+	text-transform: uppercase;
+	letter-spacing: 2px;
+	color: #333;
+	margin-bottom: 6px;
+}
+
+.lab-step {
+	margin: 10px 0 18px;
+}
+
+.lab-step-title {
+	margin: 0 0 10px;
+	color: #333;
+}
+
+.lab-codeblock {
+	position: relative;
+	border-radius: 10px;
+	overflow: hidden;
+	background: #333;
+	margin: 10px 0 14px;
+}
+
+.lab-codeblock-header {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	gap: 12px;
+	padding: 8px 10px;
+	background: #fff;
+	border-bottom: 1px solid #333;
+	color: #333;
+	font-size: 12px;
+	border: 1px solid #f2f2f2;
+}
+
+.lab-copy-btn {
+	border: 1px solid #333;
+	background: #333;
+	color: #fff;
+	padding: 6px 10px;
+	border-radius: 8px;
+	cursor: pointer;
+	font-size: 12px;
+}
+
+.lab-copy-btn:hover {
+	border: 1px solid #444;
+	background-color: #444;
+}
+
+.lab-codeblock pre {
+	margin: 0;
+	padding: 12px 12px;
+	overflow: auto;
+}
+
+.lab-codeblock code {
+	color: #fff;
+	font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+	font-size: 12.5px;
+	white-space: pre;
+}
+
+.lab-failures li {
+	margin-bottom: 10px;
+}
+.lab-pagination {
+  display: flex;
+  justify-content: center;   /* centers the group */
+  align-items: center;
+  gap: 1.25rem;              /* space between << and >> */
+}
+
+.lab-nav-link {
+  font-size: 5rem;
+  font-weight: 600;
+  text-decoration: none;
+  color: #666;
+}
+
+.lab-nav-link:hover {
+  color: #7c5cff; /* purple accent */
+}
+
+.lab-nav-link.hidden {
+  visibility: hidden; /* keeps spacing consistent */
+}
+pre {
+	background-color: #333;
+}
+
+code {
+	color: #7c5cff;
+}
+
+.bold {
+	font-weight: bold !important;
+}

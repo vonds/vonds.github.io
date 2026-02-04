@@ -1,0 +1,711 @@
+<!-- lab013.html -->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="exit_0 Documentation" />
+    <meta name="name" content="Vonds" />
+
+    <title>Vonds | Lab 013</title>
+
+    <!-- Favicons -->
+    <link rel="shortcut icon" href="../assets/images/favicon.png" />
+    <link rel="apple-touch-icon" href="../assets/images/apple-touch-icon.png" />
+    <link
+      rel="apple-touch-icon"
+      sizes="72x72"
+      href="../assets/images/apple-touch-icon-72x72.png"
+    />
+    <link
+      rel="apple-touch-icon"
+      sizes="114x114"
+      href="../assets/images/apple-touch-icon-114x114.png"
+    />
+
+    <!-- Site styles (your existing) -->
+    <link href="../assets/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="../assets/css/font-awesome.min.css" rel="stylesheet" />
+    <link href="../assets/css/linea-icons.css" rel="stylesheet" />
+    <link href="../assets/css/ionicons.min.css" rel="stylesheet" />
+    <link href="../assets/css/simpletextrotator.css" rel="stylesheet" />
+    <link href="../assets/css/magnific-popup.css" rel="stylesheet" />
+    <link href="../assets/css/owl.carousel.css" rel="stylesheet" />
+    <link href="../assets/css/superslides.css" rel="stylesheet" />
+    <link href="../assets/css/vertical.css" rel="stylesheet" />
+    <link href="../assets/css/animate.css" rel="stylesheet" />
+    <link href="../assets/css/style.css" rel="stylesheet" />
+    <link href="../assets/css/docs.css" rel="stylesheet" />
+
+    <!-- Lab page styles (new) -->
+    <link href="../assets/css/lab.css" rel="stylesheet" />
+
+    <!-- Fonts -->
+    <link
+      href="https://fonts.googleapis.com/css?family=Dosis"
+      rel="stylesheet"
+    />
+  </head>
+
+  <body>
+    <!-- PRELOADER -->
+    <div class="page-loader">
+      <div class="loader">Loading...</div>
+    </div>
+
+    <!-- OVERLAY MENU -->
+    <div id="overlay-menu" class="overlay-menu">
+      <a href="#" id="overlay-menu-hide" class="navigation-hide">
+        <i class="ion-close-round"></i>
+      </a>
+
+      <div class="overlay-menu-inner">
+        <nav class="overlay-menu-nav">
+          <ul id="nav">
+            <li><a href="../index.html">Home</a></li>
+
+            <li class="slidedown">
+              <a href="#">Portfolio</a>
+              <ul>
+                <li>
+                  <a
+                    href="https://github.com/vonds/exit_0"
+                    target="_blank"
+                    rel="noopener"
+                  >
+                    exit_0
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="https://github.com/vonds/sentinel"
+                    target="_blank"
+                    rel="noopener"
+                  >
+                    Sentinel
+                  </a>
+                </li>
+              </ul>
+            </li>
+
+            <li><a href="./index.html" class="active">Lab Write-ups</a></li>
+            <li>
+              <a
+                href="https://www.linkedin.com/in/vonds/"
+                target="_blank"
+                rel="noopener"
+              >
+                LinkedIn
+              </a>
+            </li>
+            <li>
+              <a href="https://github.com/vonds" target="_blank" rel="noopener">
+                Github
+              </a>
+            </li>
+            <li>
+              <a href="mailto:vonds13@gmail.com?subject=Hello Vonds">Contact</a>
+            </li>
+          </ul>
+        </nav>
+      </div>
+
+      <div class="overlay-navigation-footer">
+        <div class="container">
+          <div class="row">
+            <div class="col-sm-12 text-center">
+              <p class="copyright font-alt m-b-0">
+                VONDS &copy;
+                <script>
+                  document.write(new Date().getFullYear())
+                </script>
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- WRAPPER -->
+    <div class="wrapper">
+      <!-- NAVIGATION -->
+      <nav
+        class="navbar navbar-custom navbar-transparent navbar-light navbar-fixed-top"
+      >
+        <div class="container">
+          <div class="navbar-header">
+            <a class="navbar-brand" href="../index.html">
+              <img src="../assets/images/logo-dark.png" width="95" alt="" />
+            </a>
+          </div>
+
+          <ul id="icons-navbar" class="nav navbar-nav navbar-right">
+            <li>
+              <a href="#" id="toggle-menu" class="show-overlay" title="Menu">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </nav>
+
+      <!-- DOCS PAGE -->
+      <section class="module">
+        <div class="container">
+          <h2 class="font-alt module-title m-t-60">
+            Lab 13: Log Management and Troubleshooting with journalctl
+          </h2>
+          <nav class="lab-pagination">
+            <a
+              id="prev-lab"
+              class="lab-nav-link"
+              href="#"
+              aria-label="Previous lab"
+            >
+              &laquo;
+            </a>
+            <a
+              id="next-lab"
+              class="lab-nav-link"
+              href="#"
+              aria-label="Next lab"
+            >
+              &raquo;
+            </a>
+          </nav>
+          <div class="row">
+            <!-- LEFT SIDEBAR -->
+            <div class="col-sm-4 col-md-3 lab-sidebar">
+              <div class="docs-sidebar">
+                <div class="docs-widget">
+                  <h5 class="widget-title"><a href="./docs.html">Lab Index</a></h5>
+                  <ul class="docs-nav">
+                    <li><a href="#scenario">Scenario</a></li>
+                    <li><a href="#objective">Objective</a></li>
+                    <li><a href="#practice">What You'll Practice</a></li>
+                    <li><a href="#walkthrough">Walkthrough</a></li>
+                    <li><a href="#reference">Reference</a></li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            <!-- MAIN CONTENT -->
+            <div class="col-sm-8 col-md-9 lab-doc">
+              <!-- 1) Title + Summary (2 sentences max) -->
+              <p class="m-b-20 lab-summary">
+                Investigate cron execution issues by querying systemd journal
+                logs with targeted unit filters and priority views. Validate
+                evidence across journalctl output and classic log files, then
+                confirm how log rotation is triggered and controlled.
+              </p>
+
+              <!-- 2) Scenario -->
+              <section class="lab-section" id="scenario">
+                <div class="lab-chips" aria-label="Tags">
+                  <span class="lab-chip">
+                    <span class="lab-chip-key">troubleshooting</span>
+                  </span>
+                  <span class="lab-chip">
+                    <span class="lab-chip-key">services</span>
+                  </span>
+                  <span class="lab-chip">
+                    <span class="lab-chip-key">core</span>
+                  </span>
+                </div>
+
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  Scenario
+                </h3>
+                <p>
+                  A user reports that cron jobs are not being executed properly.
+                  You must inspect cron service logs, pull the most recent
+                  high-signal messages with context, filter for failures, and
+                  confirm where persistent logs live on disk. To close the loop,
+                  you will identify how log rotation is invoked and where per-service
+                  rotation policies are stored.
+                </p>
+                <div class="lab-callout">
+                  <div class="lab-callout-label">Operator context</div>
+                  <p class="m-b-0">
+                    When scheduled jobs “don’t run,” the fastest path is proving:
+                    (1) the cron daemon is active, (2) the job fired, and (3) the
+                    output/errors exist somewhere you can actually read.
+                  </p>
+                </div>
+              </section>
+
+              <!-- 3) Objective -->
+              <section class="lab-section alt-background" id="objective">
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  Objective
+                </h3>
+                <ul>
+                  <li>
+                    Show service logs for the cron unit using
+                    <code>journalctl -u</code>
+                    .
+                  </li>
+                  <li>
+                    Pull the most recent unit messages with context using
+                    <code>-x</code>
+                    and
+                    <code>-e</code>
+                    .
+                  </li>
+                  <li>
+                    Filter log output for failures using either grep or priority filters.
+                  </li>
+                  <li>
+                    View classic persistent logs under
+                    <code>/var/log</code>
+                    when present.
+                  </li>
+                  <li>
+                    Display the last 20 journal entries.
+                  </li>
+                  <li>
+                    Identify how log rotation is invoked and where rotation policies live.
+                  </li>
+                </ul>
+              </section>
+
+              <!-- 4) What You'll Practice -->
+              <section class="lab-section" id="practice">
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  What You’ll Practice
+                </h3>
+
+                <ul class="m-t-10">
+                  <li>
+                    Unit-scoped journal queries using
+                    <code>journalctl -u</code>
+                    .
+                  </li>
+                  <li>
+                    High-signal troubleshooting views using
+                    <code>journalctl -xeu</code>
+                    .
+                  </li>
+                  <li>
+                    Failure-focused log filtering using
+                    <code>journalctl -p</code>
+                    and simple grep pipelines.
+                  </li>
+                  <li>
+                    Reading persistent log files in
+                    <code>/var/log</code>
+                    using safe pagers like
+                    <code>less</code>
+                    .
+                  </li>
+                  <li>
+                    Quick recent history checks using
+                    <code>journalctl -n</code>
+                    .
+                  </li>
+                  <li>
+                    Understanding log rotation tooling and where policy is defined.
+                  </li>
+                </ul>
+              </section>
+
+              <!-- 5) Commands Walkthrough -->
+              <section class="lab-section alt-background" id="walkthrough">
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  Walkthrough
+                </h3>
+
+                <!-- Step 1 -->
+                <div class="lab-step">
+                  <div class="lab-step-title">
+                    <strong class="font-alt">Step 1</strong>
+                    : Show logs for the cron service unit.
+                  </div>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <div class="lab-codeblock-header">
+                      <span>Command</span>
+                      <button
+                        class="lab-copy-btn"
+                        type="button"
+                        data-copy="#cmd-step-1"
+                      >
+                        Copy
+                      </button>
+                    </div>
+                    <pre><code id="cmd-step-1">journalctl -u cron
+# OR (common on some distros)
+journalctl -u crond</code></pre>
+                  </div>
+
+                  <p>
+                    The
+                    <code>-u</code>
+                    filter limits output to a single unit. This is your baseline
+                    view to confirm the service is starting, receiving jobs, and
+                    emitting relevant messages for execution.
+                  </p>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <pre><code id="verify-step-1"># Example patterns:
+systemd[1]: Started Regular background program processing daemon.
+cron[891]: (root) CMD (/usr/local/bin/daily-report.sh)</code></pre>
+                  </div>
+                </div>
+
+                <!-- Step 2 -->
+                <div class="lab-step">
+                  <div class="lab-step-title">
+                    <strong class="font-alt">Step 2</strong>
+                    : Show the most recent unit messages with extra context.
+                  </div>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <div class="lab-codeblock-header">
+                      <span>Command</span>
+                      <button
+                        class="lab-copy-btn"
+                        type="button"
+                        data-copy="#cmd-step-2"
+                      >
+                        Copy
+                      </button>
+                    </div>
+                    <pre><code id="cmd-step-2">journalctl -xeu cron
+# OR
+journalctl -xeu crond</code></pre>
+                  </div>
+
+                  <p>
+                    <code>-e</code>
+                    jumps to the end (most recent),
+                    <code>-x</code>
+                    adds explanatory text when available, and
+                    <code>-u</code>
+                    keeps output scoped to the unit. This is a high-signal view
+                    when you need to focus on “what just happened.”
+                  </p>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <pre><code id="verify-step-2"># Example patterns:
+CRON[1023]: (lab) CMD (/usr/local/bin/backup.sh)
+pam_unix(cron:session): session opened for user lab by (uid=0)
+pam_unix(cron:session): session closed for user lab</code></pre>
+                  </div>
+                </div>
+
+                <!-- Step 3 -->
+                <div class="lab-step">
+                  <div class="lab-step-title">
+                    <strong class="font-alt">Step 3</strong>
+                    : Filter logs for failures.
+                  </div>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <div class="lab-codeblock-header">
+                      <span>Command</span>
+                      <button
+                        class="lab-copy-btn"
+                        type="button"
+                        data-copy="#cmd-step-3"
+                      >
+                        Copy
+                      </button>
+                    </div>
+                    <pre><code id="cmd-step-3">journalctl -p err -b
+# OR (simple keyword sweep)
+journalctl | grep -i fail</code></pre>
+                  </div>
+
+                  <p>
+                    Priority filtering is cleaner than raw grep when you want
+                    true “errors and above.” Adding
+                    <code>-b</code>
+                    limits output to the current boot, which reduces noise when
+                    troubleshooting something that “stopped working today.”
+                  </p>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <pre><code id="verify-step-3"># Example pattern:
+Failed password for invalid user guest from 10.0.0.23 port 53218 ssh2</code></pre>
+                  </div>
+                </div>
+
+                <!-- Step 4 -->
+                <div class="lab-step">
+                  <div class="lab-step-title">
+                    <strong class="font-alt">Step 4</strong>
+                    : View classic persistent logs when present.
+                  </div>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <div class="lab-codeblock-header">
+                      <span>Command</span>
+                      <button
+                        class="lab-copy-btn"
+                        type="button"
+                        data-copy="#cmd-step-4"
+                      >
+                        Copy
+                      </button>
+                    </div>
+                    <pre><code id="cmd-step-4">less /var/log/syslog
+# OR (quick tail view)
+tail /var/log/syslog</code></pre>
+                  </div>
+
+                  <p>
+                    Some environments still write service messages into classic
+                    log files (often via rsyslog). Checking
+                    <code>/var/log/syslog</code>
+                    is a quick “is anything writing to disk” validation, and it
+                    helps when journal retention is short or logs are not persistent.
+                  </p>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <pre><code id="verify-step-4"># Example patterns:
+CRON[1201]: (lab) CMD (/usr/local/bin/backup.sh)
+systemd[1]: Finished Cleanup of Temporary Directories.
+sshd[1350]: Failed password for invalid user admin from 192.168.1.50 port 45822 ssh2</code></pre>
+                  </div>
+                </div>
+
+                <!-- Step 5 -->
+                <div class="lab-step">
+                  <div class="lab-step-title">
+                    <strong class="font-alt">Step 5</strong>
+                    : Show the last 20 journal entries.
+                  </div>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <div class="lab-codeblock-header">
+                      <span>Command</span>
+                      <button
+                        class="lab-copy-btn"
+                        type="button"
+                        data-copy="#cmd-step-5"
+                      >
+                        Copy
+                      </button>
+                    </div>
+                    <pre><code id="cmd-step-5">journalctl -n 20</code></pre>
+                  </div>
+
+                  <p>
+                    This is a fast “what just happened” snapshot when you do not
+                    yet know which unit is involved. It is also useful after you
+                    reproduce an issue and want immediate evidence.
+                  </p>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <pre><code id="verify-step-5"># Example header and patterns:
+-- Logs begin Mon 2025-07-01 08:00:00 --
+CRON[1127]: (root) CMD (/usr/local/bin/daily-report.sh)</code></pre>
+                  </div>
+                </div>
+
+                <!-- Step 6 -->
+                <div class="lab-step">
+                  <div class="lab-step-title">
+                    <strong class="font-alt">Step 6</strong>
+                    : Trigger log rotation and confirm where policies live.
+                  </div>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <div class="lab-codeblock-header">
+                      <span>Command</span>
+                      <button
+                        class="lab-copy-btn"
+                        type="button"
+                        data-copy="#cmd-step-6"
+                      >
+                        Copy
+                      </button>
+                    </div>
+                    <pre><code id="cmd-step-6">sudo logrotate /etc/logrotate.conf
+# OR (force a run)
+sudo logrotate -f /etc/logrotate.conf</code></pre>
+                  </div>
+
+                  <p>
+                    <code>logrotate</code>
+                    applies rotation rules to log files on disk (typically under
+                    <code>/var/log</code>
+                    ). The main configuration is
+                    <code>/etc/logrotate.conf</code>
+                    , and per-service rules commonly live in
+                    <code>/etc/logrotate.d/</code>
+                    .
+                  </p>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <pre><code id="verify-step-6"># Inspect policy locations:
+ls -l /etc/logrotate.d/
+cat /etc/logrotate.conf</code></pre>
+                  </div>
+                </div>
+              </section>
+
+              <!-- 8) Reference -->
+              <!-- 9) Reference -->
+              <section class="lab-section" id="reference">
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  Reference
+                </h3>
+
+                <ul class="lab-reference-list">
+                  <li>
+                    <code>journalctl -u &lt;unit&gt;</code>
+                    : Shows journal entries for a specific systemd unit (for example
+                    <code>cron</code>
+                    or
+                    <code>crond</code>
+                    ).
+                  </li>
+                  <li>
+                    <code>journalctl -xeu &lt;unit&gt;</code>
+                    : Jumps to the most recent unit messages and includes additional context.
+                    <ul>
+                      <li>
+                        <code>-x</code>
+                        : Adds explanatory text when available.
+                      </li>
+                      <li>
+                        <code>-e</code>
+                        : Jumps to the end (most recent messages).
+                      </li>
+                      <li>
+                        <code>-u &lt;unit&gt;</code>
+                        : Filters output to a single unit.
+                      </li>
+                    </ul>
+                  </li>
+                  <li>
+                    <code>journalctl -p err -b</code>
+                    : Shows error-priority journal entries from the current boot.
+                    <ul>
+                      <li>
+                        <code>-p err</code>
+                        : Limits output to error severity and above.
+                      </li>
+                      <li>
+                        <code>-b</code>
+                        : Limits output to the current boot.
+                      </li>
+                    </ul>
+                  </li>
+                  <li>
+                    <code>/var/log/syslog</code>
+                    : Common persistent log file on Debian/Ubuntu systems (often written via rsyslog).
+                  </li>
+                  <li>
+                    <code>journalctl -n 20</code>
+                    : Displays the last 20 journal entries.
+                  </li>
+                  <li>
+                    <code>logrotate</code>
+                    : Rotates, compresses, and manages retention for log files on disk.
+                    <ul>
+                      <li>
+                        <code>/etc/logrotate.conf</code>
+                        : Main logrotate configuration.
+                      </li>
+                      <li>
+                        <code>/etc/logrotate.d/</code>
+                        : Per-service rotation policies.
+                      </li>
+                    </ul>
+                  </li>
+                </ul>
+              </section>
+
+              <!-- Lab Pagination -->
+            </div>
+            <!-- /main -->
+          </div>
+          <!-- /row -->
+          <nav class="lab-pagination">
+            <a
+                id="prev-lab"
+                class="lab-nav-link"
+                href="#"
+                aria-label="Previous lab"
+            >
+                &uArr;
+            </a>
+          </nav>
+        </div>
+        <!-- /container -->
+      </section>
+
+      <!-- FOOTER -->
+      <footer class="module bg-light">
+        <div class="container">
+          <div class="row">
+            <div class="col-sm-12">
+              <ul class="social-text-links font-alt text-center m-b-20">
+                <li>
+                  <a
+                    href="https://github.com/vonds"
+                    target="_blank"
+                    rel="noopener"
+                  >
+                    Github
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="https://www.linkedin.com/in/vonds/"
+                    target="_blank"
+                    rel="noopener"
+                  >
+                    Linkedin
+                  </a>
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-sm-12">
+              <p class="copyright text-center m-b-0">
+                VONDS &copy;
+                <span id="year"></span>
+              </p>
+
+              <div class="scroll-up">
+                <a href="#totop"><i class="fa fa-angle-double-up"></i></a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <!-- Javascript files (your existing) -->
+    <script src="../assets/js/jquery-2.2.4.min.js"></script>
+    <script src="../assets/bootstrap/js/bootstrap.min.js"></script>
+    <script src="../assets/js/jquery.superslides.min.js"></script>
+    <script src="../assets/js/jquery.mb.YTPlayer.min.js"></script>
+    <script src="../assets/js/jquery.magnific-popup.min.js"></script>
+    <script src="../assets/js/owl.carousel.min.js"></script>
+    <script src="../assets/js/jquery.simple-text-rotator.min.js"></script>
+    <script src="../assets/js/imagesloaded.pkgd.js"></script>
+    <script src="../assets/js/isotope.pkgd.min.js"></script>
+    <script src="../assets/js/packery-mode.pkgd.min.js"></script>
+    <script src="../assets/js/appear.js"></script>
+    <script src="../assets/js/jquery.easing.1.3.js"></script>
+    <script src="../assets/js/wow.min.js"></script>
+    <script src="../assets/js/jqBootstrapValidation.js"></script>
+    <script src="../assets/js/jquery.fitvids.js"></script>
+    <script src="../assets/js/jquery.parallax-1.1.3.js"></script>
+    <script src="../assets/js/smoothscroll.js"></script>
+    <script src="../assets/js/custom.js"></script>
+
+    <!-- Lab page JS (new) -->
+    <script src="../assets/js/lab.js"></script>
+  </body>
+</html>

@@ -13,7 +13,7 @@ General Styles
 
 body {
 	background: #fff;
-	font: 400 14px/1.8 "Open Sans", sans-serif;
+	font: 400 16px/1.8 "Open Sans", sans-serif;
 	color: #333;
 	overflow-x: hidden;
 	-ms-overflow-style: scrollbar;
@@ -1412,7 +1412,7 @@ Modules
 }
 
 .navbar-custom + .module {
-	padding: 200px 0;
+	padding: 50px 0;
 }
 
 .navbar-custom + .module-small {
@@ -1430,7 +1430,6 @@ Modules
 	letter-spacing: 10px;
 	text-align: center;
 	font-size: 25px;
-	margin-bottom: 70px;
 }
 
 .module-subtitle {
@@ -2396,4 +2395,52 @@ span {
 #hero .hero-text {
   position: relative;
   z-index: 1;
+}
+
+
+.labs-directory {
+  margin-top: 30px;
+}
+
+.labs-grid {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+
+  display: grid;
+  grid-template-columns: repeat(8, minmax(0, 1fr));
+  gap: 12px 24px;
+}
+
+.labs-grid li {
+  font-size: 12px;
+  letter-spacing: 1px;
+}
+
+.labs-grid a {
+  display: block;
+  color: #111;
+  padding: 4px 0;
+}
+
+.labs-grid a:hover {
+  color: #7c5cff; /* your accent purple */
+}
+
+@media (max-width: 1200px) {
+  .labs-grid {
+    grid-template-columns: repeat(6, 1fr);
+  }
+}
+
+@media (max-width: 992px) {
+  .labs-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .labs-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
 }

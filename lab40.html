@@ -1,0 +1,672 @@
+<!-- lab040.html -->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="exit_0 Documentation" />
+    <meta name="name" content="Vonds" />
+
+    <title>Vonds | Lab 040</title>
+
+    <!-- Favicons -->
+    <link rel="shortcut icon" href="../assets/images/favicon.png" />
+    <link rel="apple-touch-icon" href="../assets/images/apple-touch-icon.png" />
+    <link
+      rel="apple-touch-icon"
+      sizes="72x72"
+      href="../assets/images/apple-touch-icon-72x72.png"
+    />
+    <link
+      rel="apple-touch-icon"
+      sizes="114x114"
+      href="../assets/images/apple-touch-icon-114x114.png"
+    />
+
+    <!-- Site styles (your existing) -->
+    <link href="../assets/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="../assets/css/font-awesome.min.css" rel="stylesheet" />
+    <link href="../assets/css/linea-icons.css" rel="stylesheet" />
+    <link href="../assets/css/ionicons.min.css" rel="stylesheet" />
+    <link href="../assets/css/simpletextrotator.css" rel="stylesheet" />
+    <link href="../assets/css/magnific-popup.css" rel="stylesheet" />
+    <link href="../assets/css/owl.carousel.css" rel="stylesheet" />
+    <link href="../assets/css/superslides.css" rel="stylesheet" />
+    <link href="../assets/css/vertical.css" rel="stylesheet" />
+    <link href="../assets/css/animate.css" rel="stylesheet" />
+    <link href="../assets/css/style.css" rel="stylesheet" />
+    <link href="../assets/css/docs.css" rel="stylesheet" />
+
+    <!-- Lab page styles (new) -->
+    <link href="../assets/css/lab.css" rel="stylesheet" />
+
+    <!-- Fonts -->
+    <link
+      href="https://fonts.googleapis.com/css?family=Dosis"
+      rel="stylesheet"
+    />
+  </head>
+
+  <body>
+    <!-- PRELOADER -->
+    <div class="page-loader">
+      <div class="loader">Loading...</div>
+    </div>
+
+    <!-- OVERLAY MENU -->
+    <div id="overlay-menu" class="overlay-menu">
+      <a href="#" id="overlay-menu-hide" class="navigation-hide">
+        <i class="ion-close-round"></i>
+      </a>
+
+      <div class="overlay-menu-inner">
+        <nav class="overlay-menu-nav">
+          <ul id="nav">
+            <li><a href="../index.html">Home</a></li>
+
+            <li class="slidedown">
+              <a href="#">Portfolio</a>
+              <ul>
+                <li>
+                  <a
+                    href="https://github.com/vonds/exit_0"
+                    target="_blank"
+                    rel="noopener"
+                  >
+                    exit_0
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="https://github.com/vonds/sentinel"
+                    target="_blank"
+                    rel="noopener"
+                  >
+                    Sentinel
+                  </a>
+                </li>
+              </ul>
+            </li>
+
+            <li><a href="./index.html" class="active">Lab Write-ups</a></li>
+            <li>
+              <a
+                href="https://www.linkedin.com/in/vonds/"
+                target="_blank"
+                rel="noopener"
+              >
+                LinkedIn
+              </a>
+            </li>
+            <li>
+              <a href="https://github.com/vonds" target="_blank" rel="noopener">
+                Github
+              </a>
+            </li>
+            <li>
+              <a href="mailto:vonds13@gmail.com?subject=Hello Vonds">Contact</a>
+            </li>
+          </ul>
+        </nav>
+      </div>
+
+      <div class="overlay-navigation-footer">
+        <div class="container">
+          <div class="row">
+            <div class="col-sm-12 text-center">
+              <p class="copyright font-alt m-b-0">
+                VONDS &copy;
+                <script>
+                  document.write(new Date().getFullYear())
+                </script>
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- WRAPPER -->
+    <div class="wrapper">
+      <!-- NAVIGATION -->
+      <nav
+        class="navbar navbar-custom navbar-transparent navbar-light navbar-fixed-top"
+      >
+        <div class="container">
+          <div class="navbar-header">
+            <a class="navbar-brand" href="../index.html">
+              <img src="../assets/images/logo-dark.png" width="95" alt="" />
+            </a>
+          </div>
+
+          <ul id="icons-navbar" class="nav navbar-nav navbar-right">
+            <li>
+              <a href="#" id="toggle-menu" class="show-overlay" title="Menu">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </nav>
+
+      <!-- DOCS PAGE -->
+      <section class="module">
+        <div class="container">
+          <h2 class="font-alt module-title m-t-60">
+            Lab 40: Mastering Process Signals in Linux
+          </h2>
+          <nav class="lab-pagination">
+            <a
+              id="prev-lab"
+              class="lab-nav-link"
+              href="#"
+              aria-label="Previous lab"
+            >
+              &laquo;
+            </a>
+            <a
+              id="next-lab"
+              class="lab-nav-link"
+              href="#"
+              aria-label="Next lab"
+            >
+              &raquo;
+            </a>
+          </nav>
+          <div class="row">
+            <!-- LEFT SIDEBAR -->
+            <div class="col-sm-4 col-md-3 lab-sidebar">
+              <div class="docs-sidebar">
+                <div class="docs-widget">
+                  <h5 class="widget-title">
+                    <a href="./docs.html">Lab Index</a>
+                  </h5>
+                  <ul class="docs-nav">
+                    <li><a href="#scenario">Scenario</a></li>
+                    <li><a href="#objective">Objective</a></li>
+                    <li><a href="#practice">What You'll Practice</a></li>
+                    <li><a href="#walkthrough">Walkthrough</a></li>
+                    <li><a href="#reference">Reference</a></li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            <!-- MAIN CONTENT -->
+            <div class="col-sm-8 col-md-9 lab-doc">
+              <!-- 1) Title + Summary (2 sentences max) -->
+              <p class="m-b-20 lab-summary">
+                Identify a memory-hogging process, terminate it gracefully with
+                SIGTERM, and escalate to SIGKILL only when it refuses to exit.
+                Enumerate available signals and use a shell trap to handle SIGINT
+                with a custom message.
+              </p>
+
+              <!-- 2) Scenario -->
+              <section class="lab-section" id="scenario">
+                <div class="lab-chips" aria-label="Tags">
+                  <span class="lab-chip">
+                    <span class="lab-chip-key">troubleshooting</span>
+                  </span>
+                  <span class="lab-chip">
+                    <span class="lab-chip-key">core</span>
+                  </span>
+                  <span class="lab-chip">
+                    <span class="lab-chip-key">services</span>
+                  </span>
+                </div>
+
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  Scenario
+                </h3>
+                <p>
+                  A teammate started a background process called
+                  <code>memhog</code> that is consuming excessive memory and
+                  impacting system performance. You need to locate the PID,
+                  attempt a clean stop using <code>SIGTERM</code>, confirm whether
+                  it exited, then force-stop it with <code>SIGKILL</code> if it
+                  continues running.
+                </p>
+                <div class="lab-callout">
+                  <div class="lab-callout-label">Operator context</div>
+                  <p class="m-b-0">
+                    Signals are an operator’s control surface. Prefer graceful
+                    termination for predictable cleanup, but know when to escalate
+                    and how to prove what happened with verifiable checks.
+                  </p>
+                </div>
+              </section>
+
+              <!-- 3) Objective -->
+              <section class="lab-section alt-background" id="objective">
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  Objective
+                </h3>
+                <ul>
+                  <li>Find the <code>memhog</code> process and capture its PID.</li>
+                  <li>Send <code>SIGTERM</code> using signal name or number.</li>
+                  <li>Verify whether the process stopped using PID or name checks.</li>
+                  <li>Escalate to <code>SIGKILL</code> when <code>SIGTERM</code> fails.</li>
+                  <li>List signal names/numbers available on the system.</li>
+                  <li>Use <code>trap</code> so Ctrl+C (SIGINT) prints a message.</li>
+                </ul>
+              </section>
+
+              <!-- 4) What You'll Practice -->
+              <section class="lab-section" id="practice">
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  What You’ll Practice
+                </h3>
+
+                <ul class="m-t-10">
+                  <li>
+                    Process discovery with <code>ps</code> and filtering via <code>grep</code>.
+                  </li>
+                  <li>
+                    Signal basics: <code>SIGTERM</code> (15) vs <code>SIGKILL</code> (9).
+                  </li>
+                  <li>
+                    Verifying termination using <code>ps -p</code> and <code>pgrep</code>.
+                  </li>
+                  <li>
+                    Enumerating signals with <code>kill -l</code>.
+                  </li>
+                  <li>
+                    Handling <code>SIGINT</code> interactively using <code>trap</code>.
+                  </li>
+                </ul>
+              </section>
+
+              <!-- 5) Commands Walkthrough -->
+              <section class="lab-section alt-background" id="walkthrough">
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  Walkthrough
+                </h3>
+
+                <!-- Step 1 -->
+                <div class="lab-step">
+                  <div class="lab-step-title">
+                    <strong class="font-alt">Step 1</strong>
+                    : View processes related to <code>memhog</code>.
+                  </div>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <div class="lab-codeblock-header">
+                      <span>Command</span>
+                      <button
+                        class="lab-copy-btn"
+                        type="button"
+                        data-copy="#cmd-step-1"
+                      >
+                        Copy
+                      </button>
+                    </div>
+                    <pre><code id="cmd-step-1">ps aux | grep memhog</code></pre>
+                  </div>
+
+                  <p>
+                    This gives you the PID plus resource usage context. Expect to
+                    see your <code>grep</code> process too, so focus on the row
+                    that is actually running <code>memhog</code>.
+                  </p>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <pre><code id="verify-step-1">user123   5268  98.1 45.3 1612932 924392 pts/0  R    13:22   2:11 memhog</code></pre>
+                  </div>
+                </div>
+
+                <!-- Step 2 -->
+                <div class="lab-step">
+                  <div class="lab-step-title">
+                    <strong class="font-alt">Step 2</strong>
+                    : Send <code>SIGTERM</code> to request a clean shutdown.
+                  </div>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <div class="lab-codeblock-header">
+                      <span>Command</span>
+                      <button
+                        class="lab-copy-btn"
+                        type="button"
+                        data-copy="#cmd-step-2"
+                      >
+                        Copy
+                      </button>
+                    </div>
+                    <pre><code id="cmd-step-2">kill -SIGTERM 5268
+# OR
+kill -15 5268</code></pre>
+                  </div>
+
+                  <p>
+                    <code>SIGTERM</code> (15) asks the process to exit gracefully.
+                    Many well-behaved programs trap this signal to flush buffers,
+                    close files, and release locks before shutting down.
+                  </p>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <pre><code id="verify-step-2"># Expected result:
+# No output on success (most common).</code></pre>
+                  </div>
+                </div>
+
+                <!-- Step 3 -->
+                <div class="lab-step">
+                  <div class="lab-step-title">
+                    <strong class="font-alt">Step 3</strong>
+                    : Verify whether PID 5268 is still running.
+                  </div>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <div class="lab-codeblock-header">
+                      <span>Command</span>
+                      <button
+                        class="lab-copy-btn"
+                        type="button"
+                        data-copy="#cmd-step-3"
+                      >
+                        Copy
+                      </button>
+                    </div>
+                    <pre><code id="cmd-step-3">ps -p 5268
+# OR
+pgrep memhog</code></pre>
+                  </div>
+
+                  <p>
+                    A lingering PID after a reasonable wait means the process
+                    either ignored the signal or is stuck. In this lab scenario,
+                    the PID still exists, which triggers escalation.
+                  </p>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <pre><code id="verify-step-3">PID TTY      TIME     CMD
+5268 ?       00:02:11 memhog</code></pre>
+                  </div>
+                </div>
+
+                <!-- Step 4 -->
+                <div class="lab-step">
+                  <div class="lab-step-title">
+                    <strong class="font-alt">Step 4</strong>
+                    : Escalate to <code>SIGKILL</code> to force-stop it.
+                  </div>
+
+                  <div class="lab-callout">
+                    <div class="lab-callout-label">Safety note</div>
+                    <p class="m-b-0">
+                      <code>SIGKILL</code> cannot be handled. The process is
+                      terminated immediately with no cleanup, which can leave
+                      partial output or locked resources depending on workload.
+                    </p>
+                  </div>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <div class="lab-codeblock-header">
+                      <span>Command</span>
+                      <button
+                        class="lab-copy-btn"
+                        type="button"
+                        data-copy="#cmd-step-4"
+                      >
+                        Copy
+                      </button>
+                    </div>
+                    <pre><code id="cmd-step-4">kill -9 5268
+# OR
+kill -SIGKILL 5268</code></pre>
+                  </div>
+
+                  <p>
+                    Use <code>SIGKILL</code> (9) only when graceful termination
+                    fails and the impact justifies the forced stop.
+                  </p>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <pre><code id="verify-step-4"># Verify again:
+ps -p 5268
+pgrep memhog</code></pre>
+                  </div>
+                </div>
+
+                <!-- Step 5 -->
+                <div class="lab-step">
+                  <div class="lab-step-title">
+                    <strong class="font-alt">Step 5</strong>
+                    : Confirm it is no longer running.
+                  </div>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <div class="lab-codeblock-header">
+                      <span>Command</span>
+                      <button
+                        class="lab-copy-btn"
+                        type="button"
+                        data-copy="#cmd-step-5"
+                      >
+                        Copy
+                      </button>
+                    </div>
+                    <pre><code id="cmd-step-5">ps -p 5268
+# OR
+pgrep memhog</code></pre>
+                  </div>
+
+                  <p>
+                    Your confirmation is the proof. If there is no PID row and no
+                    name match, the process is gone.
+                  </p>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <pre><code id="verify-step-5"># Expected result:
+# No such process / no matches returned.</code></pre>
+                  </div>
+                </div>
+
+                <!-- Step 6 -->
+                <div class="lab-step">
+                  <div class="lab-step-title">
+                    <strong class="font-alt">Step 6</strong>
+                    : List all available signals.
+                  </div>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <div class="lab-codeblock-header">
+                      <span>Command</span>
+                      <button
+                        class="lab-copy-btn"
+                        type="button"
+                        data-copy="#cmd-step-6"
+                      >
+                        Copy
+                      </button>
+                    </div>
+                    <pre><code id="cmd-step-6">kill -l</code></pre>
+                  </div>
+
+                  <p>
+                    <code>kill -l</code> prints signal names and numbers for the
+                    platform you are running. This is useful when you remember a
+                    name but not the number (or the other way around).
+                  </p>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <pre><code id="verify-step-6">1) SIGHUP     2) SIGINT     3) SIGQUIT    4) SIGILL     5) SIGTRAP     6) SIGABRT     7) SIGBUS
+8) SIGFPE     9) SIGKILL   10) SIGUSR1   11) SIGSEGV   12) SIGUSR2    13) SIGPIPE    14) SIGALRM
+15) SIGTERM  16) SIGSTKFLT 17) SIGCHLD   18) SIGCONT   19) SIGSTOP    20) SIGTSTP    21) SIGTTIN
+22) SIGTTOU  23) SIGURG    24) SIGXCPU   25) SIGXFSZ   26) SIGVTALRM  27) SIGPROF    28) SIGWINCH
+29) SIGIO    30) SIGPWR    31) SIGSYS</code></pre>
+                  </div>
+                </div>
+
+                <!-- Step 7 -->
+                <div class="lab-step">
+                  <div class="lab-step-title">
+                    <strong class="font-alt">Step 7</strong>
+                    : Trap Ctrl+C (SIGINT) and print a message.
+                  </div>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <div class="lab-codeblock-header">
+                      <span>Command</span>
+                      <button
+                        class="lab-copy-btn"
+                        type="button"
+                        data-copy="#cmd-step-7"
+                      >
+                        Copy
+                      </button>
+                    </div>
+                    <pre><code id="cmd-step-7">trap 'echo Signal caught!' SIGINT</code></pre>
+                  </div>
+
+                  <p>
+                    <code>trap</code> lets you define a handler for signals in
+                    your current shell session. After setting this, pressing
+                    Ctrl+C will run your handler instead of immediately interrupting
+                    the shell’s current foreground job.
+                  </p>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <pre><code id="verify-step-7"># Press Ctrl+C to test:
+Signal caught!</code></pre>
+                  </div>
+                </div>
+              </section>
+
+              <!-- 8) Reference -->
+              <!-- 9) Reference -->
+              <section class="lab-section" id="reference">
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  Reference
+                </h3>
+
+                <ul class="lab-reference-list">
+                  <li>
+                    <code>ps aux | grep &lt;pattern&gt;</code>
+                    : Finds matching processes and shows resource usage context.
+                  </li>
+
+                  <li>
+                    <code>kill -SIGTERM &lt;pid&gt;</code>
+                    / <code>kill -15 &lt;pid&gt;</code>
+                    : Requests graceful termination.
+                  </li>
+
+                  <li>
+                    <code>kill -SIGKILL &lt;pid&gt;</code>
+                    / <code>kill -9 &lt;pid&gt;</code>
+                    : Forces immediate termination with no cleanup.
+                  </li>
+
+                  <li>
+                    <code>ps -p &lt;pid&gt;</code>
+                    : Checks whether a PID still exists.
+                  </li>
+
+                  <li>
+                    <code>pgrep &lt;name&gt;</code>
+                    : Checks whether any processes match a name/pattern.
+                  </li>
+
+                  <li>
+                    <code>kill -l</code>
+                    : Lists signal names and numbers available on the system.
+                  </li>
+
+                  <li>
+                    <code>trap '&lt;commands&gt;' &lt;signal&gt;</code>
+                    : Runs commands when the shell receives the specified signal.
+                  </li>
+                </ul>
+              </section>
+
+              <!-- Lab Pagination -->
+            </div>
+            <!-- /main -->
+          </div>
+          <!-- /row -->
+          <nav class="lab-pagination">
+            <a
+              id="prev-lab"
+              class="lab-nav-link"
+              href="#"
+              aria-label="Previous lab"
+            >
+              &uArr;
+            </a>
+          </nav>
+        </div>
+        <!-- /container -->
+      </section>
+
+      <!-- FOOTER -->
+      <footer class="module bg-light">
+        <div class="container">
+          <div class="row">
+            <div class="col-sm-12">
+              <ul class="social-text-links font-alt text-center m-b-20">
+                <li>
+                  <a
+                    href="https://github.com/vonds"
+                    target="_blank"
+                    rel="noopener"
+                  >
+                    Github
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="https://www.linkedin.com/in/vonds/"
+                    target="_blank"
+                    rel="noopener"
+                  >
+                    Linkedin
+                  </a>
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-sm-12">
+              <p class="copyright text-center m-b-0">
+                VONDS &copy;
+                <span id="year"></span>
+              </p>
+
+              <div class="scroll-up">
+                <a href="#totop"><i class="fa fa-angle-double-up"></i></a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <!-- Javascript files (your existing) -->
+    <script src="../assets/js/jquery-2.2.4.min.js"></script>
+    <script src="../assets/bootstrap/js/bootstrap.min.js"></script>
+    <script src="../assets/js/jquery.superslides.min.js"></script>
+    <script src="../assets/js/jquery.mb.YTPlayer.min.js"></script>
+    <script src="../assets/js/jquery.magnific-popup.min.js"></script>
+    <script src="../assets/js/owl.carousel.min.js"></script>
+    <script src="../assets/js/jquery.simple-text-rotator.min.js"></script>
+    <script src="../assets/js/imagesloaded.pkgd.js"></script>
+    <script src="../assets/js/isotope.pkgd.min.js"></script>
+    <script src="../assets/js/packery-mode.pkgd.min.js"></script>
+    <script src="../assets/js/appear.js"></script>
+    <script src="../assets/js/jquery.easing.1.3.js"></script>
+    <script src="../assets/js/wow.min.js"></script>
+    <script src="../assets/js/jqBootstrapValidation.js"></script>
+    <script src="../assets/js/jquery.fitvids.js"></script>
+    <script src="../assets/js/jquery.parallax-1.1.3.js"></script>
+    <script src="../assets/js/smoothscroll.js"></script>
+    <script src="../assets/js/custom.js"></script>
+
+    <!-- Lab page JS (new) -->
+    <script src="../assets/js/lab.js"></script>
+  </body>
+</html>
