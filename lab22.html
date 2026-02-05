@@ -200,8 +200,10 @@
             <div class="col-sm-8 col-md-9 lab-doc">
               <!-- 1) Title + Summary (2 sentences max) -->
               <p class="m-b-20 lab-summary">
-                Bring printing online on a Rocky Linux host by enabling the CUPS service, validating queues, and managing print jobs from the CLI.
-                Set a system default printer, submit and cancel a job, and identify the two configuration files that control the daemon and queues.
+                Bring printing online on a Rocky Linux host by enabling the CUPS
+                service, validating queues, and managing print jobs from the CLI.
+                Set a system default printer, submit and cancel a job, and identify
+                the two configuration files that control the daemon and queues.
               </p>
 
               <!-- 2) Scenario -->
@@ -222,17 +224,22 @@
                   Scenario
                 </h3>
                 <p>
-                  You’ve been asked to bring printing online on a new Rocky Linux host.
-                  A queue already exists (<code>Demo_Printer</code>), but printing is not confirmed operational.
-                  You need to start and enable CUPS, inspect printer state, set a default destination, submit a test job,
-                  and demonstrate you can cancel stuck jobs. You also need to locate the core config files that control CUPS behavior.
+                  You’ve been asked to bring printing online on a new Rocky Linux
+                  host. A queue already exists (<code>Demo_Printer</code>), but
+                  printing is not confirmed operational. You need to start and
+                  enable CUPS, inspect printer state, set a default destination,
+                  submit a test job, and demonstrate you can cancel stuck jobs.
+                  You also need to locate the core config files that control CUPS
+                  behavior.
                 </p>
 
                 <div class="lab-callout">
                   <div class="lab-callout-label">Operator context</div>
                   <p class="m-b-0">
-                    Printing incidents are usually service state, queue state (enabled/accepting), default destination, or job control.
-                    This workflow gives you a repeatable “bring it online and prove it works” checklist.
+                    Printing incidents are usually service state, queue state
+                    (enabled/accepting), default destination, or job control. This
+                    workflow gives you a repeatable “bring it online and prove it
+                    works” checklist.
                   </p>
                 </div>
               </section>
@@ -262,19 +269,23 @@
 
                 <ul class="m-t-10">
                   <li>
-                    Service lifecycle management with <code>systemctl enable --now</code>.
+                    Service lifecycle management with
+                    <code>systemctl enable --now</code>.
                   </li>
                   <li>
-                    CUPS visibility checks with <code>lpstat</code> and queue/job inspection with <code>lpq</code>.
+                    CUPS visibility checks with <code>lpstat</code> and queue/job
+                    inspection with <code>lpq</code>.
                   </li>
                   <li>
-                    Queue control using <code>cupsenable</code> and <code>cupsaccept</code>.
+                    Queue control using <code>cupsenable</code> and
+                    <code>cupsaccept</code>.
                   </li>
                   <li>
                     Default destination management with <code>lpadmin -d</code>.
                   </li>
                   <li>
-                    Job submission and cancellation with <code>lp</code> and <code>cancel</code>.
+                    Job submission and cancellation with <code>lp</code> and
+                    <code>cancel</code>.
                   </li>
                   <li>
                     Temporary remote admin toggles using <code>cupsctl</code>.
@@ -313,8 +324,9 @@
                   </div>
 
                   <p>
-                    This is the “bring it online” action. <code>--now</code> starts the service immediately and
-                    <code>enable</code> ensures it starts after reboot.
+                    This is the “bring it online” action. <code>--now</code>
+                    starts the service immediately and <code>enable</code> ensures
+                    it starts after reboot.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -344,8 +356,9 @@
                   </div>
 
                   <p>
-                    <code>lpstat -t</code> gives the “what’s configured and what’s running” view:
-                    scheduler state, default destination, and printer queue status.
+                    <code>lpstat -t</code> gives the “what’s configured and what’s
+                    running” view: scheduler state, default destination, and
+                    printer queue status.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -377,8 +390,9 @@
                   </div>
 
                   <p>
-                    These two states are separate. A queue can be enabled but not accepting jobs, or accepting jobs but disabled.
-                    You want both true for normal operations.
+                    These two states are separate. A queue can be enabled but not
+                    accepting jobs, or accepting jobs but disabled. You want both
+                    true for normal operations.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -408,8 +422,9 @@
                   </div>
 
                   <p>
-                    Setting a default destination prevents “works for me” behavior where a user prints without specifying a queue
-                    and nothing happens because no default is defined.
+                    Setting a default destination prevents “works for me” behavior
+                    where a user prints without specifying a queue and nothing
+                    happens because no default is defined.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -441,8 +456,9 @@
                   </div>
 
                   <p>
-                    <code>lp</code> submits a job to the default destination unless you override with <code>-d</code>.
-                    Printing a simple local file is a fast sanity check.
+                    <code>lp</code> submits a job to the default destination unless
+                    you override with <code>-d</code>. Printing a simple local file
+                    is a fast sanity check.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -473,7 +489,8 @@
                   </div>
 
                   <p>
-                    This is your “what is stuck right now” view. It helps confirm the job exists and whether it is active/pending.
+                    This is your “what is stuck right now” view. It helps confirm
+                    the job exists and whether it is active/pending.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -504,11 +521,13 @@
                   </div>
 
                   <p>
-                    Canceling by exact destination + job id prevents you from accidentally nuking an entire queue when you only meant to stop one job.
+                    Canceling by exact destination + job id prevents you from
+                    accidentally nuking an entire queue when you only meant to stop
+                    one job.
                   </p>
 
+                  <!-- FIXED: bad closing tags were breaking the DOM -->
                   <div class="lab-codeblock m-b-40 m-t-40">
-                    </div>
                     <pre><code id="verify-step-7">lpq -P Demo_Printer</code></pre>
                   </div>
                 </div>
@@ -523,8 +542,9 @@
                   <div class="lab-callout">
                     <div class="lab-callout-label">Safety note</div>
                     <p class="m-b-0">
-                      Use remote access temporarily for troubleshooting and then revert.
-                      Leaving CUPS open remotely without access controls is unnecessary exposure.
+                      Use remote access temporarily for troubleshooting and then
+                      revert. Leaving CUPS open remotely without access controls is
+                      unnecessary exposure.
                     </p>
                   </div>
 
@@ -544,7 +564,8 @@
 
                   <p>
                     This flips common server-side toggles via <code>cupsctl</code>.
-                    Treat it as a controlled change: enable, test, then lock it back down.
+                    Treat it as a controlled change: enable, test, then lock it back
+                    down.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -601,13 +622,14 @@
                   </div>
 
                   <p>
-                    Even if you manage CUPS primarily from the CLI, the web UI is the fastest way to print a test page and visually confirm queue state.
+                    Even if you manage CUPS primarily from the CLI, the web UI is
+                    the fastest way to print a test page and visually confirm queue
+                    state.
                   </p>
                 </div>
               </section>
 
-              <!-- 8) Reference -->
-              <!-- 9) Reference -->
+              <!-- Reference -->
               <section class="lab-section" id="reference">
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">
                   Reference
@@ -675,21 +697,20 @@
                   </li>
                 </ul>
               </section>
-
-              <!-- Lab Pagination -->
             </div>
             <!-- /main -->
           </div>
           <!-- /row -->
 
+          <!-- Bottom pagination -->
           <nav class="lab-pagination">
             <a
-                id="prev-lab"
-                class="lab-nav-link"
-                href="#"
-                aria-label="Previous lab"
+              id="to-top"
+              class="lab-nav-link"
+              href="#"
+              aria-label="Back to top"
             >
-                &uArr;
+              &uArr;
             </a>
           </nav>
         </div>
@@ -703,7 +724,11 @@
             <div class="col-sm-12">
               <ul class="social-text-links font-alt text-center m-b-20">
                 <li>
-                  <a href="https://github.com/vonds" target="_blank" rel="noopener">
+                  <a
+                    href="https://github.com/vonds"
+                    target="_blank"
+                    rel="noopener"
+                  >
                     Github
                   </a>
                 </li>
