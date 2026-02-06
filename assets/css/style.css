@@ -2427,6 +2427,28 @@ span {
   color: #7c5cff; /* your accent purple */
 }
 
+.lab-video-embed {
+  width: 100%;
+  max-width: 960px;      /* optional: controls max size */
+  margin: 0 auto;        /* centers the video */
+  aspect-ratio: 16 / 9;  /* keeps it proportional */
+}
+
+.lab-video-embed iframe {
+  width: 100%;
+  height: 100%;
+  border: 0;
+  display: block;
+}
+
+@media (max-width: 600px) {
+  .lab-video-embed {
+    max-width: 100%;
+    margin: 0;
+    aspect-ratio: 16 / 9;
+  }
+}
+
 @media (max-width: 1200px) {
   .labs-grid {
     grid-template-columns: repeat(6, 1fr);
