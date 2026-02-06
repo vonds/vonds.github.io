@@ -1,0 +1,720 @@
+<!-- lab095.html -->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="exit_0 Documentation" />
+    <meta name="name" content="Vonds" />
+
+    <title>Vonds | Lab 095</title>
+
+    <!-- Favicons -->
+    <link rel="shortcut icon" href="../assets/images/favicon.png" />
+    <link rel="apple-touch-icon" href="../assets/images/apple-touch-icon.png" />
+    <link
+      rel="apple-touch-icon"
+      sizes="72x72"
+      href="../assets/images/apple-touch-icon-72x72.png"
+    />
+    <link
+      rel="apple-touch-icon"
+      sizes="114x114"
+      href="../assets/images/apple-touch-icon-114x114.png"
+    />
+
+    <!-- Site styles (your existing) -->
+    <link href="../assets/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="../assets/css/font-awesome.min.css" rel="stylesheet" />
+    <link href="../assets/css/linea-icons.css" rel="stylesheet" />
+    <link href="../assets/css/ionicons.min.css" rel="stylesheet" />
+    <link href="../assets/css/simpletextrotator.css" rel="stylesheet" />
+    <link href="../assets/css/magnific-popup.css" rel="stylesheet" />
+    <link href="../assets/css/owl.carousel.css" rel="stylesheet" />
+    <link href="../assets/css/superslides.css" rel="stylesheet" />
+    <link href="../assets/css/vertical.css" rel="stylesheet" />
+    <link href="../assets/css/animate.css" rel="stylesheet" />
+    <link href="../assets/css/style.css" rel="stylesheet" />
+    <link href="../assets/css/docs.css" rel="stylesheet" />
+
+    <!-- Lab page styles (new) -->
+    <link href="../assets/css/lab.css" rel="stylesheet" />
+
+    <!-- Fonts -->
+    <link
+      href="https://fonts.googleapis.com/css?family=Dosis"
+      rel="stylesheet"
+    />
+  </head>
+
+  <body>
+    <!-- PRELOADER -->
+    <div class="page-loader">
+      <div class="loader">Loading...</div>
+    </div>
+
+    <!-- OVERLAY MENU -->
+    <div id="overlay-menu" class="overlay-menu">
+      <a href="#" id="overlay-menu-hide" class="navigation-hide">
+        <i class="ion-close-round"></i>
+      </a>
+
+      <div class="overlay-menu-inner">
+        <nav class="overlay-menu-nav">
+          <ul id="nav">
+            <li><a href="../index.html">Home</a></li>
+
+            <li class="slidedown">
+              <a href="#">Portfolio</a>
+              <ul>
+                <li>
+                  <a
+                    href="https://github.com/vonds/exit_0"
+                    target="_blank"
+                    rel="noopener"
+                  >
+                    exit_0
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="https://github.com/vonds/sentinel"
+                    target="_blank"
+                    rel="noopener"
+                  >
+                    Sentinel
+                  </a>
+                </li>
+              </ul>
+            </li>
+
+            <li><a href="./index.html" class="active">Lab Write-ups</a></li>
+            <li>
+              <a
+                href="https://www.linkedin.com/in/vonds/"
+                target="_blank"
+                rel="noopener"
+              >
+                LinkedIn
+              </a>
+            </li>
+            <li>
+              <a href="https://github.com/vonds" target="_blank" rel="noopener">
+                Github
+              </a>
+            </li>
+            <li>
+              <a href="mailto:vonds13@gmail.com?subject=Hello Vonds">Contact</a>
+            </li>
+          </ul>
+        </nav>
+      </div>
+
+      <div class="overlay-navigation-footer">
+        <div class="container">
+          <div class="row">
+            <div class="col-sm-12 text-center">
+              <p class="copyright font-alt m-b-0">
+                VONDS &copy;
+                <script>
+                  document.write(new Date().getFullYear())
+                </script>
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- WRAPPER -->
+    <div class="wrapper">
+      <!-- NAVIGATION -->
+      <nav
+        class="navbar navbar-custom navbar-transparent navbar-light navbar-fixed-top"
+      >
+        <div class="container">
+          <div class="navbar-header">
+            <a class="navbar-brand" href="../index.html">
+              <img src="../assets/images/logo-dark.png" width="95" alt="" />
+            </a>
+          </div>
+
+          <ul id="icons-navbar" class="nav navbar-nav navbar-right">
+            <li>
+              <a href="#" id="toggle-menu" class="show-overlay" title="Menu">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </nav>
+
+      <!-- DOCS PAGE -->
+      <section class="module">
+        <div class="container">
+          <h2 class="font-alt module-title m-t-60">
+            Lab 95: Tuning System Performance
+          </h2>
+
+          <nav class="lab-pagination">
+            <a
+              id="prev-lab"
+              class="lab-nav-link"
+              href="#"
+              aria-label="Previous lab"
+            >
+              &laquo;
+            </a>
+            <a
+              id="next-lab"
+              class="lab-nav-link"
+              href="#"
+              aria-label="Next lab"
+            >
+              &raquo;
+            </a>
+          </nav>
+
+          <div class="row">
+            <!-- LEFT SIDEBAR -->
+            <div class="col-sm-4 col-md-3 lab-sidebar">
+              <div class="docs-sidebar">
+                <div class="docs-widget">
+                  <h5 class="widget-title">
+                    <a href="./docs.html">Lab Index</a>
+                  </h5>
+                  <ul class="docs-nav">
+                    <li><a href="#scenario">Scenario</a></li>
+                    <li><a href="#objective">Objective</a></li>
+                    <li><a href="#practice">What You'll Practice</a></li>
+                    <li><a href="#walkthrough">Walkthrough</a></li>
+                    <li><a href="#reference">Reference</a></li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            <!-- MAIN CONTENT -->
+            <div class="col-sm-8 col-md-9 lab-doc">
+              <!-- 1) Title + Summary (2 sentences max) -->
+              <p class="m-b-20 lab-summary">
+                Apply a tuned profile to align system behavior with workload goals,
+                then control CPU scheduling pressure by adjusting process priorities
+                with nice and renice. Verify active profiles and confirm that your
+                priority changes took effect on running processes.
+              </p>
+
+              <!-- Optional Video (leave in place; swap src when you have it) -->
+              <section class="lab-section" id="video" aria-label="Lab video">
+                <div class="lab-video">
+                  <div class="lab-video-embed text-center">
+                    <iframe
+                      width="560"
+                      height="315"
+                      src="https://www.youtube.com/embed/REPLACE_ME"
+                      title="YouTube video player"
+                      frameborder="0"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                      referrerpolicy="strict-origin-when-cross-origin"
+                      allowfullscreen
+                    >
+                    </iframe>
+                  </div>
+                </div>
+              </section>
+
+              <!-- 2) Scenario -->
+              <section class="lab-section" id="scenario">
+                <div class="lab-chips" aria-label="Tags">
+                  <span class="lab-chip">
+                    <span class="lab-chip-key">performance</span>
+                  </span>
+                  <span class="lab-chip">
+                    <span class="lab-chip-key">scheduling</span>
+                  </span>
+                  <span class="lab-chip">
+                    <span class="lab-chip-key">rhel</span>
+                  </span>
+                </div>
+
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  Scenario
+                </h3>
+                <p>
+                  A host is being repurposed to handle a heavier workload. Your job is
+                  to apply a tuned performance profile appropriate for throughput and
+                  then reduce the impact of noisy background CPU jobs by controlling
+                  process priorities. You’ll verify tuned state, start test workloads,
+                  and use nice/renice to adjust scheduling priority safely.
+                </p>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">Operator context</div>
+                  <p class="m-b-0">
+                    tuned changes system behavior at a profile level. nice/renice is
+                    a per-process control and won’t “fix” a broken workload, but it
+                    can keep low-value jobs from competing with critical services.
+                  </p>
+                </div>
+              </section>
+
+              <!-- 3) Objective -->
+              <section class="lab-section alt-background" id="objective">
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  Objective
+                </h3>
+                <ul>
+                  <li>Install and start tuned.</li>
+                  <li>List available tuned profiles and apply a new profile.</li>
+                  <li>Verify the currently active profile.</li>
+                  <li>Generate CPU load for testing and compare priorities.</li>
+                  <li>Start a process with a lower priority using nice.</li>
+                  <li>Change a running process’s nice value using renice.</li>
+                  <li>Clean up background workloads.</li>
+                </ul>
+              </section>
+
+              <!-- 4) What You'll Practice -->
+              <section class="lab-section" id="practice">
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  What You’ll Practice
+                </h3>
+
+                <ul class="m-t-10">
+                  <li><code>tuned</code> service lifecycle and profile management.</li>
+                  <li><code>tuned-adm</code> commands: list, profile, active.</li>
+                  <li>
+                    Process priority basics: lower priority (higher nice number)
+                    vs higher priority (lower nice number).
+                  </li>
+                  <li>
+                    Verifying priority with <code>ps</code> output (NI column).
+                  </li>
+                  <li>
+                    Safer cleanup patterns: kill by PID, pkill/killall when appropriate.
+                  </li>
+                </ul>
+              </section>
+
+              <!-- 5) Walkthrough -->
+              <section class="lab-section alt-background" id="walkthrough">
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  Walkthrough
+                </h3>
+
+                <!-- Step 1 -->
+                <div class="lab-step">
+                  <div class="lab-step-title">
+                    <strong class="font-alt">Step 1</strong>
+                    : Install tuned (if needed).
+                  </div>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <div class="lab-codeblock-header">
+                      <span>Command</span>
+                      <button
+                        class="lab-copy-btn"
+                        type="button"
+                        data-copy="#cmd-step-1"
+                      >
+                        Copy
+                      </button>
+                    </div>
+                    <pre><code id="cmd-step-1"># Debian/Ubuntu
+sudo apt install tuned -y
+
+# RHEL/Fedora
+sudo dnf install tuned -y
+
+# Arch (if available in your repo set)
+sudo pacman -S tuned</code></pre>
+                  </div>
+
+                  <p>
+                    tuned is most common in RHEL-family environments, but the workflow
+                    is consistent: install it, start it, then manage profiles.
+                  </p>
+                </div>
+
+                <!-- Step 2 -->
+                <div class="lab-step">
+                  <div class="lab-step-title">
+                    <strong class="font-alt">Step 2</strong>
+                    : Enable and start tuned.
+                  </div>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <div class="lab-codeblock-header">
+                      <span>Command</span>
+                      <button
+                        class="lab-copy-btn"
+                        type="button"
+                        data-copy="#cmd-step-2"
+                      >
+                        Copy
+                      </button>
+                    </div>
+                    <pre><code id="cmd-step-2">sudo systemctl enable --now tuned</code></pre>
+                  </div>
+
+                  <p>
+                    This turns on profile enforcement and ensures tuned will start on boot.
+                  </p>
+                </div>
+
+                <!-- Step 3 -->
+                <div class="lab-step">
+                  <div class="lab-step-title">
+                    <strong class="font-alt">Step 3</strong>
+                    : List available tuned profiles.
+                  </div>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <div class="lab-codeblock-header">
+                      <span>Command</span>
+                      <button
+                        class="lab-copy-btn"
+                        type="button"
+                        data-copy="#cmd-step-3"
+                      >
+                        Copy
+                      </button>
+                    </div>
+                    <pre><code id="cmd-step-3">tuned-adm list</code></pre>
+                  </div>
+
+                  <p>
+                    You’re looking for profiles like <code>balanced</code>,
+                    <code>powersave</code>, <code>throughput-performance</code>,
+                    and other workload-specific options depending on distro/version.
+                  </p>
+                </div>
+
+                <!-- Step 4 -->
+                <div class="lab-step">
+                  <div class="lab-step-title">
+                    <strong class="font-alt">Step 4</strong>
+                    : Apply the throughput profile.
+                  </div>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <div class="lab-codeblock-header">
+                      <span>Command</span>
+                      <button
+                        class="lab-copy-btn"
+                        type="button"
+                        data-copy="#cmd-step-4"
+                      >
+                        Copy
+                      </button>
+                    </div>
+                    <pre><code id="cmd-step-4">sudo tuned-adm profile throughput-performance</code></pre>
+                  </div>
+
+                  <p>
+                    This is a common server-oriented profile that tends to favor
+                    throughput over power savings. Always verify the active profile
+                    after changing it.
+                  </p>
+                </div>
+
+                <!-- Step 5 -->
+                <div class="lab-step">
+                  <div class="lab-step-title">
+                    <strong class="font-alt">Step 5</strong>
+                    : Confirm the active profile.
+                  </div>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <div class="lab-codeblock-header">
+                      <span>Command</span>
+                      <button
+                        class="lab-copy-btn"
+                        type="button"
+                        data-copy="#cmd-step-5"
+                      >
+                        Copy
+                      </button>
+                    </div>
+                    <pre><code id="cmd-step-5">tuned-adm active</code></pre>
+                  </div>
+
+                  <p>
+                    Treat this as a verification step before moving on to process-level tuning.
+                  </p>
+                </div>
+
+                <!-- Step 6 -->
+                <div class="lab-step">
+                  <div class="lab-step-title">
+                    <strong class="font-alt">Step 6</strong>
+                    : Start a CPU-intensive background process.
+                  </div>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <div class="lab-codeblock-header">
+                      <span>Command</span>
+                      <button
+                        class="lab-copy-btn"
+                        type="button"
+                        data-copy="#cmd-step-6"
+                      >
+                        Copy
+                      </button>
+                    </div>
+                    <pre><code id="cmd-step-6">yes &gt; /dev/null &amp;</code></pre>
+                  </div>
+
+                  <p>
+                    This creates a predictable CPU load so you can see how priority changes behave.
+                  </p>
+                </div>
+
+                <!-- Step 7 -->
+                <div class="lab-step">
+                  <div class="lab-step-title">
+                    <strong class="font-alt">Step 7</strong>
+                    : Start the same workload with a lower priority using nice.
+                  </div>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <div class="lab-codeblock-header">
+                      <span>Command</span>
+                      <button
+                        class="lab-copy-btn"
+                        type="button"
+                        data-copy="#cmd-step-7"
+                      >
+                        Copy
+                      </button>
+                    </div>
+                    <pre><code id="cmd-step-7">nice -n 10 yes &gt; /dev/null &amp;</code></pre>
+                  </div>
+
+                  <p>
+                    A higher nice value means lower scheduling priority. This is the “be nice”
+                    version of the workload so it competes less aggressively for CPU.
+                  </p>
+                </div>
+
+                <!-- Step 8 -->
+                <div class="lab-step">
+                  <div class="lab-step-title">
+                    <strong class="font-alt">Step 8</strong>
+                    : Identify PIDs and inspect nice values.
+                  </div>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <div class="lab-codeblock-header">
+                      <span>Command</span>
+                      <button
+                        class="lab-copy-btn"
+                        type="button"
+                        data-copy="#cmd-step-8"
+                      >
+                        Copy
+                      </button>
+                    </div>
+                    <pre><code id="cmd-step-8"># find PIDs
+pgrep yes
+
+# inspect priority (NI column shows nice)
+ps -o pid,ni,cmd -C yes</code></pre>
+                  </div>
+
+                  <p>
+                    Use <code>ps -o pid,ni,cmd -C yes</code> to confirm one process has NI 0
+                    and the nice-started one has NI 10.
+                  </p>
+                </div>
+
+                <!-- Step 9 -->
+                <div class="lab-step">
+                  <div class="lab-step-title">
+                    <strong class="font-alt">Step 9</strong>
+                    : Adjust priority of a running process with renice.
+                  </div>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <div class="lab-codeblock-header">
+                      <span>Command</span>
+                      <button
+                        class="lab-copy-btn"
+                        type="button"
+                        data-copy="#cmd-step-9"
+                      >
+                        Copy
+                      </button>
+                    </div>
+                    <pre><code id="cmd-step-9"># Example: lower priority (increase nice) of PID 1234
+sudo renice 15 -p 1234
+
+# Verify the change
+ps -o pid,ni,cmd -p 1234</code></pre>
+                  </div>
+
+                  <p>
+                    In practice, you typically increase nice values (lower priority) for background
+                    jobs. Decreasing nice values (higher priority) requires elevated privileges and
+                    should be used sparingly.
+                  </p>
+                </div>
+
+                <!-- Step 10 -->
+                <div class="lab-step">
+                  <div class="lab-step-title">
+                    <strong class="font-alt">Step 10</strong>
+                    : Clean up the test workloads.
+                  </div>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <div class="lab-codeblock-header">
+                      <span>Command</span>
+                      <button
+                        class="lab-copy-btn"
+                        type="button"
+                        data-copy="#cmd-step-10"
+                      >
+                        Copy
+                      </button>
+                    </div>
+                    <pre><code id="cmd-step-10"># Either option is fine in a lab environment:
+killall yes
+# OR
+pkill yes</code></pre>
+                  </div>
+
+                  <p>
+                    Clean shutdown of test noise matters—especially in a repeatable lab cycle.
+                  </p>
+                </div>
+              </section>
+
+              <!-- 6) Reference -->
+              <section class="lab-section" id="reference">
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  Reference
+                </h3>
+
+                <ul class="lab-reference-list">
+                  <li>
+                    <code>tuned-adm</code>
+                    <ul>
+                      <li><code>tuned-adm list</code> : List profiles and show current selection.</li>
+                      <li><code>tuned-adm profile NAME</code> : Apply a profile.</li>
+                      <li><code>tuned-adm active</code> : Show the active profile.</li>
+                    </ul>
+                  </li>
+
+                  <li>
+                    <code>nice</code> / <code>renice</code>
+                    <ul>
+                      <li>
+                        <code>nice -n N cmd</code> : Start a process with nice value N (higher is lower priority).
+                      </li>
+                      <li>
+                        <code>renice N -p PID</code> : Change nice value of an existing PID.
+                      </li>
+                      <li>
+                        <code>ps -o pid,ni,cmd</code> : Verify NI values for running processes.
+                      </li>
+                    </ul>
+                  </li>
+
+                  <li>
+                    <code>systemctl</code>
+                    <ul>
+                      <li><code>systemctl enable --now tuned</code> : Enable and start tuned immediately.</li>
+                    </ul>
+                  </li>
+                </ul>
+              </section>
+            </div>
+            <!-- /main -->
+          </div>
+          <!-- /row -->
+
+          <nav class="lab-pagination">
+            <a
+              id="prev-lab"
+              class="lab-nav-link"
+              href="#"
+              aria-label="Back to top"
+            >
+              &uArr;
+            </a>
+          </nav>
+        </div>
+        <!-- /container -->
+      </section>
+
+      <!-- FOOTER -->
+      <footer class="module bg-light">
+        <div class="container">
+          <div class="row">
+            <div class="col-sm-12">
+              <ul class="social-text-links font-alt text-center m-b-20">
+                <li>
+                  <a
+                    href="https://github.com/vonds"
+                    target="_blank"
+                    rel="noopener"
+                  >
+                    Github
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="https://www.linkedin.com/in/vonds/"
+                    target="_blank"
+                    rel="noopener"
+                  >
+                    Linkedin
+                  </a>
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-sm-12">
+              <p class="copyright text-center m-b-0">
+                VONDS &copy;
+                <span id="year"></span>
+              </p>
+
+              <div class="scroll-up">
+                <a href="#totop"><i class="fa fa-angle-double-up"></i></a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <!-- Javascript files (your existing) -->
+    <script src="../assets/js/jquery-2.2.4.min.js"></script>
+    <script src="../assets/bootstrap/js/bootstrap.min.js"></script>
+    <script src="../assets/js/jquery.superslides.min.js"></script>
+    <script src="../assets/js/jquery.mb.YTPlayer.min.js"></script>
+    <script src="../assets/js/jquery.magnific-popup.min.js"></script>
+    <script src="../assets/js/owl.carousel.min.js"></script>
+    <script src="../assets/js/jquery.simple-text-rotator.min.js"></script>
+    <script src="../assets/js/imagesloaded.pkgd.js"></script>
+    <script src="../assets/js/isotope.pkgd.min.js"></script>
+    <script src="../assets/js/packery-mode.pkgd.min.js"></script>
+    <script src="../assets/js/appear.js"></script>
+    <script src="../assets/js/jquery.easing.1.3.js"></script>
+    <script src="../assets/js/wow.min.js"></script>
+    <script src="../assets/js/jqBootstrapValidation.js"></script>
+    <script src="../assets/js/jquery.fitvids.js"></script>
+    <script src="../assets/js/jquery.parallax-1.1.3.js"></script>
+    <script src="../assets/js/smoothscroll.js"></script>
+    <script src="../assets/js/custom.js"></script>
+
+    <!-- Lab page JS (new) -->
+    <script src="../assets/js/lab.js"></script>
+  </body>
+</html>

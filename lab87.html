@@ -1,0 +1,564 @@
+<!-- lab087.html -->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="exit_0 Documentation" />
+    <meta name="name" content="Vonds" />
+
+    <title>Vonds | Lab 087</title>
+
+    <!-- Favicons -->
+    <link rel="shortcut icon" href="../assets/images/favicon.png" />
+    <link rel="apple-touch-icon" href="../assets/images/apple-touch-icon.png" />
+    <link
+      rel="apple-touch-icon"
+      sizes="72x72"
+      href="../assets/images/apple-touch-icon-72x72.png"
+    />
+    <link
+      rel="apple-touch-icon"
+      sizes="114x114"
+      href="../assets/images/apple-touch-icon-114x114.png"
+    />
+
+    <!-- Site styles (your existing) -->
+    <link href="../assets/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="../assets/css/font-awesome.min.css" rel="stylesheet" />
+    <link href="../assets/css/linea-icons.css" rel="stylesheet" />
+    <link href="../assets/css/ionicons.min.css" rel="stylesheet" />
+    <link href="../assets/css/simpletextrotator.css" rel="stylesheet" />
+    <link href="../assets/css/magnific-popup.css" rel="stylesheet" />
+    <link href="../assets/css/owl.carousel.css" rel="stylesheet" />
+    <link href="../assets/css/superslides.css" rel="stylesheet" />
+    <link href="../assets/css/vertical.css" rel="stylesheet" />
+    <link href="../assets/css/animate.css" rel="stylesheet" />
+    <link href="../assets/css/style.css" rel="stylesheet" />
+    <link href="../assets/css/docs.css" rel="stylesheet" />
+
+    <!-- Lab page styles (new) -->
+    <link href="../assets/css/lab.css" rel="stylesheet" />
+
+    <!-- Fonts -->
+    <link
+      href="https://fonts.googleapis.com/css?family=Dosis"
+      rel="stylesheet"
+    />
+  </head>
+
+  <body>
+    <!-- PRELOADER -->
+    <div class="page-loader">
+      <div class="loader">Loading...</div>
+    </div>
+
+    <!-- OVERLAY MENU -->
+    <div id="overlay-menu" class="overlay-menu">
+      <a href="#" id="overlay-menu-hide" class="navigation-hide">
+        <i class="ion-close-round"></i>
+      </a>
+
+      <div class="overlay-menu-inner">
+        <nav class="overlay-menu-nav">
+          <ul id="nav">
+            <li><a href="../index.html">Home</a></li>
+
+            <li class="slidedown">
+              <a href="#">Portfolio</a>
+              <ul>
+                <li>
+                  <a
+                    href="https://github.com/vonds/exit_0"
+                    target="_blank"
+                    rel="noopener"
+                  >
+                    exit_0
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="https://github.com/vonds/sentinel"
+                    target="_blank"
+                    rel="noopener"
+                  >
+                    Sentinel
+                  </a>
+                </li>
+              </ul>
+            </li>
+
+            <li><a href="./index.html" class="active">Lab Write-ups</a></li>
+            <li>
+              <a
+                href="https://www.linkedin.com/in/vonds/"
+                target="_blank"
+                rel="noopener"
+              >
+                LinkedIn
+              </a>
+            </li>
+            <li>
+              <a href="https://github.com/vonds" target="_blank" rel="noopener">
+                Github
+              </a>
+            </li>
+            <li>
+              <a href="mailto:vonds13@gmail.com?subject=Hello Vonds">Contact</a>
+            </li>
+          </ul>
+        </nav>
+      </div>
+
+      <div class="overlay-navigation-footer">
+        <div class="container">
+          <div class="row">
+            <div class="col-sm-12 text-center">
+              <p class="copyright font-alt m-b-0">
+                VONDS &copy;
+                <script>
+                  document.write(new Date().getFullYear())
+                </script>
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- WRAPPER -->
+    <div class="wrapper">
+      <!-- NAVIGATION -->
+      <nav
+        class="navbar navbar-custom navbar-transparent navbar-light navbar-fixed-top"
+      >
+        <div class="container">
+          <div class="navbar-header">
+            <a class="navbar-brand" href="../index.html">
+              <img src="../assets/images/logo-dark.png" width="95" alt="" />
+            </a>
+          </div>
+
+          <ul id="icons-navbar" class="nav navbar-nav navbar-right">
+            <li>
+              <a href="#" id="toggle-menu" class="show-overlay" title="Menu">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </nav>
+
+      <!-- DOCS PAGE -->
+      <section class="module">
+        <div class="container">
+          <h2 class="font-alt module-title m-t-60">
+            Lab 87: Network Troubleshooting with netcat (nc)
+          </h2>
+
+          <nav class="lab-pagination">
+            <a
+              id="prev-lab"
+              class="lab-nav-link"
+              href="#"
+              aria-label="Previous lab"
+            >
+              &laquo;
+            </a>
+            <a
+              id="next-lab"
+              class="lab-nav-link"
+              href="#"
+              aria-label="Next lab"
+            >
+              &raquo;
+            </a>
+          </nav>
+
+          <div class="row">
+            <!-- LEFT SIDEBAR -->
+            <div class="col-sm-4 col-md-3 lab-sidebar">
+              <div class="docs-sidebar">
+                <div class="docs-widget">
+                  <h5 class="widget-title">
+                    <a href="./docs.html">Lab Index</a>
+                  </h5>
+                  <ul class="docs-nav">
+                    <li><a href="#scenario">Scenario</a></li>
+                    <li><a href="#objective">Objective</a></li>
+                    <li><a href="#practice">What You'll Practice</a></li>
+                    <li><a href="#walkthrough">Walkthrough</a></li>
+                    <li><a href="#reference">Reference</a></li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            <!-- MAIN CONTENT -->
+            <div class="col-sm-8 col-md-9 lab-doc">
+              <!-- 1) Title + Summary (2 sentences max) -->
+              <p class="m-b-20 lab-summary">
+                Use netcat (nc) to validate TCP reachability to an internal web
+                app endpoint and prove end-to-end delivery using a temporary
+                listener on the target host. Confirm evidence from both sides so
+                you can separate “network path” failures from “application”
+                failures.
+              </p>
+
+              <!-- Optional Video (leave in place; swap src when you have it) -->
+              <section class="lab-section" id="video" aria-label="Lab video">
+                <div class="lab-video">
+                  <div class="lab-video-embed text-center">
+                    <iframe
+                      width="560"
+                      height="315"
+                      src="https://www.youtube.com/embed/REPLACE_ME"
+                      title="YouTube video player"
+                      frameborder="0"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                      referrerpolicy="strict-origin-when-cross-origin"
+                      allowfullscreen
+                    >
+                    </iframe>
+                  </div>
+                </div>
+              </section>
+
+              <!-- 2) Scenario -->
+              <section class="lab-section" id="scenario">
+                <div class="lab-chips" aria-label="Tags">
+                  <span class="lab-chip">
+                    <span class="lab-chip-key">networking</span>
+                  </span>
+                  <span class="lab-chip">
+                    <span class="lab-chip-key">troubleshooting</span>
+                  </span>
+                  <span class="lab-chip">
+                    <span class="lab-chip-key">tools</span>
+                  </span>
+                </div>
+
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  Scenario
+                </h3>
+                <p>
+                  A branch office reports that the internal web app at
+                  <code>10.10.20.15:8080</code>
+                  is down. You will use netcat (
+                  <code>nc</code>
+                  ) to verify connectivity and confirm whether traffic from the
+                  branch can reach the application host.
+                </p>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">Operator context</div>
+                  <p class="m-b-0">
+                    When users report an app is “down,” you need fast proof of
+                    where the failure lives: DNS, routing, firewall policy,
+                    listener state, or the application itself. netcat is a
+                    lightweight, low-friction way to validate the path.
+                  </p>
+                </div>
+              </section>
+
+              <!-- 3) Objective -->
+              <section class="lab-section alt-background" id="objective">
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  Objective
+                </h3>
+                <ul>
+                  <li>
+                    Perform a TCP reachability check to
+                    <code>10.10.20.15:8080</code>
+                    with a timeout and verbose output.
+                  </li>
+                  <li>
+                    Start a temporary netcat listener on the app server to
+                    observe inbound traffic.
+                  </li>
+                  <li>
+                    Send a test payload from the branch workstation to confirm
+                    end-to-end delivery.
+                  </li>
+                </ul>
+              </section>
+
+              <!-- 4) What You'll Practice -->
+              <section class="lab-section" id="practice">
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  What You’ll Practice
+                </h3>
+
+                <ul class="m-t-10">
+                  <li>
+                    Using netcat scan mode (
+                    <code>-z</code>
+                    ) to test whether a TCP port is reachable.
+                  </li>
+                  <li>
+                    Adding a connection timeout (
+                    <code>-w</code>
+                    ) to avoid hanging during reachability tests.
+                  </li>
+                  <li>
+                    Running a listener with verbose output (
+                    <code>-l</code>
+                    ,
+                    <code>-v</code>
+                    ) and numeric-only display (
+                    <code>-n</code>
+                    ).
+                  </li>
+                  <li>
+                    Proving delivery by piping a payload into
+                    <code>nc</code>
+                    from a remote host.
+                  </li>
+                </ul>
+              </section>
+
+              <!-- 5) Commands Walkthrough -->
+              <section class="lab-section alt-background" id="walkthrough">
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  Walkthrough
+                </h3>
+
+                <!-- Step 1 -->
+                <div class="lab-step">
+                  <div class="lab-step-title">
+                    <strong class="font-alt">Step 1</strong>
+                    : Validate TCP reachability to <code>10.10.20.15:8080</code>.
+                  </div>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <div class="lab-codeblock-header">
+                      <span>Command</span>
+                      <button
+                        class="lab-copy-btn"
+                        type="button"
+                        data-copy="#cmd-step-1"
+                      >
+                        Copy
+                      </button>
+                    </div>
+                    <pre><code id="cmd-step-1">nc -vz -w 3 10.10.20.15 8080</code></pre>
+                  </div>
+
+                  <p>
+                    This uses netcat “scan mode” (
+                    <code>-z</code>
+                    ) with verbose output (
+                    <code>-v</code>
+                    ) and a 3-second timeout (
+                    <code>-w 3</code>
+                    ) to answer a single question: can you establish a TCP
+                    connection to the port?
+                  </p>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <pre><code id="verify-step-1"># Typical patterns you might see:
+# succeeded:   10.10.20.15 8080 open
+# failed:      timed out / refused / unreachable</code></pre>
+                  </div>
+                </div>
+
+                <!-- Step 2 -->
+                <div class="lab-step">
+                  <div class="lab-step-title">
+                    <strong class="font-alt">Step 2</strong>
+                    : Start a temporary listener on the app server.
+                  </div>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <div class="lab-codeblock-header">
+                      <span>Command</span>
+                      <button
+                        class="lab-copy-btn"
+                        type="button"
+                        data-copy="#cmd-step-2"
+                      >
+                        Copy
+                      </button>
+                    </div>
+                    <pre><code id="cmd-step-2">sudo nc -lvnp 8080</code></pre>
+                  </div>
+
+                  <p>
+                    This binds to TCP port 8080 and prints inbound connections.
+                    The goal is to prove whether branch traffic reaches the host
+                    at all. Use this as a controlled diagnostic tool and stop
+                    it when you’re done.
+                  </p>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <pre><code id="verify-step-2"># Simulated listener state:
+listening on [any] 8080 ...</code></pre>
+                  </div>
+                </div>
+
+                <!-- Step 3 -->
+                <div class="lab-step">
+                  <div class="lab-step-title">
+                    <strong class="font-alt">Step 3</strong>
+                    : Send a payload from the branch to confirm end-to-end delivery.
+                  </div>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <div class="lab-codeblock-header">
+                      <span>Command</span>
+                      <button
+                        class="lab-copy-btn"
+                        type="button"
+                        data-copy="#cmd-step-3"
+                      >
+                        Copy
+                      </button>
+                    </div>
+                    <pre><code id="cmd-step-3">echo "health-check" | nc 10.10.20.15 8080</code></pre>
+                  </div>
+
+                  <p>
+                    Piping a payload into
+                    <code>nc</code>
+                    makes the client send bytes immediately. On the server-side
+                    listener, you should see the inbound connection and the
+                    payload. If Step 1 “succeeds” but Step 3 never shows up on
+                    the listener, you’re looking at asymmetric routing, NAT, or
+                    policy issues between segments.
+                  </p>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <pre><code id="verify-step-3"># On the app server listener you would see (example):
+Connection received on 10.10.20.15 8080
+health-check</code></pre>
+                  </div>
+                </div>
+              </section>
+
+              <!-- 6) Reference -->
+              <section class="lab-section" id="reference">
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  Reference
+                </h3>
+
+                <ul class="lab-reference-list">
+                  <li>
+                    <code>nc -vz -w &lt;sec&gt; &lt;host&gt; &lt;port&gt;</code>
+                    : Tests TCP connectivity to a port using scan mode with a timeout.
+                    <ul>
+                      <li><code>-z</code>: Zero-I/O scan mode (do not send data).</li>
+                      <li><code>-v</code>: Verbose output.</li>
+                      <li><code>-w</code>: Timeout in seconds.</li>
+                    </ul>
+                  </li>
+                  <li>
+                    <code>nc -lvnp &lt;port&gt;</code>
+                    : Starts a TCP listener for inbound connections.
+                    <ul>
+                      <li><code>-l</code>: Listen mode.</li>
+                      <li><code>-v</code>: Verbose output.</li>
+                      <li><code>-n</code>: Numeric-only output (no DNS lookups).</li>
+                      <li><code>-p</code>: Local port to bind.</li>
+                    </ul>
+                  </li>
+                  <li>
+                    <code>echo "msg" | nc &lt;host&gt; &lt;port&gt;</code>
+                    : Sends a simple payload to a listening socket.
+                  </li>
+                  <li>
+                    <code>10.10.20.15:8080</code>
+                    : Target application host and port used in this lab scenario.
+                  </li>
+                </ul>
+              </section>
+
+              <!-- Lab Pagination -->
+            </div>
+            <!-- /main -->
+          </div>
+          <!-- /row -->
+
+          <nav class="lab-pagination">
+            <a
+              id="prev-lab"
+              class="lab-nav-link"
+              href="#"
+              aria-label="Previous lab"
+            >
+              &uArr;
+            </a>
+          </nav>
+        </div>
+        <!-- /container -->
+      </section>
+
+      <!-- FOOTER -->
+      <footer class="module bg-light">
+        <div class="container">
+          <div class="row">
+            <div class="col-sm-12">
+              <ul class="social-text-links font-alt text-center m-b-20">
+                <li>
+                  <a
+                    href="https://github.com/vonds"
+                    target="_blank"
+                    rel="noopener"
+                  >
+                    Github
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="https://www.linkedin.com/in/vonds/"
+                    target="_blank"
+                    rel="noopener"
+                  >
+                    Linkedin
+                  </a>
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-sm-12">
+              <p class="copyright text-center m-b-0">
+                VONDS &copy;
+                <span id="year"></span>
+              </p>
+
+              <div class="scroll-up">
+                <a href="#totop"><i class="fa fa-angle-double-up"></i></a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <!-- Javascript files (your existing) -->
+    <script src="../assets/js/jquery-2.2.4.min.js"></script>
+    <script src="../assets/bootstrap/js/bootstrap.min.js"></script>
+    <script src="../assets/js/jquery.superslides.min.js"></script>
+    <script src="../assets/js/jquery.mb.YTPlayer.min.js"></script>
+    <script src="../assets/js/jquery.magnific-popup.min.js"></script>
+    <script src="../assets/js/owl.carousel.min.js"></script>
+    <script src="../assets/js/jquery.simple-text-rotator.min.js"></script>
+    <script src="../assets/js/imagesloaded.pkgd.js"></script>
+    <script src="../assets/js/isotope.pkgd.min.js"></script>
+    <script src="../assets/js/packery-mode.pkgd.min.js"></script>
+    <script src="../assets/js/appear.js"></script>
+    <script src="../assets/js/jquery.easing.1.3.js"></script>
+    <script src="../assets/js/wow.min.js"></script>
+    <script src="../assets/js/jqBootstrapValidation.js"></script>
+    <script src="../assets/js/jquery.fitvids.js"></script>
+    <script src="../assets/js/jquery.parallax-1.1.3.js"></script>
+    <script src="../assets/js/smoothscroll.js"></script>
+    <script src="../assets/js/custom.js"></script>
+
+    <!-- Lab page JS (new) -->
+    <script src="../assets/js/lab.js"></script>
+  </body>
+</html>

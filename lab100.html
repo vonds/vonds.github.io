@@ -1,0 +1,558 @@
+<!-- lab100.html -->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="exit_0 Documentation" />
+    <meta name="name" content="Vonds" />
+
+    <title>Vonds | Lab 100</title>
+
+    <!-- Favicons -->
+    <link rel="shortcut icon" href="../assets/images/favicon.png" />
+    <link rel="apple-touch-icon" href="../assets/images/apple-touch-icon.png" />
+    <link
+      rel="apple-touch-icon"
+      sizes="72x72"
+      href="../assets/images/apple-touch-icon-72x72.png"
+    />
+    <link
+      rel="apple-touch-icon"
+      sizes="114x114"
+      href="../assets/images/apple-touch-icon-114x114.png"
+    />
+
+    <!-- Site styles (your existing) -->
+    <link href="../assets/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="../assets/css/font-awesome.min.css" rel="stylesheet" />
+    <link href="../assets/css/linea-icons.css" rel="stylesheet" />
+    <link href="../assets/css/ionicons.min.css" rel="stylesheet" />
+    <link href="../assets/css/simpletextrotator.css" rel="stylesheet" />
+    <link href="../assets/css/magnific-popup.css" rel="stylesheet" />
+    <link href="../assets/css/owl.carousel.css" rel="stylesheet" />
+    <link href="../assets/css/superslides.css" rel="stylesheet" />
+    <link href="../assets/css/vertical.css" rel="stylesheet" />
+    <link href="../assets/css/animate.css" rel="stylesheet" />
+    <link href="../assets/css/style.css" rel="stylesheet" />
+    <link href="../assets/css/docs.css" rel="stylesheet" />
+
+    <!-- Lab page styles (new) -->
+    <link href="../assets/css/lab.css" rel="stylesheet" />
+
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css?family=Dosis" rel="stylesheet" />
+  </head>
+
+  <body>
+    <!-- PRELOADER -->
+    <div class="page-loader">
+      <div class="loader">Loading...</div>
+    </div>
+
+    <!-- OVERLAY MENU -->
+    <div id="overlay-menu" class="overlay-menu">
+      <a href="#" id="overlay-menu-hide" class="navigation-hide">
+        <i class="ion-close-round"></i>
+      </a>
+
+      <div class="overlay-menu-inner">
+        <nav class="overlay-menu-nav">
+          <ul id="nav">
+            <li><a href="../index.html">Home</a></li>
+
+            <li class="slidedown">
+              <a href="#">Portfolio</a>
+              <ul>
+                <li>
+                  <a
+                    href="https://github.com/vonds/exit_0"
+                    target="_blank"
+                    rel="noopener"
+                  >
+                    exit_0
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="https://github.com/vonds/sentinel"
+                    target="_blank"
+                    rel="noopener"
+                  >
+                    Sentinel
+                  </a>
+                </li>
+              </ul>
+            </li>
+
+            <li><a href="./index.html" class="active">Lab Write-ups</a></li>
+
+            <li>
+              <a
+                href="https://www.linkedin.com/in/vonds/"
+                target="_blank"
+                rel="noopener"
+              >
+                LinkedIn
+              </a>
+            </li>
+            <li>
+              <a href="https://github.com/vonds" target="_blank" rel="noopener">
+                Github
+              </a>
+            </li>
+            <li>
+              <a href="mailto:vonds13@gmail.com?subject=Hello Vonds">Contact</a>
+            </li>
+          </ul>
+        </nav>
+      </div>
+
+      <div class="overlay-navigation-footer">
+        <div class="container">
+          <div class="row">
+            <div class="col-sm-12 text-center">
+              <p class="copyright font-alt m-b-0">
+                VONDS &copy;
+                <script>
+                  document.write(new Date().getFullYear())
+                </script>
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- WRAPPER -->
+    <div class="wrapper">
+      <!-- NAVIGATION -->
+      <nav
+        class="navbar navbar-custom navbar-transparent navbar-light navbar-fixed-top"
+      >
+        <div class="container">
+          <div class="navbar-header">
+            <a class="navbar-brand" href="../index.html">
+              <img src="../assets/images/logo-dark.png" width="95" alt="" />
+            </a>
+          </div>
+
+          <ul id="icons-navbar" class="nav navbar-nav navbar-right">
+            <li>
+              <a href="#" id="toggle-menu" class="show-overlay" title="Menu">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </nav>
+
+      <!-- DOCS PAGE -->
+      <section class="module">
+        <div class="container" id="totop">
+          <h2 class="font-alt module-title m-t-60">
+            Lab 100: Agent-Based Configuration with ansible-pull
+          </h2>
+
+          <nav class="lab-pagination">
+            <a id="prev-lab" class="lab-nav-link" href="./lab099.html" aria-label="Previous lab">
+              &laquo;
+            </a>
+            <a id="next-lab" class="lab-nav-link" href="./lab101.html" aria-label="Next lab">
+              &raquo;
+            </a>
+          </nav>
+
+          <div class="row">
+            <!-- LEFT SIDEBAR -->
+            <div class="col-sm-4 col-md-3 lab-sidebar">
+              <div class="docs-sidebar">
+                <div class="docs-widget">
+                  <h5 class="widget-title">
+                    <a href="./docs.html">Lab Index</a>
+                  </h5>
+                  <ul class="docs-nav">
+                    <li><a href="#scenario">Scenario</a></li>
+                    <li><a href="#objective">Objective</a></li>
+                    <li><a href="#practice">What You'll Practice</a></li>
+                    <li><a href="#walkthrough">Walkthrough</a></li>
+                    <li><a href="#ops-notes">Ops Notes</a></li>
+                    <li><a href="#reference">Reference</a></li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            <!-- MAIN CONTENT -->
+            <div class="col-sm-8 col-md-9 lab-doc">
+              <!-- 1) Title + Summary (2 sentences max) -->
+              <p class="m-b-20 lab-summary">
+                Configure a host to pull and apply its desired state from a Git repository using
+                <code>ansible-pull</code>. You’ll run a local self-apply, then schedule it so the node
+                continuously converges without a central controller.
+              </p>
+
+              <!-- Optional Video -->
+              <section class="lab-section" id="video" aria-label="Lab video">
+                <div class="lab-video">
+                  <div class="lab-video-embed text-center">
+                    <iframe
+                      width="560"
+                      height="315"
+                      src="https://www.youtube.com/embed/REPLACE_ME"
+                      title="YouTube video player"
+                      frameborder="0"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                      referrerpolicy="strict-origin-when-cross-origin"
+                      allowfullscreen
+                    ></iframe>
+                  </div>
+                </div>
+              </section>
+
+              <!-- 2) Scenario -->
+              <section class="lab-section" id="scenario">
+                <div class="lab-chips" aria-label="Tags">
+                  <span class="lab-chip"><span class="lab-chip-key">ansible</span></span>
+                  <span class="lab-chip"><span class="lab-chip-key">ansible-pull</span></span>
+                  <span class="lab-chip"><span class="lab-chip-key">git</span></span>
+                  <span class="lab-chip"><span class="lab-chip-key">cron</span></span>
+                  <span class="lab-chip"><span class="lab-chip-key">desired-state</span></span>
+                </div>
+
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">Scenario</h3>
+                <p>
+                  You want Linux systems to self-configure by pulling their desired state from a Git
+                  repository and applying it locally. This is useful when hosts can reach Git but a
+                  central controller can’t reliably reach them (branch networks, NAT, limited inbound
+                  access, or “pull-only” environments).
+                </p>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">Operator context</div>
+                  <p class="m-b-0">
+                    With <code>ansible-pull</code>, the node is the “controller.” It clones (or updates)
+                    a repo, runs a playbook against <code>localhost</code>, and repeats on a schedule so it
+                    stays converged.
+                  </p>
+                </div>
+              </section>
+
+              <!-- 3) Objective -->
+              <section class="lab-section alt-background" id="objective">
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">Objective</h3>
+                <ul>
+                  <li>Install Ansible and Git on the managed node.</li>
+                  <li>Inspect a repo-hosted playbook intended for localhost configuration.</li>
+                  <li>Run <code>ansible-pull</code> to apply configuration locally.</li>
+                  <li>Schedule <code>ansible-pull</code> to run every 30 minutes.</li>
+                  <li>Prepare a log path to capture scheduled run output.</li>
+                </ul>
+              </section>
+
+              <!-- 4) What You'll Practice -->
+              <section class="lab-section" id="practice">
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  What You’ll Practice
+                </h3>
+                <ul class="m-t-10">
+                  <li>Agent-based config model with <code>ansible-pull</code></li>
+                  <li>Git-backed desired state</li>
+                  <li>Local execution targeting <code>localhost</code></li>
+                  <li>Recurring convergence via <code>cron</code></li>
+                  <li>Operational logging for scheduled automation</li>
+                </ul>
+              </section>
+
+              <!-- 5) Walkthrough -->
+              <section class="lab-section alt-background" id="walkthrough">
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">Walkthrough</h3>
+
+                <!-- Step 1 -->
+                <div class="lab-step">
+                  <div class="lab-step-title">
+                    <strong class="font-alt">Step 1</strong>: Install Ansible and Git.
+                  </div>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <div class="lab-codeblock-header">
+                      <span>Command</span>
+                      <button class="lab-copy-btn" type="button" data-copy="#cmd-100-1">
+                        Copy
+                      </button>
+                    </div>
+                    <pre><code id="cmd-100-1">sudo dnf install ansible git -y
+# (or apt/pacman equivalents)</code></pre>
+                  </div>
+
+                  <p>
+                    Both are required: Git pulls your desired state, Ansible applies it.
+                  </p>
+                </div>
+
+                <!-- Step 2 -->
+                <div class="lab-step">
+                  <div class="lab-step-title">
+                    <strong class="font-alt">Step 2</strong>: Clone the remote repository.
+                  </div>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <div class="lab-codeblock-header">
+                      <span>Command</span>
+                      <button class="lab-copy-btn" type="button" data-copy="#cmd-100-2">
+                        Copy
+                      </button>
+                    </div>
+                    <pre><code id="cmd-100-2">git clone https://github.com/example/ansible-lab100.git</code></pre>
+                  </div>
+
+                  <p>
+                    In production you’d typically point at an internal repo or a locked-down private repo.
+                  </p>
+                </div>
+
+                <!-- Step 3 -->
+                <div class="lab-step">
+                  <div class="lab-step-title">
+                    <strong class="font-alt">Step 3</strong>: Inspect the playbook that targets localhost.
+                  </div>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <div class="lab-codeblock-header">
+                      <span>Command</span>
+                      <button class="lab-copy-btn" type="button" data-copy="#cmd-100-3">
+                        Copy
+                      </button>
+                    </div>
+                    <pre><code id="cmd-100-3">cat ansible-lab100/site.yml
+# or
+less ansible-lab100/site.yml</code></pre>
+                  </div>
+
+                  <p>
+                    For <code>ansible-pull</code>, the pattern is usually <code>hosts: localhost</code> with
+                    <code>become: true</code>, since the node configures itself.
+                  </p>
+                </div>
+
+                <!-- Step 4 -->
+                <div class="lab-step">
+                  <div class="lab-step-title">
+                    <strong class="font-alt">Step 4</strong>: Apply the desired state locally using <code>ansible-pull</code>.
+                  </div>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <div class="lab-codeblock-header">
+                      <span>Command</span>
+                      <button class="lab-copy-btn" type="button" data-copy="#cmd-100-4">
+                        Copy
+                      </button>
+                    </div>
+                    <pre><code id="cmd-100-4">sudo ansible-pull -U https://github.com/example/ansible-lab100.git -i localhost site.yml</code></pre>
+                  </div>
+
+                  <p>
+                    This clones (or updates) the repo into the default pull directory and runs the playbook against
+                    <code>localhost</code>. On later runs, you should see fewer changes as the system converges.
+                  </p>
+                </div>
+
+                <!-- Step 5 -->
+                <div class="lab-step">
+                  <div class="lab-step-title">
+                    <strong class="font-alt">Step 5</strong>: Schedule the node to self-apply every 30 minutes.
+                  </div>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <div class="lab-codeblock-header">
+                      <span>Command</span>
+                      <button class="lab-copy-btn" type="button" data-copy="#cmd-100-5">
+                        Copy
+                      </button>
+                    </div>
+                    <pre><code id="cmd-100-5">crontab -e</code></pre>
+                  </div>
+
+                  <div class="lab-codeblock m-b-40 m-t-10">
+                    <div class="lab-codeblock-header">
+                      <span>Cron entry</span>
+                      <button class="lab-copy-btn" type="button" data-copy="#file-100-cron">
+                        Copy
+                      </button>
+                    </div>
+                    <pre><code id="file-100-cron">*/30 * * * * /usr/bin/ansible-pull -U https://github.com/example/ansible-lab100.git -i localhost site.yml</code></pre>
+                  </div>
+
+                  <p>
+                    This is the simplest convergence loop. In production, you’ll usually add logging (next step)
+                    and sometimes a lock to prevent overlap if a run takes longer than the interval.
+                  </p>
+                </div>
+
+                <!-- Step 6 -->
+                <div class="lab-step">
+                  <div class="lab-step-title">
+                    <strong class="font-alt">Step 6</strong>: Prepare a log file for scheduled run output.
+                  </div>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <div class="lab-codeblock-header">
+                      <span>Command</span>
+                      <button class="lab-copy-btn" type="button" data-copy="#cmd-100-6">
+                        Copy
+                      </button>
+                    </div>
+                    <pre><code id="cmd-100-6">sudo mkdir -p /var/log/ansible
+sudo touch /var/log/ansible/pull.log</code></pre>
+                  </div>
+
+                  <p>
+                    At minimum, capture output so you can verify runs and troubleshoot failures quickly.
+                  </p>
+                </div>
+              </section>
+
+              <!-- Ops Notes -->
+              <section class="lab-section" id="ops-notes">
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">Ops Notes</h3>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">Make cron safer (typical production pattern)</div>
+                  <p>
+                    Cron often runs with a minimal environment. Use absolute paths, and redirect stdout/stderr to a log.
+                    Also consider a lock to prevent overlapping runs.
+                  </p>
+
+                  <div class="lab-codeblock m-b-0 m-t-10">
+                    <div class="lab-codeblock-header">
+                      <span>Example cron line (safer)</span>
+                      <button class="lab-copy-btn" type="button" data-copy="#file-100-cron-safe">
+                        Copy
+                      </button>
+                    </div>
+                    <pre><code id="file-100-cron-safe">*/30 * * * * flock -n /var/lock/ansible-pull.lock /usr/bin/ansible-pull -U https://github.com/example/ansible-lab100.git -i localhost site.yml >> /var/log/ansible/pull.log 2>&1</code></pre>
+                  </div>
+                </div>
+
+                <ul class="m-t-20">
+                  <li>
+                    If you’re pulling from a private repo, the usual approaches are deploy keys, a machine identity (SSO),
+                    or a secret manager flow. Keep credentials out of the repo.
+                  </li>
+                  <li>
+                    For larger setups, pairing <code>ansible-pull</code> with systemd timers can be cleaner than cron.
+                  </li>
+                </ul>
+              </section>
+
+              <!-- Reference -->
+              <section class="lab-section" id="reference">
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">Reference</h3>
+
+                <ul class="lab-reference-list">
+                  <li>
+                    Pull + apply
+                    <ul>
+                      <li>
+                        <code>sudo ansible-pull -U &lt;repo_url&gt; -i localhost site.yml</code>
+                      </li>
+                    </ul>
+                  </li>
+
+                  <li>
+                    Schedule
+                    <ul>
+                      <li><code>crontab -e</code></li>
+                      <li><code>*/30 * * * * ...</code></li>
+                    </ul>
+                  </li>
+
+                  <li>
+                    Logging
+                    <ul>
+                      <li><code>/var/log/ansible/pull.log</code></li>
+                    </ul>
+                  </li>
+                </ul>
+              </section>
+            </div>
+            <!-- /main -->
+          </div>
+          <!-- /row -->
+
+          <nav class="lab-pagination">
+            <a class="lab-nav-link" href="#totop" aria-label="Back to top">&uArr;</a>
+          </nav>
+        </div>
+        <!-- /container -->
+      </section>
+
+      <!-- FOOTER -->
+      <footer class="module bg-light">
+        <div class="container">
+          <div class="row">
+            <div class="col-sm-12">
+              <ul class="social-text-links font-alt text-center m-b-20">
+                <li>
+                  <a href="https://github.com/vonds" target="_blank" rel="noopener">
+                    Github
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="https://www.linkedin.com/in/vonds/"
+                    target="_blank"
+                    rel="noopener"
+                  >
+                    Linkedin
+                  </a>
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-sm-12">
+              <p class="copyright text-center m-b-0">
+                VONDS &copy; <span id="year"></span>
+              </p>
+
+              <div class="scroll-up">
+                <a href="#totop"><i class="fa fa-angle-double-up"></i></a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <!-- Javascript files (your existing) -->
+    <script src="../assets/js/jquery-2.2.4.min.js"></script>
+    <script src="../assets/bootstrap/js/bootstrap.min.js"></script>
+    <script src="../assets/js/jquery.superslides.min.js"></script>
+    <script src="../assets/js/jquery.mb.YTPlayer.min.js"></script>
+    <script src="../assets/js/jquery.magnific-popup.min.js"></script>
+    <script src="../assets/js/owl.carousel.min.js"></script>
+    <script src="../assets/js/jquery.simple-text-rotator.min.js"></script>
+    <script src="../assets/js/imagesloaded.pkgd.js"></script>
+    <script src="../assets/js/isotope.pkgd.min.js"></script>
+    <script src="../assets/js/packery-mode.pkgd.min.js"></script>
+    <script src="../assets/js/appear.js"></script>
+    <script src="../assets/js/jquery.easing.1.3.js"></script>
+    <script src="../assets/js/wow.min.js"></script>
+    <script src="../assets/js/jqBootstrapValidation.js"></script>
+    <script src="../assets/js/jquery.fitvids.js"></script>
+    <script src="../assets/js/jquery.parallax-1.1.3.js"></script>
+    <script src="../assets/js/smoothscroll.js"></script>
+    <script src="../assets/js/custom.js"></script>
+
+    <!-- Lab page JS (new) -->
+    <script src="../assets/js/lab.js"></script>
+
+    <script>
+      document.getElementById("year").textContent = new Date().getFullYear()
+    </script>
+  </body>
+</html>

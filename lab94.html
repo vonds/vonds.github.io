@@ -1,0 +1,758 @@
+<!-- lab094.html -->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="exit_0 Documentation" />
+    <meta name="name" content="Vonds" />
+
+    <title>Vonds | Lab 094</title>
+
+    <!-- Favicons -->
+    <link rel="shortcut icon" href="../assets/images/favicon.png" />
+    <link rel="apple-touch-icon" href="../assets/images/apple-touch-icon.png" />
+    <link
+      rel="apple-touch-icon"
+      sizes="72x72"
+      href="../assets/images/apple-touch-icon-72x72.png"
+    />
+    <link
+      rel="apple-touch-icon"
+      sizes="114x114"
+      href="../assets/images/apple-touch-icon-114x114.png"
+    />
+
+    <!-- Site styles (your existing) -->
+    <link href="../assets/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="../assets/css/font-awesome.min.css" rel="stylesheet" />
+    <link href="../assets/css/linea-icons.css" rel="stylesheet" />
+    <link href="../assets/css/ionicons.min.css" rel="stylesheet" />
+    <link href="../assets/css/simpletextrotator.css" rel="stylesheet" />
+    <link href="../assets/css/magnific-popup.css" rel="stylesheet" />
+    <link href="../assets/css/owl.carousel.css" rel="stylesheet" />
+    <link href="../assets/css/superslides.css" rel="stylesheet" />
+    <link href="../assets/css/vertical.css" rel="stylesheet" />
+    <link href="../assets/css/animate.css" rel="stylesheet" />
+    <link href="../assets/css/style.css" rel="stylesheet" />
+    <link href="../assets/css/docs.css" rel="stylesheet" />
+
+    <!-- Lab page styles (new) -->
+    <link href="../assets/css/lab.css" rel="stylesheet" />
+
+    <!-- Fonts -->
+    <link
+      href="https://fonts.googleapis.com/css?family=Dosis"
+      rel="stylesheet"
+    />
+  </head>
+
+  <body>
+    <!-- PRELOADER -->
+    <div class="page-loader">
+      <div class="loader">Loading...</div>
+    </div>
+
+    <!-- OVERLAY MENU -->
+    <div id="overlay-menu" class="overlay-menu">
+      <a href="#" id="overlay-menu-hide" class="navigation-hide">
+        <i class="ion-close-round"></i>
+      </a>
+
+      <div class="overlay-menu-inner">
+        <nav class="overlay-menu-nav">
+          <ul id="nav">
+            <li><a href="../index.html">Home</a></li>
+
+            <li class="slidedown">
+              <a href="#">Portfolio</a>
+              <ul>
+                <li>
+                  <a
+                    href="https://github.com/vonds/exit_0"
+                    target="_blank"
+                    rel="noopener"
+                  >
+                    exit_0
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="https://github.com/vonds/sentinel"
+                    target="_blank"
+                    rel="noopener"
+                  >
+                    Sentinel
+                  </a>
+                </li>
+              </ul>
+            </li>
+
+            <li><a href="./index.html" class="active">Lab Write-ups</a></li>
+            <li>
+              <a
+                href="https://www.linkedin.com/in/vonds/"
+                target="_blank"
+                rel="noopener"
+              >
+                LinkedIn
+              </a>
+            </li>
+            <li>
+              <a href="https://github.com/vonds" target="_blank" rel="noopener">
+                Github
+              </a>
+            </li>
+            <li>
+              <a href="mailto:vonds13@gmail.com?subject=Hello Vonds">Contact</a>
+            </li>
+          </ul>
+        </nav>
+      </div>
+
+      <div class="overlay-navigation-footer">
+        <div class="container">
+          <div class="row">
+            <div class="col-sm-12 text-center">
+              <p class="copyright font-alt m-b-0">
+                VONDS &copy;
+                <script>
+                  document.write(new Date().getFullYear())
+                </script>
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- WRAPPER -->
+    <div class="wrapper">
+      <!-- NAVIGATION -->
+      <nav
+        class="navbar navbar-custom navbar-transparent navbar-light navbar-fixed-top"
+      >
+        <div class="container">
+          <div class="navbar-header">
+            <a class="navbar-brand" href="../index.html">
+              <img src="../assets/images/logo-dark.png" width="95" alt="" />
+            </a>
+          </div>
+
+          <ul id="icons-navbar" class="nav navbar-nav navbar-right">
+            <li>
+              <a href="#" id="toggle-menu" class="show-overlay" title="Menu">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </nav>
+
+      <!-- DOCS PAGE -->
+      <section class="module">
+        <div class="container">
+          <h2 class="font-alt module-title m-t-60">
+            Lab 94: Configuring the Linux Firewall
+          </h2>
+
+          <nav class="lab-pagination">
+            <a
+              id="prev-lab"
+              class="lab-nav-link"
+              href="#"
+              aria-label="Previous lab"
+            >
+              &laquo;
+            </a>
+            <a
+              id="next-lab"
+              class="lab-nav-link"
+              href="#"
+              aria-label="Next lab"
+            >
+              &raquo;
+            </a>
+          </nav>
+
+          <div class="row">
+            <!-- LEFT SIDEBAR -->
+            <div class="col-sm-4 col-md-3 lab-sidebar">
+              <div class="docs-sidebar">
+                <div class="docs-widget">
+                  <h5 class="widget-title">
+                    <a href="./docs.html">Lab Index</a>
+                  </h5>
+                  <ul class="docs-nav">
+                    <li><a href="#scenario">Scenario</a></li>
+                    <li><a href="#objective">Objective</a></li>
+                    <li><a href="#practice">What You'll Practice</a></li>
+                    <li><a href="#walkthrough">Walkthrough</a></li>
+                    <li><a href="#reference">Reference</a></li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            <!-- MAIN CONTENT -->
+            <div class="col-sm-8 col-md-9 lab-doc">
+              <!-- 1) Title + Summary (2 sentences max) -->
+              <p class="m-b-20 lab-summary">
+                Configure host firewall policy to allow only required services
+                while keeping a “deny by default” posture. Apply rules using
+                either UFW (Debian/Ubuntu) or firewalld (RHEL/Fedora) and verify
+                effective state.
+              </p>
+
+              <!-- Optional Video (leave in place; swap src when you have it) -->
+              <section class="lab-section" id="video" aria-label="Lab video">
+                <div class="lab-video">
+                  <div class="lab-video-embed text-center">
+                    <iframe
+                      width="560"
+                      height="315"
+                      src="https://www.youtube.com/embed/REPLACE_ME"
+                      title="YouTube video player"
+                      frameborder="0"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                      referrerpolicy="strict-origin-when-cross-origin"
+                      allowfullscreen
+                    >
+                    </iframe>
+                  </div>
+                </div>
+              </section>
+
+              <!-- 2) Scenario -->
+              <section class="lab-section" id="scenario">
+                <div class="lab-chips" aria-label="Tags">
+                  <span class="lab-chip">
+                    <span class="lab-chip-key">security</span>
+                  </span>
+                  <span class="lab-chip">
+                    <span class="lab-chip-key">networking</span>
+                  </span>
+                  <span class="lab-chip">
+                    <span class="lab-chip-key">hardening</span>
+                  </span>
+                </div>
+
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  Scenario
+                </h3>
+                <p>
+                  You’re standardizing host firewall configuration. The system
+                  must allow SSH for administration and HTTP for a web service,
+                  deny other unsolicited inbound traffic, and support quickly
+                  blocking a hostile IP. You’ll implement the policy using UFW
+                  or firewalld based on distro, then verify rules and startup
+                  behavior.
+                </p>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">Operator context</div>
+                  <p class="m-b-0">
+                    Firewall changes can lock you out. Confirm you have console
+                    access or an out-of-band path before enforcing restrictive
+                    inbound defaults on remote hosts.
+                  </p>
+                </div>
+              </section>
+
+              <!-- 3) Objective -->
+              <section class="lab-section alt-background" id="objective">
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  Objective
+                </h3>
+                <ul>
+                  <li>Install the firewall tooling for your distro.</li>
+                  <li>Enable the firewall and ensure it persists at boot.</li>
+                  <li>Allow inbound SSH and HTTP explicitly.</li>
+                  <li>Set a restrictive inbound default policy.</li>
+                  <li>Reload/apply rules and inspect the active ruleset.</li>
+                  <li>Block a specific IPv4 address.</li>
+                  <li>Remove a previously-added rule and confirm state.</li>
+                </ul>
+              </section>
+
+              <!-- 4) What You'll Practice -->
+              <section class="lab-section" id="practice">
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  What You’ll Practice
+                </h3>
+
+                <ul class="m-t-10">
+                  <li>
+                    UFW basics: enable, allow services, default policies, status.
+                  </li>
+                  <li>
+                    firewalld basics: services, permanent rules, reload, inspection.
+                  </li>
+                  <li>
+                    The difference between “configured” and “effective right now.”
+                  </li>
+                  <li>
+                    Targeted blocks using UFW rules or firewalld rich rules.
+                  </li>
+                </ul>
+              </section>
+
+              <!-- 5) Commands Walkthrough -->
+              <section class="lab-section alt-background" id="walkthrough">
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  Walkthrough
+                </h3>
+
+                <!-- Step 1 -->
+                <div class="lab-step">
+                  <div class="lab-step-title">
+                    <strong class="font-alt">Step 1</strong>
+                    : Install the firewall package.
+                  </div>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <div class="lab-codeblock-header">
+                      <span>Command</span>
+                      <button
+                        class="lab-copy-btn"
+                        type="button"
+                        data-copy="#cmd-step-1"
+                      >
+                        Copy
+                      </button>
+                    </div>
+                    <pre><code id="cmd-step-1"># UFW (Debian/Ubuntu)
+sudo apt install ufw -y
+# OR (Arch)
+sudo pacman -S ufw
+
+# firewalld (RHEL/Fedora)
+sudo dnf install firewalld -y</code></pre>
+                  </div>
+
+                  <p>
+                    Install the tooling that matches the host OS family. Don’t
+                    try to run UFW commands on a host where you’re standardizing
+                    on firewalld (and vice versa).
+                  </p>
+                </div>
+
+                <!-- Step 2 -->
+                <div class="lab-step">
+                  <div class="lab-step-title">
+                    <strong class="font-alt">Step 2</strong>
+                    : Enable the firewall service.
+                  </div>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <div class="lab-codeblock-header">
+                      <span>Command</span>
+                      <button
+                        class="lab-copy-btn"
+                        type="button"
+                        data-copy="#cmd-step-2"
+                      >
+                        Copy
+                      </button>
+                    </div>
+                    <pre><code id="cmd-step-2"># UFW
+sudo ufw enable
+
+# firewalld
+sudo systemctl enable --now firewalld</code></pre>
+                  </div>
+
+                  <p>
+                    This turns on policy enforcement. On remote systems, it’s
+                    safest to add SSH allow rules before enabling a restrictive
+                    inbound posture.
+                  </p>
+                </div>
+
+                <!-- Step 3 -->
+                <div class="lab-step">
+                  <div class="lab-step-title">
+                    <strong class="font-alt">Step 3</strong>
+                    : Allow inbound SSH.
+                  </div>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <div class="lab-codeblock-header">
+                      <span>Command</span>
+                      <button
+                        class="lab-copy-btn"
+                        type="button"
+                        data-copy="#cmd-step-3"
+                      >
+                        Copy
+                      </button>
+                    </div>
+                    <pre><code id="cmd-step-3"># UFW
+sudo ufw allow OpenSSH
+
+# firewalld
+sudo firewall-cmd --permanent --add-service=ssh</code></pre>
+                  </div>
+
+                  <p>
+                    This is the “do not lock yourself out” rule. firewalld uses
+                    services (XML definitions) that map to ports/protocols.
+                  </p>
+                </div>
+
+                <!-- Step 4 -->
+                <div class="lab-step">
+                  <div class="lab-step-title">
+                    <strong class="font-alt">Step 4</strong>
+                    : Allow inbound HTTP.
+                  </div>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <div class="lab-codeblock-header">
+                      <span>Command</span>
+                      <button
+                        class="lab-copy-btn"
+                        type="button"
+                        data-copy="#cmd-step-4"
+                      >
+                        Copy
+                      </button>
+                    </div>
+                    <pre><code id="cmd-step-4"># UFW
+sudo ufw allow http
+
+# firewalld
+sudo firewall-cmd --permanent --add-service=http</code></pre>
+                  </div>
+
+                  <p>
+                    This permits inbound port 80 traffic (service-based). If
+                    you’re serving HTTPS, you’d also add <code>https</code>.
+                  </p>
+                </div>
+
+                <!-- Step 5 -->
+                <div class="lab-step">
+                  <div class="lab-step-title">
+                    <strong class="font-alt">Step 5</strong>
+                    : Set a “deny inbound by default” posture.
+                  </div>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <div class="lab-codeblock-header">
+                      <span>Command</span>
+                      <button
+                        class="lab-copy-btn"
+                        type="button"
+                        data-copy="#cmd-step-5"
+                      >
+                        Copy
+                      </button>
+                    </div>
+                    <pre><code id="cmd-step-5"># UFW
+sudo ufw default deny incoming
+
+# firewalld (example posture change)
+sudo firewall-cmd --set-default-zone=drop</code></pre>
+                  </div>
+
+                  <p>
+                    This establishes the baseline policy: only explicitly
+                    allowed inbound traffic gets in. Be deliberate when changing
+                    a firewalld default zone—zones affect how interfaces and
+                    sources are handled.
+                  </p>
+                </div>
+
+                <!-- Step 6 -->
+                <div class="lab-step">
+                  <div class="lab-step-title">
+                    <strong class="font-alt">Step 6</strong>
+                    : Reload/apply changes.
+                  </div>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <div class="lab-codeblock-header">
+                      <span>Command</span>
+                      <button
+                        class="lab-copy-btn"
+                        type="button"
+                        data-copy="#cmd-step-6"
+                      >
+                        Copy
+                      </button>
+                    </div>
+                    <pre><code id="cmd-step-6"># UFW
+sudo ufw reload
+
+# firewalld
+sudo firewall-cmd --reload</code></pre>
+                  </div>
+
+                  <p>
+                    With firewalld, permanent changes require a reload to become
+                    active (unless you also add them to the runtime config).
+                  </p>
+                </div>
+
+                <!-- Step 7 -->
+                <div class="lab-step">
+                  <div class="lab-step-title">
+                    <strong class="font-alt">Step 7</strong>
+                    : View the current ruleset.
+                  </div>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <div class="lab-codeblock-header">
+                      <span>Command</span>
+                      <button
+                        class="lab-copy-btn"
+                        type="button"
+                        data-copy="#cmd-step-7"
+                      >
+                        Copy
+                      </button>
+                    </div>
+                    <pre><code id="cmd-step-7"># UFW
+sudo ufw status verbose
+
+# firewalld
+sudo firewall-cmd --list-all</code></pre>
+                  </div>
+
+                  <p>
+                    This is your primary verification step: confirm SSH/HTTP are
+                    allowed and the default posture matches the intent.
+                  </p>
+                </div>
+
+                <!-- Step 8 -->
+                <div class="lab-step">
+                  <div class="lab-step-title">
+                    <strong class="font-alt">Step 8</strong>
+                    : Block a hostile IP address.
+                  </div>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <div class="lab-codeblock-header">
+                      <span>Command</span>
+                      <button
+                        class="lab-copy-btn"
+                        type="button"
+                        data-copy="#cmd-step-8"
+                      >
+                        Copy
+                      </button>
+                    </div>
+                    <pre><code id="cmd-step-8"># UFW
+sudo ufw deny from 203.0.113.10
+
+# firewalld (rich rule example)
+sudo firewall-cmd --permanent --add-rich-rule="rule family=ipv4 source address=203.0.113.10 reject"</code></pre>
+                  </div>
+
+                  <p>
+                    Use targeted blocks to stop abusive sources without changing
+                    the overall service policy. Rich rules provide expressive
+                    matching beyond simple service/port additions.
+                  </p>
+                </div>
+
+                <!-- Step 9 -->
+                <div class="lab-step">
+                  <div class="lab-step-title">
+                    <strong class="font-alt">Step 9</strong>
+                    : Remove a rule (example: HTTP allow).
+                  </div>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <div class="lab-codeblock-header">
+                      <span>Command</span>
+                      <button
+                        class="lab-copy-btn"
+                        type="button"
+                        data-copy="#cmd-step-9"
+                      >
+                        Copy
+                      </button>
+                    </div>
+                    <pre><code id="cmd-step-9"># UFW
+sudo ufw delete allow http
+
+# firewalld
+sudo firewall-cmd --permanent --remove-service=http</code></pre>
+                  </div>
+
+                  <p>
+                    After removal, reload and re-check active state to ensure
+                    your policy matches the new requirement.
+                  </p>
+                </div>
+
+                <!-- Step 10 -->
+                <div class="lab-step">
+                  <div class="lab-step-title">
+                    <strong class="font-alt">Step 10</strong>
+                    : Confirm the firewall service is enabled at boot.
+                  </div>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <div class="lab-codeblock-header">
+                      <span>Command</span>
+                      <button
+                        class="lab-copy-btn"
+                        type="button"
+                        data-copy="#cmd-step-10"
+                      >
+                        Copy
+                      </button>
+                    </div>
+                    <pre><code id="cmd-step-10">sudo systemctl is-enabled ufw
+# OR
+sudo systemctl is-enabled firewalld</code></pre>
+                  </div>
+
+                  <p>
+                    This verifies persistence. “enabled” means the firewall
+                    will come up across reboots; “disabled” means policy may
+                    not be enforced after restart.
+                  </p>
+                </div>
+              </section>
+
+              <!-- 6) Reference -->
+              <section class="lab-section" id="reference">
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  Reference
+                </h3>
+
+                <ul class="lab-reference-list">
+                  <li>
+                    <code>ufw</code>
+                    : Simple host firewall management (front-end to nftables/iptables).
+                    <ul>
+                      <li><code>ufw enable</code> : Enable firewall enforcement.</li>
+                      <li><code>ufw allow &lt;service&gt;</code> : Allow inbound service.</li>
+                      <li><code>ufw default deny incoming</code> : Deny inbound by default.</li>
+                      <li><code>ufw status verbose</code> : Inspect active policy.</li>
+                    </ul>
+                  </li>
+
+                  <li>
+                    <code>firewalld</code>
+                    : Zone-based firewall daemon (nftables backend on modern distros).
+                    <ul>
+                      <li>
+                        <code>firewall-cmd --permanent --add-service=&lt;name&gt;</code>
+                        : Add a service rule persistently.
+                      </li>
+                      <li>
+                        <code>firewall-cmd --reload</code>
+                        : Apply permanent rules to runtime.
+                      </li>
+                      <li>
+                        <code>firewall-cmd --list-all</code>
+                        : Inspect active zone configuration.
+                      </li>
+                      <li>
+                        <code>--add-rich-rule</code>
+                        : Add more expressive match/action rules.
+                      </li>
+                    </ul>
+                  </li>
+
+                  <li>
+                    <code>systemctl is-enabled &lt;unit&gt;</code>
+                    : Confirm service enablement at boot.
+                  </li>
+                </ul>
+              </section>
+            </div>
+            <!-- /main -->
+          </div>
+          <!-- /row -->
+
+          <nav class="lab-pagination">
+            <a
+              id="prev-lab"
+              class="lab-nav-link"
+              href="#"
+              aria-label="Previous lab"
+            >
+              &uArr;
+            </a>
+          </nav>
+        </div>
+        <!-- /container -->
+      </section>
+
+      <!-- FOOTER -->
+      <footer class="module bg-light">
+        <div class="container">
+          <div class="row">
+            <div class="col-sm-12">
+              <ul class="social-text-links font-alt text-center m-b-20">
+                <li>
+                  <a
+                    href="https://github.com/vonds"
+                    target="_blank"
+                    rel="noopener"
+                  >
+                    Github
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="https://www.linkedin.com/in/vonds/"
+                    target="_blank"
+                    rel="noopener"
+                  >
+                    Linkedin
+                  </a>
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-sm-12">
+              <p class="copyright text-center m-b-0">
+                VONDS &copy;
+                <span id="year"></span>
+              </p>
+
+              <div class="scroll-up">
+                <a href="#totop"><i class="fa fa-angle-double-up"></i></a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <!-- Javascript files (your existing) -->
+    <script src="../assets/js/jquery-2.2.4.min.js"></script>
+    <script src="../assets/bootstrap/js/bootstrap.min.js"></script>
+    <script src="../assets/js/jquery.superslides.min.js"></script>
+    <script src="../assets/js/jquery.mb.YTPlayer.min.js"></script>
+    <script src="../assets/js/jquery.magnific-popup.min.js"></script>
+    <script src="../assets/js/owl.carousel.min.js"></script>
+    <script src="../assets/js/jquery.simple-text-rotator.min.js"></script>
+    <script src="../assets/js/imagesloaded.pkgd.js"></script>
+    <script src="../assets/js/isotope.pkgd.min.js"></script>
+    <script src="../assets/js/packery-mode.pkgd.min.js"></script>
+    <script src="../assets/js/appear.js"></script>
+    <script src="../assets/js/jquery.easing.1.3.js"></script>
+    <script src="../assets/js/wow.min.js"></script>
+    <script src="../assets/js/jqBootstrapValidation.js"></script>
+    <script src="../assets/js/jquery.fitvids.js"></script>
+    <script src="../assets/js/jquery.parallax-1.1.3.js"></script>
+    <script src="../assets/js/smoothscroll.js"></script>
+    <script src="../assets/js/custom.js"></script>
+
+    <!-- Lab page JS (new) -->
+    <script src="../assets/js/lab.js"></script>
+  </body>
+</html>

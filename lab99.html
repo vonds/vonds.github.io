@@ -1,0 +1,658 @@
+<!-- lab099.html -->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="exit_0 Documentation" />
+    <meta name="name" content="Vonds" />
+
+    <title>Vonds | Lab 099</title>
+
+    <!-- Favicons -->
+    <link rel="shortcut icon" href="../assets/images/favicon.png" />
+    <link rel="apple-touch-icon" href="../assets/images/apple-touch-icon.png" />
+    <link
+      rel="apple-touch-icon"
+      sizes="72x72"
+      href="../assets/images/apple-touch-icon-72x72.png"
+    />
+    <link
+      rel="apple-touch-icon"
+      sizes="114x114"
+      href="../assets/images/apple-touch-icon-114x114.png"
+    />
+
+    <!-- Site styles (your existing) -->
+    <link href="../assets/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="../assets/css/font-awesome.min.css" rel="stylesheet" />
+    <link href="../assets/css/linea-icons.css" rel="stylesheet" />
+    <link href="../assets/css/ionicons.min.css" rel="stylesheet" />
+    <link href="../assets/css/simpletextrotator.css" rel="stylesheet" />
+    <link href="../assets/css/magnific-popup.css" rel="stylesheet" />
+    <link href="../assets/css/owl.carousel.css" rel="stylesheet" />
+    <link href="../assets/css/superslides.css" rel="stylesheet" />
+    <link href="../assets/css/vertical.css" rel="stylesheet" />
+    <link href="../assets/css/animate.css" rel="stylesheet" />
+    <link href="../assets/css/style.css" rel="stylesheet" />
+    <link href="../assets/css/docs.css" rel="stylesheet" />
+
+    <!-- Lab page styles (new) -->
+    <link href="../assets/css/lab.css" rel="stylesheet" />
+
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css?family=Dosis" rel="stylesheet" />
+  </head>
+
+  <body>
+    <!-- PRELOADER -->
+    <div class="page-loader">
+      <div class="loader">Loading...</div>
+    </div>
+
+    <!-- OVERLAY MENU -->
+    <div id="overlay-menu" class="overlay-menu">
+      <a href="#" id="overlay-menu-hide" class="navigation-hide">
+        <i class="ion-close-round"></i>
+      </a>
+
+      <div class="overlay-menu-inner">
+        <nav class="overlay-menu-nav">
+          <ul id="nav">
+            <li><a href="../index.html">Home</a></li>
+
+            <li class="slidedown">
+              <a href="#">Portfolio</a>
+              <ul>
+                <li>
+                  <a
+                    href="https://github.com/vonds/exit_0"
+                    target="_blank"
+                    rel="noopener"
+                  >
+                    exit_0
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="https://github.com/vonds/sentinel"
+                    target="_blank"
+                    rel="noopener"
+                  >
+                    Sentinel
+                  </a>
+                </li>
+              </ul>
+            </li>
+
+            <li><a href="./index.html" class="active">Lab Write-ups</a></li>
+            <li>
+              <a
+                href="https://www.linkedin.com/in/vonds/"
+                target="_blank"
+                rel="noopener"
+              >
+                LinkedIn
+              </a>
+            </li>
+            <li>
+              <a href="https://github.com/vonds" target="_blank" rel="noopener">
+                Github
+              </a>
+            </li>
+            <li>
+              <a href="mailto:vonds13@gmail.com?subject=Hello Vonds">Contact</a>
+            </li>
+          </ul>
+        </nav>
+      </div>
+
+      <div class="overlay-navigation-footer">
+        <div class="container">
+          <div class="row">
+            <div class="col-sm-12 text-center">
+              <p class="copyright font-alt m-b-0">
+                VONDS &copy;
+                <script>
+                  document.write(new Date().getFullYear())
+                </script>
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- WRAPPER -->
+    <div class="wrapper">
+      <!-- NAVIGATION -->
+      <nav
+        class="navbar navbar-custom navbar-transparent navbar-light navbar-fixed-top"
+      >
+        <div class="container">
+          <div class="navbar-header">
+            <a class="navbar-brand" href="../index.html">
+              <img src="../assets/images/logo-dark.png" width="95" alt="" />
+            </a>
+          </div>
+
+          <ul id="icons-navbar" class="nav navbar-nav navbar-right">
+            <li>
+              <a href="#" id="toggle-menu" class="show-overlay" title="Menu">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </nav>
+
+      <!-- DOCS PAGE -->
+      <section class="module">
+        <div class="container" id="totop">
+          <h2 class="font-alt module-title m-t-60">
+            Lab 99: Creating and Using Ansible Roles
+          </h2>
+
+          <nav class="lab-pagination">
+            <a id="prev-lab" class="lab-nav-link" href="#" aria-label="Previous lab">
+              &laquo;
+            </a>
+            <a id="next-lab" class="lab-nav-link" href="#" aria-label="Next lab">
+              &raquo;
+            </a>
+          </nav>
+
+          <div class="row">
+            <!-- LEFT SIDEBAR -->
+            <div class="col-sm-4 col-md-3 lab-sidebar">
+              <div class="docs-sidebar">
+                <div class="docs-widget">
+                  <h5 class="widget-title">
+                    <a href="./docs.html">Lab Index</a>
+                  </h5>
+                  <ul class="docs-nav">
+                    <li><a href="#scenario">Scenario</a></li>
+                    <li><a href="#objective">Objective</a></li>
+                    <li><a href="#practice">What You'll Practice</a></li>
+                    <li><a href="#walkthrough">Walkthrough</a></li>
+                    <li><a href="#reference">Reference</a></li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            <!-- MAIN CONTENT -->
+            <div class="col-sm-8 col-md-9 lab-doc">
+              <!-- 1) Title + Summary (2 sentences max) -->
+              <p class="m-b-20 lab-summary">
+                Convert a growing playbook into a reusable Ansible role with tasks,
+                handlers, and templates. You’ll deploy a simple Nginx site using a
+                production-style structure that scales cleanly as your automation grows.
+              </p>
+
+              <!-- Optional Video -->
+              <section class="lab-section" id="video" aria-label="Lab video">
+                <div class="lab-video">
+                  <div class="lab-video-embed text-center">
+                    <iframe
+                      width="560"
+                      height="315"
+                      src="https://www.youtube.com/embed/REPLACE_ME"
+                      title="YouTube video player"
+                      frameborder="0"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                      referrerpolicy="strict-origin-when-cross-origin"
+                      allowfullscreen
+                    ></iframe>
+                  </div>
+                </div>
+              </section>
+
+              <!-- 2) Scenario -->
+              <section class="lab-section" id="scenario">
+                <div class="lab-chips" aria-label="Tags">
+                  <span class="lab-chip"><span class="lab-chip-key">ansible</span></span>
+                  <span class="lab-chip"><span class="lab-chip-key">roles</span></span>
+                  <span class="lab-chip"><span class="lab-chip-key">handlers</span></span>
+                  <span class="lab-chip"><span class="lab-chip-key">templates</span></span>
+                  <span class="lab-chip"><span class="lab-chip-key">ansible-lint</span></span>
+                </div>
+
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">Scenario</h3>
+                <p>
+                  You’re managing a growing set of Ansible playbooks and the structure is
+                  starting to sprawl. To keep things clean and reusable, you’ll migrate to
+                  roles and implement a production-grade pattern: tasks install and configure,
+                  handlers restart services only when needed, and templates render host-specific
+                  content.
+                </p>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">Operator context</div>
+                  <p class="m-b-0">
+                    Roles are the “unit of reuse” in Ansible. The goal is a layout you can
+                    drop into any repo, compose into a site playbook, and lint for consistency.
+                  </p>
+                </div>
+              </section>
+
+              <!-- 3) Objective -->
+              <section class="lab-section alt-background" id="objective">
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">Objective</h3>
+                <ul>
+                  <li>Create a role skeleton with <code>ansible-galaxy init</code>.</li>
+                  <li>Define tasks to install Nginx and deploy a templated landing page.</li>
+                  <li>Create a handler that restarts Nginx only when notified.</li>
+                  <li>Write a site playbook that applies the role to the <code>web</code> group.</li>
+                  <li>Validate structure and syntax with <code>ansible-lint</code>.</li>
+                </ul>
+              </section>
+
+              <!-- 4) What You'll Practice -->
+              <section class="lab-section" id="practice">
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  What You’ll Practice
+                </h3>
+                <ul class="m-t-10">
+                  <li>Role scaffolding: <code>ansible-galaxy init</code></li>
+                  <li>Role anatomy: <code>tasks/</code>, <code>handlers/</code>, <code>templates/</code>, <code>defaults/</code></li>
+                  <li>Template rendering: <code>template:</code> with facts like <code>ansible_hostname</code></li>
+                  <li>Change-driven restarts: <code>notify:</code> + handlers</li>
+                  <li>Quality gates: <code>ansible-lint</code></li>
+                </ul>
+              </section>
+
+              <!-- 5) Walkthrough -->
+              <section class="lab-section alt-background" id="walkthrough">
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">Walkthrough</h3>
+
+                <!-- Step 1 -->
+                <div class="lab-step">
+                  <div class="lab-step-title">
+                    <strong class="font-alt">Step 1</strong>: Create a new role named <code>nginx</code>.
+                  </div>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <div class="lab-codeblock-header">
+                      <span>Command</span>
+                      <button class="lab-copy-btn" type="button" data-copy="#cmd-99-1">
+                        Copy
+                      </button>
+                    </div>
+                    <pre><code id="cmd-99-1">ansible-galaxy init nginx</code></pre>
+                  </div>
+
+                  <p>
+                    This creates the standard role layout. You’ll primarily work in
+                    <code>tasks/main.yml</code>, <code>handlers/main.yml</code>, and
+                    <code>templates/</code>.
+                  </p>
+                </div>
+
+                <!-- Step 2 -->
+                <div class="lab-step">
+                  <div class="lab-step-title">
+                    <strong class="font-alt">Step 2</strong>: Define a task to install Nginx.
+                  </div>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <div class="lab-codeblock-header">
+                      <span>Command</span>
+                      <button class="lab-copy-btn" type="button" data-copy="#cmd-99-2">
+                        Copy
+                      </button>
+                    </div>
+                    <pre><code id="cmd-99-2">nano nginx/tasks/main.yml
+# or
+vim nginx/tasks/main.yml</code></pre>
+                  </div>
+
+                  <div class="lab-codeblock m-b-40 m-t-10">
+                    <div class="lab-codeblock-header">
+                      <span>nginx/tasks/main.yml (baseline)</span>
+                      <button class="lab-copy-btn" type="button" data-copy="#file-99-tasks-1">
+                        Copy
+                      </button>
+                    </div>
+                    <pre><code id="file-99-tasks-1">- name: Install nginx
+  package:
+    name: nginx
+    state: present</code></pre>
+                  </div>
+
+                  <p>
+                    The <code>package</code> module keeps this role portable across distros.
+                  </p>
+                </div>
+
+                <!-- Step 3 -->
+                <div class="lab-step">
+                  <div class="lab-step-title">
+                    <strong class="font-alt">Step 3</strong>: Add a handler to restart Nginx.
+                  </div>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <div class="lab-codeblock-header">
+                      <span>Command</span>
+                      <button class="lab-copy-btn" type="button" data-copy="#cmd-99-3">
+                        Copy
+                      </button>
+                    </div>
+                    <pre><code id="cmd-99-3">nano nginx/handlers/main.yml
+# or
+vim nginx/handlers/main.yml</code></pre>
+                  </div>
+
+                  <div class="lab-codeblock m-b-40 m-t-10">
+                    <div class="lab-codeblock-header">
+                      <span>nginx/handlers/main.yml</span>
+                      <button class="lab-copy-btn" type="button" data-copy="#file-99-handlers">
+                        Copy
+                      </button>
+                    </div>
+                    <pre><code id="file-99-handlers">- name: restart nginx
+  service:
+    name: nginx
+    state: restarted</code></pre>
+                  </div>
+
+                  <p>
+                    Handlers run only when notified, which prevents unnecessary restarts.
+                  </p>
+                </div>
+
+                <!-- Step 4 -->
+                <div class="lab-step">
+                  <div class="lab-step-title">
+                    <strong class="font-alt">Step 4</strong>: Create the HTML template.
+                  </div>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <div class="lab-codeblock-header">
+                      <span>Command</span>
+                      <button class="lab-copy-btn" type="button" data-copy="#cmd-99-4">
+                        Copy
+                      </button>
+                    </div>
+                    <pre><code id="cmd-99-4">nano nginx/templates/index.html.j2
+# or
+vim nginx/templates/index.html.j2</code></pre>
+                  </div>
+
+                  <div class="lab-codeblock m-b-40 m-t-10">
+                    <div class="lab-codeblock-header">
+                      <span>nginx/templates/index.html.j2</span>
+                      <button class="lab-copy-btn" type="button" data-copy="#file-99-template">
+                        Copy
+                      </button>
+                    </div>
+                    <pre><code id="file-99-template">&lt;!DOCTYPE html&gt;
+&lt;html lang="en"&gt;
+  &lt;head&gt;
+    &lt;meta charset="UTF-8" /&gt;
+    &lt;meta name="viewport" content="width=device-width, initial-scale=1.0" /&gt;
+    &lt;title&gt;Ansible Role Deployed&lt;/title&gt;
+  &lt;/head&gt;
+  &lt;body&gt;
+    &lt;h1&gt;Deployed by Ansible&lt;/h1&gt;
+    &lt;p&gt;Host: {{ ansible_hostname }}&lt;/p&gt;
+  &lt;/body&gt;
+&lt;/html&gt;</code></pre>
+                  </div>
+
+                  <p>
+                    This uses <code>ansible_hostname</code> from gathered facts to render host-specific output.
+                  </p>
+                </div>
+
+                <!-- Step 5 -->
+                <div class="lab-step">
+                  <div class="lab-step-title">
+                    <strong class="font-alt">Step 5</strong>: Deploy the template from the role and notify the handler.
+                  </div>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <div class="lab-codeblock-header">
+                      <span>Command</span>
+                      <button class="lab-copy-btn" type="button" data-copy="#cmd-99-5">
+                        Copy
+                      </button>
+                    </div>
+                    <pre><code id="cmd-99-5">nano nginx/tasks/main.yml
+# or
+vim nginx/tasks/main.yml</code></pre>
+                  </div>
+
+                  <div class="lab-codeblock m-b-40 m-t-10">
+                    <div class="lab-codeblock-header">
+                      <span>nginx/tasks/main.yml (final)</span>
+                      <button class="lab-copy-btn" type="button" data-copy="#file-99-tasks-2">
+                        Copy
+                      </button>
+                    </div>
+                    <pre><code id="file-99-tasks-2">- name: Install nginx
+  package:
+    name: nginx
+    state: present
+
+- name: Ensure nginx is enabled and running
+  service:
+    name: nginx
+    state: started
+    enabled: yes
+
+- name: Deploy custom index.html
+  template:
+    src: index.html.j2
+    dest: /usr/share/nginx/html/index.html
+    owner: root
+    group: root
+    mode: "0644"
+  notify: restart nginx</code></pre>
+                  </div>
+
+                  <p>
+                    The handler only runs if the template task reports a change.
+                  </p>
+                </div>
+
+                <!-- Step 6 -->
+                <div class="lab-step">
+                  <div class="lab-step-title">
+                    <strong class="font-alt">Step 6</strong>: Create a site playbook that uses the role.
+                  </div>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <div class="lab-codeblock-header">
+                      <span>Command</span>
+                      <button class="lab-copy-btn" type="button" data-copy="#cmd-99-6">
+                        Copy
+                      </button>
+                    </div>
+                    <pre><code id="cmd-99-6">nano site.yml
+# or
+vim site.yml</code></pre>
+                  </div>
+
+                  <div class="lab-codeblock m-b-40 m-t-10">
+                    <div class="lab-codeblock-header">
+                      <span>site.yml</span>
+                      <button class="lab-copy-btn" type="button" data-copy="#file-99-site">
+                        Copy
+                      </button>
+                    </div>
+                    <pre><code id="file-99-site">- name: Configure web servers
+  hosts: web
+  become: yes
+  roles:
+    - nginx</code></pre>
+                  </div>
+
+                  <p>
+                    This composes the role into a clean entry point. As you add roles,
+                    you keep <code>site.yml</code> readable and predictable.
+                  </p>
+                </div>
+
+                <!-- Step 7 -->
+                <div class="lab-step">
+                  <div class="lab-step-title">
+                    <strong class="font-alt">Step 7</strong>: Run the role-based playbook.
+                  </div>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <div class="lab-codeblock-header">
+                      <span>Command</span>
+                      <button class="lab-copy-btn" type="button" data-copy="#cmd-99-7">
+                        Copy
+                      </button>
+                    </div>
+                    <pre><code id="cmd-99-7">ansible-playbook -i ~/inventory site.yml</code></pre>
+                  </div>
+
+                  <p>
+                    First run should show changes; subsequent runs should converge to mostly <code>ok</code>
+                    unless you modify templates or tasks.
+                  </p>
+                </div>
+
+                <!-- Step 8 -->
+                <div class="lab-step">
+                  <div class="lab-step-title">
+                    <strong class="font-alt">Step 8</strong>: Lint the playbook (and role) for best practices.
+                  </div>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <div class="lab-codeblock-header">
+                      <span>Command</span>
+                      <button class="lab-copy-btn" type="button" data-copy="#cmd-99-8">
+                        Copy
+                      </button>
+                    </div>
+                    <pre><code id="cmd-99-8">ansible-lint site.yml</code></pre>
+                  </div>
+
+                  <p>
+                    Linting is your “production hygiene” step: consistent patterns, fewer surprises,
+                    and cleaner reviews when roles become shared artifacts across teams.
+                  </p>
+                </div>
+              </section>
+
+              <!-- 6) Reference -->
+              <section class="lab-section" id="reference">
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">Reference</h3>
+
+                <ul class="lab-reference-list">
+                  <li>
+                    Role scaffolding
+                    <ul>
+                      <li><code>ansible-galaxy init nginx</code></li>
+                    </ul>
+                  </li>
+
+                  <li>
+                    Core role files
+                    <ul>
+                      <li><code>nginx/tasks/main.yml</code></li>
+                      <li><code>nginx/handlers/main.yml</code></li>
+                      <li><code>nginx/templates/index.html.j2</code></li>
+                    </ul>
+                  </li>
+
+                  <li>
+                    Deploy
+                    <ul>
+                      <li><code>ansible-playbook -i ~/inventory site.yml</code></li>
+                    </ul>
+                  </li>
+
+                  <li>
+                    Quality gate
+                    <ul>
+                      <li><code>ansible-lint site.yml</code></li>
+                    </ul>
+                  </li>
+                </ul>
+              </section>
+            </div>
+            <!-- /main -->
+          </div>
+          <!-- /row -->
+
+          <nav class="lab-pagination">
+            <a class="lab-nav-link" href="#totop" aria-label="Back to top">&uArr;</a>
+          </nav>
+        </div>
+        <!-- /container -->
+      </section>
+
+      <!-- FOOTER -->
+      <footer class="module bg-light">
+        <div class="container">
+          <div class="row">
+            <div class="col-sm-12">
+              <ul class="social-text-links font-alt text-center m-b-20">
+                <li>
+                  <a href="https://github.com/vonds" target="_blank" rel="noopener">
+                    Github
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="https://www.linkedin.com/in/vonds/"
+                    target="_blank"
+                    rel="noopener"
+                  >
+                    Linkedin
+                  </a>
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-sm-12">
+              <p class="copyright text-center m-b-0">
+                VONDS &copy; <span id="year"></span>
+              </p>
+
+              <div class="scroll-up">
+                <a href="#totop"><i class="fa fa-angle-double-up"></i></a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <!-- Javascript files (your existing) -->
+    <script src="../assets/js/jquery-2.2.4.min.js"></script>
+    <script src="../assets/bootstrap/js/bootstrap.min.js"></script>
+    <script src="../assets/js/jquery.superslides.min.js"></script>
+    <script src="../assets/js/jquery.mb.YTPlayer.min.js"></script>
+    <script src="../assets/js/jquery.magnific-popup.min.js"></script>
+    <script src="../assets/js/owl.carousel.min.js"></script>
+    <script src="../assets/js/jquery.simple-text-rotator.min.js"></script>
+    <script src="../assets/js/imagesloaded.pkgd.js"></script>
+    <script src="../assets/js/isotope.pkgd.min.js"></script>
+    <script src="../assets/js/packery-mode.pkgd.min.js"></script>
+    <script src="../assets/js/appear.js"></script>
+    <script src="../assets/js/jquery.easing.1.3.js"></script>
+    <script src="../assets/js/wow.min.js"></script>
+    <script src="../assets/js/jqBootstrapValidation.js"></script>
+    <script src="../assets/js/jquery.fitvids.js"></script>
+    <script src="../assets/js/jquery.parallax-1.1.3.js"></script>
+    <script src="../assets/js/smoothscroll.js"></script>
+    <script src="../assets/js/custom.js"></script>
+
+    <!-- Lab page JS (new) -->
+    <script src="../assets/js/lab.js"></script>
+
+    <script>
+      document.getElementById("year").textContent = new Date().getFullYear()
+    </script>
+  </body>
+</html>

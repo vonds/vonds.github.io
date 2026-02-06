@@ -206,6 +206,23 @@
                 a simple confirmation statement suitable for a deployment note.
               </p>
 
+              <section class="lab-section" id="video" aria-label="Lab video">
+                <div class="lab-video">
+                  <div class="lab-video-embed text-center">
+                    <iframe
+                      width="560"
+                      height="315"
+                      src="https://www.youtube.com/embed/uJk54bhaadA?si=seGSukCoMFN7ohRo"
+                      title="YouTube video player"
+                      frameborder="0"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                      referrerpolicy="strict-origin-when-cross-origin"
+                      allowfullscreen
+                    ></iframe>
+                  </div>
+                </div>
+              </section>
+
               <!-- 2) Scenario -->
               <section class="lab-section" id="scenario">
                 <div class="lab-chips" aria-label="Tags">
@@ -223,9 +240,11 @@
 
                 <p>
                   You are preparing a report for a new software deployment. The
-                  application requires a <strong>64-bit</strong> system, so you
-                  need to confirm the machine architecture and verify the OS is
-                  running in 64-bit mode using terminal commands only.
+                  application requires a
+                  <strong>64-bit</strong>
+                  system, so you need to confirm the machine architecture and
+                  verify the OS is running in 64-bit mode using terminal
+                  commands only.
                 </p>
 
                 <div class="lab-callout">
@@ -244,16 +263,25 @@
                   Objective
                 </h3>
                 <ul>
-                  <li>Check the machine architecture with <code>arch</code>.</li>
                   <li>
-                    Confirm the same architecture via <code>uname -m</code>.
+                    Check the machine architecture with
+                    <code>arch</code>
+                    .
+                  </li>
+                  <li>
+                    Confirm the same architecture via
+                    <code>uname -m</code>
+                    .
                   </li>
                   <li>
                     Review CPU architecture and execution modes using
-                    <code>lscpu</code>.
+                    <code>lscpu</code>
+                    .
                   </li>
                   <li>
-                    Verify the OS bitness using <code>getconf LONG_BIT</code>.
+                    Verify the OS bitness using
+                    <code>getconf LONG_BIT</code>
+                    .
                   </li>
                   <li>
                     Produce a short confirmation note suitable for a deployment
@@ -270,15 +298,21 @@
 
                 <ul class="m-t-10">
                   <li>
-                    Architecture identification using <code>arch</code> and
-                    <code>uname -m</code>.
+                    Architecture identification using
+                    <code>arch</code>
+                    and
+                    <code>uname -m</code>
+                    .
                   </li>
                   <li>
-                    CPU capability review using <code>lscpu</code> (including
-                    op-modes).
+                    CPU capability review using
+                    <code>lscpu</code>
+                    (including op-modes).
                   </li>
                   <li>
-                    OS bitness validation using <code>getconf LONG_BIT</code>.
+                    OS bitness validation using
+                    <code>getconf LONG_BIT</code>
+                    .
                   </li>
                   <li>
                     Practical cross-verification: confirming the same fact using
@@ -483,7 +517,10 @@ Model name:             Intel(R) Xeon(R) CPU</code></pre>
                     <code>uname -m</code>
                     : Displays the machine hardware name (architecture).
                     <ul>
-                      <li><code>-m</code>: Outputs the machine hardware name.</li>
+                      <li>
+                        <code>-m</code>
+                        : Outputs the machine hardware name.
+                      </li>
                     </ul>
                   </li>
 
@@ -492,8 +529,11 @@ Model name:             Intel(R) Xeon(R) CPU</code></pre>
                     : Displays CPU architecture details and execution modes.
                     <ul>
                       <li>
-                        Useful fields include <code>Architecture</code> and
-                        <code>CPU op-mode(s)</code>.
+                        Useful fields include
+                        <code>Architecture</code>
+                        and
+                        <code>CPU op-mode(s)</code>
+                        .
                       </li>
                     </ul>
                   </li>
@@ -504,15 +544,20 @@ Model name:             Intel(R) Xeon(R) CPU</code></pre>
                     mode.
                     <ul>
                       <li>
-                        <code>LONG_BIT</code>: Returns <code>32</code> or
-                        <code>64</code>.
+                        <code>LONG_BIT</code>
+                        : Returns
+                        <code>32</code>
+                        or
+                        <code>64</code>
+                        .
                       </li>
                     </ul>
                   </li>
 
                   <li>
                     <code>echo 'System is 64-bit compatible'</code>
-                    : Produces a short confirmation message for operational notes.
+                    : Produces a short confirmation message for operational
+                    notes.
                   </li>
                 </ul>
               </section>

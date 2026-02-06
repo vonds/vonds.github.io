@@ -157,7 +157,7 @@
           <h2 class="font-alt module-title m-t-60">
             Lab 19: File Search and Manipulation
           </h2>
-		  <nav class="lab-pagination">
+          <nav class="lab-pagination">
             <a
               id="prev-lab"
               class="lab-nav-link"
@@ -180,7 +180,9 @@
             <div class="col-sm-4 col-md-3 lab-sidebar">
               <div class="docs-sidebar">
                 <div class="docs-widget">
-                  <h5 class="widget-title"><a href="./docs.html">Lab Index</a></h5>
+                  <h5 class="widget-title">
+                    <a href="./docs.html">Lab Index</a>
+                  </h5>
                   <ul class="docs-nav">
                     <li><a href="#scenario">Scenario</a></li>
                     <li><a href="#objective">Objective</a></li>
@@ -196,9 +198,33 @@
             <div class="col-sm-8 col-md-9 lab-doc">
               <!-- 1) Title + Summary (2 sentences max) -->
               <p class="m-b-20 lab-summary">
-                Search for log and temporary files using <code>find</code>, then safely delete targets using <code>-exec</code> or <code>xargs</code>.
-                Refresh the locate database and use <code>locate</code> to enumerate configuration files quickly.
+                Search for log and temporary files using
+                <code>find</code>
+                , then safely delete targets using
+                <code>-exec</code>
+                or
+                <code>xargs</code>
+                . Refresh the locate database and use
+                <code>locate</code>
+                to enumerate configuration files quickly.
               </p>
+
+              <section class="lab-section" id="video" aria-label="Lab video">
+                <div class="lab-video">
+                  <div class="lab-video-embed text-center">
+                    <iframe
+                      width="560"
+                      height="315"
+                      src="https://www.youtube.com/embed/uJk54bhaadA?si=seGSukCoMFN7ohRo"
+                      title="YouTube video player"
+                      frameborder="0"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                      referrerpolicy="strict-origin-when-cross-origin"
+                      allowfullscreen
+                    ></iframe>
+                  </div>
+                </div>
+              </section>
 
               <!-- 2) Scenario -->
               <section class="lab-section" id="scenario">
@@ -218,15 +244,23 @@
                   Scenario
                 </h3>
                 <p>
-                  The system has accumulated log and temporary files. You have been asked to identify log files under
-                  <code>/var/log</code>, find temporary files in <code>/tmp</code> older than 7 days, and remove stale temp files safely.
-                  You also need to list configuration files quickly using <code>locate</code> after refreshing the database.
+                  The system has accumulated log and temporary files. You have
+                  been asked to identify log files under
+                  <code>/var/log</code>
+                  , find temporary files in
+                  <code>/tmp</code>
+                  older than 7 days, and remove stale temp files safely. You
+                  also need to list configuration files quickly using
+                  <code>locate</code>
+                  after refreshing the database.
                 </p>
                 <div class="lab-callout">
                   <div class="lab-callout-label">Operator context</div>
                   <p class="m-b-0">
-                    This is what cleanup and triage looks like in real environments: target precisely, verify matches, then delete with a safe execution path.
-                    The difference between “cleanup” and “incident” is usually one bad pattern.
+                    This is what cleanup and triage looks like in real
+                    environments: target precisely, verify matches, then delete
+                    with a safe execution path. The difference between “cleanup”
+                    and “incident” is usually one bad pattern.
                   </p>
                 </div>
               </section>
@@ -237,11 +271,33 @@
                   Objective
                 </h3>
                 <ul>
-                  <li>Find all <code>.log</code> files under <code>/var/log</code>.</li>
-                  <li>Find files in <code>/tmp</code> older than 7 days.</li>
-                  <li>Delete files older than 7 days in <code>/tmp</code> using a safe <code>find</code> execution method.</li>
+                  <li>
+                    Find all
+                    <code>.log</code>
+                    files under
+                    <code>/var/log</code>
+                    .
+                  </li>
+                  <li>
+                    Find files in
+                    <code>/tmp</code>
+                    older than 7 days.
+                  </li>
+                  <li>
+                    Delete files older than 7 days in
+                    <code>/tmp</code>
+                    using a safe
+                    <code>find</code>
+                    execution method.
+                  </li>
                   <li>Refresh the locate database.</li>
-                  <li>Use <code>locate</code> to list configuration files matching <code>*.conf</code>.</li>
+                  <li>
+                    Use
+                    <code>locate</code>
+                    to list configuration files matching
+                    <code>*.conf</code>
+                    .
+                  </li>
                 </ul>
               </section>
 
@@ -253,16 +309,33 @@
 
                 <ul class="m-t-10">
                   <li>
-                    Targeted file discovery with <code>find</code> using <code>-type</code>, <code>-name</code>, and time filters like <code>-mtime</code>.
+                    Targeted file discovery with
+                    <code>find</code>
+                    using
+                    <code>-type</code>
+                    ,
+                    <code>-name</code>
+                    , and time filters like
+                    <code>-mtime</code>
+                    .
                   </li>
                   <li>
-                    Safe deletion workflows: verify first, then delete with <code>-exec</code> (or pipe to <code>xargs</code> when appropriate).
+                    Safe deletion workflows: verify first, then delete with
+                    <code>-exec</code>
+                    (or pipe to
+                    <code>xargs</code>
+                    when appropriate).
                   </li>
                   <li>
-                    Fast path-based search using <code>locate</code> and why <code>updatedb</code> matters.
+                    Fast path-based search using
+                    <code>locate</code>
+                    and why
+                    <code>updatedb</code>
+                    matters.
                   </li>
                   <li>
-                    Understanding patterns and quoting (globs vs strings) in search commands.
+                    Understanding patterns and quoting (globs vs strings) in
+                    search commands.
                   </li>
                 </ul>
               </section>
@@ -277,7 +350,11 @@
                 <div class="lab-step">
                   <div class="lab-step-title">
                     <strong class="font-alt">Step 1</strong>
-                    : Find all <code>.log</code> files under <code>/var/log</code>.
+                    : Find all
+                    <code>.log</code>
+                    files under
+                    <code>/var/log</code>
+                    .
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -295,8 +372,12 @@
                   </div>
 
                   <p>
-                    <code>find</code> searches the filesystem in real time. Quoting <code>'*.log'</code> ensures the shell does not expand the glob
-                    before <code>find</code> runs.
+                    <code>find</code>
+                    searches the filesystem in real time. Quoting
+                    <code>'*.log'</code>
+                    ensures the shell does not expand the glob before
+                    <code>find</code>
+                    runs.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -309,7 +390,9 @@
                 <div class="lab-step">
                   <div class="lab-step-title">
                     <strong class="font-alt">Step 2</strong>
-                    : Find files in <code>/tmp</code> older than 7 days.
+                    : Find files in
+                    <code>/tmp</code>
+                    older than 7 days.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -327,7 +410,9 @@
                   </div>
 
                   <p>
-                    <code>-mtime +7</code> matches files whose data was last modified more than 7 days ago. This is a common cleanup filter for temp directories.
+                    <code>-mtime +7</code>
+                    matches files whose data was last modified more than 7 days
+                    ago. This is a common cleanup filter for temp directories.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -358,8 +443,15 @@
                   </div>
 
                   <p>
-                    <code>-exec</code> runs a command for each matched file. The <code>\;</code> terminator must be escaped so the shell passes it through.
-                    In production, you often run the same <code>find</code> without <code>rm</code> first, then add deletion once you trust the matches.
+                    <code>-exec</code>
+                    runs a command for each matched file. The
+                    <code>\;</code>
+                    terminator must be escaped so the shell passes it through.
+                    In production, you often run the same
+                    <code>find</code>
+                    without
+                    <code>rm</code>
+                    first, then add deletion once you trust the matches.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -389,7 +481,11 @@
                   </div>
 
                   <p>
-                    <code>locate</code> searches an index, not the live filesystem. <code>updatedb</code> refreshes that index so newly created or moved files can be found.
+                    <code>locate</code>
+                    searches an index, not the live filesystem.
+                    <code>updatedb</code>
+                    refreshes that index so newly created or moved files can be
+                    found.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -401,7 +497,9 @@
                 <div class="lab-step">
                   <div class="lab-step-title">
                     <strong class="font-alt">Step 5</strong>
-                    : Use locate to list all <code>*.conf</code> files.
+                    : Use locate to list all
+                    <code>*.conf</code>
+                    files.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -419,8 +517,11 @@
                   </div>
 
                   <p>
-                    Quoting the pattern prevents the shell from expanding it in your current directory. <code>locate</code> will return paths anywhere on the system
-                    that match the indexed pattern.
+                    Quoting the pattern prevents the shell from expanding it in
+                    your current directory.
+                    <code>locate</code>
+                    will return paths anywhere on the system that match the
+                    indexed pattern.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -434,7 +535,9 @@
                 <div class="lab-step">
                   <div class="lab-step-title">
                     <strong class="font-alt">Step 6</strong>
-                    : Batch-delete with <code>xargs</code> (safe pattern).
+                    : Batch-delete with
+                    <code>xargs</code>
+                    (safe pattern).
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -452,8 +555,16 @@
                   </div>
 
                   <p>
-                    This is the <strong>safe</strong> xargs pattern: <code>-print0</code> and <code>-0</code> prevent whitespace and special characters from breaking file names.
-                    Use this when you want one <code>rm</code> invocation that takes many paths at once.
+                    This is the
+                    <strong>safe</strong>
+                    xargs pattern:
+                    <code>-print0</code>
+                    and
+                    <code>-0</code>
+                    prevent whitespace and special characters from breaking file
+                    names. Use this when you want one
+                    <code>rm</code>
+                    invocation that takes many paths at once.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -472,27 +583,41 @@
                 <ul class="lab-reference-list">
                   <li>
                     <code>find</code>
-                    : Searches the filesystem in real time using filters such as <code>-type</code>, <code>-name</code>, and <code>-mtime</code>.
+                    : Searches the filesystem in real time using filters such as
+                    <code>-type</code>
+                    ,
+                    <code>-name</code>
+                    , and
+                    <code>-mtime</code>
+                    .
                   </li>
 
                   <li>
                     <code>find ... -exec &lt;cmd&gt; {} \;</code>
-                    : Executes a command once per matched path (the <code>\;</code> terminator must be escaped).
+                    : Executes a command once per matched path (the
+                    <code>\;</code>
+                    terminator must be escaped).
                   </li>
 
                   <li>
                     <code>updatedb</code>
-                    : Refreshes the locate database (required to keep <code>locate</code> results current).
+                    : Refreshes the locate database (required to keep
+                    <code>locate</code>
+                    results current).
                   </li>
 
                   <li>
                     <code>locate &lt;pattern&gt;</code>
-                    : Searches the locate database for matching paths (fast, but index-based).
+                    : Searches the locate database for matching paths (fast, but
+                    index-based).
                   </li>
 
                   <li>
                     <code>xargs -0</code>
-                    : Safely builds command arguments from NUL-delimited input (pair with <code>find -print0</code>).
+                    : Safely builds command arguments from NUL-delimited input
+                    (pair with
+                    <code>find -print0</code>
+                    ).
                   </li>
                 </ul>
               </section>
@@ -504,12 +629,12 @@
           <!-- /row -->
           <nav class="lab-pagination">
             <a
-                id="prev-lab"
-                class="lab-nav-link"
-                href="#"
-                aria-label="Previous lab"
+              id="prev-lab"
+              class="lab-nav-link"
+              href="#"
+              aria-label="Previous lab"
             >
-                &uArr;
+              &uArr;
             </a>
           </nav>
         </div>

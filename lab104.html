@@ -1,0 +1,843 @@
+<!-- lab104.html -->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="exit_0 Documentation" />
+    <meta name="name" content="Vonds" />
+
+    <title>Vonds | Lab 104</title>
+
+    <!-- Favicons -->
+    <link rel="shortcut icon" href="../assets/images/favicon.png" />
+    <link rel="apple-touch-icon" href="../assets/images/apple-touch-icon.png" />
+    <link
+      rel="apple-touch-icon"
+      sizes="72x72"
+      href="../assets/images/apple-touch-icon-72x72.png"
+    />
+    <link
+      rel="apple-touch-icon"
+      sizes="114x114"
+      href="../assets/images/apple-touch-icon-114x114.png"
+    />
+
+    <!-- Site styles (your existing) -->
+    <link href="../assets/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="../assets/css/font-awesome.min.css" rel="stylesheet" />
+    <link href="../assets/css/linea-icons.css" rel="stylesheet" />
+    <link href="../assets/css/ionicons.min.css" rel="stylesheet" />
+    <link href="../assets/css/simpletextrotator.css" rel="stylesheet" />
+    <link href="../assets/css/magnific-popup.css" rel="stylesheet" />
+    <link href="../assets/css/owl.carousel.css" rel="stylesheet" />
+    <link href="../assets/css/superslides.css" rel="stylesheet" />
+    <link href="../assets/css/vertical.css" rel="stylesheet" />
+    <link href="../assets/css/animate.css" rel="stylesheet" />
+    <link href="../assets/css/style.css" rel="stylesheet" />
+    <link href="../assets/css/docs.css" rel="stylesheet" />
+
+    <!-- Lab page styles (new) -->
+    <link href="../assets/css/lab.css" rel="stylesheet" />
+
+    <!-- Fonts -->
+    <link
+      href="https://fonts.googleapis.com/css?family=Dosis"
+      rel="stylesheet"
+    />
+  </head>
+
+  <body>
+    <!-- PRELOADER -->
+    <div class="page-loader">
+      <div class="loader">Loading...</div>
+    </div>
+
+    <!-- OVERLAY MENU -->
+    <div id="overlay-menu" class="overlay-menu">
+      <a href="#" id="overlay-menu-hide" class="navigation-hide">
+        <i class="ion-close-round"></i>
+      </a>
+
+      <div class="overlay-menu-inner">
+        <nav class="overlay-menu-nav">
+          <ul id="nav">
+            <li><a href="../index.html">Home</a></li>
+
+            <li class="slidedown">
+              <a href="#">Portfolio</a>
+              <ul>
+                <li>
+                  <a
+                    href="https://github.com/vonds/exit_0"
+                    target="_blank"
+                    rel="noopener"
+                  >
+                    exit_0
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="https://github.com/vonds/sentinel"
+                    target="_blank"
+                    rel="noopener"
+                  >
+                    Sentinel
+                  </a>
+                </li>
+              </ul>
+            </li>
+
+            <li><a href="./index.html" class="active">Lab Write-ups</a></li>
+            <li>
+              <a
+                href="https://www.linkedin.com/in/vonds/"
+                target="_blank"
+                rel="noopener"
+              >
+                LinkedIn
+              </a>
+            </li>
+            <li>
+              <a href="https://github.com/vonds" target="_blank" rel="noopener">
+                Github
+              </a>
+            </li>
+            <li>
+              <a href="mailto:vonds13@gmail.com?subject=Hello Vonds">Contact</a>
+            </li>
+          </ul>
+        </nav>
+      </div>
+
+      <div class="overlay-navigation-footer">
+        <div class="container">
+          <div class="row">
+            <div class="col-sm-12 text-center">
+              <p class="copyright font-alt m-b-0">
+                VONDS &copy;
+                <script>
+                  document.write(new Date().getFullYear())
+                </script>
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- WRAPPER -->
+    <div class="wrapper">
+      <!-- NAVIGATION -->
+      <nav
+        class="navbar navbar-custom navbar-transparent navbar-light navbar-fixed-top"
+      >
+        <div class="container">
+          <div class="navbar-header">
+            <a class="navbar-brand" href="../index.html">
+              <img src="../assets/images/logo-dark.png" width="95" alt="" />
+            </a>
+          </div>
+
+          <ul id="icons-navbar" class="nav navbar-nav navbar-right">
+            <li>
+              <a href="#" id="toggle-menu" class="show-overlay" title="Menu">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </nav>
+
+      <!-- DOCS PAGE -->
+      <section class="module">
+        <div class="container">
+          <h2 class="font-alt module-title m-t-60">
+            Lab 104: Installing, Configuring, and Managing OpenVPN
+          </h2>
+
+          <nav class="lab-pagination">
+            <a
+              id="prev-lab"
+              class="lab-nav-link"
+              href="#"
+              aria-label="Previous lab"
+            >
+              &laquo;
+            </a>
+            <a id="next-lab" class="lab-nav-link" href="#" aria-label="Next lab">
+              &raquo;
+            </a>
+          </nav>
+
+          <div class="row">
+            <!-- LEFT SIDEBAR -->
+            <div class="col-sm-4 col-md-3 lab-sidebar">
+              <div class="docs-sidebar">
+                <div class="docs-widget">
+                  <h5 class="widget-title">
+                    <a href="./docs.html">Lab Index</a>
+                  </h5>
+                  <ul class="docs-nav">
+                    <li><a href="#scenario">Scenario</a></li>
+                    <li><a href="#objective">Objective</a></li>
+                    <li><a href="#practice">What You'll Practice</a></li>
+                    <li><a href="#walkthrough">Walkthrough</a></li>
+                    <li><a href="#reference">Reference</a></li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            <!-- MAIN CONTENT -->
+            <div class="col-sm-8 col-md-9 lab-doc">
+              <!-- 1) Summary -->
+              <p class="m-b-20 lab-summary">
+                Build a basic OpenVPN server using TLS certificates generated by
+                Easy-RSA, then validate service state and generate a client
+                certificate for remote access. This lab emphasizes PKI workflow,
+                secure file placement, and systemd service management on a
+                RHEL-style host.
+              </p>
+
+              <!-- Optional video section (replace when you have the Lab 104 video) -->
+              <section class="lab-section" id="video" aria-label="Lab video">
+                <div class="lab-video">
+                  <div class="lab-video-embed text-center">
+                    <iframe
+                      width="560"
+                      height="315"
+                      src="https://www.youtube.com/embed/uJk54bhaadA?si=seGSukCoMFN7ohRo"
+                      title="YouTube video player"
+                      frameborder="0"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                      referrerpolicy="strict-origin-when-cross-origin"
+                      allowfullscreen
+                    ></iframe>
+                  </div>
+                </div>
+              </section>
+
+              <!-- 2) Scenario -->
+              <section class="lab-section" id="scenario">
+                <div class="lab-chips" aria-label="Tags">
+                  <span class="lab-chip">
+                    <span class="lab-chip-key">networking</span>
+                  </span>
+                  <span class="lab-chip">
+                    <span class="lab-chip-key">security</span>
+                  </span>
+                  <span class="lab-chip">
+                    <span class="lab-chip-key">vpn</span>
+                  </span>
+                </div>
+
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  Scenario
+                </h3>
+
+                <p>
+                  You’re configuring a secure VPN tunnel for remote workers
+                  using OpenVPN with TLS-based encryption. Your goal is to stand
+                  up a functional OpenVPN server, bootstrap a Certificate
+                  Authority (CA), issue server credentials, and confirm the
+                  service reaches an “Initialization Sequence Completed” state.
+                </p>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">Operator context</div>
+                  <p class="m-b-0">
+                    VPN is security infrastructure. Treat keys as secrets, apply
+                    least privilege to key files, and validate service behavior
+                    before distributing client configs.
+                  </p>
+                </div>
+              </section>
+
+              <!-- 3) Objective -->
+              <section class="lab-section alt-background" id="objective">
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  Objective
+                </h3>
+                <ul>
+                  <li>Install OpenVPN and Easy-RSA.</li>
+                  <li>Initialize PKI and build a local CA.</li>
+                  <li>Generate and sign a server certificate.</li>
+                  <li>Generate Diffie-Hellman parameters.</li>
+                  <li>Stage server keys/certs in <code>/etc/openvpn/</code>.</li>
+                  <li>Generate an initial server config and start the service.</li>
+                  <li>Verify service state and generate a client certificate.</li>
+                </ul>
+              </section>
+
+              <!-- 4) What You'll Practice -->
+              <section class="lab-section" id="practice">
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  What You’ll Practice
+                </h3>
+
+                <ul class="m-t-10">
+                  <li>
+                    Package installation on RHEL-like systems using
+                    <code>dnf</code>.
+                  </li>
+                  <li>
+                    Easy-RSA PKI workflow:
+                    <code>init-pki</code>, <code>build-ca</code>,
+                    <code>gen-req</code>, and <code>sign-req</code>.
+                  </li>
+                  <li>
+                    Server crypto material management and safe placement under
+                    <code>/etc/openvpn/</code>.
+                  </li>
+                  <li>
+                    Creating a baseline server config from the upstream sample
+                    configuration.
+                  </li>
+                  <li>
+                    systemd lifecycle management:
+                    <code>systemctl enable --now</code> and
+                    <code>systemctl status</code>.
+                  </li>
+                </ul>
+              </section>
+
+              <!-- 5) Walkthrough -->
+              <section class="lab-section alt-background" id="walkthrough">
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  Walkthrough
+                </h3>
+
+                <!-- Step 1 -->
+                <div class="lab-step">
+                  <div class="lab-step-title">
+                    <strong class="font-alt">Step 1</strong>
+                    : Install the OpenVPN and Easy-RSA packages.
+                  </div>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <div class="lab-codeblock-header">
+                      <span>Command</span>
+                      <button
+                        class="lab-copy-btn"
+                        type="button"
+                        data-copy="#cmd-step-1"
+                      >
+                        Copy
+                      </button>
+                    </div>
+                    <pre><code id="cmd-step-1">sudo dnf install openvpn easy-rsa -y</code></pre>
+                  </div>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <pre><code id="out-step-1">  Last metadata expiration check: 0:03:12 ago on Fri 19 Dec 2025 04:10:11 PM EST.
+  Dependencies resolved.
+  ================================================================================
+   Package                Architecture    Version                 Repository  Size
+  ================================================================================
+   Installing:
+   easy-rsa                noarch          3.1.7-1.el9             epel       49 k
+   openvpn                 x86_64          2.6.8-1.el9              appstream  584 k
+
+   Installing dependencies:
+   lz4-libs                x86_64          1.9.4-2.el9              baseos     62 k
+
+  Transaction Summary
+  ================================================================================
+  Install  3 Packages
+
+  Installed:
+    easy-rsa-3.1.7-1.el9.noarch  openvpn-2.6.8-1.el9.x86_64  lz4-libs-1.9.4-2.el9.x86_64</code></pre>
+                  </div>
+                </div>
+
+                <!-- Step 2 -->
+                <div class="lab-step">
+                  <div class="lab-step-title">
+                    <strong class="font-alt">Step 2</strong>
+                    : Set up the PKI directory.
+                  </div>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <div class="lab-codeblock-header">
+                      <span>Command</span>
+                      <button
+                        class="lab-copy-btn"
+                        type="button"
+                        data-copy="#cmd-step-2"
+                      >
+                        Copy
+                      </button>
+                    </div>
+                    <pre><code id="cmd-step-2">make-cadir ~/openvpn-ca && cd ~/openvpn-ca</code></pre>
+                  </div>
+
+                  <div class="lab-callout">
+                    <div class="lab-callout-label">Note</div>
+                    <p class="m-b-0">
+                      Easy-RSA packaging differs across distros. Some provide
+                      <code>make-cadir</code>, others expect you to copy from
+                      <code>/usr/share/easy-rsa/</code>. The goal is the same:
+                      create a working directory for PKI operations.
+                    </p>
+                  </div>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <pre><code id="out-step-2">  Created directory: /home/lab/openvpn-ca
+  Copied easy-rsa files into: /home/lab/openvpn-ca</code></pre>
+                  </div>
+                </div>
+
+                <!-- Step 3 -->
+                <div class="lab-step">
+                  <div class="lab-step-title">
+                    <strong class="font-alt">Step 3</strong>
+                    : Build the Certificate Authority (CA).
+                  </div>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <div class="lab-codeblock-header">
+                      <span>Command</span>
+                      <button
+                        class="lab-copy-btn"
+                        type="button"
+                        data-copy="#cmd-step-3"
+                      >
+                        Copy
+                      </button>
+                    </div>
+                    <pre><code id="cmd-step-3">./easyrsa init-pki && ./easyrsa build-ca</code></pre>
+                  </div>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <pre><code id="out-step-3">  Notice
+  ------
+  'init-pki' complete; you may now create a CA or requests.
+
+  Using SSL: openssl OpenSSL 3.0.7 1 Nov 2022
+
+  Enter New CA Key Passphrase:
+  Re-Enter New CA Key Passphrase:
+
+  Common Name (eg: your user, host, or server name) [Easy-RSA CA]: rhel-lab-ca
+
+  CA creation complete and you may now import and sign cert requests.
+  Your new CA certificate file for publishing is at:
+    pki/ca.crt</code></pre>
+                  </div>
+
+                  <p>
+                    The CA is the trust anchor. Protect
+                    <code>pki/private/ca.key</code>
+                    like a production secret.
+                  </p>
+                </div>
+
+                <!-- Step 4 -->
+                <div class="lab-step">
+                  <div class="lab-step-title">
+                    <strong class="font-alt">Step 4</strong>
+                    : Generate the server certificate and key.
+                  </div>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <div class="lab-codeblock-header">
+                      <span>Command</span>
+                      <button
+                        class="lab-copy-btn"
+                        type="button"
+                        data-copy="#cmd-step-4"
+                      >
+                        Copy
+                      </button>
+                    </div>
+                    <pre><code id="cmd-step-4">./easyrsa gen-req server nopass && ./easyrsa sign-req server server</code></pre>
+                  </div>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <pre><code id="out-step-4">  Using SSL: openssl OpenSSL 3.0.7 1 Nov 2022
+  Generating a RSA private key
+  ........................................................+++++
+  ........................................+++++
+  writing new private key to 'pki/private/server.key'
+  -----
+
+  Keypair and certificate request completed. Your files are:
+    req: pki/reqs/server.req
+    key: pki/private/server.key
+
+  You are about to sign the following certificate request:
+    subject=CN = server
+
+  Type the word 'yes' to continue, or any other input to abort.
+    Confirm request details: yes
+
+  Enter pass phrase for /home/lab/openvpn-ca/pki/private/ca.key:
+
+  Certificate created at: pki/issued/server.crt</code></pre>
+                  </div>
+                </div>
+
+                <!-- Step 5 -->
+                <div class="lab-step">
+                  <div class="lab-step-title">
+                    <strong class="font-alt">Step 5</strong>
+                    : Generate Diffie-Hellman parameters.
+                  </div>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <div class="lab-codeblock-header">
+                      <span>Command</span>
+                      <button
+                        class="lab-copy-btn"
+                        type="button"
+                        data-copy="#cmd-step-5"
+                      >
+                        Copy
+                      </button>
+                    </div>
+                    <pre><code id="cmd-step-5">./easyrsa gen-dh</code></pre>
+                  </div>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <pre><code id="out-step-5">  Using SSL: openssl OpenSSL 3.0.7 1 Nov 2022
+  Generating DH parameters, 2048 bit long safe prime
+  This is going to take a long time
+  ..............................................................................+
+  ..........................................................+
+  DH parameters of size 2048 created at pki/dh.pem</code></pre>
+                  </div>
+                </div>
+
+                <!-- Step 6 -->
+                <div class="lab-step">
+                  <div class="lab-step-title">
+                    <strong class="font-alt">Step 6</strong>
+                    : Copy certificates and keys into <code>/etc/openvpn/</code>.
+                  </div>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <div class="lab-codeblock-header">
+                      <span>Command</span>
+                      <button
+                        class="lab-copy-btn"
+                        type="button"
+                        data-copy="#cmd-step-6"
+                      >
+                        Copy
+                      </button>
+                    </div>
+                    <pre><code id="cmd-step-6">sudo cp pki/ca.crt pki/private/server.key pki/issued/server.crt pki/dh.pem /etc/openvpn/</code></pre>
+                  </div>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <pre><code id="out-step-6">  cp: copy '/home/lab/openvpn-ca/pki/ca.crt' -> '/etc/openvpn/ca.crt'
+  cp: copy '/home/lab/openvpn-ca/pki/private/server.key' -> '/etc/openvpn/server.key'
+  cp: copy '/home/lab/openvpn-ca/pki/issued/server.crt' -> '/etc/openvpn/server.crt'
+  cp: copy '/home/lab/openvpn-ca/pki/dh.pem' -> '/etc/openvpn/dh.pem'</code></pre>
+                  </div>
+
+                  <div class="lab-callout">
+                    <div class="lab-callout-label">Security note</div>
+                    <p class="m-b-0">
+                      Your sample output warns that
+                      <code>server.key</code>
+                      is group/other accessible. In real deployments, correct
+                      file permissions immediately (e.g.
+                      <code>chmod 600 /etc/openvpn/server.key</code>
+                      and ensure root ownership).
+                    </p>
+                  </div>
+                </div>
+
+                <!-- Step 7 -->
+                <div class="lab-step">
+                  <div class="lab-step-title">
+                    <strong class="font-alt">Step 7</strong>
+                    : Generate a baseline OpenVPN server configuration.
+                  </div>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <div class="lab-codeblock-header">
+                      <span>Command</span>
+                      <button
+                        class="lab-copy-btn"
+                        type="button"
+                        data-copy="#cmd-step-7"
+                      >
+                        Copy
+                      </button>
+                    </div>
+                    <pre><code id="cmd-step-7">sudo gunzip -c /usr/share/doc/openvpn/examples/sample-config-files/server.conf.gz | sudo tee /etc/openvpn/server.conf &gt; /dev/null</code></pre>
+                  </div>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <pre><code id="out-step-7">  0+1 records in
+  0+1 records out
+  7556 bytes copied, 0.00231445 s, 3.3 MB/s</code></pre>
+                  </div>
+
+                  <p>
+                    This gives you a starting config. In production, you’d
+                    explicitly set certificate paths, modern cipher settings,
+                    and routing rules, then validate with a controlled client
+                    rollout.
+                  </p>
+                </div>
+
+                <!-- Step 8 -->
+                <div class="lab-step">
+                  <div class="lab-step-title">
+                    <strong class="font-alt">Step 8</strong>
+                    : Start and enable the OpenVPN service.
+                  </div>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <div class="lab-codeblock-header">
+                      <span>Command</span>
+                      <button
+                        class="lab-copy-btn"
+                        type="button"
+                        data-copy="#cmd-step-8"
+                      >
+                        Copy
+                      </button>
+                    </div>
+                    <pre><code id="cmd-step-8">sudo systemctl enable --now openvpn@server</code></pre>
+                  </div>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <pre><code id="out-step-8">  Created symlink /etc/systemd/system/multi-user.target.wants/openvpn@server.service → /usr/lib/systemd/system/openvpn@.service.</code></pre>
+                  </div>
+                </div>
+
+                <!-- Step 9 -->
+                <div class="lab-step">
+                  <div class="lab-step-title">
+                    <strong class="font-alt">Step 9</strong>
+                    : Verify service status and confirm initialization.
+                  </div>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <div class="lab-codeblock-header">
+                      <span>Command</span>
+                      <button
+                        class="lab-copy-btn"
+                        type="button"
+                        data-copy="#cmd-step-9"
+                      >
+                        Copy
+                      </button>
+                    </div>
+                    <pre><code id="cmd-step-9">sudo systemctl status openvpn@server</code></pre>
+                  </div>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <pre><code id="out-step-9">  ● openvpn@server.service - OpenVPN service for server
+     Loaded: loaded (/usr/lib/systemd/system/openvpn@.service; enabled; vendor preset: disabled)
+     Active: active (running) since Fri 2025-12-19 16:12:44 EST; 6s ago
+       Docs: man:openvpn(8)
+   Main PID: 4128 (openvpn)
+     Status: "Initialization Sequence Completed"
+
+  Dec 19 16:12:44 rhel-lab openvpn[4128]: WARNING: file '/etc/openvpn/server.key' is group or others accessible
+  Dec 19 16:12:44 rhel-lab openvpn[4128]: NOTE: --cipher is not set. OpenVPN 2.5+ uses negotiated ciphers.
+  Dec 19 16:12:44 rhel-lab openvpn[4128]: Initialization Sequence Completed</code></pre>
+                  </div>
+
+                  <p>
+                    “Initialization Sequence Completed” is the key confirmation
+                    that OpenVPN parsed the config, loaded crypto material, and
+                    brought the tunnel interface up successfully.
+                  </p>
+                </div>
+
+                <!-- Step 10 -->
+                <div class="lab-step">
+                  <div class="lab-step-title">
+                    <strong class="font-alt">Step 10</strong>
+                    : Generate a client certificate (client1).
+                  </div>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <div class="lab-codeblock-header">
+                      <span>Command</span>
+                      <button
+                        class="lab-copy-btn"
+                        type="button"
+                        data-copy="#cmd-step-10"
+                      >
+                        Copy
+                      </button>
+                    </div>
+                    <pre><code id="cmd-step-10">./easyrsa gen-req client1 nopass && ./easyrsa sign-req client client1</code></pre>
+                  </div>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <pre><code id="out-step-10">  Using SSL: openssl OpenSSL 3.0.7 1 Nov 2022
+  Generating a RSA private key
+  ...................................................+++++
+  .............................+++++
+  writing new private key to 'pki/private/client1.key'
+  -----
+  Keypair and certificate request completed. Your files are:
+    req: pki/reqs/client1.req
+    key: pki/private/client1.key
+
+  You are about to sign the following certificate request:
+    subject=CN = client1
+
+  Type the word 'yes' to continue, or any other input to abort.
+    Confirm request details: yes
+
+  Enter pass phrase for /home/lab/openvpn-ca/pki/private/ca.key:
+
+  Certificate created at: pki/issued/client1.crt</code></pre>
+                  </div>
+
+                  <p>
+                    At this point you have the CA, server cert/key, and a client
+                    cert/key. The next step in a real environment is to generate
+                    a client config
+                    (<code>.ovpn</code>)
+                    and securely distribute client credentials.
+                  </p>
+                </div>
+              </section>
+
+              <!-- 6) Reference -->
+              <section class="lab-section" id="reference">
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  Reference
+                </h3>
+
+                <ul class="lab-reference-list">
+                  <li>
+                    <code>dnf install openvpn easy-rsa -y</code>
+                    : Install OpenVPN and Easy-RSA tooling.
+                  </li>
+                  <li>
+                    <code>make-cadir</code>
+                    : Initializes a working directory for Easy-RSA (packaging dependent).
+                  </li>
+                  <li>
+                    <code>./easyrsa init-pki</code>
+                    : Create PKI structure.
+                  </li>
+                  <li>
+                    <code>./easyrsa build-ca</code>
+                    : Create the CA certificate and private key.
+                  </li>
+                  <li>
+                    <code>./easyrsa gen-req</code>
+                    and
+                    <code>./easyrsa sign-req</code>
+                    : Generate and sign certificate requests.
+                  </li>
+                  <li>
+                    <code>./easyrsa gen-dh</code>
+                    : Generate DH parameters.
+                  </li>
+                  <li>
+                    <code>systemctl enable --now openvpn@server</code>
+                    : Enable and start the OpenVPN instance for server.conf.
+                  </li>
+                  <li>
+                    <code>systemctl status openvpn@server</code>
+                    : Verify service status and check for init success.
+                  </li>
+                </ul>
+              </section>
+            </div>
+            <!-- /main -->
+          </div>
+          <!-- /row -->
+
+          <nav class="lab-pagination">
+            <a
+              id="prev-lab"
+              class="lab-nav-link"
+              href="#"
+              aria-label="Back to top"
+            >
+              &uArr;
+            </a>
+          </nav>
+        </div>
+        <!-- /container -->
+      </section>
+
+      <!-- FOOTER -->
+      <footer class="module bg-light">
+        <div class="container">
+          <div class="row">
+            <div class="col-sm-12">
+              <ul class="social-text-links font-alt text-center m-b-20">
+                <li>
+                  <a
+                    href="https://github.com/vonds"
+                    target="_blank"
+                    rel="noopener"
+                  >
+                    Github
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="https://www.linkedin.com/in/vonds/"
+                    target="_blank"
+                    rel="noopener"
+                  >
+                    Linkedin
+                  </a>
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-sm-12">
+              <p class="copyright text-center m-b-0">
+                VONDS &copy;
+                <span id="year"></span>
+              </p>
+
+              <div class="scroll-up">
+                <a href="#totop"><i class="fa fa-angle-double-up"></i></a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <!-- Javascript files (your existing) -->
+    <script src="../assets/js/jquery-2.2.4.min.js"></script>
+    <script src="../assets/bootstrap/js/bootstrap.min.js"></script>
+    <script src="../assets/js/jquery.superslides.min.js"></script>
+    <script src="../assets/js/jquery.mb.YTPlayer.min.js"></script>
+    <script src="../assets/js/jquery.magnific-popup.min.js"></script>
+    <script src="../assets/js/owl.carousel.min.js"></script>
+    <script src="../assets/js/jquery.simple-text-rotator.min.js"></script>
+    <script src="../assets/js/imagesloaded.pkgd.js"></script>
+    <script src="../assets/js/isotope.pkgd.min.js"></script>
+    <script src="../assets/js/packery-mode.pkgd.min.js"></script>
+    <script src="../assets/js/appear.js"></script>
+    <script src="../assets/js/jquery.easing.1.3.js"></script>
+    <script src="../assets/js/wow.min.js"></script>
+    <script src="../assets/js/jqBootstrapValidation.js"></script>
+    <script src="../assets/js/jquery.fitvids.js"></script>
+    <script src="../assets/js/jquery.parallax-1.1.3.js"></script>
+    <script src="../assets/js/smoothscroll.js"></script>
+    <script src="../assets/js/custom.js"></script>
+
+    <!-- Lab page JS (new) -->
+    <script src="../assets/js/lab.js"></script>
+
+    <script>
+      document.getElementById("year").textContent = new Date().getFullYear()
+    </script>
+  </body>
+</html>
