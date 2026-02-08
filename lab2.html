@@ -12,11 +12,7 @@
     <!-- Favicons -->
     <link rel="shortcut icon" href="../assets/images/favicon.png" />
     <link rel="apple-touch-icon" href="../assets/images/apple-touch-icon.png" />
-    <link
-      rel="apple-touch-icon"
-      sizes="72x72"
-      href="../assets/images/apple-touch-icon-72x72.png"
-    />
+    <link rel="apple-touch-icon" sizes="72x72" href="../assets/images/apple-touch-icon-72x72.png" />
     <link
       rel="apple-touch-icon"
       sizes="114x114"
@@ -37,14 +33,11 @@
     <link href="../assets/css/style.css" rel="stylesheet" />
     <link href="../assets/css/docs.css" rel="stylesheet" />
 
-    <!-- Lab page styles (new) -->
+    <!-- Lab page styles -->
     <link href="../assets/css/lab.css" rel="stylesheet" />
 
     <!-- Fonts -->
-    <link
-      href="https://fonts.googleapis.com/css?family=Dosis"
-      rel="stylesheet"
-    />
+    <link href="https://fonts.googleapis.com/css?family=Dosis" rel="stylesheet" />
   </head>
 
   <body>
@@ -68,34 +61,26 @@
               <a href="#">Portfolio</a>
               <ul>
                 <li>
-                  <a
-                    href="https://github.com/vonds/exit_0"
-                    target="_blank"
-                    rel="noopener"
-                  >
+                  <a href="https://github.com/vonds/exit_0" target="_blank" rel="noopener">
                     exit_0
                   </a>
                 </li>
                 <li>
-                  <a
-                    href="docs.html"
-                    target="_blank"
-                    rel="noopener"
-                  >
+                  <a href="docs.html" target="_blank" rel="noopener">
                     exit_0 Documentation
                   </a>
                 </li>
-                <li><a href="https://github.com/vonds/sentinel" target="_blank" rel="noopener">Sentinel</a></li>
+                <li>
+                  <a href="https://github.com/vonds/sentinel" target="_blank" rel="noopener">
+                    Sentinel
+                  </a>
+                </li>
               </ul>
             </li>
 
             <li><a href="./index.html" class="active">Lab Write-ups</a></li>
             <li>
-              <a
-                href="https://www.linkedin.com/in/vonds/"
-                target="_blank"
-                rel="noopener"
-              >
+              <a href="https://www.linkedin.com/in/vonds/" target="_blank" rel="noopener">
                 LinkedIn
               </a>
             </li>
@@ -130,9 +115,7 @@
     <!-- WRAPPER -->
     <div class="wrapper">
       <!-- NAVIGATION -->
-      <nav
-        class="navbar navbar-custom navbar-transparent navbar-light navbar-fixed-top"
-      >
+      <nav class="navbar navbar-custom navbar-transparent navbar-light navbar-fixed-top">
         <div class="container">
           <div class="navbar-header">
             <a class="navbar-brand" href="../index.html">
@@ -155,39 +138,28 @@
       <!-- DOCS PAGE -->
       <section class="module">
         <div class="container">
-          <h2 class="font-alt module-title m-t-60">
-            Lab 2: Real-Time Log Filter Setup
-          </h2>
+          <h2 class="font-alt module-title m-t-60">Lab 2: Real-Time Log Filter Setup</h2>
 
           <nav class="lab-pagination">
-            <a
-              id="prev-lab"
-              class="lab-nav-link"
-              href="#"
-              aria-label="Previous lab"
-            >
-              &laquo;
-            </a>
-            <a
-              id="next-lab"
-              class="lab-nav-link"
-              href="#"
-              aria-label="Next lab"
-            >
-              &raquo;
-            </a>
+            <a id="prev-lab" class="lab-nav-link" href="#" aria-label="Previous lab">&laquo;</a>
+            <a id="next-lab" class="lab-nav-link" href="#" aria-label="Next lab">&raquo;</a>
           </nav>
 
           <div class="row">
-            
             <!-- LEFT SIDEBAR -->
             <div class="col-sm-4 col-md-3 lab-sidebar">
               <div class="docs-sidebar">
                 <div class="docs-widget">
-                  <h5 class="widget-title"><a href="./docs.html">Lab Index</a></h5>
+                  <h5 class="widget-title">
+                    <a href="./docs.html">Lab Index</a>
+                  </h5>
                   <ul class="docs-nav">
                     <li><a href="#scenario">Scenario</a></li>
+                    <li><a href="#objective">Objective</a></li>
+                    <li><a href="#concepts">Concepts</a></li>
                     <li><a href="#walkthrough">Walkthrough</a></li>
+                    <li><a href="#breakpoints">Breakpoints</a></li>
+                    <li><a href="#cleanup">Cleanup</a></li>
                     <li><a href="#reference">Reference</a></li>
                   </ul>
                 </div>
@@ -196,142 +168,115 @@
 
             <!-- MAIN CONTENT -->
             <div class="col-sm-8 col-md-9 lab-doc">
-              <!-- 1) Title + Summary (2 sentences max) -->
               <p class="m-b-20 lab-summary">
-                Set up a real-time log monitoring pipeline to surface critical
-                system failures as they occur using standard CLI tooling.
-                Validate log locations, stream updates safely, and confirm
-                kernel-managed inspection paths under <code>/sys</code>.
+                Set up a real-time log monitoring pipeline to surface critical system failures as
+                they occur using standard CLI tooling. Validate log locations, stream updates safely,
+                and confirm kernel-managed inspection paths under <code>/sys</code>.
               </p>
 
+              <!-- Video (kept on page; removed from left panel moving forward) -->
               <section class="lab-section" id="video" aria-label="Lab video">
-  				<div class="lab-video">
-    				<div class="lab-video-embed text-center">
-      					<iframe 
-							width="560" 
-							height="315" 
-							src="https://www.youtube.com/embed/gwynRKnMgf8?si=M7cN4LZ3S_U82Kwe" 
-							title="YouTube video player" 
-							frameborder="0" 
-							allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
-							referrerpolicy="strict-origin-when-cross-origin" 
-							allowfullscreen>
-						</iframe>
-    				</div>
-  				</div>
-			</section>
+                <div class="lab-video">
+                  <div class="lab-video-embed text-center">
+                    <iframe
+                      src="https://www.youtube.com/embed/gwynRKnMgf8?si=M7cN4LZ3S_U82Kwe"
+                      title="YouTube video player"
+                      frameborder="0"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                      referrerpolicy="strict-origin-when-cross-origin"
+                      allowfullscreen
+                    ></iframe>
+                  </div>
+                </div>
+              </section>
 
-              <!-- 2) Scenario -->
+              <!-- Scenario -->
               <section class="lab-section" id="scenario">
                 <div class="lab-chips" aria-label="Tags">
-                  <span class="lab-chip">
-                    <span class="lab-chip-key">troubleshooting</span>
-                  </span>
-                  <span class="lab-chip">
-                    <span class="lab-chip-key">core</span>
-                  </span>
-                  <span class="lab-chip">
-                    <span class="lab-chip-key">services</span>
-                  </span>
+                  <span class="lab-chip"><span class="lab-chip-key">troubleshooting</span></span>
+                  <span class="lab-chip"><span class="lab-chip-key">core</span></span>
+                  <span class="lab-chip"><span class="lab-chip-key">services</span></span>
                 </div>
 
-                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
-                  Scenario
-                </h3>
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">Scenario</h3>
 
                 <p>
-                  Your team needs to monitor critical system events in real time.
-                  You are tasked with identifying where logs live on disk,
-                  building a live filter that highlights failures (panic, denied,
-                  segfault, crash, and login failures), and validating key kernel
-                  inspection paths under <code>/sys</code>.
+                  Your team needs to monitor critical system events in real time. You are tasked
+                  with identifying where logs live on disk, building a live filter that highlights
+                  failures (panic, denied, segfault, crash, and login failures), and validating key
+                  kernel inspection paths under <code>/sys</code>.
                 </p>
 
                 <div class="lab-callout">
                   <div class="lab-callout-label">Operator context</div>
                   <p class="m-b-0">
-                    Establish this level of baseline log visibility before declaring an incident, escalating the issue, or making changes to the system state.
+                    Establish this level of baseline log visibility before declaring an incident,
+                    escalating the issue, or making changes to the system state.
                   </p>
                 </div>
               </section>
 
-              <!-- 3) Objective -->
+              <!-- Objective -->
               <section class="lab-section alt-background" id="objective">
-                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
-                  Objective
-                </h3>
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">Objective</h3>
                 <ul>
                   <li>Identify common system log file locations under <code>/var/log</code>.</li>
                   <li>
-                    Stream log updates live and filter for high-signal error
-                    patterns using <code>tail -f</code> and <code>grep -E</code>.
+                    Stream log updates live and filter for high-signal error patterns using
+                    <code>tail -f</code> and <code>grep -E</code>.
                   </li>
                   <li>
-                    Confirm kernel-managed inspection paths under <code>/sys</code> for module
-                    and kernel feature visibility.
+                    Confirm kernel-managed inspection paths under <code>/sys</code> for module and
+                    kernel feature visibility.
                   </li>
                 </ul>
               </section>
 
-              <!-- 4) What You'll Practice -->
-              <section class="lab-section" id="practice">
-                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
-                  What You’ll Practice
-                </h3>
-
-                <ul class="m-t-10">
+              <!-- Concepts (no alt-background moving forward) -->
+              <section class="lab-section" id="concepts">
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">Concepts</h3>
+                <ul>
                   <li>
-                    Discovering available log files using
-                    <code>ls /var/log</code>.
+                    Log locations vary by distro and logging stack; confirm what exists under
+                    <code>/var/log</code> before building tooling around it.
                   </li>
                   <li>
-                    Building a live monitoring pipeline using
-                    <code>tail -f</code> piped into <code>grep -Ei</code>.
+                    Live streaming versus historical review: <code>tail -f</code> is for “what is
+                    happening now,” not “what happened last night.”
                   </li>
                   <li>
-                    Writing practical regex patterns for high-impact events
-                    (error, fail, panic, denied, segfault, crash).
+                    High-signal filtering: use a small regex set that catches failures without
+                    flooding you with noise.
                   </li>
                   <li>
-                    Inspecting kernel-managed paths using
-                    <code>/sys/module</code> and <code>/sys/kernel</code>.
+                    sysfs is a read-only view into live kernel state; it is useful for validating
+                    modules and kernel subsystems while you correlate events.
                   </li>
                 </ul>
               </section>
 
-              <!-- 5) Commands Walkthrough -->
+              <!-- Walkthrough -->
               <section class="lab-section alt-background" id="walkthrough">
-                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
-                  Walkthrough
-                </h3>
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">Walkthrough</h3>
 
                 <!-- Step 1 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
-                    <strong class="font-alt">Step 1</strong>
-                    : Explore available system log files.
+                    <strong class="font-alt">Step 1</strong>: Explore available system log files.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
-                      <button
-                        class="lab-copy-btn"
-                        type="button"
-                        data-copy="#cmd-step-1"
-                      >
-                        Copy
-                      </button>
+                      <button class="lab-copy-btn" type="button" data-copy="#cmd-step-1">Copy</button>
                     </div>
                     <pre><code id="cmd-step-1">ls /var/log</code></pre>
                   </div>
 
                   <p>
-                    This confirms where your distribution keeps system and
-                    service logs. Common files you might see include
-                    <code>syslog</code>, <code>messages</code>, and
-                    <code>auth.log</code>, depending on distro and logging
-                    configuration.
+                    This confirms where your distribution keeps system and service logs. Common
+                    files you might see include <code>syslog</code>, <code>messages</code>, and
+                    <code>auth.log</code>, depending on distro and logging configuration.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -342,30 +287,21 @@
                 <!-- Step 2 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
-                    <strong class="font-alt">Step 2</strong>
-                    : Show only critical errors in real time.
+                    <strong class="font-alt">Step 2</strong>: Show only critical errors in real time.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
-                      <button
-                        class="lab-copy-btn"
-                        type="button"
-                        data-copy="#cmd-step-2"
-                      >
-                        Copy
-                      </button>
+                      <button class="lab-copy-btn" type="button" data-copy="#cmd-step-2">Copy</button>
                     </div>
                     <pre><code id="cmd-step-2">sudo tail -f /var/log/syslog | grep -Ei 'error|fail|panic|denied|segfault|crash'</code></pre>
                   </div>
 
                   <p>
-                    Use <code>tail -f</code> to stream live updates as they are
-                    written, then filter down to high-signal lines with
-                    <code>grep -Ei</code>. On some systems, you may stream
-                    <code>/var/log/messages</code> instead of
-                    <code>/var/log/syslog</code>.
+                    Use <code>tail -f</code> to stream live updates as they are written, then filter
+                    down to high-signal lines with <code>grep -Ei</code>. On some systems, you may
+                    stream <code>/var/log/messages</code> instead of <code>/var/log/syslog</code>.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -375,10 +311,7 @@ Jul 16 08:11:20 sshd[1938]: Failed password for root from 192.168.1.42 port 5587
 Jul 16 08:11:22 kernel: panic: attempting to kill init!
 Jul 16 08:11:23 audit[2001]: denied attempt to access /etc/shadow by uid 1000
 Jul 16 08:11:25 systemd[1]: Failed to start Network Manager.
-Jul 16 08:11:26 gdm-password[1982]: gkr-pam: unable to locate daemon control file
-Jul 16 08:11:27 systemd[1]: user@1000.service: Main process exited, code=exited,
-status=1/FAILURE
-Jul 16 08:11:28 kernel: device-mapper: thin: 253:1: reached low water mark
+Jul 16 08:11:27 systemd[1]: user@1000.service: Main process exited, code=exited, status=1/FAILURE
 Jul 16 08:11:30 crash-handler[2042]: Process 1892 (firefox) crashed with signal 11 (SIGSEGV)</code></pre>
                   </div>
                 </div>
@@ -386,29 +319,21 @@ Jul 16 08:11:30 crash-handler[2042]: Process 1892 (firefox) crashed with signal 
                 <!-- Step 3 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
-                    <strong class="font-alt">Step 3</strong>
-                    : Inspect kernel-managed paths.
+                    <strong class="font-alt">Step 3</strong>: Inspect kernel-managed paths.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
-                      <button
-                        class="lab-copy-btn"
-                        type="button"
-                        data-copy="#cmd-step-3"
-                      >
-                        Copy
-                      </button>
+                      <button class="lab-copy-btn" type="button" data-copy="#cmd-step-3">Copy</button>
                     </div>
                     <pre><code id="cmd-step-3">ls /sys/module</code></pre>
                   </div>
 
                   <p>
-                    The <code>/sys</code> filesystem reflects live kernel state.
-                    Listing <code>/sys/module</code> shows modules visible to the
-                    running kernel, which is useful when correlating hardware,
-                    drivers, and kernel events.
+                    The <code>/sys</code> filesystem reflects live kernel state. Listing
+                    <code>/sys/module</code> shows modules visible to the running kernel, which is
+                    useful when correlating hardware, drivers, and kernel events.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -420,22 +345,15 @@ ahci             crc32c_intel        input_core        rfkill</code></pre>
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Alternate</span>
-                      <button
-                        class="lab-copy-btn"
-                        type="button"
-                        data-copy="#cmd-step-3b"
-                      >
-                        Copy
-                      </button>
+                      <button class="lab-copy-btn" type="button" data-copy="#cmd-step-3b">Copy</button>
                     </div>
                     <pre><code id="cmd-step-3b">ls /sys/kernel</code></pre>
                   </div>
 
                   <p>
-                    Listing <code>/sys/kernel</code> exposes kernel-level
-                    features and subsystems. This can be useful when you need to
-                    confirm runtime knobs for logging, tracing, security, or
-                    debugging.
+                    Listing <code>/sys/kernel</code> exposes kernel-level features and subsystems.
+                    This can be useful when you need to confirm runtime knobs for logging, tracing,
+                    security, or debugging.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -445,84 +363,156 @@ security         system              tracing           uevent_helper</code></pre
                 </div>
               </section>
 
-              <!-- 8) Reference -->
-              <!-- 9) Reference -->
+              <!-- Common breakpoints -->
+              <section class="lab-section" id="breakpoints">
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">Common breakpoints</h3>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">/var/log/syslog does not exist</div>
+                  <p class="m-b-0">
+                    Some distros use <code>/var/log/messages</code> or only journald. List
+                    <code>/var/log</code> and switch to a file that exists. On systemd-only setups,
+                    use <code>journalctl -f</code> instead.
+                  </p>
+                </div>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">No output from the grep filter</div>
+                  <p class="m-b-0">
+                    That can be normal if the system is quiet. Trigger a safe event (for example,
+                    a failed login) or broaden the pattern temporarily.
+                  </p>
+                </div>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">Permissions errors when reading logs</div>
+                  <p class="m-b-0">
+                    Many logs are root-readable. Use <code>sudo</code> or ensure your account has
+                    appropriate group membership for log access.
+                  </p>
+                </div>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">sysfs paths are missing or look different</div>
+                  <p class="m-b-0">
+                    sysfs layout can vary slightly by kernel and configuration. Confirm
+                    <code>/sys</code> is mounted and browse the relevant subtree.
+                  </p>
+                </div>
+              </section>
+
+              <!-- Cleanup -->
+              <section class="lab-section alt-background" id="cleanup">
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">Cleanup checklist</h3>
+
+                <p>
+                  This lab is read-only. Cleanup is simply stopping your live streams cleanly and
+                  leaving the terminal in a known state.
+                </p>
+
+                <div class="lab-codeblock m-b-40 m-t-40">
+                  <div class="lab-codeblock-header">
+                    <span>Checklist</span>
+                    <button class="lab-copy-btn" type="button" data-copy="#cmd-cleanup">Copy</button>
+                  </div>
+                  <pre><code id="cmd-cleanup"># Stop the live stream (Ctrl+C) in the terminal where tail is running.
+# Optional: clear the screen and return to your working directory.
+clear
+pwd</code></pre>
+                </div>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">Success signal</div>
+                  <p class="m-b-0">
+                    You can confidently reproduce the pipeline, adjust log targets per distro, and
+                    confirm kernel-visible state under <code>/sys</code>.
+                  </p>
+                </div>
+              </section>
+
+              <!-- Reference -->
               <section class="lab-section" id="reference">
-                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
-                  Reference
-                </h3>
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">Reference</h3>
 
                 <ul class="lab-reference-list">
                   <li>
-                    <code>ls /var/log</code>
-                    : Lists common system log files on disk.
+                    <code>ls</code>: Lists files and directories.
+                  </li>
+
+                  <li>
+                    <code>ls /var/log</code>: Lists common system log files on disk.
                     <ul>
-                      <li>
-                        <code>/var/log</code>
-                        : Standard log directory for many services and system
-                        components.
-                      </li>
+                      <li><code>/var/log</code>: Standard log directory for many services and system components.</li>
                     </ul>
                   </li>
 
                   <li>
-                    <code>tail -f &lt;file&gt;</code>
-                    : Streams appended log lines as they are written.
+                    <code>tail</code>: Prints the last part of files.
+                  </li>
+
+                  <li>
+                    <code>tail -f &lt;file&gt;</code>: Streams appended log lines as they are written.
                     <ul>
-                      <li>
-                        <code>-f</code>
-                        : Follow the file and print new lines in real time.
-                      </li>
+                      <li><code>-f</code>: Follow the file and print new lines in real time.</li>
+                      <li><code>&lt;file&gt;</code>: Path to the log file to follow.</li>
                     </ul>
                   </li>
 
                   <li>
-                    <code>grep -Ei '&lt;pattern&gt;'</code>
-                    : Filters text output using extended regex and
-                    case-insensitive matching.
+                    <code>grep</code>: Searches input text for matching patterns.
+                  </li>
+
+                  <li>
+                    <code>grep -E '&lt;pattern&gt;'</code>: Filters text output using extended regular expressions.
                     <ul>
-                      <li>
-                        <code>-E</code>
-                        : Use extended regular expressions (supports
-                        <code>|</code> alternation).
-                      </li>
-                      <li>
-                        <code>-i</code>
-                        : Case-insensitive matching.
-                      </li>
+                      <li><code>-E</code>: Use extended regular expressions (supports <code>|</code> alternation).</li>
+                      <li><code>&lt;pattern&gt;</code>: Regex pattern to match.</li>
                     </ul>
                   </li>
 
                   <li>
-                    <code>/sys</code>
-                    : sysfs virtual filesystem exposing live kernel object
-                    state.
+                    <code>grep -i '&lt;pattern&gt;'</code>: Filters text output using case-insensitive matching.
+                    <ul>
+                      <li><code>-i</code>: Case-insensitive matching.</li>
+                      <li><code>&lt;pattern&gt;</code>: Regex pattern to match.</li>
+                    </ul>
                   </li>
+
                   <li>
-                    <code>ls /sys/module</code>
-                    : Lists modules visible to the running kernel.
+                    <code>grep -Ei '&lt;pattern&gt;'</code>: Filters text output using extended regex and case-insensitive matching.
+                    <ul>
+                      <li><code>-E</code>: Use extended regular expressions (supports <code>|</code> alternation).</li>
+                      <li><code>-i</code>: Case-insensitive matching.</li>
+                      <li><code>&lt;pattern&gt;</code>: Regex pattern to match.</li>
+                    </ul>
                   </li>
+
                   <li>
-                    <code>ls /sys/kernel</code>
-                    : Lists kernel feature/subsystem entries exposed via sysfs.
+                    <code>/sys</code>: sysfs virtual filesystem exposing live kernel object state.
+                  </li>
+
+                  <li>
+                    <code>ls /sys/module</code>: Lists modules visible to the running kernel.
+                    <ul>
+                      <li><code>/sys/module</code>: Directory containing loaded module objects.</li>
+                    </ul>
+                  </li>
+
+                  <li>
+                    <code>ls /sys/kernel</code>: Lists kernel feature and subsystem entries exposed via sysfs.
+                    <ul>
+                      <li><code>/sys/kernel</code>: Directory containing kernel subsystem entries.</li>
+                    </ul>
                   </li>
                 </ul>
               </section>
-
-              <!-- Lab Pagination -->
             </div>
             <!-- /main -->
           </div>
           <!-- /row -->
+
           <nav class="lab-pagination">
-            <a
-                id="prev-lab"
-                class="lab-nav-link"
-                href="#"
-                aria-label="Previous lab"
-            >
-                &uArr;
-            </a>
+            <a id="prev-lab" class="lab-nav-link" href="#" aria-label="Previous lab">&uArr;</a>
           </nav>
         </div>
         <!-- /container -->
@@ -535,22 +525,10 @@ security         system              tracing           uevent_helper</code></pre
             <div class="col-sm-12">
               <ul class="social-text-links font-alt text-center m-b-20">
                 <li>
-                  <a
-                    href="https://github.com/vonds"
-                    target="_blank"
-                    rel="noopener"
-                  >
-                    Github
-                  </a>
+                  <a href="https://github.com/vonds" target="_blank" rel="noopener">Github</a>
                 </li>
                 <li>
-                  <a
-                    href="https://www.linkedin.com/in/vonds/"
-                    target="_blank"
-                    rel="noopener"
-                  >
-                    Linkedin
-                  </a>
+                  <a href="https://www.linkedin.com/in/vonds/" target="_blank" rel="noopener">Linkedin</a>
                 </li>
               </ul>
             </div>
@@ -559,8 +537,7 @@ security         system              tracing           uevent_helper</code></pre
           <div class="row">
             <div class="col-sm-12">
               <p class="copyright text-center m-b-0">
-                VONDS &copy;
-                <span id="year"></span>
+                VONDS &copy; <span id="year"></span>
               </p>
 
               <div class="scroll-up">
@@ -594,5 +571,9 @@ security         system              tracing           uevent_helper</code></pre
 
     <!-- Lab page JS (new) -->
     <script src="../assets/js/lab.js"></script>
+
+    <script>
+      document.getElementById("year").textContent = new Date().getFullYear()
+    </script>
   </body>
 </html>

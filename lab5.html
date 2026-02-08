@@ -12,11 +12,7 @@
     <!-- Favicons -->
     <link rel="shortcut icon" href="../assets/images/favicon.png" />
     <link rel="apple-touch-icon" href="../assets/images/apple-touch-icon.png" />
-    <link
-      rel="apple-touch-icon"
-      sizes="72x72"
-      href="../assets/images/apple-touch-icon-72x72.png"
-    />
+    <link rel="apple-touch-icon" sizes="72x72" href="../assets/images/apple-touch-icon-72x72.png" />
     <link
       rel="apple-touch-icon"
       sizes="114x114"
@@ -26,6 +22,7 @@
     <!-- Site styles (your existing) -->
     <link href="../assets/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
     <link href="../assets/css/font-awesome.min.css" rel="stylesheet" />
+    <link href="../assets/css/linea-icons.css" rel="stylesheet" />
     <link href="../assets/css/linea-icons.css" rel="stylesheet" />
     <link href="../assets/css/ionicons.min.css" rel="stylesheet" />
     <link href="../assets/css/simpletextrotator.css" rel="stylesheet" />
@@ -37,14 +34,11 @@
     <link href="../assets/css/style.css" rel="stylesheet" />
     <link href="../assets/css/docs.css" rel="stylesheet" />
 
-    <!-- Lab page styles (new) -->
+    <!-- Lab page styles -->
     <link href="../assets/css/lab.css" rel="stylesheet" />
 
     <!-- Fonts -->
-    <link
-      href="https://fonts.googleapis.com/css?family=Dosis"
-      rel="stylesheet"
-    />
+    <link href="https://fonts.googleapis.com/css?family=Dosis" rel="stylesheet" />
   </head>
 
   <body>
@@ -68,33 +62,25 @@
               <a href="#">Portfolio</a>
               <ul>
                 <li>
-                  <a
-                    href="https://github.com/vonds/exit_0"
-                    target="_blank"
-                    rel="noopener"
-                  >
+                  <a href="https://github.com/vonds/exit_0" target="_blank" rel="noopener">
                     exit_0
                   </a>
                 </li>
                 <li>
-                  <a
-                    href="docs.html"
-                    target="_blank"
-                    rel="noopener"
-                  >
+                  <a href="docs.html" target="_blank" rel="noopener">
                     exit_0 Documentation
                   </a>
                 </li>
-                <li><a href="https://github.com/vonds/sentinel" target="_blank" rel="noopener">Sentinel</a></li>
+                <li>
+                  <a href="https://github.com/vonds/sentinel" target="_blank" rel="noopener">
+                    Sentinel
+                  </a>
+                </li>
               </ul>
             </li>
 
             <li>
-              <a
-                href="https://www.linkedin.com/in/vonds/"
-                target="_blank"
-                rel="noopener"
-              >
+              <a href="https://www.linkedin.com/in/vonds/" target="_blank" rel="noopener">
                 LinkedIn
               </a>
             </li>
@@ -129,9 +115,7 @@
     <!-- WRAPPER -->
     <div class="wrapper">
       <!-- NAVIGATION -->
-      <nav
-        class="navbar navbar-custom navbar-transparent navbar-light navbar-fixed-top"
-      >
+      <nav class="navbar navbar-custom navbar-transparent navbar-light navbar-fixed-top">
         <div class="container">
           <div class="navbar-header">
             <a class="navbar-brand" href="../index.html">
@@ -154,27 +138,13 @@
       <!-- DOCS PAGE -->
       <section class="module">
         <div class="container">
-          <h2 class="font-alt module-title m-t-60">
-            Lab 5: Investigate the System Boot Process
-          </h2>
+          <h2 class="font-alt module-title m-t-60">Lab 5: Investigate the System Boot Process</h2>
+
           <nav class="lab-pagination">
-            <a
-              id="prev-lab"
-              class="lab-nav-link"
-              href="#"
-              aria-label="Previous lab"
-            >
-              &laquo;
-            </a>
-            <a
-              id="next-lab"
-              class="lab-nav-link"
-              href="#"
-              aria-label="Next lab"
-            >
-              &raquo;
-            </a>
+            <a id="prev-lab" class="lab-nav-link" href="#" aria-label="Previous lab">&laquo;</a>
+            <a id="next-lab" class="lab-nav-link" href="#" aria-label="Next lab">&raquo;</a>
           </nav>
+
           <div class="row">
             <!-- LEFT SIDEBAR -->
             <div class="col-sm-4 col-md-3 lab-sidebar">
@@ -183,7 +153,11 @@
                   <h5 class="widget-title"><a href="./docs.html">Lab Index</a></h5>
                   <ul class="docs-nav">
                     <li><a href="#scenario">Scenario</a></li>
+                    <li><a href="#objective">Objective</a></li>
+                    <li><a href="#concepts">Concepts</a></li>
                     <li><a href="#walkthrough">Walkthrough</a></li>
+                    <li><a href="#breakpoints">Breakpoints</a></li>
+                    <li><a href="#cleanup">Cleanup</a></li>
                     <li><a href="#reference">Reference</a></li>
                   </ul>
                 </div>
@@ -192,74 +166,59 @@
 
             <!-- MAIN CONTENT -->
             <div class="col-sm-8 col-md-9 lab-doc">
-              <!-- 1) Title + Summary (2 sentences max) -->
               <p class="m-b-20 lab-summary">
-                Investigate a slow-boot complaint by validating the boot device
-                layout, inspecting kernel artifacts in
-                <code>/boot</code>
-                , reading kernel boot parameters, and identifying the init system
-                via symlink inspection. Capture evidence using CLI-only commands
-                suitable for documentation or escalation.
+                Investigate a slow-boot complaint by validating the boot device layout, inspecting
+                kernel artifacts in <code>/boot</code>, reading kernel boot parameters, and
+                identifying the init system via symlink inspection. Capture evidence using CLI-only
+                commands suitable for documentation or escalation.
               </p>
 
+              <!-- Video (kept on page; removed from left panel moving forward) -->
               <section class="lab-section" id="video" aria-label="Lab video">
-  				<div class="lab-video">
-    				<div class="lab-video-embed text-center">
-      					<iframe 
-							width="560" 
-							height="315" 
-							src="https://www.youtube.com/embed/uxMaPvlf2AI?si=tzqpWOUBY2yOACHv" 
-							title="YouTube video player" 
-							frameborder="0" 
-							allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
-							referrerpolicy="strict-origin-when-cross-origin" 
-							allowfullscreen>
-						</iframe>
-    				</div>
-  				</div>
-			</section>
+                <div class="lab-video">
+                  <div class="lab-video-embed text-center">
+                    <iframe
+                      src="https://www.youtube.com/embed/uxMaPvlf2AI?si=tzqpWOUBY2yOACHv"
+                      title="YouTube video player"
+                      frameborder="0"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                      referrerpolicy="strict-origin-when-cross-origin"
+                      allowfullscreen
+                    ></iframe>
+                  </div>
+                </div>
+              </section>
 
-              <!-- 2) Scenario -->
+              <!-- Scenario -->
               <section class="lab-section" id="scenario">
                 <div class="lab-chips" aria-label="Tags">
-                  <span class="lab-chip">
-                    <span class="lab-chip-key">boot</span>
-                  </span>
-                  <span class="lab-chip">
-                    <span class="lab-chip-key">troubleshooting</span>
-                  </span>
-                  <span class="lab-chip">
-                    <span class="lab-chip-key">core</span>
-                  </span>
+                  <span class="lab-chip"><span class="lab-chip-key">boot</span></span>
+                  <span class="lab-chip"><span class="lab-chip-key">troubleshooting</span></span>
+                  <span class="lab-chip"><span class="lab-chip-key">core</span></span>
                 </div>
 
-                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
-                  Scenario
-                </h3>
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">Scenario</h3>
 
                 <p>
-                  Your client suspects their system takes too long to boot.
-                  You’ve been asked to investigate the boot sequence, identify
-                  the boot-relevant filesystem layout, locate kernel artifacts,
-                  read boot parameters, and confirm the init system in use.
+                  Your client suspects their system takes too long to boot. You have been asked to
+                  investigate the boot sequence, identify the boot-relevant filesystem layout,
+                  locate kernel artifacts, read boot parameters, and confirm the init system in use.
                 </p>
 
                 <div class="lab-callout">
                   <div class="lab-callout-label">Operator context</div>
                   <p class="m-b-0">
-                    This is the baseline evidence you collect before deeper
-                    timing analysis or service-level root cause work. The goal
-                    here is “what is this system booting, from where, with what
-                    arguments, and what init process takes over.”
+                    This is baseline evidence you collect before deeper timing analysis or
+                    service-level root cause work. The goal here is to confirm what the system is
+                    booting, where it is booting from, what kernel arguments are in effect, and what
+                    init process takes over.
                   </p>
                 </div>
               </section>
 
-              <!-- 3) Objective -->
+              <!-- Objective -->
               <section class="lab-section alt-background" id="objective">
-                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
-                  Objective
-                </h3>
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">Objective</h3>
                 <ul>
                   <li>Confirm block devices and mount points for boot paths.</li>
                   <li>Inspect kernel and initrd artifacts under <code>/boot</code>.</li>
@@ -269,64 +228,43 @@
                 </ul>
               </section>
 
-              <!-- 4) What You'll Practice -->
-              <section class="lab-section" id="practice">
-                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
-                  What You’ll Practice
-                </h3>
-
-                <ul class="m-t-10">
+              <!-- Concepts (no alt-background moving forward) -->
+              <section class="lab-section" id="concepts">
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">Concepts</h3>
+                <ul>
                   <li>
-                    Mapping devices to mount points using
-                    <code>lsblk</code>
-                    .
+                    Start with layout: if you do not understand the boot and root devices, the rest
+                    of the evidence is harder to interpret.
                   </li>
                   <li>
-                    Inspecting boot assets in
-                    <code>/boot</code>
-                    with
-                    <code>ls</code>
-                    .
+                    <code>/boot</code> holds the artifacts the bootloader loads (kernel image and
+                    initramfs). Multiple kernels can exist side-by-side.
                   </li>
                   <li>
-                    Reading kernel parameters via
-                    <code>/proc/cmdline</code>
-                    .
+                    <code>/proc/cmdline</code> shows the kernel arguments in effect for the current
+                    boot. Treat it as the source of truth for runtime boot flags.
                   </li>
                   <li>
-                    Capturing kernel image timestamps and size using
-                    <code>stat</code>
-                    .
-                  </li>
-                  <li>
-                    Confirming init system identity via
-                    <code>ls -l /sbin/init</code>
-                    .
+                    Init identity matters: the init system determines service ordering, logging, and
+                    how boot timing is measured.
                   </li>
                 </ul>
               </section>
 
-              <!-- 5) Commands Walkthrough -->
+              <!-- Walkthrough -->
               <section class="lab-section alt-background" id="walkthrough">
-                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
-                  Walkthrough
-                </h3>
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">Walkthrough</h3>
 
                 <!-- Step 1 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
-                    <strong class="font-alt">Step 1</strong>
-                    : Show block devices and mount points.
+                    <strong class="font-alt">Step 1</strong>: Show block devices and mount points.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
-                      <button
-                        class="lab-copy-btn"
-                        type="button"
-                        data-copy="#cmd-step-1"
-                      >
+                      <button class="lab-copy-btn" type="button" data-copy="#cmd-step-1">
                         Copy
                       </button>
                     </div>
@@ -334,11 +272,9 @@
                   </div>
 
                   <p>
-                    This quickly confirms whether
-                    <code>/boot</code>
-                    is a separate partition and which device backs the root
-                    filesystem. It’s your starting point for “what disk is boot
-                    reading from.”
+                    This confirms whether <code>/boot</code> is a separate partition and which
+                    device backs the root filesystem. It is your starting point for identifying the
+                    storage path the system boots from.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -352,20 +288,13 @@ sda      8:0    0   40G  0 disk
                 <!-- Step 2 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
-                    <strong class="font-alt">Step 2</strong>
-                    : List files under
-                    <code>/boot</code>
-                    .
+                    <strong class="font-alt">Step 2</strong>: List files under <code>/boot</code>.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
-                      <button
-                        class="lab-copy-btn"
-                        type="button"
-                        data-copy="#cmd-step-2"
-                      >
+                      <button class="lab-copy-btn" type="button" data-copy="#cmd-step-2">
                         Copy
                       </button>
                     </div>
@@ -373,12 +302,9 @@ sda      8:0    0   40G  0 disk
                   </div>
 
                   <p>
-                    This confirms the presence of the kernel image
-                    (<code>vmlinuz</code>)
-                    and initramfs
-                    (<code>initrd.img</code>)
-                    that the bootloader loads. It’s also an easy way to spot
-                    multiple installed kernels.
+                    This confirms the presence of the kernel image (<code>vmlinuz</code>) and
+                    initramfs (<code>initrd.img</code>) that the bootloader loads. It also makes it
+                    easy to spot multiple installed kernels.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -391,18 +317,13 @@ vmlinuz-5.15.0-91-generic</code></pre>
                 <!-- Step 3 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
-                    <strong class="font-alt">Step 3</strong>
-                    : Show kernel boot parameters.
+                    <strong class="font-alt">Step 3</strong>: Show kernel boot parameters.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
-                      <button
-                        class="lab-copy-btn"
-                        type="button"
-                        data-copy="#cmd-step-3"
-                      >
+                      <button class="lab-copy-btn" type="button" data-copy="#cmd-step-3">
                         Copy
                       </button>
                     </div>
@@ -410,15 +331,9 @@ vmlinuz-5.15.0-91-generic</code></pre>
                   </div>
 
                   <p>
-                    This shows the exact arguments passed to the kernel at boot,
-                    including the selected kernel image, root device, and flags
-                    like
-                    <code>ro</code>
-                    ,
-                    <code>quiet</code>
-                    , and
-                    <code>splash</code>
-                    .
+                    This shows the exact arguments passed to the kernel at boot, including the
+                    selected kernel image, root device, and common flags such as <code>ro</code>,
+                    <code>quiet</code>, and <code>splash</code>.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -429,18 +344,13 @@ vmlinuz-5.15.0-91-generic</code></pre>
                 <!-- Step 4 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
-                    <strong class="font-alt">Step 4</strong>
-                    : Show metadata for the kernel image.
+                    <strong class="font-alt">Step 4</strong>: Capture metadata for the kernel image.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
-                      <button
-                        class="lab-copy-btn"
-                        type="button"
-                        data-copy="#cmd-step-4"
-                      >
+                      <button class="lab-copy-btn" type="button" data-copy="#cmd-step-4">
                         Copy
                       </button>
                     </div>
@@ -448,9 +358,8 @@ vmlinuz-5.15.0-91-generic</code></pre>
                   </div>
 
                   <p>
-                    This captures file size and timestamps for the kernel image.
-                    It’s useful evidence for “when was this kernel installed or
-                    last modified” during boot-related investigations.
+                    This captures file size and timestamps for the kernel image. It is useful
+                    evidence when you need to establish when a kernel was installed or last changed.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -465,18 +374,13 @@ Change: 2025-06-30 22:51:03.000000000</code></pre>
                 <!-- Step 5 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
-                    <strong class="font-alt">Step 5</strong>
-                    : Identify the init system in use via symlink.
+                    <strong class="font-alt">Step 5</strong>: Identify the init system via symlink.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
-                      <button
-                        class="lab-copy-btn"
-                        type="button"
-                        data-copy="#cmd-step-5"
-                      >
+                      <button class="lab-copy-btn" type="button" data-copy="#cmd-step-5">
                         Copy
                       </button>
                     </div>
@@ -484,12 +388,9 @@ Change: 2025-06-30 22:51:03.000000000</code></pre>
                   </div>
 
                   <p>
-                    On many systems,
-                    <code>/sbin/init</code>
-                    is a symlink to the real init binary. Following this link is
-                    a fast, reliable way to confirm whether the host is running
-                    <code>systemd</code>
-                    or something else.
+                    On many systems, <code>/sbin/init</code> is a symlink to the real init binary.
+                    Following the link is a fast way to confirm whether the host is running
+                    <code>systemd</code> or another init system.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -498,117 +399,121 @@ Change: 2025-06-30 22:51:03.000000000</code></pre>
                 </div>
               </section>
 
-              <!-- 8) Reference -->
-              <!-- 9) Reference -->
+              <!-- Common breakpoints -->
+              <section class="lab-section" id="breakpoints">
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">Common breakpoints</h3>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">/boot does not exist or is empty</div>
+                  <p class="m-b-0">
+                    Some systems use a different layout (for example, a unified kernel image, a
+                    mounted EFI system partition, or a bootloader that references paths under
+                    <code>/boot/efi</code>). Confirm mounts with <code>lsblk</code> and
+                    <code>findmnt /boot /boot/efi</code>.
+                  </p>
+                </div>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">Multiple kernels under /boot</div>
+                  <p class="m-b-0">
+                    That is normal on many systems. Use <code>uname -r</code> to confirm the running
+                    kernel version and correlate it with the kernel image names under
+                    <code>/boot</code>.
+                  </p>
+                </div>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">BOOT_IMAGE does not show a /boot path</div>
+                  <p class="m-b-0">
+                    The value can vary by distro and bootloader configuration. Treat it as one
+                    signal, then corroborate with <code>uname -r</code> and the files present under
+                    <code>/boot</code>.
+                  </p>
+                </div>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">/sbin/init is not a symlink</div>
+                  <p class="m-b-0">
+                    Some distros ship <code>/sbin/init</code> as a real binary or a wrapper. If it is
+                    a file, use <code>file /sbin/init</code> and <code>readlink -f /sbin/init</code>
+                    to confirm what it resolves to.
+                  </p>
+                </div>
+              </section>
+
+              <!-- Cleanup -->
+              <section class="lab-section alt-background" id="cleanup">
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">Cleanup checklist</h3>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">Nothing to revert</div>
+                  <p class="m-b-0">
+                    This lab is read-only. Cleanup is saving your captured output (commands and
+                    evidence) into your notes or ticket for future comparison.
+                  </p>
+                </div>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">Success signal</div>
+                  <p class="m-b-0">
+                    You can quickly describe the boot storage layout, identify the kernel artifacts
+                    in use, read the active kernel arguments, and confirm the init system without
+                    relying on a GUI.
+                  </p>
+                </div>
+              </section>
+
+              <!-- Reference -->
               <section class="lab-section" id="reference">
-                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
-                  Reference
-                </h3>
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">Reference</h3>
 
                 <ul class="lab-reference-list">
-                  <li>
-                    <code>lsblk</code>
-                    : Lists block devices and their mount points.
-                  </li>
+                  <li><code>lsblk</code>: Lists block devices and their mount points.</li>
 
                   <li>
-                    <code>ls /boot</code>
-                    : Lists boot-related files (kernel images, initramfs, configs).
+                    <code>ls /boot</code>: Lists boot-related files (kernel images, initramfs, configs).
                     <ul>
-                      <li>
-                        <code>/boot</code>
-                        : Common location for kernel and initramfs artifacts.
-                      </li>
+                      <li><code>/boot</code>: Common location for kernel and initramfs artifacts.</li>
                     </ul>
                   </li>
 
                   <li>
-                    <code>cat /proc/cmdline</code>
-                    : Shows the kernel boot parameters for the current boot.
+                    <code>cat /proc/cmdline</code>: Shows the kernel boot parameters for the current boot.
                     <ul>
-                      <li>
-                        <code>/proc</code>
-                        : Virtual filesystem exposing process and kernel interfaces.
-                      </li>
-                      <li>
-                        <code>root=</code>
-                        : Indicates the device used as the root filesystem.
-                      </li>
-                      <li>
-                        <code>ro</code>
-                        : Root filesystem is initially mounted read-only during early boot.
-                      </li>
-                      <li>
-                        <code>quiet</code>
-                        : Reduces kernel console output.
-                      </li>
-                      <li>
-                        <code>splash</code>
-                        : Enables a graphical boot splash on systems that support it.
-                      </li>
+                      <li><code>/proc</code>: Virtual filesystem exposing process and kernel interfaces.</li>
+                      <li><code>root=</code>: Indicates the device used as the root filesystem.</li>
+                      <li><code>ro</code>: Root filesystem initially mounted read-only during early boot.</li>
+                      <li><code>quiet</code>: Reduces kernel console output.</li>
+                      <li><code>splash</code>: Enables a graphical boot splash on systems that support it.</li>
                     </ul>
                   </li>
 
                   <li>
-                    <code>stat /boot/vmlinuz*</code>
-                    : Displays file metadata for kernel images under
-                    <code>/boot</code>
-                    .
+                    <code>stat /boot/vmlinuz*</code>: Displays file metadata for kernel images under <code>/boot</code>.
                     <ul>
-                      <li>
-                        <code>Access</code>
-                        : Last access time.
-                      </li>
-                      <li>
-                        <code>Modify</code>
-                        : Last content modification time.
-                      </li>
-                      <li>
-                        <code>Change</code>
-                        : Last metadata change time.
-                      </li>
+                      <li><code>Access</code>: Last access time.</li>
+                      <li><code>Modify</code>: Last content modification time.</li>
+                      <li><code>Change</code>: Last metadata change time.</li>
                     </ul>
                   </li>
 
                   <li>
-                    <code>ls -l /sbin/init</code>
-                    : Shows what init binary
-                    <code>/sbin/init</code>
-                    points to.
+                    <code>ls -l /sbin/init</code>: Shows what init binary <code>/sbin/init</code> points to.
                     <ul>
-                      <li>
-                        <code>-l</code>
-                        : Long listing format (shows permissions, owner, and symlink target).
-                      </li>
-                      <li>
-                        <code>/sbin/init</code>
-                        : Conventional init entrypoint that typically points to the real init system.
-                      </li>
-                      <li>
-                        <code>/lib/systemd/systemd</code>
-                        : Indicates
-                        <code>systemd</code>
-                        is the init system in use.
-                      </li>
+                      <li><code>-l</code>: Long listing format (permissions, owner, and symlink target).</li>
+                      <li><code>/sbin/init</code>: Conventional init entrypoint that points to the real init system.</li>
+                      <li><code>/lib/systemd/systemd</code>: Indicates <code>systemd</code> is the init system in use.</li>
                     </ul>
                   </li>
                 </ul>
               </section>
-
-              <!-- Lab Pagination -->
             </div>
             <!-- /main -->
           </div>
           <!-- /row -->
+
           <nav class="lab-pagination">
-            <a
-                id="prev-lab"
-                class="lab-nav-link"
-                href="#"
-                aria-label="Previous lab"
-            >
-                &uArr;
-            </a>
+            <a id="prev-lab" class="lab-nav-link" href="#" aria-label="Previous lab">&uArr;</a>
           </nav>
         </div>
         <!-- /container -->
@@ -621,22 +526,10 @@ Change: 2025-06-30 22:51:03.000000000</code></pre>
             <div class="col-sm-12">
               <ul class="social-text-links font-alt text-center m-b-20">
                 <li>
-                  <a
-                    href="https://github.com/vonds"
-                    target="_blank"
-                    rel="noopener"
-                  >
-                    Github
-                  </a>
+                  <a href="https://github.com/vonds" target="_blank" rel="noopener">Github</a>
                 </li>
                 <li>
-                  <a
-                    href="https://www.linkedin.com/in/vonds/"
-                    target="_blank"
-                    rel="noopener"
-                  >
-                    Linkedin
-                  </a>
+                  <a href="https://www.linkedin.com/in/vonds/" target="_blank" rel="noopener">Linkedin</a>
                 </li>
               </ul>
             </div>
@@ -645,8 +538,7 @@ Change: 2025-06-30 22:51:03.000000000</code></pre>
           <div class="row">
             <div class="col-sm-12">
               <p class="copyright text-center m-b-0">
-                VONDS &copy;
-                <span id="year"></span>
+                VONDS &copy; <span id="year"></span>
               </p>
 
               <div class="scroll-up">
@@ -680,5 +572,9 @@ Change: 2025-06-30 22:51:03.000000000</code></pre>
 
     <!-- Lab page JS (new) -->
     <script src="../assets/js/lab.js"></script>
+
+    <script>
+      document.getElementById("year").textContent = new Date().getFullYear()
+    </script>
   </body>
 </html>

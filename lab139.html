@@ -1,4 +1,4 @@
-<!-- lab123.html -->
+<!-- lab139.html -->
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -7,7 +7,7 @@
     <meta name="description" content="exit_0 Documentation" />
     <meta name="name" content="Vonds" />
 
-    <title>Vonds | Lab 123</title>
+    <title>Vonds | Lab 139</title>
 
     <!-- Favicons -->
     <link rel="shortcut icon" href="../assets/images/favicon.png" />
@@ -65,7 +65,11 @@
               <a href="#">Portfolio</a>
               <ul>
                 <li>
-                  <a href="https://github.com/vonds/exit_0" target="_blank" rel="noopener">
+                  <a
+                    href="https://github.com/vonds/exit_0"
+                    target="_blank"
+                    rel="noopener"
+                  >
                     exit_0
                   </a>
                 </li>
@@ -78,7 +82,11 @@
             </li>
 
             <li>
-              <a href="https://www.linkedin.com/in/vonds/" target="_blank" rel="noopener">
+              <a
+                href="https://www.linkedin.com/in/vonds/"
+                target="_blank"
+                rel="noopener"
+              >
                 LinkedIn
               </a>
             </li>
@@ -137,7 +145,7 @@
       <section class="module">
         <div class="container">
           <h2 class="font-alt module-title m-t-60">
-            Lab 123: Partition /dev/sdb with msdos (MBR) using parted
+            Lab 139: Remote Syslog & Logrotate Workflow
           </h2>
 
           <nav class="lab-pagination">
@@ -169,17 +177,17 @@
             <!-- MAIN CONTENT -->
             <div class="col-sm-8 col-md-9 lab-doc">
               <p class="m-b-20 lab-summary">
-                Label an uninitialized disk with an MBR (<code>msdos</code>) partition table, create a
-                primary partition with <code>parted</code>, verify the kernel sees it via
-                <code>lsblk</code> and <code>/proc/partitions</code>, then remove the partition and confirm
-                the disk returns to a clean state.
+                Enable remote syslog reception over <code>UDP/514</code> using a safe rsyslog drop-in, validate syntax,
+                restart rsyslog, open the firewall, confirm the listener with <code>ss</code>, generate a test message with
+                <code>logger</code>, verify it lands in <code>/var/log/messages</code>, then create and test a dedicated
+                <code>logrotate</code> policy for <code>/var/log/acmeapp.log</code>.
               </p>
 
               <section class="lab-section" id="video" aria-label="Lab video">
                 <div class="lab-video">
                   <div class="lab-video-embed text-center">
                     <iframe
-                      src="https://www.youtube.com/embed/REPLACE_WITH_LAB123_VIDEO"
+                      src="https://www.youtube.com/embed/REPLACE_WITH_LAB139_VIDEO"
                       title="YouTube video player"
                       frameborder="0"
                       allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
@@ -193,26 +201,30 @@
               <!-- Scenario -->
               <section class="lab-section" id="scenario">
                 <div class="lab-chips" aria-label="Tags">
-                  <span class="lab-chip"><span class="lab-chip-key">storage</span></span>
-                  <span class="lab-chip"><span class="lab-chip-key">parted</span></span>
-                  <span class="lab-chip"><span class="lab-chip-key">mbr</span></span>
                   <span class="lab-chip"><span class="lab-chip-key">rhel</span></span>
+                  <span class="lab-chip"><span class="lab-chip-key">rhcsa</span></span>
+                  <span class="lab-chip"><span class="lab-chip-key">services</span></span>
+                  <span class="lab-chip"><span class="lab-chip-key">rsyslog</span></span>
+                  <span class="lab-chip"><span class="lab-chip-key">syslog</span></span>
+                  <span class="lab-chip"><span class="lab-chip-key">udp</span></span>
+                  <span class="lab-chip"><span class="lab-chip-key">firewalld</span></span>
+                  <span class="lab-chip"><span class="lab-chip-key">logrotate</span></span>
+                  <span class="lab-chip"><span class="lab-chip-key">logging</span></span>
                 </div>
 
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">Scenario</h3>
 
                 <p>
-                  A new 100MB disk (<code>/dev/sdb</code>) was attached to a RHEL VM for a legacy appliance.
-                  The appliance requires an MBR partition table (<code>msdos</code>), not GPT.
-                  Your job is to label the disk, create a small primary partition for testing, verify the
-                  kernel sees it, then remove the partition to return the disk to a clean state.
+                  A team needs this host to receive syslog over <code>UDP/514</code> from a legacy device. You must enable
+                  rsyslog UDP reception safely, allow it through the firewall, verify the listener, confirm logs arrive,
+                  then set up logrotate for a custom application log.
                 </p>
 
                 <div class="lab-callout">
                   <div class="lab-callout-label">Safety note</div>
                   <p class="m-b-0">
-                    Double-check the target device before writing partition tables. The commands in this lab
-                    are destructive to existing partition layouts on the selected disk.
+                    Rsyslog config changes can break logging if you introduce syntax errors. Validate configuration with
+                    <code>rsyslogd -N1</code> before restarting the service.
                   </p>
                 </div>
               </section>
@@ -221,12 +233,14 @@
               <section class="lab-section alt-background" id="objective">
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">Objective</h3>
                 <ul>
-                  <li>Confirm the disk has no recognized partition table.</li>
-                  <li>Write an MBR (<code>msdos</code>) disk label with <code>parted mklabel</code>.</li>
-                  <li>Create a primary partition with MiB-aligned boundaries.</li>
-                  <li>Verify the partition appears in <code>parted</code> output.</li>
-                  <li>Verify the kernel’s view using <code>lsblk</code> and <code>/proc/partitions</code>.</li>
-                  <li>Remove the partition with <code>parted rm</code> and verify cleanup.</li>
+                  <li>Create an rsyslog drop-in that loads <code>imudp</code> and listens on port <code>514</code>.</li>
+                  <li>Validate rsyslog config syntax with <code>rsyslogd -N1</code>.</li>
+                  <li>Restart rsyslog to apply the listener configuration.</li>
+                  <li>Allow <code>514/udp</code> in firewalld permanently and reload.</li>
+                  <li>Verify rsyslog is listening on <code>UDP/514</code> with <code>ss</code>.</li>
+                  <li>Generate a syslog test event with <code>logger</code> and confirm it lands in <code>/var/log/messages</code>.</li>
+                  <li>Create a dedicated logrotate policy for <code>/var/log/acmeapp.log</code>.</li>
+                  <li>Test the policy in debug mode with <code>logrotate -d</code>.</li>
                 </ul>
               </section>
 
@@ -237,38 +251,32 @@
                 <!-- Step 1 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
-                    <strong class="font-alt">Step 1</strong>: Inspect current partition information on
-                    <code>/dev/sdb</code>.
+                    <strong class="font-alt">Step 1</strong>: Create the rsyslog UDP listener drop-in.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
-                      <span>Command</span>
+                      <span>File</span>
                       <button class="lab-copy-btn" type="button" data-copy="#cmd-step-1">Copy</button>
                     </div>
-                    <pre><code id="cmd-step-1">sudo parted /dev/sdb print</code></pre>
+                    <pre><code id="cmd-step-1">sudo vi /etc/rsyslog.d/10-udp514.conf</code></pre>
                   </div>
 
                   <p>
-                    On an uninitialized disk, <code>parted</code> will report an unrecognized label and show
-                    the disk geometry. This is your confirmation that you are starting from a blank layout.
+                    Create a dedicated file under <code>/etc/rsyslog.d</code> so the change is isolated and easy to revert.
+                    Add the two lines below.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code id="verify-step-1">Error: /dev/sdb: unrecognised disk label
-Model: Virtio Block Device (virtblk)
-Disk /dev/sdb: 105MB
-Sector size (logical/physical): 512B/512B
-Partition Table: unknown
-Disk Flags:</code></pre>
+                    <pre><code>module(load="imudp")
+input(type="imudp" port="514")</code></pre>
                   </div>
                 </div>
 
                 <!-- Step 2 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
-                    <strong class="font-alt">Step 2</strong>: Create an MBR partition table
-                    (<code>msdos</code>) on <code>/dev/sdb</code>.
+                    <strong class="font-alt">Step 2</strong>: Validate rsyslog configuration syntax.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -276,19 +284,23 @@ Disk Flags:</code></pre>
                       <span>Command</span>
                       <button class="lab-copy-btn" type="button" data-copy="#cmd-step-2">Copy</button>
                     </div>
-                    <pre><code id="cmd-step-2">sudo parted /dev/sdb mklabel msdos</code></pre>
+                    <pre><code id="cmd-step-2">sudo rsyslogd -N1</code></pre>
                   </div>
 
                   <p>
-                    This writes the disk label. It is a destructive change if the disk previously contained data.
+                    This catches syntax issues before you restart the daemon.
                   </p>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <pre><code>rsyslogd: version 8.2310.0, config validation run (level 1), master config /etc/rsyslog.conf
+rsyslogd: End of config validation run. Bye.</code></pre>
+                  </div>
                 </div>
 
                 <!-- Step 3 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
-                    <strong class="font-alt">Step 3</strong>: Confirm the partition table type is now
-                    <code>msdos</code>.
+                    <strong class="font-alt">Step 3</strong>: Restart rsyslog to apply the listener.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -296,24 +308,18 @@ Disk Flags:</code></pre>
                       <span>Command</span>
                       <button class="lab-copy-btn" type="button" data-copy="#cmd-step-3">Copy</button>
                     </div>
-                    <pre><code id="cmd-step-3">sudo parted /dev/sdb print</code></pre>
+                    <pre><code id="cmd-step-3">sudo systemctl restart rsyslog</code></pre>
                   </div>
 
-                  <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code id="verify-step-3">Model: Virtio Block Device (virtblk)
-Disk /dev/sdb: 105MB
-Sector size (logical/physical): 512B/512B
-Partition Table: msdos
-Disk Flags:
-
-Number  Start  End  Size  Type  File system  Flags</code></pre>
-                  </div>
+                  <p>
+                    Restart after validation so you do not take down logging with a broken config.
+                  </p>
                 </div>
 
                 <!-- Step 4 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
-                    <strong class="font-alt">Step 4</strong>: Create a primary partition aligned to MiB.
+                    <strong class="font-alt">Step 4</strong>: Allow UDP/514 in firewalld permanently.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -321,24 +327,18 @@ Number  Start  End  Size  Type  File system  Flags</code></pre>
                       <span>Command</span>
                       <button class="lab-copy-btn" type="button" data-copy="#cmd-step-4">Copy</button>
                     </div>
-                    <pre><code id="cmd-step-4">sudo parted /dev/sdb mkpart primary 1MiB 101MiB</code></pre>
+                    <pre><code id="cmd-step-4">sudo firewall-cmd --permanent --add-port=514/udp</code></pre>
                   </div>
 
-                  <p>
-                    Starting at <code>1MiB</code> avoids the MBR gap and aligns partitions cleanly.
-                    The end boundary leaves room for metadata and device geometry.
-                  </p>
-
                   <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code id="verify-step-4">Information: You may need to update /etc/fstab.</code></pre>
+                    <pre><code>success</code></pre>
                   </div>
                 </div>
 
                 <!-- Step 5 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
-                    <strong class="font-alt">Step 5</strong>: Verify the partition exists in
-                    <code>parted</code>.
+                    <strong class="font-alt">Step 5</strong>: Reload firewalld to apply permanent rules.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -346,20 +346,25 @@ Number  Start  End  Size  Type  File system  Flags</code></pre>
                       <span>Command</span>
                       <button class="lab-copy-btn" type="button" data-copy="#cmd-step-5">Copy</button>
                     </div>
-                    <pre><code id="cmd-step-5">sudo parted /dev/sdb print</code></pre>
+                    <pre><code id="cmd-step-5">sudo firewall-cmd --reload</code></pre>
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code id="verify-step-5">Number  Start   End     Size    Type     File system  Flags
- 1      1.05MiB 101MiB  100MiB  primary</code></pre>
+                    <pre><code>success</code></pre>
+                  </div>
+
+                  <div class="lab-callout">
+                    <div class="lab-callout-label">Ops habit</div>
+                    <p class="m-b-0">
+                      Permanent changes do nothing until you reload (or restart) firewalld. Always apply and then verify.
+                    </p>
                   </div>
                 </div>
 
                 <!-- Step 6 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
-                    <strong class="font-alt">Step 6</strong>: Confirm the kernel created
-                    <code>/dev/sdb1</code>.
+                    <strong class="font-alt">Step 6</strong>: Verify rsyslog is listening on UDP/514.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -367,26 +372,22 @@ Number  Start  End  Size  Type  File system  Flags</code></pre>
                       <span>Command</span>
                       <button class="lab-copy-btn" type="button" data-copy="#cmd-step-6">Copy</button>
                     </div>
-                    <pre><code id="cmd-step-6">lsblk /dev/sdb</code></pre>
+                    <pre><code id="cmd-step-6">ss -lunp | grep ':514 '</code></pre>
                   </div>
 
                   <p>
-                    This is the practical check that userspace sees the device node and the partition.
-                    If <code>/dev/sdb1</code> does not appear, you may need a rescan.
+                    You want to see an <code>UNCONN</code> UDP socket bound to <code>0.0.0.0:514</code> owned by rsyslog.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code id="verify-step-6">NAME MAJ:MIN RM  SIZE RO TYPE MOUNTPOINTS
-sdb    8:16  0  100M  0 disk
-└─sdb1 8:17  0   95M  0 part</code></pre>
+                    <pre><code>UNCONN 0      0              0.0.0.0:514         0.0.0.0:*    users:(("rsyslogd",pid=1019,fd=7))</code></pre>
                   </div>
                 </div>
 
                 <!-- Step 7 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
-                    <strong class="font-alt">Step 7</strong>: Confirm <code>/proc/partitions</code>
-                    reflects the new partition.
+                    <strong class="font-alt">Step 7</strong>: Generate a test syslog message.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -394,24 +395,18 @@ sdb    8:16  0  100M  0 disk
                       <span>Command</span>
                       <button class="lab-copy-btn" type="button" data-copy="#cmd-step-7">Copy</button>
                     </div>
-                    <pre><code id="cmd-step-7">grep -E 'sdb$|sdb1$' /proc/partitions</code></pre>
+                    <pre><code id="cmd-step-7">logger -p local0.notice 'test: UDP syslog receiving enabled'</code></pre>
                   </div>
 
                   <p>
-                    <code>/proc/partitions</code> is the kernel’s exported view. This is a clean verification
-                    step when troubleshooting device node issues.
+                    This creates a clean, timestamped event you can immediately verify in the logs.
                   </p>
-
-                  <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code id="verify-step-7">8  16 102400 sdb
-8  17  97280 sdb1</code></pre>
-                  </div>
                 </div>
 
                 <!-- Step 8 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
-                    <strong class="font-alt">Step 8</strong>: Remove partition 1.
+                    <strong class="font-alt">Step 8</strong>: Confirm the message appears in <code>/var/log/messages</code>.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -419,44 +414,54 @@ sdb    8:16  0  100M  0 disk
                       <span>Command</span>
                       <button class="lab-copy-btn" type="button" data-copy="#cmd-step-8">Copy</button>
                     </div>
-                    <pre><code id="cmd-step-8">sudo parted /dev/sdb rm 1</code></pre>
+                    <pre><code id="cmd-step-8">sudo tail -n 8 /var/log/messages</code></pre>
                   </div>
 
                   <p>
-                    This removes the partition entry from the table. It does not wipe data blocks, but it returns
-                    the partition layout to “no partitions.”
+                    Look for the rsyslog UDP acquisition line and your test message.
                   </p>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <pre><code>Jan 25 07:14:21 lab139 rsyslogd[1019]: imudp: Acquired UDP socket, server will listen on port 514.
+Jan 25 07:14:33 lab139 lab[pts/0]: test: UDP syslog receiving enabled</code></pre>
+                  </div>
                 </div>
 
                 <!-- Step 9 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
-                    <strong class="font-alt">Step 9</strong>: Confirm the partition is gone.
+                    <strong class="font-alt">Step 9</strong>: Create a logrotate policy for <code>/var/log/acmeapp.log</code>.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
-                      <span>Command</span>
+                      <span>File</span>
                       <button class="lab-copy-btn" type="button" data-copy="#cmd-step-9">Copy</button>
                     </div>
-                    <pre><code id="cmd-step-9">sudo parted /dev/sdb print</code></pre>
+                    <pre><code id="cmd-step-9">sudo vi /etc/logrotate.d/acmeapp</code></pre>
                   </div>
 
-                  <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code id="verify-step-9">Model: Virtio Block Device (virtblk)
-Disk /dev/sdb: 105MB
-Sector size (logical/physical): 512B/512B
-Partition Table: msdos
-Disk Flags:
+                  <p>
+                    Use a dedicated policy file under <code>/etc/logrotate.d</code> so the application’s rotation rules are
+                    explicit and reviewable.
+                  </p>
 
-Number  Start  End  Size  Type  File system  Flags</code></pre>
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <pre><code>/var/log/acmeapp.log {
+    daily
+    rotate 7
+    compress
+    missingok
+    notifempty
+    create 0640 root root
+}</code></pre>
                   </div>
                 </div>
 
                 <!-- Step 10 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
-                    <strong class="font-alt">Step 10</strong>: Verify kernel view updated (no <code>sdb1</code>).
+                    <strong class="font-alt">Step 10</strong>: Test the logrotate policy in debug mode.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -464,47 +469,31 @@ Number  Start  End  Size  Type  File system  Flags</code></pre>
                       <span>Command</span>
                       <button class="lab-copy-btn" type="button" data-copy="#cmd-step-10">Copy</button>
                     </div>
-                    <pre><code id="cmd-step-10">lsblk /dev/sdb</code></pre>
+                    <pre><code id="cmd-step-10">sudo logrotate -d /etc/logrotate.d/acmeapp</code></pre>
                   </div>
 
                   <p>
-                    You should only see the disk device now. If a stale partition device remains visible,
-                    you may need to trigger a rescan.
+                    Debug mode shows what logrotate would do without making changes. This is the safe way to validate a new
+                    policy.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code id="verify-step-10">NAME MAJ:MIN RM  SIZE RO TYPE MOUNTPOINTS
-sdb    8:16  0  100M  0 disk</code></pre>
+                    <pre><code>reading config file /etc/logrotate.d/acmeapp
+Reading state from file: /var/lib/logrotate/logrotate.status
+Handling 1 logs
+rotating pattern: /var/log/acmeapp.log  after 1 days (7 rotations)
+empty log files are not rotated, old logs are removed
+consider log /var/log/acmeapp.log
+log does not exist -- skipping</code></pre>
                   </div>
-                </div>
-              </section>
 
-              <!-- Common breakpoints -->
-              <section class="lab-section" id="breakpoints">
-                <h3 class="font-alt lab-section-title m-b-40 m-t-40">Common breakpoints</h3>
-
-                <div class="lab-callout">
-                  <div class="lab-callout-label">Partition does not appear as /dev/sdb1</div>
-                  <p class="m-b-0">
-                    The kernel may not have re-read the partition table yet. In real environments, you might use
-                    <code>partprobe</code> or a device rescan to refresh the kernel’s view.
-                  </p>
-                </div>
-
-                <div class="lab-callout">
-                  <div class="lab-callout-label">Wrong disk selected</div>
-                  <p class="m-b-0">
-                    Always verify device identity using <code>lsblk -o NAME,SIZE,MODEL,SERIAL</code>
-                    (when available) before writing a new disk label.
-                  </p>
-                </div>
-
-                <div class="lab-callout">
-                  <div class="lab-callout-label">MBR vs GPT mismatch</div>
-                  <p class="m-b-0">
-                    Some environments default to GPT. This lab forces <code>msdos</code> explicitly to match
-                    legacy requirements.
-                  </p>
+                  <div class="lab-callout">
+                    <div class="lab-callout-label">Signal to look for</div>
+                    <p class="m-b-0">
+                      “<code>log does not exist -- skipping</code>” is fine here. It proves the policy parsed correctly and
+                      would rotate the file once it exists.
+                    </p>
+                  </div>
                 </div>
               </section>
 
@@ -513,21 +502,17 @@ sdb    8:16  0  100M  0 disk</code></pre>
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">Reference</h3>
 
                 <ul class="lab-reference-list">
-                  <li><code>parted /dev/sdb print</code>: Show disk geometry and partition table.</li>
-                  <li><code>parted /dev/sdb mklabel msdos</code>: Write MBR partition table.</li>
-                  <li><code>parted /dev/sdb mkpart primary 1MiB 101MiB</code>: Create partition with MiB alignment.</li>
-                  <li><code>parted /dev/sdb rm 1</code>: Remove partition by number.</li>
-                  <li><code>lsblk /dev/sdb</code>: Verify kernel device/partition nodes.</li>
-                  <li><code>/proc/partitions</code>: Kernel-exported view of block devices and partitions.</li>
+                  <li><code>/etc/rsyslog.d/10-udp514.conf</code>: rsyslog drop-in for UDP reception.</li>
+                  <li><code>rsyslogd -N1</code>: validate rsyslog configuration syntax safely.</li>
+                  <li><code>systemctl restart rsyslog</code>: apply config changes.</li>
+                  <li><code>firewall-cmd --permanent --add-port=514/udp</code>: open UDP/514 persistently.</li>
+                  <li><code>firewall-cmd --reload</code>: apply permanent firewall rules.</li>
+                  <li><code>ss -lunp</code>: verify UDP listener and owning process.</li>
+                  <li><code>logger -p local0.notice</code>: generate a test syslog event.</li>
+                  <li><code>tail /var/log/messages</code>: confirm the logging pipeline.</li>
+                  <li><code>/etc/logrotate.d/acmeapp</code>: per-app logrotate policy file.</li>
+                  <li><code>logrotate -d</code>: debug new policies without changing files.</li>
                 </ul>
-
-                <div class="lab-callout">
-                  <div class="lab-callout-label">Tip</div>
-                  <p class="m-b-0">
-                    When you need deterministic boundaries, prefer MiB units (<code>1MiB</code>) and verify with
-                    <code>parted print</code> immediately after each write.
-                  </p>
-                </div>
               </section>
             </div>
             <!-- /main -->
@@ -547,7 +532,13 @@ sdb    8:16  0  100M  0 disk</code></pre>
                   <a href="https://github.com/vonds" target="_blank" rel="noopener">Github</a>
                 </li>
                 <li>
-                  <a href="https://www.linkedin.com/in/vonds/" target="_blank" rel="noopener">Linkedin</a>
+                  <a
+                    href="https://www.linkedin.com/in/vonds/"
+                    target="_blank"
+                    rel="noopener"
+                  >
+                    Linkedin
+                  </a>
                 </li>
               </ul>
             </div>

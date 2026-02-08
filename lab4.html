@@ -12,11 +12,7 @@
     <!-- Favicons -->
     <link rel="shortcut icon" href="../assets/images/favicon.png" />
     <link rel="apple-touch-icon" href="../assets/images/apple-touch-icon.png" />
-    <link
-      rel="apple-touch-icon"
-      sizes="72x72"
-      href="../assets/images/apple-touch-icon-72x72.png"
-    />
+    <link rel="apple-touch-icon" sizes="72x72" href="../assets/images/apple-touch-icon-72x72.png" />
     <link
       rel="apple-touch-icon"
       sizes="114x114"
@@ -37,14 +33,11 @@
     <link href="../assets/css/style.css" rel="stylesheet" />
     <link href="../assets/css/docs.css" rel="stylesheet" />
 
-    <!-- Lab page styles (new) -->
+    <!-- Lab page styles -->
     <link href="../assets/css/lab.css" rel="stylesheet" />
 
     <!-- Fonts -->
-    <link
-      href="https://fonts.googleapis.com/css?family=Dosis"
-      rel="stylesheet"
-    />
+    <link href="https://fonts.googleapis.com/css?family=Dosis" rel="stylesheet" />
   </head>
 
   <body>
@@ -68,33 +61,25 @@
               <a href="#">Portfolio</a>
               <ul>
                 <li>
-                  <a
-                    href="https://github.com/vonds/exit_0"
-                    target="_blank"
-                    rel="noopener"
-                  >
+                  <a href="https://github.com/vonds/exit_0" target="_blank" rel="noopener">
                     exit_0
                   </a>
                 </li>
                 <li>
-                  <a
-                    href="docs.html"
-                    target="_blank"
-                    rel="noopener"
-                  >
+                  <a href="docs.html" target="_blank" rel="noopener">
                     exit_0 Documentation
                   </a>
                 </li>
-                <li><a href="https://github.com/vonds/sentinel" target="_blank" rel="noopener">Sentinel</a></li>
+                <li>
+                  <a href="https://github.com/vonds/sentinel" target="_blank" rel="noopener">
+                    Sentinel
+                  </a>
+                </li>
               </ul>
             </li>
 
             <li>
-              <a
-                href="https://www.linkedin.com/in/vonds/"
-                target="_blank"
-                rel="noopener"
-              >
+              <a href="https://www.linkedin.com/in/vonds/" target="_blank" rel="noopener">
                 LinkedIn
               </a>
             </li>
@@ -129,9 +114,7 @@
     <!-- WRAPPER -->
     <div class="wrapper">
       <!-- NAVIGATION -->
-      <nav
-        class="navbar navbar-custom navbar-transparent navbar-light navbar-fixed-top"
-      >
+      <nav class="navbar navbar-custom navbar-transparent navbar-light navbar-fixed-top">
         <div class="container">
           <div class="navbar-header">
             <a class="navbar-brand" href="../index.html">
@@ -157,24 +140,12 @@
           <h2 class="font-alt module-title m-t-60">
             Lab 4: Using sed To Do SSH Config Hardening
           </h2>
+
           <nav class="lab-pagination">
-            <a
-              id="prev-lab"
-              class="lab-nav-link"
-              href="#"
-              aria-label="Previous lab"
-            >
-              &laquo;
-            </a>
-            <a
-              id="next-lab"
-              class="lab-nav-link"
-              href="#"
-              aria-label="Next lab"
-            >
-              &raquo;
-            </a>
+            <a id="prev-lab" class="lab-nav-link" href="#" aria-label="Previous lab">&laquo;</a>
+            <a id="next-lab" class="lab-nav-link" href="#" aria-label="Next lab">&raquo;</a>
           </nav>
+
           <div class="row">
             <!-- LEFT SIDEBAR -->
             <div class="col-sm-4 col-md-3 lab-sidebar">
@@ -183,7 +154,11 @@
                   <h5 class="widget-title"><a href="./docs.html">Lab Index</a></h5>
                   <ul class="docs-nav">
                     <li><a href="#scenario">Scenario</a></li>
+                    <li><a href="#objective">Objective</a></li>
+                    <li><a href="#concepts">Concepts</a></li>
                     <li><a href="#walkthrough">Walkthrough</a></li>
+                    <li><a href="#breakpoints">Breakpoints</a></li>
+                    <li><a href="#cleanup">Cleanup</a></li>
                     <li><a href="#reference">Reference</a></li>
                   </ul>
                 </div>
@@ -192,160 +167,110 @@
 
             <!-- MAIN CONTENT -->
             <div class="col-sm-8 col-md-9 lab-doc">
-              <!-- 1) Title + Summary (2 sentences max) -->
               <p class="m-b-20 lab-summary">
-                Harden SSH configuration using precise
-                <code>sed</code>
-                substitutions against a test
-                <code>sshd_config</code>
-                file. You will disable root login, disable password
+                Harden SSH configuration using precise <code>sed</code> substitutions against a test
+                <code>sshd_config</code> file. You will disable root login, disable password
                 authentication, and change the SSH port using CLI-only edits.
               </p>
 
+              <!-- Video (kept on page; removed from left panel moving forward) -->
               <section class="lab-section" id="video" aria-label="Lab video">
-  				<div class="lab-video">
-    				<div class="lab-video-embed text-center">
-      					<iframe 
-							width="560" 
-							height="315" 
-							src="https://www.youtube.com/embed/cUn2evRCIjo?si=jwYvqWmiVjAdYiie" 
-							title="YouTube video player" 
-							frameborder="0" 
-							allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
-							referrerpolicy="strict-origin-when-cross-origin" 
-							allowfullscreen>
-						</iframe>
-    				</div>
-  				</div>
-			</section>
+                <div class="lab-video">
+                  <div class="lab-video-embed text-center">
+                    <iframe
+                      src="https://www.youtube.com/embed/cUn2evRCIjo?si=jwYvqWmiVjAdYiie"
+                      title="YouTube video player"
+                      frameborder="0"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                      referrerpolicy="strict-origin-when-cross-origin"
+                      allowfullscreen
+                    ></iframe>
+                  </div>
+                </div>
+              </section>
 
-              <!-- 2) Scenario -->
+              <!-- Scenario -->
               <section class="lab-section" id="scenario">
                 <div class="lab-chips" aria-label="Tags">
-                  <span class="lab-chip">
-                    <span class="lab-chip-key">security</span>
-                  </span>
-                  <span class="lab-chip">
-                    <span class="lab-chip-key">services</span>
-                  </span>
-                  <span class="lab-chip">
-                    <span class="lab-chip-key">core</span>
-                  </span>
+                  <span class="lab-chip"><span class="lab-chip-key">security</span></span>
+                  <span class="lab-chip"><span class="lab-chip-key">services</span></span>
+                  <span class="lab-chip"><span class="lab-chip-key">core</span></span>
                 </div>
 
-                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
-                  Scenario
-                </h3>
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">Scenario</h3>
 
                 <p>
-                  Your task is to harden SSH settings using the
-                  <code>sed</code>
-                  command. You have a sample SSH daemon configuration at
-                  <code>/tmp/sshd_config</code>
-                  , and you must apply three changes:
-                  <code>PermitRootLogin</code>
-                  to
-                  <code>no</code>
-                  ,
-                  <code>PasswordAuthentication</code>
-                  to
-                  <code>no</code>
-                  , and the SSH
-                  <code>Port</code>
-                  to
-                  <code>2222</code>
-                  .
+                  Your task is to harden SSH settings using the <code>sed</code> command. You have
+                  a sample SSH daemon configuration at <code>/tmp/sshd_config</code>, and you must
+                  apply three changes: set <code>PermitRootLogin</code> to <code>no</code>, set
+                  <code>PasswordAuthentication</code> to <code>no</code>, and change the SSH
+                  <code>Port</code> to <code>2222</code>.
                 </p>
 
                 <div class="lab-callout">
                   <div class="lab-callout-label">Operator context</div>
                   <p class="m-b-0">
-                    This lab reflects a standard production workflow: assess the current state, apply targeted configuration changes, and verify the results. In a live environment, you would also validate the syntax and restart <code>sshd</code>, but the focus here is on safe and controlled text manipulation.
+                    This lab reflects a standard production workflow: assess the current state,
+                    apply targeted configuration changes, and verify the results. In a live
+                    environment, you would also validate the syntax and restart <code>sshd</code>,
+                    but the focus here is safe and controlled text manipulation.
                   </p>
                 </div>
               </section>
 
-              <!-- 3) Objective -->
+              <!-- Objective -->
               <section class="lab-section alt-background" id="objective">
-                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
-                  Objective
-                </h3>
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">Objective</h3>
+                <ul>
+                  <li>View an SSH daemon configuration file with <code>cat</code>.</li>
+                  <li>Use anchored <code>sed</code> substitutions to change specific directives.</li>
+                  <li>Confirm the resulting configuration values are correct.</li>
+                </ul>
+              </section>
+
+              <!-- Concepts (no alt-background moving forward) -->
+              <section class="lab-section" id="concepts">
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">Concepts</h3>
                 <ul>
                   <li>
-                    View an SSH daemon configuration file with
-                    <code>cat</code>
-                    .
+                    Treat configuration changes like change control: read current state, write a
+                    minimal change, then re-check.
                   </li>
                   <li>
-                    Use anchored
-                    <code>sed</code>
-                    substitutions to change specific directives.
+                    Anchoring with <code>^</code> reduces collateral edits by matching only directive
+                    lines that start with the setting name.
                   </li>
                   <li>
-                    Confirm the resulting configuration values are correct.
+                    SSH hardening is layered: authentication method, privileged access, and exposed
+                    surface area (port) are adjusted together.
+                  </li>
+                  <li>
+                    In-place edits are fast; verification is what makes them safe.
                   </li>
                 </ul>
               </section>
 
-              <!-- 4) What You'll Practice -->
-              <section class="lab-section" id="practice">
-                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
-                  What You’ll Practice
-                </h3>
-
-                <ul class="m-t-10">
-                  <li>
-                    Reading configuration state from
-                    <code>/tmp/sshd_config</code>
-                    .
-                  </li>
-                  <li>
-                    Using
-                    <code>sed -i</code>
-                    for in-place edits.
-                  </li>
-                  <li>
-                    Anchoring patterns with
-                    <code>^</code>
-                    to avoid accidental matches.
-                  </li>
-                  <li>
-                    Editing SSH hardening directives without opening an editor.
-                  </li>
-                </ul>
-              </section>
-
-              <!-- 5) Commands Walkthrough -->
+              <!-- Walkthrough -->
               <section class="lab-section alt-background" id="walkthrough">
-                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
-                  Walkthrough
-                </h3>
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">Walkthrough</h3>
 
                 <!-- Step 1 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
-                    <strong class="font-alt">Step 1</strong>
-                    : View the current SSH daemon configuration.
+                    <strong class="font-alt">Step 1</strong>: View the current SSH daemon configuration.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
-                      <button
-                        class="lab-copy-btn"
-                        type="button"
-                        data-copy="#cmd-step-1"
-                      >
-                        Copy
-                      </button>
+                      <button class="lab-copy-btn" type="button" data-copy="#cmd-step-1">Copy</button>
                     </div>
                     <pre><code id="cmd-step-1">cat /tmp/sshd_config</code></pre>
                   </div>
 
                   <p>
-                    Confirm the current directive values before modifying
-                    anything. This prevents you from “hardening” the wrong file
-                    or guessing the current state.
+                    Confirm the current directive values before modifying anything. This prevents
+                    you from hardening the wrong file or guessing the current state.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -359,100 +284,62 @@ Port 22</code></pre>
                 <!-- Step 2 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
-                    <strong class="font-alt">Step 2</strong>
-                    : Disable root login by setting
-                    <code>PermitRootLogin</code>
-                    to
-                    <code>no</code>
-                    .
+                    <strong class="font-alt">Step 2</strong>: Disable root login by setting
+                    <code>PermitRootLogin</code> to <code>no</code>.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
-                      <button
-                        class="lab-copy-btn"
-                        type="button"
-                        data-copy="#cmd-step-2"
-                      >
-                        Copy
-                      </button>
+                      <button class="lab-copy-btn" type="button" data-copy="#cmd-step-2">Copy</button>
                     </div>
                     <pre><code id="cmd-step-2">sed -i 's/^PermitRootLogin yes/PermitRootLogin no/' /tmp/sshd_config</code></pre>
                   </div>
 
                   <p>
-                    The pattern is anchored with
-                    <code>^</code>
-                    so only the directive line starting with
-                    <code>PermitRootLogin</code>
-                    is changed.
+                    The match is anchored with <code>^</code> so only the directive line starting with
+                    <code>PermitRootLogin</code> is changed.
                   </p>
                 </div>
 
                 <!-- Step 3 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
-                    <strong class="font-alt">Step 3</strong>
-                    : Disable password authentication by setting
-                    <code>PasswordAuthentication</code>
-                    to
-                    <code>no</code>
-                    .
+                    <strong class="font-alt">Step 3</strong>: Disable password authentication by setting
+                    <code>PasswordAuthentication</code> to <code>no</code>.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
-                      <button
-                        class="lab-copy-btn"
-                        type="button"
-                        data-copy="#cmd-step-3"
-                      >
-                        Copy
-                      </button>
+                      <button class="lab-copy-btn" type="button" data-copy="#cmd-step-3">Copy</button>
                     </div>
                     <pre><code id="cmd-step-3">sed -i 's/^PasswordAuthentication yes/PasswordAuthentication no/' /tmp/sshd_config</code></pre>
                   </div>
 
                   <p>
                     This performs a targeted substitution for the
-                    <code>PasswordAuthentication</code>
-                    directive only.
+                    <code>PasswordAuthentication</code> directive only.
                   </p>
                 </div>
 
                 <!-- Step 4 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
-                    <strong class="font-alt">Step 4</strong>
-                    : Change the SSH port to
-                    <code>2222</code>
-                    .
+                    <strong class="font-alt">Step 4</strong>: Change the SSH port to <code>2222</code>.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
-                      <button
-                        class="lab-copy-btn"
-                        type="button"
-                        data-copy="#cmd-step-4"
-                      >
-                        Copy
-                      </button>
+                      <button class="lab-copy-btn" type="button" data-copy="#cmd-step-4">Copy</button>
                     </div>
                     <pre><code id="cmd-step-4">sed -i 's/^Port 22/Port 2222/' /tmp/sshd_config</code></pre>
                   </div>
 
                   <p>
-                    This updates the
-                    <code>Port</code>
-                    directive line from
-                    <code>22</code>
-                    to
-                    <code>2222</code>
-                    without touching other lines.
+                    This updates the <code>Port</code> directive line from <code>22</code> to
+                    <code>2222</code> without touching other lines.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -463,82 +350,112 @@ Port 2222</code></pre>
                 </div>
               </section>
 
-              <!-- 8) Reference -->
-              <!-- 9) Reference -->
+              <!-- Common breakpoints -->
+              <section class="lab-section" id="breakpoints">
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">Common breakpoints</h3>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">No change after running sed</div>
+                  <p class="m-b-0">
+                    The file may not match the expected values (for example, the directives are
+                    commented out, already set to <code>no</code>, or use extra whitespace). Inspect
+                    with <code>grep -nE '^(PermitRootLogin|PasswordAuthentication|Port)\\b' /tmp/sshd_config</code>
+                    and adjust the match pattern.
+                  </p>
+                </div>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">Directive appears multiple times</div>
+                  <p class="m-b-0">
+                    In real <code>sshd_config</code> files, duplicates can exist, and the last match
+                    usually wins. Your substitution might change only one line while another later
+                    line overrides it. Use <code>grep -n</code> to find duplicates and resolve them.
+                  </p>
+                </div>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">Permission denied</div>
+                  <p class="m-b-0">
+                    If this were a real <code>/etc/ssh/sshd_config</code> edit, you would need
+                    elevated privileges. Practice the same workflow with <code>sudo</code> when
+                    appropriate.
+                  </p>
+                </div>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">Lockout risk in production</div>
+                  <p class="m-b-0">
+                    Disabling password auth and changing the port can lock you out if keys or
+                    firewall rules are not in place. Always keep an active session open and validate
+                    connectivity before you disconnect.
+                  </p>
+                </div>
+              </section>
+
+              <!-- Cleanup -->
+              <section class="lab-section alt-background" id="cleanup">
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">Cleanup checklist</h3>
+
+                <p>
+                  This lab modifies a temporary test file. Cleanup is resetting the file so you can
+                  repeat the workflow.
+                </p>
+
+                <div class="lab-codeblock m-b-40 m-t-40">
+                  <div class="lab-codeblock-header">
+                    <span>Optional</span>
+                    <button class="lab-copy-btn" type="button" data-copy="#cmd-cleanup">Copy</button>
+                  </div>
+                  <pre><code id="cmd-cleanup"># Reset /tmp/sshd_config back to the starting values for another repetition
+sed -i 's/^PermitRootLogin no/PermitRootLogin yes/' /tmp/sshd_config
+sed -i 's/^PasswordAuthentication no/PasswordAuthentication yes/' /tmp/sshd_config
+sed -i 's/^Port 2222/Port 22/' /tmp/sshd_config
+
+# Verify
+cat /tmp/sshd_config</code></pre>
+                </div>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">Success signal</div>
+                  <p class="m-b-0">
+                    You can make narrow, audit-friendly configuration changes using anchored matches,
+                    then validate results immediately.
+                  </p>
+                </div>
+              </section>
+
+              <!-- Reference -->
               <section class="lab-section" id="reference">
-                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
-                  Reference
-                </h3>
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">Reference</h3>
 
                 <ul class="lab-reference-list">
                   <li>
-                    <code>cat &lt;file&gt;</code>
-                    : Prints file contents to standard output.
+                    <code>cat &lt;file&gt;</code>: Prints file contents to standard output.
                   </li>
 
                   <li>
-                    <code>sed -i 's/pattern/replacement/' &lt;file&gt;</code>
-                    : Replaces the first match of
-                    <code>pattern</code>
-                    on each line and writes changes back to the file.
+                    <code>sed -i 's/pattern/replacement/' &lt;file&gt;</code>: Replaces the first match of
+                    <code>pattern</code> on each line and writes changes back to the file.
                     <ul>
-                      <li>
-                        <code>-i</code>
-                        : Edit the file in-place (modify the file directly).
-                      </li>
-                      <li>
-                        <code>^</code>
-                        : Anchors the match to the start of the line.
-                      </li>
-                      <li>
-                        <code>s/old/new/</code>
-                        : Substitution operator (replace
-                        <code>old</code>
-                        with
-                        <code>new</code>
-                        ).
-                      </li>
+                      <li><code>-i</code>: Edit the file in place.</li>
+                      <li><code>^</code>: Anchor the match to the start of the line.</li>
+                      <li><code>s/old/new/</code>: Substitution operator.</li>
                     </ul>
                   </li>
 
-                  <li>
-                    <code>/tmp/sshd_config</code>
-                    : A temporary test configuration file used in this lab.
-                  </li>
-
-                  <li>
-                    <code>PermitRootLogin</code>
-                    : Controls whether the root user can log in over SSH.
-                  </li>
-
-                  <li>
-                    <code>PasswordAuthentication</code>
-                    : Controls whether SSH allows password-based logins.
-                  </li>
-
-                  <li>
-                    <code>Port</code>
-                    : Specifies the TCP port where
-                    <code>sshd</code>
-                    listens for incoming connections.
-                  </li>
+                  <li><code>/tmp/sshd_config</code>: Temporary test configuration file used in this lab.</li>
+                  <li><code>PermitRootLogin</code>: Controls whether the root user can log in over SSH.</li>
+                  <li><code>PasswordAuthentication</code>: Controls whether SSH allows password-based logins.</li>
+                  <li><code>Port</code>: Specifies the TCP port where <code>sshd</code> listens for incoming connections.</li>
                 </ul>
               </section>
-
-              <!-- Lab Pagination -->
             </div>
             <!-- /main -->
           </div>
           <!-- /row -->
+
           <nav class="lab-pagination">
-            <a
-                id="prev-lab"
-                class="lab-nav-link"
-                href="#"
-                aria-label="Previous lab"
-            >
-                &uArr;
-            </a>
+            <a id="prev-lab" class="lab-nav-link" href="#" aria-label="Previous lab">&uArr;</a>
           </nav>
         </div>
         <!-- /container -->
@@ -551,20 +468,12 @@ Port 2222</code></pre>
             <div class="col-sm-12">
               <ul class="social-text-links font-alt text-center m-b-20">
                 <li>
-                  <a
-                    href="https://github.com/vonds"
-                    target="_blank"
-                    rel="noopener"
-                  >
+                  <a href="https://github.com/vonds" target="_blank" rel="noopener">
                     Github
                   </a>
                 </li>
                 <li>
-                  <a
-                    href="https://www.linkedin.com/in/vonds/"
-                    target="_blank"
-                    rel="noopener"
-                  >
+                  <a href="https://www.linkedin.com/in/vonds/" target="_blank" rel="noopener">
                     Linkedin
                   </a>
                 </li>
@@ -575,8 +484,7 @@ Port 2222</code></pre>
           <div class="row">
             <div class="col-sm-12">
               <p class="copyright text-center m-b-0">
-                VONDS &copy;
-                <span id="year"></span>
+                VONDS &copy; <span id="year"></span>
               </p>
 
               <div class="scroll-up">
@@ -610,5 +518,9 @@ Port 2222</code></pre>
 
     <!-- Lab page JS (new) -->
     <script src="../assets/js/lab.js"></script>
+
+    <script>
+      document.getElementById("year").textContent = new Date().getFullYear()
+    </script>
   </body>
 </html>

@@ -12,11 +12,7 @@
     <!-- Favicons -->
     <link rel="shortcut icon" href="../assets/images/favicon.png" />
     <link rel="apple-touch-icon" href="../assets/images/apple-touch-icon.png" />
-    <link
-      rel="apple-touch-icon"
-      sizes="72x72"
-      href="../assets/images/apple-touch-icon-72x72.png"
-    />
+    <link rel="apple-touch-icon" sizes="72x72" href="../assets/images/apple-touch-icon-72x72.png" />
     <link
       rel="apple-touch-icon"
       sizes="114x114"
@@ -37,14 +33,11 @@
     <link href="../assets/css/style.css" rel="stylesheet" />
     <link href="../assets/css/docs.css" rel="stylesheet" />
 
-    <!-- Lab page styles (new) -->
+    <!-- Lab page styles -->
     <link href="../assets/css/lab.css" rel="stylesheet" />
 
     <!-- Fonts -->
-    <link
-      href="https://fonts.googleapis.com/css?family=Dosis"
-      rel="stylesheet"
-    />
+    <link href="https://fonts.googleapis.com/css?family=Dosis" rel="stylesheet" />
   </head>
 
   <body>
@@ -68,41 +61,20 @@
               <a href="#">Portfolio</a>
               <ul>
                 <li>
-                  <a
-                    href="https://github.com/vonds/exit_0"
-                    target="_blank"
-                    rel="noopener"
-                  >
+                  <a href="https://github.com/vonds/exit_0" target="_blank" rel="noopener">
                     exit_0
                   </a>
                 </li>
                 <li>
-                  <a
-                    href="docs.html"
-                    target="_blank"
-                    rel="noopener"
-                  >
-                    exit_0 Documentation
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="https://github.com/vonds/sentinel"
-                    target="_blank"
-                    rel="noopener"
-                  >
-                    Sentinel
+                  <a href="docs.html" target="_blank" rel="noopener">
+                    exit_0
                   </a>
                 </li>
               </ul>
             </li>
 
             <li>
-              <a
-                href="https://www.linkedin.com/in/vonds/"
-                target="_blank"
-                rel="noopener"
-              >
+              <a href="https://www.linkedin.com/in/vonds/" target="_blank" rel="noopener">
                 LinkedIn
               </a>
             </li>
@@ -137,9 +109,7 @@
     <!-- WRAPPER -->
     <div class="wrapper">
       <!-- NAVIGATION -->
-      <nav
-        class="navbar navbar-custom navbar-transparent navbar-light navbar-fixed-top"
-      >
+      <nav class="navbar navbar-custom navbar-transparent navbar-light navbar-fixed-top">
         <div class="container">
           <div class="navbar-header">
             <a class="navbar-brand" href="../index.html">
@@ -162,36 +132,28 @@
       <!-- DOCS PAGE -->
       <section class="module">
         <div class="container">
-          <h2 class="font-alt module-title m-t-60">
-            Lab 12: Schedule and Inspect Cron Jobs
-          </h2>
+          <h2 class="font-alt module-title m-t-60">Lab 12: Schedule and Inspect Cron Jobs</h2>
+
           <nav class="lab-pagination">
-            <a
-              id="prev-lab"
-              class="lab-nav-link"
-              href="#"
-              aria-label="Previous lab"
-            >
-              &laquo;
-            </a>
-            <a
-              id="next-lab"
-              class="lab-nav-link"
-              href="#"
-              aria-label="Next lab"
-            >
-              &raquo;
-            </a>
+            <a id="prev-lab" class="lab-nav-link" href="#" aria-label="Previous lab">&laquo;</a>
+            <a id="next-lab" class="lab-nav-link" href="#" aria-label="Next lab">&raquo;</a>
           </nav>
+
           <div class="row">
             <!-- LEFT SIDEBAR -->
             <div class="col-sm-4 col-md-3 lab-sidebar">
               <div class="docs-sidebar">
                 <div class="docs-widget">
-                  <h5 class="widget-title"><a href="./docs.html">Lab Index</a></h5>
+                  <h5 class="widget-title">
+                    <a href="./docs.html">Lab Index</a>
+                  </h5>
                   <ul class="docs-nav">
                     <li><a href="#scenario">Scenario</a></li>
+                    <li><a href="#objective">Objective</a></li>
+                    <li><a href="#concepts">Concepts</a></li>
                     <li><a href="#walkthrough">Walkthrough</a></li>
+                    <li><a href="#breakpoints">Breakpoints</a></li>
+                    <li><a href="#cleanup">Cleanup</a></li>
                     <li><a href="#reference">Reference</a></li>
                   </ul>
                 </div>
@@ -200,165 +162,111 @@
 
             <!-- MAIN CONTENT -->
             <div class="col-sm-8 col-md-9 lab-doc">
-              <!-- 1) Title + Summary (2 sentences max) -->
               <p class="m-b-20 lab-summary">
-                Schedule a recurring backup task using a user crontab and verify
-                that it is installed correctly. Validate the job with crontab
-                inspection, identify where cron activity is logged, and
-                understand the role of system-wide cron directories.
+                Schedule a recurring backup task using a user crontab and verify that it is installed correctly.
+                Validate the job with crontab inspection, identify where cron activity is logged, and understand the role of system-wide cron directories.
               </p>
 
+              <!-- Video (kept on page; removed from left panel) -->
               <section class="lab-section" id="video" aria-label="Lab video">
-  				<div class="lab-video">
-    				<div class="lab-video-embed text-center">
-      					<iframe 
-							width="560" 
-							height="315" 
-							src="https://www.youtube.com/embed/90lldFwJSLw?si=xdJB8d_0mAEZ_35c" 
-							title="YouTube video player" 
-							frameborder="0" 
-							allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
-							referrerpolicy="strict-origin-when-cross-origin" 
-							allowfullscreen>
-						</iframe>
-    				</div>
-  				</div>
-			</section>
+                <div class="lab-video">
+                  <div class="lab-video-embed text-center">
+                    <iframe
+                      src="https://www.youtube.com/embed/90lldFwJSLw?si=xdJB8d_0mAEZ_35c"
+                      title="YouTube video player"
+                      frameborder="0"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                      referrerpolicy="strict-origin-when-cross-origin"
+                      allowfullscreen
+                    ></iframe>
+                  </div>
+                </div>
+              </section>
 
-              <!-- 2) Scenario -->
+              <!-- Scenario -->
               <section class="lab-section" id="scenario">
                 <div class="lab-chips" aria-label="Tags">
-                  <span class="lab-chip">
-                    <span class="lab-chip-key">services</span>  
-                  </span>
-                  <span class="lab-chip">
-                    <span class="lab-chip-key">troubleshooting</span>
-                  </span>
-                  <span class="lab-chip">
-                    <span class="lab-chip-key">core</span>
-                  </span>
+                  <span class="lab-chip"><span class="lab-chip-key">services</span></span>
+                  <span class="lab-chip"><span class="lab-chip-key">troubleshooting</span></span>
+                  <span class="lab-chip"><span class="lab-chip-key">core</span></span>
                 </div>
 
-                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
-                  Scenario
-                </h3>
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">Scenario</h3>
+
                 <p>
-                  Your team needs regular backups to run automatically. You have
-                  been asked to schedule a daily backup job using cron, confirm
-                  it is present in the user’s crontab, and identify where you
-                  would check for evidence when troubleshooting job execution.
+                  Your team needs regular backups to run automatically. You have been asked to schedule a daily backup job using cron,
+                  confirm it is present in the user’s crontab, and identify where you would check for evidence when troubleshooting job execution.
                 </p>
+
                 <div class="lab-callout">
                   <div class="lab-callout-label">Operator context</div>
                   <p class="m-b-0">
-                    Cron failures are often simple: the job was never installed,
-                    the schedule was wrong, or logs were never checked. This lab
-                    builds the habit of proving each piece with command output.
+                    Cron failures are often simple: the job was never installed, the schedule was wrong, or logs were never checked.
+                    This lab builds the habit of proving each piece with command output.
                   </p>
                 </div>
               </section>
 
-              <!-- 3) Objective -->
+              <!-- Objective -->
               <section class="lab-section alt-background" id="objective">
-                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
-                  Objective
-                </h3>
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">Objective</h3>
+                <ul>
+                  <li>List the current user’s cron jobs.</li>
+                  <li>Open the user’s crontab for editing.</li>
+                  <li>Create a daily job to run <code>/usr/local/bin/backup.sh</code> at 02:00.</li>
+                  <li>Verify the job is installed using <code>crontab -l</code>.</li>
+                  <li>Identify where cron messages are logged on common distros.</li>
+                  <li>Explain the purpose of <code>/etc/cron.d/</code>.</li>
+                </ul>
+              </section>
+
+              <!-- Concepts (no alt-background moving forward) -->
+              <section class="lab-section" id="concepts">
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">Concepts</h3>
                 <ul>
                   <li>
-                    List the current user’s cron jobs.
+                    A user crontab is per-account scheduling managed by <code>crontab</code>, not a file you edit directly.
                   </li>
                   <li>
-                    Open the user’s crontab for editing.
+                    Always verify install with <code>crontab -l</code>. If it is not listed, it will not run.
                   </li>
                   <li>
-                    Create a daily job to run
-                    <code>/usr/local/bin/backup.sh</code>
-                    at 02:00.
+                    Cron runs with a minimal environment. Use full paths and do not assume shell variables are present.
                   </li>
                   <li>
-                    Verify the job is installed using
-                    <code>crontab -l</code>
-                    .
+                    Log destinations vary by distro and logging stack. Know where your platform records cron execution.
                   </li>
                   <li>
-                    Identify where cron messages are logged on common distros.
-                  </li>
-                  <li>
-                    Explain the purpose of
-                    <code>/etc/cron.d/</code>
-                    .
+                    <code>/etc/cron.d/</code> is for system-managed cron files that include an explicit user field.
                   </li>
                 </ul>
               </section>
 
-              <!-- 4) What You'll Practice -->
-              <section class="lab-section" id="practice">
-                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
-                  What You’ll Practice
-                </h3>
-
-                <ul class="m-t-10">
-                  <li>
-                    Inspecting user crontabs with
-                    <code>crontab -l</code>
-                    .
-                  </li>
-                  <li>
-                    Editing user crontabs with
-                    <code>crontab -e</code>
-                    .
-                  </li>
-                  <li>
-                    Cron time field basics (minute, hour, day-of-month, month,
-                    day-of-week).
-                  </li>
-                  <li>
-                    Verifying job installation and troubleshooting using log
-                    locations.
-                  </li>
-                  <li>
-                    Understanding system-wide cron entries in
-                    <code>/etc/cron.d/</code>
-                    .
-                  </li>
-                </ul>
-              </section>
-
-              <!-- 5) Commands Walkthrough -->
+              <!-- Walkthrough -->
               <section class="lab-section alt-background" id="walkthrough">
-                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
-                  Walkthrough
-                </h3>
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">Walkthrough</h3>
 
                 <!-- Step 1 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
-                    <strong class="font-alt">Step 1</strong>
-                    : List the current user’s cron jobs.
+                    <strong class="font-alt">Step 1</strong>: List the current user’s cron jobs.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
-                      <button
-                        class="lab-copy-btn"
-                        type="button"
-                        data-copy="#cmd-step-1"
-                      >
-                        Copy
-                      </button>
+                      <button class="lab-copy-btn" type="button" data-copy="#cmd-step-1">Copy</button>
                     </div>
                     <pre><code id="cmd-step-1">crontab -l</code></pre>
                   </div>
 
                   <p>
-                    This confirms whether the user already has scheduled jobs.
-                    If no crontab exists, you will see a message indicating the
+                    This confirms whether the user already has scheduled jobs. If no crontab exists, you will see a message indicating the
                     crontab is empty or missing.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code id="verify-step-1"># Example (no jobs yet):
+                    <pre><code># Example (no jobs yet):
 crontab: no crontab for vonds</code></pre>
                   </div>
                 </div>
@@ -366,32 +274,24 @@ crontab: no crontab for vonds</code></pre>
                 <!-- Step 2 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
-                    <strong class="font-alt">Step 2</strong>
-                    : Open the user’s crontab for editing.
+                    <strong class="font-alt">Step 2</strong>: Open the user’s crontab for editing.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
-                      <button
-                        class="lab-copy-btn"
-                        type="button"
-                        data-copy="#cmd-step-2"
-                      >
-                        Copy
-                      </button>
+                      <button class="lab-copy-btn" type="button" data-copy="#cmd-step-2">Copy</button>
                     </div>
                     <pre><code id="cmd-step-2">crontab -e</code></pre>
                   </div>
 
                   <p>
-                    This opens the per-user crontab in an editor. The editor may
-                    vary by system configuration, but the goal is the same:
+                    This opens the per-user crontab in an editor. The editor may vary by system configuration, but the goal is the same:
                     install a cron entry under the user’s account.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code id="verify-step-2"># Example message:
+                    <pre><code># Example message:
 Editing crontab using nano. Use Ctrl+O to save, Ctrl+X to exit.</code></pre>
                   </div>
                 </div>
@@ -399,33 +299,24 @@ Editing crontab using nano. Use Ctrl+O to save, Ctrl+X to exit.</code></pre>
                 <!-- Step 3 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
-                    <strong class="font-alt">Step 3</strong>
-                    : Add a daily backup job at 02:00.
+                    <strong class="font-alt">Step 3</strong>: Add a daily backup job at 02:00.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
-                      <button
-                        class="lab-copy-btn"
-                        type="button"
-                        data-copy="#cmd-step-3"
-                      >
-                        Copy
-                      </button>
+                      <button class="lab-copy-btn" type="button" data-copy="#cmd-step-3">Copy</button>
                     </div>
                     <pre><code id="cmd-step-3">0 2 * * * /usr/local/bin/backup.sh</code></pre>
                   </div>
 
                   <p>
-                    Cron format is:
-                    <code>MIN HOUR DOM MON DOW CMD</code>
-                    . This entry runs at minute 0 of hour 2 every day of the
-                    month, every month, regardless of day-of-week.
+                    Cron format is <code>MIN HOUR DOM MON DOW CMD</code>. This entry runs at minute 0 of hour 2 every day of the month,
+                    every month, regardless of day-of-week.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code id="verify-step-3"># Confirm the entry is present in the crontab file you saved:
+                    <pre><code># Confirm the entry is present in the crontab file you saved:
 0 2 * * * /usr/local/bin/backup.sh</code></pre>
                   </div>
                 </div>
@@ -433,52 +324,37 @@ Editing crontab using nano. Use Ctrl+O to save, Ctrl+X to exit.</code></pre>
                 <!-- Step 4 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
-                    <strong class="font-alt">Step 4</strong>
-                    : Verify the job is installed.
+                    <strong class="font-alt">Step 4</strong>: Verify the job is installed.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
-                      <button
-                        class="lab-copy-btn"
-                        type="button"
-                        data-copy="#cmd-step-4"
-                      >
-                        Copy
-                      </button>
+                      <button class="lab-copy-btn" type="button" data-copy="#cmd-step-4">Copy</button>
                     </div>
                     <pre><code id="cmd-step-4">crontab -l</code></pre>
                   </div>
 
                   <p>
-                    Always re-list the crontab after editing. This proves your
-                    entry was installed and helps catch editing mistakes before
+                    Always re-list the crontab after editing. This proves your entry was installed and helps catch editing mistakes before
                     you wait for the schedule to trigger.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code id="verify-step-4">0 2 * * * /usr/local/bin/backup.sh</code></pre>
+                    <pre><code>0 2 * * * /usr/local/bin/backup.sh</code></pre>
                   </div>
                 </div>
 
                 <!-- Step 5 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
-                    <strong class="font-alt">Step 5</strong>
-                    : Identify where cron messages are logged.
+                    <strong class="font-alt">Step 5</strong>: Identify where cron messages are logged.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
-                      <button
-                        class="lab-copy-btn"
-                        type="button"
-                        data-copy="#cmd-step-5"
-                      >
-                        Copy
-                      </button>
+                      <button class="lab-copy-btn" type="button" data-copy="#cmd-step-5">Copy</button>
                     </div>
                     <pre><code id="cmd-step-5"># Common locations (distro-dependent):
 /var/log/syslog
@@ -486,16 +362,13 @@ Editing crontab using nano. Use Ctrl+O to save, Ctrl+X to exit.</code></pre>
                   </div>
 
                   <p>
-                    Log locations vary by distro and logging configuration.
-                    Debian/Ubuntu commonly record cron activity in
-                    <code>/var/log/syslog</code>
-                    . Some systems log cron to a dedicated
-                    <code>/var/log/cron.log</code>
-                    or include cron events in a general messages log.
+                    Log locations vary by distro and logging configuration. Debian/Ubuntu commonly record cron activity in
+                    <code>/var/log/syslog</code>. Some systems log cron to a dedicated <code>/var/log/cron.log</code> or include cron events
+                    in a general messages log.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code id="verify-step-5"># Example evidence patterns you might see:
+                    <pre><code># Example evidence patterns you might see:
 CRON[12345]: (vonds) CMD (/usr/local/bin/backup.sh)</code></pre>
                   </div>
                 </div>
@@ -503,35 +376,24 @@ CRON[12345]: (vonds) CMD (/usr/local/bin/backup.sh)</code></pre>
                 <!-- Step 6 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
-                    <strong class="font-alt">Step 6</strong>
-                    : Understand what
-                    <code>/etc/cron.d/</code>
-                    is for.
+                    <strong class="font-alt">Step 6</strong>: Understand what <code>/etc/cron.d/</code> is for.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
-                      <button
-                        class="lab-copy-btn"
-                        type="button"
-                        data-copy="#cmd-step-6"
-                      >
-                        Copy
-                      </button>
+                      <button class="lab-copy-btn" type="button" data-copy="#cmd-step-6">Copy</button>
                     </div>
                     <pre><code id="cmd-step-6">ls -l /etc/cron.d/</code></pre>
                   </div>
 
                   <p>
-                    <code>/etc/cron.d/</code>
-                    holds system-wide cron jobs that are managed as separate
-                    files. Unlike user crontabs, entries here typically include
-                    an explicit user field so a job can run as a chosen account.
+                    <code>/etc/cron.d/</code> holds system-wide cron jobs that are managed as separate files. Unlike user crontabs,
+                    entries here typically include an explicit user field so a job can run as a chosen account.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code id="verify-step-6"># You should see one or more cron definition files (example):
+                    <pre><code># You should see one or more cron definition files (example):
 anacron
 e2scrub_all
 php</code></pre>
@@ -539,58 +401,98 @@ php</code></pre>
                 </div>
               </section>
 
-              <!-- 8) Reference -->
-              <!-- 9) Reference -->
+              <!-- Common breakpoints -->
+              <section class="lab-section" id="breakpoints">
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">Common breakpoints</h3>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">The job is not listed after editing</div>
+                  <p class="m-b-0">
+                    The editor may have exited without saving, or the crontab may have failed validation.
+                    Re-run <code>crontab -e</code>, save, then confirm with <code>crontab -l</code>.
+                  </p>
+                </div>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">The job is listed, but it never runs</div>
+                  <p class="m-b-0">
+                    Cron runs with a minimal environment. Verify the script path is correct, the script is executable, and
+                    use absolute paths inside the script. Then check cron logs for execution evidence.
+                  </p>
+                </div>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">The script runs manually but fails under cron</div>
+                  <p class="m-b-0">
+                    Environment differences are the usual cause. Missing <code>PATH</code>, missing variables, or relative paths
+                    inside the script can break cron execution. Log output to a file to capture errors.
+                  </p>
+                </div>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">No cron logs appear where you expect</div>
+                  <p class="m-b-0">
+                    Your system may be using journald-only logging or a different syslog configuration.
+                    Search the journal for cron entries or confirm where your distro records scheduler activity.
+                  </p>
+                </div>
+              </section>
+
+              <!-- Cleanup -->
+              <section class="lab-section alt-background" id="cleanup">
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">Cleanup checklist</h3>
+
+                <p>
+                  This lab installs a scheduled job. If you do not want it to persist, remove the entry from the user crontab
+                  and verify it is gone.
+                </p>
+
+                <div class="lab-codeblock m-b-40 m-t-40">
+                  <div class="lab-codeblock-header">
+                    <span>Commands</span>
+                    <button class="lab-copy-btn" type="button" data-copy="#cmd-cleanup">Copy</button>
+                  </div>
+                  <pre><code id="cmd-cleanup">crontab -l
+crontab -e</code></pre>
+                </div>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">Success signal</div>
+                  <p class="m-b-0">
+                    <code>crontab -l</code> shows the expected schedule (or shows no entry after removal), and cron logs show execution evidence when the job runs.
+                  </p>
+                </div>
+              </section>
+
+              <!-- Reference -->
               <section class="lab-section" id="reference">
-                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
-                  Reference
-                </h3>
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">Reference</h3>
 
                 <ul class="lab-reference-list">
                   <li>
-                    <code>crontab -l</code>
-                    : Lists the current user’s scheduled cron jobs.
+                    <code>crontab -l</code>: Lists the current user’s scheduled cron jobs.
                   </li>
                   <li>
-                    <code>crontab -e</code>
-                    : Edits the current user’s crontab in the configured editor.
+                    <code>crontab -e</code>: Edits the current user’s crontab in the configured editor.
                   </li>
                   <li>
-                    <code>MIN HOUR DOM MON DOW CMD</code>
-                    : Standard cron schedule fields used in user crontabs.
+                    <code>MIN HOUR DOM MON DOW CMD</code>: Standard cron schedule fields used in user crontabs.
                   </li>
                   <li>
-                    <code>/var/log/syslog</code>
-                    : Common location for cron messages on Debian/Ubuntu
-                    systems.
+                    <code>/var/log/syslog</code>: Common location for cron messages on Debian/Ubuntu systems.
                   </li>
                   <li>
-                    <code>/var/log/cron.log</code>
-                    : Common dedicated cron log file on some systems.
+                    <code>/var/log/cron.log</code>: Common dedicated cron log file on some systems.
                   </li>
                   <li>
-                    <code>/etc/cron.d/</code>
-                    : Directory for system-wide cron job definitions with an
-                    explicit user field.
+                    <code>/etc/cron.d/</code>: Directory for system-wide cron job definitions with an explicit user field.
                   </li>
                 </ul>
               </section>
-
-              <!-- Lab Pagination -->
             </div>
             <!-- /main -->
           </div>
           <!-- /row -->
-          <nav class="lab-pagination">
-            <a
-                id="prev-lab"
-                class="lab-nav-link"
-                href="#"
-                aria-label="Previous lab"
-            >
-                &uArr;
-            </a>
-          </nav>
         </div>
         <!-- /container -->
       </section>
@@ -602,22 +504,10 @@ php</code></pre>
             <div class="col-sm-12">
               <ul class="social-text-links font-alt text-center m-b-20">
                 <li>
-                  <a
-                    href="https://github.com/vonds"
-                    target="_blank"
-                    rel="noopener"
-                  >
-                    Github
-                  </a>
+                  <a href="https://github.com/vonds" target="_blank" rel="noopener">Github</a>
                 </li>
                 <li>
-                  <a
-                    href="https://www.linkedin.com/in/vonds/"
-                    target="_blank"
-                    rel="noopener"
-                  >
-                    Linkedin
-                  </a>
+                  <a href="https://www.linkedin.com/in/vonds/" target="_blank" rel="noopener">Linkedin</a>
                 </li>
               </ul>
             </div>
@@ -626,8 +516,7 @@ php</code></pre>
           <div class="row">
             <div class="col-sm-12">
               <p class="copyright text-center m-b-0">
-                VONDS &copy;
-                <span id="year"></span>
+                VONDS &copy; <span id="year"></span>
               </p>
 
               <div class="scroll-up">
@@ -650,7 +539,6 @@ php</code></pre>
     <script src="../assets/js/imagesloaded.pkgd.js"></script>
     <script src="../assets/js/isotope.pkgd.min.js"></script>
     <script src="../assets/js/packery-mode.pkgd.min.js"></script>
-    <script src="../assets/js/packery-mode.pkgd.min.js"></script>
     <script src="../assets/js/appear.js"></script>
     <script src="../assets/js/jquery.easing.1.3.js"></script>
     <script src="../assets/js/wow.min.js"></script>
@@ -662,5 +550,9 @@ php</code></pre>
 
     <!-- Lab page JS (new) -->
     <script src="../assets/js/lab.js"></script>
+
+    <script>
+      document.getElementById("year").textContent = new Date().getFullYear()
+    </script>
   </body>
 </html>

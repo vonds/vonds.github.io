@@ -12,11 +12,7 @@
     <!-- Favicons -->
     <link rel="shortcut icon" href="../assets/images/favicon.png" />
     <link rel="apple-touch-icon" href="../assets/images/apple-touch-icon.png" />
-    <link
-      rel="apple-touch-icon"
-      sizes="72x72"
-      href="../assets/images/apple-touch-icon-72x72.png"
-    />
+    <link rel="apple-touch-icon" sizes="72x72" href="../assets/images/apple-touch-icon-72x72.png" />
     <link
       rel="apple-touch-icon"
       sizes="114x114"
@@ -136,17 +132,11 @@
       <!-- DOCS PAGE -->
       <section class="module">
         <div class="container">
-          <h2 class="font-alt module-title m-t-60">
-            Lab 125: LVM Basics
-          </h2>
+          <h2 class="font-alt module-title m-t-60">Lab 125: LVM Basics</h2>
 
           <nav class="lab-pagination">
-            <a id="prev-lab" class="lab-nav-link" href="#" aria-label="Previous lab">
-              &laquo;
-            </a>
-            <a id="next-lab" class="lab-nav-link" href="#" aria-label="Next lab">
-              &raquo;
-            </a>
+            <a id="prev-lab" class="lab-nav-link" href="#" aria-label="Previous lab">&laquo;</a>
+            <a id="next-lab" class="lab-nav-link" href="#" aria-label="Next lab">&raquo;</a>
           </nav>
 
           <div class="row">
@@ -158,8 +148,13 @@
                     <a href="./docs.html">Lab Index</a>
                   </h5>
                   <ul class="docs-nav">
+
                     <li><a href="#scenario">Scenario</a></li>
+                    <li><a href="#objective">Objective</a></li>
+                    <li><a href="#concepts">Concepts</a></li>
                     <li><a href="#walkthrough">Walkthrough</a></li>
+                    <li><a href="#breakpoints">Breakpoints</a></li>
+                    <li><a href="#cleanup">Cleanup</a></li>
                     <li><a href="#reference">Reference</a></li>
                   </ul>
                 </div>
@@ -169,11 +164,14 @@
             <!-- MAIN CONTENT -->
             <div class="col-sm-8 col-md-9 lab-doc">
               <p class="m-b-20 lab-summary">
-                Build an LVM stack from scratch (<code>PV → VG → LV</code>) on a blank disk (<code>/dev/vdb</code>),
-                format the LV with XFS, mount it at <code>/mnt/logs</code>, make the mount persistent with a UUID-based
-                <code>/etc/fstab</code> entry, extend the LV, grow XFS online, then revert the system back to a clean state.
+                Build an LVM stack from scratch (<code>PV → VG → LV</code>) on a blank disk
+                (<code>/dev/vdb</code>), format the LV with XFS, mount it at
+                <code>/mnt/logs</code>, make the mount persistent with a UUID-based
+                <code>/etc/fstab</code> entry, extend the LV, grow XFS online, then revert the
+                system back to a clean state.
               </p>
 
+              <!-- Video -->
               <section class="lab-section" id="video" aria-label="Lab video">
                 <div class="lab-video">
                   <div class="lab-video-embed text-center">
@@ -202,16 +200,18 @@
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">Scenario</h3>
 
                 <p>
-                  A VM gets a new blank disk for application logs. You want flexibility to resize later, so you choose LVM.
-                  You will create <code>PV → VG → LV</code>, format XFS, mount at <code>/mnt/logs</code>, make it persistent
-                  via <code>/etc/fstab</code>, extend the LV, grow XFS online, then clean up.
+                  A VM gets a new blank disk for application logs. You want flexibility to resize
+                  later, so you choose LVM. You will create <code>PV → VG → LV</code>, format XFS,
+                  mount at <code>/mnt/logs</code>, make it persistent via <code>/etc/fstab</code>,
+                  extend the LV, grow XFS online, then clean up.
                 </p>
 
                 <div class="lab-callout">
                   <div class="lab-callout-label">Safety note</div>
                   <p class="m-b-0">
-                    LVM operations write metadata to disks and can destroy data if you target the wrong device. Confirm the
-                    target disk and verify each layer (PV/VG/LV) before formatting or mounting.
+                    LVM operations write metadata to disks and can destroy data if you target the
+                    wrong device. Confirm the target disk and verify each layer (PV/VG/LV) before
+                    formatting or mounting.
                   </p>
                 </div>
               </section>
@@ -223,11 +223,41 @@
                   <li>Confirm <code>/dev/vdb</code> exists, is unused, and has no mountpoints.</li>
                   <li>Install LVM tooling (<code>lvm2</code>) if required.</li>
                   <li>Create and verify an LVM physical volume (PV) on <code>/dev/vdb</code>.</li>
-                  <li>Create a volume group (VG) <code>logs_vg</code> and a logical volume (LV) <code>logs_lv</code>.</li>
+                  <li>
+                    Create a volume group (VG) <code>logs_vg</code> and a logical volume (LV)
+                    <code>logs_lv</code>.
+                  </li>
                   <li>Create XFS on the LV and mount it at <code>/mnt/logs</code>.</li>
-                  <li>Persist the mount using a UUID-based <code>/etc/fstab</code> entry and validate with <code>mount -a</code>.</li>
+                  <li>
+                    Persist the mount using a UUID-based <code>/etc/fstab</code> entry and validate
+                    with <code>mount -a</code>.
+                  </li>
                   <li>Extend the LV and grow XFS online.</li>
                   <li>Cleanly revert: remove fstab entry, unmount, remove LV/VG/PV labels.</li>
+                </ul>
+              </section>
+
+              <!-- Concepts (no alt-background moving forward) -->
+              <section class="lab-section" id="concepts">
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">Concepts</h3>
+                <ul>
+                  <li>LVM layering: <code>PV → VG → LV</code> and what each layer represents.</li>
+                  <li>
+                    Device naming: canonical paths (<code>/dev/&lt;vg&gt;/&lt;lv&gt;</code>) vs
+                    mapper paths (<code>/dev/mapper/*</code>).
+                  </li>
+                  <li>Filesystem vs block device resizing: grow the LV first, then grow XFS.</li>
+                  <li>
+                    Persistent mounts: why UUIDs are safer than device names in <code>/etc/fstab</code>.
+                  </li>
+                  <li>
+                    Ops-safe validation: using <code>mount -a</code> after fstab edits to avoid boot
+                    failures.
+                  </li>
+                  <li>
+                    Clean teardown order: unmount first, then remove <code>LV → VG → PV</code> to
+                    avoid “in use” errors.
+                  </li>
                 </ul>
               </section>
 
@@ -250,7 +280,8 @@
                   </div>
 
                   <p>
-                    Verify the target disk is present, the size matches expectation, and it has no filesystem or mountpoint.
+                    Verify the target disk is present, the size matches expectation, and it has no
+                    filesystem or mountpoint.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -275,9 +306,7 @@ vdb    253:16   0   1G  0 disk</code></pre>
                     <pre><code id="cmd-step-2">sudo dnf -y install lvm2</code></pre>
                   </div>
 
-                  <p>
-                    If the system already has LVM tooling, the package manager should report nothing to do.
-                  </p>
+                  <p>If the system already has LVM tooling, the package manager should report nothing to do.</p>
                 </div>
 
                 <!-- Step 3 -->
@@ -294,9 +323,7 @@ vdb    253:16   0   1G  0 disk</code></pre>
                     <pre><code id="cmd-step-3">sudo pvcreate /dev/vdb</code></pre>
                   </div>
 
-                  <p>
-                    This writes LVM metadata to the disk and makes it available for a volume group.
-                  </p>
+                  <p>This writes LVM metadata to the disk and makes it available for a volume group.</p>
                 </div>
 
                 <!-- Step 4 -->
@@ -333,9 +360,7 @@ vdb    253:16   0   1G  0 disk</code></pre>
                     <pre><code id="cmd-step-5">sudo vgcreate logs_vg /dev/vdb</code></pre>
                   </div>
 
-                  <p>
-                    A VG pools PV capacity into something you can slice into logical volumes.
-                  </p>
+                  <p>A VG pools PV capacity into something you can slice into logical volumes.</p>
                 </div>
 
                 <!-- Step 6 -->
@@ -352,9 +377,7 @@ vdb    253:16   0   1G  0 disk</code></pre>
                     <pre><code id="cmd-step-6">sudo lvcreate -L 500M -n logs_lv logs_vg</code></pre>
                   </div>
 
-                  <p>
-                    This creates the block device you will format and mount.
-                  </p>
+                  <p>This creates the block device you will format and mount.</p>
                 </div>
 
                 <!-- Step 7 -->
@@ -372,7 +395,8 @@ vdb    253:16   0   1G  0 disk</code></pre>
                   </div>
 
                   <p>
-                    The canonical device path is <code>/dev/logs_vg/logs_lv</code> (and the mapper path is also valid).
+                    The canonical device path is <code>/dev/logs_vg/logs_lv</code> (and the mapper
+                    path is also valid).
                   </p>
                 </div>
 
@@ -390,9 +414,7 @@ vdb    253:16   0   1G  0 disk</code></pre>
                     <pre><code id="cmd-step-8">sudo mkfs.xfs /dev/logs_vg/logs_lv</code></pre>
                   </div>
 
-                  <p>
-                    This is a destructive write. Only run it after you have verified the LV path.
-                  </p>
+                  <p>This is a destructive write. Only run it after you have verified the LV path.</p>
                 </div>
 
                 <!-- Step 9 -->
@@ -410,9 +432,7 @@ vdb    253:16   0   1G  0 disk</code></pre>
 sudo mount /dev/logs_vg/logs_lv /mnt/logs</code></pre>
                   </div>
 
-                  <p>
-                    Mounting is your first end-to-end validation that the storage stack is usable.
-                  </p>
+                  <p>Mounting is your first end-to-end validation that the storage stack is usable.</p>
                 </div>
 
                 <!-- Step 10 -->
@@ -429,9 +449,7 @@ sudo mount /dev/logs_vg/logs_lv /mnt/logs</code></pre>
                     <pre><code id="cmd-step-10">df -h /mnt/logs</code></pre>
                   </div>
 
-                  <p>
-                    This confirms the filesystem is mounted and reports its current size.
-                  </p>
+                  <p>This confirms the filesystem is mounted and reports its current size.</p>
                 </div>
 
                 <!-- Step 11 -->
@@ -448,9 +466,7 @@ sudo mount /dev/logs_vg/logs_lv /mnt/logs</code></pre>
                     <pre><code id="cmd-step-11">sudo blkid /dev/logs_vg/logs_lv</code></pre>
                   </div>
 
-                  <p>
-                    Use the filesystem UUID rather than device paths for persistence.
-                  </p>
+                  <p>Use the filesystem UUID rather than device paths for persistence.</p>
                 </div>
 
                 <!-- Step 12 -->
@@ -474,8 +490,9 @@ sudo mount -a</code></pre>
                   <div class="lab-callout">
                     <div class="lab-callout-label">Ops habit</div>
                     <p class="m-b-0">
-                      After any change to <code>/etc/fstab</code>, run <code>mount -a</code> immediately. If you broke
-                      the file, you want to find out now, not at the next reboot.
+                      After any change to <code>/etc/fstab</code>, run <code>mount -a</code>
+                      immediately. If you broke the file, you want to find out now, not at the next
+                      reboot.
                     </p>
                   </div>
                 </div>
@@ -497,15 +514,16 @@ df -h /mnt/logs</code></pre>
                   </div>
 
                   <p>
-                    The LV grows first (block device). Then XFS expands online while mounted. Finish by verifying the
-                    new size with <code>df</code>.
+                    The LV grows first (block device). Then XFS expands online while mounted. Finish
+                    by verifying the new size with <code>df</code>.
                   </p>
 
                   <div class="lab-callout">
                     <div class="lab-callout-label">Alternative</div>
                     <p class="m-b-0">
-                      In real work you may use <code>lvextend -r</code> to resize the filesystem automatically. This lab
-                      keeps the two steps explicit so you build the habit of verifying each layer.
+                      In real work you may use <code>lvextend -r</code> to resize the filesystem
+                      automatically. This lab keeps the two steps explicit so you build the habit of
+                      verifying each layer.
                     </p>
                   </div>
                 </div>
@@ -518,51 +536,54 @@ df -h /mnt/logs</code></pre>
                 <div class="lab-callout">
                   <div class="lab-callout-label">pvcreate fails: “device is in use”</div>
                   <p class="m-b-0">
-                    You targeted a disk that already has signatures, partitions, or is mounted. Re-check <code>lsblk -f</code>
-                    and confirm you are operating on the correct device.
+                    You targeted a disk that already has signatures, partitions, or is mounted.
+                    Re-check <code>lsblk -f</code> and confirm you are operating on the correct
+                    device.
                   </p>
                 </div>
 
                 <div class="lab-callout">
                   <div class="lab-callout-label">mkfs.xfs complains about an existing signature</div>
                   <p class="m-b-0">
-                    The LV already has a filesystem signature. On real systems, you would investigate why, and only use
-                    <code>mkfs.xfs -f</code> if you are intentionally overwriting it.
+                    The LV already has a filesystem signature. On real systems, you would investigate
+                    why, and only use <code>mkfs.xfs -f</code> if you are intentionally overwriting
+                    it.
                   </p>
                 </div>
 
                 <div class="lab-callout">
                   <div class="lab-callout-label">mount -a errors after editing /etc/fstab</div>
                   <p class="m-b-0">
-                    This usually means a typo in the UUID, mountpoint, or filesystem type. Fix the line immediately. Do not
-                    leave a broken <code>/etc/fstab</code> behind.
+                    This usually means a typo in the UUID, mountpoint, or filesystem type. Fix the
+                    line immediately. Do not leave a broken <code>/etc/fstab</code> behind.
                   </p>
                 </div>
 
                 <div class="lab-callout">
                   <div class="lab-callout-label">xfs_growfs shows no change</div>
                   <p class="m-b-0">
-                    The filesystem can only grow into free space if the LV grew. Re-check <code>lvs</code> after
-                    <code>lvextend</code> and confirm the mountpoint is correct.
+                    The filesystem can only grow into free space if the LV grew. Re-check
+                    <code>lvs</code> after <code>lvextend</code> and confirm the mountpoint is
+                    correct.
                   </p>
                 </div>
 
                 <div class="lab-callout">
                   <div class="lab-callout-label">Cleanup fails because the filesystem is still mounted</div>
                   <p class="m-b-0">
-                    Unmount first. If a process is holding the mount busy, you would locate it (for example with
-                    <code>lsof</code> or <code>fuser</code>) before retrying.
+                    Unmount first. If a process is holding the mount busy, you would locate it (for
+                    example with <code>lsof</code> or <code>fuser</code>) before retrying.
                   </p>
                 </div>
               </section>
 
-               <!-- Cleanup -->
+              <!-- Cleanup -->
               <section class="lab-section alt-background" id="cleanup">
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">Cleanup checklist</h3>
 
                 <p>
-                  The goal is to leave the system in a clean, boot-safe state with no leftover mounts and no LVM metadata
-                  on the test disk.
+                  The goal is to leave the system in a clean, boot-safe state with no leftover mounts
+                  and no LVM metadata on the test disk.
                 </p>
 
                 <div class="lab-codeblock m-b-40 m-t-40">
@@ -591,8 +612,8 @@ sudo lvs</code></pre>
                 <div class="lab-callout">
                   <div class="lab-callout-label">Final verification signal</div>
                   <p class="m-b-0">
-                    <code>pvs/vgs/lvs</code> should not show your test objects, and <code>lsblk -f</code> should show
-                    <code>/dev/vdb</code> without an LVM signature.
+                    <code>pvs/vgs/lvs</code> should not show your test objects, and
+                    <code>lsblk -f</code> should show <code>/dev/vdb</code> without an LVM signature.
                   </p>
                 </div>
               </section>
@@ -602,19 +623,216 @@ sudo lvs</code></pre>
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">Reference</h3>
 
                 <ul class="lab-reference-list">
-                  <li><code>lsblk -o NAME,SIZE,TYPE,FSTYPE,MOUNTPOINTS</code>: verify disk state and mounts.</li>
-                  <li><code>pvcreate /dev/vdb</code>, <code>pvs</code>: PV creation and verification.</li>
-                  <li><code>vgcreate logs_vg /dev/vdb</code>, <code>vgs</code>: VG creation and verification.</li>
-                  <li><code>lvcreate -L 500M -n logs_lv logs_vg</code>, <code>lvs</code>: LV creation and verification.</li>
-                  <li><code>mkfs.xfs /dev/logs_vg/logs_lv</code>: create XFS.</li>
-                  <li><code>mount</code>, <code>umount</code>, <code>df -h</code>: mount lifecycle and verification.</li>
-                  <li><code>blkid</code>: obtain UUID for persistence.</li>
-                  <li><code>/etc/fstab</code>, <code>mount -a</code>: persistent mounts and validation.</li>
-                  <li><code>lvextend</code>, <code>xfs_growfs</code>: expand block device and filesystem online.</li>
+                  <li>
+                    <code>lsblk</code>: Lists block devices and how they are layered (disk, partition, LVM, etc.).
+                  </li>
+
+                  <li>
+                    <code>lsblk -o NAME,SIZE,TYPE,FSTYPE,MOUNTPOINTS</code>: Shows disk state, filesystem type, and mountpoints.
+                    <ul>
+                      <li><code>-o</code>: Selects which output columns to display.</li>
+                      <li><code>NAME</code>: Device name (for example <code>vdb</code>, <code>vda1</code>).</li>
+                      <li><code>SIZE</code>: Device size.</li>
+                      <li><code>TYPE</code>: Device type (disk, part, lvm, rom, etc.).</li>
+                      <li><code>FSTYPE</code>: Filesystem type if present (xfs, ext4, etc.).</li>
+                      <li><code>MOUNTPOINTS</code>: All mountpoints for the device (blank means not mounted).</li>
+                    </ul>
+                  </li>
+
+                  <li>
+                    <code>dnf</code>: Installs packages on RHEL-based systems.
+                  </li>
+
+                  <li>
+                    <code>dnf -y install lvm2</code>: Installs LVM tooling.
+                    <ul>
+                      <li><code>-y</code>: Automatically answers "yes" to prompts.</li>
+                      <li><code>install</code>: Installs the named package(s).</li>
+                      <li><code>lvm2</code>: Package that provides LVM commands (<code>pv*</code>, <code>vg*</code>, <code>lv*</code>).</li>
+                    </ul>
+                  </li>
+
+                  <li>
+                    <code>pvcreate /dev/vdb</code>: Initializes <code>/dev/vdb</code> as an LVM Physical Volume (PV).
+                    <ul>
+                      <li><code>/dev/vdb</code>: Target block device to label as a PV (destructive if you pick the wrong disk).</li>
+                    </ul>
+                  </li>
+
+                  <li>
+                    <code>pvs</code>: Displays physical volume details (name, size, free space, VG membership).
+                  </li>
+
+                  <li>
+                    <code>pvs -o pv_name,vg_name,pv_size,pv_free</code>: Shows PV status and free space.
+                    <ul>
+                      <li><code>-o</code>: Selects which fields to display.</li>
+                      <li><code>pv_name</code>: PV device path.</li>
+                      <li><code>vg_name</code>: VG name the PV belongs to (blank means not assigned).</li>
+                      <li><code>pv_size</code>: Total PV size.</li>
+                      <li><code>pv_free</code>: Unallocated space available on the PV.</li>
+                    </ul>
+                  </li>
+
+                  <li>
+                    <code>vgcreate logs_vg /dev/vdb</code>: Creates a volume group named <code>logs_vg</code>.
+                    <ul>
+                      <li><code>logs_vg</code>: New VG name.</li>
+                      <li><code>/dev/vdb</code>: PV to add to the VG (you can list multiple PVs).</li>
+                    </ul>
+                  </li>
+
+                  <li>
+                    <code>vgs</code>: Displays volume group details (total size, free space, PV count, etc.).
+                  </li>
+
+                  <li>
+                    <code>lvcreate -L 500M -n logs_lv logs_vg</code>: Creates a 500 MB LV named <code>logs_lv</code>.
+                    <ul>
+                      <li><code>-L 500M</code>: Sets LV size.</li>
+                      <li><code>-n logs_lv</code>: Sets LV name.</li>
+                      <li><code>logs_vg</code>: VG to allocate space from.</li>
+                    </ul>
+                  </li>
+
+                  <li>
+                    <code>lvs</code>: Displays logical volume details (LV name, VG name, size, and paths).
+                  </li>
+
+                  <li>
+                    <code>lvs -o lv_name,vg_name,lv_size,lv_path</code>: Shows LV details including the canonical device path.
+                    <ul>
+                      <li><code>-o</code>: Selects which fields to display.</li>
+                      <li><code>lv_name</code>: LV name.</li>
+                      <li><code>vg_name</code>: Parent VG.</li>
+                      <li><code>lv_size</code>: LV size.</li>
+                      <li><code>lv_path</code>: Canonical LV path (for example <code>/dev/logs_vg/logs_lv</code>).</li>
+                    </ul>
+                  </li>
+
+                  <li>
+                    <code>mkfs.xfs /dev/logs_vg/logs_lv</code>: Creates an XFS filesystem on the LV.
+                    <ul>
+                      <li><code>/dev/logs_vg/logs_lv</code>: Target block device to format (destructive).</li>
+                    </ul>
+                  </li>
+
+                  <li>
+                    <code>mkdir -p /mnt/logs</code>: Creates the mountpoint directory.
+                    <ul>
+                      <li><code>-p</code>: Creates parent directories as needed; no error if the directory already exists.</li>
+                    </ul>
+                  </li>
+
+                  <li>
+                    <code>mount /dev/logs_vg/logs_lv /mnt/logs</code>: Mounts the filesystem on <code>/mnt/logs</code>.
+                    <ul>
+                      <li><code>/dev/logs_vg/logs_lv</code>: Source block device.</li>
+                      <li><code>/mnt/logs</code>: Mountpoint path.</li>
+                    </ul>
+                  </li>
+
+                  <li>
+                    <code>df -h /mnt/logs</code>: Confirms the filesystem is mounted and shows its size/usage.
+                    <ul>
+                      <li><code>-h</code>: Human-readable units (K/M/G).</li>
+                      <li><code>/mnt/logs</code>: Report the filesystem mounted at this path.</li>
+                    </ul>
+                  </li>
+
+                  <li>
+                    <code>blkid /dev/logs_vg/logs_lv</code>: Displays filesystem identifiers (including UUID) for stable mounting.
+                    <ul>
+                      <li><code>/dev/logs_vg/logs_lv</code>: Device to query for UUID and filesystem type.</li>
+                    </ul>
+                  </li>
+
+                  <li>
+                    <code>tee</code>: Writes stdin to a file (and stdout). Useful with <code>sudo</code> when writing root-owned files.
+                  </li>
+
+                  <li>
+                    <code>tee -a /etc/fstab</code>: Appends a new line to <code>/etc/fstab</code>.
+                    <ul>
+                      <li><code>-a</code>: Append mode (does not overwrite the file).</li>
+                      <li><code>/etc/fstab</code>: Filesystem mount table.</li>
+                    </ul>
+                  </li>
+
+                  <li>
+                    <code>mount -a</code>: Validates <code>/etc/fstab</code> by attempting to mount entries that are not already mounted.
+                    <ul>
+                      <li><code>-a</code>: Mount all filesystems listed in <code>/etc/fstab</code> (except entries marked <code>noauto</code>).</li>
+                    </ul>
+                  </li>
+
+                  <li>
+                    <code>lvextend -L +200M /dev/logs_vg/logs_lv</code>: Extends the LV by 200 MB.
+                    <ul>
+                      <li><code>-L +200M</code>: Increase LV size by 200 MB (leading <code>+</code> means "add").</li>
+                      <li><code>/dev/logs_vg/logs_lv</code>: Target LV to extend.</li>
+                    </ul>
+                  </li>
+
+                  <li>
+                    <code>xfs_growfs /mnt/logs</code>: Grows the XFS filesystem to use the LV’s newly available space.
+                    <ul>
+                      <li><code>/mnt/logs</code>: Mountpoint of the XFS filesystem to grow.</li>
+                    </ul>
+                  </li>
+
+                  <li>
+                    <code>sed</code>: Stream editor used for non-interactive text edits.
+                  </li>
+
+                  <li>
+                    <code>sed -i '/\/mnt\/logs/d' /etc/fstab</code>: Removes the <code>/mnt/logs</code> fstab line during cleanup.
+                    <ul>
+                      <li><code>-i</code>: Edit file in place.</li>
+                      <li><code>'/\/mnt\/logs/d'</code>: Delete lines matching <code>/mnt/logs</code>.</li>
+                      <li><code>/etc/fstab</code>: Target file to edit.</li>
+                    </ul>
+                  </li>
+
+                  <li>
+                    <code>umount /mnt/logs</code>: Unmounts the filesystem before removing LVM objects.
+                    <ul>
+                      <li><code>/mnt/logs</code>: Mountpoint to detach.</li>
+                    </ul>
+                  </li>
+
+                  <li>
+                    <code>lvremove -y /dev/logs_vg/logs_lv</code>: Removes the logical volume.
+                    <ul>
+                      <li><code>-y</code>: Auto-confirm removal prompts (destructive).</li>
+                      <li><code>/dev/logs_vg/logs_lv</code>: LV to remove.</li>
+                    </ul>
+                  </li>
+
+                  <li>
+                    <code>vgremove -y logs_vg</code>: Removes the volume group.
+                    <ul>
+                      <li><code>-y</code>: Auto-confirm removal prompts (destructive).</li>
+                      <li><code>logs_vg</code>: VG to remove.</li>
+                    </ul>
+                  </li>
+
+                  <li>
+                    <code>pvremove -y /dev/vdb</code>: Removes LVM metadata from the disk (returns it to a raw device state).
+                    <ul>
+                      <li><code>-y</code>: Auto-confirm removal prompts (destructive).</li>
+                      <li><code>/dev/vdb</code>: PV device to wipe LVM labels from.</li>
+                    </ul>
+                  </li>
+
+                  <li>
+                    <code>lsblk -f</code>: Shows filesystem signatures and UUIDs for block devices (useful for final cleanup verification).
+                    <ul>
+                      <li><code>-f</code>: Display filesystem info (FSTYPE, UUID, LABEL, etc.).</li>
+                    </ul>
+                  </li>
                 </ul>
               </section>
-
-             
             </div>
             <!-- /main -->
           </div>

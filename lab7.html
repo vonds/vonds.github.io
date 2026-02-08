@@ -12,16 +12,8 @@
     <!-- Favicons -->
     <link rel="shortcut icon" href="../assets/images/favicon.png" />
     <link rel="apple-touch-icon" href="../assets/images/apple-touch-icon.png" />
-    <link
-      rel="apple-touch-icon"
-      sizes="72x72"
-      href="../assets/images/apple-touch-icon-72x72.png"
-    />
-    <link
-      rel="apple-touch-icon"
-      sizes="114x114"
-      href="../assets/images/apple-touch-icon-114x114.png"
-    />
+    <link rel="apple-touch-icon" sizes="72x72" href="../assets/images/apple-touch-icon-72x72.png" />
+    <link rel="apple-touch-icon" sizes="114x114" href="../assets/images/apple-touch-icon-114x114.png" />
 
     <!-- Site styles (your existing) -->
     <link href="../assets/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
@@ -37,14 +29,11 @@
     <link href="../assets/css/style.css" rel="stylesheet" />
     <link href="../assets/css/docs.css" rel="stylesheet" />
 
-    <!-- Lab page styles (new) -->
+    <!-- Lab page styles -->
     <link href="../assets/css/lab.css" rel="stylesheet" />
 
     <!-- Fonts -->
-    <link
-      href="https://fonts.googleapis.com/css?family=Dosis"
-      rel="stylesheet"
-    />
+    <link href="https://fonts.googleapis.com/css?family=Dosis" rel="stylesheet" />
   </head>
 
   <body>
@@ -68,33 +57,25 @@
               <a href="#">Portfolio</a>
               <ul>
                 <li>
-                  <a
-                    href="https://github.com/vonds/exit_0"
-                    target="_blank"
-                    rel="noopener"
-                  >
+                  <a href="https://github.com/vonds/exit_0" target="_blank" rel="noopener">
                     exit_0
                   </a>
                 </li>
                 <li>
-                  <a
-                    href="docs.html"
-                    target="_blank"
-                    rel="noopener"
-                  >
+                  <a href="docs.html" target="_blank" rel="noopener">
                     exit_0 Documentation
                   </a>
                 </li>
-                <li><a href="https://github.com/vonds/sentinel" target="_blank" rel="noopener">Sentinel</a></li>
+                <li>
+                  <a href="https://github.com/vonds/sentinel" target="_blank" rel="noopener">
+                    Sentinel
+                  </a>
+                </li>
               </ul>
             </li>
 
             <li>
-              <a
-                href="https://www.linkedin.com/in/vonds/"
-                target="_blank"
-                rel="noopener"
-              >
+              <a href="https://www.linkedin.com/in/vonds/" target="_blank" rel="noopener">
                 LinkedIn
               </a>
             </li>
@@ -129,9 +110,7 @@
     <!-- WRAPPER -->
     <div class="wrapper">
       <!-- NAVIGATION -->
-      <nav
-        class="navbar navbar-custom navbar-transparent navbar-light navbar-fixed-top"
-      >
+      <nav class="navbar navbar-custom navbar-transparent navbar-light navbar-fixed-top">
         <div class="container">
           <div class="navbar-header">
             <a class="navbar-brand" href="../index.html">
@@ -157,24 +136,12 @@
           <h2 class="font-alt module-title m-t-60">
             Lab 7: Inspect and Load Kernel Modules
           </h2>
+
           <nav class="lab-pagination">
-            <a
-              id="prev-lab"
-              class="lab-nav-link"
-              href="#"
-              aria-label="Previous lab"
-            >
-              &laquo;
-            </a>
-            <a
-              id="next-lab"
-              class="lab-nav-link"
-              href="#"
-              aria-label="Next lab"
-            >
-              &raquo;
-            </a>
+            <a id="prev-lab" class="lab-nav-link" href="#" aria-label="Previous lab">&laquo;</a>
+            <a id="next-lab" class="lab-nav-link" href="#" aria-label="Next lab">&raquo;</a>
           </nav>
+
           <div class="row">
             <!-- LEFT SIDEBAR -->
             <div class="col-sm-4 col-md-3 lab-sidebar">
@@ -183,7 +150,11 @@
                   <h5 class="widget-title"><a href="./docs.html">Lab Index</a></h5>
                   <ul class="docs-nav">
                     <li><a href="#scenario">Scenario</a></li>
+                    <li><a href="#objective">Objective</a></li>
+                    <li><a href="#concepts">Concepts</a></li>
                     <li><a href="#walkthrough">Walkthrough</a></li>
+                    <li><a href="#breakpoints">Breakpoints</a></li>
+                    <li><a href="#cleanup">Cleanup</a></li>
                     <li><a href="#reference">Reference</a></li>
                   </ul>
                 </div>
@@ -192,71 +163,53 @@
 
             <!-- MAIN CONTENT -->
             <div class="col-sm-8 col-md-9 lab-doc">
-              <!-- 1) Title + Summary (2 sentences max) -->
               <p class="m-b-20 lab-summary">
-                Investigate a suspected missing USB storage kernel module by
-                listing loaded modules, inspecting module metadata, loading the
-                module on demand, and validating that it is active. Configure
-                the module to auto-load on boot using
-                <code>/etc/modules-load.d</code>
-                for persistence.
+                Investigate a suspected missing USB storage kernel module by listing loaded modules,
+                inspecting module metadata, loading the module on demand, and validating that it is active.
+                Configure the module to auto-load on boot using <code>/etc/modules-load.d</code>.
               </p>
 
               <section class="lab-section" id="video" aria-label="Lab video">
-  				<div class="lab-video">
-    				<div class="lab-video-embed text-center">
-      					<iframe 
-							width="560" 
-							height="315" 
-							src="https://www.youtube.com/embed/t6LvI4YZwHY?si=xOLJRVSBb0H3Zhjz" 
-							title="YouTube video player" 
-							frameborder="0" 
-							allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
-							referrerpolicy="strict-origin-when-cross-origin" 
-							allowfullscreen>
-						</iframe>
-    				</div>
-  				</div>
-			</section>
+                <div class="lab-video">
+                  <div class="lab-video-embed text-center">
+                    <iframe
+                      src="https://www.youtube.com/embed/t6LvI4YZwHY?si=xOLJRVSBb0H3Zhjz"
+                      title="YouTube video player"
+                      frameborder="0"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                      referrerpolicy="strict-origin-when-cross-origin"
+                      allowfullscreen
+                    ></iframe>
+                  </div>
+                </div>
+              </section>
 
-              <!-- 2) Scenario -->
+              <!-- Scenario -->
               <section class="lab-section" id="scenario">
                 <div class="lab-chips" aria-label="Tags">
-                  <span class="lab-chip">
-                    <span class="lab-chip-key">troubleshooting</span>
-                  </span>
-                  <span class="lab-chip">
-                    <span class="lab-chip-key">boot</span>
-                  </span>
-                  <span class="lab-chip">
-                    <span class="lab-chip-key">storage</span>
-                  </span>
+                  <span class="lab-chip"><span class="lab-chip-key">troubleshooting</span></span>
+                  <span class="lab-chip"><span class="lab-chip-key">boot</span></span>
+                  <span class="lab-chip"><span class="lab-chip-key">storage</span></span>
                 </div>
 
-                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
-                  Scenario
-                </h3>
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">Scenario</h3>
 
                 <p>
-                  A USB device is not working and may be missing a kernel module.
-                  You’ve been asked to investigate, load the correct module,
-                  verify it is active, and configure it to load on every boot.
+                  A USB device is not working and may be missing a kernel module. You have been asked to
+                  investigate, load the correct module, verify it is active, and configure it to load on every boot.
                 </p>
 
                 <div class="lab-callout">
                   <div class="lab-callout-label">Operator context</div>
                   <p class="m-b-0">
-                    This is how you validate driver availability and turn a
-                    one-time fix into a persistent configuration change.
+                    This is how you validate driver availability and turn a one-time fix into a persistent configuration change.
                   </p>
                 </div>
               </section>
 
-              <!-- 3) Objective -->
+              <!-- Objective -->
               <section class="lab-section alt-background" id="objective">
-                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
-                  Objective
-                </h3>
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">Objective</h3>
                 <ul>
                   <li>List currently loaded kernel modules.</li>
                   <li>Inspect metadata for a suspected module.</li>
@@ -267,87 +220,53 @@
                 </ul>
               </section>
 
-              <!-- 4) What You'll Practice -->
-              <section class="lab-section" id="practice">
-                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
-                  What You’ll Practice
-                </h3>
-
-                <ul class="m-t-10">
+              <!-- Concepts -->
+              <section class="lab-section" id="concepts">
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">Concepts</h3>
+                <ul>
                   <li>
-                    Discovering loaded modules with
-                    <code>lsmod</code>
-                    .
+                    <code>lsmod</code> answers “what is loaded right now,” not “what exists on disk.”
+                    A module can be present under <code>/lib/modules</code> and still not be loaded.
                   </li>
                   <li>
-                    Inspecting module metadata using
-                    <code>modinfo</code>
-                    .
+                    <code>modprobe</code> is preferred over <code>insmod</code> because it resolves dependencies automatically.
                   </li>
                   <li>
-                    Loading modules with
-                    <code>modprobe</code>
-                    and verifying with
-                    <code>lsmod | grep</code>
-                    .
+                    <code>modinfo</code> is your reality check: file path, description, and aliases help confirm you are loading the right driver.
                   </li>
                   <li>
-                    Understanding the modules tree under
-                    <code>/lib/modules/&lt;kernel-version&gt;</code>
-                    .
-                  </li>
-                  <li>
-                    Persisting module auto-load behavior via
-                    <code>/etc/modules-load.d</code>
-                    .
+                    <code>/etc/modules-load.d</code> is for explicit boot-time module loads. Use it when auto-detection is unreliable or intentionally disabled.
                   </li>
                 </ul>
               </section>
 
-              <!-- 5) Commands Walkthrough -->
+              <!-- Walkthrough -->
               <section class="lab-section alt-background" id="walkthrough">
-                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
-                  Walkthrough
-                </h3>
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">Walkthrough</h3>
 
                 <!-- Step 1 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
-                    <strong class="font-alt">Step 1</strong>
-                    : List loaded kernel modules.
+                    <strong class="font-alt">Step 1</strong>: List loaded kernel modules.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
-                      <button
-                        class="lab-copy-btn"
-                        type="button"
-                        data-copy="#cmd-step-1"
-                      >
-                        Copy
-                      </button>
+                      <button class="lab-copy-btn" type="button" data-copy="#cmd-step-1">Copy</button>
                     </div>
                     <pre><code id="cmd-step-1">lsmod</code></pre>
                   </div>
 
                   <p>
-                    <code>lsmod</code>
-                    shows what modules are currently loaded. This helps confirm
-                    whether the suspected driver is already present before you
-                    attempt to load anything.
+                    <code>lsmod</code> shows what modules are currently loaded. This helps confirm whether
+                    the suspected driver is already present before you load anything.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Example output</span>
-                      <button
-                        class="lab-copy-btn"
-                        type="button"
-                        data-copy="#verify-step-1"
-                      >
-                        Copy
-                      </button>
+                      <button class="lab-copy-btn" type="button" data-copy="#verify-step-1">Copy</button>
                     </div>
                     <pre><code id="verify-step-1">Module                  Size  Used by
 xhci_pci               20480  0
@@ -358,32 +277,20 @@ usbcore               294912  3 xhci_pci,ehci_hcd,usb_common</code></pre>
                 <!-- Step 2 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
-                    <strong class="font-alt">Step 2</strong>
-                    : Inspect module metadata for
-                    <code>usb_storage</code>
-                    .
+                    <strong class="font-alt">Step 2</strong>: Inspect module metadata for <code>usb_storage</code>.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
-                      <button
-                        class="lab-copy-btn"
-                        type="button"
-                        data-copy="#cmd-step-2"
-                      >
-                        Copy
-                      </button>
+                      <button class="lab-copy-btn" type="button" data-copy="#cmd-step-2">Copy</button>
                     </div>
                     <pre><code id="cmd-step-2">modinfo usb_storage</code></pre>
                   </div>
 
                   <p>
-                    <code>modinfo</code>
-                    confirms what the module is, where its
-                    <code>.ko</code>
-                    file lives, and which hardware patterns it matches. This is
-                    how you avoid loading the wrong module by name alone.
+                    <code>modinfo</code> confirms what the module is, where its <code>.ko</code> file lives,
+                    and which device classes it matches. This prevents guesswork.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -397,58 +304,39 @@ alias:          usb:v*p*d*dc*dsc*dp*ic08isc06ip50in*</code></pre>
                 <!-- Step 3 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
-                    <strong class="font-alt">Step 3</strong>
-                    : Load the module immediately.
+                    <strong class="font-alt">Step 3</strong>: Load the module immediately.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
-                      <button
-                        class="lab-copy-btn"
-                        type="button"
-                        data-copy="#cmd-step-3"
-                      >
-                        Copy
-                      </button>
+                      <button class="lab-copy-btn" type="button" data-copy="#cmd-step-3">Copy</button>
                     </div>
                     <pre><code id="cmd-step-3">sudo modprobe usb_storage</code></pre>
                   </div>
 
                   <p>
-                    <code>modprobe</code>
-                    loads the module and resolves dependencies automatically.
-                    Using
-                    <code>sudo</code>
-                    is typical because inserting modules is a privileged kernel
-                    operation.
+                    <code>modprobe</code> loads the module and resolves dependencies automatically.
+                    Inserting modules is a privileged kernel operation, so <code>sudo</code> is typical.
                   </p>
                 </div>
 
                 <!-- Step 4 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
-                    <strong class="font-alt">Step 4</strong>
-                    : Verify the module is loaded.
+                    <strong class="font-alt">Step 4</strong>: Verify the module is loaded.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
-                      <button
-                        class="lab-copy-btn"
-                        type="button"
-                        data-copy="#cmd-step-4"
-                      >
-                        Copy
-                      </button>
+                      <button class="lab-copy-btn" type="button" data-copy="#cmd-step-4">Copy</button>
                     </div>
                     <pre><code id="cmd-step-4">lsmod | grep usb_storage</code></pre>
                   </div>
 
                   <p>
-                    This confirms the module is now present in the loaded module
-                    list.
+                    This confirms the module is now present in the loaded module list.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -459,28 +347,20 @@ alias:          usb:v*p*d*dc*dsc*dp*ic08isc06ip50in*</code></pre>
                 <!-- Step 5 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
-                    <strong class="font-alt">Step 5</strong>
-                    : Locate the modules directory for this kernel version.
+                    <strong class="font-alt">Step 5</strong>: Locate the modules directory for this kernel version.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
-                      <button
-                        class="lab-copy-btn"
-                        type="button"
-                        data-copy="#cmd-step-5"
-                      >
-                        Copy
-                      </button>
+                      <button class="lab-copy-btn" type="button" data-copy="#cmd-step-5">Copy</button>
                     </div>
                     <pre><code id="cmd-step-5">ls /lib/modules/5.15.0-88-generic/</code></pre>
                   </div>
 
                   <p>
-                    This directory contains all modules for a specific kernel.
-                    It’s useful for confirming whether a module exists on disk
-                    even if it is not currently loaded.
+                    This directory contains all modules for a specific kernel. It is useful for confirming
+                    whether a module exists on disk even if it is not currently loaded.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -491,29 +371,20 @@ alias:          usb:v*p*d*dc*dsc*dp*ic08isc06ip50in*</code></pre>
                 <!-- Step 6 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
-                    <strong class="font-alt">Step 6</strong>
-                    : Configure auto-load on boot.
+                    <strong class="font-alt">Step 6</strong>: Configure auto-load on boot.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
-                      <button
-                        class="lab-copy-btn"
-                        type="button"
-                        data-copy="#cmd-step-6"
-                      >
-                        Copy
-                      </button>
+                      <button class="lab-copy-btn" type="button" data-copy="#cmd-step-6">Copy</button>
                     </div>
                     <pre><code id="cmd-step-6">echo usb_storage | sudo tee /etc/modules-load.d/usb.conf</code></pre>
                   </div>
 
                   <p>
-                    Adding the module name to a file under
-                    <code>/etc/modules-load.d</code>
-                    configures systemd to load it during boot. This turns your
-                    fix into persistent behavior.
+                    Adding the module name to a file under <code>/etc/modules-load.d</code> configures systemd
+                    to load it during boot. This turns your fix into persistent behavior.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -522,58 +393,88 @@ alias:          usb:v*p*d*dc*dsc*dp*ic08isc06ip50in*</code></pre>
                 </div>
               </section>
 
-              <!-- 8) Reference -->
-              <!-- 9) Reference -->
-              <section class="lab-section" id="reference">
-                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
-                  Reference
-                </h3>
+              <!-- Breakpoints -->
+              <section class="lab-section" id="breakpoints">
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">Common breakpoints</h3>
 
-                <ul class="lab-reference-list">
-                  <li>
-                    <code>lsmod</code>
-                    : Lists modules currently loaded in the kernel.
-                  </li>
-                  <li>
-                    <code>modinfo &lt;module&gt;</code>
-                    : Displays module metadata such as file path, description,
-                    license, and aliases.
-                  </li>
-                  <li>
-                    <code>modprobe &lt;module&gt;</code>
-                    : Loads a module and resolves dependencies automatically.
-                  </li>
-                  <li>
-                    <code>/lib/modules/&lt;kernel-version&gt;</code>
-                    : Contains the installed module tree for that kernel.
-                  </li>
-                  <li>
-                    <code>/etc/modules-load.d/*.conf</code>
-                    : Files listing modules that should be loaded during boot.
-                  </li>
-                  <li>
-                    <code>tee</code>
-                    : Writes stdin to a file, useful with
-                    <code>sudo</code>
-                    when writing to protected paths.
-                  </li>
-                </ul>
+                <div class="lab-callout">
+                  <div class="lab-callout-label">modinfo: ERROR: Module usb_storage not found</div>
+                  <p class="m-b-0">
+                    The module is not installed for this kernel. Confirm the running kernel with
+                    <code>uname -r</code>, then check <code>/lib/modules/$(uname -r)</code>. If the
+                    directory is missing modules, you may need the correct kernel modules package.
+                  </p>
+                </div>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">modprobe fails silently or returns non-zero</div>
+                  <p class="m-b-0">
+                    Check the kernel log for the actual failure reason:
+                    <code>dmesg | tail -n 50</code>. Missing dependencies, secure boot policy, or a
+                    mismatched kernel/modules set are common causes.
+                  </p>
+                </div>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">Module loads, but USB storage still does not work</div>
+                  <p class="m-b-0">
+                    The driver is only one layer. Validate device detection and errors with:
+                    <code>dmesg | tail</code>, and confirm the block device appears with <code>lsblk</code>.
+                  </p>
+                </div>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">Auto-load config does not take effect</div>
+                  <p class="m-b-0">
+                    Confirm your file exists and contains only the module name:
+                    <code>cat /etc/modules-load.d/usb.conf</code>. Also check for a blacklist entry that blocks it:
+                    <code>grep -R usb_storage /etc/modprobe.d</code>.
+                  </p>
+                </div>
               </section>
 
-              <!-- Lab Pagination -->
+              <!-- Cleanup -->
+              <section class="lab-section alt-background" id="cleanup">
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">Cleanup checklist</h3>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">Optional revert</div>
+                  <p class="m-b-0">
+                    If you do not want this module to auto-load, remove the file:
+                    <code>sudo rm -f /etc/modules-load.d/usb.conf</code> and confirm it is gone:
+                    <code>ls /etc/modules-load.d</code>.
+                  </p>
+                </div>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">Success signal</div>
+                  <p class="m-b-0">
+                    <code>usb_storage</code> appears in <code>lsmod</code> after loading, and your boot-time
+                    config file contains the expected module name.
+                  </p>
+                </div>
+              </section>
+
+              <!-- Reference -->
+              <section class="lab-section" id="reference">
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">Reference</h3>
+
+                <ul class="lab-reference-list">
+                  <li><code>lsmod</code>: Lists modules currently loaded in the kernel.</li>
+                  <li><code>modinfo &lt;module&gt;</code>: Displays module metadata.</li>
+                  <li><code>modprobe &lt;module&gt;</code>: Loads a module and resolves dependencies automatically.</li>
+                  <li><code>/lib/modules/&lt;kernel-version&gt;</code>: Installed module tree for that kernel.</li>
+                  <li><code>/etc/modules-load.d/*.conf</code>: Modules that should be loaded during boot.</li>
+                  <li><code>tee</code>: Writes stdin to a file (useful with <code>sudo</code>).</li>
+                </ul>
+              </section>
             </div>
             <!-- /main -->
           </div>
           <!-- /row -->
+
           <nav class="lab-pagination">
-            <a
-                id="prev-lab"
-                class="lab-nav-link"
-                href="#"
-                aria-label="Previous lab"
-            >
-                &uArr;
-            </a>
+            <a id="prev-lab" class="lab-nav-link" href="#" aria-label="Previous lab">&uArr;</a>
           </nav>
         </div>
         <!-- /container -->
@@ -586,22 +487,10 @@ alias:          usb:v*p*d*dc*dsc*dp*ic08isc06ip50in*</code></pre>
             <div class="col-sm-12">
               <ul class="social-text-links font-alt text-center m-b-20">
                 <li>
-                  <a
-                    href="https://github.com/vonds"
-                    target="_blank"
-                    rel="noopener"
-                  >
-                    Github
-                  </a>
+                  <a href="https://github.com/vonds" target="_blank" rel="noopener">Github</a>
                 </li>
                 <li>
-                  <a
-                    href="https://www.linkedin.com/in/vonds/"
-                    target="_blank"
-                    rel="noopener"
-                  >
-                    Linkedin
-                  </a>
+                  <a href="https://www.linkedin.com/in/vonds/" target="_blank" rel="noopener">Linkedin</a>
                 </li>
               </ul>
             </div>
@@ -634,6 +523,7 @@ alias:          usb:v*p*d*dc*dsc*dp*ic08isc06ip50in*</code></pre>
     <script src="../assets/js/imagesloaded.pkgd.js"></script>
     <script src="../assets/js/isotope.pkgd.min.js"></script>
     <script src="../assets/js/packery-mode.pkgd.min.js"></script>
+    <script src="../assets/js/packery-mode.pkgd.min.js"></script>
     <script src="../assets/js/appear.js"></script>
     <script src="../assets/js/jquery.easing.1.3.js"></script>
     <script src="../assets/js/wow.min.js"></script>
@@ -645,5 +535,9 @@ alias:          usb:v*p*d*dc*dsc*dp*ic08isc06ip50in*</code></pre>
 
     <!-- Lab page JS (new) -->
     <script src="../assets/js/lab.js"></script>
+
+    <script>
+      document.getElementById("year").textContent = new Date().getFullYear()
+    </script>
   </body>
 </html>

@@ -1,4 +1,4 @@
-<!-- lab123.html -->
+<!-- lab141.html -->
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -7,7 +7,7 @@
     <meta name="description" content="exit_0 Documentation" />
     <meta name="name" content="Vonds" />
 
-    <title>Vonds | Lab 123</title>
+    <title>Vonds | Lab 141</title>
 
     <!-- Favicons -->
     <link rel="shortcut icon" href="../assets/images/favicon.png" />
@@ -65,7 +65,11 @@
               <a href="#">Portfolio</a>
               <ul>
                 <li>
-                  <a href="https://github.com/vonds/exit_0" target="_blank" rel="noopener">
+                  <a
+                    href="https://github.com/vonds/exit_0"
+                    target="_blank"
+                    rel="noopener"
+                  >
                     exit_0
                   </a>
                 </li>
@@ -78,7 +82,11 @@
             </li>
 
             <li>
-              <a href="https://www.linkedin.com/in/vonds/" target="_blank" rel="noopener">
+              <a
+                href="https://www.linkedin.com/in/vonds/"
+                target="_blank"
+                rel="noopener"
+              >
                 LinkedIn
               </a>
             </li>
@@ -137,7 +145,7 @@
       <section class="module">
         <div class="container">
           <h2 class="font-alt module-title m-t-60">
-            Lab 123: Partition /dev/sdb with msdos (MBR) using parted
+            Lab 141:  Postfix Queue & Time/Journal Workflow
           </h2>
 
           <nav class="lab-pagination">
@@ -169,17 +177,16 @@
             <!-- MAIN CONTENT -->
             <div class="col-sm-8 col-md-9 lab-doc">
               <p class="m-b-20 lab-summary">
-                Label an uninitialized disk with an MBR (<code>msdos</code>) partition table, create a
-                primary partition with <code>parted</code>, verify the kernel sees it via
-                <code>lsblk</code> and <code>/proc/partitions</code>, then remove the partition and confirm
-                the disk returns to a clean state.
+                Forward root mail to two addresses by updating <code>/etc/aliases</code> and rebuilding the aliases database.
+                Validate Postfix health, inspect the mail queue, and use <code>postcat</code> to view a queued message by ID.
+                Finish with quick time and journald checks to confirm the system signals you would capture during incident review.
               </p>
 
               <section class="lab-section" id="video" aria-label="Lab video">
                 <div class="lab-video">
                   <div class="lab-video-embed text-center">
                     <iframe
-                      src="https://www.youtube.com/embed/REPLACE_WITH_LAB123_VIDEO"
+                      src="https://www.youtube.com/embed/REPLACE_WITH_LAB141_VIDEO"
                       title="YouTube video player"
                       frameborder="0"
                       allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
@@ -193,26 +200,27 @@
               <!-- Scenario -->
               <section class="lab-section" id="scenario">
                 <div class="lab-chips" aria-label="Tags">
-                  <span class="lab-chip"><span class="lab-chip-key">storage</span></span>
-                  <span class="lab-chip"><span class="lab-chip-key">parted</span></span>
-                  <span class="lab-chip"><span class="lab-chip-key">mbr</span></span>
                   <span class="lab-chip"><span class="lab-chip-key">rhel</span></span>
+                  <span class="lab-chip"><span class="lab-chip-key">rhcsa</span></span>
+                  <span class="lab-chip"><span class="lab-chip-key">postfix</span></span>
+                  <span class="lab-chip"><span class="lab-chip-key">mail</span></span>
+                  <span class="lab-chip"><span class="lab-chip-key">aliases</span></span>
+                  <span class="lab-chip"><span class="lab-chip-key">chrony</span></span>
+                  <span class="lab-chip"><span class="lab-chip-key">journald</span></span>
                 </div>
 
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">Scenario</h3>
 
                 <p>
-                  A new 100MB disk (<code>/dev/sdb</code>) was attached to a RHEL VM for a legacy appliance.
-                  The appliance requires an MBR partition table (<code>msdos</code>), not GPT.
-                  Your job is to label the disk, create a small primary partition for testing, verify the
-                  kernel sees it, then remove the partition to return the disk to a clean state.
+                  Ops wants all <code>root</code> mail forwarded to two addresses. There is also a queued message that needs
+                  inspection to confirm what is being sent and why it is stuck.
                 </p>
 
                 <div class="lab-callout">
-                  <div class="lab-callout-label">Safety note</div>
+                  <div class="lab-callout-label">Why this matters</div>
                   <p class="m-b-0">
-                    Double-check the target device before writing partition tables. The commands in this lab
-                    are destructive to existing partition layouts on the selected disk.
+                    Root mail often contains cron output, service alerts, and local security notices. If it is not forwarded
+                    correctly, incidents are missed. Queue inspection is a core skill for diagnosing outbound mail failures.
                   </p>
                 </div>
               </section>
@@ -221,12 +229,15 @@
               <section class="lab-section alt-background" id="objective">
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">Objective</h3>
                 <ul>
-                  <li>Confirm the disk has no recognized partition table.</li>
-                  <li>Write an MBR (<code>msdos</code>) disk label with <code>parted mklabel</code>.</li>
-                  <li>Create a primary partition with MiB-aligned boundaries.</li>
-                  <li>Verify the partition appears in <code>parted</code> output.</li>
-                  <li>Verify the kernel’s view using <code>lsblk</code> and <code>/proc/partitions</code>.</li>
-                  <li>Remove the partition with <code>parted rm</code> and verify cleanup.</li>
+                  <li>Edit <code>/etc/aliases</code> to forward <code>root</code> to two recipients.</li>
+                  <li>Rebuild the aliases database with <code>newaliases</code>.</li>
+                  <li>Confirm Postfix is active.</li>
+                  <li>Inspect the queue with <code>mailq</code> or <code>postqueue -p</code>.</li>
+                  <li>View a queued message with <code>postcat -q</code>.</li>
+                  <li>Confirm time zone state using <code>timedatectl</code>.</li>
+                  <li>Confirm chrony config file path exists.</li>
+                  <li>Pull kernel messages from journald with <code>journalctl -k</code>.</li>
+                  <li>Verify the alias line was applied.</li>
                 </ul>
               </section>
 
@@ -237,8 +248,7 @@
                 <!-- Step 1 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
-                    <strong class="font-alt">Step 1</strong>: Inspect current partition information on
-                    <code>/dev/sdb</code>.
+                    <strong class="font-alt">Step 1</strong>: Update the aliases file.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -246,29 +256,29 @@
                       <span>Command</span>
                       <button class="lab-copy-btn" type="button" data-copy="#cmd-step-1">Copy</button>
                     </div>
-                    <pre><code id="cmd-step-1">sudo parted /dev/sdb print</code></pre>
+                    <pre><code id="cmd-step-1">sudo vim /etc/aliases</code></pre>
                   </div>
 
                   <p>
-                    On an uninitialized disk, <code>parted</code> will report an unrecognized label and show
-                    the disk geometry. This is your confirmation that you are starting from a blank layout.
+                    Add or update the <code>root</code> alias so messages are forwarded to both recipients.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code id="verify-step-1">Error: /dev/sdb: unrecognised disk label
-Model: Virtio Block Device (virtblk)
-Disk /dev/sdb: 105MB
-Sector size (logical/physical): 512B/512B
-Partition Table: unknown
-Disk Flags:</code></pre>
+                    <pre><code>root: admin@example.com, webmaster@example.com</code></pre>
+                  </div>
+
+                  <div class="lab-callout">
+                    <div class="lab-callout-label">Note</div>
+                    <p class="m-b-0">
+                      The aliases database is not updated automatically. Editing the file alone does not apply the change.
+                    </p>
                   </div>
                 </div>
 
                 <!-- Step 2 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
-                    <strong class="font-alt">Step 2</strong>: Create an MBR partition table
-                    (<code>msdos</code>) on <code>/dev/sdb</code>.
+                    <strong class="font-alt">Step 2</strong>: Rebuild the aliases database.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -276,19 +286,22 @@ Disk Flags:</code></pre>
                       <span>Command</span>
                       <button class="lab-copy-btn" type="button" data-copy="#cmd-step-2">Copy</button>
                     </div>
-                    <pre><code id="cmd-step-2">sudo parted /dev/sdb mklabel msdos</code></pre>
+                    <pre><code id="cmd-step-2">sudo newaliases</code></pre>
                   </div>
 
                   <p>
-                    This writes the disk label. It is a destructive change if the disk previously contained data.
+                    This compiles <code>/etc/aliases</code> into the database file that Postfix actually uses.
                   </p>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <pre><code>/etc/aliases: 86 aliases, longest 52 bytes, 948 bytes total</code></pre>
+                  </div>
                 </div>
 
                 <!-- Step 3 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
-                    <strong class="font-alt">Step 3</strong>: Confirm the partition table type is now
-                    <code>msdos</code>.
+                    <strong class="font-alt">Step 3</strong>: Confirm Postfix is active.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -296,24 +309,22 @@ Disk Flags:</code></pre>
                       <span>Command</span>
                       <button class="lab-copy-btn" type="button" data-copy="#cmd-step-3">Copy</button>
                     </div>
-                    <pre><code id="cmd-step-3">sudo parted /dev/sdb print</code></pre>
+                    <pre><code id="cmd-step-3">systemctl is-active postfix</code></pre>
                   </div>
 
-                  <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code id="verify-step-3">Model: Virtio Block Device (virtblk)
-Disk /dev/sdb: 105MB
-Sector size (logical/physical): 512B/512B
-Partition Table: msdos
-Disk Flags:
+                  <p>
+                    You want a clean “active” signal before spending time on queue analysis.
+                  </p>
 
-Number  Start  End  Size  Type  File system  Flags</code></pre>
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <pre><code>active</code></pre>
                   </div>
                 </div>
 
                 <!-- Step 4 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
-                    <strong class="font-alt">Step 4</strong>: Create a primary partition aligned to MiB.
+                    <strong class="font-alt">Step 4</strong>: Inspect the mail queue.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -321,24 +332,25 @@ Number  Start  End  Size  Type  File system  Flags</code></pre>
                       <span>Command</span>
                       <button class="lab-copy-btn" type="button" data-copy="#cmd-step-4">Copy</button>
                     </div>
-                    <pre><code id="cmd-step-4">sudo parted /dev/sdb mkpart primary 1MiB 101MiB</code></pre>
+                    <pre><code id="cmd-step-4">mailq</code></pre>
                   </div>
 
                   <p>
-                    Starting at <code>1MiB</code> avoids the MBR gap and aligns partitions cleanly.
-                    The end boundary leaves room for metadata and device geometry.
+                    Identify stuck messages, note the queue ID, and capture sender and recipient to guide the next step.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code id="verify-step-4">Information: You may need to update /etc/fstab.</code></pre>
+                    <pre><code>-Queue ID-  --Size-- ----Arrival Time---- -Sender/Recipient-------
+A1B2C3D4E5*     1468 Sun Jan 25 07:10:41  root@lab141
+                                         admin@example.com
+-- 2 Kbytes in 1 Request.</code></pre>
                   </div>
                 </div>
 
                 <!-- Step 5 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
-                    <strong class="font-alt">Step 5</strong>: Verify the partition exists in
-                    <code>parted</code>.
+                    <strong class="font-alt">Step 5</strong>: View the queued message contents.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -346,20 +358,31 @@ Number  Start  End  Size  Type  File system  Flags</code></pre>
                       <span>Command</span>
                       <button class="lab-copy-btn" type="button" data-copy="#cmd-step-5">Copy</button>
                     </div>
-                    <pre><code id="cmd-step-5">sudo parted /dev/sdb print</code></pre>
+                    <pre><code id="cmd-step-5">sudo postcat -q A1B2C3D4E5</code></pre>
                   </div>
 
+                  <p>
+                    <code>postcat -q</code> lets you inspect what is in the queue without attempting delivery. This is useful
+                    for confirming message headers, recipients, and the subject line during triage.
+                  </p>
+
                   <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code id="verify-step-5">Number  Start   End     Size    Type     File system  Flags
- 1      1.05MiB 101MiB  100MiB  primary</code></pre>
+                    <pre><code>*** ENVELOPE RECORDS active ***
+message_size:           1468
+message_arrival_time:   Sun Jan 25 07:10:41 2026
+sender:                 root@lab141
+recipient:              admin@example.com
+*** MESSAGE CONTENTS active ***
+Subject: RHCSA-LAB141 queued test
+
+This is a queued test message.</code></pre>
                   </div>
                 </div>
 
                 <!-- Step 6 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
-                    <strong class="font-alt">Step 6</strong>: Confirm the kernel created
-                    <code>/dev/sdb1</code>.
+                    <strong class="font-alt">Step 6</strong>: List available time zones.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -367,26 +390,26 @@ Number  Start  End  Size  Type  File system  Flags</code></pre>
                       <span>Command</span>
                       <button class="lab-copy-btn" type="button" data-copy="#cmd-step-6">Copy</button>
                     </div>
-                    <pre><code id="cmd-step-6">lsblk /dev/sdb</code></pre>
+                    <pre><code id="cmd-step-6">timedatectl list-timezones | head -n 5</code></pre>
                   </div>
 
                   <p>
-                    This is the practical check that userspace sees the device node and the partition.
-                    If <code>/dev/sdb1</code> does not appear, you may need a rescan.
+                    This confirms the system has the time zone database available and shows how to safely limit output.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code id="verify-step-6">NAME MAJ:MIN RM  SIZE RO TYPE MOUNTPOINTS
-sdb    8:16  0  100M  0 disk
-└─sdb1 8:17  0   95M  0 part</code></pre>
+                    <pre><code>Africa/Abidjan
+Africa/Accra
+Africa/Addis_Ababa
+Africa/Algiers
+Africa/Asmara</code></pre>
                   </div>
                 </div>
 
                 <!-- Step 7 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
-                    <strong class="font-alt">Step 7</strong>: Confirm <code>/proc/partitions</code>
-                    reflects the new partition.
+                    <strong class="font-alt">Step 7</strong>: Confirm current time and time zone.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -394,24 +417,25 @@ sdb    8:16  0  100M  0 disk
                       <span>Command</span>
                       <button class="lab-copy-btn" type="button" data-copy="#cmd-step-7">Copy</button>
                     </div>
-                    <pre><code id="cmd-step-7">grep -E 'sdb$|sdb1$' /proc/partitions</code></pre>
+                    <pre><code id="cmd-step-7">timedatectl</code></pre>
                   </div>
 
                   <p>
-                    <code>/proc/partitions</code> is the kernel’s exported view. This is a clean verification
-                    step when troubleshooting device node issues.
+                    Capture the exact time zone and sync state as part of incident context, especially when mail timestamps
+                    and logs need to correlate with external systems.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code id="verify-step-7">8  16 102400 sdb
-8  17  97280 sdb1</code></pre>
+                    <pre><code>Time zone: America/New_York (EST, -0500)
+System clock synchronized: yes
+NTP service: active</code></pre>
                   </div>
                 </div>
 
                 <!-- Step 8 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
-                    <strong class="font-alt">Step 8</strong>: Remove partition 1.
+                    <strong class="font-alt">Step 8</strong>: Confirm the chrony configuration file path.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -419,19 +443,23 @@ sdb    8:16  0  100M  0 disk
                       <span>Command</span>
                       <button class="lab-copy-btn" type="button" data-copy="#cmd-step-8">Copy</button>
                     </div>
-                    <pre><code id="cmd-step-8">sudo parted /dev/sdb rm 1</code></pre>
+                    <pre><code id="cmd-step-8">ls -l /etc/chrony.conf</code></pre>
                   </div>
 
                   <p>
-                    This removes the partition entry from the table. It does not wipe data blocks, but it returns
-                    the partition layout to “no partitions.”
+                    In real incidents, you often need to confirm where the active config lives before making changes or
+                    collecting evidence.
                   </p>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <pre><code>-rw-r--r--. 1 root root 1247 Jan 25 06:58 /etc/chrony.conf</code></pre>
+                  </div>
                 </div>
 
                 <!-- Step 9 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
-                    <strong class="font-alt">Step 9</strong>: Confirm the partition is gone.
+                    <strong class="font-alt">Step 9</strong>: Pull kernel messages from the journal.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -439,24 +467,24 @@ sdb    8:16  0  100M  0 disk
                       <span>Command</span>
                       <button class="lab-copy-btn" type="button" data-copy="#cmd-step-9">Copy</button>
                     </div>
-                    <pre><code id="cmd-step-9">sudo parted /dev/sdb print</code></pre>
+                    <pre><code id="cmd-step-9">journalctl -k -n 5</code></pre>
                   </div>
 
-                  <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code id="verify-step-9">Model: Virtio Block Device (virtblk)
-Disk /dev/sdb: 105MB
-Sector size (logical/physical): 512B/512B
-Partition Table: msdos
-Disk Flags:
+                  <p>
+                    Kernel messages can provide useful context such as link state, driver resets, and audit signals that
+                    explain service behavior.
+                  </p>
 
-Number  Start  End  Size  Type  File system  Flags</code></pre>
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <pre><code>Jan 25 06:58:31 lab141 kernel: e1000e 0000:00:03.0 eth0: Link is Up 1000 Mbps Full Duplex
+Jan 25 07:12:03 lab141 kernel: audit: type=1100 audit(...): pid=1 uid=0 ... unit=postfix ...</code></pre>
                   </div>
                 </div>
 
                 <!-- Step 10 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
-                    <strong class="font-alt">Step 10</strong>: Verify kernel view updated (no <code>sdb1</code>).
+                    <strong class="font-alt">Step 10</strong>: Verify the root alias line is present.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -464,17 +492,15 @@ Number  Start  End  Size  Type  File system  Flags</code></pre>
                       <span>Command</span>
                       <button class="lab-copy-btn" type="button" data-copy="#cmd-step-10">Copy</button>
                     </div>
-                    <pre><code id="cmd-step-10">lsblk /dev/sdb</code></pre>
+                    <pre><code id="cmd-step-10">grep '^root:' /etc/aliases</code></pre>
                   </div>
 
                   <p>
-                    You should only see the disk device now. If a stale partition device remains visible,
-                    you may need to trigger a rescan.
+                    This is a quick verification that the correct alias line exists after edits.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code id="verify-step-10">NAME MAJ:MIN RM  SIZE RO TYPE MOUNTPOINTS
-sdb    8:16  0  100M  0 disk</code></pre>
+                    <pre><code>root: admin@example.com, webmaster@example.com</code></pre>
                   </div>
                 </div>
               </section>
@@ -484,27 +510,53 @@ sdb    8:16  0  100M  0 disk</code></pre>
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">Common breakpoints</h3>
 
                 <div class="lab-callout">
-                  <div class="lab-callout-label">Partition does not appear as /dev/sdb1</div>
+                  <div class="lab-callout-label">Alias change does not take effect</div>
                   <p class="m-b-0">
-                    The kernel may not have re-read the partition table yet. In real environments, you might use
-                    <code>partprobe</code> or a device rescan to refresh the kernel’s view.
+                    You edited <code>/etc/aliases</code> but did not run <code>newaliases</code>. Rebuild the database and try again.
                   </p>
                 </div>
 
                 <div class="lab-callout">
-                  <div class="lab-callout-label">Wrong disk selected</div>
+                  <div class="lab-callout-label">mailq shows “Mail queue is empty”</div>
                   <p class="m-b-0">
-                    Always verify device identity using <code>lsblk -o NAME,SIZE,MODEL,SERIAL</code>
-                    (when available) before writing a new disk label.
+                    That is not an error. It just means there is nothing queued on this host at the moment.
                   </p>
                 </div>
 
                 <div class="lab-callout">
-                  <div class="lab-callout-label">MBR vs GPT mismatch</div>
+                  <div class="lab-callout-label">postcat fails: “No such file or directory”</div>
                   <p class="m-b-0">
-                    Some environments default to GPT. This lab forces <code>msdos</code> explicitly to match
-                    legacy requirements.
+                    The queue ID may be wrong, or the message was delivered/removed. Re-run <code>mailq</code> and copy the exact ID.
                   </p>
+                </div>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">Time looks correct but incidents still show drift</div>
+                  <p class="m-b-0">
+                    Check the NTP sync state, and confirm chrony sources with <code>chronyc sources -v</code> if needed.
+                  </p>
+                </div>
+              </section>
+
+              <!-- Cleanup -->
+              <section class="lab-section alt-background" id="cleanup">
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">Cleanup checklist</h3>
+
+                <p>
+                  Leave the system in a safe state. If you modified aliases for lab testing, revert the line to the prior value.
+                </p>
+
+                <div class="lab-codeblock m-b-40 m-t-40">
+                  <div class="lab-codeblock-header">
+                    <span>Commands</span>
+                    <button class="lab-copy-btn" type="button" data-copy="#cmd-cleanup">Copy</button>
+                  </div>
+                  <pre><code id="cmd-cleanup"># If you changed /etc/aliases for the lab, revert as needed
+sudo vim /etc/aliases
+sudo newaliases
+
+# Optional: verify Postfix state
+systemctl is-active postfix || systemctl status postfix --no-pager</code></pre>
                 </div>
               </section>
 
@@ -513,21 +565,15 @@ sdb    8:16  0  100M  0 disk</code></pre>
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">Reference</h3>
 
                 <ul class="lab-reference-list">
-                  <li><code>parted /dev/sdb print</code>: Show disk geometry and partition table.</li>
-                  <li><code>parted /dev/sdb mklabel msdos</code>: Write MBR partition table.</li>
-                  <li><code>parted /dev/sdb mkpart primary 1MiB 101MiB</code>: Create partition with MiB alignment.</li>
-                  <li><code>parted /dev/sdb rm 1</code>: Remove partition by number.</li>
-                  <li><code>lsblk /dev/sdb</code>: Verify kernel device/partition nodes.</li>
-                  <li><code>/proc/partitions</code>: Kernel-exported view of block devices and partitions.</li>
+                  <li><code>/etc/aliases</code>: local alias map used for address rewriting.</li>
+                  <li><code>newaliases</code>: rebuild alias database for Postfix to use.</li>
+                  <li><code>systemctl is-active postfix</code>: quick service health signal.</li>
+                  <li><code>mailq</code>, <code>postqueue -p</code>: inspect the Postfix queue.</li>
+                  <li><code>postcat -q QUEUEID</code>: view queued message content without delivery attempts.</li>
+                  <li><code>timedatectl</code>: time zone and NTP sync state.</li>
+                  <li><code>/etc/chrony.conf</code>: chrony configuration file path.</li>
+                  <li><code>journalctl -k</code>: kernel messages from the system journal.</li>
                 </ul>
-
-                <div class="lab-callout">
-                  <div class="lab-callout-label">Tip</div>
-                  <p class="m-b-0">
-                    When you need deterministic boundaries, prefer MiB units (<code>1MiB</code>) and verify with
-                    <code>parted print</code> immediately after each write.
-                  </p>
-                </div>
               </section>
             </div>
             <!-- /main -->
@@ -547,7 +593,13 @@ sdb    8:16  0  100M  0 disk</code></pre>
                   <a href="https://github.com/vonds" target="_blank" rel="noopener">Github</a>
                 </li>
                 <li>
-                  <a href="https://www.linkedin.com/in/vonds/" target="_blank" rel="noopener">Linkedin</a>
+                  <a
+                    href="https://www.linkedin.com/in/vonds/"
+                    target="_blank"
+                    rel="noopener"
+                  >
+                    Linkedin
+                  </a>
                 </li>
               </ul>
             </div>

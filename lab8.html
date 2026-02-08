@@ -37,14 +37,11 @@
     <link href="../assets/css/style.css" rel="stylesheet" />
     <link href="../assets/css/docs.css" rel="stylesheet" />
 
-    <!-- Lab page styles (new) -->
+    <!-- Lab page styles -->
     <link href="../assets/css/lab.css" rel="stylesheet" />
 
     <!-- Fonts -->
-    <link
-      href="https://fonts.googleapis.com/css?family=Dosis"
-      rel="stylesheet"
-    />
+    <link href="https://fonts.googleapis.com/css?family=Dosis" rel="stylesheet" />
   </head>
 
   <body>
@@ -77,15 +74,10 @@
                   </a>
                 </li>
                 <li>
-                  <a
-                    href="docs.html"
-                    target="_blank"
-                    rel="noopener"
-                  >
-                    exit_0 Documentation
+                  <a href="docs.html" target="_blank" rel="noopener">
+                    exit_0
                   </a>
                 </li>
-                <li><a href="https://github.com/vonds/sentinel" target="_blank" rel="noopener">Sentinel</a></li>
               </ul>
             </li>
 
@@ -129,9 +121,7 @@
     <!-- WRAPPER -->
     <div class="wrapper">
       <!-- NAVIGATION -->
-      <nav
-        class="navbar navbar-custom navbar-transparent navbar-light navbar-fixed-top"
-      >
+      <nav class="navbar navbar-custom navbar-transparent navbar-light navbar-fixed-top">
         <div class="container">
           <div class="navbar-header">
             <a class="navbar-brand" href="../index.html">
@@ -157,33 +147,27 @@
           <h2 class="font-alt module-title m-t-60">
             Lab 8: Identify and Change Default Runlevel (SysV Systems)
           </h2>
+
           <nav class="lab-pagination">
-            <a
-              id="prev-lab"
-              class="lab-nav-link"
-              href="#"
-              aria-label="Previous lab"
-            >
-              &laquo;
-            </a>
-            <a
-              id="next-lab"
-              class="lab-nav-link"
-              href="#"
-              aria-label="Next lab"
-            >
-              &raquo;
-            </a>
+            <a id="prev-lab" class="lab-nav-link" href="#" aria-label="Previous lab">&laquo;</a>
+            <a id="next-lab" class="lab-nav-link" href="#" aria-label="Next lab">&raquo;</a>
           </nav>
+
           <div class="row">
             <!-- LEFT SIDEBAR -->
             <div class="col-sm-4 col-md-3 lab-sidebar">
               <div class="docs-sidebar">
                 <div class="docs-widget">
-                  <h5 class="widget-title"><a href="./docs.html">Lab Index</a></h5>
+                  <h5 class="widget-title">
+                    <a href="./docs.html">Lab Index</a>
+                  </h5>
                   <ul class="docs-nav">
                     <li><a href="#scenario">Scenario</a></li>
+                    <li><a href="#objective">Objective</a></li>
+                    <li><a href="#concepts">Concepts</a></li>
                     <li><a href="#walkthrough">Walkthrough</a></li>
+                    <li><a href="#breakpoints">Breakpoints</a></li>
+                    <li><a href="#cleanup">Cleanup</a></li>
                     <li><a href="#reference">Reference</a></li>
                   </ul>
                 </div>
@@ -192,213 +176,180 @@
 
             <!-- MAIN CONTENT -->
             <div class="col-sm-8 col-md-9 lab-doc">
-              <!-- 1) Title + Summary (2 sentences max) -->
               <p class="m-b-20 lab-summary">
-                Identify the current SysV runlevel and switch targets during
-                runtime. Then locate the configuration responsible for the
-                default runlevel to make the change persist across boots.
+                Identify the current SysV runlevel and validate runlevel state using CLI-only inspection.
+                Switch to runlevel 3 at runtime, then confirm where the default runlevel is defined so
+                the change persists across boots.
               </p>
 
+              <!-- Video -->
               <section class="lab-section" id="video" aria-label="Lab video">
-  				<div class="lab-video">
-    				<div class="lab-video-embed text-center">
-      					<iframe 
-							width="560" 
-							height="315" 
-							src="https://www.youtube.com/embed/qLmfKQTB_xw?si=3P-gTMjKn8GEkY5o" 
-							title="YouTube video player" 
-							frameborder="0" 
-							allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
-							referrerpolicy="strict-origin-when-cross-origin" 
-							allowfullscreen>
-						</iframe>
-    				</div>
-  				</div>
-			</section>
+                <div class="lab-video">
+                  <div class="lab-video-embed text-center">
+                    <iframe
+                      src="https://www.youtube.com/embed/qLmfKQTB_xw?si=3P-gTMjKn8GEkY5o"
+                      title="YouTube video player"
+                      frameborder="0"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                      referrerpolicy="strict-origin-when-cross-origin"
+                      allowfullscreen
+                    ></iframe>
+                  </div>
+                </div>
+              </section>
 
-              <!-- 2) Scenario -->
+              <!-- Scenario -->
               <section class="lab-section" id="scenario">
                 <div class="lab-chips" aria-label="Tags">
-                  <span class="lab-chip">
-                    <span class="lab-chip-key">boot</span>
-                  </span>
-                  <span class="lab-chip">
-                    <span class="lab-chip-key">services</span>
-                  </span>
-                  <span class="lab-chip">
-                    <span class="lab-chip-key">troubleshooting</span>
-                  </span>
+                  <span class="lab-chip"><span class="lab-chip-key">boot</span></span>
+                  <span class="lab-chip"><span class="lab-chip-key">services</span></span>
+                  <span class="lab-chip"><span class="lab-chip-key">troubleshooting</span></span>
                 </div>
 
-                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
-                  Scenario
-                </h3>
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">Scenario</h3>
+
                 <p>
-                  You’re working on an older Debian system using SysV init. The
-                  system boots into a graphical environment, but your team needs
-                  it to boot into multi-user mode without GUI (runlevel 3).
+                  You are working on an older Debian system using SysV init. The system boots into a graphical
+                  environment, but your team needs it to boot into multi-user mode without a GUI
+                  (runlevel 3) for headless operation and reduced boot complexity.
                 </p>
 
                 <div class="lab-callout">
                   <div class="lab-callout-label">Operator context</div>
                   <p class="m-b-0">
-                    This is the kind of change you make for headless servers,
-                    recovery situations, or systems where the GUI adds boot time
-                    and operational risk.
+                    This is the kind of change you make when the GUI adds boot time, introduces unnecessary
+                    dependencies, or complicates recovery. Validate the runtime transition first, then
+                    commit the persistent configuration change.
                   </p>
                 </div>
               </section>
 
-              <!-- 3) Objective -->
+              <!-- Objective -->
               <section class="lab-section alt-background" id="objective">
-                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
-                  Objective
-                </h3>
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">Objective</h3>
                 <ul>
                   <li>Identify the current runlevel.</li>
                   <li>Verify runlevel state using more than one command.</li>
-                  <li>Inspect runlevel-specific service symlinks.</li>
+                  <li>Inspect runlevel 3 service ordering via rc symlinks.</li>
                   <li>Switch to runlevel 3 during runtime.</li>
-                  <li>Identify where the default runlevel is configured.</li>
+                  <li>Locate the configuration responsible for the default runlevel.</li>
                   <li>Switch back to graphical mode (runlevel 5).</li>
                 </ul>
               </section>
 
-              <!-- 4) What You'll Practice -->
-              <section class="lab-section" id="practice">
-                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
-                  What You’ll Practice
-                </h3>
-
-                <ul class="m-t-10">
+              <!-- Concepts (no alt-background moving forward) -->
+              <section class="lab-section" id="concepts">
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">Concepts</h3>
+                <ul>
                   <li>
-                    Checking runlevel state using
-                    <code>runlevel</code>
-                    and
-                    <code>who -r</code>
-                    .
+                    Runlevels are operational modes that determine which services should be started or stopped.
                   </li>
                   <li>
-                    Inspecting SysV service symlinks in
-                    <code>/etc/rc3.d/</code>
-                    .
+                    Runtime changes (<code>init 3</code>) alter the current state only; persistent changes require
+                    updating the system’s default runlevel configuration.
                   </li>
                   <li>
-                    Switching runlevels using
-                    <code>init</code>
-                    /
-                    <code>telinit</code>
-                    .
+                    SysV runlevel directories (for example <code>/etc/rc3.d</code>) contain <code>S##</code> and
+                    <code>K##</code> symlinks that control start/stop ordering.
                   </li>
                   <li>
-                    Identifying the default runlevel configuration file:
-                    <code>/etc/inittab</code>
-                    .
+                    <code>/etc/inittab</code> defines the default runlevel via the <code>initdefault</code> entry
+                    on systems using classic SysV init.
+                  </li>
+                  <li>
+                    Many modern systems provide SysV-compatible commands while actually using systemd.
+                    Verify assumptions when files like <code>/etc/inittab</code> are missing.
                   </li>
                 </ul>
               </section>
 
-              <!-- 5) Commands Walkthrough -->
+              <!-- Walkthrough -->
               <section class="lab-section alt-background" id="walkthrough">
-                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
-                  Walkthrough
-                </h3>
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">Walkthrough</h3>
 
                 <!-- Step 1 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
-                    <strong class="font-alt">Step 1</strong>
-                    : Show the current runlevel.
+                    <strong class="font-alt">Step 1</strong>: Show the current runlevel.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
-                      <button
-                        class="lab-copy-btn"
-                        type="button"
-                        data-copy="#cmd-step-1"
-                      >
-                        Copy
-                      </button>
+                      <button class="lab-copy-btn" type="button" data-copy="#cmd-step-1">Copy</button>
                     </div>
                     <pre><code id="cmd-step-1">runlevel</code></pre>
                   </div>
 
+                  <p>
+                    <code>runlevel</code> prints two fields: the previous runlevel and the current runlevel.
+                    A previous runlevel of <code>N</code> typically means this is the first runlevel after boot.
+                  </p>
+
                   <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code id="verify-step-1">N 5</code></pre>
+                    <pre><code>N 5</code></pre>
                   </div>
                 </div>
 
                 <!-- Step 2 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
-                    <strong class="font-alt">Step 2</strong>
-                    : Confirm runlevel via an alternate command.
+                    <strong class="font-alt">Step 2</strong>: Confirm runlevel using an alternate command.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
-                      <button
-                        class="lab-copy-btn"
-                        type="button"
-                        data-copy="#cmd-step-2"
-                      >
-                        Copy
-                      </button>
+                      <button class="lab-copy-btn" type="button" data-copy="#cmd-step-2">Copy</button>
                     </div>
                     <pre><code id="cmd-step-2">who -r</code></pre>
                   </div>
 
+                  <p>
+                    <code>who -r</code> provides a second source of truth and includes when the current runlevel
+                    was entered, which can be useful for operational notes and incident timelines.
+                  </p>
+
                   <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code id="verify-step-2">run-level 5  2025-07-18 13:14</code></pre>
+                    <pre><code>run-level 5  2025-07-18 13:14</code></pre>
                   </div>
                 </div>
 
                 <!-- Step 3 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
-                    <strong class="font-alt">Step 3</strong>
-                    : Inspect services for runlevel 3.
+                    <strong class="font-alt">Step 3</strong>: Inspect runlevel 3 service links.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
-                      <button
-                        class="lab-copy-btn"
-                        type="button"
-                        data-copy="#cmd-step-3"
-                      >
-                        Copy
-                      </button>
+                      <button class="lab-copy-btn" type="button" data-copy="#cmd-step-3">Copy</button>
                     </div>
                     <pre><code id="cmd-step-3">ls /etc/rc3.d/</code></pre>
                   </div>
 
+                  <p>
+                    Runlevel directories contain symlinks that control service ordering.
+                    <code>S##</code> entries are started when entering the runlevel, and <code>K##</code> entries
+                    are stopped. The numbers define ordering.
+                  </p>
+
                   <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code id="verify-step-3">S01rsyslog  S02networking  S03cron  K01gdm3</code></pre>
+                    <pre><code>S01rsyslog  S02networking  S03cron  K01gdm3</code></pre>
                   </div>
                 </div>
 
                 <!-- Step 4 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
-                    <strong class="font-alt">Step 4</strong>
-                    : Switch to runlevel 3 immediately.
+                    <strong class="font-alt">Step 4</strong>: Switch to runlevel 3 immediately.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
-                      <button
-                        class="lab-copy-btn"
-                        type="button"
-                        data-copy="#cmd-step-4"
-                      >
-                        Copy
-                      </button>
+                      <button class="lab-copy-btn" type="button" data-copy="#cmd-step-4">Copy</button>
                     </div>
                     <pre><code id="cmd-step-4">init 3</code></pre>
                   </div>
@@ -406,19 +357,19 @@
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Alternative</span>
-                      <button
-                        class="lab-copy-btn"
-                        type="button"
-                        data-copy="#cmd-step-4b"
-                      >
-                        Copy
-                      </button>
+                      <button class="lab-copy-btn" type="button" data-copy="#cmd-step-4b">Copy</button>
                     </div>
                     <pre><code id="cmd-step-4b">telinit 3</code></pre>
                   </div>
 
+                  <p>
+                    This performs a runtime transition into multi-user mode without the GUI. On real systems,
+                    be careful: runlevel changes can stop services that impact remote access depending on how
+                    the rc symlinks are defined.
+                  </p>
+
                   <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code id="verify-step-4">Switching to runlevel 3...
+                    <pre><code>Switching to runlevel 3...
 [ OK ] Stopping graphical interface manager
 [ OK ] Starting multi-user services</code></pre>
                   </div>
@@ -427,26 +378,24 @@
                 <!-- Step 5 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
-                    <strong class="font-alt">Step 5</strong>
-                    : Identify the default runlevel config file.
+                    <strong class="font-alt">Step 5</strong>: Identify where the default runlevel is configured.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
-                      <span>File</span>
-                      <button
-                        class="lab-copy-btn"
-                        type="button"
-                        data-copy="#cmd-step-5"
-                      >
-                        Copy
-                      </button>
+                      <span>Command</span>
+                      <button class="lab-copy-btn" type="button" data-copy="#cmd-step-5">Copy</button>
                     </div>
-                    <pre><code id="cmd-step-5">/etc/inittab</code></pre>
+                    <pre><code id="cmd-step-5">grep -E '^[[:space:]]*id:.*:initdefault:' /etc/inittab</code></pre>
                   </div>
 
+                  <p>
+                    On SysV init systems, the default runlevel is defined by the <code>initdefault</code> entry in
+                    <code>/etc/inittab</code>. This is what determines the runlevel after a reboot.
+                  </p>
+
                   <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code id="verify-step-5"># The default runlevel.
+                    <pre><code># The default runlevel.
 id:3:initdefault:</code></pre>
                   </div>
                 </div>
@@ -454,20 +403,13 @@ id:3:initdefault:</code></pre>
                 <!-- Step 6 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
-                    <strong class="font-alt">Step 6</strong>
-                    : Return to graphical mode (runlevel 5).
+                    <strong class="font-alt">Step 6</strong>: Return to graphical mode (runlevel 5).
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
-                      <button
-                        class="lab-copy-btn"
-                        type="button"
-                        data-copy="#cmd-step-6"
-                      >
-                        Copy
-                      </button>
+                      <button class="lab-copy-btn" type="button" data-copy="#cmd-step-6">Copy</button>
                     </div>
                     <pre><code id="cmd-step-6">init 5</code></pre>
                   </div>
@@ -475,74 +417,129 @@ id:3:initdefault:</code></pre>
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Alternative</span>
-                      <button
-                        class="lab-copy-btn"
-                        type="button"
-                        data-copy="#cmd-step-6b"
-                      >
-                        Copy
-                      </button>
+                      <button class="lab-copy-btn" type="button" data-copy="#cmd-step-6b">Copy</button>
                     </div>
                     <pre><code id="cmd-step-6b">telinit 5</code></pre>
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code id="verify-step-6">Switching to runlevel 5...
+                    <pre><code>Switching to runlevel 5...
 [ OK ] Starting graphical interface manager</code></pre>
                   </div>
                 </div>
               </section>
 
-              <!-- 8) Reference -->
-              <!-- 9) Reference -->
+              <!-- Breakpoints -->
+              <section class="lab-section" id="breakpoints">
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">Common breakpoints</h3>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">/etc/inittab not found</div>
+                  <p class="m-b-0">
+                    Many systems are systemd-based even when SysV commands exist. Confirm the init system before
+                    assuming runlevel persistence is controlled by <code>/etc/inittab</code>.
+                    A quick check is <code>ps -p 1 -o comm=</code> and verifying whether PID 1 is <code>init</code>
+                    or <code>systemd</code>.
+                  </p>
+                </div>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">Remote session drops after switching runlevels</div>
+                  <p class="m-b-0">
+                    If networking or SSH is tied to runlevel-specific symlinks, a runlevel change can stop
+                    remote access. Always validate rc directory contents and service ordering before making
+                    changes on remote systems.
+                  </p>
+                </div>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">Runlevel 3 does not behave as expected</div>
+                  <p class="m-b-0">
+                    Runlevel meanings vary by distribution and configuration. Use rc directory contents as the
+                    source of truth for what starts and stops in that runlevel.
+                  </p>
+                </div>
+              </section>
+
+              <!-- Cleanup -->
+              <section class="lab-section alt-background" id="cleanup">
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">Cleanup checklist</h3>
+
+                <p>
+                  This lab does not change configuration unless you edit <code>/etc/inittab</code>.
+                  Ensure the system is returned to the expected runlevel (typically 5 for this scenario)
+                  and confirm the active runlevel.
+                </p>
+
+                <div class="lab-codeblock m-b-40 m-t-40">
+                  <div class="lab-codeblock-header">
+                    <span>Commands</span>
+                    <button class="lab-copy-btn" type="button" data-copy="#cmd-cleanup">Copy</button>
+                  </div>
+                  <pre><code id="cmd-cleanup">runlevel
+who -r</code></pre>
+                </div>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">Success signal</div>
+                  <p class="m-b-0">
+                    Both commands agree on the current runlevel and the system is in the intended operational
+                    mode for the environment.
+                  </p>
+                </div>
+              </section>
+
+              <!-- Reference -->
               <section class="lab-section" id="reference">
-                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
-                  Reference
-                </h3>
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">Reference</h3>
 
                 <ul class="lab-reference-list">
                   <li>
-                    <code>runlevel</code>
-                    : Shows previous and current SysV runlevel.
+                    <code>runlevel</code>: Shows previous and current SysV runlevel.
+                    <ul>
+                      <li>Output format: <code>&lt;previous&gt; &lt;current&gt;</code> (example: <code>N 5</code>).</li>
+                      <li><code>N</code> typically indicates the first runlevel after boot.</li>
+                      <li>Useful as a fast confirmation of the system’s current mode.</li>
+                    </ul>
                   </li>
+
                   <li>
-                    <code>who -r</code>
-                    : Displays runlevel and time of last runlevel change.
+                    <code>who -r</code>: Displays current runlevel and when it was entered.
+                    <ul>
+                      <li><code>-r:</code> Instructs <code>who</code> to print the system’s current runlevel record</li>
+                    </ul>
                   </li>
+
                   <li>
-                    <code>/etc/rc3.d/</code>
-                    : SysV runlevel directory containing service symlinks for
-                    runlevel 3.
+                    <code>ls /etc/rc3.d/</code>: Lists SysV service symlinks for runlevel 3.
                   </li>
+
                   <li>
-                    <code>init &lt;N&gt;</code>
-                    /
-                    <code>telinit &lt;N&gt;</code>
-                    : Switches runlevels immediately.
+                    <code>init &lt;N&gt;</code> / <code>telinit &lt;N&gt;</code>: Switches runlevels immediately.
                   </li>
+
                   <li>
-                    <code>/etc/inittab</code>
-                    : Defines the default runlevel in SysV init systems.
+                    <code>/etc/inittab</code>: SysV init configuration file for default runlevel.
                   </li>
+
+                  <li>
+                    Common runlevel meanings (verify per distro/config):
+                    <ul>
+                      <li><code>0</code>: Halt / power off</li>
+                      <li><code>1</code>: Single-user / rescue</li>
+                      <li><code>2</code>: Multi-user (varies)</li>
+                      <li><code>3</code>: Multi-user, no GUI (common mapping)</li>
+                      <li><code>5</code>: Multi-user with GUI</li>
+                      <li><code>6</code>: Reboot</li>
+                    </ul>
+                  </li>
+
                 </ul>
               </section>
-
-              <!-- Lab Pagination -->
             </div>
             <!-- /main -->
           </div>
           <!-- /row -->
-
-          <nav class="lab-pagination">
-            <a
-                id="prev-lab"
-                class="lab-nav-link"
-                href="#"
-                aria-label="Previous lab"
-            >
-                &uArr;
-            </a>
-          </nav>
         </div>
         <!-- /container -->
       </section>
@@ -554,22 +551,10 @@ id:3:initdefault:</code></pre>
             <div class="col-sm-12">
               <ul class="social-text-links font-alt text-center m-b-20">
                 <li>
-                  <a
-                    href="https://github.com/vonds"
-                    target="_blank"
-                    rel="noopener"
-                  >
-                    Github
-                  </a>
+                  <a href="https://github.com/vonds" target="_blank" rel="noopener">Github</a>
                 </li>
                 <li>
-                  <a
-                    href="https://www.linkedin.com/in/vonds/"
-                    target="_blank"
-                    rel="noopener"
-                  >
-                    Linkedin
-                  </a>
+                  <a href="https://www.linkedin.com/in/vonds/" target="_blank" rel="noopener">Linkedin</a>
                 </li>
               </ul>
             </div>
@@ -578,8 +563,7 @@ id:3:initdefault:</code></pre>
           <div class="row">
             <div class="col-sm-12">
               <p class="copyright text-center m-b-0">
-                VONDS &copy;
-                <span id="year"></span>
+                VONDS &copy; <span id="year"></span>
               </p>
 
               <div class="scroll-up">
@@ -593,7 +577,7 @@ id:3:initdefault:</code></pre>
 
     <!-- Javascript files (your existing) -->
     <script src="../assets/js/jquery-2.2.4.min.js"></script>
-    <script src="../assets/bootstrap/js/bootstrap.min.js"></script>
+    <script src="../assets/bootstrap/js/bootstrap.min.css"></script>
     <script src="../assets/js/jquery.superslides.min.js"></script>
     <script src="../assets/js/jquery.mb.YTPlayer.min.js"></script>
     <script src="../assets/js/jquery.magnific-popup.min.js"></script>
@@ -613,5 +597,9 @@ id:3:initdefault:</code></pre>
 
     <!-- Lab page JS (new) -->
     <script src="../assets/js/lab.js"></script>
+
+    <script>
+      document.getElementById("year").textContent = new Date().getFullYear()
+    </script>
   </body>
 </html>

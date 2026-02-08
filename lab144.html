@@ -1,4 +1,4 @@
-<!-- lab123.html -->
+<!-- lab144.html -->
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -7,7 +7,7 @@
     <meta name="description" content="exit_0 Documentation" />
     <meta name="name" content="Vonds" />
 
-    <title>Vonds | Lab 123</title>
+    <title>Vonds | Lab 144</title>
 
     <!-- Favicons -->
     <link rel="shortcut icon" href="../assets/images/favicon.png" />
@@ -137,7 +137,7 @@
       <section class="module">
         <div class="container">
           <h2 class="font-alt module-title m-t-60">
-            Lab 123: Partition /dev/sdb with msdos (MBR) using parted
+            Lab 144: Journald Persistence & Rsyslog Remote Forward
           </h2>
 
           <nav class="lab-pagination">
@@ -160,6 +160,8 @@
                   <ul class="docs-nav">
                     <li><a href="#scenario">Scenario</a></li>
                     <li><a href="#walkthrough">Walkthrough</a></li>
+                    <li><a href="#breakpoints">Common breakpoints</a></li>
+                    <li><a href="#cleanup">Cleanup</a></li>
                     <li><a href="#reference">Reference</a></li>
                   </ul>
                 </div>
@@ -169,17 +171,17 @@
             <!-- MAIN CONTENT -->
             <div class="col-sm-8 col-md-9 lab-doc">
               <p class="m-b-20 lab-summary">
-                Label an uninitialized disk with an MBR (<code>msdos</code>) partition table, create a
-                primary partition with <code>parted</code>, verify the kernel sees it via
-                <code>lsblk</code> and <code>/proc/partitions</code>, then remove the partition and confirm
-                the disk returns to a clean state.
+                Enable persistent journald storage using a drop-in config and confirm <code>/var/log/journal</code> exists.
+                Configure rsyslog to forward all messages to a central collector over TCP/514 using a safe drop-in, validate
+                config syntax, restart cleanly, then generate a test message and confirm it lands locally. Finish by confirming
+                NTP synchronization state using <code>chronyc tracking</code>.
               </p>
 
               <section class="lab-section" id="video" aria-label="Lab video">
                 <div class="lab-video">
                   <div class="lab-video-embed text-center">
                     <iframe
-                      src="https://www.youtube.com/embed/REPLACE_WITH_LAB123_VIDEO"
+                      src="https://www.youtube.com/embed/REPLACE_WITH_LAB144_VIDEO"
                       title="YouTube video player"
                       frameborder="0"
                       allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
@@ -193,26 +195,28 @@
               <!-- Scenario -->
               <section class="lab-section" id="scenario">
                 <div class="lab-chips" aria-label="Tags">
-                  <span class="lab-chip"><span class="lab-chip-key">storage</span></span>
-                  <span class="lab-chip"><span class="lab-chip-key">parted</span></span>
-                  <span class="lab-chip"><span class="lab-chip-key">mbr</span></span>
                   <span class="lab-chip"><span class="lab-chip-key">rhel</span></span>
+                  <span class="lab-chip"><span class="lab-chip-key">rhcsa</span></span>
+                  <span class="lab-chip"><span class="lab-chip-key">journald</span></span>
+                  <span class="lab-chip"><span class="lab-chip-key">rsyslog</span></span>
+                  <span class="lab-chip"><span class="lab-chip-key">tcp</span></span>
+                  <span class="lab-chip"><span class="lab-chip-key">logging</span></span>
+                  <span class="lab-chip"><span class="lab-chip-key">chrony</span></span>
+                  <span class="lab-chip"><span class="lab-chip-key">ntp</span></span>
                 </div>
 
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">Scenario</h3>
 
                 <p>
-                  A new 100MB disk (<code>/dev/sdb</code>) was attached to a RHEL VM for a legacy appliance.
-                  The appliance requires an MBR partition table (<code>msdos</code>), not GPT.
-                  Your job is to label the disk, create a small primary partition for testing, verify the
-                  kernel sees it, then remove the partition to return the disk to a clean state.
+                  Ops needs persistent journald logs for auditing, and rsyslog must forward logs to a central collector over TCP.
+                  You will implement and verify both changes, then confirm NTP sync state.
                 </p>
 
                 <div class="lab-callout">
-                  <div class="lab-callout-label">Safety note</div>
+                  <div class="lab-callout-label">Operational note</div>
                   <p class="m-b-0">
-                    Double-check the target device before writing partition tables. The commands in this lab
-                    are destructive to existing partition layouts on the selected disk.
+                    In production, log forwarding is only half the story: you also validate delivery on the collector.
+                    This lab keeps validation local and focuses on safe configuration and verification habits.
                   </p>
                 </div>
               </section>
@@ -221,12 +225,13 @@
               <section class="lab-section alt-background" id="objective">
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">Objective</h3>
                 <ul>
-                  <li>Confirm the disk has no recognized partition table.</li>
-                  <li>Write an MBR (<code>msdos</code>) disk label with <code>parted mklabel</code>.</li>
-                  <li>Create a primary partition with MiB-aligned boundaries.</li>
-                  <li>Verify the partition appears in <code>parted</code> output.</li>
-                  <li>Verify the kernel’s view using <code>lsblk</code> and <code>/proc/partitions</code>.</li>
-                  <li>Remove the partition with <code>parted rm</code> and verify cleanup.</li>
+                  <li>Check current journal disk usage with <code>journalctl --disk-usage</code>.</li>
+                  <li>Enable persistent journald storage via a drop-in and restart cleanly.</li>
+                  <li>Confirm persistent storage directory <code>/var/log/journal</code> exists.</li>
+                  <li>Configure rsyslog forwarding over TCP/514 using a drop-in file.</li>
+                  <li>Validate rsyslog configuration syntax and restart the service.</li>
+                  <li>Generate a test log event and confirm local ingestion.</li>
+                  <li>Verify NTP synchronization state using <code>chronyc tracking</code>.</li>
                 </ul>
               </section>
 
@@ -237,8 +242,7 @@
                 <!-- Step 1 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
-                    <strong class="font-alt">Step 1</strong>: Inspect current partition information on
-                    <code>/dev/sdb</code>.
+                    <strong class="font-alt">Step 1</strong>: Check journald disk usage.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -246,29 +250,22 @@
                       <span>Command</span>
                       <button class="lab-copy-btn" type="button" data-copy="#cmd-step-1">Copy</button>
                     </div>
-                    <pre><code id="cmd-step-1">sudo parted /dev/sdb print</code></pre>
+                    <pre><code id="cmd-step-1">journalctl --disk-usage</code></pre>
                   </div>
 
                   <p>
-                    On an uninitialized disk, <code>parted</code> will report an unrecognized label and show
-                    the disk geometry. This is your confirmation that you are starting from a blank layout.
+                    This provides a fast baseline for how much space the journal is consuming on disk.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code id="verify-step-1">Error: /dev/sdb: unrecognised disk label
-Model: Virtio Block Device (virtblk)
-Disk /dev/sdb: 105MB
-Sector size (logical/physical): 512B/512B
-Partition Table: unknown
-Disk Flags:</code></pre>
+                    <pre><code>Archived and active journals take up 144.0M in the file system.</code></pre>
                   </div>
                 </div>
 
                 <!-- Step 2 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
-                    <strong class="font-alt">Step 2</strong>: Create an MBR partition table
-                    (<code>msdos</code>) on <code>/dev/sdb</code>.
+                    <strong class="font-alt">Step 2</strong>: Create a journald drop-in to enable persistent storage.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -276,19 +273,35 @@ Disk Flags:</code></pre>
                       <span>Command</span>
                       <button class="lab-copy-btn" type="button" data-copy="#cmd-step-2">Copy</button>
                     </div>
-                    <pre><code id="cmd-step-2">sudo parted /dev/sdb mklabel msdos</code></pre>
+                    <pre><code id="cmd-step-2">sudo vim /etc/systemd/journald.conf.d/10-persistent.conf</code></pre>
                   </div>
 
-                  <p>
-                    This writes the disk label. It is a destructive change if the disk previously contained data.
+                  <p class="m-b-10">
+                    Add the following content:
                   </p>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <div class="lab-codeblock-header">
+                      <span>File content</span>
+                      <button class="lab-copy-btn" type="button" data-copy="#file-step-2">Copy</button>
+                    </div>
+                    <pre><code id="file-step-2">[Journal]
+Storage=persistent</code></pre>
+                  </div>
+
+                  <div class="lab-callout">
+                    <div class="lab-callout-label">Why a drop-in</div>
+                    <p class="m-b-0">
+                      Drop-ins keep changes isolated and auditable. They also reduce merge conflicts during updates,
+                      compared to editing the main config directly.
+                    </p>
+                  </div>
                 </div>
 
                 <!-- Step 3 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
-                    <strong class="font-alt">Step 3</strong>: Confirm the partition table type is now
-                    <code>msdos</code>.
+                    <strong class="font-alt">Step 3</strong>: Restart journald to apply the change.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -296,24 +309,18 @@ Disk Flags:</code></pre>
                       <span>Command</span>
                       <button class="lab-copy-btn" type="button" data-copy="#cmd-step-3">Copy</button>
                     </div>
-                    <pre><code id="cmd-step-3">sudo parted /dev/sdb print</code></pre>
+                    <pre><code id="cmd-step-3">sudo systemctl restart systemd-journald</code></pre>
                   </div>
 
-                  <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code id="verify-step-3">Model: Virtio Block Device (virtblk)
-Disk /dev/sdb: 105MB
-Sector size (logical/physical): 512B/512B
-Partition Table: msdos
-Disk Flags:
-
-Number  Start  End  Size  Type  File system  Flags</code></pre>
-                  </div>
+                  <p>
+                    Restarting applies the new storage mode and triggers directory creation when appropriate.
+                  </p>
                 </div>
 
                 <!-- Step 4 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
-                    <strong class="font-alt">Step 4</strong>: Create a primary partition aligned to MiB.
+                    <strong class="font-alt">Step 4</strong>: Verify <code>/var/log/journal</code> exists.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -321,24 +328,23 @@ Number  Start  End  Size  Type  File system  Flags</code></pre>
                       <span>Command</span>
                       <button class="lab-copy-btn" type="button" data-copy="#cmd-step-4">Copy</button>
                     </div>
-                    <pre><code id="cmd-step-4">sudo parted /dev/sdb mkpart primary 1MiB 101MiB</code></pre>
+                    <pre><code id="cmd-step-4">ls -ld /var/log/journal</code></pre>
                   </div>
 
                   <p>
-                    Starting at <code>1MiB</code> avoids the MBR gap and aligns partitions cleanly.
-                    The end boundary leaves room for metadata and device geometry.
+                    Persistent journals live under <code>/var/log/journal</code>. Directory ownership and permissions matter
+                    for correct writes.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code id="verify-step-4">Information: You may need to update /etc/fstab.</code></pre>
+                    <pre><code>drwxr-sr-x. 3 root systemd-journal 4096 Jan 25 07:34 /var/log/journal</code></pre>
                   </div>
                 </div>
 
                 <!-- Step 5 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
-                    <strong class="font-alt">Step 5</strong>: Verify the partition exists in
-                    <code>parted</code>.
+                    <strong class="font-alt">Step 5</strong>: Configure rsyslog to forward all logs to a collector over TCP.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -346,20 +352,33 @@ Number  Start  End  Size  Type  File system  Flags</code></pre>
                       <span>Command</span>
                       <button class="lab-copy-btn" type="button" data-copy="#cmd-step-5">Copy</button>
                     </div>
-                    <pre><code id="cmd-step-5">sudo parted /dev/sdb print</code></pre>
+                    <pre><code id="cmd-step-5">sudo vim /etc/rsyslog.d/90-forward.conf</code></pre>
                   </div>
 
+                  <p class="m-b-10">
+                    Add the following line:
+                  </p>
+
                   <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code id="verify-step-5">Number  Start   End     Size    Type     File system  Flags
- 1      1.05MiB 101MiB  100MiB  primary</code></pre>
+                    <div class="lab-codeblock-header">
+                      <span>File content</span>
+                      <button class="lab-copy-btn" type="button" data-copy="#file-step-5">Copy</button>
+                    </div>
+                    <pre><code id="file-step-5">*.* @@192.0.2.10:514</code></pre>
+                  </div>
+
+                  <div class="lab-callout">
+                    <div class="lab-callout-label">TCP vs UDP in rsyslog forwarding</div>
+                    <p class="m-b-0">
+                      <code>@</code> is UDP, <code>@@</code> is TCP. This lab forwards via TCP/514 for more reliable delivery semantics.
+                    </p>
                   </div>
                 </div>
 
                 <!-- Step 6 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
-                    <strong class="font-alt">Step 6</strong>: Confirm the kernel created
-                    <code>/dev/sdb1</code>.
+                    <strong class="font-alt">Step 6</strong>: Validate rsyslog configuration syntax.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -367,26 +386,23 @@ Number  Start  End  Size  Type  File system  Flags</code></pre>
                       <span>Command</span>
                       <button class="lab-copy-btn" type="button" data-copy="#cmd-step-6">Copy</button>
                     </div>
-                    <pre><code id="cmd-step-6">lsblk /dev/sdb</code></pre>
+                    <pre><code id="cmd-step-6">rsyslogd -N1</code></pre>
                   </div>
 
                   <p>
-                    This is the practical check that userspace sees the device node and the partition.
-                    If <code>/dev/sdb1</code> does not appear, you may need a rescan.
+                    Always validate syntax before restarting. It prevents self-inflicted outages.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code id="verify-step-6">NAME MAJ:MIN RM  SIZE RO TYPE MOUNTPOINTS
-sdb    8:16  0  100M  0 disk
-└─sdb1 8:17  0   95M  0 part</code></pre>
+                    <pre><code>rsyslogd: version 8.2310.0, config validation run (level 1), master config /etc/rsyslog.conf
+rsyslogd: End of config validation run. Bye.</code></pre>
                   </div>
                 </div>
 
                 <!-- Step 7 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
-                    <strong class="font-alt">Step 7</strong>: Confirm <code>/proc/partitions</code>
-                    reflects the new partition.
+                    <strong class="font-alt">Step 7</strong>: Restart rsyslog to apply forwarding.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -394,24 +410,18 @@ sdb    8:16  0  100M  0 disk
                       <span>Command</span>
                       <button class="lab-copy-btn" type="button" data-copy="#cmd-step-7">Copy</button>
                     </div>
-                    <pre><code id="cmd-step-7">grep -E 'sdb$|sdb1$' /proc/partitions</code></pre>
+                    <pre><code id="cmd-step-7">sudo systemctl restart rsyslog</code></pre>
                   </div>
 
                   <p>
-                    <code>/proc/partitions</code> is the kernel’s exported view. This is a clean verification
-                    step when troubleshooting device node issues.
+                    A clean restart after validation ensures the forward rule is active.
                   </p>
-
-                  <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code id="verify-step-7">8  16 102400 sdb
-8  17  97280 sdb1</code></pre>
-                  </div>
                 </div>
 
                 <!-- Step 8 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
-                    <strong class="font-alt">Step 8</strong>: Remove partition 1.
+                    <strong class="font-alt">Step 8</strong>: Generate a test log message.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -419,19 +429,18 @@ sdb    8:16  0  100M  0 disk
                       <span>Command</span>
                       <button class="lab-copy-btn" type="button" data-copy="#cmd-step-8">Copy</button>
                     </div>
-                    <pre><code id="cmd-step-8">sudo parted /dev/sdb rm 1</code></pre>
+                    <pre><code id="cmd-step-8">logger -p local0.notice 'test: forwarding enabled'</code></pre>
                   </div>
 
                   <p>
-                    This removes the partition entry from the table. It does not wipe data blocks, but it returns
-                    the partition layout to “no partitions.”
+                    This produces a deterministic event you can trace through the local pipeline.
                   </p>
                 </div>
 
                 <!-- Step 9 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
-                    <strong class="font-alt">Step 9</strong>: Confirm the partition is gone.
+                    <strong class="font-alt">Step 9</strong>: Confirm the message appears locally.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -439,24 +448,23 @@ sdb    8:16  0  100M  0 disk
                       <span>Command</span>
                       <button class="lab-copy-btn" type="button" data-copy="#cmd-step-9">Copy</button>
                     </div>
-                    <pre><code id="cmd-step-9">sudo parted /dev/sdb print</code></pre>
+                    <pre><code id="cmd-step-9">tail -n 5 /var/log/messages</code></pre>
                   </div>
 
-                  <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code id="verify-step-9">Model: Virtio Block Device (virtblk)
-Disk /dev/sdb: 105MB
-Sector size (logical/physical): 512B/512B
-Partition Table: msdos
-Disk Flags:
+                  <p>
+                    Local confirmation validates ingestion. Forwarding confirmation requires checking the collector side.
+                  </p>
 
-Number  Start  End  Size  Type  File system  Flags</code></pre>
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <pre><code>Jan 25 07:36:18 lab144 rsyslogd[1043]: [origin software="rsyslogd" swVersion="8.2310.0" x-pid="1043" x-info="https://www.rsyslog.com"] start
+Jan 25 07:36:25 lab144 lab[pts/0]: test: forwarding enabled</code></pre>
                   </div>
                 </div>
 
                 <!-- Step 10 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
-                    <strong class="font-alt">Step 10</strong>: Verify kernel view updated (no <code>sdb1</code>).
+                    <strong class="font-alt">Step 10</strong>: Verify NTP sync status with chrony.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -464,17 +472,27 @@ Number  Start  End  Size  Type  File system  Flags</code></pre>
                       <span>Command</span>
                       <button class="lab-copy-btn" type="button" data-copy="#cmd-step-10">Copy</button>
                     </div>
-                    <pre><code id="cmd-step-10">lsblk /dev/sdb</code></pre>
+                    <pre><code id="cmd-step-10">chronyc tracking</code></pre>
                   </div>
 
                   <p>
-                    You should only see the disk device now. If a stale partition device remains visible,
-                    you may need to trigger a rescan.
+                    <code>chronyc tracking</code> summarizes whether the system clock is synchronized and how stable it is.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code id="verify-step-10">NAME MAJ:MIN RM  SIZE RO TYPE MOUNTPOINTS
-sdb    8:16  0  100M  0 disk</code></pre>
+                    <pre><code>Reference ID    : C0A80101 (ntp1.example.com)
+Stratum         : 3
+Ref time (UTC)  : Sun Jan 25 12:36:11 2026
+System time     : 0.000012345 seconds fast of NTP time
+Last offset     : -0.000004321 seconds
+RMS offset      : 0.000015678 seconds
+Frequency       : 15.123 ppm fast
+Residual freq   : -0.002 ppm
+Skew            : 0.045 ppm
+Root delay      : 0.012345 seconds
+Root dispersion : 0.001234 seconds
+Update interval : 64.0 seconds
+Leap status     : Normal</code></pre>
                   </div>
                 </div>
               </section>
@@ -484,26 +502,73 @@ sdb    8:16  0  100M  0 disk</code></pre>
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">Common breakpoints</h3>
 
                 <div class="lab-callout">
-                  <div class="lab-callout-label">Partition does not appear as /dev/sdb1</div>
+                  <div class="lab-callout-label">/etc/systemd/journald.conf.d does not exist</div>
                   <p class="m-b-0">
-                    The kernel may not have re-read the partition table yet. In real environments, you might use
-                    <code>partprobe</code> or a device rescan to refresh the kernel’s view.
+                    Create it first: <code>sudo mkdir -p /etc/systemd/journald.conf.d</code>. Then add the drop-in file.
                   </p>
                 </div>
 
                 <div class="lab-callout">
-                  <div class="lab-callout-label">Wrong disk selected</div>
+                  <div class="lab-callout-label">/var/log/journal is missing after restart</div>
                   <p class="m-b-0">
-                    Always verify device identity using <code>lsblk -o NAME,SIZE,MODEL,SERIAL</code>
-                    (when available) before writing a new disk label.
+                    Ensure the drop-in is under <code>/etc/systemd/journald.conf.d</code>, and that it contains a valid
+                    <code>[Journal]</code> section with <code>Storage=persistent</code>. Then restart journald again.
                   </p>
                 </div>
 
                 <div class="lab-callout">
-                  <div class="lab-callout-label">MBR vs GPT mismatch</div>
+                  <div class="lab-callout-label">rsyslog restart fails</div>
                   <p class="m-b-0">
-                    Some environments default to GPT. This lab forces <code>msdos</code> explicitly to match
-                    legacy requirements.
+                    Run <code>rsyslogd -N1</code> and fix the first reported error before restarting. If SELinux is enforcing,
+                    check the journal for denial messages.
+                  </p>
+                </div>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">No message in /var/log/messages</div>
+                  <p class="m-b-0">
+                    On some systems, messages may be routed differently or handled by journald only. Verify rsyslog is running
+                    and confirm log destination config. Use <code>journalctl -t lab</code> or search for the message in the journal.
+                  </p>
+                </div>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">chronyc tracking shows unsynchronized</div>
+                  <p class="m-b-0">
+                    Confirm the service is running, check sources with <code>chronyc sources -v</code>, and verify network
+                    reachability to the configured NTP servers.
+                  </p>
+                </div>
+              </section>
+
+              <!-- Cleanup -->
+              <section class="lab-section alt-background" id="cleanup">
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">Cleanup checklist</h3>
+
+                <p>
+                  This lab makes durable changes (journald persistence and rsyslog forwarding). In a real environment, you would
+                  leave them in place. For a disposable lab host, you may want a quick rollback plan.
+                </p>
+
+                <div class="lab-codeblock m-b-40 m-t-40">
+                  <div class="lab-codeblock-header">
+                    <span>Optional rollback</span>
+                    <button class="lab-copy-btn" type="button" data-copy="#cmd-cleanup">Copy</button>
+                  </div>
+                  <pre><code id="cmd-cleanup"># Remove drop-ins (optional, lab-only rollback)
+sudo rm -f /etc/systemd/journald.conf.d/10-persistent.conf
+sudo rm -f /etc/rsyslog.d/90-forward.conf
+
+# Restart services
+sudo systemctl restart systemd-journald
+sudo systemctl restart rsyslog</code></pre>
+                </div>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">Final verification signal</div>
+                  <p class="m-b-0">
+                    <code>journalctl --disk-usage</code> reports expected growth behavior, <code>/var/log/journal</code> exists,
+                    rsyslog validates cleanly, and <code>chronyc tracking</code> shows normal sync state.
                   </p>
                 </div>
               </section>
@@ -513,21 +578,14 @@ sdb    8:16  0  100M  0 disk</code></pre>
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">Reference</h3>
 
                 <ul class="lab-reference-list">
-                  <li><code>parted /dev/sdb print</code>: Show disk geometry and partition table.</li>
-                  <li><code>parted /dev/sdb mklabel msdos</code>: Write MBR partition table.</li>
-                  <li><code>parted /dev/sdb mkpart primary 1MiB 101MiB</code>: Create partition with MiB alignment.</li>
-                  <li><code>parted /dev/sdb rm 1</code>: Remove partition by number.</li>
-                  <li><code>lsblk /dev/sdb</code>: Verify kernel device/partition nodes.</li>
-                  <li><code>/proc/partitions</code>: Kernel-exported view of block devices and partitions.</li>
+                  <li><code>journalctl --disk-usage</code>: show journal space usage.</li>
+                  <li><code>/etc/systemd/journald.conf.d/*.conf</code>: journald drop-in configuration directory.</li>
+                  <li><code>Storage=persistent</code>: enable persistent journal storage under <code>/var/log/journal</code>.</li>
+                  <li><code>rsyslogd -N1</code>: validate rsyslog configuration.</li>
+                  <li><code>*.* @@host:514</code>: forward all facilities/priorities to a remote host over TCP.</li>
+                  <li><code>logger -p local0.notice ...</code>: generate a controlled syslog event.</li>
+                  <li><code>chronyc tracking</code>: summary view of chrony synchronization state.</li>
                 </ul>
-
-                <div class="lab-callout">
-                  <div class="lab-callout-label">Tip</div>
-                  <p class="m-b-0">
-                    When you need deterministic boundaries, prefer MiB units (<code>1MiB</code>) and verify with
-                    <code>parted print</code> immediately after each write.
-                  </p>
-                </div>
               </section>
             </div>
             <!-- /main -->
@@ -547,7 +605,9 @@ sdb    8:16  0  100M  0 disk</code></pre>
                   <a href="https://github.com/vonds" target="_blank" rel="noopener">Github</a>
                 </li>
                 <li>
-                  <a href="https://www.linkedin.com/in/vonds/" target="_blank" rel="noopener">Linkedin</a>
+                  <a href="https://www.linkedin.com/in/vonds/" target="_blank" rel="noopener">
+                    Linkedin
+                  </a>
                 </li>
               </ul>
             </div>

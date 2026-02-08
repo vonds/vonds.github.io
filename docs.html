@@ -15,7 +15,7 @@
 	<link rel="apple-touch-icon" sizes="72x72" href="../assets/images/apple-touch-icon-72x72.png" />
 	<link rel="apple-touch-icon" sizes="114x114" href="../assets/images/apple-touch-icon-114x114.png" />
 
-	<!-- Bootstrap core CSS -->
+	<!-- Bootstrap shell CSS -->
 	<link href="../assets/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
 
 	<!-- Plugins -->
@@ -29,7 +29,7 @@
 	<link href="../assets/css/vertical.css" rel="stylesheet" />
 	<link href="../assets/css/animate.css" rel="stylesheet" />
 
-	<!-- Template core CSS -->
+	<!-- Template shell CSS -->
 	<link href="../assets/css/style.css" rel="stylesheet" />
 
 	<!-- Docs overrides -->
@@ -121,16 +121,16 @@
 							<div class="docs-widget">
 								<h5 class="widget-title m-b-40">Filter Labs By Category</h5>
 								<ul class="docs-nav">
-									<li><a href="#" data-filter="core">Core Shell + Files</a></li>
-									<li><a href="#" data-filter="users">Users + Permissions</a></li>
-									<li><a href="#" data-filter="services">Services + systemd</a></li>
-									<li><a href="#" data-filter="storage">Storage + LVM</a></li>
+									<li><a href="#" data-filter="shell">Shell</a></li>
+									<li><a href="#" data-filter="users">Users</a></li>
+									<li><a href="#" data-filter="services">Services</a></li>
+									<li><a href="#" data-filter="storage">Storage</a></li>
 									<li><a href="#" data-filter="network">Networking</a></li>
 									<li><a href="#" data-filter="security">Security</a></li>
 									<li><a href="#" data-filter="containers">Containers</a></li>
-									<li><a href="#" data-filter="packages">Packages + Updates</a></li>
+									<li><a href="#" data-filter="packages">Packages</a></li>
 									<li><a href="#" data-filter="troubleshooting">Troubleshooting</a></li>
-									<li><a href="#" data-filter="boot">Boot + System Lifecycle</a></li>
+									<li><a href="#" data-filter="boot">Boot</a></li>
 								</ul>
 							</div>
 						</div>
@@ -171,7 +171,7 @@
 								id="labSearch"
 								class="form-control navbar-light"
 								type="text"
-								placeholder='Examples: core, LVM, boot, troubleshooting, services, security'
+								placeholder='Examples: shell, LVM, boot, troubleshooting, services, security'
 								aria-label="Search labs by category tag"
 							/>
 							<div class="docs-search-actions">
@@ -182,12 +182,12 @@
 
 						<div class="labs-directory">
 							<ul class="labs-grid" id="labsGrid">
-								<li data-filter="core raid controller pci lspci kernel driver module megaraid megaraid_sas sysfs /sys lsmod modinfo modprobe dmesg journalctl troubleshooting hardware firmware device-init"><a href="lab1.html">Lab 001</a></li>
-								<li data-filter="core services troubleshooting real-time logs log-monitoring pipeline tail tail-f grep regex grep-e grep-i var-log syslog messages auth-log filtering error-detection incident-response kernel sysfs sys-kernel"><a href="lab2.html">Lab 002</a></li>
-								<li data-filter="core services troubleshooting sed substitution text-editing in-place sed-i global-replace regex config-file configuration webserver-conf typo fix protcol protocol string-replace search-replace cat verify ops-workflow"><a href="lab3.html">Lab 003</a></li>
-								<li data-filter="security services core ssh sshd sshd-config sshd_config hardening config-file configuration sed text-editing in-place sed-i anchored-pattern caret permitrootlogin root-login passwordauthentication password-auth disable-password disable-root port change-port 2222 port-2222 cli-only verify cat tmp tmp-sshd-config"><a href="lab4.html">Lab 004</a></li>
-								<li data-filter="boot troubleshooting core boot-process boot-sequence slow-boot startup init init-system init-symlink systemd sbin-init kernel kernel-image vmlinuz initramfs initrd cmdline proc-cmdline boot-parameters kernel-parameters lsblk block-devices mountpoints partition layout boot-partition rootfs root-device sda sda1 sda2 boot-device boot-artifacts boot-files ls-boot stat file-metadata timestamps evidence documentation escalation cli-only verify cat ls ls-l"><a href="lab5.html">Lab 005</a></li>
-								<li data-filter="troubleshooting boot core kernel-module modules module pcspkr pc-speaker beeping beep nobeep blacklist blacklisting modprobe modprobe.d etc-modprobe.d nobeep.conf disable-module prevent-autoload autoload unload unload-module rmmod lsmod grep tee config-file persistent-config reboot-safe cli-only verify verification linux hardening noise-reduction system-admin"><a href="lab6.html">Lab 006</a></li>
+								<li data-filter="shell raid controller pci lspci kernel driver module megaraid megaraid_sas sysfs /sys lsmod modinfo modprobe dmesg journalctl troubleshooting hardware firmware device-init"><a href="lab1.html">Lab 001</a></li>
+								<li data-filter="shell services troubleshooting real-time logs log-monitoring pipeline tail tail-f grep regex grep-e grep-i var-log syslog messages auth-log filtering error-detection incident-response kernel sysfs sys-kernel"><a href="lab2.html">Lab 002</a></li>
+								<li data-filter="shell services troubleshooting sed substitution text-editing in-place sed-i global-replace regex config-file configuration webserver-conf typo fix protcol protocol string-replace search-replace cat verify ops-workflow"><a href="lab3.html">Lab 003</a></li>
+								<li data-filter="security services shell ssh sshd sshd-config sshd_config hardening config-file configuration sed text-editing in-place sed-i anchored-pattern caret permitrootlogin root-login passwordauthentication password-auth disable-password disable-root port change-port 2222 port-2222 cli-only verify cat tmp tmp-sshd-config"><a href="lab4.html">Lab 004</a></li>
+								<li data-filter="boot troubleshooting shell boot-process boot-sequence slow-boot startup init init-system init-symlink systemd sbin-init kernel kernel-image vmlinuz initramfs initrd cmdline proc-cmdline boot-parameters kernel-parameters lsblk block-devices mountpoints partition layout boot-partition rootfs root-device sda sda1 sda2 boot-device boot-artifacts boot-files ls-boot stat file-metadata timestamps evidence documentation escalation cli-only verify cat ls ls-l"><a href="lab5.html">Lab 005</a></li>
+								<li data-filter="troubleshooting boot shell kernel-module modules module pcspkr pc-speaker beeping beep nobeep blacklist blacklisting modprobe modprobe.d etc-modprobe.d nobeep.conf disable-module prevent-autoload autoload unload unload-module rmmod lsmod grep tee config-file persistent-config reboot-safe cli-only verify verification linux hardening noise-reduction system-admin"><a href="lab6.html">Lab 006</a></li>
 								<li data-filter="troubleshooting boot storage kernel-modules kernel-module module modules usb usb-storage usb_storage usb-storage.ko driver drivers usb-mass-storage mass-storage usb-device usb-device-not-working missing-driver modinfo modprobe lsmod grep load-module insert-module on-demand load-on-demand verify verification validate active module-metadata aliases dependency dependencies resolve-deps lib-modules /lib/modules kernel-version modules-tree modules.dep modules.alias modules.softdep systemd modules-load modules-load.d /etc/modules-load.d auto-load autoload-on-boot persistent persistence usb.conf tee cli-only sysadmin"><a href="lab7.html">Lab 007</a></li>
 								<li data-filter="sysv init runlevel run level change runlevel default runlevel Debian sysvinit inittab /etc/inittab initdefault boot to console boot to text mode boot without gui disable gui headless server multi-user mode runlevel 3 runlevel 5 switch to runlevel 3 switch to runlevel 5 init 3 init 5 telinit 3 telinit 5 runlevel command who -r check current runlevel rc3.d /etc/rc3.d gdm3 stop gdm stop display manager"><a href="lab8.html">Lab 008</a></li>
 								<li data-filter="systemd service nginx troubleshoot logs journal restart enable boot status failure port bind conflict"><a href="lab9.html">Lab 009</a></li>
@@ -197,10 +197,10 @@
 								<li data-filter="journalctl logs journald systemd cron crond syslog logrotate rotation troubleshooting errors filtering grep priority linux"><a href="lab13.html">Lab 013</a></li>
 								<li data-filter="tar archive archiving compress compression gzip xz unxz extract extraction backup transfer bundle files directories storage linux"><a href="lab14.html">Lab 014</a></li>
 								<li data-filter="useradd userdel usermod passwd chage aging expiration policy shadow login.defs accounts users security intern provisioning linux"><a href="lab15.html">Lab 015</a></li>
-								<li data-filter="processes process management job control ps top kill signals sigterm sigkill nice renice priority scheduling cpu memory troubleshooting performance jobs fg bg linux core services"><a href="lab16.html">Lab 016</a></li>
-								<li data-filter="mounting filesystems filesystem mounts mount umount fstab /etc/fstab persistent mounts boot mount -a lsblk findmnt mkfs.ext4 ext4 uuid blkid storage partitions block devices /dev/sdb1 /mnt/data troubleshooting validation emergency mode fsck passno core boot storage linux"><a href="lab17.html">Lab 017</a></li>
-								<li data-filter="partitioning disk partition table fdisk create partition primary partition mbr dos partition table /dev/sdc /dev/sdc1 block devices lsblk fdisk -l partprobe rescan device node udev mkfs.ext4 ext4 filesystem format disk storage troubleshooting verification write changes n w sectors mount preparation core storage linux"><a href="lab18.html">Lab 018</a></li>
-								<li data-filter="file search file manipulation find locate updatedb mlocate database search paths /var/log /tmp logs temp files cleanup delete rm -exec xargs -print0 -0 mtime older than 7 days *.log *.conf glob quoting troubleshooting services core verification safe deletion batch delete findmnt"><a href="lab19.html">Lab 019</a></li>
+								<li data-filter="processes process management job control ps top kill signals sigterm sigkill nice renice priority scheduling cpu memory troubleshooting performance jobs fg bg linux shell services"><a href="lab16.html">Lab 016</a></li>
+								<li data-filter="mounting filesystems filesystem mounts mount umount fstab /etc/fstab persistent mounts boot mount -a lsblk findmnt mkfs.ext4 ext4 uuid blkid storage partitions block devices /dev/sdb1 /mnt/data troubleshooting validation emergency mode fsck passno shell boot storage linux"><a href="lab17.html">Lab 017</a></li>
+								<li data-filter="partitioning disk partition table fdisk create partition primary partition mbr dos partition table /dev/sdc /dev/sdc1 block devices lsblk fdisk -l partprobe rescan device node udev mkfs.ext4 ext4 filesystem format disk storage troubleshooting verification write changes n w sectors mount preparation shell storage linux"><a href="lab18.html">Lab 018</a></li>
+								<li data-filter="file search file manipulation find locate updatedb mlocate database search paths /var/log /tmp logs temp files cleanup delete rm -exec xargs -print0 -0 mtime older than 7 days *.log *.conf glob quoting troubleshooting services shell verification safe deletion batch delete findmnt"><a href="lab19.html">Lab 019</a></li>
 								<li data-filter="printenv env export set PATH bash_profile bash_login profile environment"><a href="lab20.html">Lab 020</a></li>
 								<li data-filter="chmod sticky-bit +t 1777 permissions ls -ld mkdir"><a href="lab21.html">Lab 021</a></li>
 								<li data-filter="cups printing systemctl lpstat lpq lp lpadmin cupsenable cupsaccept cancel cupsctl cupsd.conf printers.conf 631"><a href="lab22.html">Lab 022</a></li>
@@ -208,97 +208,97 @@
 								<li data-filter="permissions file-permissions special-bits sticky-bit setuid setgid chmod ls -l ls -ld octal symbolic umask /tmp 1777 4755 2770 u+s g+s +t drwxrwxrwt drwxrws--- security multi-user shared-directory"><a href="lab24.html">Lab 024</a></li>
 								<li data-filter="logs logging log-rotation logrotate journalctl truncate du /var/log syslog journald systemd-journal disk-usage disk-full troubleshoot performance incident-response journalctl -f du -sh truncate -s /etc/logrotate.conf /etc/logrotate.d logrotate -f"><a href="lab25.html">Lab 025</a></li>
 								<li data-filter="users user-management onboarding accounts groups groupadd useradd usermod passwd userdel groupdel permissions ownership chgrp shared-directory workspace /opt/devwork devteam devstudent devstudent2 /etc/passwd /etc/group getent id grep primary-group supplementary-groups home-directory shell /bin/bash cleanup userdel -r"><a href="lab26.html">Lab 026</a></li>
-								<li data-filter="users security core password-policy password-aging expiration chage passwd"><a href="lab27.html">Lab 027</a></li>
-								<li data-filter="users core security privilege-escalation sudo su switching-users root-shell login-shell least-privilege access-control authorization sudoers wheel group-membership usermod useradd passwd userdel whoami audit sudo -i sudo <command> su - tempsudo tempsudo /etc/sudoers /etc/sudoers.d visudo policy verification identity boundary escalation patterns"><a href="lab28.html">Lab 028</a></li>
-								<li data-filter="security core users monitoring user-activity session-monitoring access-review incident-triage login-triage suspicious-login after-hours login-history current-sessions remote-sessions tty pts ssh sshd authentication authorization privilege audit trail forensics evidence-preservation account-lockout account-mitigation who w last id getent grep auth.log /var/log/auth.log /var/log/secure failed-password brute-force password-guessing credential-abuse ip-address source-ip sessions wtmp sudo wheel sudo-group group-membership risk-assessment passwd -l lock-account"><a href="lab29.html">Lab 029</a></li>
-								<li data-filter="users core communication user-communication maintenance maintenance-window planned-maintenance downtime reboot reboot-notice patching patch-cycle change-window change-management incident-comms operator-comms notify notify-users broadcast broadcast-message announcement terminal-messaging messaging wall write users-command who-command session-visibility active-sessions logged-in-users tty pts pseudo-terminal console local-login remote-login ssh sessions targeting targeted-message direct-message private-message one-to-one message-to-user message-to-tty wall System maintenance save-your-work time-bound notice user-notification operational-discipline pre-reboot checklist system-admin workflow multi-user system"><a href="lab30.html">Lab 030</a></li>
+								<li data-filter="users security shell password-policy password-aging expiration chage passwd"><a href="lab27.html">Lab 027</a></li>
+								<li data-filter="users shell security privilege-escalation sudo su switching-users root-shell login-shell least-privilege access-control authorization sudoers wheel group-membership usermod useradd passwd userdel whoami audit sudo -i sudo <command> su - tempsudo tempsudo /etc/sudoers /etc/sudoers.d visudo policy verification identity boundary escalation patterns"><a href="lab28.html">Lab 028</a></li>
+								<li data-filter="security shell users monitoring user-activity session-monitoring access-review incident-triage login-triage suspicious-login after-hours login-history current-sessions remote-sessions tty pts ssh sshd authentication authorization privilege audit trail forensics evidence-preservation account-lockout account-mitigation who w last id getent grep auth.log /var/log/auth.log /var/log/secure failed-password brute-force password-guessing credential-abuse ip-address source-ip sessions wtmp sudo wheel sudo-group group-membership risk-assessment passwd -l lock-account"><a href="lab29.html">Lab 029</a></li>
+								<li data-filter="users shell communication user-communication maintenance maintenance-window planned-maintenance downtime reboot reboot-notice patching patch-cycle change-window change-management incident-comms operator-comms notify notify-users broadcast broadcast-message announcement terminal-messaging messaging wall write users-command who-command session-visibility active-sessions logged-in-users tty pts pseudo-terminal console local-login remote-login ssh sessions targeting targeted-message direct-message private-message one-to-one message-to-user message-to-tty wall System maintenance save-your-work time-bound notice user-notification operational-discipline pre-reboot checklist system-admin workflow multi-user system"><a href="lab30.html">Lab 030</a></li>
 								<li data-filter="permissions special-permissions special-bits setuid suid setgid sgid sticky-bit sticky world-writable chmod chmod-2775 chmod-4755 chmod-1777 octal-permissions permission-bits permission-string ls-l ls-ld umask group-inheritance shared-directory shared-workspace devshare dev-team multi-user collaboration file-ownership group-ownership chgrp groupadd group-management user-management security hardening privilege-escalation least-privilege root-owned helper helper-binary /usr/local/bin /opt /tmp /tmp-shared drop-zone staging-directory safe-config verification verify-output field-troubleshooting misconfiguration detection audit audit-permissions compliance"><a href="lab31.html">Lab 031</a></li>
 								<li data-filter="environment-variables env-vars shell-configuration shell-config bash bashrc .bashrc bash-profile .bash_profile profile .profile login-shell interactive-shell non-login-shell shell-startup startup-files shell-init init-files persistence persist export set export-variable PROJECT_ROOT project-root troubleshooting diagnose missing-variable missing-env-var terminal-session new-shell reload source dotfiles dotfile-management configuration-management user-environment user-config user-profile evidence verification verify-state repeatable-checks cli-checks printenv env grep file-audit audit-config file-inspection append echo-redirect redirection >> path PATH home-directory user-home /home/dev developer-workflow devops sysadmin operations operational-hygiene reproducible-fix"><a href="lab32.html">Lab 032</a></li>
 								<li data-filter="env printenv export grep source bash bashrc .bashrc environment variables shell config persistence"><a href="lab33.html">Lab 033</a></li>
-								<li data-filter="core troubleshooting secvices"><a href="lab34.html">Lab 034</a></li>
-								<li data-filter="core troubleshooting secvices"><a href="lab35.html">Lab 035</a></li>
-								<li data-filter="core troubleshooting secvices"><a href="lab36.html">Lab 036</a></li>
-								<li data-filter="core troubleshooting secvices"><a href="lab37.html">Lab 037</a></li>
-								<li data-filter="core troubleshooting secvices"><a href="lab38.html">Lab 038</a></li>
-								<li data-filter="core troubleshooting secvices"><a href="lab39.html">Lab 039</a></li>
-								<li data-filter="core troubleshooting secvices"><a href="lab40.html">Lab 040</a></li>
-								<li data-filter="core troubleshooting users"><a href="lab41.html">Lab 041</a></li>
-								<li data-filter="core troubleshooting secvices"><a href="lab42.html">Lab 042</a></li>
-								<li data-filter="core troubleshooting secvices"><a href="lab43.html">Lab 043</a></li>
-								<li data-filter="core troubleshooting secvices"><a href="lab44.html">Lab 044</a></li>
-								<li data-filter="core troubleshooting storage"><a href="lab45.html">Lab 045</a></li>
-								<li data-filter="core security secvices"><a href="lab46.html">Lab 046</a></li>
+								<li data-filter="shell troubleshooting secvices"><a href="lab34.html">Lab 034</a></li>
+								<li data-filter="shell troubleshooting secvices"><a href="lab35.html">Lab 035</a></li>
+								<li data-filter="shell troubleshooting secvices"><a href="lab36.html">Lab 036</a></li>
+								<li data-filter="shell troubleshooting secvices"><a href="lab37.html">Lab 037</a></li>
+								<li data-filter="shell troubleshooting secvices"><a href="lab38.html">Lab 038</a></li>
+								<li data-filter="shell troubleshooting secvices"><a href="lab39.html">Lab 039</a></li>
+								<li data-filter="shell troubleshooting secvices"><a href="lab40.html">Lab 040</a></li>
+								<li data-filter="shell troubleshooting users"><a href="lab41.html">Lab 041</a></li>
+								<li data-filter="shell troubleshooting secvices"><a href="lab42.html">Lab 042</a></li>
+								<li data-filter="shell troubleshooting secvices"><a href="lab43.html">Lab 043</a></li>
+								<li data-filter="shell troubleshooting secvices"><a href="lab44.html">Lab 044</a></li>
+								<li data-filter="shell troubleshooting storage"><a href="lab45.html">Lab 045</a></li>
+								<li data-filter="shell security secvices"><a href="lab46.html">Lab 046</a></li>
 								<li data-filter="boot troubleshooting secvices"><a href="lab47.html">Lab 047</a></li>
-								<li data-filter="core network secvices"><a href="lab48.html">Lab 048</a></li>
-								<li data-filter="core boot secvices"><a href="lab49.html">Lab 049</a></li>
-								<li data-filter="core boot secvices"><a href="lab50.html">Lab 050</a></li>
-								<li data-filter="core boot secvices"><a href="lab51.html">Lab 051</a></li>
-								<li data-filter="core boot users"><a href="lab52.html">Lab 052</a></li>
-								<li data-filter="core boot secvices"><a href="lab53.html">Lab 053</a></li>
-								<li data-filter="core boot secvices"><a href="lab54.html">Lab 054</a></li>
-								<li data-filter="core boot secvices"><a href="lab55.html">Lab 055</a></li>
-								<li data-filter="core boot secvices"><a href="lab56.html">Lab 056</a></li>
-								<li data-filter="core boot secvices"><a href="lab57.html">Lab 057</a></li>
-								<li data-filter="core boot secvices"><a href="lab58.html">Lab 058</a></li>
-								<li data-filter="core boot secvices"><a href="lab59.html">Lab 059</a></li>
-								<li data-filter="core boot secvices"><a href="lab60.html">Lab 060</a></li>
-								<li data-filter="core boot secvices"><a href="lab61.html">Lab 061</a></li>
-								<li data-filter="core boot secvices"><a href="lab62.html">Lab 062</a></li>
-								<li data-filter="core boot secvices"><a href="lab63.html">Lab 063</a></li>
-								<li data-filter="core boot secvices"><a href="lab64.html">Lab 064</a></li>
-								<li data-filter="core boot secvices"><a href="lab65.html">Lab 065</a></li>
-								<li data-filter="core boot secvices"><a href="lab66.html">Lab 066</a></li>
-								<li data-filter="core boot secvices"><a href="lab67.html">Lab 067</a></li>
-								<li data-filter="core boot secvices"><a href="lab68.html">Lab 068</a></li>
-								<li data-filter="core boot secvices"><a href="lab69.html">Lab 069</a></li>
-								<li data-filter="core boot secvices"><a href="lab70.html">Lab 070</a></li>
-								<li data-filter="core boot secvices"><a href="lab71.html">Lab 071</a></li>
-								<li data-filter="core boot secvices"><a href="lab72.html">Lab 072</a></li>
-								<li data-filter="core boot secvices"><a href="lab73.html">Lab 073</a></li>
-								<li data-filter="core boot secvices"><a href="lab74.html">Lab 074</a></li>
-								<li data-filter="core boot secvices"><a href="lab75.html">Lab 075</a></li>
-								<li data-filter="core boot secvices"><a href="lab76.html">Lab 076</a></li>
-								<li data-filter="core boot secvices"><a href="lab77.html">Lab 077</a></li>
-								<li data-filter="core boot secvices"><a href="lab78.html">Lab 078</a></li>
-								<li data-filter="core boot secvices"><a href="lab79.html">Lab 079</a></li>
-								<li data-filter="core boot secvices"><a href="lab80.html">Lab 080</a></li>
-								<li data-filter="core boot secvices"><a href="lab81.html">Lab 081</a></li>
-								<li data-filter="core boot secvices"><a href="lab82.html">Lab 082</a></li>
-								<li data-filter="core boot secvices"><a href="lab83.html">Lab 083</a></li>
-								<li data-filter="core boot secvices"><a href="lab84.html">Lab 084</a></li>
-								<li data-filter="core boot secvices"><a href="lab85.html">Lab 085</a></li>
-								<li data-filter="core boot secvices"><a href="lab86.html">Lab 086</a></li>
-								<li data-filter="core boot secvices"><a href="lab87.html">Lab 087</a></li>
-								<li data-filter="core boot secvices"><a href="lab88.html">Lab 088</a></li>
-								<li data-filter="core boot secvices"><a href="lab89.html">Lab 089</a></li>
-								<li data-filter="core boot secvices"><a href="lab90.html">Lab 090</a></li>
-								<li data-filter="core boot secvices"><a href="lab91.html">Lab 091</a></li>
-								<li data-filter="core boot secvices"><a href="lab92.html">Lab 092</a></li>
-								<li data-filter="core boot secvices"><a href="lab93.html">Lab 093</a></li>
-								<li data-filter="core boot secvices"><a href="lab94.html">Lab 094</a></li>
-								<li data-filter="core boot secvices"><a href="lab95.html">Lab 095</a></li>
-								<li data-filter="core boot secvices"><a href="lab96.html">Lab 096</a></li>
-								<li data-filter="core boot secvices"><a href="lab97.html">Lab 097</a></li>
-								<li data-filter="core boot secvices"><a href="lab98.html">Lab 098</a></li>
-								<li data-filter="core boot secvices"><a href="lab99.html">Lab 099</a></li>
-								<li data-filter="core boot secvices"><a href="lab100.html">Lab 100</a></li>
-								<li data-filter="core boot secvices"><a href="lab101.html">Lab 101</a></li>
-								<li data-filter="core boot secvices"><a href="lab102.html">Lab 102</a></li>
-								<li data-filter="core boot secvices"><a href="lab103.html">Lab 103</a></li>
-								<li data-filter="core boot secvices"><a href="lab104.html">Lab 104</a></li>
-								<li data-filter="core boot secvices"><a href="lab105.html">Lab 105</a></li>
-								<li data-filter="core boot secvices"><a href="lab106.html">Lab 106</a></li>
-								<li data-filter="core boot secvices"><a href="lab107.html">Lab 107</a></li>
-								<li data-filter="core boot secvices"><a href="lab108.html">Lab 108</a></li>
-								<li data-filter="core boot secvices"><a href="lab109.html">Lab 109</a></li>
-								<li data-filter="core boot secvices"><a href="lab110.html">Lab 110</a></li>
-								<li data-filter="core boot secvices"><a href="lab111.html">Lab 111</a></li>
-								<li data-filter="core boot secvices"><a href="lab112.html">Lab 112</a></li>
+								<li data-filter="shell network secvices"><a href="lab48.html">Lab 048</a></li>
+								<li data-filter="shell boot secvices"><a href="lab49.html">Lab 049</a></li>
+								<li data-filter="shell boot secvices"><a href="lab50.html">Lab 050</a></li>
+								<li data-filter="shell boot secvices"><a href="lab51.html">Lab 051</a></li>
+								<li data-filter="shell boot users"><a href="lab52.html">Lab 052</a></li>
+								<li data-filter="shell boot secvices"><a href="lab53.html">Lab 053</a></li>
+								<li data-filter="shell boot secvices"><a href="lab54.html">Lab 054</a></li>
+								<li data-filter="shell boot secvices"><a href="lab55.html">Lab 055</a></li>
+								<li data-filter="shell boot secvices"><a href="lab56.html">Lab 056</a></li>
+								<li data-filter="shell boot secvices"><a href="lab57.html">Lab 057</a></li>
+								<li data-filter="shell boot secvices"><a href="lab58.html">Lab 058</a></li>
+								<li data-filter="shell boot secvices"><a href="lab59.html">Lab 059</a></li>
+								<li data-filter="shell boot secvices"><a href="lab60.html">Lab 060</a></li>
+								<li data-filter="shell boot secvices"><a href="lab61.html">Lab 061</a></li>
+								<li data-filter="shell boot secvices"><a href="lab62.html">Lab 062</a></li>
+								<li data-filter="shell boot secvices"><a href="lab63.html">Lab 063</a></li>
+								<li data-filter="shell boot secvices"><a href="lab64.html">Lab 064</a></li>
+								<li data-filter="shell boot secvices"><a href="lab65.html">Lab 065</a></li>
+								<li data-filter="shell boot secvices"><a href="lab66.html">Lab 066</a></li>
+								<li data-filter="shell boot secvices"><a href="lab67.html">Lab 067</a></li>
+								<li data-filter="shell boot secvices"><a href="lab68.html">Lab 068</a></li>
+								<li data-filter="shell boot secvices"><a href="lab69.html">Lab 069</a></li>
+								<li data-filter="shell boot secvices"><a href="lab70.html">Lab 070</a></li>
+								<li data-filter="shell boot secvices"><a href="lab71.html">Lab 071</a></li>
+								<li data-filter="shell boot secvices"><a href="lab72.html">Lab 072</a></li>
+								<li data-filter="shell boot secvices"><a href="lab73.html">Lab 073</a></li>
+								<li data-filter="shell boot secvices"><a href="lab74.html">Lab 074</a></li>
+								<li data-filter="shell boot secvices"><a href="lab75.html">Lab 075</a></li>
+								<li data-filter="shell boot secvices"><a href="lab76.html">Lab 076</a></li>
+								<li data-filter="shell boot secvices"><a href="lab77.html">Lab 077</a></li>
+								<li data-filter="shell boot secvices"><a href="lab78.html">Lab 078</a></li>
+								<li data-filter="shell boot secvices"><a href="lab79.html">Lab 079</a></li>
+								<li data-filter="shell boot secvices"><a href="lab80.html">Lab 080</a></li>
+								<li data-filter="shell boot secvices"><a href="lab81.html">Lab 081</a></li>
+								<li data-filter="shell boot secvices"><a href="lab82.html">Lab 082</a></li>
+								<li data-filter="shell boot secvices"><a href="lab83.html">Lab 083</a></li>
+								<li data-filter="shell boot secvices"><a href="lab84.html">Lab 084</a></li>
+								<li data-filter="shell boot secvices"><a href="lab85.html">Lab 085</a></li>
+								<li data-filter="shell boot secvices"><a href="lab86.html">Lab 086</a></li>
+								<li data-filter="shell boot secvices"><a href="lab87.html">Lab 087</a></li>
+								<li data-filter="shell boot secvices"><a href="lab88.html">Lab 088</a></li>
+								<li data-filter="shell boot secvices"><a href="lab89.html">Lab 089</a></li>
+								<li data-filter="shell boot secvices"><a href="lab90.html">Lab 090</a></li>
+								<li data-filter="shell boot secvices"><a href="lab91.html">Lab 091</a></li>
+								<li data-filter="shell boot secvices"><a href="lab92.html">Lab 092</a></li>
+								<li data-filter="shell boot secvices"><a href="lab93.html">Lab 093</a></li>
+								<li data-filter="shell boot secvices"><a href="lab94.html">Lab 094</a></li>
+								<li data-filter="shell boot secvices"><a href="lab95.html">Lab 095</a></li>
+								<li data-filter="shell boot secvices"><a href="lab96.html">Lab 096</a></li>
+								<li data-filter="shell boot secvices"><a href="lab97.html">Lab 097</a></li>
+								<li data-filter="shell boot secvices"><a href="lab98.html">Lab 098</a></li>
+								<li data-filter="shell boot secvices"><a href="lab99.html">Lab 099</a></li>
+								<li data-filter="shell boot secvices"><a href="lab100.html">Lab 100</a></li>
+								<li data-filter="shell boot secvices"><a href="lab101.html">Lab 101</a></li>
+								<li data-filter="shell boot secvices"><a href="lab102.html">Lab 102</a></li>
+								<li data-filter="shell boot secvices"><a href="lab103.html">Lab 103</a></li>
+								<li data-filter="shell boot secvices"><a href="lab104.html">Lab 104</a></li>
+								<li data-filter="shell boot secvices"><a href="lab105.html">Lab 105</a></li>
+								<li data-filter="shell boot secvices"><a href="lab106.html">Lab 106</a></li>
+								<li data-filter="shell boot secvices"><a href="lab107.html">Lab 107</a></li>
+								<li data-filter="shell boot secvices"><a href="lab108.html">Lab 108</a></li>
+								<li data-filter="shell boot secvices"><a href="lab109.html">Lab 109</a></li>
+								<li data-filter="shell boot secvices"><a href="lab110.html">Lab 110</a></li>
+								<li data-filter="shell boot secvices"><a href="lab111.html">Lab 111</a></li>
+								<li data-filter="shell boot secvices"><a href="lab112.html">Lab 112</a></li>
 								<li data-filter="hardware troubleshooting rhcsa"><a href="lab113.html">Lab 113</a></li>
-								<li data-filter="core boot secvices"><a href="lab114.html">Lab 114</a></li>
-								<li data-filter="core boot secvices"><a href="lab115.html">Lab 115</a></li>
-								<li data-filter="inventory storage core"><a href="lab116.html">Lab 116</a></li>
-								<li data-filter="packages debian core"><a href="lab117.html">Lab 117</a></li>
+								<li data-filter="shell boot secvices"><a href="lab114.html">Lab 114</a></li>
+								<li data-filter="shell boot secvices"><a href="lab115.html">Lab 115</a></li>
+								<li data-filter="inventory storage shell"><a href="lab116.html">Lab 116</a></li>
+								<li data-filter="packages debian shell"><a href="lab117.html">Lab 117</a></li>
 								<li data-filter=" troubleshooting services rhel "><a href="lab118.html">Lab 118</a></li>
 								<li data-filter="packages troubleshooting rhel"><a href="lab119.html">Lab 119</a></li>
 								<li data-filter="packages troubleshooting rhel"><a href="lab120.html">Lab 120</a></li>
@@ -310,10 +310,10 @@
 								<li data-filter="linker shared-libs ldconfig troubleshooting"><a href="lab126.html">Lab 126</a></li>
 								<li data-filter="networking routing dns troubleshooting systemd-resolved"><a href="lab127.html">Lab 127</a></li>
 								<li data-filter="networking firewalld ssh incident troubleshooting"><a href="lab128.html">Lab 128</a></li>
-								<li data-filter="networking troubleshooting core"><a href="lab129.html">Lab 129</a></li>
-								<li data-filter="networking troubleshooting core "><a href="lab130.html">Lab 130</a></li>
-								<li data-filter="networking troubleshooting core dns routing"><a href="lab131.html">Lab 131</a></li>
-								<li data-filter="networking troubleshooting dns core nss "><a href="lab132.html">Lab 132</a></li>
+								<li data-filter="networking troubleshooting shell"><a href="lab129.html">Lab 129</a></li>
+								<li data-filter="networking troubleshooting shell "><a href="lab130.html">Lab 130</a></li>
+								<li data-filter="networking troubleshooting shell dns routing"><a href="lab131.html">Lab 131</a></li>
+								<li data-filter="networking troubleshooting dns shell nss "><a href="lab132.html">Lab 132</a></li>
 								<li data-filter="networking troubleshooting dns"><a href="lab133.html">Lab 133</a></li>
 								<li data-filter="networking troubleshooting firewall"><a href="lab134.html">Lab 134</a></li>
 								<li data-filter="networking troubleshooting dns"><a href="lab135.html">Lab 135</a></li>
