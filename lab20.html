@@ -12,11 +12,7 @@
     <!-- Favicons -->
     <link rel="shortcut icon" href="../assets/images/favicon.png" />
     <link rel="apple-touch-icon" href="../assets/images/apple-touch-icon.png" />
-    <link
-      rel="apple-touch-icon"
-      sizes="72x72"
-      href="../assets/images/apple-touch-icon-72x72.png"
-    />
+    <link rel="apple-touch-icon" sizes="72x72" href="../assets/images/apple-touch-icon-72x72.png" />
     <link
       rel="apple-touch-icon"
       sizes="114x114"
@@ -30,6 +26,7 @@
     <link href="../assets/css/ionicons.min.css" rel="stylesheet" />
     <link href="../assets/css/simpletextrotator.css" rel="stylesheet" />
     <link href="../assets/css/magnific-popup.css" rel="stylesheet" />
+    <link href="../assets/css/magnific-popup.css" rel="stylesheet" />
     <link href="../assets/css/owl.carousel.css" rel="stylesheet" />
     <link href="../assets/css/superslides.css" rel="stylesheet" />
     <link href="../assets/css/vertical.css" rel="stylesheet" />
@@ -37,14 +34,11 @@
     <link href="../assets/css/style.css" rel="stylesheet" />
     <link href="../assets/css/docs.css" rel="stylesheet" />
 
-    <!-- Lab page styles (new) -->
+    <!-- Lab page styles -->
     <link href="../assets/css/lab.css" rel="stylesheet" />
 
     <!-- Fonts -->
-    <link
-      href="https://fonts.googleapis.com/css?family=Dosis"
-      rel="stylesheet"
-    />
+    <link href="https://fonts.googleapis.com/css?family=Dosis" rel="stylesheet" />
   </head>
 
   <body>
@@ -68,33 +62,20 @@
               <a href="#">Portfolio</a>
               <ul>
                 <li>
-                  <a
-                    href="https://github.com/vonds/exit_0"
-                    target="_blank"
-                    rel="noopener"
-                  >
+                  <a href="https://github.com/vonds/exit_0" target="_blank" rel="noopener">
                     exit_0
                   </a>
                 </li>
                 <li>
-                  <a
-                    href="docs.html"
-                    target="_blank"
-                    rel="noopener"
-                  >
-                    exit_0 Documentation
+                  <a href="docs.html" target="_blank" rel="noopener">
+                    exit_0
                   </a>
                 </li>
-                <li><a href="https://github.com/vonds/sentinel" target="_blank" rel="noopener">Sentinel</a></li>
               </ul>
             </li>
 
             <li>
-              <a
-                href="https://www.linkedin.com/in/vonds/"
-                target="_blank"
-                rel="noopener"
-              >
+              <a href="https://www.linkedin.com/in/vonds/" target="_blank" rel="noopener">
                 LinkedIn
               </a>
             </li>
@@ -129,9 +110,7 @@
     <!-- WRAPPER -->
     <div class="wrapper">
       <!-- NAVIGATION -->
-      <nav
-        class="navbar navbar-custom navbar-transparent navbar-light navbar-fixed-top"
-      >
+      <nav class="navbar navbar-custom navbar-transparent navbar-light navbar-fixed-top">
         <div class="container">
           <div class="navbar-header">
             <a class="navbar-brand" href="../index.html">
@@ -154,26 +133,11 @@
       <!-- DOCS PAGE -->
       <section class="module">
         <div class="container">
-          <h2 class="font-alt module-title m-t-60">
-            Lab 20: Manage Environment Variables
-          </h2>
+          <h2 class="font-alt module-title m-t-60">Lab 20: Manage Environment Variables</h2>
+
           <nav class="lab-pagination">
-            <a
-              id="prev-lab"
-              class="lab-nav-link"
-              href="#"
-              aria-label="Previous lab"
-            >
-              &laquo;
-            </a>
-            <a
-              id="next-lab"
-              class="lab-nav-link"
-              href="#"
-              aria-label="Next lab"
-            >
-              &raquo;
-            </a>
+            <a id="prev-lab" class="lab-nav-link" href="#" aria-label="Previous lab">&laquo;</a>
+            <a id="next-lab" class="lab-nav-link" href="#" aria-label="Next lab">&raquo;</a>
           </nav>
 
           <div class="row">
@@ -186,7 +150,11 @@
                   </h5>
                   <ul class="docs-nav">
                     <li><a href="#scenario">Scenario</a></li>
+                    <li><a href="#objective">Objective</a></li>
+                    <li><a href="#concepts">Concepts</a></li>
                     <li><a href="#walkthrough">Walkthrough</a></li>
+                    <li><a href="#breakpoints">Breakpoints</a></li>
+                    <li><a href="#cleanup">Cleanup</a></li>
                     <li><a href="#reference">Reference</a></li>
                   </ul>
                 </div>
@@ -195,68 +163,59 @@
 
             <!-- MAIN CONTENT -->
             <div class="col-sm-8 col-md-9 lab-doc">
-              <!-- 1) Title + Summary (2 sentences max) -->
               <p class="m-b-20 lab-summary">
-                Inspect the current shell environment, set variables for the active session, and make changes persist across login shells.
-                Update PATH safely and identify the correct per-user and system-wide startup locations.
+                Inspect the current shell environment, set variables for the active session, and make
+                changes persist across login shells. Update PATH safely and identify the correct
+                per-user and system-wide startup locations.
               </p>
 
+              <!-- Video (kept on page; removed from left panel) -->
               <section class="lab-section" id="video" aria-label="Lab video">
-  				<div class="lab-video">
-    				<div class="lab-video-embed text-center">
-      					<iframe 
-							width="560" 
-							height="315" 
-							src="https://www.youtube.com/embed/uJk54bhaadA?si=seGSukCoMFN7ohRo" 
-							title="YouTube video player" 
-							frameborder="0" 
-							allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
-							referrerpolicy="strict-origin-when-cross-origin" 
-							allowfullscreen>
-						</iframe>
-    				</div>
-  				</div>
-			</section>
+                <div class="lab-video">
+                  <div class="lab-video-embed text-center">
+                    <iframe
+                      src="https://www.youtube.com/embed/MAoYZIdvXy8?si=jdFcrvrpDIHHCoKM"
+                      title="YouTube video player"
+                      frameborder="0"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                      referrerpolicy="strict-origin-when-cross-origin"
+                      allowfullscreen
+                    ></iframe>
+                  </div>
+                </div>
+              </section>
 
-              <!-- 2) Scenario -->
+              <!-- Scenario -->
               <section class="lab-section" id="scenario">
                 <div class="lab-chips" aria-label="Tags">
-                  <span class="lab-chip">
-                    <span class="lab-chip-key">core</span>
-                  </span>
-                  <span class="lab-chip">
-                    <span class="lab-chip-key">troubleshooting</span>
-                  </span>
-                  <span class="lab-chip">
-                    <span class="lab-chip-key">services</span>
-                  </span>
+                  <span class="lab-chip"><span class="lab-chip-key">core</span></span>
+                  <span class="lab-chip"><span class="lab-chip-key">troubleshooting</span></span>
+                  <span class="lab-chip"><span class="lab-chip-key">services</span></span>
                 </div>
 
-                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
-                  Scenario
-                </h3>
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">Scenario</h3>
+
                 <p>
-                  A teammate reports that a tool works in one terminal session but “disappears” in a new login.
-                  You need to validate the current environment, export variables correctly, and make changes persist
-                  for bash login shells without breaking existing PATH behavior. You also need to know where to place
-                  global environment settings for all users.
+                  A teammate reports that a tool works in one terminal session but “disappears” in a
+                  new login. You need to validate the current environment, export variables correctly,
+                  and make changes persist for bash login shells without breaking existing PATH
+                  behavior. You also need to know where to place global environment settings for all
+                  users.
                 </p>
 
                 <div class="lab-callout">
                   <div class="lab-callout-label">Operator context</div>
                   <p class="m-b-0">
-                    Most “it works on my machine” issues in Linux come down to startup files, PATH ordering, and
-                    whether the shell is login vs non-login. Treat env changes like config changes: verify, apply,
-                    re-check in a new session.
+                    Most “it works on my machine” issues in Linux come down to startup files, PATH
+                    ordering, and whether the shell is login vs non-login. Treat env changes like
+                    config changes: verify, apply, re-check in a new session.
                   </p>
                 </div>
               </section>
 
-              <!-- 3) Objective -->
+              <!-- Objective -->
               <section class="lab-section alt-background" id="objective">
-                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
-                  Objective
-                </h3>
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">Objective</h3>
                 <ul>
                   <li>Display all environment variables in the current shell.</li>
                   <li>Set a new exported variable for the current session.</li>
@@ -266,54 +225,43 @@
                 </ul>
               </section>
 
-              <!-- 4) What You'll Practice -->
-              <section class="lab-section" id="practice">
-                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
-                  What You’ll Practice
-                </h3>
-
-                <ul class="m-t-10">
+              <!-- Concepts (no alt-background moving forward) -->
+              <section class="lab-section" id="concepts">
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">Concepts</h3>
+                <ul>
                   <li>
                     Environment inspection with <code>printenv</code> and <code>env</code>.
                   </li>
                   <li>
-                    Shell variable scope: session-only vs exported environment variables.
+                    Variable scope: session-only shell variables versus exported environment variables.
                   </li>
                   <li>
-                    bash startup behavior for login shells (<code>~/.bash_profile</code>, <code>~/.bash_login</code>, <code>~/.profile</code>).
+                    bash login startup order: <code>~/.bash_profile</code>, <code>~/.bash_login</code>,
+                    <code>~/.profile</code>.
                   </li>
                   <li>
-                    Safe PATH manipulation with <code>export PATH="$PATH:/new/path"</code>.
+                    Safe PATH manipulation using <code>export PATH="$PATH:/new/path"</code>.
                   </li>
                   <li>
-                    System-wide environment configuration via <code>/etc/environment</code>.
+                    System-wide environment configuration using <code>/etc/environment</code>.
                   </li>
                 </ul>
               </section>
 
-              <!-- 5) Commands Walkthrough -->
+              <!-- Walkthrough -->
               <section class="lab-section alt-background" id="walkthrough">
-                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
-                  Walkthrough
-                </h3>
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">Walkthrough</h3>
 
                 <!-- Step 1 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
-                    <strong class="font-alt">Step 1</strong>
-                    : Show all environment variables for the current shell.
+                    <strong class="font-alt">Step 1</strong>: Show all environment variables for the current shell.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
-                      <button
-                        class="lab-copy-btn"
-                        type="button"
-                        data-copy="#cmd-step-1"
-                      >
-                        Copy
-                      </button>
+                      <button class="lab-copy-btn" type="button" data-copy="#cmd-step-1">Copy</button>
                     </div>
                     <pre><code id="cmd-step-1">printenv
 # OR
@@ -321,12 +269,13 @@ env</code></pre>
                   </div>
 
                   <p>
-                    Both <code>printenv</code> and <code>env</code> display the exported environment for the current process context.
-                    This is the fastest way to confirm what the shell will pass to child processes.
+                    Both <code>printenv</code> and <code>env</code> display the exported environment for
+                    the current process context. This is the fastest way to confirm what the shell will
+                    pass to child processes.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code id="verify-step-1">PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+                    <pre><code>PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 HOME=/home/lab
 SHELL=/bin/bash</code></pre>
                   </div>
@@ -335,51 +284,37 @@ SHELL=/bin/bash</code></pre>
                 <!-- Step 2 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
-                    <strong class="font-alt">Step 2</strong>
-                    : Set a temporary environment variable for this session.
+                    <strong class="font-alt">Step 2</strong>: Set a temporary exported variable for this session.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
-                      <button
-                        class="lab-copy-btn"
-                        type="button"
-                        data-copy="#cmd-step-2"
-                      >
-                        Copy
-                      </button>
+                      <button class="lab-copy-btn" type="button" data-copy="#cmd-step-2">Copy</button>
                     </div>
                     <pre><code id="cmd-step-2">export FOO=bar</code></pre>
                   </div>
 
                   <p>
-                    <code>export</code> marks the variable for inheritance by child processes.
-                    Without <code>export</code>, the variable exists only as a shell variable in the current shell.
+                    <code>export</code> marks the variable for inheritance by child processes. Without
+                    <code>export</code>, the variable exists only as a shell variable in the current shell.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code id="verify-step-2">Variable FOO set to 'bar'.</code></pre>
+                    <pre><code>Variable FOO set to 'bar'.</code></pre>
                   </div>
                 </div>
 
                 <!-- Step 3 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
-                    <strong class="font-alt">Step 3</strong>
-                    : Make the variable persistent for bash login shells.
+                    <strong class="font-alt">Step 3</strong>: Make the variable persistent for bash login shells.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>File</span>
-                      <button
-                        class="lab-copy-btn"
-                        type="button"
-                        data-copy="#cmd-step-3"
-                      >
-                        Copy
-                      </button>
+                      <button class="lab-copy-btn" type="button" data-copy="#cmd-step-3">Copy</button>
                     </div>
                     <pre><code id="cmd-step-3">~/.bash_profile
 # OR (depending on system config)
@@ -388,13 +323,14 @@ SHELL=/bin/bash</code></pre>
                   </div>
 
                   <p>
-                    bash login shells typically read <code>~/.bash_profile</code> first. If it does not exist, bash may fall back to
-                    <code>~/.bash_login</code> or <code>~/.profile</code> depending on how the system is configured.
-                    Adding <code>export FOO=bar</code> there makes it available in new login sessions.
+                    bash login shells read <code>~/.bash_profile</code> first. If it does not exist,
+                    bash may fall back to <code>~/.bash_login</code> or <code>~/.profile</code> depending
+                    on what exists. Add <code>export FOO=bar</code> there to make it available in new login
+                    sessions.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code id="verify-step-3"># Add a line like:
+                    <pre><code># Add a line like:
 export FOO=bar</code></pre>
                   </div>
                 </div>
@@ -402,82 +338,63 @@ export FOO=bar</code></pre>
                 <!-- Step 4 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
-                    <strong class="font-alt">Step 4</strong>
-                    : Append <code>/opt/scripts</code> to PATH for this session.
+                    <strong class="font-alt">Step 4</strong>: Append <code>/opt/scripts</code> to PATH for this session.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
-                      <button
-                        class="lab-copy-btn"
-                        type="button"
-                        data-copy="#cmd-step-4"
-                      >
-                        Copy
-                      </button>
+                      <button class="lab-copy-btn" type="button" data-copy="#cmd-step-4">Copy</button>
                     </div>
                     <pre><code id="cmd-step-4">export PATH=$PATH:/opt/scripts</code></pre>
                   </div>
 
                   <p>
-                    Always preserve the existing PATH by referencing <code>$PATH</code>. Appending adds your directory at the end, which reduces the risk of
-                    accidentally shadowing system binaries with a custom script of the same name.
+                    Preserve the existing PATH by referencing <code>$PATH</code>. Appending places your
+                    directory at the end, which reduces the risk of shadowing system binaries with a
+                    custom script of the same name.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code id="verify-step-4">PATH updated for this session.</code></pre>
+                    <pre><code>PATH updated for this session.</code></pre>
                   </div>
                 </div>
 
                 <!-- Step 5 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
-                    <strong class="font-alt">Step 5</strong>
-                    : Identify the system-wide environment configuration file.
+                    <strong class="font-alt">Step 5</strong>: Identify the system-wide environment configuration file.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>File</span>
-                      <button
-                        class="lab-copy-btn"
-                        type="button"
-                        data-copy="#cmd-step-5"
-                      >
-                        Copy
-                      </button>
+                      <button class="lab-copy-btn" type="button" data-copy="#cmd-step-5">Copy</button>
                     </div>
                     <pre><code id="cmd-step-5">/etc/environment</code></pre>
                   </div>
 
                   <p>
-                    <code>/etc/environment</code> is commonly used to define global environment variables at login for all users.
-                    It is not a shell script. Keep the format simple (KEY=VALUE) and avoid shell syntax.
+                    <code>/etc/environment</code> is commonly used to define global environment variables
+                    at login for all users. It is not a shell script. Keep the format simple (KEY=VALUE)
+                    and avoid shell syntax.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code id="verify-step-5">/etc/environment is used for global env vars.</code></pre>
+                    <pre><code>/etc/environment is used for global env vars.</code></pre>
                   </div>
                 </div>
 
-                <!-- Step 6 (Operator check) -->
+                <!-- Step 6 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
-                    <strong class="font-alt">Step 6</strong>
-                    : Validate changes in a fresh session.
+                    <strong class="font-alt">Step 6</strong>: Validate changes in a fresh session.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
-                      <button
-                        class="lab-copy-btn"
-                        type="button"
-                        data-copy="#cmd-step-6"
-                      >
-                        Copy
-                      </button>
+                      <button class="lab-copy-btn" type="button" data-copy="#cmd-step-6">Copy</button>
                     </div>
                     <pre><code id="cmd-step-6"># Start a new login shell and confirm:
 printenv FOO
@@ -485,12 +402,13 @@ echo $PATH</code></pre>
                   </div>
 
                   <p>
-                    Session changes prove the syntax works. A new login session proves persistence and correct startup-file placement.
-                    This is the standard “done means verified” check for environment troubleshooting.
+                    Session changes prove the syntax works. A new login session proves persistence and
+                    correct startup-file placement. This is the standard “done means verified” check for
+                    environment troubleshooting.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code id="verify-step-6"># Expected:
+                    <pre><code># Expected:
 bar
 # PATH should include:
 /opt/scripts</code></pre>
@@ -498,61 +416,122 @@ bar
                 </div>
               </section>
 
-              <!-- 8) Reference -->
-              <!-- 9) Reference -->
-              <section class="lab-section" id="reference">
-                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
-                  Reference
-                </h3>
+              <!-- Common breakpoints -->
+              <section class="lab-section" id="breakpoints">
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">Common breakpoints</h3>
 
-                <ul class="lab-reference-list">
-                  <li>
-                    <code>printenv</code>
-                    : Displays exported environment variables.
-                  </li>
+                <div class="lab-callout">
+                  <div class="lab-callout-label">Changes work only in the current terminal</div>
+                  <p class="m-b-0">
+                    If the variable works only in the current session, it was not written into a startup
+                    file used by the type of shell you are launching. Confirm whether you are opening a
+                    login shell and confirm the correct file is sourced.
+                  </p>
+                </div>
 
-                  <li>
-                    <code>env</code>
-                    : Displays the environment and can run a command with a modified environment.
-                  </li>
+                <div class="lab-callout">
+                  <div class="lab-callout-label">PATH overwritten instead of appended</div>
+                  <p class="m-b-0">
+                    If you set <code>PATH=/opt/scripts</code> without including <code>$PATH</code>, you
+                    can break command lookup for standard tools. Always preserve the existing value:
+                    <code>export PATH="$PATH:/opt/scripts"</code>.
+                  </p>
+                </div>
 
-                  <li>
-                    <code>export NAME=value</code>
-                    : Creates or updates an environment variable for the current shell and its child processes.
-                  </li>
+                <div class="lab-callout">
+                  <div class="lab-callout-label">Startup file is not sourced</div>
+                  <p class="m-b-0">
+                    A non-login interactive shell reads <code>~/.bashrc</code>, not
+                    <code>~/.bash_profile</code>. If you are using a terminal emulator that launches
+                    non-login shells, you may need to source <code>~/.bashrc</code> from your profile or
+                    place exports in the right file for your environment.
+                  </p>
+                </div>
 
-                  <li>
-                    <code>~/.bash_profile</code>, <code>~/.bash_login</code>, <code>~/.profile</code>
-                    : Per-user startup files typically read by bash login shells (selection depends on what exists and system config).
-                  </li>
-
-                  <li>
-                    <code>/etc/environment</code>
-                    : System-wide environment variables for all users at login (KEY=VALUE format, not shell code).
-                  </li>
-
-                  <li>
-                    <code>PATH</code>
-                    : Controls command lookup order; preserve existing values when modifying (<code>$PATH</code>).
-                  </li>
-                </ul>
+                <div class="lab-callout">
+                  <div class="lab-callout-label">Global changes do not apply</div>
+                  <p class="m-b-0">
+                    <code>/etc/environment</code> applies at login. If you edit it, start a new login
+                    session (or log out/in) to confirm the change. Avoid shell syntax in this file.
+                  </p>
+                </div>
               </section>
 
-              <!-- Lab Pagination -->
+              <!-- Cleanup -->
+              <section class="lab-section alt-background" id="cleanup">
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">Cleanup checklist</h3>
+
+                <p>
+                  If you added variables for testing, remove them from the startup file you modified
+                  and confirm they no longer appear in a new login session.
+                </p>
+
+                <div class="lab-codeblock m-b-40 m-t-40">
+                  <div class="lab-codeblock-header">
+                    <span>Commands</span>
+                    <button class="lab-copy-btn" type="button" data-copy="#cmd-cleanup">Copy</button>
+                  </div>
+                  <pre><code id="cmd-cleanup"># Start a new login session after removing the test export and confirm:
+printenv FOO
+echo $PATH</code></pre>
+                </div>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">Success signal</div>
+                  <p class="m-b-0">
+                    <code>printenv FOO</code> returns no value (or “not found”), and PATH still contains
+                    the expected baseline directories.
+                  </p>
+                </div>
+              </section>
+
+              <!-- Reference -->
+              <section class="lab-section" id="reference">
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">Reference</h3>
+
+                <ul class="lab-reference-list">
+
+                  <li>
+                    <code>printenv</code>: Displays exported environment variables.
+                  </li>
+
+                  <li>
+                    <code>env</code>: Displays the environment and can run a command with a modified environment.
+                  </li>
+
+                  <li>
+                    <code>export NAME=value</code>: Sets an environment variable for the current shell and its child processes.
+                  </li>
+
+                  <li>
+                    <code>~/.bash_profile</code>, <code>~/.bash_login</code>, <code>~/.profile</code>: Per-user startup files typically read by bash login shells.
+                    <ul>
+                      <li><code>~/.bash_profile</code>: First choice for bash login shells if present.</li>
+                      <li><code>~/.bash_login</code>: Fallback if <code>~/.bash_profile</code> does not exist.</li>
+                      <li><code>~/.profile</code>: Common POSIX fallback file used by multiple shells.</li>
+                    </ul>
+                  </li>
+
+                  <li>
+                    <code>/etc/environment</code>: System-wide environment variables for all users at login.
+                    <ul>
+                      <li>Uses simple <code>KEY=VALUE</code> format (not shell code).</li>
+                    </ul>
+                  </li>
+
+                  <li>
+                    <code>PATH</code>: Controls command lookup order.
+                    <ul>
+                      <li>Preserve existing values when modifying: <code>export PATH="$PATH:/opt/scripts"</code>.</li>
+                    </ul>
+                  </li>
+
+                </ul>
+              </section>
             </div>
             <!-- /main -->
           </div>
           <!-- /row -->
-          <nav class="lab-pagination">
-            <a
-                id="prev-lab"
-                class="lab-nav-link"
-                href="#"
-                aria-label="Previous lab"
-            >
-                &uArr;
-            </a>
-          </nav>
         </div>
         <!-- /container -->
       </section>
@@ -564,22 +543,10 @@ bar
             <div class="col-sm-12">
               <ul class="social-text-links font-alt text-center m-b-20">
                 <li>
-                  <a
-                    href="https://github.com/vonds"
-                    target="_blank"
-                    rel="noopener"
-                  >
-                    Github
-                  </a>
+                  <a href="https://github.com/vonds" target="_blank" rel="noopener">Github</a>
                 </li>
                 <li>
-                  <a
-                    href="https://www.linkedin.com/in/vonds/"
-                    target="_blank"
-                    rel="noopener"
-                  >
-                    Linkedin
-                  </a>
+                  <a href="https://www.linkedin.com/in/vonds/" target="_blank" rel="noopener">Linkedin</a>
                 </li>
               </ul>
             </div>
@@ -588,8 +555,7 @@ bar
           <div class="row">
             <div class="col-sm-12">
               <p class="copyright text-center m-b-0">
-                VONDS &copy;
-                <span id="year"></span>
+                VONDS &copy; <span id="year"></span>
               </p>
 
               <div class="scroll-up">
@@ -603,14 +569,14 @@ bar
 
     <!-- Javascript files (your existing) -->
     <script src="../assets/js/jquery-2.2.4.min.js"></script>
-    <script src="../assets/bootstrap/js/bootstrap.min.js"></script>
+    <script src="../assets/bootstrap/js/bootstrap.min.css"></script>
     <script src="../assets/js/jquery.superslides.min.js"></script>
     <script src="../assets/js/jquery.mb.YTPlayer.min.js"></script>
     <script src="../assets/js/jquery.magnific-popup.min.js"></script>
     <script src="../assets/js/owl.carousel.min.js"></script>
     <script src="../assets/js/jquery.simple-text-rotator.min.js"></script>
     <script src="../assets/js/imagesloaded.pkgd.js"></script>
-    <script src="../assets/js/isotope.pkgd.js"></script>
+    <script src="../assets/js/isotope.pkgd.min.js"></script>
     <script src="../assets/js/packery-mode.pkgd.min.js"></script>
     <script src="../assets/js/appear.js"></script>
     <script src="../assets/js/jquery.easing.1.3.js"></script>
@@ -623,5 +589,9 @@ bar
 
     <!-- Lab page JS (new) -->
     <script src="../assets/js/lab.js"></script>
+
+    <script>
+      document.getElementById("year").textContent = new Date().getFullYear()
+    </script>
   </body>
 </html>

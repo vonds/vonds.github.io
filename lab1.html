@@ -12,7 +12,11 @@
     <!-- Favicons -->
     <link rel="shortcut icon" href="../assets/images/favicon.png" />
     <link rel="apple-touch-icon" href="../assets/images/apple-touch-icon.png" />
-    <link rel="apple-touch-icon" sizes="72x72" href="../assets/images/apple-touch-icon-72x72.png" />
+    <link
+      rel="apple-touch-icon"
+      sizes="72x72"
+      href="../assets/images/apple-touch-icon-72x72.png"
+    />
     <link
       rel="apple-touch-icon"
       sizes="114x114"
@@ -37,7 +41,10 @@
     <link href="../assets/css/lab.css" rel="stylesheet" />
 
     <!-- Fonts -->
-    <link href="https://fonts.googleapis.com/css?family=Dosis" rel="stylesheet" />
+    <link
+      href="https://fonts.googleapis.com/css?family=Dosis"
+      rel="stylesheet"
+    />
   </head>
 
   <body>
@@ -61,20 +68,27 @@
               <a href="#">Portfolio</a>
               <ul>
                 <li>
-                  <a href="https://github.com/vonds/exit_0" target="_blank" rel="noopener">
+                  <a href="https://github.com/vonds/exit_0" target="_blank">
                     exit_0
                   </a>
                 </li>
                 <li>
-                  <a href="docs.html" target="_blank" rel="noopener">
-                    exit_0
+                  <a href="https://github.com/vonds/sentinel" target="_blank">
+                    Sentinel
                   </a>
+                </li>
+                <li>
+                  <a href="docs.html" target="_blank">exit_0 Documentation</a>
                 </li>
               </ul>
             </li>
 
             <li>
-              <a href="https://www.linkedin.com/in/vonds/" target="_blank" rel="noopener">
+              <a
+                href="https://www.linkedin.com/in/vonds/"
+                target="_blank"
+                rel="noopener"
+              >
                 LinkedIn
               </a>
             </li>
@@ -109,7 +123,9 @@
     <!-- WRAPPER -->
     <div class="wrapper">
       <!-- NAVIGATION -->
-      <nav class="navbar navbar-custom navbar-transparent navbar-light navbar-fixed-top">
+      <nav
+        class="navbar navbar-custom navbar-transparent navbar-light navbar-fixed-top"
+      >
         <div class="container">
           <div class="navbar-header">
             <a class="navbar-brand" href="../index.html">
@@ -132,11 +148,27 @@
       <!-- DOCS PAGE -->
       <section class="module">
         <div class="container">
-          <h2 class="font-alt module-title m-t-60">Lab 1: RAID Controller Module Identification</h2>
+          <h2 class="font-alt module-title m-t-60">
+            Lab 1: RAID Controller Module Identification
+          </h2>
 
           <nav class="lab-pagination">
-            <a id="prev-lab" class="lab-nav-link" href="#" aria-label="Previous lab">&laquo;</a>
-            <a id="next-lab" class="lab-nav-link" href="#" aria-label="Next lab">&raquo;</a>
+            <a
+              id="prev-lab"
+              class="lab-nav-link"
+              href="#"
+              aria-label="Previous lab"
+            >
+              &laquo;
+            </a>
+            <a
+              id="next-lab"
+              class="lab-nav-link"
+              href="#"
+              aria-label="Next lab"
+            >
+              &raquo;
+            </a>
           </nav>
 
           <div class="row">
@@ -163,9 +195,11 @@
             <!-- MAIN CONTENT -->
             <div class="col-sm-8 col-md-9 lab-doc">
               <p class="m-b-20 lab-summary">
-                Identify the kernel driver bound to a PCI RAID controller and validate the module’s
-                load state using CLI-only inspection. Confirm evidence across PCI enumeration, sysfs,
-                module metadata, and kernel logs, then prove control by reloading the module safely.
+                Identify the kernel driver bound to a PCI RAID controller and
+                validate the module’s load state using CLI-only inspection.
+                Confirm evidence across PCI enumeration, sysfs, module metadata,
+                and kernel logs, then prove control by reloading the module
+                safely.
               </p>
 
               <!-- Video (kept on page; removed from left panel) -->
@@ -187,39 +221,57 @@
               <!-- Scenario -->
               <section class="lab-section" id="scenario">
                 <div class="lab-chips" aria-label="Tags">
-                  <span class="lab-chip"><span class="lab-chip-key">troubleshooting</span></span>
-                  <span class="lab-chip"><span class="lab-chip-key">boot</span></span>
-                  <span class="lab-chip"><span class="lab-chip-key">core</span></span>
+                  <span class="lab-chip">
+                    <span class="lab-chip-key">troubleshooting</span>
+                  </span>
+                  <span class="lab-chip">
+                    <span class="lab-chip-key">boot</span>
+                  </span>
+                  <span class="lab-chip">
+                    <span class="lab-chip-key">core</span>
+                  </span>
                 </div>
 
-                <h3 class="font-alt lab-section-title m-b-40 m-t-40">Scenario</h3>
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  Scenario
+                </h3>
 
                 <p>
-                  A new RAID controller has been installed at PCI address <strong>03:00.0</strong>.
-                  You cannot open the chassis (warranty constraints), but you still need to confirm
-                  the correct driver is in use, verify the module is actually loaded, and gather log
-                  evidence to support troubleshooting.
+                  A new RAID controller has been installed at PCI address
+                  <strong>03:00.0</strong>
+                  . You cannot open the chassis (warranty constraints), but you
+                  still need to confirm the correct driver is in use, verify the
+                  module is actually loaded, and gather log evidence to support
+                  troubleshooting.
                 </p>
 
                 <div class="lab-callout">
                   <div class="lab-callout-label">Operator context</div>
                   <p class="m-b-0">
-                    Perform this verification before escalating the issue to hardware support,
-                    replacing firmware, or assuming the kernel should detect the device
-                    automatically.
+                    Perform this verification before escalating the issue to
+                    hardware support, replacing firmware, or assuming the kernel
+                    should detect the device automatically.
                   </p>
                 </div>
               </section>
 
               <!-- Objective -->
               <section class="lab-section alt-background" id="objective">
-                <h3 class="font-alt lab-section-title m-b-40 m-t-40">Objective</h3>
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  Objective
+                </h3>
                 <ul>
-                  <li>Confirm the RAID controller is visible on the PCI bus.</li>
                   <li>
-                    Identify the kernel driver bound to PCI device <code>03:00.0</code>.
+                    Confirm the RAID controller is visible on the PCI bus.
                   </li>
-                  <li>Validate module presence via sysfs and module tooling.</li>
+                  <li>
+                    Identify the kernel driver bound to PCI device
+                    <code>03:00.0</code>
+                    .
+                  </li>
+                  <li>
+                    Validate module presence via sysfs and module tooling.
+                  </li>
                   <li>Collect kernel log evidence for the module/device.</li>
                   <li>Verify control by safely reloading the module.</li>
                 </ul>
@@ -227,56 +279,82 @@
 
               <!-- Concepts (no alt-background moving forward) -->
               <section class="lab-section" id="concepts">
-                <h3 class="font-alt lab-section-title m-b-40 m-t-40">Concepts</h3>
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  Concepts
+                </h3>
                 <ul>
                   <li>
-                    PCI device identification and targeted inspection using <code>lspci</code>.
+                    PCI device identification and targeted inspection using
+                    <code>lspci</code>
+                    .
                   </li>
                   <li>
-                    Driver/module binding: “kernel driver in use” versus “available kernel modules.”
+                    Driver/module binding: “kernel driver in use” versus
+                    “available kernel modules.”
                   </li>
                   <li>
-                    sysfs as a source of truth for kernel object state (<code>/sys</code>).
+                    sysfs as a source of truth for kernel object state (
+                    <code>/sys</code>
+                    ).
                   </li>
                   <li>
-                    Loaded module validation and metadata inspection (<code>lsmod</code>,
-                    <code>modinfo</code>).
+                    Loaded module validation and metadata inspection (
+                    <code>lsmod</code>
+                    ,
+                    <code>modinfo</code>
+                    ).
                   </li>
                   <li>
-                    Kernel log triage for device initialization (<code>dmesg</code>,
-                    <code>journalctl -k</code>).
+                    Kernel log triage for device initialization (
+                    <code>dmesg</code>
+                    ,
+                    <code>journalctl -k</code>
+                    ).
                   </li>
                   <li>
-                    Safe module reload procedure (<code>modprobe -r</code> then
-                    <code>modprobe</code>).
+                    Safe module reload procedure (
+                    <code>modprobe -r</code>
+                    then
+                    <code>modprobe</code>
+                    ).
                   </li>
                 </ul>
               </section>
 
               <!-- Walkthrough -->
               <section class="lab-section alt-background" id="walkthrough">
-                <h3 class="font-alt lab-section-title m-b-40 m-t-40">Walkthrough</h3>
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  Walkthrough
+                </h3>
 
                 <!-- Step 1 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
-                    <strong class="font-alt">Step 1</strong>: Confirm the controller is visible on
-                    PCI.
+                    <strong class="font-alt">Step 1</strong>
+                    : Confirm the controller is visible on PCI.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
-                      <button class="lab-copy-btn" type="button" data-copy="#cmd-step-1">Copy</button>
+                      <button
+                        class="lab-copy-btn"
+                        type="button"
+                        data-copy="#cmd-step-1"
+                      >
+                        Copy
+                      </button>
                     </div>
                     <pre><code id="cmd-step-1">lspci</code></pre>
                   </div>
 
                   <p>
-                    <code>lspci</code> enumerates PCI devices and is your baseline proof that the OS
-                    sees the hardware. If the device is not listed, driver and module work is
-                    premature. At that point you are likely dealing with a seating, firmware, slot,
-                    or passthrough mapping issue.
+                    <code>lspci</code>
+                    enumerates PCI devices and is your baseline proof that the
+                    OS sees the hardware. If the device is not listed, driver
+                    and module work is premature. At that point you are likely
+                    dealing with a seating, firmware, slot, or passthrough
+                    mapping issue.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -288,22 +366,31 @@
                 <!-- Step 2 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
-                    <strong class="font-alt">Step 2</strong>: Identify the kernel driver bound to
-                    03:00.0.
+                    <strong class="font-alt">Step 2</strong>
+                    : Identify the kernel driver bound to 03:00.0.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
-                      <button class="lab-copy-btn" type="button" data-copy="#cmd-step-2">Copy</button>
+                      <button
+                        class="lab-copy-btn"
+                        type="button"
+                        data-copy="#cmd-step-2"
+                      >
+                        Copy
+                      </button>
                     </div>
                     <pre><code id="cmd-step-2">lspci -k -s 03:00.0</code></pre>
                   </div>
 
                   <p>
-                    <code>-s</code> scopes to a single PCI address. <code>-k</code> prints kernel
-                    driver and module binding information. This gives direct evidence of the active
-                    driver without guessing module names.
+                    <code>-s</code>
+                    scopes to a single PCI address.
+                    <code>-k</code>
+                    prints kernel driver and module binding information. This
+                    gives direct evidence of the active driver without guessing
+                    module names.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -315,13 +402,20 @@ Kernel modules: megaraid_sas</code></pre>
                 <!-- Step 3 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
-                    <strong class="font-alt">Step 3</strong>: Cross-check kernel state in sysfs.
+                    <strong class="font-alt">Step 3</strong>
+                    : Cross-check kernel state in sysfs.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Commands</span>
-                      <button class="lab-copy-btn" type="button" data-copy="#cmd-step-3">Copy</button>
+                      <button
+                        class="lab-copy-btn"
+                        type="button"
+                        data-copy="#cmd-step-3"
+                      >
+                        Copy
+                      </button>
                     </div>
                     <pre><code id="cmd-step-3">ls /sys/bus/pci/drivers
 # OR
@@ -329,10 +423,15 @@ ls /sys/module</code></pre>
                   </div>
 
                   <p>
-                    sysfs (<code>/sys</code>) reflects live kernel objects. Listing
-                    <code>/sys/bus/pci/drivers</code> shows registered PCI drivers. Listing
-                    <code>/sys/module</code> shows modules present from the kernel’s perspective.
-                    This is how you avoid “a tool says it’s there” when the kernel disagrees.
+                    sysfs (
+                    <code>/sys</code>
+                    ) reflects live kernel objects. Listing
+                    <code>/sys/bus/pci/drivers</code>
+                    shows registered PCI drivers. Listing
+                    <code>/sys/module</code>
+                    shows modules present from the kernel’s perspective. This is
+                    how you avoid “a tool says it’s there” when the kernel
+                    disagrees.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -344,13 +443,20 @@ megaraid_sas</code></pre>
                 <!-- Step 4 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
-                    <strong class="font-alt">Step 4</strong>: Validate load state and module metadata.
+                    <strong class="font-alt">Step 4</strong>
+                    : Validate load state and module metadata.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Commands</span>
-                      <button class="lab-copy-btn" type="button" data-copy="#cmd-step-4">Copy</button>
+                      <button
+                        class="lab-copy-btn"
+                        type="button"
+                        data-copy="#cmd-step-4"
+                      >
+                        Copy
+                      </button>
                     </div>
                     <pre><code id="cmd-step-4">lsmod | grep megaraid_sas
 # OR
@@ -358,9 +464,12 @@ modinfo megaraid_sas</code></pre>
                   </div>
 
                   <p>
-                    <code>lsmod</code> tells you whether the module is loaded and its usage count.
-                    <code>modinfo</code> describes the module (description, license, file path,
-                    version) and helps confirm you are running the expected driver build.
+                    <code>lsmod</code>
+                    tells you whether the module is loaded and its usage count.
+                    <code>modinfo</code>
+                    describes the module (description, license, file path,
+                    version) and helps confirm you are running the expected
+                    driver build.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -376,14 +485,20 @@ filename:       /lib/modules/.../megaraid_sas.ko...</code></pre>
                 <!-- Step 5 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
-                    <strong class="font-alt">Step 5</strong>: Collect kernel log evidence for device
-                    initialization.
+                    <strong class="font-alt">Step 5</strong>
+                    : Collect kernel log evidence for device initialization.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Commands</span>
-                      <button class="lab-copy-btn" type="button" data-copy="#cmd-step-5">Copy</button>
+                      <button
+                        class="lab-copy-btn"
+                        type="button"
+                        data-copy="#cmd-step-5"
+                      >
+                        Copy
+                      </button>
                     </div>
                     <pre><code id="cmd-step-5">dmesg | grep megaraid
 # OR
@@ -391,10 +506,12 @@ journalctl -k | grep megaraid</code></pre>
                   </div>
 
                   <p>
-                    Logs answer “what happened when the kernel initialized this device.” This is
-                    where you spot IRQ mapping issues, firmware readiness, timeouts, and fallback
-                    modes. <code>journalctl -k</code> is often better on systemd systems because it
-                    provides a consistent kernel log view.
+                    Logs answer “what happened when the kernel initialized this
+                    device.” This is where you spot IRQ mapping issues, firmware
+                    readiness, timeouts, and fallback modes.
+                    <code>journalctl -k</code>
+                    is often better on systemd systems because it provides a
+                    consistent kernel log view.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -407,21 +524,28 @@ FW now in Ready state</code></pre>
                 <!-- Step 6 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
-                    <strong class="font-alt">Step 6</strong>: Confirm general module visibility.
+                    <strong class="font-alt">Step 6</strong>
+                    : Confirm general module visibility.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
-                      <button class="lab-copy-btn" type="button" data-copy="#cmd-step-6">Copy</button>
+                      <button
+                        class="lab-copy-btn"
+                        type="button"
+                        data-copy="#cmd-step-6"
+                      >
+                        Copy
+                      </button>
                     </div>
                     <pre><code id="cmd-step-6">lsmod</code></pre>
                   </div>
 
                   <p>
-                    This is the broad “what’s loaded right now” view. It is useful for spotting
-                    related dependencies and confirming you are not debugging an empty runtime
-                    environment.
+                    This is the broad “what’s loaded right now” view. It is
+                    useful for spotting related dependencies and confirming you
+                    are not debugging an empty runtime environment.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -433,31 +557,38 @@ megaraid_sas</code></pre>
                 <!-- Step 7 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
-                    <strong class="font-alt">Step 7</strong>: Reload the module to validate control
-                    and reset state.
+                    <strong class="font-alt">Step 7</strong>
+                    : Reload the module to validate control and reset state.
                   </div>
 
                   <div class="lab-callout">
                     <div class="lab-callout-label">Safety note</div>
                     <p class="m-b-0">
-                      Reloading a storage driver can be disruptive. Do this only when you
-                      understand the blast radius (mounted filesystems, active I/O, RAID management
-                      tools, etc.).
+                      Reloading a storage driver can be disruptive. Do this only
+                      when you understand the blast radius (mounted filesystems,
+                      active I/O, RAID management tools, etc.).
                     </p>
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
-                      <button class="lab-copy-btn" type="button" data-copy="#cmd-step-7">Copy</button>
+                      <button
+                        class="lab-copy-btn"
+                        type="button"
+                        data-copy="#cmd-step-7"
+                      >
+                        Copy
+                      </button>
                     </div>
                     <pre><code id="cmd-step-7">sudo modprobe -r megaraid_sas && sudo modprobe megaraid_sas</code></pre>
                   </div>
 
                   <p>
-                    <code>modprobe -r</code> removes the module (and may refuse if it is in use).
-                    Re-adding it tests that the system can cleanly reinitialize the driver. Treat
-                    this as a controlled operation.
+                    <code>modprobe -r</code>
+                    removes the module (and may refuse if it is in use).
+                    Re-adding it tests that the system can cleanly reinitialize
+                    the driver. Treat this as a controlled operation.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -469,57 +600,89 @@ dmesg | grep megaraid</code></pre>
 
               <!-- Common breakpoints -->
               <section class="lab-section" id="breakpoints">
-                <h3 class="font-alt lab-section-title m-b-40 m-t-40">Common breakpoints</h3>
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  Common breakpoints
+                </h3>
 
                 <div class="lab-callout">
-                  <div class="lab-callout-label">PCI device not present in lspci output</div>
+                  <div class="lab-callout-label">
+                    PCI device not present in lspci output
+                  </div>
                   <p class="m-b-0">
-                    If <code>03:00.0</code> does not appear at all, driver troubleshooting is
-                    premature. Verify the slot, firmware, BIOS settings, or virtualization passthrough
-                    mapping first.
+                    If
+                    <code>03:00.0</code>
+                    does not appear at all, driver troubleshooting is premature.
+                    Verify the slot, firmware, BIOS settings, or virtualization
+                    passthrough mapping first.
                   </p>
                 </div>
 
                 <div class="lab-callout">
-                  <div class="lab-callout-label">Kernel driver in use is blank</div>
+                  <div class="lab-callout-label">
+                    Kernel driver in use is blank
+                  </div>
                   <p class="m-b-0">
-                    The device is present, but nothing is bound. Confirm the correct module exists,
-                    check <code>Kernel modules</code> output, then look for binding errors in
-                    <code>dmesg</code> or <code>journalctl -k</code>.
+                    The device is present, but nothing is bound. Confirm the
+                    correct module exists, check
+                    <code>Kernel modules</code>
+                    output, then look for binding errors in
+                    <code>dmesg</code>
+                    or
+                    <code>journalctl -k</code>
+                    .
                   </p>
                 </div>
 
                 <div class="lab-callout">
-                  <div class="lab-callout-label">modprobe -r fails: “module is in use”</div>
+                  <div class="lab-callout-label">
+                    modprobe -r fails: “module is in use”
+                  </div>
                   <p class="m-b-0">
-                    Storage modules often cannot be removed while the device is active. Stop related
-                    services, unmount filesystems, and ensure there is no active I/O before retrying.
+                    Storage modules often cannot be removed while the device is
+                    active. Stop related services, unmount filesystems, and
+                    ensure there is no active I/O before retrying.
                   </p>
                 </div>
 
                 <div class="lab-callout">
-                  <div class="lab-callout-label">No useful log evidence found</div>
+                  <div class="lab-callout-label">
+                    No useful log evidence found
+                  </div>
                   <p class="m-b-0">
-                    Filter may be too narrow. Try searching by PCI address (<code>03:00.0</code>) or
-                    by vendor strings from <code>lspci</code>. You can also inspect the full kernel
-                    log window around boot time with <code>journalctl -k -b</code>.
+                    Filter may be too narrow. Try searching by PCI address (
+                    <code>03:00.0</code>
+                    ) or by vendor strings from
+                    <code>lspci</code>
+                    . You can also inspect the full kernel log window around
+                    boot time with
+                    <code>journalctl -k -b</code>
+                    .
                   </p>
                 </div>
               </section>
 
               <!-- Cleanup -->
               <section class="lab-section alt-background" id="cleanup">
-                <h3 class="font-alt lab-section-title m-b-40 m-t-40">Cleanup checklist</h3>
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  Cleanup checklist
+                </h3>
 
                 <p>
-                  This lab is read-only until the optional module reload. If you reloaded the module,
-                  your “cleanup” is verifying the device is still bound and logs show a clean reinit.
+                  This lab is read-only until the optional module reload. If you
+                  reloaded the module, your “cleanup” is verifying the device is
+                  still bound and logs show a clean reinit.
                 </p>
 
                 <div class="lab-codeblock m-b-40 m-t-40">
                   <div class="lab-codeblock-header">
                     <span>Commands</span>
-                    <button class="lab-copy-btn" type="button" data-copy="#cmd-cleanup">Copy</button>
+                    <button
+                      class="lab-copy-btn"
+                      type="button"
+                      data-copy="#cmd-cleanup"
+                    >
+                      Copy
+                    </button>
                   </div>
                   <pre><code id="cmd-cleanup">lspci -k -s 03:00.0
 lsmod | grep megaraid_sas
@@ -529,7 +692,8 @@ journalctl -k | grep megaraid</code></pre>
                 <div class="lab-callout">
                   <div class="lab-callout-label">Success signal</div>
                   <p class="m-b-0">
-                    <code>lspci -k</code> still shows a bound driver, and logs show a clean init with
+                    <code>lspci -k</code>
+                    still shows a bound driver, and logs show a clean init with
                     no repeated timeouts or probe failures.
                   </p>
                 </div>
@@ -537,66 +701,103 @@ journalctl -k | grep megaraid</code></pre>
 
               <!-- Reference -->
               <section class="lab-section" id="reference">
-                <h3 class="font-alt lab-section-title m-b-40 m-t-40">Reference</h3>
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  Reference
+                </h3>
 
                 <ul class="lab-reference-list">
-
                   <li>
-                    <code>lspci -k -s &lt;addr&gt;</code>: Shows kernel driver and module binding for a specific PCI device.
+                    <code>lspci -k -s &lt;addr&gt;</code>
+                    : Shows kernel driver and module binding for a specific PCI
+                    device.
                     <ul>
-                      <li><code>-k</code>: Displays the kernel driver currently bound to the device.</li>
                       <li>
-                        <code>-s &lt;addr&gt;</code>: Restricts output to a single PCI address (for example
-                        <code>03:00.0</code>).
+                        <code>-k</code>
+                        : Displays the kernel driver currently bound to the
+                        device.
+                      </li>
+                      <li>
+                        <code>-s &lt;addr&gt;</code>
+                        : Restricts output to a single PCI address (for example
+                        <code>03:00.0</code>
+                        ).
                       </li>
                     </ul>
                   </li>
 
                   <li>
-                    <code>ls /sys/bus/pci/drivers</code>: Shows registered PCI drivers.
+                    <code>ls /sys/bus/pci/drivers</code>
+                    : Shows registered PCI drivers.
                     <ul>
-                      <li><code>/sys/bus/pci/drivers</code>: Directory containing PCI driver entries.</li>
+                      <li>
+                        <code>/sys/bus/pci/drivers</code>
+                        : Directory containing PCI driver entries.
+                      </li>
                     </ul>
                   </li>
 
                   <li>
-                    <code>ls /sys/module</code>: Shows modules present from the kernel’s perspective.
+                    <code>ls /sys/module</code>
+                    : Shows modules present from the kernel’s perspective.
                     <ul>
-                      <li><code>/sys/module</code>: Directory containing loaded module objects.</li>
+                      <li>
+                        <code>/sys/module</code>
+                        : Directory containing loaded module objects.
+                      </li>
                     </ul>
                   </li>
 
                   <li>
-                    <code>lsmod | grep &lt;module&gt;</code>: Confirms whether a specific module is loaded.
+                    <code>lsmod | grep &lt;module&gt;</code>
+                    : Confirms whether a specific module is loaded.
                     <ul>
-                      <li><code>|</code>: Pipes output from the left command into the right command.</li>
-                      <li><code>grep &lt;module&gt;</code>: Filters lines matching the module name.</li>
+                      <li>
+                        <code>|</code>
+                        : Pipes output from the left command into the right
+                        command.
+                      </li>
+                      <li>
+                        <code>grep &lt;module&gt;</code>
+                        : Filters lines matching the module name.
+                      </li>
                     </ul>
                   </li>
 
                   <li>
-                    <code>modinfo &lt;module&gt;</code>: Displays metadata about a kernel module.
+                    <code>modinfo &lt;module&gt;</code>
+                    : Displays metadata about a kernel module.
                   </li>
 
                   <li>
-                    <code>dmesg | grep &lt;pattern&gt;</code>: Searches kernel messages for a pattern.
+                    <code>dmesg | grep &lt;pattern&gt;</code>
+                    : Searches kernel messages for a pattern.
                   </li>
 
                   <li>
-                    <code>journalctl -k -b</code>: Shows kernel logs for the current boot.
+                    <code>journalctl -k -b</code>
+                    : Shows kernel logs for the current boot.
                     <ul>
-                      <li><code>-k</code>: Limits output to kernel messages.</li>
-                      <li><code>-b</code>: Restricts output to the current boot.</li>
+                      <li>
+                        <code>-k</code>
+                        : Limits output to kernel messages.
+                      </li>
+                      <li>
+                        <code>-b</code>
+                        : Restricts output to the current boot.
+                      </li>
                     </ul>
                   </li>
 
                   <li>
-                    <code>modprobe -r &lt;module&gt;</code>: Unloads a kernel module (if not in use).
+                    <code>modprobe -r &lt;module&gt;</code>
+                    : Unloads a kernel module (if not in use).
                     <ul>
-                      <li><code>-r</code>: Removes (unloads) the module.</li>
+                      <li>
+                        <code>-r</code>
+                        : Removes (unloads) the module.
+                      </li>
                     </ul>
                   </li>
-
                 </ul>
               </section>
             </div>
@@ -614,10 +815,22 @@ journalctl -k | grep megaraid</code></pre>
             <div class="col-sm-12">
               <ul class="social-text-links font-alt text-center m-b-20">
                 <li>
-                  <a href="https://github.com/vonds" target="_blank" rel="noopener">Github</a>
+                  <a
+                    href="https://github.com/vonds"
+                    target="_blank"
+                    rel="noopener"
+                  >
+                    Github
+                  </a>
                 </li>
                 <li>
-                  <a href="https://www.linkedin.com/in/vonds/" target="_blank" rel="noopener">Linkedin</a>
+                  <a
+                    href="https://www.linkedin.com/in/vonds/"
+                    target="_blank"
+                    rel="noopener"
+                  >
+                    Linkedin
+                  </a>
                 </li>
               </ul>
             </div>
@@ -626,7 +839,8 @@ journalctl -k | grep megaraid</code></pre>
           <div class="row">
             <div class="col-sm-12">
               <p class="copyright text-center m-b-0">
-                VONDS &copy; <span id="year"></span>
+                VONDS &copy;
+                <span id="year"></span>
               </p>
 
               <div class="scroll-up">
@@ -662,7 +876,7 @@ journalctl -k | grep megaraid</code></pre>
     <script src="../assets/js/lab.js"></script>
 
     <script>
-      document.getElementById("year").textContent = new Date().getFullYear()
+      document.getElementById('year').textContent = new Date().getFullYear()
     </script>
   </body>
 </html>
