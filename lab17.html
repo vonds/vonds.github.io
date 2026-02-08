@@ -12,16 +12,8 @@
     <!-- Favicons -->
     <link rel="shortcut icon" href="../assets/images/favicon.png" />
     <link rel="apple-touch-icon" href="../assets/images/apple-touch-icon.png" />
-    <link
-      rel="apple-touch-icon"
-      sizes="72x72"
-      href="../assets/images/apple-touch-icon-72x72.png"
-    />
-    <link
-      rel="apple-touch-icon"
-      sizes="114x114"
-      href="../assets/images/apple-touch-icon-114x114.png"
-    />
+    <link rel="apple-touch-icon" sizes="72x72" href="../assets/images/apple-touch-icon-72x72.png" />
+    <link rel="apple-touch-icon" sizes="114x114" href="../assets/images/apple-touch-icon-114x114.png" />
 
     <!-- Site styles (your existing) -->
     <link href="../assets/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
@@ -37,14 +29,11 @@
     <link href="../assets/css/style.css" rel="stylesheet" />
     <link href="../assets/css/docs.css" rel="stylesheet" />
 
-    <!-- Lab page styles (new) -->
+    <!-- Lab page styles -->
     <link href="../assets/css/lab.css" rel="stylesheet" />
 
     <!-- Fonts -->
-    <link
-      href="https://fonts.googleapis.com/css?family=Dosis"
-      rel="stylesheet"
-    />
+    <link href="https://fonts.googleapis.com/css?family=Dosis" rel="stylesheet" />
   </head>
 
   <body>
@@ -68,33 +57,25 @@
               <a href="#">Portfolio</a>
               <ul>
                 <li>
-                  <a
-                    href="https://github.com/vonds/exit_0"
-                    target="_blank"
-                    rel="noopener"
-                  >
+                  <a href="https://github.com/vonds/exit_0" target="_blank" rel="noopener">
                     exit_0
                   </a>
                 </li>
                 <li>
-                  <a
-                    href="docs.html"
-                    target="_blank"
-                    rel="noopener"
-                  >
+                  <a href="docs.html" target="_blank" rel="noopener">
                     exit_0 Documentation
                   </a>
                 </li>
-                <li><a href="https://github.com/vonds/sentinel" target="_blank" rel="noopener">Sentinel</a></li>
+                <li>
+                  <a href="https://github.com/vonds/sentinel" target="_blank" rel="noopener">
+                    Sentinel
+                  </a>
+                </li>
               </ul>
             </li>
 
             <li>
-              <a
-                href="https://www.linkedin.com/in/vonds/"
-                target="_blank"
-                rel="noopener"
-              >
+              <a href="https://www.linkedin.com/in/vonds/" target="_blank" rel="noopener">
                 LinkedIn
               </a>
             </li>
@@ -129,9 +110,7 @@
     <!-- WRAPPER -->
     <div class="wrapper">
       <!-- NAVIGATION -->
-      <nav
-        class="navbar navbar-custom navbar-transparent navbar-light navbar-fixed-top"
-      >
+      <nav class="navbar navbar-custom navbar-transparent navbar-light navbar-fixed-top">
         <div class="container">
           <div class="navbar-header">
             <a class="navbar-brand" href="../index.html">
@@ -154,36 +133,28 @@
       <!-- DOCS PAGE -->
       <section class="module">
         <div class="container">
-          <h2 class="font-alt module-title m-t-60">
-            Lab 17: Mounting Filesystems and Editing /etc/fstab
-          </h2>
-		  <nav class="lab-pagination">
-            <a
-              id="prev-lab"
-              class="lab-nav-link"
-              href="#"
-              aria-label="Previous lab"
-            >
-              &laquo;
-            </a>
-            <a
-              id="next-lab"
-              class="lab-nav-link"
-              href="#"
-              aria-label="Next lab"
-            >
-              &raquo;
-            </a>
+          <h2 class="font-alt module-title m-t-60">Lab 17: Mounting Filesystems and Editing /etc/fstab</h2>
+
+          <nav class="lab-pagination">
+            <a id="prev-lab" class="lab-nav-link" href="#" aria-label="Previous lab">&laquo;</a>
+            <a id="next-lab" class="lab-nav-link" href="#" aria-label="Next lab">&raquo;</a>
           </nav>
+
           <div class="row">
             <!-- LEFT SIDEBAR -->
             <div class="col-sm-4 col-md-3 lab-sidebar">
               <div class="docs-sidebar">
                 <div class="docs-widget">
-                  <h5 class="widget-title"><a href="./docs.html">Lab Index</a></h5>
+                  <h5 class="widget-title">
+                    <a href="./docs.html">Lab Index</a>
+                  </h5>
                   <ul class="docs-nav">
                     <li><a href="#scenario">Scenario</a></li>
+                    <li><a href="#objective">Objective</a></li>
+                    <li><a href="#concepts">Concepts</a></li>
                     <li><a href="#walkthrough">Walkthrough</a></li>
+                    <li><a href="#breakpoints">Breakpoints</a></li>
+                    <li><a href="#cleanup">Cleanup</a></li>
                     <li><a href="#reference">Reference</a></li>
                   </ul>
                 </div>
@@ -192,53 +163,43 @@
 
             <!-- MAIN CONTENT -->
             <div class="col-sm-8 col-md-9 lab-doc">
-              <!-- 1) Title + Summary (2 sentences max) -->
               <p class="m-b-20 lab-summary">
                 Prepare a new partition for use by formatting it, mounting it to a target directory, and confirming it is active.
                 Persist the mount across reboots by adding a correct entry to <code>/etc/fstab</code> and validating it safely.
               </p>
-              
-              
 
+              <!-- Video (kept on page; removed fixed sizing so responsive CSS can control it) -->
               <section class="lab-section" id="video" aria-label="Lab video">
-  				<div class="lab-video">
-    				<div class="lab-video-embed text-center">
-      					<iframe 
-							width="560" 
-							height="315" 
-							src="https://www.youtube.com/embed/_D_49JSQEkM?si=n4r3ZVBmjcSl450X" 
-							title="YouTube video player" 
-							frameborder="0" 
-							allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
-							referrerpolicy="strict-origin-when-cross-origin" 
-							allowfullscreen>
-						</iframe>
-    				</div>
-  				</div>
-			</section>
+                <div class="lab-video">
+                  <div class="lab-video-embed text-center">
+                    <iframe
+                      src="https://www.youtube.com/embed/_D_49JSQEkM?si=n4r3ZVBmjcSl450X"
+                      title="YouTube video player"
+                      frameborder="0"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                      referrerpolicy="strict-origin-when-cross-origin"
+                      allowfullscreen
+                    ></iframe>
+                  </div>
+                </div>
+              </section>
 
-              <!-- 2) Scenario -->
+              <!-- Scenario -->
               <section class="lab-section" id="scenario">
                 <div class="lab-chips" aria-label="Tags">
-                  <span class="lab-chip">
-                    <span class="lab-chip-key">storage</span>
-                  </span>
-                  <span class="lab-chip">
-                    <span class="lab-chip-key">boot</span>
-                  </span>
-                  <span class="lab-chip">
-                    <span class="lab-chip-key">core</span>
-                  </span>
+                  <span class="lab-chip"><span class="lab-chip-key">storage</span></span>
+                  <span class="lab-chip"><span class="lab-chip-key">boot</span></span>
+                  <span class="lab-chip"><span class="lab-chip-key">core</span></span>
                 </div>
 
-                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
-                  Scenario
-                </h3>
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">Scenario</h3>
+
                 <p>
                   A new partition has been added as <code>/dev/sdb1</code>. You are responsible for formatting it, mounting it to
                   <code>/mnt/data</code>, and ensuring it mounts automatically at boot by correctly updating <code>/etc/fstab</code>.
                   You also need to validate the entry without rebooting.
                 </p>
+
                 <div class="lab-callout">
                   <div class="lab-callout-label">Operator context</div>
                   <p class="m-b-0">
@@ -248,92 +209,59 @@
                 </div>
               </section>
 
-              <!-- 3) Objective -->
+              <!-- Objective -->
               <section class="lab-section alt-background" id="objective">
-                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
-                  Objective
-                </h3>
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">Objective</h3>
+                <ul>
+                  <li>Identify the new block device and confirm it is the correct partition.</li>
+                  <li>Create an <code>ext4</code> filesystem on <code>/dev/sdb1</code>.</li>
+                  <li>Create the mountpoint at <code>/mnt/data</code> and mount the filesystem.</li>
+                  <li>Verify the mount is active and backed by the expected device.</li>
+                  <li>Add a correct entry to <code>/etc/fstab</code> (prefer UUID) for persistence at boot.</li>
+                  <li>Validate <code>/etc/fstab</code> safely without rebooting.</li>
+                </ul>
+              </section>
+
+              <!-- Concepts -->
+              <section class="lab-section" id="concepts">
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">Concepts</h3>
                 <ul>
                   <li>
-                    Identify the new block device and confirm it is the correct partition.
+                    Use stable identifiers in <code>/etc/fstab</code>. Device names like <code>/dev/sdb1</code> can change; UUIDs typically do not.
                   </li>
                   <li>
-                    Create an <code>ext4</code> filesystem on <code>/dev/sdb1</code>.
+                    Filesystem creation is destructive. Verify the target device before running <code>mkfs</code>.
                   </li>
                   <li>
-                    Mount the filesystem at <code>/mnt/data</code>.
+                    A mount is not “done” until you can prove it: check the mount table and confirm the source device matches expectations.
                   </li>
                   <li>
-                    Verify the mount is active using common inspection commands.
-                  </li>
-                  <li>
-                    Add a correct entry to <code>/etc/fstab</code> for persistence at boot.
-                  </li>
-                  <li>
-                    Validate <code>/etc/fstab</code> safely without rebooting.
+                    <code>mount -a</code> is your safety net. It lets you catch a bad <code>fstab</code> entry while you still have a working shell.
                   </li>
                 </ul>
               </section>
 
-              <!-- 4) What You'll Practice -->
-              <section class="lab-section" id="practice">
-                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
-                  What You’ll Practice
-                </h3>
-
-                <ul class="m-t-10">
-                  <li>
-                    Block device inspection using <code>lsblk</code>.
-                  </li>
-                  <li>
-                    Filesystem creation using <code>mkfs.ext4</code>.
-                  </li>
-                  <li>
-                    Mounting filesystems using <code>mount</code>.
-                  </li>
-                  <li>
-                    Mount verification using <code>mount</code> and <code>findmnt</code>.
-                  </li>
-                  <li>
-                    Persistent mount configuration using <code>/etc/fstab</code>.
-                  </li>
-                  <li>
-                    Safe validation of mount configuration using <code>mount -a</code>.
-                  </li>
-                </ul>
-              </section>
-
-              <!-- 5) Commands Walkthrough -->
+              <!-- Walkthrough -->
               <section class="lab-section alt-background" id="walkthrough">
-                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
-                  Walkthrough
-                </h3>
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">Walkthrough</h3>
 
                 <!-- Step 1 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
-                    <strong class="font-alt">Step 1</strong>
-                    : Identify the new partition.
+                    <strong class="font-alt">Step 1</strong>: Identify the new partition and confirm it is unused.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
-                      <button
-                        class="lab-copy-btn"
-                        type="button"
-                        data-copy="#cmd-step-1"
-                      >
-                        Copy
-                      </button>
+                      <button class="lab-copy-btn" type="button" data-copy="#cmd-step-1">Copy</button>
                     </div>
                     <pre><code id="cmd-step-1">lsblk</code></pre>
                   </div>
 
                   <p>
-                    <code>lsblk</code>
-                    displays block devices in a tree view so you can see disks, partitions, sizes, and current mountpoints.
-                    This is where you confirm <code>/dev/sdb1</code> exists and is not already mounted or in use.
+                    <code>lsblk</code> shows disks, partitions, sizes, filesystem types, and mountpoints.
+                    Confirm <code>/dev/sdb1</code> exists and has no active mountpoint before you format it.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -349,35 +277,25 @@ sdb      8:16   0   20G  0 disk
                 <!-- Step 2 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
-                    <strong class="font-alt">Step 2</strong>
-                    : Create an ext4 filesystem on <code>/dev/sdb1</code>.
+                    <strong class="font-alt">Step 2</strong>: Create an ext4 filesystem on <code>/dev/sdb1</code>.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
-                      <button
-                        class="lab-copy-btn"
-                        type="button"
-                        data-copy="#cmd-step-2"
-                      >
-                        Copy
-                      </button>
+                      <button class="lab-copy-btn" type="button" data-copy="#cmd-step-2">Copy</button>
                     </div>
                     <pre><code id="cmd-step-2">sudo mkfs.ext4 /dev/sdb1</code></pre>
                   </div>
 
                   <p>
-                    <code>mkfs.ext4</code>
-                    writes a new ext4 filesystem to the partition. This destroys any existing data on that partition, so you do this only after confirming
-                    you are targeting the correct device.
+                    This writes a new filesystem and destroys any existing data on the partition. Do this only after you confirm the correct device.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <pre><code id="verify-step-2">mke2fs 1.45.5 (07-Jan-2020)
 Creating filesystem with 5242880 4k blocks and 1310720 inodes
 Filesystem UUID: abc12345-6789-4def-aaaa-bbbbccccdddd
-Superblock backups stored on blocks: 32768, 98304, 163840...
 Filesystem created successfully.</code></pre>
                   </div>
                 </div>
@@ -385,28 +303,21 @@ Filesystem created successfully.</code></pre>
                 <!-- Step 3 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
-                    <strong class="font-alt">Step 3</strong>
-                    : Mount the filesystem to <code>/mnt/data</code>.
+                    <strong class="font-alt">Step 3</strong>: Create the mountpoint and mount the filesystem.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
-                      <span>Command</span>
-                      <button
-                        class="lab-copy-btn"
-                        type="button"
-                        data-copy="#cmd-step-3"
-                      >
-                        Copy
-                      </button>
+                      <span>Commands</span>
+                      <button class="lab-copy-btn" type="button" data-copy="#cmd-step-3">Copy</button>
                     </div>
-                    <pre><code id="cmd-step-3">sudo mount /dev/sdb1 /mnt/data</code></pre>
+                    <pre><code id="cmd-step-3">sudo mkdir -p /mnt/data
+sudo mount /dev/sdb1 /mnt/data</code></pre>
                   </div>
 
                   <p>
-                    <code>mount</code>
-                    attaches the filesystem at the mountpoint so it becomes part of the directory tree. If the mountpoint does not exist,
-                    create it first with <code>sudo mkdir -p /mnt/data</code>.
+                    The mountpoint is just an empty directory that becomes the attach point for the filesystem.
+                    After mounting, the filesystem content is accessible under <code>/mnt/data</code>.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -417,155 +328,233 @@ Filesystem created successfully.</code></pre>
                 <!-- Step 4 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
-                    <strong class="font-alt">Step 4</strong>
-                    : Verify the mount is active.
+                    <strong class="font-alt">Step 4</strong>: Verify the mount is active and points to the expected device.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
-                      <span>Command</span>
-                      <button
-                        class="lab-copy-btn"
-                        type="button"
-                        data-copy="#cmd-step-4"
-                      >
-                        Copy
-                      </button>
+                      <span>Commands</span>
+                      <button class="lab-copy-btn" type="button" data-copy="#cmd-step-4">Copy</button>
                     </div>
-                    <pre><code id="cmd-step-4">findmnt</code></pre>
+                    <pre><code id="cmd-step-4">findmnt /mnt/data
+df -hT /mnt/data</code></pre>
                   </div>
 
                   <p>
-                    Verification matters. <code>findmnt</code> gives a structured view of active mounts, which is useful when multiple devices
-                    or bind mounts are present. You can also use <code>mount</code> if you want raw output.
+                    <code>findmnt</code> is structured evidence: source device, target, filesystem type, and options.
+                    <code>df -hT</code> confirms size, usage, and filesystem type for the mountpoint.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code id="verify-step-4">/dev/sdb1 on /mnt/data type ext4 (rw,relatime)</code></pre>
+                    <pre><code id="verify-step-4">/mnt/data  /dev/sdb1  ext4  rw,relatime
+Filesystem     Type  Size  Used Avail Use% Mounted on
+/dev/sdb1      ext4   20G   24M   19G   1% /mnt/data</code></pre>
                   </div>
                 </div>
 
                 <!-- Step 5 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
-                    <strong class="font-alt">Step 5</strong>
-                    : Add a persistent mount entry to <code>/etc/fstab</code>.
+                    <strong class="font-alt">Step 5</strong>: Capture the UUID and prepare the <code>/etc/fstab</code> entry.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
-                      <button
-                        class="lab-copy-btn"
-                        type="button"
-                        data-copy="#cmd-step-5"
-                      >
-                        Copy
-                      </button>
+                      <button class="lab-copy-btn" type="button" data-copy="#cmd-step-5">Copy</button>
                     </div>
-                    <pre><code id="cmd-step-5"># Add this line to /etc/fstab:
-/dev/sdb1 /mnt/data ext4 defaults 0 2</code></pre>
+                    <pre><code id="cmd-step-5">sudo blkid /dev/sdb1</code></pre>
                   </div>
 
                   <p>
-                    <code>/etc/fstab</code>
-                    controls what mounts at boot. The fields are: device, mountpoint, filesystem type, options, dump, and fsck pass number.
-                    A wrong entry can break boot, so you keep the line minimal and correct.
+                    Using <code>UUID=</code> in <code>/etc/fstab</code> avoids failures caused by device renaming (<code>/dev/sdb</code> becoming <code>/dev/sdc</code>, etc.).
+                    Copy the UUID exactly.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code id="verify-step-5">fstab line added: /dev/sdb1 /mnt/data ext4 defaults 0 2</code></pre>
+                    <pre><code id="verify-step-5">/dev/sdb1: UUID="abc12345-6789-4def-aaaa-bbbbccccdddd" TYPE="ext4"</code></pre>
+                  </div>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <pre><code># Add this line to /etc/fstab (use your real UUID):
+UUID=abc12345-6789-4def-aaaa-bbbbccccdddd  /mnt/data  ext4  defaults  0  2</code></pre>
                   </div>
                 </div>
 
                 <!-- Step 6 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
-                    <strong class="font-alt">Step 6</strong>
-                    : Validate <code>/etc/fstab</code> without rebooting.
+                    <strong class="font-alt">Step 6</strong>: Validate <code>/etc/fstab</code> safely without rebooting.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
-                      <span>Command</span>
-                      <button
-                        class="lab-copy-btn"
-                        type="button"
-                        data-copy="#cmd-step-6"
-                      >
-                        Copy
-                      </button>
+                      <span>Commands</span>
+                      <button class="lab-copy-btn" type="button" data-copy="#cmd-step-6">Copy</button>
                     </div>
-                    <pre><code id="cmd-step-6">sudo mount -a</code></pre>
+                    <pre><code id="cmd-step-6">sudo umount /mnt/data
+sudo mount -a
+findmnt /mnt/data</code></pre>
                   </div>
 
                   <p>
-                    <code>mount -a</code>
-                    attempts to mount everything in <code>/etc/fstab</code> that is not already mounted (excluding entries marked
-                    with <code>noauto</code>). If there is an error, this is where you want to catch it.
+                    Unmounting first forces your <code>fstab</code> entry to be used by <code>mount -a</code>.
+                    If anything is wrong, you catch it now instead of at boot.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code id="verify-step-6">All valid entries from /etc/fstab mounted successfully.</code></pre>
+                    <pre><code id="verify-step-6">/mnt/data  /dev/sdb1  ext4  rw,relatime</code></pre>
                   </div>
                 </div>
               </section>
 
-              <!-- 8) Reference -->
-              <!-- 9) Reference -->
+              <!-- Common breakpoints -->
+              <section class="lab-section" id="breakpoints">
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">Common breakpoints</h3>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">I formatted the wrong device</div>
+                  <p class="m-b-0">
+                    Stop immediately and document what happened. This is why you confirm with <code>lsblk -f</code> and double-check the target device
+                    before running <code>mkfs</code>. Treat it as a data loss incident.
+                  </p>
+                </div>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">mount: mount point does not exist</div>
+                  <p class="m-b-0">
+                    Create it first with <code>sudo mkdir -p /mnt/data</code>, then re-run the mount.
+                  </p>
+                </div>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">mount -a fails after editing /etc/fstab</div>
+                  <p class="m-b-0">
+                    Your <code>fstab</code> line is incorrect (bad UUID, wrong field order, invalid options, or missing mountpoint).
+                    Fix the line and re-run <code>mount -a</code> until it succeeds.
+                  </p>
+                </div>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">It mounts manually, but not on reboot</div>
+                  <p class="m-b-0">
+                    Confirm the final <code>fstab</code> line uses <code>UUID=</code>, the mountpoint exists at boot, and the filesystem type matches.
+                    Validate with <code>findmnt</code> and confirm the UUID using <code>blkid</code>.
+                  </p>
+                </div>
+              </section>
+
+              <!-- Cleanup -->
+              <section class="lab-section alt-background" id="cleanup">
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">Cleanup checklist</h3>
+
+                <p>
+                  If this was a test mount, remove the <code>/etc/fstab</code> entry before you forget. Otherwise, leave it in place.
+                  Always confirm the system is in a stable state before moving on.
+                </p>
+
+                <div class="lab-codeblock m-b-40 m-t-40">
+                  <div class="lab-codeblock-header">
+                    <span>Commands</span>
+                    <button class="lab-copy-btn" type="button" data-copy="#cmd-cleanup">Copy</button>
+                  </div>
+                  <pre><code id="cmd-cleanup">findmnt /mnt/data
+sudo blkid /dev/sdb1</code></pre>
+                </div>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">Success signal</div>
+                  <p class="m-b-0">
+                    <code>findmnt</code> shows <code>/mnt/data</code> backed by <code>/dev/sdb1</code> (or the expected UUID), and your last
+                    <code>mount -a</code> run completed without errors.
+                  </p>
+                </div>
+              </section>
+
+              <!-- Reference -->
               <section class="lab-section" id="reference">
-                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
-                  Reference
-                </h3>
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">Reference</h3>
 
                 <ul class="lab-reference-list">
                   <li>
-                    <code>lsblk</code>
-                    : Lists block devices and partitions, including mountpoints and sizes.
+                    <code>lsblk</code>: Lists block devices and partitions, including sizes, types, and mountpoints.
+                    <ul>
+                      <li><code>-f</code>: Show filesystem type, UUID, and label for each device.</li>
+                      <li><code>-p</code>: Show full device paths (example: <code>/dev/sdb1</code>).</li>
+                    </ul>
                   </li>
 
                   <li>
-                    <code>mkfs.ext4 &lt;device&gt;</code>
-                    : Creates an ext4 filesystem on a block device (destructive operation).
+                    <code>mkfs.ext4 &lt;device&gt;</code>: Creates an ext4 filesystem on a block device (destructive).
+                    <ul>
+                      <li><code>-L &lt;label&gt;</code>: Set a filesystem label (example: <code>-L DATA</code>).</li>
+                    </ul>
                   </li>
 
                   <li>
-                    <code>mount &lt;device&gt; &lt;mountpoint&gt;</code>
-                    : Mounts a filesystem at a directory.
+                    <code>mkdir -p &lt;dir&gt;</code>: Creates a directory (and parents) for a mountpoint.
+                    <ul>
+                      <li><code>-p</code>: Do not error if the directory exists; create parent dirs as needed.</li>
+                    </ul>
                   </li>
 
                   <li>
-                    <code>findmnt</code>
-                    : Displays mounted filesystems in a structured, searchable format.
+                    <code>mount &lt;device&gt; &lt;mountpoint&gt;</code>: Mounts a filesystem at a directory.
+                    <ul>
+                      <li><code>-t &lt;type&gt;</code>: Specify filesystem type explicitly (example: <code>-t ext4</code>).</li>
+                    </ul>
                   </li>
 
                   <li>
-                    <code>/etc/fstab</code>
-                    : Static filesystem table used to define persistent mounts at boot.
+                    <code>umount &lt;mountpoint&gt;</code>: Unmounts a mounted filesystem.
+                    <ul>
+                      <li><code>-l</code>: Lazy unmount (detaches now, cleans up when no longer busy).</li>
+                    </ul>
                   </li>
 
                   <li>
-                    <code>mount -a</code>
-                    : Mounts all filesystems listed in <code>/etc/fstab</code> (except those marked <code>noauto</code>) to validate entries.
+                    <code>findmnt &lt;path&gt;</code>: Query the mount that backs a specific path (example: <code>findmnt /mnt/data</code>).
+                    <ul>
+                      <li><code>-r</code>: Raw output (useful for scripting).</li>
+                    </ul>
+                  </li>
+
+                  <li>
+                    <code>df -hT &lt;path&gt;</code>: Shows space usage and filesystem type for a path.
+                    <ul>
+                      <li><code>-h</code>: Human-readable sizes.</li>
+                      <li><code>-T</code>: Include filesystem type.</li>
+                    </ul>
+                  </li>
+
+                  <li>
+                    <code>blkid &lt;device&gt;</code>: Prints UUID and filesystem type for a block device.
+                    <ul>
+                      <li><code>-s UUID</code>: Print only the UUID field.</li>
+                    </ul>
+                  </li>
+
+                  <li>
+                    <code>/etc/fstab</code>: Static filesystem table used to define persistent mounts at boot.
+                    <ul>
+                      <li>Field order: <code>&lt;source&gt; &lt;mountpoint&gt; &lt;type&gt; &lt;options&gt; &lt;dump&gt; &lt;fsck_pass&gt;</code></li>
+                      <li>Prefer <code>UUID=&lt;uuid&gt;</code> as the source for stability.</li>
+                    </ul>
+                  </li>
+
+                  <li>
+                    <code>mount -a</code>: Mounts all filesystems from <code>/etc/fstab</code> that are not already mounted.
+                    <ul>
+                      <li>Primary safety check after editing <code>/etc/fstab</code>.</li>
+                      <li>Entries with <code>noauto</code> are skipped.</li>
+                    </ul>
                   </li>
                 </ul>
               </section>
-
-              <!-- Lab Pagination -->
             </div>
             <!-- /main -->
           </div>
           <!-- /row -->
-          <nav class="lab-pagination">
-            <a
-                id="prev-lab"
-                class="lab-nav-link"
-                href="#"
-                aria-label="Previous lab"
-            >
-                &uArr;
-            </a>
-          </nav>
         </div>
         <!-- /container -->
       </section>
@@ -577,22 +566,10 @@ Filesystem created successfully.</code></pre>
             <div class="col-sm-12">
               <ul class="social-text-links font-alt text-center m-b-20">
                 <li>
-                  <a
-                    href="https://github.com/vonds"
-                    target="_blank"
-                    rel="noopener"
-                  >
-                    Github
-                  </a>
+                  <a href="https://github.com/vonds" target="_blank" rel="noopener">Github</a>
                 </li>
                 <li>
-                  <a
-                    href="https://www.linkedin.com/in/vonds/"
-                    target="_blank"
-                    rel="noopener"
-                  >
-                    Linkedin
-                  </a>
+                  <a href="https://www.linkedin.com/in/vonds/" target="_blank" rel="noopener">Linkedin</a>
                 </li>
               </ul>
             </div>
@@ -601,8 +578,7 @@ Filesystem created successfully.</code></pre>
           <div class="row">
             <div class="col-sm-12">
               <p class="copyright text-center m-b-0">
-                VONDS &copy;
-                <span id="year"></span>
+                VONDS &copy; <span id="year"></span>
               </p>
 
               <div class="scroll-up">
@@ -636,5 +612,9 @@ Filesystem created successfully.</code></pre>
 
     <!-- Lab page JS (new) -->
     <script src="../assets/js/lab.js"></script>
+
+    <script>
+      document.getElementById("year").textContent = new Date().getFullYear()
+    </script>
   </body>
 </html>

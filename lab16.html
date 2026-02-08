@@ -30,6 +30,7 @@
     <link href="../assets/css/ionicons.min.css" rel="stylesheet" />
     <link href="../assets/css/simpletextrotator.css" rel="stylesheet" />
     <link href="../assets/css/magnific-popup.css" rel="stylesheet" />
+    <link href="../assets/css/magnific-popup.css" rel="stylesheet" />
     <link href="../assets/css/owl.carousel.css" rel="stylesheet" />
     <link href="../assets/css/superslides.css" rel="stylesheet" />
     <link href="../assets/css/vertical.css" rel="stylesheet" />
@@ -37,7 +38,7 @@
     <link href="../assets/css/style.css" rel="stylesheet" />
     <link href="../assets/css/docs.css" rel="stylesheet" />
 
-    <!-- Lab page styles (new) -->
+    <!-- Lab page styles -->
     <link href="../assets/css/lab.css" rel="stylesheet" />
 
     <!-- Fonts -->
@@ -77,15 +78,19 @@
                   </a>
                 </li>
                 <li>
-                  <a
-                    href="docs.html"
-                    target="_blank"
-                    rel="noopener"
-                  >
+                  <a href="docs.html" target="_blank" rel="noopener">
                     exit_0 Documentation
                   </a>
                 </li>
-                <li><a href="https://github.com/vonds/sentinel" target="_blank" rel="noopener">Sentinel</a></li>
+                <li>
+                  <a
+                    href="https://github.com/vonds/sentinel"
+                    target="_blank"
+                    rel="noopener"
+                  >
+                    Sentinel
+                  </a>
+                </li>
               </ul>
             </li>
 
@@ -157,7 +162,8 @@
           <h2 class="font-alt module-title m-t-60">
             Lab 16: Process Management and Job Control
           </h2>
-		  <nav class="lab-pagination">
+
+          <nav class="lab-pagination">
             <a
               id="prev-lab"
               class="lab-nav-link"
@@ -175,15 +181,22 @@
               &raquo;
             </a>
           </nav>
+
           <div class="row">
             <!-- LEFT SIDEBAR -->
             <div class="col-sm-4 col-md-3 lab-sidebar">
               <div class="docs-sidebar">
                 <div class="docs-widget">
-                  <h5 class="widget-title"><a href="./docs.html">Lab Index</a></h5>
+                  <h5 class="widget-title">
+                    <a href="./docs.html">Lab Index</a>
+                  </h5>
                   <ul class="docs-nav">
                     <li><a href="#scenario">Scenario</a></li>
+                    <li><a href="#objective">Objective</a></li>
+                    <li><a href="#concepts">Concepts</a></li>
                     <li><a href="#walkthrough">Walkthrough</a></li>
+                    <li><a href="#breakpoints">Breakpoints</a></li>
+                    <li><a href="#cleanup">Cleanup</a></li>
                     <li><a href="#reference">Reference</a></li>
                   </ul>
                 </div>
@@ -192,30 +205,30 @@
 
             <!-- MAIN CONTENT -->
             <div class="col-sm-8 col-md-9 lab-doc">
-              <!-- 1) Title + Summary (2 sentences max) -->
               <p class="m-b-20 lab-summary">
-                Identify resource-hungry processes, validate what is actually running, and take controlled action to stabilize the system.
-                Use standard tools to inspect, terminate, and reprioritize workloads, and manage background jobs safely.
+                Identify resource-hungry processes, validate what is actually
+                running, and take controlled action to stabilize the system. Use
+                standard tools to inspect, terminate, and reprioritize
+                workloads, and manage background jobs safely.
               </p>
 
+              <!-- Video (remove fixed sizing so your responsive CSS can control it) -->
               <section class="lab-section" id="video" aria-label="Lab video">
-  				<div class="lab-video">
-    				<div class="lab-video-embed text-center">
-      					<iframe 
-							width="560" 
-							height="315" 
-							src="https://www.youtube.com/embed/sS6HDuE10JE?si=0O-eBcTqL1iboLtY" 
-							title="YouTube video player" 
-							frameborder="0" 
-							allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
-							referrerpolicy="strict-origin-when-cross-origin" 
-							allowfullscreen>
-						</iframe>
-    				</div>
-  				</div>
-			</section>
+                <div class="lab-video">
+                  <div class="lab-video-embed text-center">
+                    <iframe
+                      src="https://www.youtube.com/embed/sS6HDuE10JE?si=0O-eBcTqL1iboLtY"
+                      title="YouTube video player"
+                      frameborder="0"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                      referrerpolicy="strict-origin-when-cross-origin"
+                      allowfullscreen
+                    ></iframe>
+                  </div>
+                </div>
+              </section>
 
-              <!-- 2) Scenario -->
+              <!-- Scenario -->
               <section class="lab-section" id="scenario">
                 <div class="lab-chips" aria-label="Tags">
                   <span class="lab-chip">
@@ -233,27 +246,34 @@
                   Scenario
                 </h3>
                 <p>
-                  A Linux host is running slowly and user sessions feel laggy. You need to identify a process that is consuming excessive CPU,
-                  confirm system state using both snapshot and live views, terminate the runaway workload safely, and ensure you can manage
-                  shell jobs and scheduling priority without making the system worse.
+                  A Linux host is running slowly and user sessions feel laggy.
+                  You need to identify a process that is consuming excessive
+                  CPU, confirm system state using both snapshot and live views,
+                  terminate the runaway workload safely, and ensure you can
+                  manage shell jobs and scheduling priority without making the
+                  system worse.
                 </p>
+
                 <div class="lab-callout">
                   <div class="lab-callout-label">Operator context</div>
                   <p class="m-b-0">
-                    This is the workflow you use before escalating to “the server is slow” tickets or guessing. You validate what is running,
-                    prove which process is responsible, and take the smallest safe corrective action.
+                    This is the workflow you use before escalating “the server
+                    is slow” tickets or guessing. You validate what is running,
+                    prove which process is responsible, and take the smallest
+                    safe corrective action.
                   </p>
                 </div>
               </section>
 
-              <!-- 3) Objective -->
+              <!-- Objective -->
               <section class="lab-section alt-background" id="objective">
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">
                   Objective
                 </h3>
                 <ul>
                   <li>
-                    Capture a quick process snapshot with CPU and memory visibility.
+                    Capture a quick process snapshot with CPU and memory
+                    visibility.
                   </li>
                   <li>
                     Inspect live process behavior to confirm the top offender.
@@ -261,41 +281,59 @@
                   <li>
                     Terminate a runaway process using a controlled signal.
                   </li>
+                  <li>List, stop, resume, and foreground shell jobs safely.</li>
                   <li>
-                    List, foreground, and manage shell jobs safely.
-                  </li>
-                  <li>
-                    Start a workload at a lower scheduling priority using <code>nice</code>.
+                    Start a workload at a lower scheduling priority using
+                    <code>nice</code>
+                    .
                   </li>
                 </ul>
               </section>
 
-              <!-- 4) What You'll Practice -->
-              <section class="lab-section" id="practice">
+              <!-- Concepts -->
+              <section class="lab-section" id="concepts">
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">
-                  What You’ll Practice
+                  Concepts
                 </h3>
-
-                <ul class="m-t-10">
+                <ul>
                   <li>
-                    Fast process inspection using <code>ps aux</code> and targeted output filtering with <code>head</code>.
+                    <code>ps</code>
+                    is your snapshot. Good for quick evidence and grep-able
+                    output.
                   </li>
                   <li>
-                    Live process monitoring using <code>top</code> to confirm CPU-heavy workloads in real time.
+                    <code>top</code>
+                    (or
+                    <code>htop</code>
+                    ) is your live view. It confirms whether a PID is
+                    consistently misbehaving.
                   </li>
                   <li>
-                    Process termination basics using <code>kill</code> (SIGTERM) for controlled shutdown.
+                    <code>kill</code>
+                    defaults to SIGTERM (graceful request). Escalate only if
+                    needed.
                   </li>
                   <li>
-                    Shell job control using <code>jobs</code> and <code>fg</code>.
+                    Job control (
+                    <code>Ctrl+Z</code>
+                    ,
+                    <code>bg</code>
+                    ,
+                    <code>fg</code>
+                    ,
+                    <code>jobs</code>
+                    ) is per-shell session, not system-wide.
                   </li>
                   <li>
-                    Scheduling priority adjustment using <code>nice</code> to reduce impact on system responsiveness.
+                    <code>nice</code>
+                    sets priority at start. (Adjusting an existing process is
+                    <code>renice</code>
+                    .)
                   </li>
                 </ul>
               </section>
 
-              <!-- 5) Commands Walkthrough -->
+              <!-- Walkthrough -->
               <section class="lab-section alt-background" id="walkthrough">
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">
                   Walkthrough
@@ -305,7 +343,7 @@
                 <div class="lab-step">
                   <div class="lab-step-title">
                     <strong class="font-alt">Step 1</strong>
-                    : Take a quick snapshot of processes with CPU and memory columns.
+                    : Take a quick snapshot of top CPU consumers.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -319,23 +357,20 @@
                         Copy
                       </button>
                     </div>
-                    <pre><code id="cmd-step-1">ps aux | head -n 5</code></pre>
+                    <pre><code id="cmd-step-1">ps aux --sort=-%cpu | head -n 10</code></pre>
                   </div>
 
                   <p>
-                    <code>ps aux</code>
-                    provides a wide process listing including <code>%CPU</code> and <code>%MEM</code>. Piping into
-                    <code>head</code>
-                    gives you a quick baseline view without flooding the terminal. This is useful for confirming the machine is not “empty”
-                    and spotting obvious outliers.
+                    Sorting by CPU gives you a fast shortlist. This is better
+                    than staring at an unsorted wall of processes. Treat this as
+                    evidence gathering before you take action.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <pre><code id="verify-step-1">USER       PID %CPU %MEM    VSZ   RSS TTY      STAT START   TIME COMMAND
-root         1  0.0  0.1 167936  1104 ?        Ss   Jul18   0:02 /sbin/init
-root       402  0.1  0.3  98720  3128 ?        Ss   08:01   0:00 /lib/systemd/systemd-journald
-root       711  0.0  0.2  72960  2140 ?        Ss   08:01   0:00 /usr/sbin/cron -f
-lab       1357 25.3  4.1 248112 42280 ?        Rl   12:45   1:37 /usr/bin/python3 script.py</code></pre>
+lab       1357 98.3  0.5 248112 42280 ?        Rl   12:45   1:37 /usr/bin/python3 script.py
+root       711  0.2  0.2  72960  2140 ?        Ss   08:01   0:00 /usr/sbin/cron -f
+root       402  0.1  0.3  98720  3128 ?        Ss   08:01   0:00 /lib/systemd/systemd-journald</code></pre>
                   </div>
                 </div>
 
@@ -343,7 +378,7 @@ lab       1357 25.3  4.1 248112 42280 ?        Rl   12:45   1:37 /usr/bin/python
                 <div class="lab-step">
                   <div class="lab-step-title">
                     <strong class="font-alt">Step 2</strong>
-                    : Confirm the top offender using a live process view.
+                    : Confirm the offender in a live view.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -361,21 +396,16 @@ lab       1357 25.3  4.1 248112 42280 ?        Rl   12:45   1:37 /usr/bin/python
                   </div>
 
                   <p>
-                    <code>top</code>
-                    gives a real-time view of CPU, memory, and per-process usage. Use this to confirm that the same PID is consistently consuming CPU,
-                    not just spiking briefly. This reduces the chance you terminate the wrong process.
+                    The point is not “open top.” The point is confirming the
+                    same PID is consistently responsible, not a transient spike.
+                    Exit with
+                    <code>q</code>
+                    .
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code id="verify-step-2">top - 12:48:33 up  2:47,  1 user,  load average: 2.23, 2.10, 1.76
-Tasks: 188 total,   2 running, 186 sleeping,   0 stopped,   0 zombie
-%Cpu(s): 38.6 us,  3.1 sy,  0.0 ni, 57.9 id,  0.1 wa,  0.0 hi,  0.3 si,  0.0 st
-MiB Mem :   7860.0 total,   1180.5 free,   2387.2 used,   4292.3 buff/cache
-MiB Swap:   2048.0 total,   2048.0 free,      0.0 used.   4970.1 avail Mem
-
-  PID USER      PR  NI    VIRT    RES    SHR S  %CPU %MEM     TIME+ COMMAND
- 1357 lab       20   0  248.1m  41.3m   5.1m R  98.3  0.5   1:39.21 python3
- (Press 'q' to quit top)</code></pre>
+                    <pre><code id="verify-step-2">  PID USER      PR  NI    VIRT    RES    SHR S  %CPU %MEM     TIME+ COMMAND
+ 1357 lab       20   0  248.1m  41.3m   5.1m R  98.3  0.5   1:39.21 python3</code></pre>
                   </div>
                 </div>
 
@@ -383,7 +413,7 @@ MiB Swap:   2048.0 total,   2048.0 free,      0.0 used.   4970.1 avail Mem
                 <div class="lab-step">
                   <div class="lab-step-title">
                     <strong class="font-alt">Step 3</strong>
-                    : Terminate the runaway process using a controlled signal.
+                    : Send a controlled termination request (SIGTERM).
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -397,17 +427,20 @@ MiB Swap:   2048.0 total,   2048.0 free,      0.0 used.   4970.1 avail Mem
                         Copy
                       </button>
                     </div>
-                    <pre><code id="cmd-step-3">kill 1357</code></pre>
+                    <pre><code id="cmd-step-3">kill 1357
+# Verify:
+ps -p 1357 || echo "PID 1357 is gone"</code></pre>
                   </div>
 
                   <p>
+                    Default
                     <code>kill</code>
-                    without a signal defaults to SIGTERM, which requests a graceful shutdown. This is a safe first move because it allows the process
-                    to exit cleanly. If a process ignores SIGTERM, you can escalate, but start here.
+                    is SIGTERM, which is the safe first move. If the process is
+                    still present after a moment, you investigate or escalate.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code id="verify-step-3">bash: sent SIGTERM to PID 1357</code></pre>
+                    <pre><code id="verify-step-3">PID 1357 is gone</code></pre>
                   </div>
                 </div>
 
@@ -415,12 +448,12 @@ MiB Swap:   2048.0 total,   2048.0 free,      0.0 used.   4970.1 avail Mem
                 <div class="lab-step">
                   <div class="lab-step-title">
                     <strong class="font-alt">Step 4</strong>
-                    : List background jobs in the current shell.
+                    : Practice job control in your current shell session.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
-                      <span>Command</span>
+                      <span>Commands</span>
                       <button
                         class="lab-copy-btn"
                         type="button"
@@ -429,16 +462,25 @@ MiB Swap:   2048.0 total,   2048.0 free,      0.0 used.   4970.1 avail Mem
                         Copy
                       </button>
                     </div>
-                    <pre><code id="cmd-step-4">jobs</code></pre>
+                    <pre><code id="cmd-step-4">sleep 300
+# Press Ctrl+Z to stop it
+jobs
+bg %1
+jobs</code></pre>
                   </div>
 
                   <p>
-                    Job control is shell-scoped. <code>jobs</code> shows what you have running in the background in your current session.
-                    This matters when you need to recover control of a long-running script, pause work, or bring a task back into focus.
+                    <code>Ctrl+Z</code>
+                    stops (suspends) the foreground job.
+                    <code>bg</code>
+                    resumes it in the background. Use
+                    <code>jobs</code>
+                    to verify state before you bring anything to the foreground.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code id="verify-step-4">[1]-  Running                 ./bigjob.sh &</code></pre>
+                    <pre><code id="verify-step-4">[1]+  Stopped                 sleep 300
+[1]+  Running                 sleep 300 &</code></pre>
                   </div>
                 </div>
 
@@ -446,7 +488,7 @@ MiB Swap:   2048.0 total,   2048.0 free,      0.0 used.   4970.1 avail Mem
                 <div class="lab-step">
                   <div class="lab-step-title">
                     <strong class="font-alt">Step 5</strong>
-                    : Bring a background job back into the foreground.
+                    : Bring a job back to the foreground.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -464,14 +506,14 @@ MiB Swap:   2048.0 total,   2048.0 free,      0.0 used.   4970.1 avail Mem
                   </div>
 
                   <p>
-                    <code>fg</code>
-                    resumes a background job in the foreground so you can interact with it directly. If there are multiple jobs, targeting by job spec
-                    (like <code>%1</code>) prevents you from foregrounding the wrong task.
+                    Foregrounding restores interactive control. This is how you
+                    recover a “lost” long-running command. End it with
+                    <code>Ctrl+C</code>
+                    if needed.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code id="verify-step-5">./bigjob.sh
-(running in foreground; press Ctrl+Z to background)</code></pre>
+                    <pre><code id="verify-step-5">sleep 300</code></pre>
                   </div>
                 </div>
 
@@ -479,7 +521,7 @@ MiB Swap:   2048.0 total,   2048.0 free,      0.0 used.   4970.1 avail Mem
                 <div class="lab-step">
                   <div class="lab-step-title">
                     <strong class="font-alt">Step 6</strong>
-                    : Start a workload with a lower scheduling priority.
+                    : Start a workload with lower scheduling priority.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -497,19 +539,90 @@ MiB Swap:   2048.0 total,   2048.0 free,      0.0 used.   4970.1 avail Mem
                   </div>
 
                   <p>
-                    <code>nice</code>
-                    runs a command with an adjusted niceness value. Higher niceness generally means lower CPU scheduling priority, which helps keep the system
-                    responsive while background work runs. This is a common operator move when you need work to complete without impacting interactive users.
+                    Raising niceness reduces scheduling priority. This is an
+                    operator-friendly way to run heavy work without clobbering
+                    interactive users.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code id="verify-step-6">started './backup.sh' with nice value +10 (lower priority)</code></pre>
+                    <pre><code id="verify-step-6">started './backup.sh' with nice value +10</code></pre>
                   </div>
                 </div>
               </section>
 
-              <!-- 8) Reference -->
-              <!-- 9) Reference -->
+              <!-- Breakpoints -->
+              <section class="lab-section" id="breakpoints">
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  Common breakpoints
+                </h3>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">
+                    I killed the wrong process
+                  </div>
+                  <p class="m-b-0">
+                    Use a repeatable identification step first: confirm the
+                    command line with
+                    <code>ps -p &lt;PID&gt; -o pid,user,cmd</code>
+                    . Do not rely on PID alone if processes respawn.
+                  </p>
+                </div>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">SIGTERM did nothing</div>
+                  <p class="m-b-0">
+                    Some processes trap SIGTERM or are stuck in uninterruptible
+                    I/O. Verify state with
+                    <code>ps -o pid,stat,cmd -p &lt;PID&gt;</code>
+                    . If you must escalate, use SIGKILL as a last resort and
+                    document it.
+                  </p>
+                </div>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">jobs shows nothing</div>
+                  <p class="m-b-0">
+                    Job control is per-shell session. If the process was started
+                    in a different terminal or via a service,
+                    <code>jobs</code>
+                    will not show it. Use system-wide tools (
+                    <code>ps</code>
+                    ,
+                    <code>top</code>
+                    ) for those.
+                  </p>
+                </div>
+              </section>
+
+              <!-- Cleanup -->
+              <section class="lab-section alt-background" id="cleanup">
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  Cleanup checklist
+                </h3>
+
+                <p>
+                  End any test jobs you started during the lab.
+                </p>
+
+                <div class="lab-codeblock m-b-40 m-t-40">
+                  <div class="lab-codeblock-header">
+                    <span>Commands</span>
+                    <button
+                      class="lab-copy-btn"
+                      type="button"
+                      data-copy="#cmd-cleanup"
+                    >
+                      Copy
+                    </button>
+                  </div>
+                  <pre><code id="cmd-cleanup">jobs
+# If needed:
+kill %1
+jobs</code></pre>
+                </div>
+              </section>
+
+              <!-- Reference -->
               <section class="lab-section" id="reference">
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">
                   Reference
@@ -517,55 +630,142 @@ MiB Swap:   2048.0 total,   2048.0 free,      0.0 used.   4970.1 avail Mem
 
                 <ul class="lab-reference-list">
                   <li>
-                    <code>ps aux</code>
-                    : Snapshot of all processes with user, CPU, memory, and full command details.
-                  </li>
-
-                  <li>
-                    <code>head -n &lt;N&gt;</code>
-                    : Prints only the first N lines of output to keep listings readable.
+                    <code>ps aux --sort=-%cpu</code>
+                    : Snapshot of all processes, sorted by CPU usage (highest
+                    first).
+                    <ul>
+                      <li>
+                        <code>a</code>
+                        : Show processes for all users with a controlling TTY.
+                      </li>
+                      <li>
+                        <code>u</code>
+                        : User-oriented format (includes
+                        <code>%CPU</code>
+                        ,
+                        <code>%MEM</code>
+                        , USER, etc.).
+                      </li>
+                      <li>
+                        <code>x</code>
+                        : Include processes without a controlling TTY (common
+                        for daemons/services).
+                      </li>
+                      <li>
+                        <code>--sort=-%cpu</code>
+                        : Sort descending by CPU percentage.
+                      </li>
+                    </ul>
                   </li>
 
                   <li>
                     <code>top</code>
-                    : Interactive, live view of system load and per-process CPU/memory usage.
+                    : Interactive, live view of system load and per-process
+                    CPU/memory usage.
+                    <ul>
+                      <li>
+                        <code>q</code>
+                        : Quit
+                        <code>top</code>
+                        .
+                      </li>
+                      <li>
+                        <code>P</code>
+                        : Sort by CPU usage.
+                      </li>
+                      <li>
+                        <code>M</code>
+                        : Sort by memory usage.
+                      </li>
+                      <li>
+                        <code>k</code>
+                        : Kill a process from within
+                        <code>top</code>
+                        (prompts for PID and signal).
+                      </li>
+                    </ul>
                   </li>
 
                   <li>
                     <code>kill &lt;PID&gt;</code>
-                    : Sends a signal to a process (defaults to SIGTERM) for controlled termination.
+                    : Sends a signal to a process (defaults to SIGTERM).
+                    <ul>
+                      <li>
+                        <code>&lt;PID&gt;</code>
+                        : Process ID to signal.
+                      </li>
+                      <li>
+                        <code>kill -TERM &lt;PID&gt;</code>
+                        : Explicit SIGTERM (graceful request).
+                      </li>
+                      <li>
+                        <code>kill -KILL &lt;PID&gt;</code>
+                        : SIGKILL (force stop, last resort).
+                      </li>
+                      <li>
+                        <code>kill -0 &lt;PID&gt;</code>
+                        : Existence/permission check (does not terminate the
+                        process).
+                      </li>
+                    </ul>
                   </li>
 
                   <li>
                     <code>jobs</code>
-                    : Lists jobs started from the current shell session.
+                    : Lists jobs in the current shell session.
+                    <ul>
+                      <li>
+                        Shows job IDs like
+                        <code>[1]</code>
+                        , state (Running/Stopped), and the command line.
+                      </li>
+                      <li>
+                        Only includes jobs started from the current shell (not
+                        system-wide processes).
+                      </li>
+                    </ul>
                   </li>
 
                   <li>
-                    <code>fg</code>
-                    : Brings a background job to the foreground (use <code>fg %&lt;job&gt;</code> to target).
+                    <code>bg %&lt;job&gt;</code>
+                    : Resumes a stopped job in the background.
+                  </li>
+
+                  <li>
+                    <code>fg %&lt;job&gt;</code>
+                    : Brings a job to the foreground.
                   </li>
 
                   <li>
                     <code>nice -n &lt;value&gt; &lt;command&gt;</code>
-                    : Starts a command with an adjusted niceness (higher value usually means lower priority).
+                    : Starts a command with adjusted niceness (higher usually
+                    means lower priority).
+                    <ul>
+                      <li>
+                        <code>-n &lt;value&gt;</code>
+                        : Niceness adjustment (common range:
+                        <code>-20</code>
+                        highest priority to
+                        <code>19</code>
+                        lowest).
+                      </li>
+                    </ul>
                   </li>
                 </ul>
               </section>
-
-              <!-- Lab Pagination -->
             </div>
             <!-- /main -->
           </div>
           <!-- /row -->
+
           <nav class="lab-pagination">
             <a
-                id="prev-lab"
-                class="lab-nav-link"
-                href="#"
-                aria-label="Previous lab"
+              id="prev-lab"
+              class="lab-nav-link"
+              href="#"
+              aria-label="Previous lab"
             >
-                &uArr;
+              &uArr;
             </a>
           </nav>
         </div>
@@ -638,5 +838,9 @@ MiB Swap:   2048.0 total,   2048.0 free,      0.0 used.   4970.1 avail Mem
 
     <!-- Lab page JS (new) -->
     <script src="../assets/js/lab.js"></script>
+
+    <script>
+      document.getElementById('year').textContent = new Date().getFullYear()
+    </script>
   </body>
 </html>
