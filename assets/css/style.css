@@ -643,6 +643,7 @@ Social links
 	margin: 0;
 }
 
+
 .socicon-round > li > a {
 	-webkit-border-radius: 2px;
 	   -moz-border-radius: 2px;
@@ -678,8 +679,8 @@ Social links
 	color: #111;
 }
 
-.social-icon-links > li > a:hover {
-	background: #f0f0f0;
+.social-text-links > li > a:hover {
+	color: #7c5cff;
 }
 
 /* ------------------------------------------------------------------
@@ -2071,6 +2072,33 @@ Reset bootstrap navigation styles for small screens
 	padding-top: 15px;
 	padding-bottom: 15px;
 }
+
+.docs-search-wrap {
+	margin: 0 0 20px 0;
+}
+
+.docs-search-wrap .help-block {
+	margin: 8px 0 0 0;
+	opacity: 0.9;
+}
+
+.docs-search-actions {
+	margin-top: 10px;
+	display: flex;
+	gap: 10px;
+	flex-wrap: wrap;
+	align-items: center;
+}
+
+.docs-pill {
+	display: inline-block;
+	padding: 4px 10px;
+	border: 1px solid rgba(0, 0, 0, 0.15);
+	border-radius: 999px;
+	font-size: 12px;
+	opacity: 0.9;
+}
+
 
 /* -------------------------------------------------------------------
 Responsive Media Querries

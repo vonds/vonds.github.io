@@ -1,0 +1,859 @@
+<!-- lab119.html -->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="exit_0 Documentation" />
+    <meta name="name" content="Vonds" />
+
+    <title>Vonds | Lab 119</title>
+
+    <!-- Favicons -->
+    <link rel="shortcut icon" href="../assets/images/favicon.png" />
+    <link rel="apple-touch-icon" href="../assets/images/apple-touch-icon.png" />
+    <link
+      rel="apple-touch-icon"
+      sizes="72x72"
+      href="../assets/images/apple-touch-icon-72x72.png"
+    />
+    <link
+      rel="apple-touch-icon"
+      sizes="114x114"
+      href="../assets/images/apple-touch-icon-114x114.png"
+    />
+
+    <!-- Site styles (your existing) -->
+    <link href="../assets/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="../assets/css/font-awesome.min.css" rel="stylesheet" />
+    <link href="../assets/css/linea-icons.css" rel="stylesheet" />
+    <link href="../assets/css/ionicons.min.css" rel="stylesheet" />
+    <link href="../assets/css/simpletextrotator.css" rel="stylesheet" />
+    <link href="../assets/css/magnific-popup.css" rel="stylesheet" />
+    <link href="../assets/css/owl.carousel.css" rel="stylesheet" />
+    <link href="../assets/css/superslides.css" rel="stylesheet" />
+    <link href="../assets/css/vertical.css" rel="stylesheet" />
+    <link href="../assets/css/animate.css" rel="stylesheet" />
+    <link href="../assets/css/style.css" rel="stylesheet" />
+    <link href="../assets/css/docs.css" rel="stylesheet" />
+
+    <!-- Lab page styles (new) -->
+    <link href="../assets/css/lab.css" rel="stylesheet" />
+
+    <!-- Fonts -->
+    <link
+      href="https://fonts.googleapis.com/css?family=Dosis"
+      rel="stylesheet"
+    />
+  </head>
+
+  <body>
+    <!-- PRELOADER -->
+    <div class="page-loader">
+      <div class="loader">Loading...</div>
+    </div>
+
+    <!-- OVERLAY MENU -->
+    <div id="overlay-menu" class="overlay-menu">
+      <a href="#" id="overlay-menu-hide" class="navigation-hide">
+        <i class="ion-close-round"></i>
+      </a>
+
+      <div class="overlay-menu-inner">
+        <nav class="overlay-menu-nav">
+          <ul id="nav">
+            <li><a href="../index.html">Home</a></li>
+
+            <li class="slidedown">
+              <a href="#">Portfolio</a>
+              <ul>
+                <li>
+                  <a
+                    href="https://github.com/vonds/exit_0"
+                    target="_blank"
+                    rel="noopener"
+                  >
+                    exit_0
+                  </a>
+                </li>
+                <li>
+                  <a href="docs.html" target="_blank" rel="noopener">
+                    exit_0
+                  </a>
+                </li>
+              </ul>
+            </li>
+
+            <li>
+              <a
+                href="https://www.linkedin.com/in/vonds/"
+                target="_blank"
+                rel="noopener"
+              >
+                LinkedIn
+              </a>
+            </li>
+            <li>
+              <a href="https://github.com/vonds" target="_blank" rel="noopener">
+                Github
+              </a>
+            </li>
+            <li>
+              <a href="mailto:vonds13@gmail.com?subject=Hello Vonds">Contact</a>
+            </li>
+          </ul>
+        </nav>
+      </div>
+
+      <div class="overlay-navigation-footer">
+        <div class="container">
+          <div class="row">
+            <div class="col-sm-12 text-center">
+              <p class="copyright font-alt m-b-0">
+                VONDS &copy;
+                <script>
+                  document.write(new Date().getFullYear())
+                </script>
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- WRAPPER -->
+    <div class="wrapper">
+      <!-- NAVIGATION -->
+      <nav
+        class="navbar navbar-custom navbar-transparent navbar-light navbar-fixed-top"
+      >
+        <div class="container">
+          <div class="navbar-header">
+            <a class="navbar-brand" href="../index.html">
+              <img src="../assets/images/logo-dark.png" width="95" alt="" />
+            </a>
+          </div>
+
+          <ul id="icons-navbar" class="nav navbar-nav navbar-right">
+            <li>
+              <a href="#" id="toggle-menu" class="show-overlay" title="Menu">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </nav>
+
+      <!-- DOCS PAGE -->
+      <section class="module">
+        <div class="container">
+          <h2 class="font-alt module-title m-t-60">Lab 119: YUM Basics</h2>
+
+          <nav class="lab-pagination">
+            <a
+              id="prev-lab"
+              class="lab-nav-link"
+              href="#"
+              aria-label="Previous lab"
+            >
+              &laquo;
+            </a>
+            <a
+              id="next-lab"
+              class="lab-nav-link"
+              href="#"
+              aria-label="Next lab"
+            >
+              &raquo;
+            </a>
+          </nav>
+
+          <div class="row">
+            <!-- LEFT SIDEBAR -->
+            <div class="col-sm-4 col-md-3 lab-sidebar">
+              <div class="docs-sidebar">
+                <div class="docs-widget">
+                  <h5 class="widget-title">
+                    <a href="./docs.html">Lab Index</a>
+                  </h5>
+                  <ul class="docs-nav">
+                    <li><a href="#scenario">Scenario</a></li>
+                    <li><a href="#walkthrough">Walkthrough</a></li>
+                    <li><a href="#reference">Reference</a></li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            <!-- MAIN CONTENT -->
+            <div class="col-sm-8 col-md-9 lab-doc">
+              <!-- 1) Title + Summary (2 sentences max) -->
+              <p class="m-b-20 lab-summary">
+                Use
+                <code>yum</code>
+                to verify repositories, discover packages, identify file
+                ownership, review transaction history, and perform safe repair
+                workflows. Practice the commands you use on real RHEL-family
+                systems when you need evidence first and changes second.
+              </p>
+
+              <section class="lab-section" id="video" aria-label="Lab video">
+                <div class="lab-video">
+                  <div class="lab-video-embed text-center">
+                    <iframe
+                      src="https://www.youtube.com/embed/REPLACE_WITH_LAB119_VIDEO"
+                      title="YouTube video player"
+                      frameborder="0"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                      referrerpolicy="strict-origin-when-cross-origin"
+                      allowfullscreen
+                    ></iframe>
+                  </div>
+                </div>
+              </section>
+
+              <!-- 2) Scenario -->
+              <section class="lab-section" id="scenario">
+                <div class="lab-chips" aria-label="Tags">
+                  <span class="lab-chip">
+                    <span class="lab-chip-key">packages</span>
+                  </span>
+                  <span class="lab-chip">
+                    <span class="lab-chip-key">troubleshooting</span>
+                  </span>
+                  <span class="lab-chip">
+                    <span class="lab-chip-key">rhel</span>
+                  </span>
+                </div>
+
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  Scenario
+                </h3>
+                <p>
+                  You are onboarding to a RHEL-like system where you must use
+                  <code>yum</code>
+                  to verify repositories, discover packages, identify which
+                  package owns a specific file, review transaction history, and
+                  perform safe package management actions. Your goal is to
+                  complete common workflows you will use when troubleshooting
+                  real servers.
+                </p>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">Operator context</div>
+                  <p class="m-b-0">
+                    Treat
+                    <code>yum</code>
+                    as an evidence tool as much as an installer. Start by
+                    confirming repos and package metadata, then make targeted
+                    changes only after you can explain what will happen and why.
+                  </p>
+                </div>
+              </section>
+
+              <!-- 3) Objective -->
+              <section class="lab-section alt-background" id="objective">
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  Objective
+                </h3>
+                <ul>
+                  <li>
+                    List enabled repositories and confirm the system’s repo set.
+                  </li>
+                  <li>
+                    List installed packages using a name/pattern match.
+                  </li>
+                  <li>
+                    Search for packages by keyword to discover candidates.
+                  </li>
+                  <li>
+                    Inspect package details using
+                    <code>yum info</code>
+                    .
+                  </li>
+                  <li>
+                    Identify which package provides a file path using
+                    <code>yum provides</code>
+                    /
+                    <code>yum whatprovides</code>
+                    .
+                  </li>
+                  <li>
+                    Check for available updates without installing them.
+                  </li>
+                  <li>
+                    Review transaction history to understand change provenance.
+                  </li>
+                  <li>
+                    Reinstall a package as a repair workflow.
+                  </li>
+                  <li>
+                    Clean metadata and re-verify repo visibility.
+                  </li>
+                </ul>
+              </section>
+
+              <!-- 4) What You'll Practice -->
+              <section class="lab-section" id="practice">
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  What You’ll Practice
+                </h3>
+
+                <ul class="m-t-10">
+                  <li>
+                    Repo verification with
+                    <code>yum repolist</code>
+                    before you trust results.
+                  </li>
+                  <li>
+                    Package discovery workflows:
+                    <code>yum list</code>
+                    ,
+                    <code>yum search</code>
+                    ,
+                    <code>yum info</code>
+                    .
+                  </li>
+                  <li>
+                    File ownership and “what package contains this binary”
+                    triage.
+                  </li>
+                  <li>
+                    Safe maintenance signals:
+                    <code>yum check-update</code>
+                    and
+                    <code>yum history</code>
+                    .
+                  </li>
+                  <li>
+                    Repair patterns:
+                    <code>yum reinstall</code>
+                    and cache cleanup.
+                  </li>
+                </ul>
+              </section>
+
+              <!-- 5) Commands Walkthrough -->
+              <section class="lab-section alt-background" id="walkthrough">
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  Walkthrough
+                </h3>
+
+                <!-- Step 1 -->
+                <div class="lab-step">
+                  <div class="lab-step-title">
+                    <strong class="font-alt">Step 1</strong>
+                    : List enabled repositories.
+                  </div>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <div class="lab-codeblock-header">
+                      <span>Command</span>
+                      <button
+                        class="lab-copy-btn"
+                        type="button"
+                        data-copy="#cmd-step-1"
+                      >
+                        Copy
+                      </button>
+                    </div>
+                    <pre><code id="cmd-step-1">yum repolist</code></pre>
+                  </div>
+
+                  <p>
+                    Repos are your supply chain. If a repo is missing, disabled,
+                    or stale, package discovery and troubleshooting results will
+                    be misleading.
+                  </p>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <pre><code id="verify-step-1">repo id                               repo name
+appstream                             Rocky Linux 9 - AppStream
+baseos                                Rocky Linux 9 - BaseOS
+extras                                Rocky Linux 9 - Extras</code></pre>
+                  </div>
+                </div>
+
+                <!-- Step 2 -->
+                <div class="lab-step">
+                  <div class="lab-step-title">
+                    <strong class="font-alt">Step 2</strong>
+                    : List installed packages matching
+                    <code>bash</code>
+                    .
+                  </div>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <div class="lab-codeblock-header">
+                      <span>Command</span>
+                      <button
+                        class="lab-copy-btn"
+                        type="button"
+                        data-copy="#cmd-step-2"
+                      >
+                        Copy
+                      </button>
+                    </div>
+                    <pre><code id="cmd-step-2">yum list installed bash</code></pre>
+                  </div>
+
+                  <p>
+                    This is a fast way to confirm whether a package is installed
+                    and which repo it was sourced from. For broader matches,
+                    use wildcards (for example
+                    <code>'*bash*'</code>
+                    ) when appropriate.
+                  </p>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <pre><code id="verify-step-2">Installed Packages
+bash.x86_64                          5.1.8-6.el9                      @baseos</code></pre>
+                  </div>
+                </div>
+
+                <!-- Step 3 -->
+                <div class="lab-step">
+                  <div class="lab-step-title">
+                    <strong class="font-alt">Step 3</strong>
+                    : Search repos for packages related to “http server”.
+                  </div>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <div class="lab-codeblock-header">
+                      <span>Command</span>
+                      <button
+                        class="lab-copy-btn"
+                        type="button"
+                        data-copy="#cmd-step-3"
+                      >
+                        Copy
+                      </button>
+                    </div>
+                    <pre><code id="cmd-step-3">yum search http server</code></pre>
+                  </div>
+
+                  <p>
+                    Use
+                    <code>yum search</code>
+                    for discovery. It matches package names and summaries,
+                    helping you identify likely candidates quickly.
+                  </p>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <pre><code id="verify-step-3">==================== Name & Summary Matched: http =====================
+httpd.x86_64 : Apache HTTP Server
+mod_ssl.x86_64 : SSL/TLS module for the Apache HTTP Server</code></pre>
+                  </div>
+                </div>
+
+                <!-- Step 4 -->
+                <div class="lab-step">
+                  <div class="lab-step-title">
+                    <strong class="font-alt">Step 4</strong>
+                    : Show detailed info about
+                    <code>httpd</code>
+                    .
+                  </div>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <div class="lab-codeblock-header">
+                      <span>Command</span>
+                      <button
+                        class="lab-copy-btn"
+                        type="button"
+                        data-copy="#cmd-step-4"
+                      >
+                        Copy
+                      </button>
+                    </div>
+                    <pre><code id="cmd-step-4">yum info httpd</code></pre>
+                  </div>
+
+                  <p>
+                    This provides package metadata (version, release, repo,
+                    summary). You typically check this before installing or
+                    troubleshooting a dependency chain.
+                  </p>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <pre><code id="verify-step-4">Available Packages
+Name        : httpd
+Version     : 2.4.57
+Release     : 8.el9
+Arch        : x86_64
+Repo        : appstream
+Summary     : Apache HTTP Server</code></pre>
+                  </div>
+                </div>
+
+                <!-- Step 5 -->
+                <div class="lab-step">
+                  <div class="lab-step-title">
+                    <strong class="font-alt">Step 5</strong>
+                    : Identify which package provides
+                    <code>/usr/bin/top</code>
+                    .
+                  </div>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <div class="lab-codeblock-header">
+                      <span>Command</span>
+                      <button
+                        class="lab-copy-btn"
+                        type="button"
+                        data-copy="#cmd-step-5"
+                      >
+                        Copy
+                      </button>
+                    </div>
+                    <pre><code id="cmd-step-5">yum provides /usr/bin/top</code></pre>
+                  </div>
+
+                  <p>
+                    This is one of the most common admin tasks: “I found a file
+                    on disk, what package owns it?” It’s how you move from a
+                    symptom (missing binary) to a repair action (reinstall the
+                    owning package).
+                  </p>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <pre><code id="verify-step-5">procps-ng-3.3.17-13.el9.x86_64 : System and process monitoring utilities
+Repo        : baseos
+Matched from:
+Filename    : /usr/bin/top</code></pre>
+                  </div>
+                </div>
+
+                <!-- Step 6 -->
+                <div class="lab-step">
+                  <div class="lab-step-title">
+                    <strong class="font-alt">Step 6</strong>
+                    : Check for available updates without installing them.
+                  </div>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <div class="lab-codeblock-header">
+                      <span>Command</span>
+                      <button
+                        class="lab-copy-btn"
+                        type="button"
+                        data-copy="#cmd-step-6"
+                      >
+                        Copy
+                      </button>
+                    </div>
+                    <pre><code id="cmd-step-6">yum check-update</code></pre>
+                  </div>
+
+                  <p>
+                    This is your non-invasive “what would change” view. In
+                    production, it’s useful for planning maintenance windows and
+                    identifying security-relevant updates.
+                  </p>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <pre><code id="verify-step-6">curl.x86_64                         7.76.1-26.el9_4                 baseos
+openssl-libs.x86_64                 3.0.7-25.el9_4                  baseos</code></pre>
+                  </div>
+                </div>
+
+                <!-- Step 7 -->
+                <div class="lab-step">
+                  <div class="lab-step-title">
+                    <strong class="font-alt">Step 7</strong>
+                    : View transaction history.
+                  </div>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <div class="lab-codeblock-header">
+                      <span>Command</span>
+                      <button
+                        class="lab-copy-btn"
+                        type="button"
+                        data-copy="#cmd-step-7"
+                      >
+                        Copy
+                      </button>
+                    </div>
+                    <pre><code id="cmd-step-7">yum history</code></pre>
+                  </div>
+
+                  <p>
+                    History answers “what changed on this host and when.” This is
+                    critical when troubleshooting regressions after updates or
+                    proving what actions were performed during an incident.
+                  </p>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <pre><code id="verify-step-7">ID     | Command line             | Date and time    | Action(s) | Altered
+12     | install vim-enhanced     | 2026-01-02 12:20 | Install   |    1
+11     | update                   | 2026-01-01 09:10 | Update    |   14</code></pre>
+                  </div>
+                </div>
+
+                <!-- Step 8 -->
+                <div class="lab-step">
+                  <div class="lab-step-title">
+                    <strong class="font-alt">Step 8</strong>
+                    : Reinstall
+                    <code>bash</code>
+                    to repair missing files.
+                  </div>
+
+                  <div class="lab-callout">
+                    <div class="lab-callout-label">Repair note</div>
+                    <p class="m-b-0">
+                      Reinstall is a safe, targeted repair when the owning
+                      package is known and you suspect file loss or corruption.
+                    </p>
+                  </div>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <div class="lab-codeblock-header">
+                      <span>Command</span>
+                      <button
+                        class="lab-copy-btn"
+                        type="button"
+                        data-copy="#cmd-step-8"
+                      >
+                        Copy
+                      </button>
+                    </div>
+                    <pre><code id="cmd-step-8">sudo yum reinstall -y bash</code></pre>
+                  </div>
+
+                  <p>
+                    This restores packaged files from the repo while respecting
+                    configuration handling rules. It’s a common workflow after a
+                    hardening script or mis-edit breaks something fundamental.
+                  </p>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <pre><code id="verify-step-8">Dependencies resolved.
+Reinstalling:
+  bash.x86_64  5.1.8-6.el9  baseos
+Complete!</code></pre>
+                  </div>
+                </div>
+
+                <!-- Step 9 -->
+                <div class="lab-step">
+                  <div class="lab-step-title">
+                    <strong class="font-alt">Step 9</strong>
+                    : Clean cached metadata.
+                  </div>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <div class="lab-codeblock-header">
+                      <span>Command</span>
+                      <button
+                        class="lab-copy-btn"
+                        type="button"
+                        data-copy="#cmd-step-9"
+                      >
+                        Copy
+                      </button>
+                    </div>
+                    <pre><code id="cmd-step-9">yum clean metadata</code></pre>
+                  </div>
+
+                  <p>
+                    Cache cleanup is useful when repo metadata is stale or you
+                    suspect corrupted caches. It forces a fresh metadata fetch on
+                    the next operation.
+                  </p>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <pre><code id="verify-step-9">0 files removed</code></pre>
+                  </div>
+                </div>
+
+                <!-- Step 10 -->
+                <div class="lab-step">
+                  <div class="lab-step-title">
+                    <strong class="font-alt">Step 10</strong>
+                    : Confirm enabled repos again.
+                  </div>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <div class="lab-codeblock-header">
+                      <span>Command</span>
+                      <button
+                        class="lab-copy-btn"
+                        type="button"
+                        data-copy="#cmd-step-10"
+                      >
+                        Copy
+                      </button>
+                    </div>
+                    <pre><code id="cmd-step-10">yum repolist</code></pre>
+                  </div>
+
+                  <p>
+                    This is a simple verification step to confirm your repo view
+                    is still sane after cleanup and package operations.
+                  </p>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <pre><code id="verify-step-10">repo id                               repo name
+appstream                             Rocky Linux 9 - AppStream
+baseos                                Rocky Linux 9 - BaseOS
+extras                                Rocky Linux 9 - Extras</code></pre>
+                  </div>
+                </div>
+              </section>
+
+              <!-- 8) Reference -->
+              <section class="lab-section" id="reference">
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  Reference
+                </h3>
+
+                <ul class="lab-reference-list">
+                  <li>
+                    <code>yum repolist</code>
+                    : Lists enabled repositories.
+                    <ul>
+                      <li>
+                        Use
+                        <code>yum repolist enabled</code>
+                        to explicitly scope to enabled repos.
+                      </li>
+                    </ul>
+                  </li>
+
+                  <li>
+                    <code>yum list installed &lt;name&gt;</code>
+                    : Shows installed packages matching the name/pattern.
+                  </li>
+
+                  <li>
+                    <code>yum search &lt;terms&gt;</code>
+                    : Searches package names and summaries for keywords.
+                  </li>
+
+                  <li>
+                    <code>yum info &lt;pkg&gt;</code>
+                    : Displays package metadata (version, release, repo, summary).
+                  </li>
+
+                  <li>
+                    <code>yum provides &lt;path&gt;</code>
+                    /
+                    <code>yum whatprovides &lt;path&gt;</code>
+                    : Finds which package provides a specific file path.
+                  </li>
+
+                  <li>
+                    <code>yum check-update</code>
+                    : Lists available package updates without installing them.
+                  </li>
+
+                  <li>
+                    <code>yum history</code>
+                    : Shows transaction history and change provenance.
+                  </li>
+
+                  <li>
+                    <code>yum reinstall &lt;pkg&gt;</code>
+                    : Reinstalls a package to restore packaged files.
+                  </li>
+
+                  <li>
+                    <code>yum clean metadata</code>
+                    /
+                    <code>yum clean all</code>
+                    : Removes cached metadata (and optionally packages) to force
+                    fresh repo data.
+                  </li>
+                </ul>
+              </section>
+            </div>
+            <!-- /main -->
+          </div>
+          <!-- /row -->
+
+          <nav class="lab-pagination">
+            <a
+              id="prev-lab"
+              class="lab-nav-link"
+              href="#"
+              aria-label="Previous lab"
+            >
+              &uArr;
+            </a>
+          </nav>
+        </div>
+        <!-- /container -->
+      </section>
+
+      <!-- FOOTER -->
+      <footer class="module bg-light">
+        <div class="container">
+          <div class="row">
+            <div class="col-sm-12">
+              <ul class="social-text-links font-alt text-center m-b-20">
+                <li>
+                  <a
+                    href="https://github.com/vonds"
+                    target="_blank"
+                    rel="noopener"
+                  >
+                    Github
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="https://www.linkedin.com/in/vonds/"
+                    target="_blank"
+                    rel="noopener"
+                  >
+                    Linkedin
+                  </a>
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-sm-12">
+              <p class="copyright text-center m-b-0">
+                VONDS &copy;
+                <span id="year"></span>
+              </p>
+
+              <div class="scroll-up">
+                <a href="#totop"><i class="fa fa-angle-double-up"></i></a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <!-- Javascript files (your existing) -->
+    <script src="../assets/js/jquery-2.2.4.min.js"></script>
+    <script src="../assets/bootstrap/js/bootstrap.min.js"></script>
+    <script src="../assets/js/jquery.superslides.min.js"></script>
+    <script src="../assets/js/jquery.mb.YTPlayer.min.js"></script>
+    <script src="../assets/js/jquery.magnific-popup.min.js"></script>
+    <script src="../assets/js/owl.carousel.min.js"></script>
+    <script src="../assets/js/jquery.simple-text-rotator.min.js"></script>
+    <script src="../assets/js/imagesloaded.pkgd.js"></script>
+    <script src="../assets/js/isotope.pkgd.min.js"></script>
+    <script src="../assets/js/packery-mode.pkgd.min.js"></script>
+    <script src="../assets/js/appear.js"></script>
+    <script src="../assets/js/jquery.easing.1.3.js"></script>
+    <script src="../assets/js/wow.min.js"></script>
+    <script src="../assets/js/jqBootstrapValidation.js"></script>
+    <script src="../assets/js/jquery.fitvids.js"></script>
+    <script src="../assets/js/jquery.parallax-1.1.3.js"></script>
+    <script src="../assets/js/smoothscroll.js"></script>
+    <script src="../assets/js/custom.js"></script>
+
+    <!-- Lab page JS (new) -->
+    <script src="../assets/js/lab.js"></script>
+  </body>
+</html>

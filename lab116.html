@@ -1,0 +1,900 @@
+<!-- lab116.html -->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="exit_0 Documentation" />
+    <meta name="name" content="Vonds" />
+
+    <title>Vonds | Lab 116</title>
+
+    <!-- Favicons -->
+    <link rel="shortcut icon" href="../assets/images/favicon.png" />
+    <link rel="apple-touch-icon" href="../assets/images/apple-touch-icon.png" />
+    <link
+      rel="apple-touch-icon"
+      sizes="72x72"
+      href="../assets/images/apple-touch-icon-72x72.png"
+    />
+    <link
+      rel="apple-touch-icon"
+      sizes="114x114"
+      href="../assets/images/apple-touch-icon-114x114.png"
+    />
+
+    <!-- Site styles (your existing) -->
+    <link href="../assets/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="../assets/css/font-awesome.min.css" rel="stylesheet" />
+    <link href="../assets/css/linea-icons.css" rel="stylesheet" />
+    <link href="../assets/css/ionicons.min.css" rel="stylesheet" />
+    <link href="../assets/css/simpletextrotator.css" rel="stylesheet" />
+    <link href="../assets/css/magnific-popup.css" rel="stylesheet" />
+    <link href="../assets/css/owl.carousel.css" rel="stylesheet" />
+    <link href="../assets/css/superslides.css" rel="stylesheet" />
+    <link href="../assets/css/vertical.css" rel="stylesheet" />
+    <link href="../assets/css/animate.css" rel="stylesheet" />
+    <link href="../assets/css/style.css" rel="stylesheet" />
+    <link href="../assets/css/docs.css" rel="stylesheet" />
+    <link href="../assets/css/lab.css" rel="stylesheet" />
+
+    <!-- Fonts -->
+    <link
+      href="https://fonts.googleapis.com/css?family=Dosis"
+      rel="stylesheet"
+    />
+  </head>
+
+  <body>
+    <!-- PRELOADER -->
+    <div class="page-loader">
+      <div class="loader">Loading...</div>
+    </div>
+
+    <!-- OVERLAY MENU -->
+    <div id="overlay-menu" class="overlay-menu">
+      <a href="#" id="overlay-menu-hide" class="navigation-hide">
+        <i class="ion-close-round"></i>
+      </a>
+
+      <div class="overlay-menu-inner">
+        <nav class="overlay-menu-nav">
+          <ul id="nav">
+            <li><a href="../index.html">Home</a></li>
+
+            <li class="slidedown">
+              <a href="#">Portfolio</a>
+              <ul>
+                <li>
+                  <a
+                    href="https://github.com/vonds/exit_0"
+                    target="_blank"
+                    rel="noopener"
+                  >
+                    exit_0
+                  </a>
+                </li>
+                <li>
+                  <a href="docs.html" target="_blank" rel="noopener">
+                    exit_0
+                  </a>
+                </li>
+              </ul>
+            </li>
+            
+            <li>
+              <a
+                href="https://www.linkedin.com/in/vonds/"
+                target="_blank"
+                rel="noopener"
+              >
+                LinkedIn
+              </a>
+            </li>
+            <li>
+              <a href="https://github.com/vonds" target="_blank" rel="noopener">
+                Github
+              </a>
+            </li>
+            <li>
+              <a href="mailto:vonds13@gmail.com?subject=Hello Vonds">Contact</a>
+            </li>
+          </ul>
+        </nav>
+      </div>
+
+      <div class="overlay-navigation-footer">
+        <div class="container">
+          <div class="row">
+            <div class="col-sm-12 text-center">
+              <p class="copyright font-alt m-b-0">
+                VONDS &copy;
+                <script>
+                  document.write(new Date().getFullYear())
+                </script>
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- WRAPPER -->
+    <div class="wrapper">
+      <!-- NAVIGATION -->
+      <nav
+        class="navbar navbar-custom navbar-transparent navbar-light navbar-fixed-top"
+      >
+        <div class="container">
+          <div class="navbar-header">
+            <a class="navbar-brand" href="../index.html">
+              <img src="../assets/images/logo-dark.png" width="95" alt="" />
+            </a>
+          </div>
+
+          <ul id="icons-navbar" class="nav navbar-nav navbar-right">
+            <li>
+              <a href="#" id="toggle-menu" class="show-overlay" title="Menu">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </nav>
+
+      <!-- DOCS PAGE -->
+      <section class="module">
+        <div class="container">
+          <h2 class="font-alt module-title m-t-60">
+            Lab 116: Identify Mass Storage Types
+          </h2>
+
+          <nav class="lab-pagination">
+            <a
+              id="prev-lab"
+              class="lab-nav-link"
+              href="#"
+              aria-label="Previous lab"
+            >
+              &laquo;
+            </a>
+            <a
+              id="next-lab"
+              class="lab-nav-link"
+              href="#"
+              aria-label="Next lab"
+            >
+              &raquo;
+            </a>
+          </nav>
+
+          <div class="row">
+            <!-- LEFT SIDEBAR -->
+            <div class="col-sm-4 col-md-3 lab-sidebar">
+              <div class="docs-sidebar">
+                <div class="docs-widget">
+                  <h5 class="widget-title">
+                    <a href="./docs.html">Lab Index</a>
+                  </h5>
+                  <ul class="docs-nav">
+                    <li><a href="#scenario">Scenario</a></li>
+                    <li><a href="#walkthrough">Walkthrough</a></li>
+                    <li><a href="#reference">Reference</a></li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            <!-- MAIN CONTENT -->
+            <div class="col-sm-8 col-md-9 lab-doc">
+              <!-- 1) Title + Summary (2 sentences max) -->
+              <p class="m-b-20 lab-summary">
+                Identify disks by transport (SATA/SCSI/NVMe/USB), confirm whether
+                they are rotational or SSD, and correlate device identity across
+                <code>lsblk</code>
+                ,
+                <code>/sys</code>
+                , and udev properties. Validate scheduler selection, map
+                partitions to their parent disk, and resolve physical device
+                paths for troubleshooting and inventory work.
+              </p>
+
+              <section class="lab-section" id="video" aria-label="Lab video">
+                <div class="lab-video">
+                  <div class="lab-video-embed text-center">
+                    <iframe
+                      src="https://www.youtube.com/embed/REPLACE_WITH_LAB116_VIDEO"
+                      title="YouTube video player"
+                      frameborder="0"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                      referrerpolicy="strict-origin-when-cross-origin"
+                      allowfullscreen
+                    ></iframe>
+                  </div>
+                </div>
+              </section>
+
+              <!-- 2) Scenario -->
+              <section class="lab-section" id="scenario">
+                <div class="lab-chips" aria-label="Tags">
+                  <span class="lab-chip">
+                    <span class="lab-chip-key">inventory</span>
+                  </span>
+                  <span class="lab-chip">
+                    <span class="lab-chip-key">storage</span>
+                  </span>
+                  <span class="lab-chip">
+                    <span class="lab-chip-key">core</span>
+                  </span>
+                </div>
+
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  Scenario
+                </h3>
+                <p>
+                  You inherit a host with mixed storage: a SATA disk for the OS,
+                  an NVMe device for high-performance data, and occasional USB
+                  storage for transfers. Before you tune performance or
+                  troubleshoot I/O issues, you need to confidently identify what
+                  each device is, how it is connected, whether it is rotational,
+                  what scheduler is in use, and how to trace devices back to
+                  their underlying bus paths.
+                </p>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">Operator context</div>
+                  <p class="m-b-0">
+                    Treat storage identification as evidence gathering. You
+                    correlate the same device using multiple sources of truth:
+                    <code>lsblk</code>
+                    (inventory view),
+                    <code>/sys</code>
+                    (kernel state), and udev (device metadata).
+                  </p>
+                </div>
+              </section>
+
+              <!-- 3) Objective -->
+              <section class="lab-section alt-background" id="objective">
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  Objective
+                </h3>
+                <ul>
+                  <li>
+                    List block devices with transport/model hints using
+                    <code>lsblk</code>
+                    .
+                  </li>
+                  <li>
+                    Determine rotational vs SSD status from sysfs.
+                  </li>
+                  <li>
+                    Verify transport signals via udev properties.
+                  </li>
+                  <li>
+                    Confirm vendor/model using sysfs device attributes.
+                  </li>
+                  <li>
+                    Inspect the active I/O scheduler for a disk.
+                  </li>
+                  <li>
+                    Map a partition back to its parent disk via sysfs.
+                  </li>
+                  <li>
+                    Read USB vendor/product IDs from sysfs.
+                  </li>
+                  <li>
+                    Resolve an NVMe device’s physical path (PCI association).
+                  </li>
+                  <li>
+                    Cross-check transport and filesystem/mount data with
+                    <code>lsblk</code>
+                    .
+                  </li>
+                </ul>
+              </section>
+
+              <!-- 4) What You'll Practice -->
+              <section class="lab-section" id="practice">
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  What You’ll Practice
+                </h3>
+
+                <ul class="m-t-10">
+                  <li>
+                    Reading transport identifiers (
+                    <code>TRAN</code>
+                    ) and rotation flags (
+                    <code>ROTA</code>
+                    ) in
+                    <code>lsblk</code>
+                    .
+                  </li>
+                  <li>
+                    Using sysfs as the kernel’s live hardware source of truth (
+                    <code>/sys/block/*</code>
+                    ,
+                    <code>/sys/class/block</code>
+                    ).
+                  </li>
+                  <li>
+                    Extracting device metadata from udev (
+                    <code>udevadm info</code>
+                    ).
+                  </li>
+                  <li>
+                    Understanding how partitions relate to parent disks.
+                  </li>
+                  <li>
+                    Inspecting scheduler selection to reason about I/O behavior.
+                  </li>
+                  <li>
+                    Tracing USB and NVMe devices back to their bus paths.
+                  </li>
+                </ul>
+              </section>
+
+              <!-- 5) Commands Walkthrough -->
+              <section class="lab-section alt-background" id="walkthrough">
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  Walkthrough
+                </h3>
+
+                <!-- Step 1 -->
+                <div class="lab-step">
+                  <div class="lab-step-title">
+                    <strong class="font-alt">Step 1</strong>
+                    : Show block devices with transport and model hints.
+                  </div>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <div class="lab-codeblock-header">
+                      <span>Command</span>
+                      <button
+                        class="lab-copy-btn"
+                        type="button"
+                        data-copy="#cmd-step-1"
+                      >
+                        Copy
+                      </button>
+                    </div>
+                    <pre><code id="cmd-step-1">lsblk -o NAME,TYPE,ROTA,TRAN,SIZE,MODEL | grep -E '^sd|^nvme|^vd|^sr'</code></pre>
+                  </div>
+
+                  <p>
+                    This is the quick inventory view. The
+                    <code>TRAN</code>
+                    column gives transport hints (for example,
+                    <code>sata</code>
+                    or
+                    <code>nvme</code>
+                    ) and
+                    <code>ROTA</code>
+                    helps separate rotational disks from SSD-backed devices.
+                  </p>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <pre><code id="verify-step-1">NAME   TYPE ROTA TRAN   SIZE MODEL
+sda    disk    1 sata    40G Generic_Disk
+├─sda1 part    1 sata   512M
+└─sda2 part    1 sata  39.5G
+nvme0n1 disk   0 nvme   512G NVMe_SSD_512
+sr0    rom     1 sata     1G QEMU_DVD-ROM</code></pre>
+                  </div>
+                </div>
+
+                <!-- Step 2 -->
+                <div class="lab-step">
+                  <div class="lab-step-title">
+                    <strong class="font-alt">Step 2</strong>
+                    : Check whether
+                    <code>sda</code>
+                    is rotational via sysfs.
+                  </div>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <div class="lab-codeblock-header">
+                      <span>Command</span>
+                      <button
+                        class="lab-copy-btn"
+                        type="button"
+                        data-copy="#cmd-step-2"
+                      >
+                        Copy
+                      </button>
+                    </div>
+                    <pre><code id="cmd-step-2">cat /sys/block/sda/queue/rotational</code></pre>
+                  </div>
+
+                  <p>
+                    sysfs provides the kernel’s view of device characteristics.
+                    A value of
+                    <code>1</code>
+                    indicates a rotational device; a value of
+                    <code>0</code>
+                    indicates non-rotational (typical SSD/NVMe).
+                  </p>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <pre><code id="verify-step-2">1</code></pre>
+                  </div>
+                </div>
+
+                <!-- Step 3 -->
+                <div class="lab-step">
+                  <div class="lab-step-title">
+                    <strong class="font-alt">Step 3</strong>
+                    : Check whether
+                    <code>nvme0n1</code>
+                    is rotational.
+                  </div>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <div class="lab-codeblock-header">
+                      <span>Command</span>
+                      <button
+                        class="lab-copy-btn"
+                        type="button"
+                        data-copy="#cmd-step-3"
+                      >
+                        Copy
+                      </button>
+                    </div>
+                    <pre><code id="cmd-step-3">cat /sys/block/nvme0n1/queue/rotational</code></pre>
+                  </div>
+
+                  <p>
+                    NVMe devices are typically non-rotational and should report
+                    <code>0</code>
+                    here. If you see
+                    <code>1</code>
+                    unexpectedly, double-check device naming and paths.
+                  </p>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <pre><code id="verify-step-3">0</code></pre>
+                  </div>
+                </div>
+
+                <!-- Step 4 -->
+                <div class="lab-step">
+                  <div class="lab-step-title">
+                    <strong class="font-alt">Step 4</strong>
+                    : Verify transport signals for
+                    <code>sda</code>
+                    via udev properties.
+                  </div>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <div class="lab-codeblock-header">
+                      <span>Command</span>
+                      <button
+                        class="lab-copy-btn"
+                        type="button"
+                        data-copy="#cmd-step-4"
+                      >
+                        Copy
+                      </button>
+                    </div>
+                    <pre><code id="cmd-step-4">udevadm info --query=property --name=/dev/sda | egrep '^(ID_BUS|ID_ATA|ID_SCSI)'</code></pre>
+                  </div>
+
+                  <p>
+                    udev properties help you confirm how the device was
+                    classified by the system. This is useful when
+                    <code>lsblk</code>
+                    output differs from expectation or when you need additional
+                    evidence for a hardware audit.
+                  </p>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <pre><code id="verify-step-4">ID_BUS=ata
+ID_ATA=1
+ID_SCSI=1</code></pre>
+                  </div>
+                </div>
+
+                <!-- Step 5 -->
+                <div class="lab-step">
+                  <div class="lab-step-title">
+                    <strong class="font-alt">Step 5</strong>
+                    : Show vendor and model for
+                    <code>sda</code>
+                    via sysfs.
+                  </div>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <div class="lab-codeblock-header">
+                      <span>Command</span>
+                      <button
+                        class="lab-copy-btn"
+                        type="button"
+                        data-copy="#cmd-step-5a"
+                      >
+                        Copy
+                      </button>
+                    </div>
+                    <pre><code id="cmd-step-5a">cat /sys/block/sda/device/vendor</code></pre>
+                  </div>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <div class="lab-codeblock-header">
+                      <span>Command</span>
+                      <button
+                        class="lab-copy-btn"
+                        type="button"
+                        data-copy="#cmd-step-5b"
+                      >
+                        Copy
+                      </button>
+                    </div>
+                    <pre><code id="cmd-step-5b">cat /sys/block/sda/device/model</code></pre>
+                  </div>
+
+                  <p>
+                    These attributes come from the kernel device model and are
+                    helpful when identifying disks in a fleet (especially when
+                    serial numbers are tracked elsewhere).
+                  </p>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <pre><code id="verify-step-5"># vendor
+ATA
+
+# model
+Generic_Disk</code></pre>
+                  </div>
+                </div>
+
+                <!-- Step 6 -->
+                <div class="lab-step">
+                  <div class="lab-step-title">
+                    <strong class="font-alt">Step 6</strong>
+                    : Show the active I/O scheduler for
+                    <code>sda</code>
+                    .
+                  </div>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <div class="lab-codeblock-header">
+                      <span>Command</span>
+                      <button
+                        class="lab-copy-btn"
+                        type="button"
+                        data-copy="#cmd-step-6"
+                      >
+                        Copy
+                      </button>
+                    </div>
+                    <pre><code id="cmd-step-6">cat /sys/block/sda/queue/scheduler</code></pre>
+                  </div>
+
+                  <p>
+                    The selected scheduler appears in brackets. Scheduler choice
+                    impacts latency and throughput behavior and is often tuned
+                    differently for rotational disks versus SSD/NVMe devices.
+                  </p>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <pre><code id="verify-step-6">mq-deadline kyber [bfq] none
+(Selected scheduler appears in brackets; your system may differ.)</code></pre>
+                  </div>
+                </div>
+
+                <!-- Step 7 -->
+                <div class="lab-step">
+                  <div class="lab-step-title">
+                    <strong class="font-alt">Step 7</strong>
+                    : Resolve
+                    <code>sda2</code>
+                    ’s parent disk using sysfs.
+                  </div>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <div class="lab-codeblock-header">
+                      <span>Command</span>
+                      <button
+                        class="lab-copy-btn"
+                        type="button"
+                        data-copy="#cmd-step-7"
+                      >
+                        Copy
+                      </button>
+                    </div>
+                    <pre><code id="cmd-step-7">readlink -f /sys/class/block/sda2/.. | xargs basename</code></pre>
+                  </div>
+
+                  <p>
+                    Partitions are represented as child devices beneath their
+                    parent disk. This technique is useful when you start with a
+                    partition name and need to identify the underlying disk.
+                  </p>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <pre><code id="verify-step-7">sda</code></pre>
+                  </div>
+                </div>
+
+                <!-- Step 8 -->
+                <div class="lab-step">
+                  <div class="lab-step-title">
+                    <strong class="font-alt">Step 8</strong>
+                    : Print a USB device’s vendor and product IDs from sysfs.
+                  </div>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <div class="lab-codeblock-header">
+                      <span>Command</span>
+                      <button
+                        class="lab-copy-btn"
+                        type="button"
+                        data-copy="#cmd-step-8a"
+                      >
+                        Copy
+                      </button>
+                    </div>
+                    <pre><code id="cmd-step-8a">cat /sys/bus/usb/devices/1-1/idVendor</code></pre>
+                  </div>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <div class="lab-codeblock-header">
+                      <span>Command</span>
+                      <button
+                        class="lab-copy-btn"
+                        type="button"
+                        data-copy="#cmd-step-8b"
+                      >
+                        Copy
+                      </button>
+                    </div>
+                    <pre><code id="cmd-step-8b">cat /sys/bus/usb/devices/1-1/idProduct</code></pre>
+                  </div>
+
+                  <p>
+                    USB mass storage often shows up as
+                    <code>/dev/sdX</code>
+                    , so correlating vendor/product IDs helps you confirm you
+                    are targeting the correct removable device.
+                  </p>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <pre><code id="verify-step-8"># idVendor
+058f
+
+# idProduct
+6387</code></pre>
+                  </div>
+                </div>
+
+                <!-- Step 9 -->
+                <div class="lab-step">
+                  <div class="lab-step-title">
+                    <strong class="font-alt">Step 9</strong>
+                    : Resolve the physical device path for
+                    <code>nvme0n1</code>
+                    .
+                  </div>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <div class="lab-codeblock-header">
+                      <span>Command</span>
+                      <button
+                        class="lab-copy-btn"
+                        type="button"
+                        data-copy="#cmd-step-9"
+                      >
+                        Copy
+                      </button>
+                    </div>
+                    <pre><code id="cmd-step-9">readlink -f /sys/block/nvme0n1/device</code></pre>
+                  </div>
+
+                  <p>
+                    This ties the NVMe namespace to the underlying controller
+                    path. It is a practical way to link an NVMe block device
+                    back to a PCI address when you need to match it to hardware
+                    inventory or troubleshoot bus-level issues.
+                  </p>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <pre><code id="verify-step-9">/sys/devices/pci0000:00/0000:00:04.0/0000:01:00.0/nvme/nvme0</code></pre>
+                  </div>
+                </div>
+
+                <!-- Step 10 -->
+                <div class="lab-step">
+                  <div class="lab-step-title">
+                    <strong class="font-alt">Step 10</strong>
+                    : Cross-check transport, filesystem type, and mountpoints.
+                  </div>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <div class="lab-codeblock-header">
+                      <span>Command</span>
+                      <button
+                        class="lab-copy-btn"
+                        type="button"
+                        data-copy="#cmd-step-10"
+                      >
+                        Copy
+                      </button>
+                    </div>
+                    <pre><code id="cmd-step-10">lsblk -o NAME,TYPE,TRAN,FSTYPE,MOUNTPOINTS</code></pre>
+                  </div>
+
+                  <p>
+                    This is a final sanity check: which devices exist, how they
+                    are connected, what filesystems they host, and where they are
+                    mounted. It helps prevent mistakes before changes like
+                    formatting, partitioning, or performance tuning.
+                  </p>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <pre><code id="verify-step-10">NAME        TYPE TRAN FSTYPE MOUNTPOINTS
+sda         disk sata
+├─sda1      part sata ext4   /boot
+└─sda2      part sata ext4   /
+nvme0n1     disk nvme
+└─nvme0n1p1 part nvme ext4   /data</code></pre>
+                  </div>
+                </div>
+              </section>
+
+              <!-- 8) Reference -->
+              <section class="lab-section" id="reference">
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  Reference
+                </h3>
+
+                <ul class="lab-reference-list">
+                  <li>
+                    <code>lsblk -o NAME,TYPE,ROTA,TRAN,SIZE,MODEL</code>
+                    : Inventory view including rotation flag and transport hint.
+                  </li>
+
+                  <li>
+                    <code>/sys/block/&lt;dev&gt;/queue/rotational</code>
+                    : Kernel view of whether a device is rotational (
+                    <code>1</code>
+                    ) or non-rotational (
+                    <code>0</code>
+                    ).
+                  </li>
+
+                  <li>
+                    <code>udevadm info --query=property --name=/dev/&lt;dev&gt;</code>
+                    : Shows udev-classified properties such as
+                    <code>ID_BUS</code>
+                    ,
+                    <code>ID_ATA</code>
+                    , and
+                    <code>ID_SCSI</code>
+                    .
+                  </li>
+
+                  <li>
+                    <code>/sys/block/&lt;dev&gt;/device/vendor</code>
+                    and
+                    <code>/sys/block/&lt;dev&gt;/device/model</code>
+                    : Vendor/model attributes for block devices.
+                  </li>
+
+                  <li>
+                    <code>/sys/block/&lt;dev&gt;/queue/scheduler</code>
+                    : Shows available I/O schedulers and the currently selected
+                    one (in brackets).
+                  </li>
+
+                  <li>
+                    <code>/sys/class/block/&lt;partition&gt;/..</code>
+                    : Path to a partition’s parent disk in sysfs.
+                  </li>
+
+                  <li>
+                    <code>/sys/bus/usb/devices/&lt;bus-port&gt;/idVendor</code>
+                    and
+                    <code>idProduct</code>
+                    : USB vendor/product identifiers for a device.
+                  </li>
+
+                  <li>
+                    <code>readlink -f /sys/block/&lt;dev&gt;/device</code>
+                    : Resolves the physical device path (useful for NVMe and PCI
+                    correlation).
+                  </li>
+
+                  <li>
+                    <code>lsblk -o NAME,TYPE,TRAN,FSTYPE,MOUNTPOINTS</code>
+                    : Cross-check transport and filesystem/mountpoint mapping.
+                  </li>
+                </ul>
+              </section>
+            </div>
+            <!-- /main -->
+          </div>
+          <!-- /row -->
+
+          <nav class="lab-pagination">
+            <a
+              id="prev-lab"
+              class="lab-nav-link"
+              href="#"
+              aria-label="Previous lab"
+            >
+              &uArr;
+            </a>
+          </nav>
+        </div>
+        <!-- /container -->
+      </section>
+
+      <!-- FOOTER -->
+      <footer class="module bg-light">
+        <div class="container">
+          <div class="row">
+            <div class="col-sm-12">
+              <ul class="social-text-links font-alt text-center m-b-20">
+                <li>
+                  <a
+                    href="https://github.com/vonds"
+                    target="_blank"
+                    rel="noopener"
+                  >
+                    Github
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="https://www.linkedin.com/in/vonds/"
+                    target="_blank"
+                    rel="noopener"
+                  >
+                    Linkedin
+                  </a>
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-sm-12">
+              <p class="copyright text-center m-b-0">
+                VONDS &copy;
+                <span id="year"></span>
+              </p>
+
+              <div class="scroll-up">
+                <a href="#totop"><i class="fa fa-angle-double-up"></i></a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <!-- Javascript files (your existing) -->
+    <script src="../assets/js/jquery-2.2.4.min.js"></script>
+    <script src="../assets/bootstrap/js/bootstrap.min.js"></script>
+    <script src="../assets/js/jquery.superslides.min.js"></script>
+    <script src="../assets/js/jquery.mb.YTPlayer.min.js"></script>
+    <script src="../assets/js/jquery.magnific-popup.min.js"></script>
+    <script src="../assets/js/owl.carousel.min.js"></script>
+    <script src="../assets/js/jquery.simple-text-rotator.min.js"></script>
+    <script src="../assets/js/imagesloaded.pkgd.js"></script>
+    <script src="../assets/js/isotope.pkgd.min.js"></script>
+    <script src="../assets/js/packery-mode.pkgd.min.js"></script>
+    <script src="../assets/js/appear.js"></script>
+    <script src="../assets/js/jquery.easing.1.3.js"></script>
+    <script src="../assets/js/wow.min.js"></script>
+    <script src="../assets/js/jqBootstrapValidation.js"></script>
+    <script src="../assets/js/jquery.fitvids.js"></script>
+    <script src="../assets/js/jquery.parallax-1.1.3.js"></script>
+    <script src="../assets/js/smoothscroll.js"></script>
+    <script src="../assets/js/custom.js"></script>
+
+    <!-- Lab page JS (new) -->
+    <script src="../assets/js/lab.js"></script>
+  </body>
+</html>

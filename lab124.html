@@ -1,0 +1,672 @@
+<!-- lab124.html -->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="exit_0 Documentation" />
+    <meta name="name" content="Vonds" />
+
+    <title>Vonds | Lab 124</title>
+
+    <!-- Favicons -->
+    <link rel="shortcut icon" href="../assets/images/favicon.png" />
+    <link rel="apple-touch-icon" href="../assets/images/apple-touch-icon.png" />
+    <link
+      rel="apple-touch-icon"
+      sizes="72x72"
+      href="../assets/images/apple-touch-icon-72x72.png"
+    />
+    <link
+      rel="apple-touch-icon"
+      sizes="114x114"
+      href="../assets/images/apple-touch-icon-114x114.png"
+    />
+
+    <!-- Site styles (your existing) -->
+    <link href="../assets/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="../assets/css/font-awesome.min.css" rel="stylesheet" />
+    <link href="../assets/css/linea-icons.css" rel="stylesheet" />
+    <link href="../assets/css/ionicons.min.css" rel="stylesheet" />
+    <link href="../assets/css/simpletextrotator.css" rel="stylesheet" />
+    <link href="../assets/css/magnific-popup.css" rel="stylesheet" />
+    <link href="../assets/css/owl.carousel.css" rel="stylesheet" />
+    <link href="../assets/css/superslides.css" rel="stylesheet" />
+    <link href="../assets/css/vertical.css" rel="stylesheet" />
+    <link href="../assets/css/animate.css" rel="stylesheet" />
+    <link href="../assets/css/style.css" rel="stylesheet" />
+    <link href="../assets/css/docs.css" rel="stylesheet" />
+
+    <!-- Lab page styles -->
+    <link href="../assets/css/lab.css" rel="stylesheet" />
+
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css?family=Dosis" rel="stylesheet" />
+  </head>
+
+  <body>
+    <!-- PRELOADER -->
+    <div class="page-loader">
+      <div class="loader">Loading...</div>
+    </div>
+
+    <!-- OVERLAY MENU -->
+    <div id="overlay-menu" class="overlay-menu">
+      <a href="#" id="overlay-menu-hide" class="navigation-hide">
+        <i class="ion-close-round"></i>
+      </a>
+
+      <div class="overlay-menu-inner">
+        <nav class="overlay-menu-nav">
+          <ul id="nav">
+            <li><a href="../index.html">Home</a></li>
+
+            <li class="slidedown">
+              <a href="#">Portfolio</a>
+              <ul>
+                <li>
+                  <a href="https://github.com/vonds/exit_0" target="_blank" rel="noopener">
+                    exit_0
+                  </a>
+                </li>
+                <li>
+                  <a href="docs.html" target="_blank" rel="noopener">
+                    exit_0
+                  </a>
+                </li>
+              </ul>
+            </li>
+
+            <li>
+              <a href="https://www.linkedin.com/in/vonds/" target="_blank" rel="noopener">
+                LinkedIn
+              </a>
+            </li>
+            <li>
+              <a href="https://github.com/vonds" target="_blank" rel="noopener">
+                Github
+              </a>
+            </li>
+            <li>
+              <a href="mailto:vonds13@gmail.com?subject=Hello Vonds">Contact</a>
+            </li>
+          </ul>
+        </nav>
+      </div>
+
+      <div class="overlay-navigation-footer">
+        <div class="container">
+          <div class="row">
+            <div class="col-sm-12 text-center">
+              <p class="copyright font-alt m-b-0">
+                VONDS &copy;
+                <script>
+                  document.write(new Date().getFullYear())
+                </script>
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- WRAPPER -->
+    <div class="wrapper">
+      <!-- NAVIGATION -->
+      <nav class="navbar navbar-custom navbar-transparent navbar-light navbar-fixed-top">
+        <div class="container">
+          <div class="navbar-header">
+            <a class="navbar-brand" href="../index.html">
+              <img src="../assets/images/logo-dark.png" width="95" alt="" />
+            </a>
+          </div>
+
+          <ul id="icons-navbar" class="nav navbar-nav navbar-right">
+            <li>
+              <a href="#" id="toggle-menu" class="show-overlay" title="Menu">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </nav>
+
+      <!-- DOCS PAGE -->
+      <section class="module">
+        <div class="container">
+          <h2 class="font-alt module-title m-t-60">
+            Lab 124: Create and Delete GPT Partitions with parted
+          </h2>
+
+          <nav class="lab-pagination">
+            <a id="prev-lab" class="lab-nav-link" href="#" aria-label="Previous lab">
+              &laquo;
+            </a>
+            <a id="next-lab" class="lab-nav-link" href="#" aria-label="Next lab">
+              &raquo;
+            </a>
+          </nav>
+
+          <div class="row">
+            <!-- LEFT SIDEBAR -->
+            <div class="col-sm-4 col-md-3 lab-sidebar">
+              <div class="docs-sidebar">
+                <div class="docs-widget">
+                  <h5 class="widget-title">
+                    <a href="./docs.html">Lab Index</a>
+                  </h5>
+                  <ul class="docs-nav">
+                    <li><a href="#scenario">Scenario</a></li>
+                    <li><a href="#walkthrough">Walkthrough</a></li>
+                    <li><a href="#reference">Reference</a></li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            <!-- MAIN CONTENT -->
+            <div class="col-sm-8 col-md-9 lab-doc">
+              <p class="m-b-20 lab-summary">
+                Initialize an unused disk (<code>/dev/sdb</code>) with a GPT label, create a small test
+                partition with <code>parted</code>, verify the kernel view with <code>lsblk</code> and
+                <code>/proc/partitions</code>, then remove the partition and confirm the disk returns to a
+                clean state.
+              </p>
+
+              <section class="lab-section" id="video" aria-label="Lab video">
+                <div class="lab-video">
+                  <div class="lab-video-embed text-center">
+                    <iframe
+                      src="https://www.youtube.com/embed/REPLACE_WITH_LAB124_VIDEO"
+                      title="YouTube video player"
+                      frameborder="0"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                      referrerpolicy="strict-origin-when-cross-origin"
+                      allowfullscreen
+                    ></iframe>
+                  </div>
+                </div>
+              </section>
+
+              <!-- Scenario -->
+              <section class="lab-section" id="scenario">
+                <div class="lab-chips" aria-label="Tags">
+                  <span class="lab-chip"><span class="lab-chip-key">storage</span></span>
+                  <span class="lab-chip"><span class="lab-chip-key">parted</span></span>
+                  <span class="lab-chip"><span class="lab-chip-key">gpt</span></span>
+                  <span class="lab-chip"><span class="lab-chip-key">rhel</span></span>
+                </div>
+
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">Scenario</h3>
+
+                <p>
+                  A new 2G disk was attached to a RHEL VM for a temporary data staging task. Before handing the VM
+                  to an automation pipeline, you need to initialize the disk with GPT, create a small partition to
+                  validate the workflow, verify the kernel sees it, then remove the partition to return the disk to
+                  a clean state.
+                </p>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">Safety note</div>
+                  <p class="m-b-0">
+                    Confirm the target disk before writing labels or deleting partitions. GPT operations will destroy
+                    any existing partition layout on the selected device.
+                  </p>
+                </div>
+              </section>
+
+              <!-- Objective -->
+              <section class="lab-section alt-background" id="objective">
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">Objective</h3>
+                <ul>
+                  <li>Confirm <code>/dev/sdb</code> exists and is not mounted.</li>
+                  <li>Detect an unknown/uninitialized partition table.</li>
+                  <li>Write a GPT disk label with <code>parted mklabel gpt</code>.</li>
+                  <li>Create a MiB-aligned partition with explicit boundaries.</li>
+                  <li>Verify the partition via <code>parted</code>, <code>lsblk</code>, and <code>/proc/partitions</code>.</li>
+                  <li>Remove the partition and re-verify a clean kernel view.</li>
+                </ul>
+              </section>
+
+              <!-- Walkthrough -->
+              <section class="lab-section alt-background" id="walkthrough">
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">Walkthrough</h3>
+
+                <!-- Step 1 -->
+                <div class="lab-step">
+                  <div class="lab-step-title">
+                    <strong class="font-alt">Step 1</strong>: Confirm <code>/dev/sdb</code> is present and not mounted.
+                  </div>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <div class="lab-codeblock-header">
+                      <span>Command</span>
+                      <button class="lab-copy-btn" type="button" data-copy="#cmd-step-1">Copy</button>
+                    </div>
+                    <pre><code id="cmd-step-1">lsblk -o NAME,SIZE,TYPE,FSTYPE,MOUNTPOINTS</code></pre>
+                  </div>
+
+                  <p>
+                    This is your fast safety check: the disk exists, has the expected size, and has no mountpoints.
+                  </p>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <pre><code>NAME   MAJ:MIN RM SIZE RO TYPE FSTYPE MOUNTPOINTS
+sda      8:0    0  20G  0 disk
+└─sda1   8:1    0  20G  0 part xfs    /
+sdb      8:16   0   2G  0 disk</code></pre>
+                  </div>
+                </div>
+
+                <!-- Step 2 -->
+                <div class="lab-step">
+                  <div class="lab-step-title">
+                    <strong class="font-alt">Step 2</strong>: Check current partition table state on <code>/dev/sdb</code>.
+                  </div>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <div class="lab-codeblock-header">
+                      <span>Command</span>
+                      <button class="lab-copy-btn" type="button" data-copy="#cmd-step-2">Copy</button>
+                    </div>
+                    <pre><code id="cmd-step-2">sudo parted /dev/sdb print</code></pre>
+                  </div>
+
+                  <p>
+                    On a blank disk, <code>parted</code> reports an unrecognized label. That’s expected and confirms
+                    you are starting clean.
+                  </p>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <pre><code>Error: /dev/sdb: unrecognised disk label
+Model: Virtio Block Device (virtblk)
+Disk /dev/sdb: 2147MB
+Sector size (logical/physical): 512B/512B
+Partition Table: unknown
+Disk Flags:</code></pre>
+                  </div>
+                </div>
+
+                <!-- Step 3 -->
+                <div class="lab-step">
+                  <div class="lab-step-title">
+                    <strong class="font-alt">Step 3</strong>: Create a GPT disk label.
+                  </div>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <div class="lab-codeblock-header">
+                      <span>Command</span>
+                      <button class="lab-copy-btn" type="button" data-copy="#cmd-step-3">Copy</button>
+                    </div>
+                    <pre><code id="cmd-step-3">sudo parted /dev/sdb mklabel gpt</code></pre>
+                  </div>
+
+                  <p>
+                    This initializes the disk with GPT. On real systems, always do this only after you have confirmed
+                    the correct target device.
+                  </p>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <pre><code>Information: You may need to update /etc/fstab.</code></pre>
+                  </div>
+                </div>
+
+                <!-- Step 4 -->
+                <div class="lab-step">
+                  <div class="lab-step-title">
+                    <strong class="font-alt">Step 4</strong>: Confirm GPT is applied.
+                  </div>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <div class="lab-codeblock-header">
+                      <span>Command</span>
+                      <button class="lab-copy-btn" type="button" data-copy="#cmd-step-4">Copy</button>
+                    </div>
+                    <pre><code id="cmd-step-4">sudo parted /dev/sdb print</code></pre>
+                  </div>
+
+                  <p>
+                    Your verification signal is the <code>Partition Table: gpt</code> line.
+                  </p>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <pre><code>Model: Virtio Block Device (virtblk)
+Disk /dev/sdb: 2147MB
+Sector size (logical/physical): 512B/512B
+Partition Table: gpt
+Disk Flags:
+
+Number  Start  End  Size  File system  Name  Flags</code></pre>
+                  </div>
+                </div>
+
+                <!-- Step 5 -->
+                <div class="lab-step">
+                  <div class="lab-step-title">
+                    <strong class="font-alt">Step 5</strong>: Create a 100MiB partition starting at 1MiB.
+                  </div>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <div class="lab-codeblock-header">
+                      <span>Command</span>
+                      <button class="lab-copy-btn" type="button" data-copy="#cmd-step-5">Copy</button>
+                    </div>
+                    <pre><code id="cmd-step-5">sudo parted /dev/sdb mkpart primary 1MiB 101MiB</code></pre>
+                  </div>
+
+                  <p>
+                    Starting at <code>1MiB</code> keeps boundaries aligned. The goal here is repeatable, deterministic
+                    partition creation rather than “close enough” geometry.
+                  </p>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <pre><code>Information: You may need to update /etc/fstab.</code></pre>
+                  </div>
+                </div>
+
+                <!-- Step 6 -->
+                <div class="lab-step">
+                  <div class="lab-step-title">
+                    <strong class="font-alt">Step 6</strong>: Verify the partition exists in <code>parted</code>.
+                  </div>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <div class="lab-codeblock-header">
+                      <span>Command</span>
+                      <button class="lab-copy-btn" type="button" data-copy="#cmd-step-6">Copy</button>
+                    </div>
+                    <pre><code id="cmd-step-6">sudo parted /dev/sdb print</code></pre>
+                  </div>
+
+                  <p>
+                    Confirm you see partition <code>1</code> with the expected start/end.
+                  </p>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <pre><code>Number  Start   End     Size    File system  Name     Flags
+ 1      1049kB  106MB   105MB                primary</code></pre>
+                  </div>
+                </div>
+
+                <!-- Step 7 -->
+                <div class="lab-step">
+                  <div class="lab-step-title">
+                    <strong class="font-alt">Step 7</strong>: Confirm the kernel created <code>/dev/sdb1</code>.
+                  </div>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <div class="lab-codeblock-header">
+                      <span>Command</span>
+                      <button class="lab-copy-btn" type="button" data-copy="#cmd-step-7">Copy</button>
+                    </div>
+                    <pre><code id="cmd-step-7">lsblk -o NAME,SIZE,TYPE,MOUNTPOINTS</code></pre>
+                  </div>
+
+                  <p>
+                    This checks device node creation and the kernel’s current block device layout.
+                  </p>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <pre><code>NAME   MAJ:MIN RM SIZE RO TYPE MOUNTPOINTS
+sda      8:0    0  20G  0 disk
+└─sda1   8:1    0  20G  0 part /
+sdb      8:16   0   2G  0 disk
+└─sdb1   8:17   0 100M  0 part</code></pre>
+                  </div>
+                </div>
+
+                <!-- Step 8 -->
+                <div class="lab-step">
+                  <div class="lab-step-title">
+                    <strong class="font-alt">Step 8</strong>: Confirm <code>/proc/partitions</code> reflects the partition.
+                  </div>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <div class="lab-codeblock-header">
+                      <span>Command</span>
+                      <button class="lab-copy-btn" type="button" data-copy="#cmd-step-8">Copy</button>
+                    </div>
+                    <pre><code id="cmd-step-8">tail /proc/partitions</code></pre>
+                  </div>
+
+                  <p>
+                    <code>/proc/partitions</code> is the kernel-exported view. This is a useful check when
+                    userspace tools disagree or a device node seems stale.
+                  </p>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <pre><code>major minor  #blocks  name
+  8       0  20971520 sda
+  8       1  20970496 sda1
+  8      16   2097152 sdb
+  8      17    102400 sdb1</code></pre>
+                  </div>
+                </div>
+
+                <!-- Step 9 -->
+                <div class="lab-step">
+                  <div class="lab-step-title">
+                    <strong class="font-alt">Step 9</strong>: Remove partition 1.
+                  </div>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <div class="lab-codeblock-header">
+                      <span>Command</span>
+                      <button class="lab-copy-btn" type="button" data-copy="#cmd-step-9">Copy</button>
+                    </div>
+                    <pre><code id="cmd-step-9">sudo parted /dev/sdb rm 1</code></pre>
+                  </div>
+
+                  <p>
+                    This removes the partition entry from the GPT. It does not wipe data blocks, but it returns
+                    the partition layout to “no partitions.”
+                  </p>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <pre><code>Information: You may need to update /etc/fstab.</code></pre>
+                  </div>
+                </div>
+
+                <!-- Step 10 -->
+                <div class="lab-step">
+                  <div class="lab-step-title">
+                    <strong class="font-alt">Step 10</strong>: Confirm the partition is gone in <code>parted</code>.
+                  </div>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <div class="lab-codeblock-header">
+                      <span>Command</span>
+                      <button class="lab-copy-btn" type="button" data-copy="#cmd-step-10">Copy</button>
+                    </div>
+                    <pre><code id="cmd-step-10">sudo parted /dev/sdb print</code></pre>
+                  </div>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <pre><code>Model: Virtio Block Device (virtblk)
+Disk /dev/sdb: 2147MB
+Sector size (logical/physical): 512B/512B
+Partition Table: gpt
+Disk Flags:
+
+Number  Start  End  Size  File system  Name  Flags</code></pre>
+                  </div>
+                </div>
+
+                <!-- Step 11 -->
+                <div class="lab-step">
+                  <div class="lab-step-title">
+                    <strong class="font-alt">Step 11</strong>: Confirm <code>/proc/partitions</code> no longer lists <code>sdb1</code>.
+                  </div>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <div class="lab-codeblock-header">
+                      <span>Command</span>
+                      <button class="lab-copy-btn" type="button" data-copy="#cmd-step-11">Copy</button>
+                    </div>
+                    <pre><code id="cmd-step-11">tail /proc/partitions</code></pre>
+                  </div>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <pre><code>major minor  #blocks  name
+  8       0  20971520 sda
+  8       1  20970496 sda1
+  8      16   2097152 sdb</code></pre>
+                  </div>
+                </div>
+
+                <!-- Step 12 -->
+                <div class="lab-step">
+                  <div class="lab-step-title">
+                    <strong class="font-alt">Step 12</strong>: Verify <code>sdb1</code> is gone in <code>lsblk</code>.
+                  </div>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <div class="lab-codeblock-header">
+                      <span>Command</span>
+                      <button class="lab-copy-btn" type="button" data-copy="#cmd-step-12">Copy</button>
+                    </div>
+                    <pre><code id="cmd-step-12">lsblk -o NAME,SIZE,TYPE,MOUNTPOINTS</code></pre>
+                  </div>
+
+                  <p>
+                    You should only see the disk now. If <code>sdb1</code> still appears, the kernel may not have
+                    re-read the table yet.
+                  </p>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <pre><code>NAME   MAJ:MIN RM SIZE RO TYPE MOUNTPOINTS
+sda      8:0    0  20G  0 disk
+└─sda1   8:1    0  20G  0 part /
+sdb      8:16   0   2G  0 disk</code></pre>
+                  </div>
+                </div>
+              </section>
+
+              <!-- Common breakpoints -->
+              <section class="lab-section" id="breakpoints">
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">Common breakpoints</h3>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">sdb1 doesn’t appear after mkpart</div>
+                  <p class="m-b-0">
+                    The kernel may not have re-read the partition table yet. In real ops, you might run
+                    <code>partprobe</code> or trigger a rescan so the new partition device node is created.
+                  </p>
+                </div>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">sdb1 still appears after rm</div>
+                  <p class="m-b-0">
+                    You removed the partition entry, but userspace still sees a stale device. Re-check with
+                    <code>parted print</code> first (source of truth), then refresh the kernel view if needed.
+                  </p>
+                </div>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">Disk selection mistake</div>
+                  <p class="m-b-0">
+                    Always verify identity and size before writing labels: <code>lsblk -o NAME,SIZE,MODEL,SERIAL</code>
+                    (fields depend on platform). The fastest way to lose a system is to partition the wrong disk.
+                  </p>
+                </div>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">Units mismatch (MB vs MiB)</div>
+                  <p class="m-b-0">
+                    <code>parted</code> may display in MB/GB while you create partitions in MiB. That’s normal.
+                    Keep using explicit <code>MiB</code> boundaries when you need repeatability.
+                  </p>
+                </div>
+              </section>
+
+              <!-- Reference -->
+              <section class="lab-section" id="reference">
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">Reference</h3>
+
+                <ul class="lab-reference-list">
+                  <li><code>lsblk -o NAME,SIZE,TYPE,FSTYPE,MOUNTPOINTS</code>: Validate device presence and mounts.</li>
+                  <li><code>parted /dev/sdb print</code>: Inspect disk geometry and partition table type.</li>
+                  <li><code>parted /dev/sdb mklabel gpt</code>: Initialize disk with GPT.</li>
+                  <li><code>parted /dev/sdb mkpart primary 1MiB 101MiB</code>: Create a MiB-aligned partition.</li>
+                  <li><code>parted /dev/sdb rm 1</code>: Remove partition by number.</li>
+                  <li><code>/proc/partitions</code>: Kernel-exported view of block devices and partitions.</li>
+                </ul>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">Ops habit</div>
+                  <p class="m-b-0">
+                    After every write operation (<code>mklabel</code>, <code>mkpart</code>, <code>rm</code>), verify with
+                    <code>parted print</code> immediately, then confirm the kernel view with <code>lsblk</code> or
+                    <code>/proc/partitions</code>.
+                  </p>
+                </div>
+              </section>
+            </div>
+            <!-- /main -->
+          </div>
+          <!-- /row -->
+        </div>
+        <!-- /container -->
+      </section>
+
+      <!-- FOOTER -->
+      <footer class="module bg-light">
+        <div class="container">
+          <div class="row">
+            <div class="col-sm-12">
+              <ul class="social-text-links font-alt text-center m-b-20">
+                <li>
+                  <a href="https://github.com/vonds" target="_blank" rel="noopener">Github</a>
+                </li>
+                <li>
+                  <a href="https://www.linkedin.com/in/vonds/" target="_blank" rel="noopener">Linkedin</a>
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-sm-12">
+              <p class="copyright text-center m-b-0">
+                VONDS &copy; <span id="year"></span>
+              </p>
+
+              <div class="scroll-up">
+                <a href="#totop"><i class="fa fa-angle-double-up"></i></a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <!-- Javascript files (your existing) -->
+    <script src="../assets/js/jquery-2.2.4.min.js"></script>
+    <script src="../assets/bootstrap/js/bootstrap.min.css"></script>
+    <script src="../assets/js/jquery.superslides.min.js"></script>
+    <script src="../assets/js/jquery.mb.YTPlayer.min.js"></script>
+    <script src="../assets/js/jquery.magnific-popup.min.js"></script>
+    <script src="../assets/js/owl.carousel.min.js"></script>
+    <script src="../assets/js/jquery.simple-text-rotator.min.js"></script>
+    <script src="../assets/js/imagesloaded.pkgd.js"></script>
+    <script src="../assets/js/isotope.pkgd.min.js"></script>
+    <script src="../assets/js/packery-mode.pkgd.min.js"></script>
+    <script src="../assets/js/appear.js"></script>
+    <script src="../assets/js/jquery.easing.1.3.js"></script>
+    <script src="../assets/js/wow.min.js"></script>
+    <script src="../assets/js/jqBootstrapValidation.js"></script>
+    <script src="../assets/js/jquery.fitvids.js"></script>
+    <script src="../assets/js/jquery.parallax-1.1.3.js"></script>
+    <script src="../assets/js/smoothscroll.js"></script>
+    <script src="../assets/js/custom.js"></script>
+
+    <!-- Lab page JS (new) -->
+    <script src="../assets/js/lab.js"></script>
+
+    <script>
+      document.getElementById("year").textContent = new Date().getFullYear()
+    </script>
+  </body>
+</html>
