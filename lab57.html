@@ -37,7 +37,7 @@
     <link href="../assets/css/style.css" rel="stylesheet" />
     <link href="../assets/css/docs.css" rel="stylesheet" />
 
-    <!-- Lab page styles (new) -->
+    <!-- Lab page styles -->
     <link href="../assets/css/lab.css" rel="stylesheet" />
 
     <!-- Fonts -->
@@ -67,9 +67,29 @@
             <li class="slidedown">
               <a href="#">Portfolio</a>
               <ul>
-                <li><a href="https://github.com/vonds/exit_0" target="_blank" rel="noopener">exit_0</a></li>
-                <li><a href="docs.html" target="_blank" rel="noopener">exit_0 Documentation</a></li>
-                <li><a href="https://github.com/vonds/sentinel" target="_blank" rel="noopener">Sentinel</a></li>
+                <li>
+                  <a
+                    href="https://github.com/vonds/exit_0"
+                    target="_blank"
+                    rel="noopener"
+                  >
+                    exit_0
+                  </a>
+                </li>
+                <li>
+                  <a href="docs.html" target="_blank" rel="noopener">
+                    exit_0 Documentation
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="https://github.com/vonds/sentinel"
+                    target="_blank"
+                    rel="noopener"
+                  >
+                    Sentinel
+                  </a>
+                </li>
               </ul>
             </li>
 
@@ -138,9 +158,7 @@
       <!-- DOCS PAGE -->
       <section class="module">
         <div class="container">
-          <h2 class="font-alt module-title m-t-60">
-            Lab 57: tmux Sessions
-          </h2>
+          <h2 class="font-alt module-title m-t-60">Lab 57: tmux Sessions</h2>
 
           <nav class="lab-pagination">
             <a
@@ -171,7 +189,11 @@
                   </h5>
                   <ul class="docs-nav">
                     <li><a href="#scenario">Scenario</a></li>
+                    <li><a href="#objective">Objective</a></li>
+                    <li><a href="#concepts">Concepts</a></li>
                     <li><a href="#walkthrough">Walkthrough</a></li>
+                    <li><a href="#breakpoints">Breakpoints</a></li>
+                    <li><a href="#cleanup">Cleanup</a></li>
                     <li><a href="#reference">Reference</a></li>
                   </ul>
                 </div>
@@ -180,32 +202,30 @@
 
             <!-- MAIN CONTENT -->
             <div class="col-sm-8 col-md-9 lab-doc">
-              <!-- 1) Title + Summary (2 sentences max) -->
               <p class="m-b-20 lab-summary">
-                Use <code>tmux</code> to keep multiple workflows organized and
-                recoverable across SSH disconnects. Start a named session,
-                detach and reattach cleanly, create and name a window for log
-                work, and terminate the session when the task is complete.
+                Use <code>tmux</code> to keep multi-step terminal work organized
+                and recoverable across SSH disconnects. Create a named session,
+                detach and reattach cleanly, add a dedicated window for logs,
+                and terminate the session when the task is complete.
               </p>
 
+              <!-- Video (kept on page; not listed in left panel) -->
               <section class="lab-section" id="video" aria-label="Lab video">
-  				<div class="lab-video">
-    				<div class="lab-video-embed text-center">
-      					<iframe 
-							width="560" 
-							height="315" 
-							src="https://www.youtube.com/embed/uJk54bhaadA?si=seGSukCoMFN7ohRo" 
-							title="YouTube video player" 
-							frameborder="0" 
-							allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
-							referrerpolicy="strict-origin-when-cross-origin" 
-							allowfullscreen>
-						</iframe>
-    				</div>
-  				</div>
-			</section>
+                <div class="lab-video">
+                  <div class="lab-video-embed text-center">
+                    <iframe
+                      src="https://www.youtube.com/embed/uJk54bhaadA?si=seGSukCoMFN7ohRo"
+                      title="YouTube video player"
+                      frameborder="0"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                      referrerpolicy="strict-origin-when-cross-origin"
+                      allowfullscreen
+                    ></iframe>
+                  </div>
+                </div>
+              </section>
 
-              <!-- 2) Scenario -->
+              <!-- Scenario -->
               <section class="lab-section" id="scenario">
                 <div class="lab-chips" aria-label="Tags">
                   <span class="lab-chip">
@@ -222,10 +242,10 @@
 
                 <p>
                   You are managing multiple long-running processes on a remote
-                  system and need a reliable way to keep sessions organized and
+                  system and need a reliable way to keep work organized and
                   accessible if your connection drops. You decide to use
                   <code>tmux</code> so you can detach, reconnect, and continue
-                  work without losing state.
+                  without losing state.
                 </p>
 
                 <div class="lab-callout">
@@ -233,13 +253,13 @@
                   <p class="m-b-0">
                     Terminal multiplexers are baseline tooling for remote
                     operations. They reduce failure risk during maintenance and
-                    make it easier to separate “monitoring,” “logs,” and
-                    “change execution” into explicit workspaces.
+                    make it easier to separate monitoring, logs, and change
+                    execution into explicit workspaces.
                   </p>
                 </div>
               </section>
 
-              <!-- 3) Objective -->
+              <!-- Objective -->
               <section class="lab-section alt-background" id="objective">
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">
                   Objective
@@ -254,37 +274,36 @@
                 </ul>
               </section>
 
-              <!-- 4) What You'll Practice -->
-              <section class="lab-section" id="practice">
+              <!-- Concepts (no alt-background) -->
+              <section class="lab-section" id="concepts">
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">
-                  What You’ll Practice
+                  Concepts
                 </h3>
-
-                <ul class="m-t-10">
+                <ul>
                   <li>
-                    Creating a named session using <code>tmux new -s</code>.
+                    A tmux session is a persistent workspace that survives SSH
+                    disconnects.
                   </li>
                   <li>
-                    Detaching with the tmux prefix sequence
-                    (<code>Ctrl+b</code> then <code>d</code>).
+                    Windows separate tasks inside a session, reducing mistakes
+                    during remote operations.
                   </li>
                   <li>
-                    Listing sessions using <code>tmux ls</code> /
-                    <code>tmux list-sessions</code>.
+                    Detach keeps processes running server-side while you drop
+                    back to the normal shell.
                   </li>
                   <li>
-                    Reattaching using <code>tmux attach -t</code>.
+                    Session inventory (<code>tmux ls</code>) is an operational
+                    check before attaching or killing anything.
                   </li>
                   <li>
-                    Window management basics: create window and rename window.
-                  </li>
-                  <li>
-                    Ending a session using <code>tmux kill-session</code>.
+                    Explicit termination prevents stale sessions and makes the
+                    end of a change unambiguous.
                   </li>
                 </ul>
               </section>
 
-              <!-- 5) Commands Walkthrough -->
+              <!-- Walkthrough -->
               <section class="lab-section alt-background" id="walkthrough">
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">
                   Walkthrough
@@ -312,13 +331,13 @@
                   </div>
 
                   <p>
-                    A named session makes it easy to reconnect later. In
-                    production, naming sessions after the task (“monitor,”
-                    “upgrade,” “incident”) reduces confusion.
+                    A named session makes reconnects predictable. Use names tied
+                    to the task to avoid attaching to the wrong workspace.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code id="verify-step-1">tmux session 'monitor' started.</code></pre>
+                    <pre><code># You are now inside the tmux session.
+# Start your monitoring or long-running work here.</code></pre>
                   </div>
                 </div>
 
@@ -333,17 +352,16 @@
                     <div class="lab-codeblock-header">
                       <span>Action</span>
                     </div>
-                    <pre><code id="cmd-step-2">Ctrl+b d</code></pre>
+                    <pre><code id="cmd-step-2">Ctrl+b then d</code></pre>
                   </div>
 
                   <p>
-                    Detaching keeps the session alive on the server while your
-                    SSH connection comes and goes. This is the core reliability
-                    benefit of tmux.
+                    Detaching leaves the session running on the server. This is
+                    the core reliability benefit of tmux during remote work.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code id="verify-step-2">Detached from 'monitor' session.</code></pre>
+                    <pre><code>[detached (from session monitor)]</code></pre>
                   </div>
                 </div>
 
@@ -351,7 +369,7 @@
                 <div class="lab-step">
                   <div class="lab-step-title">
                     <strong class="font-alt">Step 3</strong>
-                    : List all tmux sessions.
+                    : List tmux sessions to confirm state.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -365,18 +383,16 @@
                         Copy
                       </button>
                     </div>
-                    <pre><code id="cmd-step-3">tmux ls
-# OR
-tmux list-sessions</code></pre>
+                    <pre><code id="cmd-step-3">tmux ls</code></pre>
                   </div>
 
                   <p>
-                    Listing sessions confirms what is currently running and
-                    provides the exact session name to reattach.
+                    This inventory check confirms what is running and provides
+                    the exact session name you should target.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code id="verify-step-3">monitor: 1 windows (created Tue Jul 23 14:00:00 2025) [80x24]</code></pre>
+                    <pre><code>monitor: 1 windows (created Tue Feb 10 04:00:00 2026) [80x24]</code></pre>
                   </div>
                 </div>
 
@@ -402,13 +418,12 @@ tmux list-sessions</code></pre>
                   </div>
 
                   <p>
-                    Reattaching returns you to the exact session state. This is
-                    how you resume monitoring or long-running operations without
-                    restarting processes.
+                    Reattaching returns you to the exact session state so you
+                    can continue work without restarting processes.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code id="verify-step-4">Reattached to 'monitor' session.</code></pre>
+                    <pre><code>[attached to monitor]</code></pre>
                   </div>
                 </div>
 
@@ -416,24 +431,23 @@ tmux list-sessions</code></pre>
                 <div class="lab-step">
                   <div class="lab-step-title">
                     <strong class="font-alt">Step 5</strong>
-                    : Create a new window inside tmux.
+                    : Create a new window for log work.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Action</span>
                     </div>
-                    <pre><code id="cmd-step-5">Ctrl+b c</code></pre>
+                    <pre><code id="cmd-step-5">Ctrl+b then c</code></pre>
                   </div>
 
                   <p>
-                    Windows are separate workspaces within a session. Use them
-                    to keep monitoring, log review, and change execution
-                    separated so you can switch contexts safely.
+                    A new window gives you a dedicated workspace for logs,
+                    keeping monitoring and change execution separate.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code id="verify-step-5">New tmux window created.</code></pre>
+                    <pre><code># New window created.</code></pre>
                   </div>
                 </div>
 
@@ -441,42 +455,32 @@ tmux list-sessions</code></pre>
                 <div class="lab-step">
                   <div class="lab-step-title">
                     <strong class="font-alt">Step 6</strong>
-                    : Rename the window to <code>logs</code>.
+                    : Rename the current window to <code>logs</code>.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Action</span>
                     </div>
-                    <pre><code id="cmd-step-6">Ctrl+b ,</code></pre>
+                    <pre><code id="cmd-step-6">Ctrl+b then ,</code></pre>
                   </div>
 
                   <p>
-                    Naming windows makes multi-window sessions usable under
-                    pressure. “logs” is a common convention for a window used
-                    for tailing or reviewing system messages.
+                    Window names reduce mistakes when you are switching quickly.
+                    Use simple names like <code>logs</code>, <code>shell</code>,
+                    or <code>deploy</code>.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code id="verify-step-6">Window renamed to 'logs'.</code></pre>
+                    <pre><code># Window renamed to 'logs'.</code></pre>
                   </div>
                 </div>
 
                 <!-- Step 7 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
-                    <strong class="font-alt bold">Step 7</strong>
-                    : Kill the tmux session.
-                  </div>
-
-                  <div class="lab-callout">
-                    <div class="lab-callout-label">Note</div>
-                    <p class="m-b-0">
-                      This lab’s script attempts to kill the session using a
-                      window name, but <code>kill-session -t</code> targets a
-                      session, not a window. The correct target here is the
-                      session name: <code>monitor</code>.
-                    </p>
+                    <strong class="font-alt">Step 7</strong>
+                    : Terminate the session when finished.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -494,14 +498,97 @@ tmux list-sessions</code></pre>
                   </div>
 
                   <p>
-                    Terminating the session explicitly prevents stale sessions
-                    from accumulating. In real environments, stale sessions can
-                    hide unfinished work and confuse future operators.
+                    Killing the session ends all windows and panes under it.
+                    Terminate explicitly so you do not leave stale sessions on
+                    shared systems.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code id="verify-step-7">Session 'monitor' terminated.</code></pre>
+                    <pre><code># Confirm the session is gone:
+tmux ls</code></pre>
                   </div>
+                </div>
+              </section>
+
+              <!-- Common breakpoints -->
+              <section class="lab-section" id="breakpoints">
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  Common breakpoints
+                </h3>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">tmux: command not found</div>
+                  <p class="m-b-0">
+                    tmux is not installed. Install it with your distro package
+                    manager and confirm it is present in PATH.
+                  </p>
+                </div>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">no sessions</div>
+                  <p class="m-b-0">
+                    <code>tmux ls</code> shows no sessions because you are
+                    listing as a different user or the session was terminated.
+                    Confirm your user and recreate the session if needed.
+                  </p>
+                </div>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">
+                    sessions: attach failed: session not found
+                  </div>
+                  <p class="m-b-0">
+                    The target name is wrong or the session no longer exists.
+                    Run <code>tmux ls</code> and attach using the exact name.
+                  </p>
+                </div>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">
+                    Killing the wrong session
+                  </div>
+                  <p class="m-b-0">
+                    Always inventory first. Use <code>tmux ls</code> before any
+                    destructive action so you do not terminate the wrong
+                    workspace.
+                  </p>
+                </div>
+              </section>
+
+              <!-- Cleanup -->
+              <section class="lab-section alt-background" id="cleanup">
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  Cleanup checklist
+                </h3>
+
+                <p>
+                  Ensure the <code>monitor</code> session does not persist after
+                  the lab.
+                </p>
+
+                <div class="lab-codeblock m-b-40 m-t-40">
+                  <div class="lab-codeblock-header">
+                    <span>Commands</span>
+                    <button
+                      class="lab-copy-btn"
+                      type="button"
+                      data-copy="#cmd-cleanup"
+                    >
+                      Copy
+                    </button>
+                  </div>
+                  <pre><code id="cmd-cleanup">tmux ls
+# If monitor still exists:
+tmux kill-session -t monitor
+tmux ls</code></pre>
+                </div>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">Success signal</div>
+                  <p class="m-b-0">
+                    <code>tmux ls</code> returns no sessions or does not list
+                    <code>monitor</code>.
+                  </p>
                 </div>
               </section>
 
@@ -514,57 +601,48 @@ tmux list-sessions</code></pre>
                 <ul class="lab-reference-list">
                   <li>
                     <code>tmux new -s &lt;name&gt;</code>
-                    : Creates a new session with a specific name.
+                    : Create a new session.
                     <ul>
-                      <li>
-                        <code>-s</code>
-                        : Sets the session name.
-                      </li>
+                      <li><code>-s</code>: session name</li>
+                    </ul>
+                  </li>
+
+                  <li>
+                    <code>tmux ls</code>
+                    : List sessions.
+                  </li>
+
+                  <li>
+                    <code>tmux attach -t &lt;name&gt;</code>
+                    : Attach to a session.
+                    <ul>
+                      <li><code>-t</code>: target session</li>
                     </ul>
                   </li>
 
                   <li>
                     <code>Ctrl+b</code>
-                    : Default tmux prefix key. Most tmux actions begin with
-                    prefix then a command key.
+                    : Default prefix key.
                   </li>
 
                   <li>
                     <code>Ctrl+b d</code>
-                    : Detaches from the current session without ending it.
-                  </li>
-
-                  <li>
-                    <code>tmux ls</code>
-                    /
-                    <code>tmux list-sessions</code>
-                    : Lists existing tmux sessions.
-                  </li>
-
-                  <li>
-                    <code>tmux attach -t &lt;name&gt;</code>
-                    : Attaches to a session by name.
-                    <ul>
-                      <li>
-                        <code>-t</code>
-                        : Targets a specific session.
-                      </li>
-                    </ul>
+                    : Detach from the current session.
                   </li>
 
                   <li>
                     <code>Ctrl+b c</code>
-                    : Creates a new window.
+                    : Create a new window.
                   </li>
 
                   <li>
                     <code>Ctrl+b ,</code>
-                    : Renames the current window.
+                    : Rename the current window.
                   </li>
 
                   <li>
-                    <code>tmux kill-session -t &lt;session&gt;</code>
-                    : Terminates a session by name.
+                    <code>tmux kill-session -t &lt;name&gt;</code>
+                    : Terminate a session.
                   </li>
                 </ul>
               </section>
@@ -641,7 +719,6 @@ tmux list-sessions</code></pre>
     <script src="../assets/js/imagesloaded.pkgd.js"></script>
     <script src="../assets/js/isotope.pkgd.min.js"></script>
     <script src="../assets/js/packery-mode.pkgd.min.js"></script>
-    <script src="../assets/js/packery-mode.pkgd.min.js"></script>
     <script src="../assets/js/appear.js"></script>
     <script src="../assets/js/jquery.easing.1.3.js"></script>
     <script src="../assets/js/wow.min.js"></script>
@@ -653,5 +730,9 @@ tmux list-sessions</code></pre>
 
     <!-- Lab page JS (new) -->
     <script src="../assets/js/lab.js"></script>
+
+    <script>
+      document.getElementById('year').textContent = new Date().getFullYear()
+    </script>
   </body>
 </html>

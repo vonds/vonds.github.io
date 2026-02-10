@@ -37,7 +37,7 @@
     <link href="../assets/css/style.css" rel="stylesheet" />
     <link href="../assets/css/docs.css" rel="stylesheet" />
 
-    <!-- Lab page styles (new) -->
+    <!-- Lab page styles -->
     <link href="../assets/css/lab.css" rel="stylesheet" />
 
     <!-- Fonts -->
@@ -67,9 +67,29 @@
             <li class="slidedown">
               <a href="#">Portfolio</a>
               <ul>
-                <li><a href="https://github.com/vonds/exit_0" target="_blank" rel="noopener">exit_0</a></li>
-                <li><a href="docs.html" target="_blank" rel="noopener">exit_0 Documentation</a></li>
-                <li><a href="https://github.com/vonds/sentinel" target="_blank" rel="noopener">Sentinel</a></li>
+                <li>
+                  <a
+                    href="https://github.com/vonds/exit_0"
+                    target="_blank"
+                    rel="noopener"
+                  >
+                    exit_0
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="https://github.com/vonds/sentinel"
+                    target="_blank"
+                    rel="noopener"
+                  >
+                    Sentinel
+                  </a>
+                </li>
+                <li>
+                  <a href="docs.html" target="_blank" rel="noopener">
+                    exit_0 Documentation
+                  </a>
+                </li>
               </ul>
             </li>
 
@@ -141,6 +161,7 @@
           <h2 class="font-alt module-title m-t-60">
             Lab 38: Monitoring System with top
           </h2>
+
           <nav class="lab-pagination">
             <a
               id="prev-lab"
@@ -159,15 +180,22 @@
               &raquo;
             </a>
           </nav>
+
           <div class="row">
             <!-- LEFT SIDEBAR -->
             <div class="col-sm-4 col-md-3 lab-sidebar">
               <div class="docs-sidebar">
                 <div class="docs-widget">
-                  <h5 class="widget-title"><a href="./docs.html">Back to Lab Index</a></h5>
+                  <h5 class="widget-title">
+                    <a href="./docs.html">Back to Lab Index</a>
+                  </h5>
                   <ul class="docs-nav">
                     <li><a href="#scenario">Scenario</a></li>
+                    <li><a href="#objective">Objective</a></li>
+                    <li><a href="#concepts">Concepts</a></li>
                     <li><a href="#walkthrough">Walkthrough</a></li>
+                    <li><a href="#breakpoints">Breakpoints</a></li>
+                    <li><a href="#cleanup">Cleanup</a></li>
                     <li><a href="#reference">Reference</a></li>
                   </ul>
                 </div>
@@ -176,32 +204,30 @@
 
             <!-- MAIN CONTENT -->
             <div class="col-sm-8 col-md-9 lab-doc">
-              <!-- 1) Title + Summary (2 sentences max) -->
               <p class="m-b-20 lab-summary">
-                Monitor a high-load Linux system with top to identify resource
-                pressure and the heaviest processes in real time. Sort by memory
-                inside the UI, exit cleanly, and confirm where to find help and
-                usage options.
+                Monitor a high-load Linux system with <code>top</code> to
+                identify resource pressure and the heaviest processes in real
+                time. Sort by memory inside the UI, exit cleanly, then confirm
+                where to find help and usage options.
               </p>
 
+              <!-- Video (kept on page; removed from left panel) -->
               <section class="lab-section" id="video" aria-label="Lab video">
-  				<div class="lab-video">
-    				<div class="lab-video-embed text-center">
-      					<iframe 
-							width="560" 
-							height="315" 
-							src="https://www.youtube.com/embed/uJk54bhaadA?si=seGSukCoMFN7ohRo" 
-							title="YouTube video player" 
-							frameborder="0" 
-							allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
-							referrerpolicy="strict-origin-when-cross-origin" 
-							allowfullscreen>
-						</iframe>
-    				</div>
-  				</div>
-			</section>
+                <div class="lab-video">
+                  <div class="lab-video-embed text-center">
+                    <iframe
+                      src="https://www.youtube.com/embed/uJk54bhaadA?si=seGSukCoMFN7ohRo"
+                      title="YouTube video player"
+                      frameborder="0"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                      referrerpolicy="strict-origin-when-cross-origin"
+                      allowfullscreen
+                    ></iframe>
+                  </div>
+                </div>
+              </section>
 
-              <!-- 2) Scenario -->
+              <!-- Scenario -->
               <section class="lab-section" id="scenario">
                 <div class="lab-chips" aria-label="Tags">
                   <span class="lab-chip">
@@ -218,63 +244,88 @@
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">
                   Scenario
                 </h3>
+
                 <p>
                   The system is reporting high load and users are complaining
                   about slowness. You need a real-time view of CPU, memory, and
                   the processes contributing to the load. Your task is to use
-                  <code>top</code> to inspect system health, sort processes by
-                  memory usage, exit safely, and confirm how to access
-                  documentation for the tool.
+                  <code>top</code>
+                  to inspect system health, sort processes by memory usage,
+                  exit cleanly, and confirm how to access documentation for the
+                  tool.
                 </p>
+
                 <div class="lab-callout">
                   <div class="lab-callout-label">Operator context</div>
                   <p class="m-b-0">
-                    <code>top</code> is often the first live telemetry you grab
-                    during an incident. It helps you answer “is this CPU-bound,
+                    <code>top</code>
+                    is often the first live telemetry you grab during an
+                    incident. It helps you answer “is this CPU-bound,
                     memory-bound, or just too many runnable tasks” before you
                     take corrective action.
                   </p>
                 </div>
               </section>
 
-              <!-- 3) Objective -->
+              <!-- Objective -->
               <section class="lab-section alt-background" id="objective">
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">
                   Objective
                 </h3>
                 <ul>
-                  <li>Launch <code>top</code> to view live system utilization.</li>
-                  <li>Interpret the header sections (load, CPU, memory, swap).</li>
-                  <li>Sort processes by memory usage inside <code>top</code>.</li>
+                  <li>
+                    Launch
+                    <code>top</code>
+                    to view live system utilization.
+                  </li>
+                  <li>
+                    Interpret the header sections (load, CPU, memory, swap).
+                  </li>
+                  <li>
+                    Sort processes by memory usage inside
+                    <code>top</code>
+                    .
+                  </li>
                   <li>Exit the viewer cleanly.</li>
-                  <li>Display help and documentation for <code>top</code>.</li>
+                  <li>
+                    Display help and documentation for
+                    <code>top</code>
+                    .
+                  </li>
                 </ul>
               </section>
 
-              <!-- 4) What You'll Practice -->
-              <section class="lab-section" id="practice">
+              <!-- Concepts (no alt-background moving forward) -->
+              <section class="lab-section" id="concepts">
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">
-                  What You’ll Practice
+                  Concepts
                 </h3>
-
-                <ul class="m-t-10">
+                <ul>
                   <li>
-                    Real-time system monitoring with <code>top</code>.
+                    Load average as a signal of runnable queue pressure versus
+                    CPU saturation.
                   </li>
                   <li>
-                    Reading load average, task states, CPU breakdown, memory, and swap.
+                    Task states (running, sleeping, stopped, zombie) and what
+                    they imply operationally.
                   </li>
                   <li>
-                    Interactive sorting inside <code>top</code> using a single keypress.
+                    CPU breakdown (user, system, iowait) to distinguish compute
+                    load from storage waits.
                   </li>
                   <li>
-                    Exiting safely (<code>q</code>) and locating usage help
-                    (<code>top --help</code> or <code>man top</code>).
+                    Memory versus cache behavior and when swap activity becomes
+                    an incident indicator.
+                  </li>
+                  <li>
+                    Interactive sorting inside
+                    <code>top</code>
+                    for rapid triage (memory-heavy versus CPU-heavy processes).
                   </li>
                 </ul>
               </section>
 
-              <!-- 5) Commands Walkthrough -->
+              <!-- Walkthrough -->
               <section class="lab-section alt-background" id="walkthrough">
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">
                   Walkthrough
@@ -302,15 +353,15 @@
                   </div>
 
                   <p>
-                    <code>top</code> provides a live view of system utilization
-                    and the processes consuming resources. The header gives you
-                    quick health signals like load average, task states, CPU
-                    breakdown, and memory pressure.
+                    <code>top</code>
+                    provides a live view of system utilization and the
+                    processes consuming resources. The header gives fast health
+                    signals like load average, task states, CPU breakdown, and
+                    memory pressure.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
-                    
-                    <pre><code id="verify-step-1">top - 10:15:01 up  1:23,  2 users,  load average: 0.25, 0.30, 0.28
+                    <pre><code>top - 10:15:01 up  1:23,  2 users,  load average: 0.25, 0.30, 0.28
 Tasks: 150 total,   1 running, 149 sleeping,   0 stopped,   0 zombie
 %Cpu(s):  3.2 us,  1.5 sy,  0.0 ni, 94.8 id,  0.4 wa,  0.0 hi,  0.1 si,  0.0 st
 MiB Mem :   7820.9 total,   2988.2 free,   1075.4 used,   3757.3 buff/cache
@@ -348,15 +399,17 @@ PID USER      PR  NI    VIRT    RES    SHR S  %CPU %MEM     TIME+ COMMAND
                   </div>
 
                   <p>
-                    While <code>top</code> is running, pressing
-                    <code>M</code> sorts the process list by memory usage. This
-                    helps you quickly identify memory-heavy workloads when the
-                    box feels slow due to pressure on RAM or cache behavior.
+                    While
+                    <code>top</code>
+                    is running, pressing
+                    <code>M</code>
+                    sorts the process list by memory usage. Use this when the
+                    system feels slow due to RAM pressure or aggressive cache
+                    churn.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
-                    
-                    <pre><code id="verify-step-2"># Expected result:
+                    <pre><code># Expected result:
 # Process list reorders with highest %MEM / RES usage at the top.</code></pre>
                   </div>
                 </div>
@@ -383,13 +436,15 @@ PID USER      PR  NI    VIRT    RES    SHR S  %CPU %MEM     TIME+ COMMAND
                   </div>
 
                   <p>
-                    Press <code>q</code> to quit <code>top</code> cleanly and
-                    return to your shell.
+                    Press
+                    <code>q</code>
+                    to quit
+                    <code>top</code>
+                    cleanly and return to your shell.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
-                    
-                    <pre><code id="verify-step-3"># Expected result:
+                    <pre><code># Expected result:
 # top exits and you return to your prompt.</code></pre>
                   </div>
                 </div>
@@ -398,12 +453,12 @@ PID USER      PR  NI    VIRT    RES    SHR S  %CPU %MEM     TIME+ COMMAND
                 <div class="lab-step">
                   <div class="lab-step-title">
                     <strong class="font-alt">Step 4</strong>
-                    : Display help options for the top command (outside of top).
+                    : Confirm help and documentation for top.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
-                      <span>Command</span>
+                      <span>Commands</span>
                       <button
                         class="lab-copy-btn"
                         type="button"
@@ -418,22 +473,120 @@ man top</code></pre>
                   </div>
 
                   <p>
-                    Use <code>top --help</code> for a quick options summary or
-                    <code>man top</code> for the full manual. This is where you
-                    confirm keybinds, sort behavior, and flags you can use in
-                    scripts or incident runbooks.
+                    Use
+                    <code>top --help</code>
+                    for a quick options summary or
+                    <code>man top</code>
+                    for the full manual. This is where you confirm keybinds,
+                    sort behavior, and flags you may want in runbooks.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
-                    
-                    <pre><code id="verify-step-4"># Expected result:
-# Help output or the top manual page opens successfully.</code></pre>
+                    <pre><code># Expected result:
+# Help output prints or the manual page opens successfully.</code></pre>
                   </div>
                 </div>
               </section>
 
-              <!-- 8) Reference -->
-              <!-- 9) Reference -->
+              <!-- Common breakpoints -->
+              <section class="lab-section" id="breakpoints">
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  Common breakpoints
+                </h3>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">
+                    Load is high but %Cpu id remains high
+                  </div>
+                  <p class="m-b-0">
+                    This often means the system is not CPU-bound. Check
+                    <code>%Cpu wa</code>
+                    for iowait and review the task count. High load can also
+                    come from many runnable or uninterruptible tasks even when
+                    the CPU is mostly idle.
+                  </p>
+                </div>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">
+                    Swap is growing and the system becomes unresponsive
+                  </div>
+                  <p class="m-b-0">
+                    Sustained swap usage can indicate memory pressure. Sort by
+                    memory with
+                    <code>M</code>
+                    and identify the largest resident sets. Expect latency and
+                    “stalls” when the box is paging heavily.
+                  </p>
+                </div>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">
+                    top does not accept keypresses
+                  </div>
+                  <p class="m-b-0">
+                    Ensure the terminal window is focused. If you are inside a
+                    nested session (for example SSH inside tmux), confirm you
+                    are sending input to the correct pane/session.
+                  </p>
+                </div>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">
+                    Process list moves too fast to read
+                  </div>
+                  <p class="m-b-0">
+                    You are likely dealing with bursty CPU usage or many short
+                    lived processes. Use sorting (
+                    <code>M</code>
+                    ) to stabilize the view around the top consumers, then
+                    capture follow-up evidence with the manual for supported
+                    non-interactive flags if needed.
+                  </p>
+                </div>
+              </section>
+
+              <!-- Cleanup -->
+              <section class="lab-section alt-background" id="cleanup">
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  Cleanup checklist
+                </h3>
+
+                <p>
+                  This lab is read-only. Cleanup is confirming you exited
+                  <code>top</code>
+                  and captured the signals you needed (load, CPU breakdown,
+                  memory/swap, and the top resource consumers).
+                </p>
+
+                <div class="lab-codeblock m-b-40 m-t-40">
+                  <div class="lab-codeblock-header">
+                    <span>Commands</span>
+                    <button
+                      class="lab-copy-btn"
+                      type="button"
+                      data-copy="#cmd-cleanup"
+                    >
+                      Copy
+                    </button>
+                  </div>
+                  <pre><code id="cmd-cleanup">top
+# Inside top:
+# M
+# q</code></pre>
+                </div>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">Success signal</div>
+                  <p class="m-b-0">
+                    You can explain whether the box is CPU-bound, memory-bound,
+                    or waiting on I/O, and you can name the top processes
+                    driving the pressure.
+                  </p>
+                </div>
+              </section>
+
+              <!-- Reference -->
               <section class="lab-section" id="reference">
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">
                   Reference
@@ -444,47 +597,52 @@ man top</code></pre>
                     <code>top</code>
                     : Interactive real-time system monitor showing load, CPU,
                     memory, and per-process usage.
-                  </li>
-
-                  <li>
-                    <code>M</code>
-                    (inside <code>top</code>)
-                    : Sorts the process list by memory usage.
-                  </li>
-
-                  <li>
-                    <code>q</code>
-                    (inside <code>top</code>)
-                    : Quits the viewer and returns to the shell.
+                    <ul>
+                      <li>
+                        <code>M</code>
+                        (inside <code>top</code>) : Sorts the process list by
+                        memory usage.
+                      </li>
+                      <li>
+                        <code>q</code>
+                        (inside <code>top</code>) : Quits <code>top</code> and
+                        returns to the shell.
+                      </li>
+                    </ul>
                   </li>
 
                   <li>
                     <code>top --help</code>
                     : Displays a quick summary of command-line options.
+                    <ul>
+                      <li>
+                        <code>--help</code>
+                        : Prints built-in usage text (options summary) and
+                        exits.
+                      </li>
+                    </ul>
                   </li>
 
                   <li>
                     <code>man top</code>
-                    : Opens the full manual page with keybinds and behavior details.
+                    : Opens the manual page for <code>top</code>.
+                    <ul>
+                      <li>
+                        <code>man</code>
+                        : Manual page viewer.
+                      </li>
+                      <li>
+                        <code>top</code>
+                        : The manual page topic to open.
+                      </li>
+                    </ul>
                   </li>
                 </ul>
               </section>
-
-              <!-- Lab Pagination -->
             </div>
             <!-- /main -->
           </div>
           <!-- /row -->
-          <nav class="lab-pagination">
-            <a
-              id="prev-lab"
-              class="lab-nav-link"
-              href="#"
-              aria-label="Previous lab"
-            >
-              &uArr;
-            </a>
-          </nav>
         </div>
         <!-- /container -->
       </section>
@@ -544,7 +702,6 @@ man top</code></pre>
     <script src="../assets/js/imagesloaded.pkgd.js"></script>
     <script src="../assets/js/isotope.pkgd.min.js"></script>
     <script src="../assets/js/packery-mode.pkgd.min.js"></script>
-    <script src="../assets/js/packery-mode.pkgd.min.js"></script>
     <script src="../assets/js/appear.js"></script>
     <script src="../assets/js/jquery.easing.1.3.js"></script>
     <script src="../assets/js/wow.min.js"></script>
@@ -556,5 +713,9 @@ man top</code></pre>
 
     <!-- Lab page JS (new) -->
     <script src="../assets/js/lab.js"></script>
+
+    <script>
+      document.getElementById('year').textContent = new Date().getFullYear()
+    </script>
   </body>
 </html>

@@ -37,7 +37,7 @@
     <link href="../assets/css/style.css" rel="stylesheet" />
     <link href="../assets/css/docs.css" rel="stylesheet" />
 
-    <!-- Lab page styles (new) -->
+    <!-- Lab page styles -->
     <link href="../assets/css/lab.css" rel="stylesheet" />
 
     <!-- Fonts -->
@@ -67,9 +67,19 @@
             <li class="slidedown">
               <a href="#">Portfolio</a>
               <ul>
-                <li><a href="https://github.com/vonds/exit_0" target="_blank" rel="noopener">exit_0</a></li>
-                <li><a href="docs.html" target="_blank" rel="noopener">exit_0 Documentation</a></li>
-                <li><a href="https://github.com/vonds/sentinel" target="_blank" rel="noopener">Sentinel</a></li>
+                <li>
+                  <a href="https://github.com/vonds/exit_0" target="_blank">
+                    exit_0
+                  </a>
+                </li>
+                <li>
+                  <a href="https://github.com/vonds/sentinel" target="_blank">
+                    Sentinel
+                  </a>
+                </li>
+                <li>
+                  <a href="docs.html" target="_blank">exit_0 Documentation</a>
+                </li>
               </ul>
             </li>
 
@@ -141,7 +151,8 @@
           <h2 class="font-alt module-title m-t-60">
             Lab 46: System Logs Monitor (/var/log)
           </h2>
-		  <nav class="lab-pagination">
+
+          <nav class="lab-pagination">
             <a
               id="prev-lab"
               class="lab-nav-link"
@@ -159,15 +170,22 @@
               &raquo;
             </a>
           </nav>
+
           <div class="row">
             <!-- LEFT SIDEBAR -->
             <div class="col-sm-4 col-md-3 lab-sidebar">
               <div class="docs-sidebar">
                 <div class="docs-widget">
-                  <h5 class="widget-title"><a href="./docs.html">Back to Lab Index</a></h5>
+                  <h5 class="widget-title">
+                    <a href="./docs.html">Back to Lab Index</a>
+                  </h5>
                   <ul class="docs-nav">
                     <li><a href="#scenario">Scenario</a></li>
+                    <li><a href="#objective">Objective</a></li>
+                    <li><a href="#concepts">Concepts</a></li>
                     <li><a href="#walkthrough">Walkthrough</a></li>
+                    <li><a href="#breakpoints">Breakpoints</a></li>
+                    <li><a href="#cleanup">Cleanup</a></li>
                     <li><a href="#reference">Reference</a></li>
                   </ul>
                 </div>
@@ -176,33 +194,31 @@
 
             <!-- MAIN CONTENT -->
             <div class="col-sm-8 col-md-9 lab-doc">
-              <!-- 1) Title + Summary (2 sentences max) -->
               <p class="m-b-20 lab-summary">
                 Investigate failed SSH attempts and missing scheduled-task output
-                by reviewing common system logs under
+                by reviewing common logs under
                 <code>/var/log</code>
-                . Use targeted filtering and simple counting to quantify activity and
-                validate what happened.
+                . Use targeted filtering and simple counting to quantify activity
+                and confirm what happened.
               </p>
 
+              <!-- Video (kept on page; removed from left panel) -->
               <section class="lab-section" id="video" aria-label="Lab video">
-  				<div class="lab-video">
-    				<div class="lab-video-embed text-center">
-      					<iframe 
-							width="560" 
-							height="315" 
-							src="https://www.youtube.com/embed/uJk54bhaadA?si=seGSukCoMFN7ohRo" 
-							title="YouTube video player" 
-							frameborder="0" 
-							allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
-							referrerpolicy="strict-origin-when-cross-origin" 
-							allowfullscreen>
-						</iframe>
-    				</div>
-  				</div>
-			</section>
+                <div class="lab-video">
+                  <div class="lab-video-embed text-center">
+                    <iframe
+                      src="https://www.youtube.com/embed/uJk54bhaadA?si=seGSukCoMFN7ohRo"
+                      title="YouTube video player"
+                      frameborder="0"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                      referrerpolicy="strict-origin-when-cross-origin"
+                      allowfullscreen
+                    ></iframe>
+                  </div>
+                </div>
+              </section>
 
-              <!-- 2) Scenario -->
+              <!-- Scenario -->
               <section class="lab-section" id="scenario">
                 <div class="lab-chips" aria-label="Tags">
                   <span class="lab-chip">
@@ -219,87 +235,92 @@
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">
                   Scenario
                 </h3>
+
                 <p>
-                  The web server team reports two issues: repeated SSH login failures and
-                  cron jobs that appear to run but do not produce expected output.
-                  Your task is to review logs in
+                  The web server team reports two issues: repeated SSH login
+                  failures and cron jobs that appear to run but do not produce
+                  expected output. Your task is to review logs in
                   <code>/var/log</code>
-                  to confirm what happened, isolate relevant entries, and quantify activity.
+                  to confirm what happened, isolate relevant entries, and
+                  quantify activity.
                 </p>
 
                 <div class="lab-callout">
                   <div class="lab-callout-label">Operator context</div>
                   <p class="m-b-0">
-                    This is a fast triage workflow: verify the signal, collect evidence,
-                    and decide whether you are dealing with brute-force attempts, a misconfigured job,
-                    or a logging gap.
+                    This is a fast triage workflow: verify the signal, collect
+                    evidence, and decide whether you are dealing with brute-force
+                    attempts, a misconfigured job, or a logging gap.
                   </p>
                 </div>
               </section>
 
-              <!-- 3) Objective -->
+              <!-- Objective -->
               <section class="lab-section alt-background" id="objective">
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">
                   Objective
                 </h3>
                 <ul>
                   <li>
-                    Identify where general system events are logged on the host.
+                    Confirm which log files record general system events and
+                    authentication activity.
                   </li>
                   <li>
                     Filter authentication logs to extract failed SSH attempts.
                   </li>
                   <li>
-                    Confirm cron log presence and review cron execution entries.
+                    Confirm cron logging exists and review execution entries.
                   </li>
                   <li>
                     Monitor live log updates to observe events in real time.
                   </li>
                   <li>
-                    Count SSH-related events to quantify activity for reporting.
+                    Count SSH-related log entries to quantify activity for
+                    reporting.
                   </li>
                 </ul>
               </section>
 
-              <!-- 4) What You'll Practice -->
-              <section class="lab-section" id="practice">
+              <!-- Concepts (no alt-background moving forward) -->
+              <section class="lab-section" id="concepts">
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">
-                  What You’ll Practice
+                  Concepts
                 </h3>
-
-                <ul class="m-t-10">
+                <ul>
                   <li>
-                    Navigating common log locations in
+                    Traditional log layout under
                     <code>/var/log</code>
-                    and understanding what each log is for.
+                    and distro differences in file naming.
                   </li>
                   <li>
-                    Reading large logs efficiently with
+                    Efficient large-file review using
                     <code>less</code>
-                    .
-                  </li>
-                  <li>
-                    Filtering auth failures with
+                    and targeted filtering with
                     <code>grep</code>
                     .
                   </li>
                   <li>
-                    Validating cron logs and correlating scheduled jobs to execution entries.
+                    Authentication log signal: “failed password” versus “accepted
+                    password” and invalid-user probes.
                   </li>
                   <li>
-                    Live log monitoring with
+                    Cron execution evidence: proving a job triggered versus
+                    proving a job produced output.
+                  </li>
+                  <li>
+                    Real-time observation using
                     <code>tail -f</code>
-                    .
+                    while reproducing an event.
                   </li>
                   <li>
                     Counting events with
                     <code>wc -l</code>
-                    to produce actionable numbers.
+                    to create a first-pass metric.
                   </li>
                 </ul>
               </section>
 
-              <!-- 5) Commands Walkthrough -->
+              <!-- Walkthrough -->
               <section class="lab-section alt-background" id="walkthrough">
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">
                   Walkthrough
@@ -309,7 +330,7 @@
                 <div class="lab-step">
                   <div class="lab-step-title">
                     <strong class="font-alt">Step 1</strong>
-                    : View general system logs.
+                    : Identify the available logs under /var/log.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -323,20 +344,20 @@
                         Copy
                       </button>
                     </div>
-                    <pre><code id="cmd-step-1">less /var/log/syslog
-# OR (common on some distros)
-less /var/log/messages</code></pre>
+                    <pre><code id="cmd-step-1">ls -lh /var/log</code></pre>
                   </div>
 
                   <p>
-                    Start broad. General logs can confirm high-level events like service starts,
-                    session creation, and system state changes. This is also where you may spot related
-                    context (network flaps, daemon restarts, time sync issues).
+                    Start by confirming what files exist. Log file names and
+                    locations vary by distro and by whether the host is using
+                    rsyslog, syslog-ng, or journald forwarding. This step
+                    prevents you from searching for a file that is not used on
+                    the system.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code id="verify-step-1">Jul 19 13:45:33 logmon01 systemd[1]: Started Session 22 of user devstudent.
-Jul 19 13:45:35 logmon01 sshd[1145]: Failed password for invalid user root from 192.168.1.5 port 58233 ssh2</code></pre>
+                    <pre><code># Look for auth and system logs:
+# auth.log, secure, syslog, messages, cron, cron.log</code></pre>
                   </div>
                 </div>
 
@@ -344,12 +365,12 @@ Jul 19 13:45:35 logmon01 sshd[1145]: Failed password for invalid user root from 
                 <div class="lab-step">
                   <div class="lab-step-title">
                     <strong class="font-alt">Step 2</strong>
-                    : View failed authentication attempts.
+                    : Review general system events.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
-                      <span>Command</span>
+                      <span>Commands</span>
                       <button
                         class="lab-copy-btn"
                         type="button"
@@ -358,22 +379,21 @@ Jul 19 13:45:35 logmon01 sshd[1145]: Failed password for invalid user root from 
                         Copy
                       </button>
                     </div>
-                    <pre><code id="cmd-step-2">grep Failed /var/log/auth.log
-# OR
-cat /var/log/auth.log | grep Failed</code></pre>
+                    <pre><code id="cmd-step-2">less /var/log/syslog
+# OR (common on some distros)
+less /var/log/messages</code></pre>
                   </div>
 
                   <p>
-                    Authentication logs are the source of truth for SSH failures.
-                    Filtering on
-                    <code>Failed</code>
-                    is a quick way to confirm brute-force attempts, mis-typed credentials,
-                    or invalid-user probes.
+                    General logs provide context around service restarts, session
+                    activity, and system state changes. This is where you can
+                    correlate authentication spikes with reboots, network flaps,
+                    or service reloads.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code id="verify-step-2">Jul 19 13:45:35 logmon01 sshd[1145]: Failed password for invalid user root from 192.168.1.5 port 58233 ssh2
-Jul 19 13:46:02 logmon01 sshd[1148]: Failed password for devstudent from 10.0.2.15 port 49622 ssh2</code></pre>
+                    <pre><code># Use / in less to search for keywords:
+# sshd, CRON, systemd, error, warning</code></pre>
                   </div>
                 </div>
 
@@ -381,7 +401,7 @@ Jul 19 13:46:02 logmon01 sshd[1148]: Failed password for devstudent from 10.0.2.
                 <div class="lab-step">
                   <div class="lab-step-title">
                     <strong class="font-alt">Step 3</strong>
-                    : Check whether cron logs exist.
+                    : Extract failed SSH attempts from authentication logs.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -395,17 +415,21 @@ Jul 19 13:46:02 logmon01 sshd[1148]: Failed password for devstudent from 10.0.2.
                         Copy
                       </button>
                     </div>
-                    <pre><code id="cmd-step-3">ls /var/log/cron*</code></pre>
+                    <pre><code id="cmd-step-3">grep "Failed password" /var/log/auth.log</code></pre>
                   </div>
 
                   <p>
-                    Cron activity is logged in different places depending on the distro and syslog/journald setup.
-                    This step confirms whether you have dedicated cron logs to inspect and whether they are rotated.
+                    Authentication logs are the source of truth for SSH login
+                    failures. Filtering on
+                    <code>Failed password</code>
+                    isolates failed attempts and helps you distinguish
+                    brute-force behavior from normal user error.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code id="verify-step-3">/var/log/cron
-/var/log/cron.1</code></pre>
+                    <pre><code># Common patterns:
+# Failed password for invalid user <user> from <ip> port <port> ssh2
+# Failed password for <user> from <ip> port <port> ssh2</code></pre>
                   </div>
                 </div>
 
@@ -413,12 +437,12 @@ Jul 19 13:46:02 logmon01 sshd[1148]: Failed password for devstudent from 10.0.2.
                 <div class="lab-step">
                   <div class="lab-step-title">
                     <strong class="font-alt">Step 4</strong>
-                    : Review cron job logs.
+                    : Confirm cron logging exists and review execution entries.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
-                      <span>Command</span>
+                      <span>Commands</span>
                       <button
                         class="lab-copy-btn"
                         type="button"
@@ -427,18 +451,23 @@ Jul 19 13:46:02 logmon01 sshd[1148]: Failed password for devstudent from 10.0.2.
                         Copy
                       </button>
                     </div>
-                    <pre><code id="cmd-step-4">cat /var/log/cron</code></pre>
+                    <pre><code id="cmd-step-4">ls /var/log/cron*
+# Then review:
+less /var/log/cron</code></pre>
                   </div>
 
                   <p>
-                    Cron logs confirm that the scheduler executed a command under a specific user context.
-                    If a job “ran” but produced no result, this log helps you prove that cron triggered it,
-                    and then you can pivot to script permissions, paths, environment, or output redirection.
+                    Cron activity is logged in different places depending on the
+                    distro and logging stack. Cron logs confirm that the
+                    scheduler executed a command under a specific user context.
+                    If output is missing, cron logs help you prove the trigger
+                    happened before you pivot to script paths, environment, and
+                    redirection.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code id="verify-step-4">Jul 19 12:00:01 logmon01 CRON[1010]: (root) CMD (backup.sh)
-Jul 19 12:05:01 logmon01 CRON[1022]: (devstudent) CMD (echo 'Hello from CRON')</code></pre>
+                    <pre><code># Look for entries like:
+# CRON[pid]: (user) CMD (<command>)</code></pre>
                   </div>
                 </div>
 
@@ -446,12 +475,12 @@ Jul 19 12:05:01 logmon01 CRON[1022]: (devstudent) CMD (echo 'Hello from CRON')</
                 <div class="lab-step">
                   <div class="lab-step-title">
                     <strong class="font-alt">Step 5</strong>
-                    : Monitor logs in real time.
+                    : Monitor log updates in real time while reproducing an event.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
-                      <span>Command</span>
+                      <span>Commands</span>
                       <button
                         class="lab-copy-btn"
                         type="button"
@@ -460,28 +489,28 @@ Jul 19 12:05:01 logmon01 CRON[1022]: (devstudent) CMD (echo 'Hello from CRON')</
                         Copy
                       </button>
                     </div>
-                    <pre><code id="cmd-step-5">tail -f /var/log/syslog
+                    <pre><code id="cmd-step-5">tail -f /var/log/auth.log
 # OR
-tail -f /var/log/messages</code></pre>
+tail -f /var/log/syslog</code></pre>
                   </div>
 
                   <p>
-                    Live monitoring is useful when you are reproducing a login attempt,
-                    restarting a service, or validating that an event is being written as expected.
-                    It gives you immediate feedback without repeatedly re-opening files.
+                    Live monitoring is useful when you are reproducing a login
+                    failure, validating that sshd is writing events, or proving
+                    that log updates are flowing. It gives immediate feedback
+                    without repeatedly reopening files.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code id="verify-step-5">Jul 19 14:01:55 logmon01 systemd[1]: Started Session 23 of user root.
-Jul 19 14:01:57 logmon01 sshd[1222]: Accepted password for root from 192.168.1.5 port 58234 ssh2</code></pre>
+                    <pre><code># Stop tail with Ctrl+C once you capture the evidence window.</code></pre>
                   </div>
                 </div>
 
                 <!-- Step 6 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
-                    <strong class="font-alt bold">Step 6</strong>
-                    : Count SSH-related attempts for today.
+                    <strong class="font-alt">Step 6</strong>
+                    : Quantify SSH-related activity.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -499,19 +528,121 @@ Jul 19 14:01:57 logmon01 sshd[1222]: Accepted password for root from 192.168.1.5
                   </div>
 
                   <p>
-                    Counting entries gives you a quick metric for reporting and escalation.
-                    This is not a perfect “attempts” counter (one attempt can generate multiple lines),
-                    but it is a useful first number when you are triaging under time pressure.
+                    Counting entries provides a quick metric for reporting. This
+                    is not a perfect “attempt counter” (one login can generate
+                    multiple lines), but it is a useful first number when you
+                    are triaging under time pressure.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code id="verify-step-6">42</code></pre>
+                    <pre><code># For a narrower count of failures only:
+# grep "Failed password" /var/log/auth.log | wc -l</code></pre>
                   </div>
                 </div>
               </section>
 
-              <!-- 8) Reference -->
-              <!-- 9) Reference -->
+              <!-- Common breakpoints -->
+              <section class="lab-section" id="breakpoints">
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  Common breakpoints
+                </h3>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">
+                    auth.log does not exist on this host
+                  </div>
+                  <p class="m-b-0">
+                    Some distros log authentication events to
+                    <code>/var/log/secure</code>
+                    instead. Confirm the available files under
+                    <code>/var/log</code>
+                    and re-run the same filters against the correct log.
+                  </p>
+                </div>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">
+                    Cron log is missing or empty
+                  </div>
+                  <p class="m-b-0">
+                    Cron may be logging into the general syslog stream or only
+                    into journald. Check
+                    <code>/var/log/syslog</code>
+                    or
+                    <code>/var/log/messages</code>
+                    for
+                    <code>CRON</code>
+                    entries before assuming the scheduler is not running.
+                  </p>
+                </div>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">
+                    grep output is too noisy or too sparse
+                  </div>
+                  <p class="m-b-0">
+                    Tune the pattern. Target
+                    <code>"Failed password"</code>
+                    for failures or filter by a known username or IP address.
+                    If you suspect rotation, check rotated logs (for example
+                    <code>auth.log.1</code>
+                    ) before concluding activity stopped.
+                  </p>
+                </div>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">
+                    tail -f shows no updates during a reproduced event
+                  </div>
+                  <p class="m-b-0">
+                    Confirm you are following the correct file and that the
+                    logging pipeline is functioning. If the host uses journald
+                    as the primary sink, text logs may not update the way you
+                    expect.
+                  </p>
+                </div>
+              </section>
+
+              <!-- Cleanup -->
+              <section class="lab-section alt-background" id="cleanup">
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  Cleanup checklist
+                </h3>
+
+                <p>
+                  This lab is read-only. Your cleanup is to capture evidence
+                  (filtered outputs and timestamps) and stop any live-follow
+                  sessions once you have the required window.
+                </p>
+
+                <div class="lab-codeblock m-b-40 m-t-40">
+                  <div class="lab-codeblock-header">
+                    <span>Commands</span>
+                    <button
+                      class="lab-copy-btn"
+                      type="button"
+                      data-copy="#cmd-cleanup"
+                    >
+                      Copy
+                    </button>
+                  </div>
+                  <pre><code id="cmd-cleanup">ls -lh /var/log
+grep "Failed password" /var/log/auth.log
+ls /var/log/cron*
+less /var/log/cron</code></pre>
+                </div>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">Success signal</div>
+                  <p class="m-b-0">
+                    You can point to the exact log lines that prove the
+                    authentication failures and cron execution activity, and you
+                    have a count suitable for reporting.
+                  </p>
+                </div>
+              </section>
+
+              <!-- Reference -->
               <section class="lab-section" id="reference">
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">
                   Reference
@@ -519,73 +650,95 @@ Jul 19 14:01:57 logmon01 sshd[1222]: Accepted password for root from 192.168.1.5
 
                 <ul class="lab-reference-list">
                   <li>
-                    <code>/var/log</code>
-                    : Common location for traditional text-based logs (syslog, auth, cron, etc.).
+                    <code>ls -lh /var/log</code>
+                    : Lists log files with sizes and timestamps.
+                    <ul>
+                      <li>
+                        <code>-l</code>
+                        : Long listing format.
+                      </li>
+                      <li>
+                        <code>-h</code>
+                        : Human-readable sizes.
+                      </li>
+                      <li>
+                        <code>/var/log</code>
+                        : Standard directory for traditional text logs.
+                      </li>
+                    </ul>
                   </li>
 
                   <li>
-                    <code>less</code>
-                    : Interactive pager for reading large files efficiently (search with
-                    <code>/</code>
-                    and quit with
-                    <code>q</code>
-                    ).
-                  </li>
-
-                  <li>
-                    <code>/var/log/syslog</code>
-                    /
-                    <code>/var/log/messages</code>
-                    : General system logging (file depends on distro/logging configuration).
-                  </li>
-
-                  <li>
-                    <code>/var/log/auth.log</code>
-                    : Authentication-related logs (SSH login failures/successes are often recorded here).
+                    <code>less &lt;file&gt;</code>
+                    : Reads a log file interactively.
+                    <ul>
+                      <li>
+                        <code>/</code>
+                        : Search forward for a pattern.
+                      </li>
+                      <li>
+                        <code>q</code>
+                        : Quit.
+                      </li>
+                    </ul>
                   </li>
 
                   <li>
                     <code>grep &lt;pattern&gt; &lt;file&gt;</code>
-                    : Filters lines matching a pattern, useful for narrowing log output quickly.
+                    : Filters lines matching a pattern.
+                    <ul>
+                      <li>
+                        <code>"Failed password"</code>
+                        : Common sshd failure string in authentication logs.
+                      </li>
+                    </ul>
                   </li>
 
                   <li>
                     <code>ls /var/log/cron*</code>
                     : Confirms cron log files and rotated variants exist.
-                  </li>
-
-                  <li>
-                    <code>cat /var/log/cron</code>
-                    : Displays cron execution entries (what ran, when, and under which user).
+                    <ul>
+                      <li>
+                        <code>*</code>
+                        : Shell glob matching rotated files (for example
+                        <code>cron.1</code>
+                        ).
+                      </li>
+                    </ul>
                   </li>
 
                   <li>
                     <code>tail -f &lt;file&gt;</code>
-                    : Follows a file as new lines are appended, useful for real-time monitoring.
+                    : Follows a file as new lines are appended.
+                    <ul>
+                      <li>
+                        <code>-f</code>
+                        : Follow updates as the file grows.
+                      </li>
+                    </ul>
                   </li>
 
                   <li>
-                    <code>wc -l</code>
-                    : Counts lines, often used with grep to quantify events in logs.
+                    <code>grep &lt;pattern&gt; &lt;file&gt; | wc -l</code>
+                    : Counts matching log lines.
+                    <ul>
+                      <li>
+                        <code>|</code>
+                        : Pipes output from the left command into the right
+                        command.
+                      </li>
+                      <li>
+                        <code>wc -l</code>
+                        : Counts lines.
+                      </li>
+                    </ul>
                   </li>
                 </ul>
               </section>
-
-              <!-- Lab Pagination -->
             </div>
             <!-- /main -->
           </div>
           <!-- /row -->
-          <nav class="lab-pagination">
-            <a
-                id="prev-lab"
-                class="lab-nav-link"
-                href="#"
-                aria-label="Previous lab"
-            >
-                &uArr;
-            </a>
-          </nav>
         </div>
         <!-- /container -->
       </section>
@@ -636,7 +789,7 @@ Jul 19 14:01:57 logmon01 sshd[1222]: Accepted password for root from 192.168.1.5
 
     <!-- Javascript files (your existing) -->
     <script src="../assets/js/jquery-2.2.4.min.js"></script>
-    <script src="../assets/bootstrap/js/bootstrap.min.js"></script>
+    <script src="../assets/bootstrap/js/bootstrap.min.css"></script>
     <script src="../assets/js/jquery.superslides.min.js"></script>
     <script src="../assets/js/jquery.mb.YTPlayer.min.js"></script>
     <script src="../assets/js/jquery.magnific-popup.min.js"></script>
@@ -644,7 +797,6 @@ Jul 19 14:01:57 logmon01 sshd[1222]: Accepted password for root from 192.168.1.5
     <script src="../assets/js/jquery.simple-text-rotator.min.js"></script>
     <script src="../assets/js/imagesloaded.pkgd.js"></script>
     <script src="../assets/js/isotope.pkgd.min.js"></script>
-    <script src="../assets/js/packery-mode.pkgd.min.js"></script>
     <script src="../assets/js/packery-mode.pkgd.min.js"></script>
     <script src="../assets/js/appear.js"></script>
     <script src="../assets/js/jquery.easing.1.3.js"></script>
@@ -657,5 +809,9 @@ Jul 19 14:01:57 logmon01 sshd[1222]: Accepted password for root from 192.168.1.5
 
     <!-- Lab page JS (new) -->
     <script src="../assets/js/lab.js"></script>
+
+    <script>
+      document.getElementById('year').textContent = new Date().getFullYear()
+    </script>
   </body>
 </html>

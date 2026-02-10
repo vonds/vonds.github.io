@@ -67,9 +67,27 @@
             <li class="slidedown">
               <a href="#">Portfolio</a>
               <ul>
-                <li><a href="https://github.com/vonds/exit_0" target="_blank" rel="noopener">exit_0</a></li>
-                <li><a href="docs.html" target="_blank" rel="noopener">exit_0 Documentation</a></li>
-                <li><a href="https://github.com/vonds/sentinel" target="_blank" rel="noopener">Sentinel</a></li>
+                <li>
+                  <a
+                    href="https://github.com/vonds/exit_0"
+                    target="_blank"
+                    rel="noopener"
+                    >exit_0</a
+                  >
+                </li>
+                <li>
+                  <a href="docs.html" target="_blank" rel="noopener"
+                    >exit_0 Documentation</a
+                  >
+                </li>
+                <li>
+                  <a
+                    href="https://github.com/vonds/sentinel"
+                    target="_blank"
+                    rel="noopener"
+                    >Sentinel</a
+                  >
+                </li>
               </ul>
             </li>
 
@@ -141,7 +159,7 @@
           <h2 class="font-alt module-title m-t-60">
             Lab 43: Scheduled Task Intervals
           </h2>
-		  <nav class="lab-pagination">
+          <nav class="lab-pagination">
             <a
               id="prev-lab"
               class="lab-nav-link"
@@ -164,10 +182,16 @@
             <div class="col-sm-4 col-md-3 lab-sidebar">
               <div class="docs-sidebar">
                 <div class="docs-widget">
-                  <h5 class="widget-title"><a href="./docs.html">Back to Lab Index</a></h5>
+                  <h5 class="widget-title">
+                    <a href="./docs.html">Back to Lab Index</a>
+                  </h5>
                   <ul class="docs-nav">
                     <li><a href="#scenario">Scenario</a></li>
+                    <li><a href="#objective">Objective</a></li>
+                    <li><a href="#concepts">Concepts</a></li>
                     <li><a href="#walkthrough">Walkthrough</a></li>
+                    <li><a href="#breakpoints">Breakpoints</a></li>
+                    <li><a href="#cleanup">Cleanup</a></li>
                     <li><a href="#reference">Reference</a></li>
                   </ul>
                 </div>
@@ -176,7 +200,6 @@
 
             <!-- MAIN CONTENT -->
             <div class="col-sm-8 col-md-9 lab-doc">
-              <!-- 1) Title + Summary (2 sentences max) -->
               <p class="m-b-20 lab-summary">
                 Configure system-wide recurring tasks using the correct cron
                 interval directories and enforce executable permissions.
@@ -184,24 +207,23 @@
                 confirming each script’s purpose and run frequency.
               </p>
 
+              <!-- Video -->
               <section class="lab-section" id="video" aria-label="Lab video">
-  				<div class="lab-video">
-    				<div class="lab-video-embed text-center">
-      					<iframe 
-							width="560" 
-							height="315" 
-							src="https://www.youtube.com/embed/uJk54bhaadA?si=seGSukCoMFN7ohRo" 
-							title="YouTube video player" 
-							frameborder="0" 
-							allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
-							referrerpolicy="strict-origin-when-cross-origin" 
-							allowfullscreen>
-						</iframe>
-    				</div>
-  				</div>
-			</section>
+                <div class="lab-video">
+                  <div class="lab-video-embed text-center">
+                    <iframe
+                      src="https://www.youtube.com/embed/uJk54bhaadA?si=seGSukCoMFN7ohRo"
+                      title="YouTube video player"
+                      frameborder="0"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                      referrerpolicy="strict-origin-when-cross-origin"
+                      allowfullscreen
+                    ></iframe>
+                  </div>
+                </div>
+              </section>
 
-              <!-- 2) Scenario -->
+              <!-- Scenario -->
               <section class="lab-section" id="scenario">
                 <div class="lab-chips" aria-label="Tags">
                   <span class="lab-chip">
@@ -228,92 +250,59 @@
                 <div class="lab-callout">
                   <div class="lab-callout-label">Operator context</div>
                   <p class="m-b-0">
-                    This is the kind of baseline automation that prevents
-                    log sprawl, keeps backups consistent, and makes routine
-                    maintenance repeatable without someone manually running
-                    commands.
+                    This is baseline automation work. Correct placement and
+                    executable permissions are what separate a working schedule
+                    from a silent failure.
                   </p>
                 </div>
               </section>
 
-              <!-- 3) Objective -->
+              <!-- Objective -->
               <section class="lab-section alt-background" id="objective">
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">
                   Objective
                 </h3>
                 <ul>
                   <li>
-                    Navigate and identify system-wide cron interval directories.
+                    Identify the system-wide cron interval directories.
                   </li>
                   <li>
-                    Create an hourly maintenance script in
-                    <code>/etc/cron.hourly</code>
-                    .
+                    Create an hourly maintenance script.
                   </li>
+                  <li>Create a daily backup script.</li>
+                  <li>Create a monthly archive sync script.</li>
                   <li>
-                    Create a daily backup script in
-                    <code>/etc/cron.daily</code>
-                    .
-                  </li>
-                  <li>
-                    Create a monthly archive sync script in
-                    <code>/etc/cron.monthly</code>
-                    .
-                  </li>
-                  <li>
-                    Verify placement by listing
-                    <code>/etc/cron.*</code>
-                    and confirming scripts exist and are executable.
+                    Verify script placement and executable permissions.
                   </li>
                 </ul>
               </section>
 
-              <!-- 4) What You'll Practice -->
-              <section class="lab-section" id="practice">
+              <!-- Concepts -->
+              <section class="lab-section" id="concepts">
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">
-                  What You’ll Practice
+                  Concepts
                 </h3>
-
-                <ul class="m-t-10">
+                <ul>
                   <li>
-                    Understanding interval-based scheduling via
-                    <code>/etc/cron.hourly</code>
-                    ,
-                    <code>/etc/cron.daily</code>
-                    ,
-                    <code>/etc/cron.weekly</code>
-                    , and
-                    <code>/etc/cron.monthly</code>
-                    .
+                    Interval-based scheduling using
+                    <code>/etc/cron.hourly</code>,
+                    <code>/etc/cron.daily</code>,
+                    <code>/etc/cron.weekly</code>,
+                    and <code>/etc/cron.monthly</code>.
                   </li>
                   <li>
-                    Creating small, realistic automation scripts with
-                    <code>vim</code>
-                    .
+                    System-wide drop-in cron directories versus user crontabs.
                   </li>
                   <li>
-                    Enforcing executable permissions using
-                    <code>chmod +x</code>
-                    so cron can run your scripts.
+                    Executable permissions as a requirement for cron scripts.
                   </li>
                   <li>
-                    Building maintenance workflows using
-                    <code>find</code>
-                    ,
-                    <code>tar</code>
-                    , and
-                    <code>rsync</code>
-                    in scripts.
-                  </li>
-                  <li>
-                    Troubleshooting placement and visibility using
-                    <code>ls</code>
-                    to confirm interval directories and scripts.
+                    Using small maintenance scripts to automate routine tasks.
                   </li>
                 </ul>
               </section>
 
-              <!-- 5) Commands Walkthrough -->
+              <!-- Walkthrough -->
               <section class="lab-section alt-background" id="walkthrough">
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">
                   Walkthrough
@@ -323,7 +312,7 @@
                 <div class="lab-step">
                   <div class="lab-step-title">
                     <strong class="font-alt">Step 1</strong>
-                    : Navigate to system-wide cron interval directories.
+                    : Inspect the cron interval directories.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -337,24 +326,20 @@
                         Copy
                       </button>
                     </div>
-                    <pre><code id="cmd-step-1">cd /etc/cron.*</code></pre>
+                    <pre><code id="cmd-step-1">ls /etc/cron.*</code></pre>
                   </div>
 
                   <p>
-                    The interval directories under
-                    <code>/etc</code>
-                    are the system-wide drop-in locations for recurring tasks.
-                    On many systems, scripts placed here are executed by the
-                    system cron framework at the matching frequency.
+                    These directories represent fixed scheduling intervals.
+                    Scripts placed here are executed automatically at the
+                    corresponding cadence.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
-                    
-                    <pre><code id="verify-step-1"># Common directories:
-# /etc/cron.hourly
-# /etc/cron.daily
-# /etc/cron.weekly
-# /etc/cron.monthly</code></pre>
+                    <pre><code>/etc/cron.daily/
+/etc/cron.hourly/
+/etc/cron.monthly/
+/etc/cron.weekly/</code></pre>
                   </div>
                 </div>
 
@@ -379,15 +364,8 @@
                     <pre><code id="cmd-step-2">sudo vim /etc/cron.hourly/cleanup_logs</code></pre>
                   </div>
 
-                  <p>
-                    Hourly tasks are for small, frequent maintenance operations.
-                    This example removes older log files to reduce disk growth.
-                    Keep these scripts fast and predictable.
-                  </p>
-
                   <div class="lab-codeblock m-b-40 m-t-40">
-                    
-                    <pre><code id="verify-step-2">#!/bin/bash
+                    <pre><code>#!/bin/bash
 find /var/log -type f -name '*.log' -mtime +3 -delete</code></pre>
                   </div>
                 </div>
@@ -412,17 +390,6 @@ find /var/log -type f -name '*.log' -mtime +3 -delete</code></pre>
                     </div>
                     <pre><code id="cmd-step-3">sudo chmod +x /etc/cron.hourly/cleanup_logs</code></pre>
                   </div>
-
-                  <p>
-                    Cron interval directories generally require executable
-                    scripts. If the file is not executable, it may be skipped
-                    even if it exists in the correct location.
-                  </p>
-
-                  <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code id="verify-step-3"># Confirm executable bit:
-# -rwxr-xr-x ... /etc/cron.hourly/cleanup_logs</code></pre>
-                  </div>
                 </div>
 
                 <!-- Step 4 -->
@@ -446,16 +413,8 @@ find /var/log -type f -name '*.log' -mtime +3 -delete</code></pre>
                     <pre><code id="cmd-step-4">sudo vim /etc/cron.daily/backup_home</code></pre>
                   </div>
 
-                  <p>
-                    Daily tasks are a good fit for backups and reports. This
-                    script generates a dated archive of
-                    <code>/home</code>
-                    to a backup location.
-                  </p>
-
                   <div class="lab-codeblock m-b-40 m-t-40">
-                    
-                    <pre><code id="verify-step-4">#!/bin/bash
+                    <pre><code>#!/bin/bash
 tar -czf /backup/home_$(date +%F).tar.gz /home</code></pre>
                   </div>
                 </div>
@@ -480,24 +439,13 @@ tar -czf /backup/home_$(date +%F).tar.gz /home</code></pre>
                     </div>
                     <pre><code id="cmd-step-5">sudo chmod +x /etc/cron.daily/backup_home</code></pre>
                   </div>
-
-                  <p>
-                    If you ever wonder why a cron directory script is not
-                    running, executable permissions are one of the first things
-                    to check.
-                  </p>
-
-                  <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code id="verify-step-5"># Confirm executable bit:
-# -rwxr-xr-x ... /etc/cron.daily/backup_home</code></pre>
-                  </div>
                 </div>
 
                 <!-- Step 6 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
                     <strong class="font-alt">Step 6</strong>
-                    : Verify all cron interval directories and contents.
+                    : Create a monthly sync script.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -511,23 +459,12 @@ tar -czf /backup/home_$(date +%F).tar.gz /home</code></pre>
                         Copy
                       </button>
                     </div>
-                    <pre><code id="cmd-step-6">ls /etc/cron.*</code></pre>
+                    <pre><code id="cmd-step-6">sudo vim /etc/cron.monthly/monthly_sync</code></pre>
                   </div>
 
-                  <p>
-                    This is your fast placement check. Confirm scripts exist in
-                    the intended directories and remember that
-                    <code>/etc/cron.weekly</code>
-                    and
-                    <code>/etc/cron.monthly</code>
-                    are also valid drop-in targets for longer cadence tasks.
-                  </p>
-
                   <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code id="verify-step-6">/etc/cron.daily/backup_home
-/etc/cron.hourly/cleanup_logs
-/etc/cron.weekly/
-/etc/cron.monthly/</code></pre>
+                    <pre><code>#!/bin/bash
+rsync -av /backup/ /mnt/nas/monthly_archive</code></pre>
                   </div>
                 </div>
 
@@ -535,7 +472,7 @@ tar -czf /backup/home_$(date +%F).tar.gz /home</code></pre>
                 <div class="lab-step">
                   <div class="lab-step-title">
                     <strong class="font-alt">Step 7</strong>
-                    : Create a monthly sync script.
+                    : Make the monthly script executable.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -549,57 +486,78 @@ tar -czf /backup/home_$(date +%F).tar.gz /home</code></pre>
                         Copy
                       </button>
                     </div>
-                    <pre><code id="cmd-step-7">sudo vim /etc/cron.monthly/monthly_sync</code></pre>
-                  </div>
-
-                  <p>
-                    Monthly tasks are useful for archive rollups and long-term
-                    retention workflows. This example syncs backups to a NAS
-                    location.
-                  </p>
-
-                  <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code id="verify-step-7">#!/bin/bash
-rsync -av /backup/ /mnt/nas/monthly_archive</code></pre>
-                  </div>
-                </div>
-
-                <!-- Step 8 -->
-                <div class="lab-step">
-                  <div class="lab-step-title">
-                    <strong class="font-alt bold">Step 8</strong>
-                    : Make the monthly sync script executable.
-                  </div>
-
-                  <div class="lab-codeblock m-b-40 m-t-40">
-                    <div class="lab-codeblock-header">
-                      <span>Command</span>
-                      <button
-                        class="lab-copy-btn"
-                        type="button"
-                        data-copy="#cmd-step-8"
-                      >
-                        Copy
-                      </button>
-                    </div>
-                    <pre><code id="cmd-step-8">sudo chmod +x /etc/cron.monthly/monthly_sync</code></pre>
-                  </div>
-
-                  <p>
-                    The executable bit is required here as well. Once set, this
-                    script is eligible to run on the monthly schedule provided
-                    by your system cron configuration.
-                  </p>
-
-                  <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code id="verify-step-8"># Confirm executable bit:
-# -rwxr-xr-x ... /etc/cron.monthly/monthly_sync</code></pre>
+                    <pre><code id="cmd-step-7">sudo chmod +x /etc/cron.monthly/monthly_sync</code></pre>
                   </div>
                 </div>
               </section>
 
-              <!-- 8) Reference -->
-              <!-- 9) Reference -->
+              <!-- Breakpoints -->
+              <section class="lab-section" id="breakpoints">
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  Common breakpoints
+                </h3>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">
+                    Script present but never runs
+                  </div>
+                  <p class="m-b-0">
+                    Most interval directories require executable scripts. Check
+                    permissions with <code>ls -l</code> and confirm the
+                    executable bit is set.
+                  </p>
+                </div>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">
+                    Script runs manually but fails in cron
+                  </div>
+                  <p class="m-b-0">
+                    Cron runs with a minimal environment. Use absolute paths and
+                    avoid relying on shell profiles or relative directories.
+                  </p>
+                </div>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">
+                    Wrong interval directory used
+                  </div>
+                  <p class="m-b-0">
+                    Confirm the script is in the correct directory. A script in
+                    <code>/etc/cron.monthly</code> will not run hourly or daily.
+                  </p>
+                </div>
+              </section>
+
+              <!-- Cleanup -->
+              <section class="lab-section alt-background" id="cleanup">
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  Cleanup checklist
+                </h3>
+
+                <p>
+                  Remove the test scripts to return the system to its original
+                  state.
+                </p>
+
+                <div class="lab-codeblock m-b-40 m-t-40">
+                  <div class="lab-codeblock-header">
+                    <span>Commands</span>
+                    <button
+                      class="lab-copy-btn"
+                      type="button"
+                      data-copy="#cmd-cleanup"
+                    >
+                      Copy
+                    </button>
+                  </div>
+                  <pre><code id="cmd-cleanup">sudo rm -f /etc/cron.hourly/cleanup_logs
+sudo rm -f /etc/cron.daily/backup_home
+sudo rm -f /etc/cron.monthly/monthly_sync</code></pre>
+                </div>
+              </section>
+
+              <!-- Reference -->
               <section class="lab-section" id="reference">
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">
                   Reference
@@ -607,74 +565,68 @@ rsync -av /backup/ /mnt/nas/monthly_archive</code></pre>
 
                 <ul class="lab-reference-list">
                   <li>
-                    <code>/etc/cron.hourly</code>
-                    : Drop-in directory for scripts executed on an hourly basis.
-                  </li>
-
-                  <li>
-                    <code>/etc/cron.daily</code>
-                    : Drop-in directory for scripts executed daily.
-                  </li>
-
-                  <li>
-                    <code>/etc/cron.weekly</code>
-                    : Drop-in directory for scripts executed weekly.
-                  </li>
-
-                  <li>
-                    <code>/etc/cron.monthly</code>
-                    : Drop-in directory for scripts executed monthly.
-                  </li>
-
-                  <li>
-                    <code>vim</code>
-                    : Create or edit maintenance scripts.
-                  </li>
-
-                  <li>
-                    <code>chmod +x &lt;file&gt;</code>
-                    : Marks a script as executable so it can be run by the cron framework.
-                  </li>
-
-                  <li>
                     <code>ls /etc/cron.*</code>
-                    : Verifies directory presence and confirms script placement.
+                    : Lists system-wide cron interval directories and their
+                    contents.
                   </li>
 
                   <li>
-                    <code>find</code>
-                    : Used for log cleanup operations (filter files and delete old logs).
+                    <code>sudo vim /etc/cron.hourly/cleanup_logs</code>
+                    : Creates or edits an hourly cron script.
                   </li>
 
                   <li>
-                    <code>tar</code>
-                    : Creates compressed archives for backups.
+                    <code>sudo vim /etc/cron.daily/backup_home</code>
+                    : Creates or edits a daily cron script.
                   </li>
 
                   <li>
-                    <code>rsync</code>
-                    : Synchronizes files and directories for archive replication.
+                    <code>sudo vim /etc/cron.monthly/monthly_sync</code>
+                    : Creates or edits a monthly cron script.
+                  </li>
+
+                  <li>
+                    <code>sudo chmod +x &lt;script&gt;</code>
+                    : Makes a cron script executable.
+                    <ul>
+                      <li><code>+x</code>: adds execute permission.</li>
+                    </ul>
+                  </li>
+
+                  <li>
+                    <code>find /var/log -type f -name '*.log' -mtime +3 -delete</code>
+                    : Removes log files older than three days.
+                    <ul>
+                      <li><code>-type f</code>: match files only.</li>
+                      <li><code>-name '*.log'</code>: match log filename pattern.</li>
+                      <li><code>-mtime +3</code>: older than 3 days.</li>
+                      <li><code>-delete</code>: remove matched files.</li>
+                    </ul>
+                  </li>
+
+                  <li>
+                    <code>tar -czf &lt;archive&gt; /home</code>
+                    : Creates a compressed archive of the home directory.
+                    <ul>
+                      <li><code>-c</code>: create archive.</li>
+                      <li><code>-z</code>: gzip compress.</li>
+                      <li><code>-f</code>: write to file.</li>
+                    </ul>
+                  </li>
+
+                  <li>
+                    <code>rsync -av /backup/ /mnt/nas/monthly_archive</code>
+                    : Synchronizes backup data to a remote archive location.
+                    <ul>
+                      <li><code>-a</code>: archive mode.</li>
+                      <li><code>-v</code>: verbose output.</li>
+                    </ul>
                   </li>
                 </ul>
               </section>
-
-              <!-- Lab Pagination -->
             </div>
-            <!-- /main -->
           </div>
-          <!-- /row -->
-          <nav class="lab-pagination">
-            <a
-                id="prev-lab"
-                class="lab-nav-link"
-                href="#"
-                aria-label="Previous lab"
-            >
-                &uArr;
-            </a>
-          </nav>
         </div>
-        <!-- /container -->
       </section>
 
       <!-- FOOTER -->

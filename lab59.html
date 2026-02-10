@@ -37,7 +37,7 @@
     <link href="../assets/css/style.css" rel="stylesheet" />
     <link href="../assets/css/docs.css" rel="stylesheet" />
 
-    <!-- Lab page styles (new) -->
+    <!-- Lab page styles -->
     <link href="../assets/css/lab.css" rel="stylesheet" />
 
     <!-- Fonts -->
@@ -67,9 +67,29 @@
             <li class="slidedown">
               <a href="#">Portfolio</a>
               <ul>
-                <li><a href="https://github.com/vonds/exit_0" target="_blank" rel="noopener">exit_0</a></li>
-                <li><a href="docs.html" target="_blank" rel="noopener">exit_0 Documentation</a></li>
-                <li><a href="https://github.com/vonds/sentinel" target="_blank" rel="noopener">Sentinel</a></li>
+                <li>
+                  <a
+                    href="https://github.com/vonds/exit_0"
+                    target="_blank"
+                    rel="noopener"
+                  >
+                    exit_0
+                  </a>
+                </li>
+                <li>
+                  <a href="docs.html" target="_blank" rel="noopener">
+                    exit_0 Documentation
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="https://github.com/vonds/sentinel"
+                    target="_blank"
+                    rel="noopener"
+                  >
+                    Sentinel
+                  </a>
+                </li>
               </ul>
             </li>
 
@@ -151,12 +171,7 @@
             >
               &laquo;
             </a>
-            <a
-              id="next-lab"
-              class="lab-nav-link"
-              href="#"
-              aria-label="Next lab"
-            >
+            <a id="next-lab" class="lab-nav-link" href="#" aria-label="Next lab">
               &raquo;
             </a>
           </nav>
@@ -171,7 +186,11 @@
                   </h5>
                   <ul class="docs-nav">
                     <li><a href="#scenario">Scenario</a></li>
+                    <li><a href="#objective">Objective</a></li>
+                    <li><a href="#concepts">Concepts</a></li>
                     <li><a href="#walkthrough">Walkthrough</a></li>
+                    <li><a href="#breakpoints">Breakpoints</a></li>
+                    <li><a href="#cleanup">Cleanup</a></li>
                     <li><a href="#reference">Reference</a></li>
                   </ul>
                 </div>
@@ -180,7 +199,6 @@
 
             <!-- MAIN CONTENT -->
             <div class="col-sm-8 col-md-9 lab-doc">
-              <!-- 1) Title + Summary (2 sentences max) -->
               <p class="m-b-20 lab-summary">
                 Collect NIC-level evidence using <code>ethtool</code> to confirm
                 link state, negotiated speed/duplex, supported modes, and driver
@@ -188,24 +206,23 @@
                 from host-side configuration or hardware faults.
               </p>
 
+              <!-- Video (kept on page; not listed in left panel) -->
               <section class="lab-section" id="video" aria-label="Lab video">
-  				<div class="lab-video">
-    				<div class="lab-video-embed text-center">
-      					<iframe 
-							width="560" 
-							height="315" 
-							src="https://www.youtube.com/embed/uJk54bhaadA?si=seGSukCoMFN7ohRo" 
-							title="YouTube video player" 
-							frameborder="0" 
-							allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
-							referrerpolicy="strict-origin-when-cross-origin" 
-							allowfullscreen>
-						</iframe>
-    				</div>
-  				</div>
-			</section>
+                <div class="lab-video">
+                  <div class="lab-video-embed text-center">
+                    <iframe
+                      src="https://www.youtube.com/embed/uJk54bhaadA?si=seGSukCoMFN7ohRo"
+                      title="YouTube video player"
+                      frameborder="0"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                      referrerpolicy="strict-origin-when-cross-origin"
+                      allowfullscreen
+                    ></iframe>
+                  </div>
+                </div>
+              </section>
 
-              <!-- 2) Scenario -->
+              <!-- Scenario -->
               <section class="lab-section" id="scenario">
                 <div class="lab-chips" aria-label="Tags">
                   <span class="lab-chip">
@@ -244,56 +261,44 @@
                 </div>
               </section>
 
-              <!-- 3) Objective -->
+              <!-- Objective -->
               <section class="lab-section alt-background" id="objective">
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">
                   Objective
                 </h3>
                 <ul>
-                  <li>
-                    Display detailed NIC information for
-                    <code>enp0s3</code>.
-                  </li>
-                  <li>
-                    Confirm link detection state from the same output.
-                  </li>
-                  <li>
-                    Retrieve supported and advertised link modes for the
-                    interface.
-                  </li>
-                  <li>
-                    Collect NIC statistics to identify drops or error patterns.
-                  </li>
+                  <li>Display detailed NIC information for <code>enp0s3</code>.</li>
+                  <li>Confirm link detection state from the same output.</li>
+                  <li>Retrieve supported and advertised link modes for the interface.</li>
+                  <li>Collect NIC statistics to identify drops or error patterns.</li>
                 </ul>
               </section>
 
-              <!-- 4) What You'll Practice -->
-              <section class="lab-section" id="practice">
+              <!-- Concepts -->
+              <section class="lab-section" id="concepts">
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">
-                  What You’ll Practice
+                  Concepts
                 </h3>
-
-                <ul class="m-t-10">
+                <ul>
                   <li>
-                    Inspecting negotiated speed and duplex using
-                    <code>ethtool &lt;iface&gt;</code>.
+                    Negotiated speed/duplex reflects what the NIC and switchport agreed on at link-up time.
                   </li>
                   <li>
-                    Filtering link status with <code>grep</code> for quick
-                    verification.
+                    Auto-negotiation mismatches often show up as poor throughput, duplex conflicts, and rising error counters.
                   </li>
                   <li>
-                    Capturing supported and advertised link modes for escalation
-                    evidence.
+                    “Supported” vs “advertised” modes can explain why a link comes up at an unexpected speed.
                   </li>
                   <li>
-                    Reviewing NIC counters with <code>ethtool -S</code> to spot
-                    drops and error trends.
+                    Driver statistics help separate “bad wire/switchport” from host-side saturation or misconfiguration.
+                  </li>
+                  <li>
+                    Evidence from <code>ethtool</code> is escalation-ready: it is hardware-facing and portable across distros.
                   </li>
                 </ul>
               </section>
 
-              <!-- 5) Commands Walkthrough -->
+              <!-- Walkthrough -->
               <section class="lab-section alt-background" id="walkthrough">
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">
                   Walkthrough
@@ -338,7 +343,7 @@ Link detected: yes</code></pre>
                 <div class="lab-step">
                   <div class="lab-step-title">
                     <strong class="font-alt">Step 2</strong>
-                    : Filter the output to confirm link status.
+                    : Confirm link detection state quickly.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -356,9 +361,9 @@ Link detected: yes</code></pre>
                   </div>
 
                   <p>
-                    This provides a fast “is there a link” signal. If the link is
-                    down (or flapping), you may need to shift focus to cable,
-                    transceiver, or switchport investigation.
+                    This gives a fast “is there a link” signal. If this reads
+                    <code>no</code> or flips between yes/no, shift attention to
+                    cabling, transceivers, and switchport conditions.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -370,7 +375,7 @@ Link detected: yes</code></pre>
                 <div class="lab-step">
                   <div class="lab-step-title">
                     <strong class="font-alt">Step 3</strong>
-                    : Retrieve supported and advertised link modes.
+                    : Capture supported and advertised link modes.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -388,10 +393,9 @@ Link detected: yes</code></pre>
                   </div>
 
                   <p>
-                    This section is useful when troubleshooting negotiation
-                    mismatches. It documents what the NIC can do and what it is
-                    advertising, which helps validate switchport configuration
-                    and expected speeds.
+                    This section documents what the NIC can do and what it is
+                    advertising. It is especially useful when the switchport is
+                    hard-set to a speed/duplex that conflicts with the NIC.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -407,8 +411,8 @@ Advertised link modes:  10baseT/Half 10baseT/Full
                 <!-- Step 4 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
-                    <strong class="font-alt bold">Step 4</strong>
-                    : View NIC statistics for drops and errors.
+                    <strong class="font-alt">Step 4</strong>
+                    : Identify the NIC driver and firmware details.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -422,7 +426,42 @@ Advertised link modes:  10baseT/Half 10baseT/Full
                         Copy
                       </button>
                     </div>
-                    <pre><code id="cmd-step-4">sudo ethtool -S enp0s3</code></pre>
+                    <pre><code id="cmd-step-4">sudo ethtool -i enp0s3</code></pre>
+                  </div>
+
+                  <p>
+                    Driver and firmware details matter when diagnosing known NIC
+                    issues or aligning host behavior with vendor guidance. This
+                    output is also useful for escalation tickets.
+                  </p>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <pre><code id="verify-step-4">driver: e1000
+version: 7.3.21-k8-NAPI
+firmware-version: N/A
+bus-info: 0000:00:03.0</code></pre>
+                  </div>
+                </div>
+
+                <!-- Step 5 -->
+                <div class="lab-step">
+                  <div class="lab-step-title">
+                    <strong class="font-alt bold">Step 5</strong>
+                    : Review NIC statistics for drops and errors.
+                  </div>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <div class="lab-codeblock-header">
+                      <span>Command</span>
+                      <button
+                        class="lab-copy-btn"
+                        type="button"
+                        data-copy="#cmd-step-5"
+                      >
+                        Copy
+                      </button>
+                    </div>
+                    <pre><code id="cmd-step-5">sudo ethtool -S enp0s3</code></pre>
                   </div>
 
                   <p>
@@ -432,7 +471,7 @@ Advertised link modes:  10baseT/Half 10baseT/Full
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code id="verify-step-4">rx_packets: 124839
+                    <pre><code id="verify-step-5">rx_packets: 124839
 tx_packets: 118204
 rx_errors: 0
 tx_errors: 0
@@ -440,6 +479,52 @@ rx_dropped: 3
 collisions: 0</code></pre>
                   </div>
                 </div>
+              </section>
+
+              <!-- Breakpoints -->
+              <section class="lab-section" id="breakpoints">
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  Breakpoints
+                </h3>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">Link detected: no</div>
+                  <p class="m-b-0">
+                    If <code>Link detected</code> is <code>no</code>, confirm the
+                    cable and switchport are connected, enabled, and on the
+                    expected VLAN. Collect this output as escalation evidence.
+                  </p>
+                </div>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">Unexpected speed or duplex</div>
+                  <p class="m-b-0">
+                    If negotiated speed/duplex is lower than expected, compare
+                    supported/advertised modes and confirm switchport config.
+                    Mismatches often correlate with rising error counters.
+                  </p>
+                </div>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">Counters increasing</div>
+                  <p class="m-b-0">
+                    If drops or errors trend upward during traffic, capture a
+                    second snapshot after a short interval and compare. Include
+                    both outputs when escalating.
+                  </p>
+                </div>
+              </section>
+
+              <!-- Cleanup -->
+              <section class="lab-section alt-background" id="cleanup">
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  Cleanup checklist
+                </h3>
+
+                <ul>
+                  <li>No state changes were made in this lab.</li>
+                  <li>Save the outputs if you are filing a ticket.</li>
+                </ul>
               </section>
 
               <!-- Reference -->
@@ -451,37 +536,36 @@ collisions: 0</code></pre>
                 <ul class="lab-reference-list">
                   <li>
                     <code>ethtool &lt;iface&gt;</code>
-                    : Displays NIC settings including supported modes,
-                    negotiation state, speed/duplex, and link detection.
+                    : Show speed/duplex, auto-negotiation, link detection, and supported/advertised modes.
                   </li>
 
                   <li>
-                    <code>grep 'Link detected'</code>
-                    : Filters the NIC output to a single link-state signal line.
-                  </li>
-
-                  <li>
-                    <code>grep -A &lt;N&gt; 'Supported link modes'</code>
-                    : Prints the supported/advertised modes section plus the
-                    next <code>N</code> lines of context.
+                    <code>ethtool -i &lt;iface&gt;</code>
+                    : Show driver, version, firmware, and bus info.
                     <ul>
-                      <li>
-                        <code>-A &lt;N&gt;</code>
-                        : “After” context lines to include following output.
-                      </li>
+                      <li><code>-i</code>: driver information</li>
                     </ul>
                   </li>
 
                   <li>
                     <code>ethtool -S &lt;iface&gt;</code>
-                    : Displays NIC driver statistics counters (drops, errors,
-                    bytes/packets, and driver-specific metrics).
+                    : Show NIC driver statistics counters (drops, errors, and vendor metrics).
                     <ul>
-                      <li>
-                        Use for trend evidence when diagnosing intermittent
-                        connectivity.
-                      </li>
+                      <li><code>-S</code>: statistics</li>
                     </ul>
+                  </li>
+
+                  <li>
+                    <code>grep -A &lt;N&gt; 'Supported link modes'</code>
+                    : Print link modes with context lines.
+                    <ul>
+                      <li><code>-A</code>: include lines after match</li>
+                    </ul>
+                  </li>
+
+                  <li>
+                    <code>grep 'Link detected'</code>
+                    : Quick link-state line filter.
                   </li>
                 </ul>
               </section>

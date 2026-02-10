@@ -37,7 +37,7 @@
     <link href="../assets/css/style.css" rel="stylesheet" />
     <link href="../assets/css/docs.css" rel="stylesheet" />
 
-    <!-- Lab page styles (new) -->
+    <!-- Lab page styles -->
     <link href="../assets/css/lab.css" rel="stylesheet" />
 
     <!-- Fonts -->
@@ -67,9 +67,29 @@
             <li class="slidedown">
               <a href="#">Portfolio</a>
               <ul>
-                <li><a href="https://github.com/vonds/exit_0" target="_blank" rel="noopener">exit_0</a></li>
-                <li><a href="docs.html" target="_blank" rel="noopener">exit_0 Documentation</a></li>
-                <li><a href="https://github.com/vonds/sentinel" target="_blank" rel="noopener">Sentinel</a></li>
+                <li>
+                  <a
+                    href="https://github.com/vonds/exit_0"
+                    target="_blank"
+                    rel="noopener"
+                  >
+                    exit_0
+                  </a>
+                </li>
+                <li>
+                  <a href="docs.html" target="_blank" rel="noopener">
+                    exit_0 Documentation
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="https://github.com/vonds/sentinel"
+                    target="_blank"
+                    rel="noopener"
+                  >
+                    Sentinel
+                  </a>
+                </li>
               </ul>
             </li>
 
@@ -171,7 +191,11 @@
                   </h5>
                   <ul class="docs-nav">
                     <li><a href="#scenario">Scenario</a></li>
+                    <li><a href="#objective">Objective</a></li>
+                    <li><a href="#concepts">Concepts</a></li>
                     <li><a href="#walkthrough">Walkthrough</a></li>
+                    <li><a href="#breakpoints">Breakpoints</a></li>
+                    <li><a href="#cleanup">Cleanup</a></li>
                     <li><a href="#reference">Reference</a></li>
                   </ul>
                 </div>
@@ -180,32 +204,30 @@
 
             <!-- MAIN CONTENT -->
             <div class="col-sm-8 col-md-9 lab-doc">
-              <!-- 1) Title + Summary (2 sentences max) -->
               <p class="m-b-20 lab-summary">
                 Use <code>screen</code> to keep long-running terminal work alive
-                across network drops or disconnects. Start a named session,
-                detach safely, reattach when you reconnect, enumerate sessions,
-                and terminate the session when the work is complete.
+                across SSH drops or disconnects. Start a named session, detach
+                safely, reattach when you reconnect, enumerate sessions, and
+                terminate the session when the work is complete.
               </p>
 
+              <!-- Video (kept on page; removed from left panel) -->
               <section class="lab-section" id="video" aria-label="Lab video">
-  				<div class="lab-video">
-    				<div class="lab-video-embed text-center">
-      					<iframe 
-							width="560" 
-							height="315" 
-							src="https://www.youtube.com/embed/uJk54bhaadA?si=seGSukCoMFN7ohRo" 
-							title="YouTube video player" 
-							frameborder="0" 
-							allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
-							referrerpolicy="strict-origin-when-cross-origin" 
-							allowfullscreen>
-						</iframe>
-    				</div>
-  				</div>
-			</section>
+                <div class="lab-video">
+                  <div class="lab-video-embed text-center">
+                    <iframe
+                      src="https://www.youtube.com/embed/uJk54bhaadA?si=seGSukCoMFN7ohRo"
+                      title="YouTube video player"
+                      frameborder="0"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                      referrerpolicy="strict-origin-when-cross-origin"
+                      allowfullscreen
+                    ></iframe>
+                  </div>
+                </div>
+              </section>
 
-              <!-- 2) Scenario -->
+              <!-- Scenario -->
               <section class="lab-section" id="scenario">
                 <div class="lab-chips" aria-label="Tags">
                   <span class="lab-chip">
@@ -222,9 +244,9 @@
 
                 <p>
                   You are performing a long upgrade process on a remote server.
-                  You cannot risk losing progress if your SSH session drops. Your
-                  job is to use <code>screen</code> to run the work inside a
-                  persistent terminal session, detach and reconnect cleanly, and
+                  You cannot risk losing progress if your SSH session drops.
+                  Your job is to use <code>screen</code> to run the work inside
+                  a persistent terminal session, detach and reconnect cleanly,
                   then close the session when finished.
                 </p>
 
@@ -239,7 +261,7 @@
                 </div>
               </section>
 
-              <!-- 3) Objective -->
+              <!-- Objective -->
               <section class="lab-section alt-background" id="objective">
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">
                   Objective
@@ -256,35 +278,36 @@
                 </ul>
               </section>
 
-              <!-- 4) What You'll Practice -->
-              <section class="lab-section" id="practice">
+              <!-- Concepts (no alt-background moving forward) -->
+              <section class="lab-section" id="concepts">
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">
-                  What You’ll Practice
+                  Concepts
                 </h3>
-
-                <ul class="m-t-10">
+                <ul>
                   <li>
-                    Creating a named <code>screen</code> session with
-                    <code>-S</code>.
+                    A screen session is a persistent terminal that continues
+                    running when your network connection drops.
                   </li>
                   <li>
-                    Detaching from a session using the control sequence
-                    <code>Ctrl+a</code> then <code>d</code>.
+                    Naming sessions reduces operator error and makes reattach
+                    workflows predictable during remote operations.
                   </li>
                   <li>
-                    Reattaching to a named session with <code>screen -r</code>.
+                    Detach is a control operation that keeps processes alive
+                    while returning you to the parent shell.
                   </li>
                   <li>
-                    Enumerating active sessions with <code>screen -ls</code>.
+                    Session inventory (<code>screen -ls</code>) is an operational
+                    check for attached versus detached state.
                   </li>
                   <li>
-                    Terminating a session using
-                    <code>screen -S &lt;name&gt; -X quit</code>.
+                    Explicit termination prevents stale sessions and makes
+                    change completion unambiguous.
                   </li>
                 </ul>
               </section>
 
-              <!-- 5) Commands Walkthrough -->
+              <!-- Walkthrough -->
               <section class="lab-section alt-background" id="walkthrough">
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">
                   Walkthrough
@@ -294,7 +317,7 @@
                 <div class="lab-step">
                   <div class="lab-step-title">
                     <strong class="font-alt">Step 1</strong>
-                    : Start a new screen session named <code>devsession</code>.
+                    : Start a new named session.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -312,13 +335,14 @@
                   </div>
 
                   <p>
-                    Starting a named session makes it easy to target and
-                    reattach later. In real workflows, naming sessions after a
-                    task or change ticket reduces operator error.
+                    Starting a named session makes reattach and cleanup
+                    predictable. Use names tied to the task to reduce confusion
+                    during multi-session work.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code id="verify-step-1">Screen session 'devsession' started.</code></pre>
+                    <pre><code># You are now inside the screen session.
+# Start your long-running work here.</code></pre>
                   </div>
                 </div>
 
@@ -326,23 +350,24 @@
                 <div class="lab-step">
                   <div class="lab-step-title">
                     <strong class="font-alt">Step 2</strong>
-                    : Detach from the screen session.
+                    : Detach without terminating the session.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Action</span>
                     </div>
-                    <pre><code id="cmd-step-2">Ctrl+a then d</code></pre>
+                    <pre><code>Ctrl+a then d</code></pre>
                   </div>
 
                   <p>
                     Detaching leaves the session running in the background. This
-                    is the key behavior that preserves work across disconnects.
+                    is the control operation that preserves work across SSH
+                    drops.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code id="verify-step-2">Detached from 'devsession'.</code></pre>
+                    <pre><code>Detached from 11234.devsession.</code></pre>
                   </div>
                 </div>
 
@@ -350,7 +375,7 @@
                 <div class="lab-step">
                   <div class="lab-step-title">
                     <strong class="font-alt">Step 3</strong>
-                    : Reattach to the screen session.
+                    : List sessions and confirm state.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -364,17 +389,18 @@
                         Copy
                       </button>
                     </div>
-                    <pre><code id="cmd-step-3">screen -r devsession</code></pre>
+                    <pre><code id="cmd-step-3">screen -ls</code></pre>
                   </div>
 
                   <p>
-                    Reattaching returns you to the exact shell state inside the
-                    session. This is how you resume long-running work after a
-                    reconnect or after stepping away.
+                    This is your inventory check. It confirms the session exists
+                    and shows whether it is attached or detached.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code id="verify-step-3">Reattached to screen session.</code></pre>
+                    <pre><code>There is a screen on:
+    11234.devsession    (Detached)
+1 Socket in /run/screen/S-user.</code></pre>
                   </div>
                 </div>
 
@@ -382,7 +408,7 @@
                 <div class="lab-step">
                   <div class="lab-step-title">
                     <strong class="font-alt">Step 4</strong>
-                    : List available screen sessions.
+                    : Reattach to resume work.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -396,27 +422,21 @@
                         Copy
                       </button>
                     </div>
-                    <pre><code id="cmd-step-4">screen -ls</code></pre>
+                    <pre><code id="cmd-step-4">screen -r devsession</code></pre>
                   </div>
 
                   <p>
-                    Listing sessions is your inventory check. It confirms what
-                    is running, whether a session is attached or detached, and
-                    which name or ID you should target.
+                    Reattaching returns you to the exact shell and process state
+                    inside the session. Use this after reconnecting or when
+                    continuing a long-running change.
                   </p>
-
-                  <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code id="verify-step-4">There is a screen on:
-    11234.devsession    (Detached)
-1 Socket in /run/screen/S-user.</code></pre>
-                  </div>
                 </div>
 
                 <!-- Step 5 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
-                    <strong class="font-alt bold">Step 5</strong>
-                    : Terminate the screen session.
+                    <strong class="font-alt">Step 5</strong>
+                    : Terminate the session when finished.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -434,14 +454,104 @@
                   </div>
 
                   <p>
-                    Terminating a session explicitly avoids leaving “orphan”
-                    sessions behind. In real environments, stale sessions can
-                    confuse operators, waste resources, and hide unfinished work.
+                    Terminating explicitly avoids leaving stale sessions behind.
+                    This is part of clean operational hygiene after completing a
+                    change.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code id="verify-step-5">Session 'devsession' terminated.</code></pre>
+                    <pre><code># Confirm removal:
+screen -ls</code></pre>
                   </div>
+                </div>
+              </section>
+
+              <!-- Common breakpoints -->
+              <section class="lab-section" id="breakpoints">
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  Common breakpoints
+                </h3>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">
+                    screen: command not found
+                  </div>
+                  <p class="m-b-0">
+                    The package is not installed or the PATH is incomplete.
+                    Install screen using your distro package manager and confirm
+                    <code>/usr/bin</code> is present in PATH.
+                  </p>
+                </div>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">
+                    There are several suitable screens on
+                  </div>
+                  <p class="m-b-0">
+                    Multiple sessions exist, so <code>screen -r</code> is
+                    ambiguous. Use <code>screen -ls</code> and reattach by name
+                    or full ID.
+                  </p>
+                </div>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">
+                    Cannot reattach because a session is attached elsewhere
+                  </div>
+                  <p class="m-b-0">
+                    The session is already attached on another terminal. Locate
+                    the attached session via <code>screen -ls</code> and detach
+                    it from that terminal before reattaching here.
+                  </p>
+                </div>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">
+                    Orphan sessions accumulate
+                  </div>
+                  <p class="m-b-0">
+                    Stale sessions create confusion during troubleshooting and
+                    remote work. Maintain naming discipline and terminate
+                    sessions explicitly when the change is complete.
+                  </p>
+                </div>
+              </section>
+
+              <!-- Cleanup -->
+              <section class="lab-section alt-background" id="cleanup">
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  Cleanup checklist
+                </h3>
+
+                <p>
+                  Ensure no sessions are left running unintentionally and that
+                  your session inventory is clean.
+                </p>
+
+                <div class="lab-codeblock m-b-40 m-t-40">
+                  <div class="lab-codeblock-header">
+                    <span>Commands</span>
+                    <button
+                      class="lab-copy-btn"
+                      type="button"
+                      data-copy="#cmd-cleanup"
+                    >
+                      Copy
+                    </button>
+                  </div>
+                  <pre><code id="cmd-cleanup">screen -ls
+# If the session still exists, terminate it:
+screen -S devsession -X quit
+screen -ls</code></pre>
+                </div>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">Success signal</div>
+                  <p class="m-b-0">
+                    <code>screen -ls</code> shows no session for the completed
+                    work, and reattach attempts fail because the session no
+                    longer exists.
+                  </p>
                 </div>
               </section>
 
@@ -467,18 +577,7 @@
                     <code>Ctrl+a</code>
                     then
                     <code>d</code>
-                    : Detaches from the current screen session without ending it.
-                  </li>
-
-                  <li>
-                    <code>screen -r &lt;name&gt;</code>
-                    : Reattaches to an existing session by name or ID.
-                    <ul>
-                      <li>
-                        If multiple sessions exist, use <code>screen -ls</code>
-                        to identify the correct target.
-                      </li>
-                    </ul>
+                    : Detaches from the current session without ending it.
                   </li>
 
                   <li>
@@ -487,9 +586,24 @@
                   </li>
 
                   <li>
-                    <code>screen -S &lt;name&gt; -X quit</code>
-                    : Sends a command to a session to terminate it.
+                    <code>screen -r &lt;name&gt;</code>
+                    : Reattaches to an existing session by name or ID.
                     <ul>
+                      <li>
+                        <code>-r</code>
+                        : Reattaches to a detached session.
+                      </li>
+                    </ul>
+                  </li>
+
+                  <li>
+                    <code>screen -S &lt;name&gt; -X quit</code>
+                    : Sends a command to terminate a session.
+                    <ul>
+                      <li>
+                        <code>-S</code>
+                        : Targets a session by name or ID.
+                      </li>
                       <li>
                         <code>-X</code>
                         : Executes a screen command in the target session.
@@ -502,22 +616,12 @@
                   </li>
                 </ul>
               </section>
-
-              <!-- /main -->
             </div>
+            <!-- /main -->
           </div>
-
-          <nav class="lab-pagination">
-            <a
-              id="prev-lab"
-              class="lab-nav-link"
-              href="#"
-              aria-label="Back to top"
-            >
-              &uArr;
-            </a>
-          </nav>
+          <!-- /row -->
         </div>
+        <!-- /container -->
       </section>
 
       <!-- FOOTER -->
@@ -540,6 +644,7 @@
                     href="https://www.linkedin.com/in/vonds/"
                     target="_blank"
                     rel="noopener"
+ளம்
                   >
                     Linkedin
                   </a>
@@ -566,7 +671,7 @@
 
     <!-- Javascript files (your existing) -->
     <script src="../assets/js/jquery-2.2.4.min.js"></script>
-    <script src="../assets/bootstrap/js/bootstrap.min.js"></script>
+    <script src="../assets/bootstrap/js/bootstrap.min.css"></script>
     <script src="../assets/js/jquery.superslides.min.js"></script>
     <script src="../assets/js/jquery.mb.YTPlayer.min.js"></script>
     <script src="../assets/js/jquery.magnific-popup.min.js"></script>
@@ -586,5 +691,9 @@
 
     <!-- Lab page JS (new) -->
     <script src="../assets/js/lab.js"></script>
+
+    <script>
+      document.getElementById('year').textContent = new Date().getFullYear()
+    </script>
   </body>
 </html>

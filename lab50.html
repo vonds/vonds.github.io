@@ -67,9 +67,29 @@
             <li class="slidedown">
               <a href="#">Portfolio</a>
               <ul>
-                <li><a href="https://github.com/vonds/exit_0" target="_blank" rel="noopener">exit_0</a></li>
-                <li><a href="docs.html" target="_blank" rel="noopener">exit_0 Documentation</a></li>
-                <li><a href="https://github.com/vonds/sentinel" target="_blank" rel="noopener">Sentinel</a></li>
+                <li>
+                  <a
+                    href="https://github.com/vonds/exit_0"
+                    target="_blank"
+                    rel="noopener"
+                  >
+                    exit_0
+                  </a>
+                </li>
+                <li>
+                  <a href="docs.html" target="_blank" rel="noopener">
+                    exit_0 Documentation
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="https://github.com/vonds/sentinel"
+                    target="_blank"
+                    rel="noopener"
+                  >
+                    Sentinel
+                  </a>
+                </li>
               </ul>
             </li>
 
@@ -136,7 +156,7 @@
       </nav>
 
       <!-- DOCS PAGE -->
-      <section class="module">
+      <section class="module" id="totop">
         <div class="container">
           <h2 class="font-alt module-title m-t-60">
             Lab 50: Finding System Architecture (arch)
@@ -146,7 +166,7 @@
             <a
               id="prev-lab"
               class="lab-nav-link"
-              href="#"
+              href="./lab049.html"
               aria-label="Previous lab"
             >
               &laquo;
@@ -154,7 +174,7 @@
             <a
               id="next-lab"
               class="lab-nav-link"
-              href="#"
+              href="./lab051.html"
               aria-label="Next lab"
             >
               &raquo;
@@ -171,7 +191,11 @@
                   </h5>
                   <ul class="docs-nav">
                     <li><a href="#scenario">Scenario</a></li>
+                    <li><a href="#objective">Objective</a></li>
+                    <li><a href="#concepts">Concepts</a></li>
                     <li><a href="#walkthrough">Walkthrough</a></li>
+                    <li><a href="#breakpoints">Breakpoints</a></li>
+                    <li><a href="#cleanup">Cleanup</a></li>
                     <li><a href="#reference">Reference</a></li>
                   </ul>
                 </div>
@@ -180,20 +204,18 @@
 
             <!-- MAIN CONTENT -->
             <div class="col-sm-8 col-md-9 lab-doc">
-              <!-- 1) Title + Summary (2 sentences max) -->
               <p class="m-b-20 lab-summary">
                 Validate that a system meets a 64-bit deployment requirement by
                 confirming architecture and CPU execution mode using CLI-only
-                checks. Cross-verify results across multiple tools, then produce
-                a simple confirmation statement suitable for a deployment note.
+                checks. Cross-verify results across multiple tools, then
+                produce a short confirmation line suitable for a deployment
+                note.
               </p>
 
               <section class="lab-section" id="video" aria-label="Lab video">
                 <div class="lab-video">
                   <div class="lab-video-embed text-center">
                     <iframe
-                      width="560"
-                      height="315"
                       src="https://www.youtube.com/embed/uJk54bhaadA?si=seGSukCoMFN7ohRo"
                       title="YouTube video player"
                       frameborder="0"
@@ -205,7 +227,7 @@
                 </div>
               </section>
 
-              <!-- 2) Scenario -->
+              <!-- Scenario -->
               <section class="lab-section" id="scenario">
                 <div class="lab-chips" aria-label="Tags">
                   <span class="lab-chip">
@@ -222,48 +244,36 @@
 
                 <p>
                   You are preparing a report for a new software deployment. The
-                  application requires a
-                  <strong>64-bit</strong>
-                  system, so you need to confirm the machine architecture and
-                  verify the OS is running in 64-bit mode using terminal
-                  commands only.
+                  application requires a <strong>64-bit</strong> system, so you
+                  need to confirm the machine architecture and verify the OS is
+                  running in 64-bit mode using terminal commands only.
                 </p>
 
                 <div class="lab-callout">
                   <div class="lab-callout-label">Operator context</div>
                   <p class="m-b-0">
-                    This is a quick, low-risk validation you perform before
-                    installing binaries, troubleshooting compatibility failures,
-                    or approving a host for production workloads.
+                    This is a low-risk validation you run before installing
+                    binaries, troubleshooting compatibility failures, or
+                    approving a host for production workloads.
                   </p>
                 </div>
               </section>
 
-              <!-- 3) Objective -->
+              <!-- Objective -->
               <section class="lab-section alt-background" id="objective">
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">
                   Objective
                 </h3>
                 <ul>
-                  <li>
-                    Check the machine architecture with
-                    <code>arch</code>
-                    .
-                  </li>
-                  <li>
-                    Confirm the same architecture via
-                    <code>uname -m</code>
-                    .
-                  </li>
+                  <li>Check the machine architecture with <code>arch</code>.</li>
+                  <li>Confirm the same architecture via <code>uname -m</code>.</li>
                   <li>
                     Review CPU architecture and execution modes using
-                    <code>lscpu</code>
-                    .
+                    <code>lscpu</code>.
                   </li>
                   <li>
                     Verify the OS bitness using
-                    <code>getconf LONG_BIT</code>
-                    .
+                    <code>getconf LONG_BIT</code>.
                   </li>
                   <li>
                     Produce a short confirmation note suitable for a deployment
@@ -272,7 +282,33 @@
                 </ul>
               </section>
 
-              <!-- 4) What You'll Practice -->
+              <!-- Concepts -->
+              <section class="lab-section" id="concepts">
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  Concepts
+                </h3>
+                <ul>
+                  <li>
+                    Architecture names like <code>x86_64</code> commonly imply a
+                    64-bit capable CPU, but you still verify OS bitness.
+                  </li>
+                  <li>
+                    <code>lscpu</code> shows CPU operating modes
+                    (<code>CPU op-mode(s)</code>) which indicates hardware
+                    capability.
+                  </li>
+                  <li>
+                    <code>getconf LONG_BIT</code> reflects userland bitness,
+                    which is what many binaries care about.
+                  </li>
+                  <li>
+                    Cross-verifying with multiple tools reduces false positives
+                    and catches weird edge cases.
+                  </li>
+                </ul>
+              </section>
+
+              <!-- What You'll Practice -->
               <section class="lab-section" id="practice">
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">
                   What You’ll Practice
@@ -280,21 +316,15 @@
 
                 <ul class="m-t-10">
                   <li>
-                    Architecture identification using
-                    <code>arch</code>
-                    and
-                    <code>uname -m</code>
-                    .
+                    Architecture identification using <code>arch</code> and
+                    <code>uname -m</code>.
                   </li>
                   <li>
-                    CPU capability review using
-                    <code>lscpu</code>
-                    (including op-modes).
+                    CPU capability review using <code>lscpu</code> (including
+                    op-modes).
                   </li>
                   <li>
-                    OS bitness validation using
-                    <code>getconf LONG_BIT</code>
-                    .
+                    OS bitness validation using <code>getconf LONG_BIT</code>.
                   </li>
                   <li>
                     Practical cross-verification: confirming the same fact using
@@ -307,7 +337,7 @@
                 </ul>
               </section>
 
-              <!-- 5) Commands Walkthrough -->
+              <!-- Walkthrough -->
               <section class="lab-section alt-background" id="walkthrough">
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">
                   Walkthrough
@@ -335,10 +365,9 @@
                   </div>
 
                   <p>
-                    <code>arch</code>
-                    prints the system hardware architecture. This is a quick
-                    baseline check when confirming whether a host can run 64-bit
-                    binaries.
+                    <code>arch</code> prints the system hardware architecture.
+                    This is a fast baseline check when confirming whether a host
+                    can run 64-bit binaries.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -368,10 +397,10 @@
                   </div>
 
                   <p>
-                    <code>uname -m</code>
-                    reports the machine hardware name. Using a second command to
-                    confirm the same result reduces mistakes and strengthens the
-                    evidence you capture in a deployment report.
+                    <code>uname -m</code> reports the machine hardware name.
+                    Using a second command to confirm the same result reduces
+                    mistakes and strengthens the evidence you capture in a
+                    deployment report.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -401,9 +430,8 @@
                   </div>
 
                   <p>
-                    <code>lscpu</code>
-                    provides detailed CPU information, including the
-                    architecture, byte order, and supported CPU operating modes.
+                    <code>lscpu</code> provides detailed CPU information,
+                    including architecture and supported CPU operating modes.
                     This is useful when verifying that the hardware can execute
                     64-bit code even if the OS architecture is unclear.
                   </p>
@@ -439,10 +467,9 @@ Model name:             Intel(R) Xeon(R) CPU</code></pre>
                   </div>
 
                   <p>
-                    <code>getconf LONG_BIT</code>
-                    reports whether the current userland is operating in 32-bit
-                    or 64-bit mode. This is a clean “yes/no” confirmation for
-                    deployment readiness.
+                    <code>getconf LONG_BIT</code> reports whether the current
+                    userland is operating in 32-bit or 64-bit mode. This is a
+                    clean confirmation for deployment readiness.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -468,22 +495,72 @@ Model name:             Intel(R) Xeon(R) CPU</code></pre>
                         Copy
                       </button>
                     </div>
-                    <pre><code id="cmd-step-5">echo 'System is 64-bit compatible'</code></pre>
+                    <pre><code id="cmd-step-5">echo 'Validated: host is x86_64 and running 64-bit userland (LONG_BIT=64).'</code></pre>
                   </div>
 
                   <p>
-                    This produces a short statement you can paste into a ticket,
+                    This produces a short line you can paste into a ticket,
                     change record, or deployment checklist after completing your
                     validation.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code id="verify-step-5">System is 64-bit compatible</code></pre>
+                    <pre><code id="verify-step-5">Validated: host is x86_64 and running 64-bit userland (LONG_BIT=64).</code></pre>
                   </div>
                 </div>
               </section>
 
-              <!-- 8) Reference -->
+              <!-- Breakpoints -->
+              <section class="lab-section" id="breakpoints">
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  Common breakpoints
+                </h3>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">
+                    arch/uname say x86_64 but LONG_BIT is 32
+                  </div>
+                  <p class="m-b-0">
+                    Hardware can support 64-bit while the OS is installed as
+                    32-bit. Your deployment requirement usually cares about OS
+                    userland, so trust <code>getconf LONG_BIT</code>.
+                  </p>
+                </div>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">lscpu not found</div>
+                  <p class="m-b-0">
+                    Some minimal images do not include it by default. Install
+                    the package that provides <code>lscpu</code> (commonly
+                    <code>util-linux</code>) or rely on the other checks.
+                  </p>
+                </div>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">
+                    Output differences across distros/VMs
+                  </div>
+                  <p class="m-b-0">
+                    Architecture strings can vary (for example <code>aarch64</code>).
+                    The workflow stays the same: verify architecture, verify CPU
+                    modes when available, then confirm OS bitness.
+                  </p>
+                </div>
+              </section>
+
+              <!-- Cleanup -->
+              <section class="lab-section alt-background" id="cleanup">
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  Cleanup checklist
+                </h3>
+
+                <p>
+                  No system changes are made in this lab. There is nothing to
+                  clean up.
+                </p>
+              </section>
+
+              <!-- Reference -->
               <section class="lab-section" id="reference">
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">
                   Reference
@@ -491,75 +568,49 @@ Model name:             Intel(R) Xeon(R) CPU</code></pre>
 
                 <ul class="lab-reference-list">
                   <li>
-                    <code>arch</code>
-                    : Prints the machine hardware architecture.
+                    <code>arch</code>: Prints the machine hardware architecture.
                   </li>
 
                   <li>
-                    <code>uname -m</code>
-                    : Displays the machine hardware name (architecture).
+                    <code>uname -m</code>: Displays the machine hardware name (architecture).
                     <ul>
-                      <li>
-                        <code>-m</code>
-                        : Outputs the machine hardware name.
-                      </li>
+                      <li><code>-m</code>: outputs the machine hardware name</li>
                     </ul>
                   </li>
 
                   <li>
-                    <code>lscpu</code>
-                    : Displays CPU architecture details and execution modes.
+                    <code>lscpu</code>: Displays CPU architecture details and execution modes.
                     <ul>
                       <li>
-                        Useful fields include
-                        <code>Architecture</code>
-                        and
+                        Key fields:
+                        <code>Architecture</code>,
                         <code>CPU op-mode(s)</code>
-                        .
                       </li>
                     </ul>
                   </li>
 
                   <li>
-                    <code>getconf LONG_BIT</code>
-                    : Reports whether userland is operating in 32-bit or 64-bit
-                    mode.
+                    <code>getconf LONG_BIT</code>: Reports whether userland is operating in 32-bit or 64-bit mode.
                     <ul>
-                      <li>
-                        <code>LONG_BIT</code>
-                        : Returns
-                        <code>32</code>
-                        or
-                        <code>64</code>
-                        .
-                      </li>
+                      <li><code>LONG_BIT</code>: returns <code>32</code> or <code>64</code></li>
                     </ul>
                   </li>
 
                   <li>
-                    <code>echo 'System is 64-bit compatible'</code>
-                    : Produces a short confirmation message for operational
-                    notes.
+                    <code>echo 'Validated: ...'</code>: Prints a short confirmation line for operational notes.
                   </li>
                 </ul>
               </section>
 
-              <!-- Lab Pagination -->
+              <nav class="lab-pagination">
+                <a class="lab-nav-link" href="#totop" aria-label="Back to top">
+                  &uArr;
+                </a>
+              </nav>
             </div>
             <!-- /main -->
           </div>
           <!-- /row -->
-
-          <nav class="lab-pagination">
-            <a
-              id="prev-lab"
-              class="lab-nav-link"
-              href="#"
-              aria-label="Previous lab"
-            >
-              &uArr;
-            </a>
-          </nav>
         </div>
         <!-- /container -->
       </section>
@@ -630,5 +681,9 @@ Model name:             Intel(R) Xeon(R) CPU</code></pre>
 
     <!-- Lab page JS (new) -->
     <script src="../assets/js/lab.js"></script>
+
+    <script>
+      document.getElementById("year").textContent = new Date().getFullYear()
+    </script>
   </body>
 </html>

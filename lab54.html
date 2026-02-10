@@ -37,7 +37,7 @@
     <link href="../assets/css/style.css" rel="stylesheet" />
     <link href="../assets/css/docs.css" rel="stylesheet" />
 
-    <!-- Lab page styles (new) -->
+    <!-- Lab page styles -->
     <link href="../assets/css/lab.css" rel="stylesheet" />
 
     <!-- Fonts -->
@@ -67,9 +67,30 @@
             <li class="slidedown">
               <a href="#">Portfolio</a>
               <ul>
-                <li><a href="https://github.com/vonds/exit_0" target="_blank" rel="noopener">exit_0</a></li>
-                <li><a href="docs.html" target="_blank" rel="noopener">exit_0 Documentation</a></li>
-                <li><a href="https://github.com/vonds/sentinel" target="_blank" rel="noopener">Sentinel</a></li>
+                <li>
+                  <a
+                    href="https://github.com/vonds/exit_0"
+                    target="_blank"
+                    rel="noopener"
+                    >exit_0</a
+                  >
+                </li>
+                <li>
+                  <a
+                    href="docs.html"
+                    target="_blank"
+                    rel="noopener"
+                    >exit_0 Documentation</a
+                  >
+                </li>
+                <li>
+                  <a
+                    href="https://github.com/vonds/sentinel"
+                    target="_blank"
+                    rel="noopener"
+                    >Sentinel</a
+                  >
+                </li>
               </ul>
             </li>
 
@@ -88,7 +109,9 @@
               </a>
             </li>
             <li>
-              <a href="mailto:vonds13@gmail.com?subject=Hello Vonds">Contact</a>
+              <a href="mailto:vonds13@gmail.com?subject=Hello Vonds"
+                >Contact</a
+              >
             </li>
           </ul>
         </nav>
@@ -139,7 +162,7 @@
       <section class="module">
         <div class="container">
           <h2 class="font-alt module-title m-t-60">
-            Lab 54: Recover Root Password (Simulation)
+            Lab 54: Recover Root Password
           </h2>
 
           <nav class="lab-pagination">
@@ -171,7 +194,11 @@
                   </h5>
                   <ul class="docs-nav">
                     <li><a href="#scenario">Scenario</a></li>
+                    <li><a href="#objective">Objective</a></li>
+                    <li><a href="#concepts">Concepts</a></li>
                     <li><a href="#walkthrough">Walkthrough</a></li>
+                    <li><a href="#breakpoints">Breakpoints</a></li>
+                    <li><a href="#cleanup">Cleanup</a></li>
                     <li><a href="#reference">Reference</a></li>
                   </ul>
                 </div>
@@ -180,7 +207,6 @@
 
             <!-- MAIN CONTENT -->
             <div class="col-sm-8 col-md-9 lab-doc">
-              <!-- 1) Title + Summary (2 sentences max) -->
               <p class="m-b-20 lab-summary">
                 Recover access when the root password is unknown by using a
                 controlled GRUB edit to boot into a minimal rescue shell. Load
@@ -188,24 +214,23 @@
                 the password, trigger a relabel, and return to normal boot.
               </p>
 
+              <!-- Video -->
               <section class="lab-section" id="video" aria-label="Lab video">
-  				<div class="lab-video">
-    				<div class="lab-video-embed text-center">
-      					<iframe 
-							width="560" 
-							height="315" 
-							src="https://www.youtube.com/embed/uJk54bhaadA?si=seGSukCoMFN7ohRo" 
-							title="YouTube video player" 
-							frameborder="0" 
-							allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
-							referrerpolicy="strict-origin-when-cross-origin" 
-							allowfullscreen>
-						</iframe>
-    				</div>
-  				</div>
-			</section>
+                <div class="lab-video">
+                  <div class="lab-video-embed text-center">
+                    <iframe
+                      src="https://www.youtube.com/embed/uJk54bhaadA?si=seGSukCoMFN7ohRo"
+                      title="YouTube video player"
+                      frameborder="0"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                      referrerpolicy="strict-origin-when-cross-origin"
+                      allowfullscreen
+                    ></iframe>
+                  </div>
+                </div>
+              </section>
 
-              <!-- 2) Scenario -->
+              <!-- Scenario -->
               <section class="lab-section" id="scenario">
                 <div class="lab-chips" aria-label="Tags">
                   <span class="lab-chip">
@@ -224,77 +249,74 @@
                 </h3>
 
                 <p>
-                  The root password is forgotten. You have console access and
-                  must regain root by editing the GRUB boot entry. Your goal is
-                  to boot into a rescue shell, ensure SELinux policy is loaded
-                  before making changes, reset the root password safely, trigger
-                  an SELinux relabel, and reboot back into normal mode.
+                  The root password is unknown. You have console access and must
+                  regain root by editing the GRUB boot entry. Boot into a rescue
+                  shell, ensure SELinux policy is loaded before making changes,
+                  reset the root password, trigger an SELinux relabel, and boot
+                  back into normal mode.
                 </p>
 
                 <div class="lab-callout">
                   <div class="lab-callout-label">Operator context</div>
                   <p class="m-b-0">
-                    This workflow is a standard recovery procedure for RHEL-like
-                    systems. In production, access to the console and the boot
-                    loader is a privileged capability and must be treated as a
-                    security boundary.
+                    This workflow is standard for RHEL-like systems. Console and
+                    boot loader access are privileged capabilities and must be
+                    treated as a security boundary.
                   </p>
                 </div>
               </section>
 
-              <!-- 3) Objective -->
+              <!-- Objective -->
               <section class="lab-section alt-background" id="objective">
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">
                   Objective
                 </h3>
                 <ul>
                   <li>Interrupt GRUB and enter edit mode.</li>
-                  <li>
-                    Append a kernel argument to boot into a minimal shell.
-                  </li>
+                  <li>Append a kernel argument to boot into a minimal shell.</li>
                   <li>Boot the modified entry.</li>
                   <li>Load SELinux policy in the rescue shell.</li>
                   <li>Remount <code>/</code> read-write.</li>
                   <li>Reset the root password.</li>
-                  <li>
-                    Create <code>/.autorelabel</code> to relabel on next boot.
-                  </li>
+                  <li>Create <code>/.autorelabel</code> to relabel on next boot.</li>
                   <li>Continue booting into normal mode.</li>
                 </ul>
               </section>
 
-              <!-- 4) What You'll Practice -->
-              <section class="lab-section" id="practice">
+              <!-- Concepts -->
+              <section class="lab-section" id="concepts">
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">
-                  What You’ll Practice
+                  Concepts
                 </h3>
-
-                <ul class="m-t-10">
-                  <li>GRUB edit workflow (console access, modify boot entry).</li>
+                <ul>
                   <li>
-                    Rescue boot technique using an init override
+                    One-time GRUB edits for recovery without permanently changing
+                    boot loader configuration.
+                  </li>
+                  <li>
+                    Init override for minimal rescue access
                     (<code>init=/bin/sh</code>).
                   </li>
                   <li>
-                    SELinux policy handling in rescue mode
-                    (<code>load_policy</code>).
+                    SELinux policy handling in rescue mode to keep labeling and
+                    authentication consistent.
                   </li>
                   <li>
-                    Remounting a filesystem read-write for controlled changes
-                    (<code>mount -o remount,rw /</code>).
-                  </li>
-                  <li>Password reset procedure using <code>passwd</code>.</li>
-                  <li>
-                    Triggering SELinux relabel via
-                    <code>/.autorelabel</code>.
+                    Controlled write access by remounting <code>/</code>
+                    read-write (<code>mount -o remount,rw /</code>).
                   </li>
                   <li>
-                    Returning to normal boot with <code>exec /sbin/init</code>.
+                    Password reset workflow (<code>passwd</code>) and post-change
+                    relabel signaling (<code>/.autorelabel</code>).
+                  </li>
+                  <li>
+                    Returning to normal boot by replacing the rescue shell with
+                    init (<code>exec /sbin/init</code>).
                   </li>
                 </ul>
               </section>
 
-              <!-- 5) Commands Walkthrough -->
+              <!-- Walkthrough -->
               <section class="lab-section alt-background" id="walkthrough">
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">
                   Walkthrough
@@ -309,20 +331,25 @@
 
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
-                      <span>Action</span>
+                      <span>Command</span>
+                      <button
+                        class="lab-copy-btn"
+                        type="button"
+                        data-copy="#cmd-step-1"
+                      >
+                        Copy
+                      </button>
                     </div>
                     <pre><code id="cmd-step-1">e</code></pre>
                   </div>
 
                   <p>
-                    On reboot, interrupt the boot loader and edit the current
-                    boot entry. This provides a one-time, in-memory change for
-                    recovery without permanently modifying the GRUB
-                    configuration.
+                    This edit is in-memory for the current boot only. Use it for
+                    recovery without modifying persistent GRUB configuration.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code id="verify-step-1">(GRUB edit screen opens)</code></pre>
+                    <pre><code>(GRUB edit screen opens)</code></pre>
                   </div>
                 </div>
 
@@ -348,10 +375,9 @@
                   </div>
 
                   <p>
-                    Appending <code>init=/bin/sh</code> changes the init process
-                    for this boot so the system drops directly into a minimal
-                    shell. This is a controlled recovery mode used to regain
-                    access when authentication is blocked.
+                    Appending <code>init=/bin/sh</code> replaces the init process
+                    for this boot and drops you into a minimal shell. This is a
+                    controlled recovery mode when authentication is blocked.
                   </p>
                 </div>
 
@@ -364,7 +390,14 @@
 
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
-                      <span>Action</span>
+                      <span>Commands</span>
+                      <button
+                        class="lab-copy-btn"
+                        type="button"
+                        data-copy="#cmd-step-3"
+                      >
+                        Copy
+                      </button>
                     </div>
                     <pre><code id="cmd-step-3">Ctrl+x
 # OR
@@ -372,13 +405,12 @@ F10</code></pre>
                   </div>
 
                   <p>
-                    Booting the edited entry applies the changes for this
-                    session only. Once the system starts, you should land in a
-                    shell prompt without a standard login sequence.
+                    The system should boot directly into a shell prompt without a
+                    normal login sequence.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code id="verify-step-3">[  OK  ] Started dracut pre-pivot and cleanup hook.
+                    <pre><code>[  OK  ] Started dracut pre-pivot and cleanup hook.
 [  OK  ] Reached target Switch Root.
 Switching root.
 /bin/sh: can't access tty; job control turned off
@@ -391,6 +423,15 @@ sh-5.1#</code></pre>
                   <div class="lab-step-title">
                     <strong class="font-alt">Step 4</strong>
                     : Load SELinux policy before making changes.
+                  </div>
+
+                  <div class="lab-callout">
+                    <div class="lab-callout-label">Safety note</div>
+                    <p class="m-b-0">
+                      If SELinux is enforcing, load policy before modifying
+                      authentication state. This reduces the chance of booting
+                      back into a mislabeled system.
+                    </p>
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -409,13 +450,11 @@ sh-5.1#</code></pre>
 
                   <p>
                     Loading policy ensures SELinux permission checks behave
-                    predictably for recovery actions. It also reduces the chance
-                    of booting back into a system with mislabeled or blocked
-                    authentication state.
+                    predictably in the rescue environment.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code id="verify-step-4">/usr/sbin/load_policy:  done</code></pre>
+                    <pre><code>/usr/sbin/load_policy:  done</code></pre>
                   </div>
                 </div>
 
@@ -441,9 +480,8 @@ sh-5.1#</code></pre>
                   </div>
 
                   <p>
-                    In this recovery mode, the root filesystem is typically
-                    mounted read-only. You must remount it read-write before
-                    changing account data.
+                    In rescue mode, <code>/</code> is typically mounted read-only.
+                    Remount it read-write before updating account data.
                   </p>
                 </div>
 
@@ -469,13 +507,12 @@ sh-5.1#</code></pre>
                   </div>
 
                   <p>
-                    Running <code>passwd</code> updates the root password. In a
-                    rescue environment, this is the direct mechanism to regain
-                    login capability.
+                    This updates the root password in-place so normal
+                    authentication can succeed after reboot.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code id="verify-step-6">New password:
+                    <pre><code>New password:
 Retype new password:
 passwd: all authentication tokens updated successfully.</code></pre>
                   </div>
@@ -503,16 +540,16 @@ passwd: all authentication tokens updated successfully.</code></pre>
                   </div>
 
                   <p>
-                    Creating <code>/.autorelabel</code> instructs the system to
-                    relabel files on the next boot. This is a standard safety
-                    step after making sensitive changes from a rescue shell.
+                    Creating <code>/.autorelabel</code> forces a relabel on the
+                    next boot. This is a standard recovery step after modifying
+                    authentication state from a rescue shell.
                   </p>
                 </div>
 
                 <!-- Step 8 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
-                    <strong class="font-alt bold">Step 8</strong>
+                    <strong class="font-alt">Step 8</strong>
                     : Continue booting into normal mode.
                   </div>
 
@@ -531,16 +568,102 @@ passwd: all authentication tokens updated successfully.</code></pre>
                   </div>
 
                   <p>
-                    <code>exec /sbin/init</code> replaces the current rescue
-                    shell with the normal init process so the system can
-                    complete boot. If <code>/.autorelabel</code> is present,
-                    relabeling may take time and should be allowed to finish.
+                    <code>exec /sbin/init</code> replaces the rescue shell with
+                    the normal init process so the system can complete boot. If
+                    relabeling runs, allow it to finish.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code id="verify-step-8">system is rebooting...
+                    <pre><code>system is rebooting...
 SELinux relabel may take several minutes.</code></pre>
                   </div>
+                </div>
+              </section>
+
+              <!-- Breakpoints -->
+              <section class="lab-section" id="breakpoints">
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  Common breakpoints
+                </h3>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">
+                    No GRUB menu appears
+                  </div>
+                  <p class="m-b-0">
+                    The boot may be too fast or the menu may be hidden. Use the
+                    console and reboot again, then press the appropriate key to
+                    interrupt boot at the GRUB stage.
+                  </p>
+                </div>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">
+                    Root filesystem remains read-only
+                  </div>
+                  <p class="m-b-0">
+                    If <code>passwd</code> fails to write updates, confirm
+                    <code>mount -o remount,rw /</code> succeeded and retry the
+                    command.
+                  </p>
+                </div>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">
+                    SELinux blocks login after reset
+                  </div>
+                  <p class="m-b-0">
+                    If authentication fails after reboot, the system may have
+                    labeling issues. Ensure <code>/.autorelabel</code> was
+                    created and allow the relabel to complete.
+                  </p>
+                </div>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">
+                    init override persists unexpectedly
+                  </div>
+                  <p class="m-b-0">
+                    The <code>init=/bin/sh</code> edit is one-time unless you
+                    modified persistent GRUB config. Reboot and confirm you are
+                    booting the normal entry without the override.
+                  </p>
+                </div>
+              </section>
+
+              <!-- Cleanup -->
+              <section class="lab-section alt-background" id="cleanup">
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  Cleanup checklist
+                </h3>
+
+                <p>
+                  This recovery is designed to leave the system in a normal boot
+                  state. Confirm the relabel completed and remove the relabel
+                  trigger file if it still exists.
+                </p>
+
+                <div class="lab-codeblock m-b-40 m-t-40">
+                  <div class="lab-codeblock-header">
+                    <span>Commands</span>
+                    <button
+                      class="lab-copy-btn"
+                      type="button"
+                      data-copy="#cmd-cleanup"
+                    >
+                      Copy
+                    </button>
+                  </div>
+                  <pre><code id="cmd-cleanup">ls -l /.autorelabel
+rm -f /.autorelabel</code></pre>
+                </div>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">Success signal</div>
+                  <p class="m-b-0">
+                    The system boots normally, root authentication works, and
+                    relabeling completes without repeated AVC failures.
+                  </p>
                 </div>
               </section>
 
@@ -571,8 +694,7 @@ SELinux relabel may take several minutes.</code></pre>
 
                   <li>
                     <code>/usr/sbin/load_policy -i</code>
-                    : Loads SELinux policy in rescue mode so permission checks
-                    behave consistently.
+                    : Loads SELinux policy in rescue mode.
                     <ul>
                       <li>
                         <code>-i</code>
@@ -583,8 +705,12 @@ SELinux relabel may take several minutes.</code></pre>
 
                   <li>
                     <code>mount -o remount,rw /</code>
-                    : Remounts the root filesystem read-write to allow changes.
+                    : Remounts the root filesystem read-write.
                     <ul>
+                      <li>
+                        <code>-o</code>
+                        : Specifies mount options.
+                      </li>
                       <li>
                         <code>remount</code>
                         : Changes mount options without unmounting.
@@ -617,6 +743,29 @@ SELinux relabel may take several minutes.</code></pre>
                       </li>
                     </ul>
                   </li>
+
+                  <li>
+                    <code>ls -l /.autorelabel</code>
+                    : Confirms whether the relabel trigger file exists.
+                    <ul>
+                      <li>
+                        <code>-l</code>
+                        : Shows long listing output including permissions and
+                        timestamps.
+                      </li>
+                    </ul>
+                  </li>
+
+                  <li>
+                    <code>rm -f /.autorelabel</code>
+                    : Removes the relabel trigger file if it remains after boot.
+                    <ul>
+                      <li>
+                        <code>-f</code>
+                        : Removes without prompting and ignores missing files.
+                      </li>
+                    </ul>
+                  </li>
                 </ul>
               </section>
 
@@ -625,12 +774,7 @@ SELinux relabel may take several minutes.</code></pre>
           </div>
 
           <nav class="lab-pagination">
-            <a
-              id="prev-lab"
-              class="lab-nav-link"
-              href="#"
-              aria-label="Back to top"
-            >
+            <a class="lab-nav-link" href="#" aria-label="Back to top">
               &uArr;
             </a>
           </nav>
@@ -703,5 +847,9 @@ SELinux relabel may take several minutes.</code></pre>
 
     <!-- Lab page JS (new) -->
     <script src="../assets/js/lab.js"></script>
+
+    <script>
+      document.getElementById('year').textContent = new Date().getFullYear()
+    </script>
   </body>
 </html>

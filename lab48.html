@@ -37,7 +37,7 @@
     <link href="../assets/css/style.css" rel="stylesheet" />
     <link href="../assets/css/docs.css" rel="stylesheet" />
 
-    <!-- Lab page styles (new) -->
+    <!-- Lab page styles -->
     <link href="../assets/css/lab.css" rel="stylesheet" />
 
     <!-- Fonts -->
@@ -67,9 +67,29 @@
             <li class="slidedown">
               <a href="#">Portfolio</a>
               <ul>
-                <li><a href="https://github.com/vonds/exit_0" target="_blank" rel="noopener">exit_0</a></li>
-                <li><a href="docs.html" target="_blank" rel="noopener">exit_0 Documentation</a></li>
-                <li><a href="https://github.com/vonds/sentinel" target="_blank" rel="noopener">Sentinel</a></li>
+                <li>
+                  <a
+                    href="https://github.com/vonds/exit_0"
+                    target="_blank"
+                    rel="noopener"
+                  >
+                    exit_0
+                  </a>
+                </li>
+                <li>
+                  <a href="docs.html" target="_blank" rel="noopener">
+                    exit_0 Documentation
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="https://github.com/vonds/sentinel"
+                    target="_blank"
+                    rel="noopener"
+                  >
+                    Sentinel
+                  </a>
+                </li>
               </ul>
             </li>
 
@@ -141,7 +161,8 @@
           <h2 class="font-alt module-title m-t-60">
             Lab 48: Changing System Hostname
           </h2>
-		  <nav class="lab-pagination">
+
+          <nav class="lab-pagination">
             <a
               id="prev-lab"
               class="lab-nav-link"
@@ -159,15 +180,22 @@
               &raquo;
             </a>
           </nav>
+
           <div class="row">
             <!-- LEFT SIDEBAR -->
             <div class="col-sm-4 col-md-3 lab-sidebar">
               <div class="docs-sidebar">
                 <div class="docs-widget">
-                  <h5 class="widget-title"><a href="./docs.html">Back to Lab Index</a></h5>
+                  <h5 class="widget-title">
+                    <a href="./docs.html">Back to Lab Index</a>
+                  </h5>
                   <ul class="docs-nav">
                     <li><a href="#scenario">Scenario</a></li>
+                    <li><a href="#objective">Objective</a></li>
+                    <li><a href="#concepts">Concepts</a></li>
                     <li><a href="#walkthrough">Walkthrough</a></li>
+                    <li><a href="#breakpoints">Breakpoints</a></li>
+                    <li><a href="#cleanup">Cleanup</a></li>
                     <li><a href="#reference">Reference</a></li>
                   </ul>
                 </div>
@@ -176,31 +204,30 @@
 
             <!-- MAIN CONTENT -->
             <div class="col-sm-8 col-md-9 lab-doc">
-              <!-- 1) Title + Summary (2 sentences max) -->
               <p class="m-b-20 lab-summary">
                 Update a Linux hostname to match a new naming convention using
                 <code>hostnamectl</code>
-                and confirm the change through system status and config files. Validate the runtime and persistent hostname state and ensure the local resolver mapping aligns with the new name.
+                and confirm the change through system status and config files.
+                Validate runtime and persistent hostname state and ensure local
+                resolver mapping aligns with the new name.
               </p>
 
               <section class="lab-section" id="video" aria-label="Lab video">
-  				<div class="lab-video">
-    				<div class="lab-video-embed text-center">
-      					<iframe 
-							width="560" 
-							height="315" 
-							src="https://www.youtube.com/embed/uJk54bhaadA?si=seGSukCoMFN7ohRo" 
-							title="YouTube video player" 
-							frameborder="0" 
-							allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
-							referrerpolicy="strict-origin-when-cross-origin" 
-							allowfullscreen>
-						</iframe>
-    				</div>
-  				</div>
-			</section>
+                <div class="lab-video">
+                  <div class="lab-video-embed text-center">
+                    <iframe
+                      src="https://www.youtube.com/embed/uJk54bhaadA?si=seGSukCoMFN7ohRo"
+                      title="YouTube video player"
+                      frameborder="0"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                      referrerpolicy="strict-origin-when-cross-origin"
+                      allowfullscreen
+                    ></iframe>
+                  </div>
+                </div>
+              </section>
 
-              <!-- 2) Scenario -->
+              <!-- Scenario -->
               <section class="lab-section" id="scenario">
                 <div class="lab-chips" aria-label="Tags">
                   <span class="lab-chip">
@@ -217,9 +244,11 @@
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">
                   Scenario
                 </h3>
+
                 <p>
-                  Your company recently restructured its internal network. You’ve been asked to update hostnames
-                  to reflect new node naming conventions. The current hostname is
+                  Your company recently restructured its internal network. You’ve
+                  been asked to update hostnames to reflect new node naming
+                  conventions. The current hostname is
                   <strong>old-server</strong>
                   and it must be changed to
                   <strong>web-node01</strong>
@@ -229,13 +258,15 @@
                 <div class="lab-callout">
                   <div class="lab-callout-label">Operator context</div>
                   <p class="m-b-0">
-                    Hostnames show up everywhere: monitoring dashboards, SSH prompts, log records, certificates,
-                    and inventory systems. A correct hostname change is both runtime-correct and persistent across reboots.
+                    Hostnames show up everywhere: monitoring dashboards, SSH
+                    prompts, log records, certificates, and inventory systems. A
+                    correct change is runtime-correct and persistent across
+                    reboots.
                   </p>
                 </div>
               </section>
 
-              <!-- 3) Objective -->
+              <!-- Objective -->
               <section class="lab-section alt-background" id="objective">
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">
                   Objective
@@ -269,40 +300,33 @@
                 </ul>
               </section>
 
-              <!-- 4) What You'll Practice -->
-              <section class="lab-section" id="practice">
+              <!-- Concepts (no alt-background moving forward) -->
+              <section class="lab-section" id="concepts">
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">
-                  What You’ll Practice
+                  Concepts
                 </h3>
-
-                <ul class="m-t-10">
+                <ul>
                   <li>
-                    Inspecting hostname state with
-                    <code>hostnamectl</code>
-                    and understanding static vs transient hostname.
+                    Static hostname vs transient hostname: what persists and
+                    what can be overwritten by DHCP or network management.
                   </li>
                   <li>
-                    Persistently setting hostnames using
-                    <code>hostnamectl set-hostname</code>
-                    .
+                    hostnamectl as the authoritative interface for systemd-hostnamed.
                   </li>
                   <li>
-                    Verifying persistence in
-                    <code>/etc/hostname</code>
-                    .
+                    /etc/hostname as the persistent source on many distributions.
                   </li>
                   <li>
-                    Validating local name resolution expectations with
-                    <code>/etc/hosts</code>
-                    (common in VM images and default distro setups).
+                    /etc/hosts and predictable local resolution for the node name.
                   </li>
                   <li>
-                    Recognizing where hostnames appear in day-to-day operations (prompt, logs, monitoring).
+                    Where hostname changes surface: prompts, logs, monitoring, and
+                    certificates.
                   </li>
                 </ul>
               </section>
 
-              <!-- 5) Commands Walkthrough -->
+              <!-- Walkthrough -->
               <section class="lab-section alt-background" id="walkthrough">
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">
                   Walkthrough
@@ -330,8 +354,8 @@
                   </div>
 
                   <p>
-                    This provides a structured view of hostname state and platform metadata.
-                    The key field for this lab is the static hostname, which persists across reboot.
+                    This shows hostname state and platform metadata. The key
+                    field is the static hostname, which persists across reboots.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -368,10 +392,10 @@ Operating System: Ubuntu 22.04.4 LTS
                   </div>
 
                   <p>
-                    This updates the static hostname persistently. You will typically see the prompt change
-                    in new sessions and the hostname reflected immediately in
+                    This sets the static hostname persistently. You will usually
+                    see the new name reflected immediately in
                     <code>hostnamectl</code>
-                    output.
+                    output, and in new sessions for prompts.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -401,8 +425,8 @@ Operating System: Ubuntu 22.04.4 LTS
                   </div>
 
                   <p>
-                    This confirms runtime state and verifies that the persistent static hostname
-                    now matches the expected value.
+                    Confirm runtime state and verify the static hostname matches
+                    the required node name.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -439,8 +463,9 @@ Operating System: Ubuntu 22.04.4 LTS
                   </div>
 
                   <p>
-                    This is the simplest proof that the hostname change is persistent on systems
-                    that store the hostname in this file. The value should match the static hostname.
+                    This is the simplest proof of persistence on systems that
+                    store the hostname in this file. The content should match
+                    the static hostname.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -451,8 +476,8 @@ Operating System: Ubuntu 22.04.4 LTS
                 <!-- Step 5 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
-                    <strong class="font-alt bold">Step 5</strong>
-                    : Confirm /etc/hosts aligns with the new hostname.
+                    <strong class="font-alt">Step 5</strong>
+                    : Align /etc/hosts with the new hostname.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -474,8 +499,9 @@ Operating System: Ubuntu 22.04.4 LTS
                     <code>/etc/hosts</code>
                     (commonly to
                     <code>127.0.1.1</code>
-                    on Ubuntu-style defaults). If this mapping is wrong, local name resolution can behave unexpectedly,
-                    and some services may log confusing host identifiers.
+                    on Ubuntu defaults). If this mapping is wrong, local name
+                    resolution can behave unexpectedly and services may log
+                    inconsistent host identifiers.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -483,10 +509,127 @@ Operating System: Ubuntu 22.04.4 LTS
 127.0.1.1   web-node01</code></pre>
                   </div>
                 </div>
+
+                <!-- Step 6 -->
+                <div class="lab-step">
+                  <div class="lab-step-title">
+                    <strong class="font-alt">Step 6</strong>
+                    : Verify what name your shell and resolver see.
+                  </div>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <div class="lab-codeblock-header">
+                      <span>Commands</span>
+                      <button
+                        class="lab-copy-btn"
+                        type="button"
+                        data-copy="#cmd-step-6"
+                      >
+                        Copy
+                      </button>
+                    </div>
+                    <pre><code id="cmd-step-6">hostname
+getent hosts "$(hostname)"</code></pre>
+                  </div>
+
+                  <p>
+                    This confirms the active hostname value and verifies that
+                    the system can resolve the hostname via local name service
+                    configuration. If resolution fails, review
+                    <code>/etc/hosts</code>
+                    and your NSS configuration.
+                  </p>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <pre><code>web-node01
+127.0.1.1   web-node01</code></pre>
+                  </div>
+                </div>
               </section>
 
-              <!-- 8) Reference -->
-              <!-- 9) Reference -->
+              <!-- Breakpoints -->
+              <section class="lab-section" id="breakpoints">
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  Common breakpoints
+                </h3>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">
+                    Prompt does not change immediately
+                  </div>
+                  <p class="m-b-0">
+                    Your current shell may cache the hostname in the prompt.
+                    Open a new session or refresh your prompt configuration to
+                    see the updated name.
+                  </p>
+                </div>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">
+                    Local resolution returns the old hostname
+                  </div>
+                  <p class="m-b-0">
+                    Update the hostname mapping in
+                    <code>/etc/hosts</code>
+                    and confirm that
+                    <code>getent hosts "$(hostname)"</code>
+                    returns the expected address-to-name mapping.
+                  </p>
+                </div>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">
+                    Static vs transient hostname confusion
+                  </div>
+                  <p class="m-b-0">
+                    Ensure you set the static hostname with
+                    <code>hostnamectl set-hostname</code>
+                    . A transient hostname can be overwritten by network or DHCP
+                    behavior on some systems.
+                  </p>
+                </div>
+              </section>
+
+              <!-- Cleanup -->
+              <section class="lab-section alt-background" id="cleanup">
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  Cleanup checklist
+                </h3>
+
+                <p>
+                  This lab is usually a permanent change. If you need to revert
+                  for a shared lab image, set the hostname back and restore
+                  the /etc/hosts mapping.
+                </p>
+
+                <div class="lab-codeblock m-b-40 m-t-40">
+                  <div class="lab-codeblock-header">
+                    <span>Commands</span>
+                    <button
+                      class="lab-copy-btn"
+                      type="button"
+                      data-copy="#cmd-cleanup"
+                    >
+                      Copy
+                    </button>
+                  </div>
+                  <pre><code id="cmd-cleanup">sudo hostnamectl set-hostname old-server
+sudo sed -i 's/\bweb-node01\b/old-server/g' /etc/hosts
+hostnamectl
+cat /etc/hostname</code></pre>
+                </div>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">Success signal</div>
+                  <p class="m-b-0">
+                    The static hostname matches the intended value, /etc/hostname
+                    matches it, and the hostname resolves locally to the expected
+                    mapping.
+                  </p>
+                </div>
+              </section>
+
+              <!-- Reference -->
               <section class="lab-section" id="reference">
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">
                   Reference
@@ -501,44 +644,33 @@ Operating System: Ubuntu 22.04.4 LTS
                   <li>
                     <code>hostnamectl set-hostname &lt;name&gt;</code>
                     : Sets the static hostname persistently.
-                    <ul>
-                      <li>
-                        <code>&lt;name&gt;</code>
-                        : The new node hostname (for example
-                        <code>web-node01</code>
-                        ).
-                      </li>
-                    </ul>
+                  </li>
+
+                  <li>
+                    <code>hostname</code>
+                    : Prints the current hostname as seen by the running system.
+                  </li>
+
+                  <li>
+                    <code>getent hosts &lt;name&gt;</code>
+                    : Queries name service switch (NSS) host resolution for a name.
                   </li>
 
                   <li>
                     <code>/etc/hostname</code>
-                    : File storing the persistent hostname on many Linux distributions.
+                    : Persistent hostname file on many Linux distributions.
                   </li>
 
                   <li>
                     <code>/etc/hosts</code>
-                    : Local name resolution mapping file, often used to bind the hostname to loopback
-                    for predictable local resolution.
+                    : Local name-to-address mapping file used for predictable local resolution.
                   </li>
                 </ul>
               </section>
-
-              <!-- Lab Pagination -->
             </div>
             <!-- /main -->
           </div>
           <!-- /row -->
-          <nav class="lab-pagination">
-            <a
-                id="prev-lab"
-                class="lab-nav-link"
-                href="#"
-                aria-label="Previous lab"
-            >
-                &uArr;
-            </a>
-          </nav>
         </div>
         <!-- /container -->
       </section>
@@ -589,7 +721,7 @@ Operating System: Ubuntu 22.04.4 LTS
 
     <!-- Javascript files (your existing) -->
     <script src="../assets/js/jquery-2.2.4.min.js"></script>
-    <script src="../assets/bootstrap/js/bootstrap.min.css"></script>
+    <script src="../assets/bootstrap/js/bootstrap.min.js"></script>
     <script src="../assets/js/jquery.superslides.min.js"></script>
     <script src="../assets/js/jquery.mb.YTPlayer.min.js"></script>
     <script src="../assets/js/jquery.magnific-popup.min.js"></script>
@@ -609,5 +741,9 @@ Operating System: Ubuntu 22.04.4 LTS
 
     <!-- Lab page JS (new) -->
     <script src="../assets/js/lab.js"></script>
+
+    <script>
+      document.getElementById('year').textContent = new Date().getFullYear()
+    </script>
   </body>
 </html>

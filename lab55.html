@@ -36,9 +36,8 @@
     <link href="../assets/css/animate.css" rel="stylesheet" />
     <link href="../assets/css/style.css" rel="stylesheet" />
     <link href="../assets/css/docs.css" rel="stylesheet" />
-    <link href="../assets/css/docs.css" rel="stylesheet" />
 
-    <!-- Lab page styles (new) -->
+    <!-- Lab page styles -->
     <link href="../assets/css/lab.css" rel="stylesheet" />
 
     <!-- Fonts -->
@@ -68,9 +67,30 @@
             <li class="slidedown">
               <a href="#">Portfolio</a>
               <ul>
-                <li><a href="https://github.com/vonds/exit_0" target="_blank" rel="noopener">exit_0</a></li>
-                <li><a href="docs.html" target="_blank" rel="noopener">exit_0 Documentation</a></li>
-                <li><a href="https://github.com/vonds/sentinel" target="_blank" rel="noopener">Sentinel</a></li>
+                <li>
+                  <a
+                    href="https://github.com/vonds/exit_0"
+                    target="_blank"
+                    rel="noopener"
+                    >exit_0</a
+                  >
+                </li>
+                <li>
+                  <a
+                    href="docs.html"
+                    target="_blank"
+                    rel="noopener"
+                    >exit_0 Documentation</a
+                  >
+                </li>
+                <li>
+                  <a
+                    href="https://github.com/vonds/sentinel"
+                    target="_blank"
+                    rel="noopener"
+                    >Sentinel</a
+                  >
+                </li>
               </ul>
             </li>
 
@@ -172,7 +192,11 @@
                   </h5>
                   <ul class="docs-nav">
                     <li><a href="#scenario">Scenario</a></li>
+                    <li><a href="#objective">Objective</a></li>
+                    <li><a href="#concepts">Concepts</a></li>
                     <li><a href="#walkthrough">Walkthrough</a></li>
+                    <li><a href="#breakpoints">Breakpoints</a></li>
+                    <li><a href="#cleanup">Cleanup</a></li>
                     <li><a href="#reference">Reference</a></li>
                   </ul>
                 </div>
@@ -181,33 +205,30 @@
 
             <!-- MAIN CONTENT -->
             <div class="col-sm-8 col-md-9 lab-doc">
-              <!-- 1) Title + Summary (2 sentences max) -->
               <p class="m-b-20 lab-summary">
-                Inspect and modify environment variables to troubleshoot user
-                issues caused by misconfigured session state. Validate PATH,
-                enumerate the current environment, create and verify a custom
-                variable, persist it via shell startup files, and remove it
-                cleanly.
+                Inspect and modify environment variables to troubleshoot session
+                state issues that produce inconsistent tool behavior. Validate
+                PATH, set and verify a project variable, persist it for new
+                shells, then remove it cleanly.
               </p>
 
+              <!-- Video (kept on page; removed from left panel) -->
               <section class="lab-section" id="video" aria-label="Lab video">
-  				<div class="lab-video">
-    				<div class="lab-video-embed text-center">
-      					<iframe 
-							width="560" 
-							height="315" 
-							src="https://www.youtube.com/embed/uJk54bhaadA?si=seGSukCoMFN7ohRo" 
-							title="YouTube video player" 
-							frameborder="0" 
-							allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
-							referrerpolicy="strict-origin-when-cross-origin" 
-							allowfullscreen>
-						</iframe>
-    				</div>
-  				</div>
-			</section>
+                <div class="lab-video">
+                  <div class="lab-video-embed text-center">
+                    <iframe
+                      src="https://www.youtube.com/embed/uJk54bhaadA?si=seGSukCoMFN7ohRo"
+                      title="YouTube video player"
+                      frameborder="0"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                      referrerpolicy="strict-origin-when-cross-origin"
+                      allowfullscreen
+                    ></iframe>
+                  </div>
+                </div>
+              </section>
 
-              <!-- 2) Scenario -->
+              <!-- Scenario -->
               <section class="lab-section" id="scenario">
                 <div class="lab-chips" aria-label="Tags">
                   <span class="lab-chip">
@@ -226,77 +247,70 @@
                 </h3>
 
                 <p>
-                  You are troubleshooting a user issue related to PATH and
-                  custom environment variables. The user reports “commands not
-                  found” behavior and inconsistent application paths between
-                  sessions. Your job is to inspect the current environment,
-                  validate PATH, add a project variable for a deployment
-                  directory, make it persistent, then remove it safely.
+                  A user reports “command not found” behavior and inconsistent
+                  application paths between sessions. Your job is to inspect the
+                  current environment, validate PATH, set a project directory
+                  variable for a deployment workflow, persist it, then remove it
+                  safely.
                 </p>
 
                 <div class="lab-callout">
                   <div class="lab-callout-label">Operator context</div>
                   <p class="m-b-0">
                     Environment variables influence process behavior, command
-                    lookup, and tool defaults. A clean, repeatable workflow is
-                    to validate current state, apply a minimal change, verify it
-                    immediately, then persist it only if required.
+                    lookup, and tool defaults. The operational workflow is to
+                    validate current state, apply a minimal change, verify it
+                    immediately, then persist it only when required.
                   </p>
                 </div>
               </section>
 
-              <!-- 3) Objective -->
+              <!-- Objective -->
               <section class="lab-section alt-background" id="objective">
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">
                   Objective
                 </h3>
                 <ul>
                   <li>Print the current PATH value.</li>
-                  <li>List all environment variables in the current session.</li>
-                  <li>
-                    Create a new environment variable
-                    <code>PROJECT_DIR</code>.
-                  </li>
+                  <li>List environment variables in the current session.</li>
+                  <li>Create and export <code>PROJECT_DIR</code>.</li>
                   <li>Verify the variable is set correctly.</li>
-                  <li>Persist the variable across sessions via <code>~/.bashrc</code>.</li>
+                  <li>Persist the variable via <code>~/.bashrc</code>.</li>
                   <li>Unset the variable from the current session.</li>
                 </ul>
               </section>
 
-              <!-- 4) What You'll Practice -->
-              <section class="lab-section" id="practice">
+              <!-- Concepts (no alt-background moving forward) -->
+              <section class="lab-section" id="concepts">
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">
-                  What You’ll Practice
+                  Concepts
                 </h3>
-
-                <ul class="m-t-10">
+                <ul>
                   <li>
-                    Reading variables safely using <code>echo</code>.
+                    PATH controls executable lookup order in the shell and is a
+                    primary cause of “command not found.”
                   </li>
                   <li>
-                    Enumerating the current environment using
-                    <code>env</code>
-                    or
-                    <code>printenv</code>
-                    .
+                    Environment variables are inherited by child processes and
+                    can change tool behavior without changing command syntax.
                   </li>
                   <li>
-                    Creating and exporting variables using
-                    <code>export</code>
-                    .
+                    <code>export</code> marks a shell variable for inheritance
+                    by processes launched from the session.
                   </li>
                   <li>
-                    Persisting variables in a user shell profile
-                    (<code>~/.bashrc</code>).
+                    Startup files like <code>~/.bashrc</code> define per-user
+                    session defaults for interactive shells.
                   </li>
                   <li>
-                    Removing variables from the current session using
-                    <code>unset</code>.
+                    <code>unset</code> removes a variable from the current
+                    session, helping you confirm whether values come from
+                    startup files or runtime changes.
                   </li>
                 </ul>
               </section>
 
-              <!-- 5) Commands Walkthrough -->
+              <!-- Walkthrough -->
               <section class="lab-section alt-background" id="walkthrough">
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">
                   Walkthrough
@@ -306,7 +320,7 @@
                 <div class="lab-step">
                   <div class="lab-step-title">
                     <strong class="font-alt">Step 1</strong>
-                    : View the current value of PATH.
+                    : Inspect the current PATH value.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -324,14 +338,14 @@
                   </div>
 
                   <p>
-                    <code>PATH</code>
-                    controls where the shell searches for executables. If a user
-                    reports “command not found,” validate PATH early to confirm
-                    the expected directories are present and ordered correctly.
+                    PATH controls where the shell searches for executables. If a
+                    user reports missing commands or inconsistent tool versions,
+                    verify PATH early and confirm expected directories are
+                    present and ordered correctly.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code id="verify-step-1">/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin</code></pre>
+                    <pre><code>/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin</code></pre>
                   </div>
                 </div>
 
@@ -339,12 +353,12 @@
                 <div class="lab-step">
                   <div class="lab-step-title">
                     <strong class="font-alt">Step 2</strong>
-                    : List all currently defined environment variables.
+                    : Enumerate the current environment.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
-                      <span>Command</span>
+                      <span>Commands</span>
                       <button
                         class="lab-copy-btn"
                         type="button"
@@ -359,16 +373,13 @@ env</code></pre>
                   </div>
 
                   <p>
-                    <code>printenv</code>
-                    and
-                    <code>env</code>
-                    provide a snapshot of session state. This helps you catch
-                    unexpected overrides and confirms what values are actually
-                    inherited by processes launched from the shell.
+                    <code>printenv</code> and <code>env</code> provide a snapshot
+                    of session state. This is how you confirm what values are
+                    actually inherited by processes launched from the shell.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code id="verify-step-2">SHELL=/bin/bash
+                    <pre><code>SHELL=/bin/bash
 USER=lab
 LOGNAME=lab
 HOME=/home/lab
@@ -384,7 +395,7 @@ LANG=en_US.UTF-8
                 <div class="lab-step">
                   <div class="lab-step-title">
                     <strong class="font-alt">Step 3</strong>
-                    : Create a new environment variable for a project path.
+                    : Create and export a project directory variable.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -402,10 +413,10 @@ LANG=en_US.UTF-8
                   </div>
 
                   <p>
-                    <code>export</code>
-                    sets the variable in the current shell and ensures child
-                    processes inherit it. This is the standard pattern when you
-                    need an application or script to see a session-level value.
+                    <code>export</code> sets the variable in the current shell
+                    and ensures child processes inherit it. Use this when a
+                    program, script, or tool needs a consistent session-level
+                    value.
                   </p>
                 </div>
 
@@ -413,7 +424,7 @@ LANG=en_US.UTF-8
                 <div class="lab-step">
                   <div class="lab-step-title">
                     <strong class="font-alt">Step 4</strong>
-                    : Confirm PROJECT_DIR is set.
+                    : Verify the variable value.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -431,13 +442,13 @@ LANG=en_US.UTF-8
                   </div>
 
                   <p>
-                    Verify immediately after you set the variable. This confirms
-                    there were no typos and the shell is holding the expected
-                    value.
+                    Verify immediately after setting the value. This confirms
+                    the shell holds the expected path and reduces time spent
+                    debugging typos later.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code id="verify-step-4">/srv/app</code></pre>
+                    <pre><code>/srv/app</code></pre>
                   </div>
                 </div>
 
@@ -445,7 +456,7 @@ LANG=en_US.UTF-8
                 <div class="lab-step">
                   <div class="lab-step-title">
                     <strong class="font-alt">Step 5</strong>
-                    : Persist the variable across sessions.
+                    : Persist the variable for new interactive shells.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -464,16 +475,16 @@ LANG=en_US.UTF-8
 
                   <p>
                     Appending to <code>~/.bashrc</code> ensures the variable is
-                    set each time an interactive shell starts. This is useful
-                    when a user relies on the variable for daily workflow.
+                    set each time an interactive shell starts. Persist only when
+                    the user needs the value across sessions.
                   </p>
                 </div>
 
                 <!-- Step 6 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
-                    <strong class="font-alt bold">Step 6</strong>
-                    : Remove the PROJECT_DIR variable from the current session.
+                    <strong class="font-alt">Step 6</strong>
+                    : Unset the variable from the current session.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -491,10 +502,99 @@ LANG=en_US.UTF-8
                   </div>
 
                   <p>
-                    <code>unset</code>
-                    removes the variable from the current shell session. This is
-                    useful when testing behavior and verifying whether a value
-                    is being pulled from startup files or set dynamically.
+                    <code>unset</code> removes the variable from the current
+                    shell session. This helps you test behavior without the
+                    value and confirm whether startup files reintroduce it on
+                    new shells.
+                  </p>
+                </div>
+              </section>
+
+              <!-- Common breakpoints -->
+              <section class="lab-section" id="breakpoints">
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  Common breakpoints
+                </h3>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">
+                    PATH is missing expected directories
+                  </div>
+                  <p class="m-b-0">
+                    If core paths like <code>/usr/bin</code> or <code>/bin</code>
+                    are missing, the shell may fail to find standard tools. Look
+                    for overrides in <code>~/.bashrc</code>, <code>~/.profile</code>,
+                    or system-wide shell configuration.
+                  </p>
+                </div>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">
+                    PROJECT_DIR works now but not in a new session
+                  </div>
+                  <p class="m-b-0">
+                    The variable was set for the current shell only. Persist it
+                    in the correct startup file and start a new interactive
+                    shell to confirm it is applied.
+                  </p>
+                </div>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">
+                    Duplicate exports accumulate in ~/.bashrc
+                  </div>
+                  <p class="m-b-0">
+                    Re-appending the same line creates multiple definitions that
+                    are harder to audit. Keep one export line per variable and
+                    remove duplicates during cleanup.
+                  </p>
+                </div>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">
+                    unset does not “fix” a broken tool
+                  </div>
+                  <p class="m-b-0">
+                    Unsetting only affects the current session. If behavior is
+                    coming from a startup file or a system service environment,
+                    correct the source and validate in a fresh shell or process.
+                  </p>
+                </div>
+              </section>
+
+              <!-- Cleanup -->
+              <section class="lab-section alt-background" id="cleanup">
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  Cleanup checklist
+                </h3>
+
+                <p>
+                  Remove the persistent export if it was only needed for testing,
+                  then confirm the variable is not present in a new shell.
+                </p>
+
+                <div class="lab-codeblock m-b-40 m-t-40">
+                  <div class="lab-codeblock-header">
+                    <span>Commands</span>
+                    <button
+                      class="lab-copy-btn"
+                      type="button"
+                      data-copy="#cmd-cleanup"
+                    >
+                      Copy
+                    </button>
+                  </div>
+                  <pre><code id="cmd-cleanup">grep -n 'PROJECT_DIR' ~/.bashrc
+# Remove the line(s) manually if present, then:
+unset PROJECT_DIR</code></pre>
+                </div>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">Success signal</div>
+                  <p class="m-b-0">
+                    <code>echo $PROJECT_DIR</code> is empty in the current shell,
+                    and new shells do not reintroduce the variable unless you
+                    intentionally persist it.
                   </p>
                 </div>
               </section>
@@ -508,7 +608,7 @@ LANG=en_US.UTF-8
                 <ul class="lab-reference-list">
                   <li>
                     <code>echo $PATH</code>
-                    : Prints the current PATH value used for command lookup.
+                    : Prints the PATH value used for command lookup.
                   </li>
 
                   <li>
@@ -518,43 +618,46 @@ LANG=en_US.UTF-8
 
                   <li>
                     <code>env</code>
-                    : Displays the current environment; also commonly used to
-                    run a command with a modified environment.
+                    : Displays the current environment.
                   </li>
 
                   <li>
-                    <code>export NAME=value</code>
+                    <code>export &lt;name&gt;=&lt;value&gt;</code>
                     : Sets a variable in the current shell and exports it to
                     child processes.
-                    <ul>
-                      <li>
-                        Use this when a value must be inherited by a program
-                        started from the shell.
-                      </li>
-                    </ul>
                   </li>
 
                   <li>
-                    <code>echo $NAME</code>
+                    <code>echo $&lt;name&gt;</code>
                     : Prints the current value of an environment variable.
                   </li>
 
                   <li>
-                    <code>echo 'export NAME=value' >> ~/.bashrc</code>
-                    : Appends a variable export to <code>~/.bashrc</code> so it
-                    is set automatically in new interactive shells.
+                    <code>echo 'export &lt;name&gt;=&lt;value&gt;' >> ~/.bashrc</code>
+                    : Persists a variable for new interactive shells.
                     <ul>
                       <li>
                         <code>>></code>
-                        appends to the file without overwriting existing
+                        : Appends to the file without overwriting existing
                         content.
                       </li>
                     </ul>
                   </li>
 
                   <li>
-                    <code>unset NAME</code>
+                    <code>unset &lt;name&gt;</code>
                     : Removes a variable from the current shell session.
+                  </li>
+
+                  <li>
+                    <code>grep -n &lt;pattern&gt; &lt;file&gt;</code>
+                    : Searches a file for matching lines and shows line numbers.
+                    <ul>
+                      <li>
+                        <code>-n</code>
+                        : Prints line numbers for matches.
+                      </li>
+                    </ul>
                   </li>
                 </ul>
               </section>
@@ -564,12 +667,7 @@ LANG=en_US.UTF-8
           </div>
 
           <nav class="lab-pagination">
-            <a
-              id="prev-lab"
-              class="lab-nav-link"
-              href="#"
-              aria-label="Back to top"
-            >
+            <a class="lab-nav-link" href="#" aria-label="Back to top">
               &uArr;
             </a>
           </nav>
@@ -622,7 +720,7 @@ LANG=en_US.UTF-8
 
     <!-- Javascript files (your existing) -->
     <script src="../assets/js/jquery-2.2.4.min.js"></script>
-    <script src="../assets/bootstrap/js/bootstrap.min.js"></script>
+    <script src="../assets/bootstrap/js/bootstrap.min.css"></script>
     <script src="../assets/js/jquery.superslides.min.js"></script>
     <script src="../assets/js/jquery.mb.YTPlayer.min.js"></script>
     <script src="../assets/js/jquery.magnific-popup.min.js"></script>
@@ -642,5 +740,9 @@ LANG=en_US.UTF-8
 
     <!-- Lab page JS (new) -->
     <script src="../assets/js/lab.js"></script>
+
+    <script>
+      document.getElementById('year').textContent = new Date().getFullYear()
+    </script>
   </body>
 </html>

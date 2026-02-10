@@ -12,8 +12,16 @@
     <!-- Favicons -->
     <link rel="shortcut icon" href="../assets/images/favicon.png" />
     <link rel="apple-touch-icon" href="../assets/images/apple-touch-icon.png" />
-    <link rel="apple-touch-icon" sizes="72x72" href="../assets/images/apple-touch-icon-72x72.png" />
-    <link rel="apple-touch-icon" sizes="114x114" href="../assets/images/apple-touch-icon-114x114.png" />
+    <link
+      rel="apple-touch-icon"
+      sizes="72x72"
+      href="../assets/images/apple-touch-icon-72x72.png"
+    />
+    <link
+      rel="apple-touch-icon"
+      sizes="114x114"
+      href="../assets/images/apple-touch-icon-114x114.png"
+    />
 
     <!-- Site styles (your existing) -->
     <link href="../assets/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
@@ -29,14 +37,19 @@
     <link href="../assets/css/style.css" rel="stylesheet" />
     <link href="../assets/css/docs.css" rel="stylesheet" />
 
-    <!-- Lab page styles (new) -->
+    <!-- Lab page styles -->
     <link href="../assets/css/lab.css" rel="stylesheet" />
 
     <!-- Fonts -->
-    <link href="https://fonts.googleapis.com/css?family=Dosis" rel="stylesheet" />
+    <link
+      href="https://fonts.googleapis.com/css?family=Dosis"
+      rel="stylesheet"
+    />
   </head>
 
   <body>
+    <div id="totop"></div>
+
     <!-- PRELOADER -->
     <div class="page-loader">
       <div class="loader">Loading...</div>
@@ -56,14 +69,39 @@
             <li class="slidedown">
               <a href="#">Portfolio</a>
               <ul>
-                <li><a href="https://github.com/vonds/exit_0" target="_blank" rel="noopener">exit_0</a></li>
-                <li><a href="docs.html" target="_blank" rel="noopener">exit_0 Documentation</a></li>
-                <li><a href="https://github.com/vonds/sentinel" target="_blank" rel="noopener">Sentinel</a></li>
+                <li>
+                  <a
+                    href="https://github.com/vonds/exit_0"
+                    target="_blank"
+                    rel="noopener"
+                    >exit_0</a
+                  >
+                </li>
+                <li>
+                  <a
+                    href="docs.html"
+                    target="_blank"
+                    rel="noopener"
+                    >exit_0 Documentation</a
+                  >
+                </li>
+                <li>
+                  <a
+                    href="https://github.com/vonds/sentinel"
+                    target="_blank"
+                    rel="noopener"
+                    >Sentinel</a
+                  >
+                </li>
               </ul>
             </li>
 
             <li>
-              <a href="https://www.linkedin.com/in/vonds/" target="_blank" rel="noopener">
+              <a
+                href="https://www.linkedin.com/in/vonds/"
+                target="_blank"
+                rel="noopener"
+              >
                 LinkedIn
               </a>
             </li>
@@ -98,7 +136,9 @@
     <!-- WRAPPER -->
     <div class="wrapper">
       <!-- NAVIGATION -->
-      <nav class="navbar navbar-custom navbar-transparent navbar-light navbar-fixed-top">
+      <nav
+        class="navbar navbar-custom navbar-transparent navbar-light navbar-fixed-top"
+      >
         <div class="container">
           <div class="navbar-header">
             <a class="navbar-brand" href="../index.html">
@@ -126,10 +166,20 @@
           </h2>
 
           <nav class="lab-pagination">
-            <a id="prev-lab" class="lab-nav-link" href="#" aria-label="Previous lab">
+            <a
+              id="prev-lab"
+              class="lab-nav-link"
+              href="#"
+              aria-label="Previous lab"
+            >
               &laquo;
             </a>
-            <a id="next-lab" class="lab-nav-link" href="#" aria-label="Next lab">
+            <a
+              id="next-lab"
+              class="lab-nav-link"
+              href="#"
+              aria-label="Next lab"
+            >
               &raquo;
             </a>
           </nav>
@@ -139,10 +189,16 @@
             <div class="col-sm-4 col-md-3 lab-sidebar">
               <div class="docs-sidebar">
                 <div class="docs-widget">
-                  <h5 class="widget-title"><a href="./docs.html">Back to Lab Index</a></h5>
+                  <h5 class="widget-title">
+                    <a href="./docs.html">Back to Lab Index</a>
+                  </h5>
                   <ul class="docs-nav">
                     <li><a href="#scenario">Scenario</a></li>
+                    <li><a href="#objective">Objective</a></li>
+                    <li><a href="#concepts">Concepts</a></li>
                     <li><a href="#walkthrough">Walkthrough</a></li>
+                    <li><a href="#breakpoints">Breakpoints</a></li>
+                    <li><a href="#cleanup">Cleanup</a></li>
                     <li><a href="#reference">Reference</a></li>
                   </ul>
                 </div>
@@ -151,31 +207,31 @@
 
             <!-- MAIN CONTENT -->
             <div class="col-sm-8 col-md-9 lab-doc">
-              <!-- 1) Title + Summary (2 sentences max) -->
               <p class="m-b-20 lab-summary">
                 Practice the core utility commands you reach for daily as a sysadmin: time, uptime, identity, kernel details,
-                calendars, and quick math. Build speed and confidence by validating outputs and understanding what each tool is
-                proving about the system.
+                calendars, and quick math. Build speed and confidence by validating outputs and knowing what each tool proves
+                about the system.
               </p>
 
+              <!-- Video (kept on page; removed from left panel) -->
               <section class="lab-section" id="video" aria-label="Lab video">
-  				<div class="lab-video">
-    				<div class="lab-video-embed text-center">
-      					<iframe 
-							width="560" 
-							height="315" 
-							src="https://www.youtube.com/embed/uJk54bhaadA?si=seGSukCoMFN7ohRo" 
-							title="YouTube video player" 
-							frameborder="0" 
-							allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
-							referrerpolicy="strict-origin-when-cross-origin" 
-							allowfullscreen>
-						</iframe>
-    				</div>
-  				</div>
-			</section>
+                <div class="lab-video">
+                  <div class="lab-video-embed text-center">
+                    <iframe
+                      width="560"
+                      height="315"
+                      src="https://www.youtube.com/embed/uJk54bhaadA?si=seGSukCoMFN7ohRo"
+                      title="YouTube video player"
+                      frameborder="0"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                      referrerpolicy="strict-origin-when-cross-origin"
+                      allowfullscreen>
+                    </iframe>
+                  </div>
+                </div>
+              </section>
 
-              <!-- 2) Scenario -->
+              <!-- Scenario -->
               <section class="lab-section" id="scenario">
                 <div class="lab-chips" aria-label="Tags">
                   <span class="lab-chip"><span class="lab-chip-key">core</span></span>
@@ -183,25 +239,31 @@
                   <span class="lab-chip"><span class="lab-chip-key">services</span></span>
                 </div>
 
-                <h3 class="font-alt lab-section-title m-b-40 m-t-40">Scenario</h3>
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  Scenario
+                </h3>
+
                 <p>
-                  As a sysadmin, you need fast access to time, basic system identity, and quick calculations. A teammate asks you
-                  to verify “what box am I on,” confirm uptime for incident notes, and compute a simple expression without leaving
-                  the terminal.
+                  A teammate needs quick verification for an incident note: current time, uptime, which host they are on, kernel
+                  details for compatibility context, and a simple calculation without leaving the terminal. Your task is to run
+                  the correct commands, interpret outputs, and capture evidence reliably.
                 </p>
 
                 <div class="lab-callout">
                   <div class="lab-callout-label">Operator context</div>
                   <p class="m-b-0">
-                    These commands are the first 60 seconds of almost every troubleshooting session. Knowing what to run and how
-                    to interpret it is core muscle memory.
+                    These commands are the first 60 seconds of most troubleshooting sessions. They establish baseline context
+                    before you chase symptoms.
                   </p>
                 </div>
               </section>
 
-              <!-- 3) Objective -->
+              <!-- Objective -->
               <section class="lab-section alt-background" id="objective">
-                <h3 class="font-alt lab-section-title m-b-40 m-t-40">Objective</h3>
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  Objective
+                </h3>
+
                 <ul>
                   <li>Display current system date and time.</li>
                   <li>Check system uptime and load averages.</li>
@@ -212,22 +274,36 @@
                 </ul>
               </section>
 
-              <!-- 4) What You'll Practice -->
-              <section class="lab-section" id="practice">
-                <h3 class="font-alt lab-section-title m-b-40 m-t-40">What You’ll Practice</h3>
-                <ul class="m-t-10">
-                  <li><code>date</code> for time verification and timestamps.</li>
-                  <li><code>uptime</code> for runtime and quick load health checks.</li>
-                  <li><code>hostname</code> for system identity validation.</li>
-                  <li><code>uname -a</code> for kernel and architecture evidence.</li>
-                  <li><code>cal</code> for fast scheduling context in the terminal.</li>
-                  <li><code>bc</code> for quick calculations during admin work.</li>
+              <!-- Concepts (no alt-background moving forward) -->
+              <section class="lab-section" id="concepts">
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  Concepts
+                </h3>
+
+                <ul>
+                  <li>
+                    Time as evidence: your timestamps must align with logs, tickets, cron schedules, and incident timelines.
+                  </li>
+                  <li>
+                    Uptime and load averages: fast signal for stability, recent restarts, and whether the system is under pressure.
+                  </li>
+                  <li>
+                    System identity: confirm the hostname so you do not troubleshoot the wrong machine.
+                  </li>
+                  <li>
+                    Kernel context: version and architecture affect drivers, modules, and behavior.
+                  </li>
+                  <li>
+                    Lightweight terminal tooling: get scheduling context and quick math without switching environments.
+                  </li>
                 </ul>
               </section>
 
-              <!-- 5) Commands Walkthrough -->
+              <!-- Walkthrough -->
               <section class="lab-section alt-background" id="walkthrough">
-                <h3 class="font-alt lab-section-title m-b-40 m-t-40">Walkthrough</h3>
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  Walkthrough
+                </h3>
 
                 <!-- Step 1 -->
                 <div class="lab-step">
@@ -239,13 +315,20 @@
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
-                      <button class="lab-copy-btn" type="button" data-copy="#cmd-step-1">Copy</button>
+                      <button
+                        class="lab-copy-btn"
+                        type="button"
+                        data-copy="#cmd-step-1"
+                      >
+                        Copy
+                      </button>
                     </div>
                     <pre><code id="cmd-step-1">date</code></pre>
                   </div>
 
                   <p>
-                    Use <code>date</code> to confirm the server clock for logs, tickets, cron schedules, and incident timelines.
+                    Use <code>date</code> to confirm the system clock for logs, tickets, cron schedules, and incident timelines.
+                    If timestamps do not line up, you can misread the entire sequence of events.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -263,14 +346,20 @@
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
-                      <button class="lab-copy-btn" type="button" data-copy="#cmd-step-2">Copy</button>
+                      <button
+                        class="lab-copy-btn"
+                        type="button"
+                        data-copy="#cmd-step-2"
+                      >
+                        Copy
+                      </button>
                     </div>
                     <pre><code id="cmd-step-2">uptime</code></pre>
                   </div>
 
                   <p>
-                    <code>uptime</code> tells you how long the system has been running and shows the load averages, which are often
-                    the first health clue when performance feels “off.”
+                    <code>uptime</code> shows how long the system has been running and reports load averages. This is quick evidence
+                    for restarts, stability, and whether the box is likely overloaded.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -282,20 +371,26 @@
                 <div class="lab-step">
                   <div class="lab-step-title">
                     <strong class="font-alt">Step 3</strong>
-                    : Show the system’s hostname.
+                    : Show the system hostname.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
-                      <button class="lab-copy-btn" type="button" data-copy="#cmd-step-3">Copy</button>
+                      <button
+                        class="lab-copy-btn"
+                        type="button"
+                        data-copy="#cmd-step-3"
+                      >
+                        Copy
+                      </button>
                     </div>
                     <pre><code id="cmd-step-3">hostname</code></pre>
                   </div>
 
                   <p>
-                    This confirms which system you are actually on, which matters when you have multiple terminals, bastions, or
-                    similarly named servers.
+                    This confirms which system you are actually on. In real environments, it is common to have multiple terminals,
+                    jump hosts, and similarly named servers.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -307,20 +402,26 @@
                 <div class="lab-step">
                   <div class="lab-step-title">
                     <strong class="font-alt">Step 4</strong>
-                    : Display the system’s kernel and architecture info.
+                    : Display kernel and architecture evidence.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
-                      <button class="lab-copy-btn" type="button" data-copy="#cmd-step-4">Copy</button>
+                      <button
+                        class="lab-copy-btn"
+                        type="button"
+                        data-copy="#cmd-step-4"
+                      >
+                        Copy
+                      </button>
                     </div>
                     <pre><code id="cmd-step-4">uname -a</code></pre>
                   </div>
 
                   <p>
-                    <code>uname -a</code> provides quick evidence of kernel version, build, and architecture. This is the baseline
-                    context you want before diagnosing driver issues, compatibility problems, or kernel-specific behavior.
+                    <code>uname -a</code> provides kernel version and architecture context. Capture this early before you diagnose
+                    driver issues, compatibility problems, or kernel-specific behavior.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -338,13 +439,20 @@
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
-                      <button class="lab-copy-btn" type="button" data-copy="#cmd-step-5">Copy</button>
+                      <button
+                        class="lab-copy-btn"
+                        type="button"
+                        data-copy="#cmd-step-5"
+                      >
+                        Copy
+                      </button>
                     </div>
                     <pre><code id="cmd-step-5">cal</code></pre>
                   </div>
 
                   <p>
-                    Use <code>cal</code> when you need quick scheduling context for maintenance windows, patch Tuesdays, or deadlines.
+                    Use <code>cal</code> for quick scheduling context. This is useful when you are coordinating maintenance windows,
+                    deadlines, and on-call handoffs.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -362,20 +470,26 @@ Su Mo Tu We Th Fr Sa
                 <div class="lab-step">
                   <div class="lab-step-title">
                     <strong class="font-alt">Step 6</strong>
-                    : Use <code>bc</code> as a calculator to solve: <code>(8 + 2) * 5</code>.
+                    : Evaluate <code>(8 + 2) * 5</code> using <code>bc</code>.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
-                      <button class="lab-copy-btn" type="button" data-copy="#cmd-step-6">Copy</button>
+                      <button
+                        class="lab-copy-btn"
+                        type="button"
+                        data-copy="#cmd-step-6"
+                      >
+                        Copy
+                      </button>
                     </div>
                     <pre><code id="cmd-step-6">echo '(8 + 2) * 5' | bc</code></pre>
                   </div>
 
                   <p>
-                    <code>bc</code> is a simple CLI calculator. This is useful when you are sizing storage, estimating time windows,
-                    or doing quick arithmetic without leaving the terminal.
+                    <code>bc</code> is a CLI calculator. Use it for quick arithmetic when you are sizing storage, estimating time
+                    windows, or validating simple math without leaving the terminal.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -384,17 +498,114 @@ Su Mo Tu We Th Fr Sa
                 </div>
               </section>
 
-              <!-- 6) Reference -->
+              <!-- Common breakpoints -->
+              <section class="lab-section" id="breakpoints">
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  Common breakpoints
+                </h3>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">Time output looks wrong</div>
+                  <p class="m-b-0">
+                    If <code>date</code> is incorrect, incident timelines and log correlation become unreliable. Capture the output
+                    as evidence and escalate clock/time sync issues before trusting timestamps.
+                  </p>
+                </div>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">High load averages in uptime</div>
+                  <p class="m-b-0">
+                    Load averages are a signal, not a diagnosis. Treat them as a prompt to investigate CPU pressure, blocked I/O,
+                    or runaway processes after you capture baseline evidence.
+                  </p>
+                </div>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">Hostname does not match expectations</div>
+                  <p class="m-b-0">
+                    If <code>hostname</code> is not the system you intended, stop. Troubleshooting the wrong machine is a common
+                    operational failure mode.
+                  </p>
+                </div>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">bc returns an error</div>
+                  <p class="m-b-0">
+                    If <code>bc</code> is missing or returns a parse error, confirm package availability and re-check the expression
+                    formatting. Treat this as a toolchain issue, not a math issue.
+                  </p>
+                </div>
+              </section>
+
+              <!-- Cleanup -->
+              <section class="lab-section alt-background" id="cleanup">
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  Cleanup checklist
+                </h3>
+
+                <p>
+                  This lab is read-only and does not change system state. Your cleanup is simply to confirm the commands produced
+                  the expected evidence and that you captured outputs you would place into a ticket.
+                </p>
+
+                <div class="lab-codeblock m-b-40 m-t-40">
+                  <div class="lab-codeblock-header">
+                    <span>Commands</span>
+                    <button
+                      class="lab-copy-btn"
+                      type="button"
+                      data-copy="#cmd-cleanup"
+                    >
+                      Copy
+                    </button>
+                  </div>
+                  <pre><code id="cmd-cleanup">date
+uptime
+hostname
+uname -a
+cal
+echo '(8 + 2) * 5' | bc</code></pre>
+                </div>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">Success signal</div>
+                  <p class="m-b-0">
+                    You can reproduce the same baseline context on demand and explain what each output proves about the system.
+                  </p>
+                </div>
+              </section>
+
+              <!-- Reference -->
               <section class="lab-section" id="reference">
-                <h3 class="font-alt lab-section-title m-b-40 m-t-40">Reference</h3>
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  Reference
+                </h3>
 
                 <ul class="lab-reference-list">
-                  <li><code>date</code>: Shows current system date and time (useful for timestamps).</li>
-                  <li><code>uptime</code>: Shows how long the system has been running and the load averages.</li>
-                  <li><code>hostname</code>: Prints the system hostname.</li>
-                  <li><code>uname -a</code>: Displays kernel version and architecture information.</li>
-                  <li><code>cal</code>: Prints a calendar for the current month (or specified month/year).</li>
-                  <li><code>bc</code>: Command-line calculator that evaluates expressions from stdin.</li>
+                  <li>
+                    <code>date</code> : Prints the current system date and time.
+                  </li>
+                  <li>
+                    <code>uptime</code> : Shows how long the system has been running and the load averages.
+                  </li>
+                  <li>
+                    <code>hostname</code> : Prints the system hostname.
+                  </li>
+                  <li>
+                    <code>uname -a</code> : Displays kernel version and architecture information.
+                    <ul>
+                      <li><code>-a</code> : Prints all available system information fields.</li>
+                    </ul>
+                  </li>
+                  <li>
+                    <code>cal</code> : Prints a calendar for the current month.
+                  </li>
+                  <li>
+                    <code>echo '(EXPR)' | bc</code> : Evaluates an arithmetic expression using <code>bc</code>.
+                    <ul>
+                      <li><code>|</code> : Pipes output from <code>echo</code> into <code>bc</code> for evaluation.</li>
+                    </ul>
+                  </li>
                 </ul>
               </section>
             </div>
@@ -403,7 +614,7 @@ Su Mo Tu We Th Fr Sa
           <!-- /row -->
 
           <nav class="lab-pagination">
-            <a id="prev-lab" class="lab-nav-link" href="#" aria-label="Previous lab">
+            <a class="lab-nav-link" href="#totop" aria-label="Back to top">
               &uArr;
             </a>
           </nav>
@@ -418,12 +629,20 @@ Su Mo Tu We Th Fr Sa
             <div class="col-sm-12">
               <ul class="social-text-links font-alt text-center m-b-20">
                 <li>
-                  <a href="https://github.com/vonds" target="_blank" rel="noopener">
+                  <a
+                    href="https://github.com/vonds"
+                    target="_blank"
+                    rel="noopener"
+                  >
                     Github
                   </a>
                 </li>
                 <li>
-                  <a href="https://www.linkedin.com/in/vonds/" target="_blank" rel="noopener">
+                  <a
+                    href="https://www.linkedin.com/in/vonds/"
+                    target="_blank"
+                    rel="noopener"
+                  >
                     Linkedin
                   </a>
                 </li>
@@ -469,5 +688,9 @@ Su Mo Tu We Th Fr Sa
 
     <!-- Lab page JS (new) -->
     <script src="../assets/js/lab.js"></script>
+
+    <script>
+      document.getElementById('year').textContent = new Date().getFullYear()
+    </script>
   </body>
 </html>

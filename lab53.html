@@ -30,7 +30,6 @@
     <link href="../assets/css/ionicons.min.css" rel="stylesheet" />
     <link href="../assets/css/simpletextrotator.css" rel="stylesheet" />
     <link href="../assets/css/magnific-popup.css" rel="stylesheet" />
-    <link href="../assets/css/magnific-popup.css" rel="stylesheet" />
     <link href="../assets/css/owl.carousel.css" rel="stylesheet" />
     <link href="../assets/css/superslides.css" rel="stylesheet" />
     <link href="../assets/css/vertical.css" rel="stylesheet" />
@@ -38,7 +37,7 @@
     <link href="../assets/css/style.css" rel="stylesheet" />
     <link href="../assets/css/docs.css" rel="stylesheet" />
 
-    <!-- Lab page styles (new) -->
+    <!-- Lab page styles -->
     <link href="../assets/css/lab.css" rel="stylesheet" />
 
     <!-- Fonts -->
@@ -68,9 +67,30 @@
             <li class="slidedown">
               <a href="#">Portfolio</a>
               <ul>
-                <li><a href="https://github.com/vonds/exit_0" target="_blank" rel="noopener">exit_0</a></li>
-                <li><a href="docs.html" target="_blank" rel="noopener">exit_0 Documentation</a></li>
-                <li><a href="https://github.com/vonds/sentinel" target="_blank" rel="noopener">Sentinel</a></li>
+                <li>
+                  <a
+                    href="https://github.com/vonds/exit_0"
+                    target="_blank"
+                    rel="noopener"
+                    >exit_0</a
+                  >
+                </li>
+                <li>
+                  <a
+                    href="docs.html"
+                    target="_blank"
+                    rel="noopener"
+                    >exit_0 Documentation</a
+                  >
+                </li>
+                <li>
+                  <a
+                    href="https://github.com/vonds/sentinel"
+                    target="_blank"
+                    rel="noopener"
+                    >Sentinel</a
+                  >
+                </li>
               </ul>
             </li>
 
@@ -89,7 +109,9 @@
               </a>
             </li>
             <li>
-              <a href="mailto:vonds13@gmail.com?subject=Hello Vonds">Contact</a>
+              <a href="mailto:vonds13@gmail.com?subject=Hello Vonds"
+                >Contact</a
+              >
             </li>
           </ul>
         </nav>
@@ -172,7 +194,11 @@
                   </h5>
                   <ul class="docs-nav">
                     <li><a href="#scenario">Scenario</a></li>
+                    <li><a href="#objective">Objective</a></li>
+                    <li><a href="#concepts">Concepts</a></li>
                     <li><a href="#walkthrough">Walkthrough</a></li>
+                    <li><a href="#breakpoints">Breakpoints</a></li>
+                    <li><a href="#cleanup">Cleanup</a></li>
                     <li><a href="#reference">Reference</a></li>
                   </ul>
                 </div>
@@ -181,32 +207,30 @@
 
             <!-- MAIN CONTENT -->
             <div class="col-sm-8 col-md-9 lab-doc">
-              <!-- 1) Title + Summary (2 sentences max) -->
               <p class="m-b-20 lab-summary">
                 Record a terminal session to a log file so troubleshooting work
-                can be reviewed or shared without relying on memory. Practice a
-                clean workflow: reset the screen, capture the session, run a
-                command for evidence, exit correctly, then review the transcript.
+                can be reviewed or shared without relying on memory. Use a clean
+                workflow: reset the screen, capture the session, run a command
+                for evidence, exit correctly, then review the transcript.
               </p>
 
+              <!-- Video -->
               <section class="lab-section" id="video" aria-label="Lab video">
-  				<div class="lab-video">
-    				<div class="lab-video-embed text-center">
-      					<iframe 
-							width="560" 
-							height="315" 
-							src="https://www.youtube.com/embed/uJk54bhaadA?si=seGSukCoMFN7ohRo" 
-							title="YouTube video player" 
-							frameborder="0" 
-							allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
-							referrerpolicy="strict-origin-when-cross-origin" 
-							allowfullscreen>
-						</iframe>
-    				</div>
-  				</div>
-			</section>
+                <div class="lab-video">
+                  <div class="lab-video-embed text-center">
+                    <iframe
+                      src="https://www.youtube.com/embed/uJk54bhaadA?si=seGSukCoMFN7ohRo"
+                      title="YouTube video player"
+                      frameborder="0"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                      referrerpolicy="strict-origin-when-cross-origin"
+                      allowfullscreen
+                    ></iframe>
+                  </div>
+                </div>
+              </section>
 
-              <!-- 2) Scenario -->
+              <!-- Scenario -->
               <section class="lab-section" id="scenario">
                 <div class="lab-chips" aria-label="Tags">
                   <span class="lab-chip">
@@ -222,24 +246,24 @@
                 </h3>
 
                 <p>
-                  You are troubleshooting a legacy system and need to document
-                  exactly what was typed and what the system returned. You will
-                  clear the screen to reduce noise, record the session to a log
-                  file, capture a hostname check as evidence, then end the
-                  session cleanly and review the transcript.
+                  You are troubleshooting a legacy system and must document
+                  exactly what was typed and what the system returned. Clear the
+                  screen to reduce noise, record the session to a log file,
+                  capture a hostname check as evidence, then end the session
+                  cleanly and review the transcript.
                 </p>
 
                 <div class="lab-callout">
                   <div class="lab-callout-label">Operator context</div>
                   <p class="m-b-0">
-                    Session transcripts are useful for peer review, change
-                    records, and escalation. Logging your steps also protects
-                    you when diagnosing a system with inconsistent behavior.
+                    Session transcripts support peer review, change records,
+                    and escalations. Logging your steps also protects you when
+                    diagnosing systems with inconsistent behavior.
                   </p>
                 </div>
               </section>
 
-              <!-- 3) Objective -->
+              <!-- Objective -->
               <section class="lab-section alt-background" id="objective">
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">
                   Objective
@@ -247,7 +271,8 @@
                 <ul>
                   <li>Clear the terminal screen before starting.</li>
                   <li>
-                    Record a troubleshooting session using <code>script</code>.
+                    Record a troubleshooting session using
+                    <code>script</code>.
                   </li>
                   <li>
                     Run <code>hostname</code> during the recorded session.
@@ -257,13 +282,12 @@
                 </ul>
               </section>
 
-              <!-- 4) What You'll Practice -->
-              <section class="lab-section" id="practice">
+              <!-- Concepts -->
+              <section class="lab-section" id="concepts">
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">
-                  What You’ll Practice
+                  Concepts
                 </h3>
-
-                <ul class="m-t-10">
+                <ul>
                   <li>
                     Screen reset using <code>clear</code> to reduce noise before
                     capturing evidence.
@@ -287,7 +311,7 @@
                 </ul>
               </section>
 
-              <!-- 5) Commands Walkthrough -->
+              <!-- Walkthrough -->
               <section class="lab-section alt-background" id="walkthrough">
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">
                   Walkthrough
@@ -315,9 +339,9 @@
                   </div>
 
                   <p>
-                    Clearing the screen is a simple way to remove unrelated
-                    output and make it easier to capture a clean transcript. It
-                    does not delete history; it only redraws the terminal view.
+                    Clearing the screen removes unrelated output and produces a
+                    cleaner transcript. It does not erase shell history; it only
+                    redraws the terminal view.
                   </p>
                 </div>
 
@@ -345,9 +369,8 @@
                   <p>
                     <code>script</code>
                     records everything printed to the terminal during the
-                    session and writes it to the file you provide. This is a
-                    lightweight way to generate a shareable transcript of what
-                    happened.
+                    session and writes it to the specified file. This produces a
+                    shareable transcript of the troubleshooting process.
                   </p>
                 </div>
 
@@ -373,13 +396,13 @@
                   </div>
 
                   <p>
-                    Running <code>hostname</code> during the recorded session
-                    provides a simple identity artifact showing which host the
+                    Running <code>hostname</code> inside the recorded session
+                    provides a simple identity artifact showing which system the
                     transcript applies to.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code id="verify-step-3">termhost.localdomain</code></pre>
+                    <pre><code>termhost.localdomain</code></pre>
                   </div>
                 </div>
 
@@ -405,17 +428,17 @@
                   </div>
 
                   <p>
-                    When <code>script</code> is running, the shell you are using
-                    is a subshell created for the recording session. Exiting
-                    cleanly ends the recording and writes the closing footer to
-                    the log.
+                    When <code>script</code> is running, you are inside a
+                    subshell created for the recording session. Exiting cleanly
+                    stops the recording and writes the closing footer to the
+                    log.
                   </p>
                 </div>
 
                 <!-- Step 5 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
-                    <strong class="font-alt bold">Step 5</strong>
+                    <strong class="font-alt">Step 5</strong>
                     : View the session log.
                   </div>
 
@@ -437,17 +460,89 @@ less lab53.log</code></pre>
 
                   <p>
                     Use <code>cat</code> for quick output or <code>less</code>
-                    for paging through longer transcripts. This validates the
-                    recording completed successfully and captured expected
-                    content.
+                    for paging through longer transcripts. This confirms the
+                    recording completed successfully.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code id="verify-step-5">Script started on ...
+                    <pre><code>Script started on ...
 hostname
 termhost.localdomain
 Script done on ...</code></pre>
                   </div>
+                </div>
+              </section>
+
+              <!-- Breakpoints -->
+              <section class="lab-section" id="breakpoints">
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  Common breakpoints
+                </h3>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">
+                    Transcript file is empty or missing
+                  </div>
+                  <p class="m-b-0">
+                    The recording session may not have been exited properly.
+                    Ensure you run <code>exit</code> from inside the
+                    <code>script</code> subshell.
+                  </p>
+                </div>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">
+                    Wrong file reviewed
+                  </div>
+                  <p class="m-b-0">
+                    Confirm the filename passed to
+                    <code>script</code>. If no name was provided, the default
+                    <code>typescript</code> file may have been created instead.
+                  </p>
+                </div>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">
+                    Unexpected commands in transcript
+                  </div>
+                  <p class="m-b-0">
+                    Clear the screen before starting and avoid running unrelated
+                    commands during the recorded session.
+                  </p>
+                </div>
+              </section>
+
+              <!-- Cleanup -->
+              <section class="lab-section alt-background" id="cleanup">
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  Cleanup checklist
+                </h3>
+
+                <p>
+                  Remove the session log if it is no longer needed. This lab does
+                  not modify system configuration.
+                </p>
+
+                <div class="lab-codeblock m-b-40 m-t-40">
+                  <div class="lab-codeblock-header">
+                    <span>Commands</span>
+                    <button
+                      class="lab-copy-btn"
+                      type="button"
+                      data-copy="#cmd-cleanup"
+                    >
+                      Copy
+                    </button>
+                  </div>
+                  <pre><code id="cmd-cleanup">rm -f lab53.log</code></pre>
+                </div>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">Success signal</div>
+                  <p class="m-b-0">
+                    The transcript file is removed and no artifacts remain from
+                    the session.
+                  </p>
                 </div>
               </section>
 
@@ -460,19 +555,13 @@ Script done on ...</code></pre>
                 <ul class="lab-reference-list">
                   <li>
                     <code>clear</code>
-                    : Clears the terminal display to reduce on-screen clutter.
+                    : Clears the terminal display.
                   </li>
 
                   <li>
                     <code>script &lt;file&gt;</code>
                     : Records a terminal session and writes the transcript to a
                     file.
-                    <ul>
-                      <li>
-                        Providing an explicit filename (for example
-                        <code>lab53.log</code>) makes the output predictable.
-                      </li>
-                    </ul>
                   </li>
 
                   <li>
@@ -482,9 +571,7 @@ Script done on ...</code></pre>
 
                   <li>
                     <code>exit</code>
-                    : Ends the current shell session. When used inside a
-                    <code>script</code>
-                    session, it stops recording and closes the transcript.
+                    : Ends the current shell session.
                   </li>
 
                   <li>
@@ -494,18 +581,15 @@ Script done on ...</code></pre>
 
                   <li>
                     <code>less &lt;file&gt;</code>
-                    : Views a file interactively with paging and search.
+                    : Views a file interactively with paging.
                   </li>
                 </ul>
               </section>
-
-              <!-- /main -->
             </div>
           </div>
 
           <nav class="lab-pagination">
             <a
-              id="prev-lab"
               class="lab-nav-link"
               href="#"
               aria-label="Back to top"
@@ -582,5 +666,9 @@ Script done on ...</code></pre>
 
     <!-- Lab page JS (new) -->
     <script src="../assets/js/lab.js"></script>
+
+    <script>
+      document.getElementById('year').textContent = new Date().getFullYear()
+    </script>
   </body>
 </html>

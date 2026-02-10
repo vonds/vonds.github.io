@@ -67,9 +67,27 @@
             <li class="slidedown">
               <a href="#">Portfolio</a>
               <ul>
-                <li><a href="https://github.com/vonds/exit_0" target="_blank" rel="noopener">exit_0</a></li>
-                <li><a href="docs.html" target="_blank" rel="noopener">exit_0 Documentation</a></li>
-                <li><a href="https://github.com/vonds/sentinel" target="_blank" rel="noopener">Sentinel</a></li>
+                <li>
+                  <a
+                    href="https://github.com/vonds/exit_0"
+                    target="_blank"
+                    rel="noopener"
+                    >exit_0</a
+                  >
+                </li>
+                <li>
+                  <a href="docs.html" target="_blank" rel="noopener"
+                    >exit_0 Documentation</a
+                  >
+                </li>
+                <li>
+                  <a
+                    href="https://github.com/vonds/sentinel"
+                    target="_blank"
+                    rel="noopener"
+                    >Sentinel</a
+                  >
+                </li>
               </ul>
             </li>
 
@@ -136,7 +154,7 @@
       </nav>
 
       <!-- DOCS PAGE -->
-      <section class="module">
+      <section class="module" id="totop">
         <div class="container">
           <h2 class="font-alt module-title m-t-60">
             Lab 51: Generating a System SOS Report
@@ -146,7 +164,7 @@
             <a
               id="prev-lab"
               class="lab-nav-link"
-              href="#"
+              href="./lab050.html"
               aria-label="Previous lab"
             >
               &laquo;
@@ -154,7 +172,7 @@
             <a
               id="next-lab"
               class="lab-nav-link"
-              href="#"
+              href="./lab052.html"
               aria-label="Next lab"
             >
               &raquo;
@@ -171,7 +189,11 @@
                   </h5>
                   <ul class="docs-nav">
                     <li><a href="#scenario">Scenario</a></li>
+                    <li><a href="#objective">Objective</a></li>
+                    <li><a href="#concepts">Concepts</a></li>
                     <li><a href="#walkthrough">Walkthrough</a></li>
+                    <li><a href="#breakpoints">Breakpoints</a></li>
+                    <li><a href="#cleanup">Cleanup</a></li>
                     <li><a href="#reference">Reference</a></li>
                   </ul>
                 </div>
@@ -180,7 +202,6 @@
 
             <!-- MAIN CONTENT -->
             <div class="col-sm-8 col-md-9 lab-doc">
-              <!-- 1) Title + Summary (2 sentences max) -->
               <p class="m-b-20 lab-summary">
                 Generate a complete system diagnostic bundle using
                 <code>sosreport</code> so performance issues can be analyzed
@@ -190,23 +211,21 @@
               </p>
 
               <section class="lab-section" id="video" aria-label="Lab video">
-  				<div class="lab-video">
-    				<div class="lab-video-embed text-center">
-      					<iframe 
-							width="560" 
-							height="315" 
-							src="https://www.youtube.com/embed/uJk54bhaadA?si=seGSukCoMFN7ohRo" 
-							title="YouTube video player" 
-							frameborder="0" 
-							allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
-							referrerpolicy="strict-origin-when-cross-origin" 
-							allowfullscreen>
-						</iframe>
-    				</div>
-  				</div>
-			</section>
+                <div class="lab-video">
+                  <div class="lab-video-embed text-center">
+                    <iframe
+                      src="https://www.youtube.com/embed/uJk54bhaadA?si=seGSukCoMFN7ohRo"
+                      title="YouTube video player"
+                      frameborder="0"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                      referrerpolicy="strict-origin-when-cross-origin"
+                      allowfullscreen
+                    ></iframe>
+                  </div>
+                </div>
+              </section>
 
-              <!-- 2) Scenario -->
+              <!-- Scenario -->
               <section class="lab-section" id="scenario">
                 <div class="lab-chips" aria-label="Tags">
                   <span class="lab-chip">
@@ -239,7 +258,7 @@
                 </div>
               </section>
 
-              <!-- 3) Objective -->
+              <!-- Objective -->
               <section class="lab-section alt-background" id="objective">
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">
                   Objective
@@ -252,7 +271,34 @@
                 </ul>
               </section>
 
-              <!-- 4) What You'll Practice -->
+              <!-- Concepts -->
+              <section class="lab-section" id="concepts">
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  Concepts
+                </h3>
+
+                <ul>
+                  <li>
+                    <code>sosreport</code> collects system state and configuration
+                    into a single archive for escalation and offline analysis.
+                  </li>
+                  <li>
+                    The archive can include sensitive data (hostnames, logs,
+                    config). Treat it like production evidence and share it only
+                    through approved channels.
+                  </li>
+                  <li>
+                    You can validate the archive without extracting by listing
+                    its contents with <code>tar -tf</code>.
+                  </li>
+                  <li>
+                    Generate the report before heavy troubleshooting changes so
+                    you capture the original failure state.
+                  </li>
+                </ul>
+              </section>
+
+              <!-- What You'll Practice -->
               <section class="lab-section" id="practice">
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">
                   What You’ll Practice
@@ -260,31 +306,24 @@
 
                 <ul class="m-t-10">
                   <li>
-                    Installing diagnostic tooling with
-                    <code>dnf</code>
-                    /
-                    <code>yum</code>
-                    .
+                    Installing diagnostic tooling with <code>dnf</code> /
+                    <code>yum</code>.
                   </li>
                   <li>
                     Creating a standardized support bundle using
-                    <code>sosreport</code>
-                    .
+                    <code>sosreport</code>.
                   </li>
                   <li>
                     Verifying output artifacts and locations using
-                    <code>ls</code>
-                    .
+                    <code>ls</code>.
                   </li>
                   <li>
-                    Listing archive contents safely using
-                    <code>tar -tf</code>
-                    .
+                    Listing archive contents safely using <code>tar -tf</code>.
                   </li>
                 </ul>
               </section>
 
-              <!-- 5) Commands Walkthrough -->
+              <!-- Walkthrough -->
               <section class="lab-section alt-background" id="walkthrough">
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">
                   Walkthrough
@@ -322,7 +361,7 @@ sudo yum install -y sos</code></pre>
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code id="verify-step-1">sos package installed successfully.</code></pre>
+                    <pre><code id="verify-step-1">Complete!</code></pre>
                   </div>
                 </div>
 
@@ -357,9 +396,20 @@ sudo yum install -y sos</code></pre>
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <pre><code id="verify-step-2">sosreport (version 4.5)
 This utility will collect diagnostic and support data from this system.
-...
-Creating archive...this may take a few minutes.
-sosreport saved to /var/tmp/sosreport-labuser-123456.tar.xz</code></pre>
+Press ENTER to continue, or CTRL-C to quit.
+
+Please enter the case id that you are generating this report for []: 123456
+Setting up archive ...
+Setting up plugins ...
+Running plugins. Please wait ...
+
+Finished running plugins.
+
+Your sosreport has been generated and saved in:
+  /var/tmp/sosreport-labuser-123456.tar.xz
+
+The checksum is:
+  sha256: 111122223333444455556666777788889999aaaabbbbccccddddeeeeffff0000</code></pre>
                   </div>
                 </div>
 
@@ -381,7 +431,7 @@ sosreport saved to /var/tmp/sosreport-labuser-123456.tar.xz</code></pre>
                         Copy
                       </button>
                     </div>
-                    <pre><code id="cmd-step-3">ls /var/tmp</code></pre>
+                    <pre><code id="cmd-step-3">ls -lh /var/tmp | grep sosreport</code></pre>
                   </div>
 
                   <p>
@@ -391,14 +441,14 @@ sosreport saved to /var/tmp/sosreport-labuser-123456.tar.xz</code></pre>
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code id="verify-step-3">sosreport-labuser-123456.tar.xz</code></pre>
+                    <pre><code id="verify-step-3">-rw------- 1 root root 18M Jul 22 01:28 sosreport-labuser-123456.tar.xz</code></pre>
                   </div>
                 </div>
 
                 <!-- Step 4 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
-                    <strong class="font-alt bold">Step 4</strong>
+                    <strong class="font-alt">Step 4</strong>
                     : List files inside the archive (non-destructive).
                   </div>
 
@@ -413,22 +463,127 @@ sosreport saved to /var/tmp/sosreport-labuser-123456.tar.xz</code></pre>
                         Copy
                       </button>
                     </div>
-                    <pre><code id="cmd-step-4">tar -tf /var/tmp/sosreport-labuser-123456.tar.xz</code></pre>
+                    <pre><code id="cmd-step-4">tar -tf /var/tmp/sosreport-labuser-123456.tar.xz | head</code></pre>
                   </div>
 
                   <p>
                     <code>tar -tf</code> lists archive contents without
                     extracting. This is the safe way to validate that the report
-                    contains expected categories of evidence (host identity,
-                    system logs, proc data) before you hand it off for analysis.
+                    contains expected categories of evidence before you hand it
+                    off for analysis.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code id="verify-step-4">sosreport-labuser-123456/etc/hostname
-sosreport-labuser-123456/var/log/messages
-sosreport-labuser-123456/proc/cpuinfo
-sosreport-labuser-123456/sys/kernel/debug</code></pre>
+                    <pre><code id="verify-step-4">sosreport-labuser-123456/
+sosreport-labuser-123456/sos_commands/
+sosreport-labuser-123456/sos_commands/general/
+sosreport-labuser-123456/sos_commands/general/hostnamectl
+sosreport-labuser-123456/etc/
+sosreport-labuser-123456/etc/hostname
+sosreport-labuser-123456/etc/hosts
+sosreport-labuser-123456/var/
+sosreport-labuser-123456/var/log/
+sosreport-labuser-123456/var/log/messages</code></pre>
                   </div>
+                </div>
+
+                <!-- Step 5 -->
+                <div class="lab-step">
+                  <div class="lab-step-title">
+                    <strong class="font-alt bold">Step 5</strong>
+                    : Record the checksum for transfer validation.
+                  </div>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <div class="lab-codeblock-header">
+                      <span>Command</span>
+                      <button
+                        class="lab-copy-btn"
+                        type="button"
+                        data-copy="#cmd-step-5"
+                      >
+                        Copy
+                      </button>
+                    </div>
+                    <pre><code id="cmd-step-5">sha256sum /var/tmp/sosreport-labuser-123456.tar.xz</code></pre>
+                  </div>
+
+                  <p>
+                    When you upload the archive to a support portal or move it to
+                    another host, a checksum lets you confirm the file arrived
+                    intact without corruption.
+                  </p>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <pre><code id="verify-step-5">111122223333444455556666777788889999aaaabbbbccccddddeeeeffff0000  /var/tmp/sosreport-labuser-123456.tar.xz</code></pre>
+                  </div>
+                </div>
+              </section>
+
+              <!-- Breakpoints -->
+              <section class="lab-section" id="breakpoints">
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  Common breakpoints
+                </h3>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">
+                    sosreport not found after install
+                  </div>
+                  <p class="m-b-0">
+                    Confirm the package name and PATH. On some systems the
+                    package may be <code>sos</code> but the binary is
+                    <code>/usr/sbin/sosreport</code>. Verify with
+                    <code>rpm -q sos</code> and <code>command -v sosreport</code>.
+                  </p>
+                </div>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">
+                    Archive not created in /var/tmp
+                  </div>
+                  <p class="m-b-0">
+                    Read the final output line from <code>sosreport</code>. It
+                    prints the exact archive path. Some environments override
+                    the destination.
+                  </p>
+                </div>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">Sensitive data concerns</div>
+                  <p class="m-b-0">
+                    Treat the archive like production evidence. If you must
+                    share it externally, follow your org’s redaction and
+                    approval process first.
+                  </p>
+                </div>
+              </section>
+
+              <!-- Cleanup -->
+              <section class="lab-section alt-background" id="cleanup">
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  Cleanup checklist
+                </h3>
+
+                <ul>
+                  <li>
+                    Optional: remove the generated archive after transfer and
+                    confirmation.
+                  </li>
+                </ul>
+
+                <div class="lab-codeblock m-b-40 m-t-40">
+                  <div class="lab-codeblock-header">
+                    <span>Command</span>
+                    <button
+                      class="lab-copy-btn"
+                      type="button"
+                      data-copy="#cmd-cleanup-1"
+                    >
+                      Copy
+                    </button>
+                  </div>
+                  <pre><code id="cmd-cleanup-1">sudo rm -f /var/tmp/sosreport-labuser-123456.tar.xz</code></pre>
                 </div>
               </section>
 
@@ -440,72 +595,55 @@ sosreport-labuser-123456/sys/kernel/debug</code></pre>
 
                 <ul class="lab-reference-list">
                   <li>
-                    <code>sudo dnf install -y sos</code>
-                    : Installs the <code>sos</code> package (which provides
-                    <code>sosreport</code>) using DNF.
+                    <code>dnf install -y sos</code>: installs the
+                    <code>sos</code> package (provides <code>sosreport</code>).
                     <ul>
-                      <li>
-                        <code>-y</code>
-                        : Automatically answers “yes” to prompts.
-                      </li>
+                      <li><code>-y</code>: automatically answers “yes”</li>
                     </ul>
                   </li>
 
                   <li>
-                    <code>sudo yum install -y sos</code>
-                    : Installs the <code>sos</code> package using YUM (legacy
-                    workflow).
+                    <code>yum install -y sos</code>: legacy workflow to install
+                    <code>sos</code>.
                     <ul>
-                      <li>
-                        <code>-y</code>
-                        : Automatically answers “yes” to prompts.
-                      </li>
+                      <li><code>-y</code>: automatically answers “yes”</li>
                     </ul>
                   </li>
 
                   <li>
-                    <code>sudo sosreport</code>
-                    : Generates a diagnostic archive containing system and
-                    configuration evidence for support analysis.
+                    <code>sosreport</code>: generates a diagnostic archive for
+                    support analysis.
                   </li>
 
                   <li>
-                    <code>ls /var/tmp</code>
-                    : Lists files in <code>/var/tmp</code> to confirm the report
-                    archive exists.
+                    <code>ls -lh /var/tmp</code>: confirms the archive exists
+                    and shows permissions/size.
                   </li>
 
                   <li>
-                    <code>tar -tf /var/tmp/&lt;archive&gt;.tar.xz</code>
-                    : Lists files inside a tar archive without extracting.
+                    <code>tar -tf /var/tmp/&lt;archive&gt;.tar.xz</code>: lists
+                    archive contents without extracting.
                     <ul>
-                      <li>
-                        <code>-t</code>
-                        : List contents.
-                      </li>
-                      <li>
-                        <code>-f</code>
-                        : Read from the specified archive file.
-                      </li>
+                      <li><code>-t</code>: list contents</li>
+                      <li><code>-f</code>: read from the specified file</li>
                     </ul>
+                  </li>
+
+                  <li>
+                    <code>sha256sum /var/tmp/&lt;archive&gt;.tar.xz</code>:
+                    produces a checksum for transfer validation.
                   </li>
                 </ul>
               </section>
 
+              <nav class="lab-pagination">
+                <a class="lab-nav-link" href="#totop" aria-label="Back to top"
+                  >&uArr;</a
+                >
+              </nav>
               <!-- /main -->
             </div>
           </div>
-
-          <nav class="lab-pagination">
-            <a
-              id="prev-lab"
-              class="lab-nav-link"
-              href="#"
-              aria-label="Back to top"
-            >
-              &uArr;
-            </a>
-          </nav>
         </div>
       </section>
 
@@ -575,5 +713,9 @@ sosreport-labuser-123456/sys/kernel/debug</code></pre>
 
     <!-- Lab page JS (new) -->
     <script src="../assets/js/lab.js"></script>
+
+    <script>
+      document.getElementById("year").textContent = new Date().getFullYear()
+    </script>
   </body>
 </html>
