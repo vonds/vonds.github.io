@@ -1,0 +1,832 @@
+<!-- lab145.html -->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="exit_0 Documentation" />
+    <meta name="name" content="Vonds" />
+
+    <title>Vonds | Lab 145</title>
+
+    <!-- Favicons -->
+    <link rel="shortcut icon" href="../assets/images/favicon.png" />
+    <link rel="apple-touch-icon" href="../assets/images/apple-touch-icon.png" />
+    <link
+      rel="apple-touch-icon"
+      sizes="72x72"
+      href="../assets/images/apple-touch-icon-72x72.png"
+    />
+    <link
+      rel="apple-touch-icon"
+      sizes="114x114"
+      href="../assets/images/apple-touch-icon-114x114.png"
+    />
+
+    <!-- Site styles (your existing) -->
+    <link href="../assets/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="../assets/css/font-awesome.min.css" rel="stylesheet" />
+    <link href="../assets/css/linea-icons.css" rel="stylesheet" />
+    <link href="../assets/css/ionicons.min.css" rel="stylesheet" />
+    <link href="../assets/css/simpletextrotator.css" rel="stylesheet" />
+    <link href="../assets/css/magnific-popup.css" rel="stylesheet" />
+    <link href="../assets/css/owl.carousel.css" rel="stylesheet" />
+    <link href="../assets/css/superslides.css" rel="stylesheet" />
+    <link href="../assets/css/vertical.css" rel="stylesheet" />
+    <link href="../assets/css/animate.css" rel="stylesheet" />
+    <link href="../assets/css/style.css" rel="stylesheet" />
+    <link href="../assets/css/docs.css" rel="stylesheet" />
+
+    <!-- Lab page styles -->
+    <link href="../assets/css/lab.css" rel="stylesheet" />
+
+    <!-- Fonts -->
+    <link
+      href="https://fonts.googleapis.com/css?family=Dosis"
+      rel="stylesheet"
+    />
+  </head>
+
+  <body>
+    <!-- PRELOADER -->
+    <div class="page-loader">
+      <div class="loader">Loading...</div>
+    </div>
+
+    <!-- OVERLAY MENU -->
+    <div id="overlay-menu" class="overlay-menu">
+      <a href="#" id="overlay-menu-hide" class="navigation-hide">
+        <i class="ion-close-round"></i>
+      </a>
+
+      <div class="overlay-menu-inner">
+        <nav class="overlay-menu-nav">
+          <ul id="nav">
+            <li><a href="../index.html">Home</a></li>
+
+            <li class="slidedown">
+              <a href="#">Portfolio</a>
+              <ul>
+                <li>
+                  <a href="https://github.com/vonds/exit_0" target="_blank">
+                    exit_0
+                  </a>
+                </li>
+                <li>
+                  <a href="https://github.com/vonds/sentinel" target="_blank">
+                    Sentinel
+                  </a>
+                </li>
+                <li>
+                  <a href="docs.html" target="_blank">exit_0 Documentation</a>
+                </li>
+              </ul>
+            </li>
+
+            <li>
+              <a
+                href="https://www.linkedin.com/in/vonds/"
+                target="_blank"
+                rel="noopener"
+              >
+                LinkedIn
+              </a>
+            </li>
+            <li>
+              <a href="https://github.com/vonds" target="_blank" rel="noopener">
+                Github
+              </a>
+            </li>
+            <li>
+              <a href="mailto:vonds13@gmail.com?subject=Hello Vonds">Contact</a>
+            </li>
+          </ul>
+        </nav>
+      </div>
+
+      <div class="overlay-navigation-footer">
+        <div class="container">
+          <div class="row">
+            <div class="col-sm-12 text-center">
+              <p class="copyright font-alt m-b-0">
+                VONDS &copy;
+                <script>
+                  document.write(new Date().getFullYear())
+                </script>
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- WRAPPER -->
+    <div class="wrapper">
+      <!-- NAVIGATION -->
+      <nav
+        class="navbar navbar-custom navbar-transparent navbar-light navbar-fixed-top"
+      >
+        <div class="container">
+          <div class="navbar-header">
+            <a class="navbar-brand" href="../index.html">
+              <img src="../assets/images/logo-dark.png" width="95" alt="" />
+            </a>
+          </div>
+
+          <ul id="icons-navbar" class="nav navbar-nav navbar-right">
+            <li>
+              <a href="#" id="toggle-menu" class="show-overlay" title="Menu">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </nav>
+
+      <!-- DOCS PAGE -->
+      <section class="module">
+        <div class="container">
+          <h2 class="font-alt module-title m-t-60">
+            Lab 145: RHCSA Admin Tasks — Permissions + Cron + at + Time + Accounts
+          </h2>
+
+          <nav class="lab-pagination">
+            <a
+              id="prev-lab"
+              class="lab-nav-link"
+              href="#"
+              aria-label="Previous lab"
+            >
+              &laquo;
+            </a>
+            <a
+              id="next-lab"
+              class="lab-nav-link"
+              href="#"
+              aria-label="Next lab"
+            >
+              &raquo;
+            </a>
+          </nav>
+
+          <div class="row">
+            <!-- LEFT SIDEBAR -->
+            <div class="col-sm-4 col-md-3 lab-sidebar">
+              <div class="docs-sidebar">
+                <div class="docs-widget">
+                  <h5 class="widget-title">
+                    <a href="./docs.html">Lab Index</a>
+                  </h5>
+                  <ul class="docs-nav">
+                    <li><a href="#scenario">Scenario</a></li>
+                    <li><a href="#objective">Objective</a></li>
+                    <li><a href="#concepts">Concepts</a></li>
+                    <li><a href="#walkthrough">Walkthrough</a></li>
+                    <li><a href="#breakpoints">Breakpoints</a></li>
+                    <li><a href="#cleanup">Cleanup</a></li>
+                    <li><a href="#reference">Reference</a></li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            <!-- MAIN CONTENT -->
+            <div class="col-sm-8 col-md-9 lab-doc">
+              <p class="m-b-20 lab-summary">
+                Apply a real admin workflow that combines secure shared-directory permissions, recurring and one-time scheduling, timezone verification,
+                and an account aging fix. Inspect current state first, make targeted changes, and verify each outcome with concrete evidence.
+              </p>
+
+              <!-- Video (kept on page; removed from left panel) -->
+              <section class="lab-section" id="video" aria-label="Lab video">
+                <div class="lab-video">
+                  <div class="lab-video-embed text-center">
+                    <iframe
+                      src="https://www.youtube.com/embed/REPLACE_ME"
+                      title="YouTube video player"
+                      frameborder="0"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                      referrerpolicy="strict-origin-when-cross-origin"
+                      allowfullscreen
+                    ></iframe>
+                  </div>
+                </div>
+              </section>
+
+              <!-- Scenario -->
+              <section class="lab-section" id="scenario">
+                <div class="lab-chips" aria-label="Tags">
+                  <span class="lab-chip">
+                    <span class="lab-chip-key">permissions</span>
+                  </span>
+                  <span class="lab-chip">
+                    <span class="lab-chip-key">scheduling</span>
+                  </span>
+                  <span class="lab-chip">
+                    <span class="lab-chip-key">time</span>
+                  </span>
+                  <span class="lab-chip">
+                    <span class="lab-chip-key">accounts</span>
+                  </span>
+                </div>
+
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  Scenario
+                </h3>
+
+                <p>
+                  A web content directory must be writable by the web team group, safely and consistently. Ops also needs a recurring cron job,
+                  a one-time at job, a timezone verification, and an account-expiration fix for a user who was locked out unexpectedly.
+                </p>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">Operator context</div>
+                  <p class="m-b-0">
+                    This is a “small changes, strong verification” workflow. You confirm current state, apply minimal changes with the right tool,
+                    and verify the result immediately before moving on.
+                  </p>
+                </div>
+              </section>
+
+              <!-- Objective -->
+              <section class="lab-section alt-background" id="objective">
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  Objective
+                </h3>
+                <ul>
+                  <li>Create a shared directory for web content at <code>/home/webfiles</code>.</li>
+                  <li>Set group ownership and permissions so the group inherits new files (setgid).</li>
+                  <li>Install a root cron schedule for a required audit script.</li>
+                  <li>Schedule and verify a one-time job using <code>at</code>.</li>
+                  <li>Verify system timezone via the <code>/etc/localtime</code> symlink.</li>
+                  <li>Remove account expiration for a locked-out user and confirm the aging state.</li>
+                </ul>
+              </section>
+
+              <!-- Concepts (no alt-background moving forward) -->
+              <section class="lab-section" id="concepts">
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  Concepts
+                </h3>
+                <ul>
+                  <li>Secure shared-directory workflows using group ownership and setgid.</li>
+                  <li>Permission verification using <code>ls -ld</code> and interpreting mode bits.</li>
+                  <li>Root versus user crontabs and safe schedule validation.</li>
+                  <li>One-time scheduling using <code>at</code> and queue inspection via <code>atq</code>.</li>
+                  <li>Timezone verification by inspecting the <code>/etc/localtime</code> target.</li>
+                  <li>Account aging controls using <code>chage</code> to manage expiration policy.</li>
+                </ul>
+              </section>
+
+              <!-- Walkthrough -->
+              <section class="lab-section alt-background" id="walkthrough">
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  Walkthrough
+                </h3>
+
+                <!-- Step 1 -->
+                <div class="lab-step">
+                  <div class="lab-step-title">
+                    <strong class="font-alt">Step 1</strong>
+                    : Create the shared directory.
+                  </div>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <div class="lab-codeblock-header">
+                      <span>Command</span>
+                      <button
+                        class="lab-copy-btn"
+                        type="button"
+                        data-copy="#cmd-step-1"
+                      >
+                        Copy
+                      </button>
+                    </div>
+                    <pre><code id="cmd-step-1">sudo mkdir -p /home/webfiles</code></pre>
+                  </div>
+
+                  <p>
+                    Use <code>-p</code> so the command is idempotent. This is the “safe to re-run” behavior you want in admin work.
+                  </p>
+                </div>
+
+                <!-- Step 2 -->
+                <div class="lab-step">
+                  <div class="lab-step-title">
+                    <strong class="font-alt">Step 2</strong>
+                    : Set the group owner to the web team group.
+                  </div>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <div class="lab-codeblock-header">
+                      <span>Command</span>
+                      <button
+                        class="lab-copy-btn"
+                        type="button"
+                        data-copy="#cmd-step-2"
+                      >
+                        Copy
+                      </button>
+                    </div>
+                    <pre><code id="cmd-step-2">sudo chgrp apache /home/webfiles</code></pre>
+                  </div>
+
+                  <p>
+                    Group ownership defines who can collaborate in the directory. This lab uses <code>apache</code> as the team group for the shared path.
+                  </p>
+                </div>
+
+                <!-- Step 3 -->
+                <div class="lab-step">
+                  <div class="lab-step-title">
+                    <strong class="font-alt">Step 3</strong>
+                    : Apply permissions and force group inheritance (setgid).
+                  </div>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <div class="lab-codeblock-header">
+                      <span>Command</span>
+                      <button
+                        class="lab-copy-btn"
+                        type="button"
+                        data-copy="#cmd-step-3"
+                      >
+                        Copy
+                      </button>
+                    </div>
+                    <pre><code id="cmd-step-3">sudo chmod 2775 /home/webfiles</code></pre>
+                  </div>
+
+                  <p>
+                    <code>2775</code> sets setgid on the directory and grants rwx to owner and group, with r-x for others.
+                    The setgid bit ensures new files inherit the directory group, which prevents “wrong group” churn.
+                  </p>
+                </div>
+
+                <!-- Step 4 -->
+                <div class="lab-step">
+                  <div class="lab-step-title">
+                    <strong class="font-alt">Step 4</strong>
+                    : Verify ownership and permissions.
+                  </div>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <div class="lab-codeblock-header">
+                      <span>Command</span>
+                      <button
+                        class="lab-copy-btn"
+                        type="button"
+                        data-copy="#cmd-step-4"
+                      >
+                        Copy
+                      </button>
+                    </div>
+                    <pre><code id="cmd-step-4">ls -ld /home/webfiles</code></pre>
+                  </div>
+
+                  <p>
+                    You are verifying two signals: group ownership shows <code>apache</code>, and the permission string shows an <code>s</code>
+                    in the group execute position (<code>drwxrwsr-x</code>), which indicates setgid is active.
+                  </p>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <pre><code>drwxrwsr-x. 2 root apache 4096 Jan 25 07:42 /home/webfiles</code></pre>
+                  </div>
+                </div>
+
+                <!-- Step 5 -->
+                <div class="lab-step">
+                  <div class="lab-step-title">
+                    <strong class="font-alt">Step 5</strong>
+                    : Open root’s crontab editor.
+                  </div>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <div class="lab-codeblock-header">
+                      <span>Command</span>
+                      <button
+                        class="lab-copy-btn"
+                        type="button"
+                        data-copy="#cmd-step-5"
+                      >
+                        Copy
+                      </button>
+                    </div>
+                    <pre><code id="cmd-step-5">sudo crontab -e</code></pre>
+                  </div>
+
+                  <p>
+                    Use root’s crontab when the job must run as root and you want the schedule owned and managed at the system-admin layer.
+                  </p>
+                </div>
+
+                <!-- Step 6 -->
+                <div class="lab-step">
+                  <div class="lab-step-title">
+                    <strong class="font-alt">Step 6</strong>
+                    : Add the required schedule line.
+                  </div>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <div class="lab-codeblock-header">
+                      <span>Crontab line</span>
+                      <button
+                        class="lab-copy-btn"
+                        type="button"
+                        data-copy="#cmd-step-6"
+                      >
+                        Copy
+                      </button>
+                    </div>
+                    <pre><code id="cmd-step-6">15 0,12 * * * /usr/local/bin/webfiles-audit.sh</code></pre>
+                  </div>
+
+                  <p>
+                    This runs at 00:15 and 12:15 daily. In production, you would also verify the script exists and has the right permissions,
+                    but the focus here is correct scheduling syntax and placement.
+                  </p>
+                </div>
+
+                <!-- Step 7 -->
+                <div class="lab-step">
+                  <div class="lab-step-title">
+                    <strong class="font-alt">Step 7</strong>
+                    : Verify the cron entry is installed.
+                  </div>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <div class="lab-codeblock-header">
+                      <span>Command</span>
+                      <button
+                        class="lab-copy-btn"
+                        type="button"
+                        data-copy="#cmd-step-7"
+                      >
+                        Copy
+                      </button>
+                    </div>
+                    <pre><code id="cmd-step-7">sudo crontab -l</code></pre>
+                  </div>
+
+                  <p>
+                    Listing the crontab is your immediate proof that the scheduler has the job recorded under the intended user context.
+                  </p>
+                </div>
+
+                <!-- Step 8 -->
+                <div class="lab-step">
+                  <div class="lab-step-title">
+                    <strong class="font-alt">Step 8</strong>
+                    : Schedule a one-time job using at.
+                  </div>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <div class="lab-codeblock-header">
+                      <span>Command</span>
+                      <button
+                        class="lab-copy-btn"
+                        type="button"
+                        data-copy="#cmd-step-8"
+                      >
+                        Copy
+                      </button>
+                    </div>
+                    <pre><code id="cmd-step-8">at now + 1 hour</code></pre>
+                  </div>
+
+                  <p>
+                    <code>at</code> is for one-off execution. After entering the at prompt, you would type the command(s) to run and end input with
+                    <code>Ctrl+D</code>.
+                  </p>
+                </div>
+
+                <!-- Step 9 -->
+                <div class="lab-step">
+                  <div class="lab-step-title">
+                    <strong class="font-alt">Step 9</strong>
+                    : Verify the at queue.
+                  </div>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <div class="lab-codeblock-header">
+                      <span>Command</span>
+                      <button
+                        class="lab-copy-btn"
+                        type="button"
+                        data-copy="#cmd-step-9"
+                      >
+                        Copy
+                      </button>
+                    </div>
+                    <pre><code id="cmd-step-9">atq</code></pre>
+                  </div>
+
+                  <p>
+                    This confirms the job exists and is scheduled for the expected time.
+                  </p>
+                </div>
+
+                <!-- Step 10 -->
+                <div class="lab-step">
+                  <div class="lab-step-title">
+                    <strong class="font-alt">Step 10</strong>
+                    : Verify the system timezone via the localtime symlink.
+                  </div>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <div class="lab-codeblock-header">
+                      <span>Command</span>
+                      <button
+                        class="lab-copy-btn"
+                        type="button"
+                        data-copy="#cmd-step-10"
+                      >
+                        Copy
+                      </button>
+                    </div>
+                    <pre><code id="cmd-step-10">ls -l /etc/localtime</code></pre>
+                  </div>
+
+                  <p>
+                    On most RHEL-like systems, <code>/etc/localtime</code> points to a zoneinfo file. Confirming the target is quick evidence that the host
+                    is configured for the expected region.
+                  </p>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <pre><code>lrwxrwxrwx. 1 root root 33 Jan 25 06:58 /etc/localtime -> ../usr/share/zoneinfo/America/New_York</code></pre>
+                  </div>
+                </div>
+
+                <!-- Step 11 -->
+                <div class="lab-step">
+                  <div class="lab-step-title">
+                    <strong class="font-alt">Step 11</strong>
+                    : Remove account expiration for the locked-out user.
+                  </div>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <div class="lab-codeblock-header">
+                      <span>Command</span>
+                      <button
+                        class="lab-copy-btn"
+                        type="button"
+                        data-copy="#cmd-step-11"
+                      >
+                        Copy
+                      </button>
+                    </div>
+                    <pre><code id="cmd-step-11">sudo chage -E -1 username</code></pre>
+                  </div>
+
+                  <p>
+                    Setting expiration to <code>-1</code> removes the account expiration date. This addresses “account expired” lockouts without changing
+                    the password. In production, you would confirm the user’s status and document the change.
+                  </p>
+                </div>
+              </section>
+
+              <!-- Common breakpoints -->
+              <section class="lab-section" id="breakpoints">
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  Common breakpoints
+                </h3>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">
+                    Permission string does not show setgid
+                  </div>
+                  <p class="m-b-0">
+                    If <code>ls -ld</code> does not show <code>rws</code> for the group bits, setgid is not active and new files may inherit the wrong group.
+                    Re-apply <code>chmod 2775</code> and verify again.
+                  </p>
+                </div>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">
+                    Cron line exists but job does not run
+                  </div>
+                  <p class="m-b-0">
+                    Confirm the script path is correct and executable. Also confirm cron is running and that your schedule is valid for the system timezone.
+                    Validate with <code>sudo crontab -l</code> and check logs if available.
+                  </p>
+                </div>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">
+                    at command fails or queue is empty
+                  </div>
+                  <p class="m-b-0">
+                    The at subsystem may be disabled or the service may not be running. Ensure the at daemon is available and that you ended job input with
+                    <code>Ctrl+D</code>. Verify with <code>atq</code>.
+                  </p>
+                </div>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">
+                    Account still appears locked out after expiration change
+                  </div>
+                  <p class="m-b-0">
+                    Account expiration is not the same as password lock. Check aging and lock state separately. If needed, inspect the full aging state with
+                    <code>chage -l username</code> and confirm there are no additional policy constraints.
+                  </p>
+                </div>
+              </section>
+
+              <!-- Cleanup -->
+              <section class="lab-section alt-background" id="cleanup">
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  Cleanup checklist
+                </h3>
+
+                <p>
+                  If this is a training system and you want to revert changes, remove the cron entry and delete the shared directory. If the at job was queued,
+                  remove it as well. Keep the timezone unchanged unless the lab explicitly required modifications.
+                </p>
+
+                <div class="lab-codeblock m-b-40 m-t-40">
+                  <div class="lab-codeblock-header">
+                    <span>Commands</span>
+                    <button
+                      class="lab-copy-btn"
+                      type="button"
+                      data-copy="#cmd-cleanup"
+                    >
+                      Copy
+                    </button>
+                  </div>
+                  <pre><code id="cmd-cleanup">ls -ld /home/webfiles
+sudo crontab -l
+atq
+ls -l /etc/localtime</code></pre>
+                </div>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">Success signal</div>
+                  <p class="m-b-0">
+                    The shared directory shows the expected group and setgid permissions, the cron line appears under root, the at queue reflects the expected job,
+                    timezone points to the expected zoneinfo file, and the user no longer has an account expiration date.
+                  </p>
+                </div>
+              </section>
+
+              <!-- Reference -->
+              <section class="lab-section" id="reference">
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  Reference
+                </h3>
+
+                <ul class="lab-reference-list">
+                  <li>
+                    <code>mkdir -p &lt;dir&gt;</code>
+                    : Creates a directory path and does not fail if it already exists.
+                    <ul>
+                      <li><code>-p</code> : Creates parent directories as needed.</li>
+                    </ul>
+                  </li>
+
+                  <li>
+                    <code>chgrp &lt;group&gt; &lt;path&gt;</code>
+                    : Changes the group ownership of a file or directory.
+                  </li>
+
+                  <li>
+                    <code>chmod 2775 &lt;dir&gt;</code>
+                    : Sets directory permissions and enables setgid for group inheritance.
+                    <ul>
+                      <li><code>2</code> : setgid on directories (new files inherit the directory group).</li>
+                      <li><code>775</code> : rwx for owner and group, r-x for others.</li>
+                    </ul>
+                  </li>
+
+                  <li>
+                    <code>ls -ld &lt;path&gt;</code>
+                    : Displays directory metadata (permissions, owner, group) for the directory itself.
+                    <ul>
+                      <li><code>-l</code> : Long listing format.</li>
+                      <li><code>-d</code> : Lists the directory entry, not its contents.</li>
+                    </ul>
+                  </li>
+
+                  <li>
+                    <code>crontab -e</code>
+                    : Edits the current user’s crontab.
+                    <ul>
+                      <li><code>sudo crontab -e</code> : Edits root’s crontab.</li>
+                    </ul>
+                  </li>
+
+                  <li>
+                    <code>crontab -l</code>
+                    : Lists the current user’s crontab.
+                    <ul>
+                      <li><code>sudo crontab -l</code> : Lists root’s crontab.</li>
+                    </ul>
+                  </li>
+
+                  <li>
+                    <code>at now + 1 hour</code>
+                    : Schedules a one-time job for a future time.
+                  </li>
+
+                  <li>
+                    <code>atq</code>
+                    : Lists pending <code>at</code> jobs in the queue.
+                  </li>
+
+                  <li>
+                    <code>ls -l /etc/localtime</code>
+                    : Shows the timezone symlink target used by the system.
+                  </li>
+
+                  <li>
+                    <code>chage -E -1 &lt;user&gt;</code>
+                    : Removes account expiration for a user.
+                    <ul>
+                      <li><code>-E</code> : Sets the account expiration date.</li>
+                      <li><code>-1</code> : No expiration.</li>
+                    </ul>
+                  </li>
+                </ul>
+              </section>
+            </div>
+            <!-- /main -->
+          </div>
+          <!-- /row -->
+        </div>
+        <!-- /container -->
+      </section>
+
+      <!-- FOOTER -->
+      <footer class="module bg-light">
+        <div class="container">
+          <div class="row">
+            <div class="col-sm-12">
+              <ul class="social-text-links font-alt text-center m-b-20">
+                <li>
+                  <a
+                    href="https://github.com/vonds"
+                    target="_blank"
+                    rel="noopener"
+                  >
+                    Github
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="https://www.linkedin.com/in/vonds/"
+                    target="_blank"
+                    rel="noopener"
+                  >
+                    Linkedin
+                  </a>
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-sm-12">
+              <p class="copyright text-center m-b-0">
+                VONDS &copy;
+                <span id="year"></span>
+              </p>
+
+              <div class="scroll-up">
+                <a href="#totop"><i class="fa fa-angle-double-up"></i></a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <!-- Javascript files (your existing) -->
+    <script src="../assets/js/jquery-2.2.4.min.js"></script>
+    <script src="../assets/bootstrap/js/bootstrap.min.css"></script>
+    <script src="../assets/js/jquery.superslides.min.js"></script>
+    <script src="../assets/js/jquery.mb.YTPlayer.min.js"></script>
+    <script src="../assets/js/jquery.magnific-popup.min.js"></script>
+    <script src="../assets/js/owl.carousel.min.js"></script>
+    <script src="../assets/js/jquery.simple-text-rotator.min.js"></script>
+    <script src="../assets/js/imagesloaded.pkgd.js"></script>
+    <script src="../assets/js/isotope.pkgd.min.js"></script>
+    <script src="../assets/js/packery-mode.pkgd.min.js"></script>
+    <script src="../assets/js/appear.js"></script>
+    <script src="../assets/js/jquery.easing.1.3.js"></script>
+    <script src="../assets/js/wow.min.js"></script>
+    <script src="../assets/js/jqBootstrapValidation.js"></script>
+    <script src="../assets/js/jquery.fitvids.js"></script>
+    <script src="../assets/js/jquery.parallax-1.1.3.js"></script>
+    <script src="../assets/js/smoothscroll.js"></script>
+    <script src="../assets/js/custom.js"></script>
+
+    <!-- Lab page JS (new) -->
+    <script src="../assets/js/lab.js"></script>
+
+    <script>
+      document.getElementById('year').textContent = new Date().getFullYear()
+    </script>
+  </body>
+</html>
