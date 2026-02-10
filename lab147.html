@@ -1,0 +1,928 @@
+<!-- lab147.html -->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="exit_0 Documentation" />
+    <meta name="name" content="Vonds" />
+
+    <title>Vonds | Lab 147</title>
+
+    <!-- Favicons -->
+    <link rel="shortcut icon" href="../assets/images/favicon.png" />
+    <link rel="apple-touch-icon" href="../assets/images/apple-touch-icon.png" />
+    <link
+      rel="apple-touch-icon"
+      sizes="72x72"
+      href="../assets/images/apple-touch-icon-72x72.png"
+    />
+    <link
+      rel="apple-touch-icon"
+      sizes="114x114"
+      href="../assets/images/apple-touch-icon-114x114.png"
+    />
+
+    <!-- Site styles (your existing) -->
+    <link href="../assets/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="../assets/css/font-awesome.min.css" rel="stylesheet" />
+    <link href="../assets/css/linea-icons.css" rel="stylesheet" />
+    <link href="../assets/css/ionicons.min.css" rel="stylesheet" />
+    <link href="../assets/css/simpletextrotator.css" rel="stylesheet" />
+    <link href="../assets/css/magnific-popup.css" rel="stylesheet" />
+    <link href="../assets/css/owl.carousel.css" rel="stylesheet" />
+    <link href="../assets/css/superslides.css" rel="stylesheet" />
+    <link href="../assets/css/vertical.css" rel="stylesheet" />
+    <link href="../assets/css/animate.css" rel="stylesheet" />
+    <link href="../assets/css/style.css" rel="stylesheet" />
+    <link href="../assets/css/docs.css" rel="stylesheet" />
+
+    <!-- Lab page styles -->
+    <link href="../assets/css/lab.css" rel="stylesheet" />
+
+    <!-- Fonts -->
+    <link
+      href="https://fonts.googleapis.com/css?family=Dosis"
+      rel="stylesheet"
+    />
+  </head>
+
+  <body>
+    <!-- PRELOADER -->
+    <div class="page-loader">
+      <div class="loader">Loading...</div>
+    </div>
+
+    <!-- OVERLAY MENU -->
+    <div id="overlay-menu" class="overlay-menu">
+      <a href="#" id="overlay-menu-hide" class="navigation-hide">
+        <i class="ion-close-round"></i>
+      </a>
+
+      <div class="overlay-menu-inner">
+        <nav class="overlay-menu-nav">
+          <ul id="nav">
+            <li><a href="../index.html">Home</a></li>
+
+            <li class="slidedown">
+              <a href="#">Portfolio</a>
+              <ul>
+                <li>
+                  <a href="https://github.com/vonds/exit_0" target="_blank">
+                    exit_0
+                  </a>
+                </li>
+                <li>
+                  <a href="https://github.com/vonds/sentinel" target="_blank">
+                    Sentinel
+                  </a>
+                </li>
+                <li>
+                  <a href="docs.html" target="_blank">exit_0 Documentation</a>
+                </li>
+              </ul>
+            </li>
+
+            <li>
+              <a
+                href="https://www.linkedin.com/in/vonds/"
+                target="_blank"
+                rel="noopener"
+              >
+                LinkedIn
+              </a>
+            </li>
+            <li>
+              <a href="https://github.com/vonds" target="_blank" rel="noopener">
+                Github
+              </a>
+            </li>
+            <li>
+              <a href="mailto:vonds13@gmail.com?subject=Hello Vonds">Contact</a>
+            </li>
+          </ul>
+        </nav>
+      </div>
+
+      <div class="overlay-navigation-footer">
+        <div class="container">
+          <div class="row">
+            <div class="col-sm-12 text-center">
+              <p class="copyright font-alt m-b-0">
+                VONDS &copy;
+                <script>
+                  document.write(new Date().getFullYear())
+                </script>
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- WRAPPER -->
+    <div class="wrapper">
+      <!-- NAVIGATION -->
+      <nav
+        class="navbar navbar-custom navbar-transparent navbar-light navbar-fixed-top"
+      >
+        <div class="container">
+          <div class="navbar-header">
+            <a class="navbar-brand" href="../index.html">
+              <img src="../assets/images/logo-dark.png" width="95" alt="" />
+            </a>
+          </div>
+
+          <ul id="icons-navbar" class="nav navbar-nav navbar-right">
+            <li>
+              <a href="#" id="toggle-menu" class="show-overlay" title="Menu">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </nav>
+
+      <!-- DOCS PAGE -->
+      <section class="module">
+        <div class="container">
+          <h2 class="font-alt module-title m-t-60">
+            Lab 147: RHCSA User + Group Admin — tsuli Account Workflow
+          </h2>
+
+          <nav class="lab-pagination">
+            <a
+              id="prev-lab"
+              class="lab-nav-link"
+              href="#"
+              aria-label="Previous lab"
+            >
+              &laquo;
+            </a>
+            <a
+              id="next-lab"
+              class="lab-nav-link"
+              href="#"
+              aria-label="Next lab"
+            >
+              &raquo;
+            </a>
+          </nav>
+
+          <div class="row">
+            <!-- LEFT SIDEBAR -->
+            <div class="col-sm-4 col-md-3 lab-sidebar">
+              <div class="docs-sidebar">
+                <div class="docs-widget">
+                  <h5 class="widget-title">
+                    <a href="./docs.html">Back to Back to Back to Lab Index</a>
+                  </h5>
+                  <ul class="docs-nav">
+                    <li><a href="#scenario">Scenario</a></li>
+                    <li><a href="#objective">Objective</a></li>
+                    <li><a href="#concepts">Concepts</a></li>
+                    <li><a href="#walkthrough">Walkthrough</a></li>
+                    <li><a href="#breakpoints">Breakpoints</a></li>
+                    <li><a href="#cleanup">Cleanup</a></li>
+                    <li><a href="#reference">Reference</a></li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            <!-- MAIN CONTENT -->
+            <div class="col-sm-8 col-md-9 lab-doc">
+              <p class="m-b-20 lab-summary">
+                Provision a short-lived contractor account (tsuli), confirm NSS
+                identity and shadow visibility, add correct supplemental groups,
+                validate permissions on core auth databases, then cleanly remove
+                the account and home directory.
+              </p>
+
+              <!-- Video (kept on page; removed from left panel) -->
+              <section class="lab-section" id="video" aria-label="Lab video">
+                <div class="lab-video">
+                  <div class="lab-video-embed text-center">
+                    <iframe
+                      src="https://www.youtube.com/embed/uJk54bhaadA?si=seGSukCoMFN7ohRo"
+                      title="YouTube video player"
+                      frameborder="0"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                      referrerpolicy="strict-origin-when-cross-origin"
+                      allowfullscreen
+                    ></iframe>
+                  </div>
+                </div>
+              </section>
+
+              <!-- Scenario -->
+              <section class="lab-section" id="scenario">
+                <div class="lab-chips" aria-label="Tags">
+                  <span class="lab-chip">
+                    <span class="lab-chip-key">users</span>
+                  </span>
+                  <span class="lab-chip">
+                    <span class="lab-chip-key">security</span>
+                  </span>
+                  <span class="lab-chip">
+                    <span class="lab-chip-key">core</span>
+                  </span>
+                </div>
+
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  Scenario
+                </h3>
+
+                <p>
+                  You need to provision a contractor account,
+                  <strong>tsuli</strong>
+                  , for documentation updates. The account must be added to the
+                  <strong>editor</strong>
+                  and
+                  <strong>devops</strong>
+                  teams. After provisioning, Ops wants a quick audit of NSS
+                  user/group records and core authentication database file
+                  permissions before access is approved.
+                </p>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">Operator context</div>
+                  <p class="m-b-0">
+                    This workflow prioritizes repeatable verification: prove the
+                    account exists via NSS, validate access-relevant group
+                    membership, and confirm the system’s auth databases are
+                    protected with correct permissions.
+                  </p>
+                </div>
+              </section>
+
+              <!-- Objective -->
+              <section class="lab-section alt-background" id="objective">
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  Objective
+                </h3>
+                <ul>
+                  <li>Ensure required groups exist: editor and devops.</li>
+                  <li>Create tsuli with a home directory.</li>
+                  <li>Verify NSS records for passwd, group, and shadow.</li>
+                  <li>Add tsuli to editor and devops without overwriting groups.</li>
+                  <li>Validate permissions on /etc/passwd, /etc/group, /etc/shadow, /etc/gshadow.</li>
+                  <li>Remove the account and home directory (cleanup).</li>
+                </ul>
+              </section>
+
+              <!-- Concepts (no alt-background moving forward) -->
+              <section class="lab-section" id="concepts">
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  Concepts
+                </h3>
+                <ul>
+                  <li>
+                    Group prerequisites and idempotent group creation with
+                    <code>groupadd -f</code>
+                    .
+                  </li>
+                  <li>
+                    User provisioning with a managed home directory (
+                    <code>useradd -m</code>
+                    ).
+                  </li>
+                  <li>
+                    NSS-backed validation using
+                    <code>getent</code>
+                    (authoritative view of identity sources).
+                  </li>
+                  <li>
+                    Identity verification and group visibility using
+                    <code>id</code>
+                    and
+                    <code>id -gn</code>
+                    .
+                  </li>
+                  <li>
+                    Safe group membership changes using
+                    <code>usermod -aG</code>
+                    (avoid clobbering existing groups).
+                  </li>
+                  <li>
+                    Authentication database protection: expected permissions on
+                    <code>/etc/*shadow*</code>
+                    .
+                  </li>
+                  <li>
+                    Clean teardown using
+                    <code>userdel -r</code>
+                    for lab hygiene.
+                  </li>
+                </ul>
+              </section>
+
+              <!-- Walkthrough -->
+              <section class="lab-section alt-background" id="walkthrough">
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  Walkthrough
+                </h3>
+
+                <!-- Step 1 -->
+                <div class="lab-step">
+                  <div class="lab-step-title">
+                    <strong class="font-alt">Step 1</strong>
+                    : Ensure editor and devops groups exist.
+                  </div>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <div class="lab-codeblock-header">
+                      <span>Command</span>
+                      <button
+                        class="lab-copy-btn"
+                        type="button"
+                        data-copy="#cmd-step-1"
+                      >
+                        Copy
+                      </button>
+                    </div>
+                    <pre><code id="cmd-step-1">sudo groupadd -f editor && sudo groupadd -f devops</code></pre>
+                  </div>
+
+                  <p>
+                    Use
+                    <code>-f</code>
+                    to make the command safe to rerun. This prevents a failure
+                    if the groups already exist and keeps the workflow
+                    repeatable.
+                  </p>
+                </div>
+
+                <!-- Step 2 -->
+                <div class="lab-step">
+                  <div class="lab-step-title">
+                    <strong class="font-alt">Step 2</strong>
+                    : Create the tsuli user with a home directory.
+                  </div>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <div class="lab-codeblock-header">
+                      <span>Command</span>
+                      <button
+                        class="lab-copy-btn"
+                        type="button"
+                        data-copy="#cmd-step-2"
+                      >
+                        Copy
+                      </button>
+                    </div>
+                    <pre><code id="cmd-step-2">sudo useradd -m tsuli</code></pre>
+                  </div>
+
+                  <p>
+                    <code>-m</code>
+                    ensures a home directory is created. This is a common
+                    expectation for interactive contractor accounts and avoids
+                    “account exists but no home” drift.
+                  </p>
+                </div>
+
+                <!-- Step 3 -->
+                <div class="lab-step">
+                  <div class="lab-step-title">
+                    <strong class="font-alt">Step 3</strong>
+                    : Verify tsuli exists in the passwd database via NSS.
+                  </div>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <div class="lab-codeblock-header">
+                      <span>Command</span>
+                      <button
+                        class="lab-copy-btn"
+                        type="button"
+                        data-copy="#cmd-step-3"
+                      >
+                        Copy
+                      </button>
+                    </div>
+                    <pre><code id="cmd-step-3">getent passwd tsuli</code></pre>
+                  </div>
+
+                  <p>
+                    <code>getent</code>
+                    queries NSS. This is the reliable “does the system resolve
+                    this identity” check, regardless of whether the source is
+                    local files, LDAP, SSSD, or another provider.
+                  </p>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <pre><code>tsuli:x:1002:1002:tsuli:/home/tsuli:/bin/bash</code></pre>
+                  </div>
+                </div>
+
+                <!-- Step 4 -->
+                <div class="lab-step">
+                  <div class="lab-step-title">
+                    <strong class="font-alt">Step 4</strong>
+                    : Confirm identity details and primary group name.
+                  </div>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <div class="lab-codeblock-header">
+                      <span>Commands</span>
+                      <button
+                        class="lab-copy-btn"
+                        type="button"
+                        data-copy="#cmd-step-4"
+                      >
+                        Copy
+                      </button>
+                    </div>
+                    <pre><code id="cmd-step-4">id tsuli
+id -gn tsuli</code></pre>
+                  </div>
+
+                  <p>
+                    <code>id</code>
+                    shows UID/GID and supplementary groups. Use
+                    <code>id -gn</code>
+                    to print only the primary group name for quick checks and
+                    scripting.
+                  </p>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <pre><code>uid=1002(tsuli) gid=1002(tsuli) groups=1002(tsuli)
+tsuli</code></pre>
+                  </div>
+                </div>
+
+                <!-- Step 5 -->
+                <div class="lab-step">
+                  <div class="lab-step-title">
+                    <strong class="font-alt">Step 5</strong>
+                    : Review tsuli’s shadow entry via NSS.
+                  </div>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <div class="lab-codeblock-header">
+                      <span>Command</span>
+                      <button
+                        class="lab-copy-btn"
+                        type="button"
+                        data-copy="#cmd-step-5"
+                      >
+                        Copy
+                      </button>
+                    </div>
+                    <pre><code id="cmd-step-5">sudo getent shadow tsuli</code></pre>
+                  </div>
+
+                  <p>
+                    Shadow data is privileged. This step confirms that the
+                    account resolves in the shadow database and reinforces the
+                    access boundary around sensitive auth material.
+                  </p>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <pre><code>tsuli:!!:19700:0:99999:7:::</code></pre>
+                  </div>
+                </div>
+
+                <!-- Step 6 -->
+                <div class="lab-step">
+                  <div class="lab-step-title">
+                    <strong class="font-alt">Step 6</strong>
+                    : Add tsuli to editor and devops (supplementary groups).
+                  </div>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <div class="lab-codeblock-header">
+                      <span>Command</span>
+                      <button
+                        class="lab-copy-btn"
+                        type="button"
+                        data-copy="#cmd-step-6"
+                      >
+                        Copy
+                      </button>
+                    </div>
+                    <pre><code id="cmd-step-6">sudo usermod -aG editor,devops tsuli</code></pre>
+                  </div>
+
+                  <p>
+                    <code>-aG</code>
+                    appends groups. Omitting
+                    <code>-a</code>
+                    is a common failure mode that can overwrite existing
+                    supplementary groups.
+                  </p>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <div class="lab-codeblock-header">
+                      <span>Verify</span>
+                      <button
+                        class="lab-copy-btn"
+                        type="button"
+                        data-copy="#cmd-step-6b"
+                      >
+                        Copy
+                      </button>
+                    </div>
+                    <pre><code id="cmd-step-6b">id tsuli</code></pre>
+                  </div>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <pre><code>uid=1002(tsuli) gid=1002(tsuli) groups=1002(tsuli),1005(editor),1006(devops)</code></pre>
+                  </div>
+                </div>
+
+                <!-- Step 7 -->
+                <div class="lab-step">
+                  <div class="lab-step-title">
+                    <strong class="font-alt">Step 7</strong>
+                    : Verify editor group membership details via NSS.
+                  </div>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <div class="lab-codeblock-header">
+                      <span>Command</span>
+                      <button
+                        class="lab-copy-btn"
+                        type="button"
+                        data-copy="#cmd-step-7"
+                      >
+                        Copy
+                      </button>
+                    </div>
+                    <pre><code id="cmd-step-7">getent group editor</code></pre>
+                  </div>
+
+                  <p>
+                    This confirms NSS group resolution and shows whether
+                    <code>tsuli</code>
+                    is listed in the group’s member field.
+                  </p>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <pre><code>editor:x:1005:tsuli</code></pre>
+                  </div>
+                </div>
+
+                <!-- Step 8 -->
+                <div class="lab-step">
+                  <div class="lab-step-title">
+                    <strong class="font-alt">Step 8</strong>
+                    : Inspect permissions on core auth databases.
+                  </div>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <div class="lab-codeblock-header">
+                      <span>Command</span>
+                      <button
+                        class="lab-copy-btn"
+                        type="button"
+                        data-copy="#cmd-step-8"
+                      >
+                        Copy
+                      </button>
+                    </div>
+                    <pre><code id="cmd-step-8">ls -l /etc/passwd /etc/group /etc/shadow /etc/gshadow</code></pre>
+                  </div>
+
+                  <p>
+                    These file modes are a baseline security control. Expect
+                    world-readable identity databases (
+                    <code>/etc/passwd</code>
+                    ,
+                    <code>/etc/group</code>
+                    ) and root-only shadow databases (
+                    <code>/etc/shadow</code>
+                    ,
+                    <code>/etc/gshadow</code>
+                    ).
+                  </p>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <pre><code>-rw-r--r--. 1 root root   ... /etc/passwd
+-rw-r--r--. 1 root root   ... /etc/group
+-rw-------. 1 root root   ... /etc/shadow
+-rw-------. 1 root root   ... /etc/gshadow</code></pre>
+                  </div>
+                </div>
+
+                <!-- Step 9 -->
+                <div class="lab-step">
+                  <div class="lab-step-title">
+                    <strong class="font-alt">Step 9</strong>
+                    : Remove the contractor account and home directory (cleanup).
+                  </div>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <div class="lab-codeblock-header">
+                      <span>Command</span>
+                      <button
+                        class="lab-copy-btn"
+                        type="button"
+                        data-copy="#cmd-step-9"
+                      >
+                        Copy
+                      </button>
+                    </div>
+                    <pre><code id="cmd-step-9">sudo userdel -r tsuli</code></pre>
+                  </div>
+
+                  <p>
+                    <code>-r</code>
+                    removes the user’s home directory and mail spool. This keeps
+                    the lab environment clean and prevents leftover state from
+                    contaminating future reps.
+                  </p>
+                </div>
+              </section>
+
+              <!-- Common breakpoints -->
+              <section class="lab-section" id="breakpoints">
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  Common breakpoints
+                </h3>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">
+                    getent shadow returns “Permission denied”
+                  </div>
+                  <p class="m-b-0">
+                    Shadow data is privileged. Run the command with
+                    <code>sudo</code>
+                    and confirm you have appropriate administrative access.
+                  </p>
+                </div>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">
+                    usermod applied groups but editor/devops not shown in id
+                  </div>
+                  <p class="m-b-0">
+                    Confirm you used
+                    <code>-aG</code>
+                    and the exact group names. Then rerun
+                    <code>id tsuli</code>
+                    and validate NSS group output with
+                    <code>getent group editor</code>
+                    and
+                    <code>getent group devops</code>
+                    .
+                  </p>
+                </div>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">
+                    Forgot -a and overwrote supplementary groups
+                  </div>
+                  <p class="m-b-0">
+                    Omitting
+                    <code>-a</code>
+                    can replace existing supplementary groups. Re-apply with
+                    <code>usermod -aG</code>
+                    and verify again with
+                    <code>id</code>
+                    .
+                  </p>
+                </div>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">
+                    /etc/shadow permissions are not 600
+                  </div>
+                  <p class="m-b-0">
+                    Treat this as a security issue. Do not “work around it.”
+                    Escalate and correct file ownership and permissions using
+                    approved policy before enabling access for any account.
+                  </p>
+                </div>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">
+                    userdel -r fails due to running processes
+                  </div>
+                  <p class="m-b-0">
+                    If the user is logged in or has active processes, logout and
+                    stop sessions first, then retry
+                    <code>userdel -r</code>
+                    .
+                  </p>
+                </div>
+              </section>
+
+              <!-- Cleanup -->
+              <section class="lab-section alt-background" id="cleanup">
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  Cleanup checklist
+                </h3>
+
+                <p>
+                  Remove the user and confirm the account no longer resolves via
+                  NSS. This verifies that both identity records and filesystem
+                  state (home directory) were cleaned up.
+                </p>
+
+                <div class="lab-codeblock m-b-40 m-t-40">
+                  <div class="lab-codeblock-header">
+                    <span>Commands</span>
+                    <button
+                      class="lab-copy-btn"
+                      type="button"
+                      data-copy="#cmd-cleanup"
+                    >
+                      Copy
+                    </button>
+                  </div>
+                  <pre><code id="cmd-cleanup">sudo userdel -r tsuli
+getent passwd tsuli
+getent group editor</code></pre>
+                </div>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">Success signal</div>
+                  <p class="m-b-0">
+                    <code>getent passwd tsuli</code>
+                    returns no output, and the user is no longer listed as a
+                    member in
+                    <code>getent group editor</code>
+                    output.
+                  </p>
+                </div>
+              </section>
+
+              <!-- Reference -->
+              <section class="lab-section" id="reference">
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  Reference
+                </h3>
+
+                <ul class="lab-reference-list">
+                  <li>
+                    <code>groupadd -f &lt;group&gt;</code>
+                    : Creates a group and does not fail if the group already exists.
+                    <ul>
+                      <li>
+                        <code>-f</code>
+                        : Forces idempotent behavior (no error if present).
+                      </li>
+                    </ul>
+                  </li>
+
+                  <li>
+                    <code>useradd -m &lt;user&gt;</code>
+                    : Creates a user and ensures a home directory exists.
+                    <ul>
+                      <li>
+                        <code>-m</code>
+                        : Creates the home directory.
+                      </li>
+                    </ul>
+                  </li>
+
+                  <li>
+                    <code>getent passwd &lt;user&gt;</code>
+                    : Queries NSS for the user’s passwd entry.
+                  </li>
+
+                  <li>
+                    <code>getent shadow &lt;user&gt;</code>
+                    : Queries NSS for the user’s shadow entry (requires privilege).
+                  </li>
+
+                  <li>
+                    <code>id &lt;user&gt;</code>
+                    : Shows UID, primary GID, and supplementary group membership.
+                  </li>
+
+                  <li>
+                    <code>id -gn &lt;user&gt;</code>
+                    : Prints the user’s primary group name.
+                    <ul>
+                      <li>
+                        <code>-g</code>
+                        : Selects the primary group.
+                      </li>
+                      <li>
+                        <code>-n</code>
+                        : Prints the name instead of the numeric ID.
+                      </li>
+                    </ul>
+                  </li>
+
+                  <li>
+                    <code>usermod -aG &lt;group1,group2&gt; &lt;user&gt;</code>
+                    : Appends the user to supplementary groups without overwriting existing groups.
+                    <ul>
+                      <li>
+                        <code>-a</code>
+                        : Appends (do not replace existing supplementary groups).
+                      </li>
+                      <li>
+                        <code>-G</code>
+                        : Sets the supplementary group list.
+                      </li>
+                    </ul>
+                  </li>
+
+                  <li>
+                    <code>getent group &lt;group&gt;</code>
+                    : Queries NSS for group details, including membership.
+                  </li>
+
+                  <li>
+                    <code>ls -l /etc/passwd /etc/group /etc/shadow /etc/gshadow</code>
+                    : Displays permissions and ownership for core auth databases.
+                  </li>
+
+                  <li>
+                    <code>userdel -r &lt;user&gt;</code>
+                    : Removes a user and the user’s home directory.
+                    <ul>
+                      <li>
+                        <code>-r</code>
+                        : Removes the home directory and mail spool.
+                      </li>
+                    </ul>
+                  </li>
+                </ul>
+              </section>
+            </div>
+            <!-- /main -->
+          </div>
+          <!-- /row -->
+        </div>
+        <!-- /container -->
+      </section>
+
+      <!-- FOOTER -->
+      <footer class="module bg-light">
+        <div class="container">
+          <div class="row">
+            <div class="col-sm-12">
+              <ul class="social-text-links font-alt text-center m-b-20">
+                <li>
+                  <a
+                    href="https://github.com/vonds"
+                    target="_blank"
+                    rel="noopener"
+                  >
+                    Github
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="https://www.linkedin.com/in/vonds/"
+                    target="_blank"
+                    rel="noopener"
+                  >
+                    Linkedin
+                  </a>
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-sm-12">
+              <p class="copyright text-center m-b-0">
+                VONDS &copy;
+                <span id="year"></span>
+              </p>
+
+              <div class="scroll-up">
+                <a href="#totop"><i class="fa fa-angle-double-up"></i></a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <!-- Javascript files (your existing) -->
+    <script src="../assets/js/jquery-2.2.4.min.js"></script>
+    <script src="../assets/bootstrap/js/bootstrap.min.css"></script>
+    <script src="../assets/js/jquery.superslides.min.js"></script>
+    <script src="../assets/js/jquery.mb.YTPlayer.min.js"></script>
+    <script src="../assets/js/jquery.magnific-popup.min.js"></script>
+    <script src="../assets/js/owl.carousel.min.js"></script>
+    <script src="../assets/js/jquery.simple-text-rotator.min.js"></script>
+    <script src="../assets/js/imagesloaded.pkgd.js"></script>
+    <script src="../assets/js/isotope.pkgd.min.js"></script>
+    <script src="../assets/js/packery-mode.pkgd.min.js"></script>
+    <script src="../assets/js/appear.js"></script>
+    <script src="../assets/js/jquery.easing.1.3.js"></script>
+    <script src="../assets/js/wow.min.js"></script>
+    <script src="../assets/js/jqBootstrapValidation.js"></script>
+    <script src="../assets/js/jquery.fitvids.js"></script>
+    <script src="../assets/js/jquery.parallax-1.1.3.js"></script>
+    <script src="../assets/js/smoothscroll.js"></script>
+    <script src="../assets/js/custom.js"></script>
+
+    <!-- Lab page JS (new) -->
+    <script src="../assets/js/lab.js"></script>
+
+    <script>
+      document.getElementById('year').textContent = new Date().getFullYear()
+    </script>
+  </body>
+</html>

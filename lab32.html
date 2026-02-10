@@ -37,7 +37,7 @@
     <link href="../assets/css/style.css" rel="stylesheet" />
     <link href="../assets/css/docs.css" rel="stylesheet" />
 
-    <!-- Lab page styles (new) -->
+    <!-- Lab page styles -->
     <link href="../assets/css/lab.css" rel="stylesheet" />
 
     <!-- Fonts -->
@@ -67,9 +67,19 @@
             <li class="slidedown">
               <a href="#">Portfolio</a>
               <ul>
-                <li><a href="https://github.com/vonds/exit_0" target="_blank" rel="noopener">exit_0</a></li>
-                <li><a href="docs.html" target="_blank" rel="noopener">exit_0 Documentation</a></li>
-                <li><a href="https://github.com/vonds/sentinel" target="_blank" rel="noopener">Sentinel</a></li>
+                <li>
+                  <a href="https://github.com/vonds/exit_0" target="_blank">
+                    exit_0
+                  </a>
+                </li>
+                <li>
+                  <a href="https://github.com/vonds/sentinel" target="_blank">
+                    Sentinel
+                  </a>
+                </li>
+                <li>
+                  <a href="docs.html" target="_blank">exit_0 Documentation</a>
+                </li>
               </ul>
             </li>
 
@@ -167,11 +177,15 @@
               <div class="docs-sidebar">
                 <div class="docs-widget">
                   <h5 class="widget-title">
-                    <a href="./docs.html">Lab Index</a>
+                    <a href="./docs.html">Back to Lab Index</a>
                   </h5>
                   <ul class="docs-nav">
                     <li><a href="#scenario">Scenario</a></li>
+                    <li><a href="#objective">Objective</a></li>
+                    <li><a href="#concepts">Concepts</a></li>
                     <li><a href="#walkthrough">Walkthrough</a></li>
+                    <li><a href="#breakpoints">Breakpoints</a></li>
+                    <li><a href="#cleanup">Cleanup</a></li>
                     <li><a href="#reference">Reference</a></li>
                   </ul>
                 </div>
@@ -180,32 +194,30 @@
 
             <!-- MAIN CONTENT -->
             <div class="col-sm-8 col-md-9 lab-doc">
-              <!-- 1) Title + Summary (2 sentences max) -->
               <p class="m-b-20 lab-summary">
                 Configure a Linux host to resolve and authenticate users from a
                 centralized directory service using LDAP client components.
                 Validate the full path from name service resolution to a working
-                login session with evidence-based checks.
+                login session.
               </p>
 
+              <!-- Video (kept on page; removed from left panel) -->
               <section class="lab-section" id="video" aria-label="Lab video">
-  				<div class="lab-video">
-    				<div class="lab-video-embed text-center">
-      					<iframe 
-							width="560" 
-							height="315" 
-							src="https://www.youtube.com/embed/uJk54bhaadA?si=seGSukCoMFN7ohRo" 
-							title="YouTube video player" 
-							frameborder="0" 
-							allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
-							referrerpolicy="strict-origin-when-cross-origin" 
-							allowfullscreen>
-						</iframe>
-    				</div>
-  				</div>
-			</section>
+                <div class="lab-video">
+                  <div class="lab-video-embed text-center">
+                    <iframe
+                      src="https://www.youtube.com/embed/uJk54bhaadA?si=seGSukCoMFN7ohRo"
+                      title="YouTube video player"
+                      frameborder="0"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                      referrerpolicy="strict-origin-when-cross-origin"
+                      allowfullscreen
+                    ></iframe>
+                  </div>
+                </div>
+              </section>
 
-              <!-- 2) Scenario -->
+              <!-- Scenario -->
               <section class="lab-section" id="scenario">
                 <div class="lab-chips" aria-label="Tags">
                   <span class="lab-chip">
@@ -225,62 +237,86 @@
 
                 <p>
                   Your company is transitioning from local accounts to a
-                  centralized authentication system. Your job is to install the
+                  centralized authentication system. You need to install the
                   LDAP client stack, configure the base DN and server URI, and
-                  verify that directory users can be resolved and authenticated
-                  like normal local accounts.
+                  verify that directory users resolve and authenticate like
+                  local accounts.
                 </p>
 
                 <div class="lab-callout">
                   <div class="lab-callout-label">Operator context</div>
                   <p class="m-b-0">
-                    In practice, “it’s configured” means nothing until
-                    <code>getent</code> resolves an identity and a login
-                    actually succeeds.
+                    “Configured” is not a result. Treat this as complete only
+                    when <code>getent</code> resolves an identity and a login
+                    succeeds.
                   </p>
                 </div>
               </section>
 
-              <!-- 3) Objective -->
+              <!-- Objective -->
               <section class="lab-section alt-background" id="objective">
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">
                   Objective
                 </h3>
 
                 <ul>
-                  <li>Install LDAP client utilities and NSS/PAM integration packages.</li>
-                  <li>Configure LDAP base DN and server URI via reconfigure workflow.</li>
-                  <li>Restart caching to ensure fresh NSS results.</li>
-                  <li>Verify a directory user resolves through <code>getent</code>.</li>
-                  <li>Inspect PAM configuration for LDAP modules.</li>
-                  <li>Simulate a login session and prove identity.</li>
+                  <li>
+                    Install LDAP client utilities and NSS and PAM integration
+                    packages.
+                  </li>
+                  <li>
+                    Configure LDAP base DN and server URI via the reconfigure
+                    workflow.
+                  </li>
+                  <li>
+                    Restart name service caching to ensure fresh NSS results.
+                  </li>
+                  <li>
+                    Verify a directory user resolves through
+                    <code>getent</code>
+                    .
+                  </li>
+                  <li>
+                    Inspect PAM configuration for LDAP module presence.
+                  </li>
+                  <li>
+                    Simulate a login session and prove identity.
+                  </li>
                 </ul>
               </section>
 
-              <!-- 4) What You'll Practice -->
-              <section class="lab-section" id="practice">
+              <!-- Concepts (no alt-background moving forward) -->
+              <section class="lab-section" id="concepts">
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">
-                  What You’ll Practice
+                  Concepts
                 </h3>
 
-                <ul class="m-t-10">
+                <ul>
                   <li>
-                    Installing LDAP client tooling and integration packages.
+                    Name Service Switch (NSS) controls how identities resolve via
+                    standard interfaces such as <code>getent</code>.
                   </li>
                   <li>
-                    Understanding the difference between name service resolution
-                    (NSS) and authentication (PAM).
+                    Pluggable Authentication Modules (PAM) controls how
+                    credentials are verified for logins and privilege changes.
                   </li>
                   <li>
-                    Evidence checks with <code>getent</code> and controlled login simulation.
+                    LDAP client configuration supplies the base DN and server URI
+                    used by NSS and PAM LDAP modules.
                   </li>
                   <li>
-                    Reading PAM stack files for module presence and order.
+                    Caching can mask configuration changes until the cache is
+                    restarted or invalidated.
+                  </li>
+                  <li>
+                    Evidence-based checks chain resolution and authentication:
+                    <code>getent</code>, PAM stack inspection, then an actual
+                    login.
                   </li>
                 </ul>
               </section>
 
-              <!-- 5) Commands Walkthrough -->
+              <!-- Walkthrough -->
               <section class="lab-section alt-background" id="walkthrough">
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">
                   Walkthrough
@@ -308,9 +344,9 @@
                   </div>
 
                   <p>
-                    This pulls in the LDAP client tools plus the NSS and PAM
-                    components that allow the system to resolve directory users
-                    and authenticate them, with <code>nscd</code> providing caching.
+                    This installs LDAP client tooling plus NSS and PAM components
+                    for directory identity resolution and authentication.
+                    <code>nscd</code> caches NSS lookups.
                   </p>
                 </div>
 
@@ -336,13 +372,13 @@
                   </div>
 
                   <p>
-                    This guided configuration sets the directory search base
-                    (base DN) and server endpoint (URI). That information becomes
-                    the lookup foundation for NSS and PAM LDAP modules.
+                    This guided workflow sets the directory search base (base DN)
+                    and server endpoint (URI). These values become the lookup
+                    foundation for the LDAP NSS and PAM modules.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code id="verify-step-2">LDAP server Uniform Resource Identifier:
+                    <pre><code>LDAP server Uniform Resource Identifier:
   ldap://ldap.example.com/
 
 Distinguished name of the search base:
@@ -374,9 +410,8 @@ LDAP version to use: 3</code></pre>
                   </div>
 
                   <p>
-                    Restarting <code>nscd</code> clears cached name service
-                    results so your <code>getent</code> checks reflect the current
-                    LDAP configuration.
+                    Restarting <code>nscd</code> clears cached results so
+                    <code>getent</code> reflects the current LDAP configuration.
                   </p>
                 </div>
 
@@ -402,12 +437,12 @@ LDAP version to use: 3</code></pre>
                   </div>
 
                   <p>
-                    This is the critical resolution proof. If NSS is correctly
-                    wired to LDAP, the user appears as if it were local.
+                    This is the resolution proof. If NSS is correctly wired to
+                    LDAP, the user appears as if it were local.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code id="verify-step-4">jdoe:x:1003:1003:John Doe:/home/jdoe:/bin/bash</code></pre>
+                    <pre><code>jdoe:x:1003:1003:John Doe:/home/jdoe:/bin/bash</code></pre>
                   </div>
                 </div>
 
@@ -433,13 +468,13 @@ LDAP version to use: 3</code></pre>
                   </div>
 
                   <p>
-                    PAM is the authentication layer. This check confirms the
-                    LDAP PAM module is present in the auth stack so directory
-                    credentials can be validated.
+                    PAM is the authentication layer. This verifies the LDAP PAM
+                    module is present in the auth stack so directory credentials
+                    can be validated.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code id="verify-step-5">auth sufficient pam_ldap.so
+                    <pre><code>auth sufficient pam_ldap.so
 auth required pam_unix.so nullok_secure</code></pre>
                   </div>
                 </div>
@@ -448,7 +483,7 @@ auth required pam_unix.so nullok_secure</code></pre>
                 <div class="lab-step">
                   <div class="lab-step-title">
                     <strong class="font-alt">Step 6</strong>
-                    : Lock down local sysadmin access except root.
+                    : Lock a local account as a containment control.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -466,8 +501,9 @@ auth required pam_unix.so nullok_secure</code></pre>
                   </div>
 
                   <p>
-                    Locking an account is a fast containment control when you
-                    are transitioning identity sources or suspect misuse.
+                    Locking an account disables password-based login for that
+                    user. Use this during identity transitions or when you need
+                    immediate access containment.
                   </p>
                 </div>
 
@@ -493,9 +529,9 @@ auth required pam_unix.so nullok_secure</code></pre>
                   </div>
 
                   <p>
-                    Resolution is not the same as authentication. A successful
+                    Resolution is not authentication. A successful
                     <code>su -</code> proves PAM can authenticate the directory
-                    user and build a working login environment.
+                    user and build a login environment.
                   </p>
                 </div>
 
@@ -521,17 +557,108 @@ auth required pam_unix.so nullok_secure</code></pre>
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code id="verify-step-8">jdoe</code></pre>
+                    <pre><code>jdoe</code></pre>
                   </div>
 
                   <p>
-                    This final proof is simple and direct: the session is
-                    actually running as the directory user.
+                    This confirms the session is running as the directory user.
                   </p>
                 </div>
               </section>
 
-              <!-- 6) Reference -->
+              <!-- Common breakpoints -->
+              <section class="lab-section" id="breakpoints">
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  Common breakpoints
+                </h3>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">
+                    getent returns no results for the user
+                  </div>
+                  <p class="m-b-0">
+                    NSS is not resolving the directory identity. Confirm the LDAP
+                    URI and base DN, restart <code>nscd</code>, then re-check. If
+                    the issue persists, validate network reachability and DNS for
+                    the LDAP host.
+                  </p>
+                </div>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">
+                    getent works but su fails authentication
+                  </div>
+                  <p class="m-b-0">
+                    Resolution is working, but PAM is not authenticating. Confirm
+                    <code>pam_ldap.so</code> is present in the auth stack and check
+                    logs for module failures. On systemd systems, inspect auth
+                    events via <code>journalctl</code>.
+                  </p>
+                </div>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">
+                    Cached results hide configuration changes
+                  </div>
+                  <p class="m-b-0">
+                    NSS caching can make broken configuration look correct (or
+                    vice versa). Restart <code>nscd</code> and re-run the evidence
+                    chain: <code>getent</code> then a login attempt.
+                  </p>
+                </div>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">
+                    passwd -l does not behave as expected
+                  </div>
+                  <p class="m-b-0">
+                    Account locking affects password-based login, but does not
+                    necessarily prevent access via keys, sudo rules, or other
+                    auth mechanisms. Treat this as one control in a broader access
+                    model.
+                  </p>
+                </div>
+              </section>
+
+              <!-- Cleanup -->
+              <section class="lab-section alt-background" id="cleanup">
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  Cleanup checklist
+                </h3>
+
+                <p>
+                  Remove the LDAP client stack and unlock any local accounts you
+                  modified so the host returns to a local-auth baseline.
+                </p>
+
+                <div class="lab-codeblock m-b-40 m-t-40">
+                  <div class="lab-codeblock-header">
+                    <span>Commands</span>
+                    <button
+                      class="lab-copy-btn"
+                      type="button"
+                      data-copy="#cmd-cleanup"
+                    >
+                      Copy
+                    </button>
+                  </div>
+                  <pre><code id="cmd-cleanup">sudo passwd -u sysadmin
+sudo apt remove --purge -y ldap-utils libnss-ldap libpam-ldap nscd
+sudo systemctl daemon-reload
+sudo systemctl restart nscd 2>/dev/null || true</code></pre>
+                </div>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">Success signal</div>
+                  <p class="m-b-0">
+                    <code>getent</code> no longer resolves directory identities,
+                    and local accounts behave normally. No LDAP client services
+                    remain enabled on the host.
+                  </p>
+                </div>
+              </section>
+
+              <!-- Reference -->
               <section class="lab-section" id="reference">
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">
                   Reference
@@ -539,41 +666,79 @@ auth required pam_unix.so nullok_secure</code></pre>
 
                 <ul class="lab-reference-list">
                   <li>
-                    <code>ldap-utils</code>
-                    : Client tooling for LDAP queries and troubleshooting.
+                    <code>apt install &lt;pkgs&gt;</code>
+                    : Installs packages on Debian-family systems.
+                    <ul>
+                      <li>
+                        <code>ldap-utils</code>
+                        : LDAP client utilities for queries and troubleshooting.
+                      </li>
+                      <li>
+                        <code>libnss-ldap</code>
+                        : NSS integration for directory-backed identity resolution.
+                      </li>
+                      <li>
+                        <code>libpam-ldap</code>
+                        : PAM module enabling directory-backed authentication.
+                      </li>
+                      <li>
+                        <code>nscd</code>
+                        : Name Service Cache Daemon for NSS caching.
+                      </li>
+                    </ul>
                   </li>
-                  <li>
-                    <code>libnss-ldap</code>
-                    : NSS integration so directory users can be resolved via
-                    standard interfaces (<code>getent</code>).
-                  </li>
-                  <li>
-                    <code>libpam-ldap</code>
-                    : PAM module enabling directory-backed authentication.
-                  </li>
-                  <li>
-                    <code>nscd</code>
-                    : Name Service Cache Daemon; caches NSS results.
-                  </li>
+
                   <li>
                     <code>dpkg-reconfigure ldap-auth-config</code>
                     : Reconfigures LDAP auth parameters (URI, base DN).
                   </li>
+
+                  <li>
+                    <code>systemctl restart nscd</code>
+                    : Restarts the name service cache daemon.
+                  </li>
+
                   <li>
                     <code>getent passwd &lt;user&gt;</code>
-                    : Verifies NSS can resolve the user from configured sources.
+                    : Verifies NSS can resolve a user from configured sources.
                   </li>
+
                   <li>
-                    <code>/etc/pam.d/common-auth</code>
-                    : PAM stack file for authentication rules on Debian-family systems.
+                    <code>cat /etc/pam.d/common-auth</code>
+                    : Displays the PAM auth stack on Debian-family systems.
+                    <ul>
+                      <li>
+                        <code>/etc/pam.d/common-auth</code>
+                        : PAM rules for authentication decisions.
+                      </li>
+                    </ul>
                   </li>
+
                   <li>
                     <code>passwd -l &lt;user&gt;</code>
                     : Locks an account by disabling password-based login.
+                    <ul>
+                      <li>
+                        <code>-l</code>
+                        : Locks the account.
+                      </li>
+                    </ul>
                   </li>
+
                   <li>
                     <code>su - &lt;user&gt;</code>
-                    : Simulates a login shell for a user and exercises PAM auth.
+                    : Starts a login shell for a user and exercises PAM auth.
+                    <ul>
+                      <li>
+                        <code>-</code>
+                        : Uses a login shell environment (loads profile, sets HOME).
+                      </li>
+                    </ul>
+                  </li>
+
+                  <li>
+                    <code>whoami</code>
+                    : Prints the effective username of the current session.
                   </li>
                 </ul>
               </section>
@@ -581,17 +746,6 @@ auth required pam_unix.so nullok_secure</code></pre>
             <!-- /main -->
           </div>
           <!-- /row -->
-
-          <nav class="lab-pagination">
-            <a
-              id="prev-lab"
-              class="lab-nav-link"
-              href="#"
-              aria-label="Previous lab"
-            >
-              &uArr;
-            </a>
-          </nav>
         </div>
         <!-- /container -->
       </section>
@@ -603,11 +757,7 @@ auth required pam_unix.so nullok_secure</code></pre>
             <div class="col-sm-12">
               <ul class="social-text-links font-alt text-center m-b-20">
                 <li>
-                  <a
-                    href="https://github.com/vonds"
-                    target="_blank"
-                    rel="noopener"
-                  >
+                  <a href="https://github.com/vonds" target="_blank" rel="noopener">
                     Github
                   </a>
                 </li>
@@ -642,7 +792,7 @@ auth required pam_unix.so nullok_secure</code></pre>
 
     <!-- Javascript files (your existing) -->
     <script src="../assets/js/jquery-2.2.4.min.js"></script>
-    <script src="../assets/bootstrap/js/bootstrap.min.js"></script>
+    <script src="../assets/bootstrap/js/bootstrap.min.css"></script>
     <script src="../assets/js/jquery.superslides.min.js"></script>
     <script src="../assets/js/jquery.mb.YTPlayer.min.js"></script>
     <script src="../assets/js/jquery.magnific-popup.min.js"></script>
@@ -650,6 +800,7 @@ auth required pam_unix.so nullok_secure</code></pre>
     <script src="../assets/js/jquery.simple-text-rotator.min.js"></script>
     <script src="../assets/js/imagesloaded.pkgd.js"></script>
     <script src="../assets/js/isotope.pkgd.min.js"></script>
+    <script src="../assets/js/packery-mode.pkgd.min.js"></script>
     <script src="../assets/js/packery-mode.pkgd.min.js"></script>
     <script src="../assets/js/appear.js"></script>
     <script src="../assets/js/jquery.easing.1.3.js"></script>
@@ -662,5 +813,9 @@ auth required pam_unix.so nullok_secure</code></pre>
 
     <!-- Lab page JS (new) -->
     <script src="../assets/js/lab.js"></script>
+
+    <script>
+      document.getElementById('year').textContent = new Date().getFullYear()
+    </script>
   </body>
 </html>

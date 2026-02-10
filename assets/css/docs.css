@@ -41,9 +41,10 @@
 }
 
 .docs-nav a:hover {
-	border-left-color: var(--accent);
 	color: var(--accent);
 }
+
+
 
 .docs-search input {
 	width: 100%;
@@ -116,6 +117,38 @@
 .container {
   overflow: visible;
 }
+
+/* Add to ../assets/css/docs.css (minimal dropdown styling) */
+.docs-nav-group > .docs-nav-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.docs-nav-submenu {
+  margin: 6px 0 12px 12px;
+  padding: 0;
+  list-style: none;
+  border-left-color: none;
+}
+
+.docs-nav-submenu li a {
+  display: block;
+  padding: 3px 0;
+  opacity: 0.9;
+}
+
+.docs-nav-submenu li a {
+	font-size: 12px;
+	margin-left: 20px;
+}
+
+.docs-nav-caret {
+  font-size: 12px;
+  opacity: 0.7;
+}
+
+
 
 @media (max-width: 991px) {
 	.lab-sidebar {

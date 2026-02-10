@@ -1,0 +1,842 @@
+<!-- lab159.html -->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="exit_0 Documentation" />
+    <meta name="name" content="Vonds" />
+
+    <title>Vonds | Lab 159</title>
+
+    <!-- Favicons -->
+    <link rel="shortcut icon" href="../assets/images/favicon.png" />
+    <link rel="apple-touch-icon" href="../assets/images/apple-touch-icon.png" />
+    <link
+      rel="apple-touch-icon"
+      sizes="72x72"
+      href="../assets/images/apple-touch-icon-72x72.png"
+    />
+    <link
+      rel="apple-touch-icon"
+      sizes="114x114"
+      href="../assets/images/apple-touch-icon-114x114.png"
+    />
+
+    <!-- Site styles (your existing) -->
+    <link href="../assets/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="../assets/css/font-awesome.min.css" rel="stylesheet" />
+    <link href="../assets/css/linea-icons.css" rel="stylesheet" />
+    <link href="../assets/css/ionicons.min.css" rel="stylesheet" />
+    <link href="../assets/css/simpletextrotator.css" rel="stylesheet" />
+    <link href="../assets/css/magnific-popup.css" rel="stylesheet" />
+    <link href="../assets/css/owl.carousel.css" rel="stylesheet" />
+    <link href="../assets/css/superslides.css" rel="stylesheet" />
+    <link href="../assets/css/vertical.css" rel="stylesheet" />
+    <link href="../assets/css/animate.css" rel="stylesheet" />
+    <link href="../assets/css/style.css" rel="stylesheet" />
+    <link href="../assets/css/docs.css" rel="stylesheet" />
+
+    <!-- Lab page styles -->
+    <link href="../assets/css/lab.css" rel="stylesheet" />
+
+    <!-- Fonts -->
+    <link
+      href="https://fonts.googleapis.com/css?family=Dosis"
+      rel="stylesheet"
+    />
+  </head>
+
+  <body>
+    <!-- PRELOADER -->
+    <div class="page-loader">
+      <div class="loader">Loading...</div>
+    </div>
+
+    <!-- OVERLAY MENU -->
+    <div id="overlay-menu" class="overlay-menu">
+      <a href="#" id="overlay-menu-hide" class="navigation-hide">
+        <i class="ion-close-round"></i>
+      </a>
+
+      <div class="overlay-menu-inner">
+        <nav class="overlay-menu-nav">
+          <ul id="nav">
+            <li><a href="../index.html">Home</a></li>
+
+            <li class="slidedown">
+              <a href="#">Portfolio</a>
+              <ul>
+                <li>
+                  <a href="https://github.com/vonds/exit_0" target="_blank">
+                    exit_0
+                  </a>
+                </li>
+                <li>
+                  <a href="https://github.com/vonds/sentinel" target="_blank">
+                    Sentinel
+                  </a>
+                </li>
+                <li>
+                  <a href="docs.html" target="_blank">exit_0 Documentation</a>
+                </li>
+              </ul>
+            </li>
+
+            <li>
+              <a
+                href="https://www.linkedin.com/in/vonds/"
+                target="_blank"
+                rel="noopener"
+              >
+                LinkedIn
+              </a>
+            </li>
+            <li>
+              <a href="https://github.com/vonds" target="_blank" rel="noopener">
+                Github
+              </a>
+            </li>
+            <li>
+              <a href="mailto:vonds13@gmail.com?subject=Hello Vonds">Contact</a>
+            </li>
+          </ul>
+        </nav>
+      </div>
+
+      <div class="overlay-navigation-footer">
+        <div class="container">
+          <div class="row">
+            <div class="col-sm-12 text-center">
+              <p class="copyright font-alt m-b-0">
+                VONDS &copy;
+                <script>
+                  document.write(new Date().getFullYear())
+                </script>
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- WRAPPER -->
+    <div class="wrapper">
+      <!-- NAVIGATION -->
+      <nav
+        class="navbar navbar-custom navbar-transparent navbar-light navbar-fixed-top"
+      >
+        <div class="container">
+          <div class="navbar-header">
+            <a class="navbar-brand" href="../index.html">
+              <img src="../assets/images/logo-dark.png" width="95" alt="" />
+            </a>
+          </div>
+
+          <ul id="icons-navbar" class="nav navbar-nav navbar-right">
+            <li>
+              <a href="#" id="toggle-menu" class="show-overlay" title="Menu">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </nav>
+
+      <!-- DOCS PAGE -->
+      <section class="module">
+        <div class="container">
+          <h2 class="font-alt module-title m-t-60">
+            Lab 159: Docker Images
+          </h2>
+
+          <nav class="lab-pagination">
+            <a
+              id="prev-lab"
+              class="lab-nav-link"
+              href="#"
+              aria-label="Previous lab"
+            >
+              &laquo;
+            </a>
+            <a
+              id="next-lab"
+              class="lab-nav-link"
+              href="#"
+              aria-label="Next lab"
+            >
+              &raquo;
+            </a>
+          </nav>
+
+          <div class="row">
+            <!-- LEFT SIDEBAR -->
+            <div class="col-sm-4 col-md-3 lab-sidebar">
+              <div class="docs-sidebar">
+                <div class="docs-widget">
+                  <h5 class="widget-title">
+                    <a href="./docs.html">Back to Lab Index</a>
+                  </h5>
+                  <ul class="docs-nav">
+                    <li><a href="#scenario">Scenario</a></li>
+                    <li><a href="#objective">Objective</a></li>
+                    <li><a href="#concepts">Concepts</a></li>
+                    <li><a href="#walkthrough">Walkthrough</a></li>
+                    <li><a href="#breakpoints">Breakpoints</a></li>
+                    <li><a href="#cleanup">Cleanup</a></li>
+                    <li><a href="#reference">Reference</a></li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            <!-- MAIN CONTENT -->
+            <div class="col-sm-8 col-md-9 lab-doc">
+              <p class="m-b-20 lab-summary">
+                Prepare a Docker image for offline transfer by tagging it for
+                internal use, exporting it to a tar archive, removing it from the
+                local host, loading it back, and proving it is runnable before
+                cleanup.
+              </p>
+
+              <!-- Video (kept on page; removed from left panel) -->
+              <section class="lab-section" id="video" aria-label="Lab video">
+                <div class="lab-video">
+                  <div class="lab-video-embed text-center">
+                    <iframe
+                      src="https://www.youtube.com/embed/VIDEO_ID_HERE"
+                      title="YouTube video player"
+                      frameborder="0"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                      referrerpolicy="strict-origin-when-cross-origin"
+                      allowfullscreen
+                    ></iframe>
+                  </div>
+                </div>
+              </section>
+
+              <!-- Scenario -->
+              <section class="lab-section" id="scenario">
+                <div class="lab-chips" aria-label="Tags">
+                  <span class="lab-chip">
+                    <span class="lab-chip-key">containers</span>
+                  </span>
+                  <span class="lab-chip">
+                    <span class="lab-chip-key">packages</span>
+                  </span>
+                  <span class="lab-chip">
+                    <span class="lab-chip-key">troubleshooting</span>
+                  </span>
+                </div>
+
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  Scenario
+                </h3>
+
+                <p>
+                  Ops ticket: Prepare an image for offline transfer to a restricted
+                  environment. Pull a base image, add an internal tag, export it to
+                  a tar archive, remove it locally, then load it back and prove it
+                  is available and runnable.
+                </p>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">Operator context</div>
+                  <p class="m-b-0">
+                    This workflow is common when the destination environment has
+                    no registry access. Your evidence is the tar archive plus the
+                    ability to load and run the image.
+                  </p>
+                </div>
+              </section>
+
+              <!-- Objective -->
+              <section class="lab-section alt-background" id="objective">
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  Objective
+                </h3>
+                <ul>
+                  <li>List current images for baseline evidence.</li>
+                  <li>Pull a known base image.</li>
+                  <li>Tag it with an internal repository name.</li>
+                  <li>Save the tagged image to a tar archive.</li>
+                  <li>Remove local tags to simulate a clean host.</li>
+                  <li>Load the image back from the tar file.</li>
+                  <li>Prove the loaded image runs.</li>
+                  <li>Clean up the image and tar artifact.</li>
+                </ul>
+              </section>
+
+              <!-- Concepts (no alt-background moving forward) -->
+              <section class="lab-section" id="concepts">
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  Concepts
+                </h3>
+                <ul>
+                  <li>
+                    Image tags are pointers to the same underlying image ID. Multiple
+                    tags can reference one image.
+                  </li>
+                  <li>
+                    docker save produces a tar archive suitable for offline transport.
+                  </li>
+                  <li>
+                    docker load imports an image tar archive into the local image store.
+                  </li>
+                  <li>
+                    Evidence should show tags exist, the archive exists, the image was
+                    removed, and the image is runnable after load.
+                  </li>
+                  <li>
+                    Cleanup prevents artifact drift: remove both images and tar files
+                    after validation.
+                  </li>
+                </ul>
+              </section>
+
+              <!-- Walkthrough -->
+              <section class="lab-section alt-background" id="walkthrough">
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  Walkthrough
+                </h3>
+
+                <!-- Step 1 -->
+                <div class="lab-step">
+                  <div class="lab-step-title">
+                    <strong class="font-alt">Step 1</strong>
+                    : List local Docker images.
+                  </div>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <div class="lab-codeblock-header">
+                      <span>Command</span>
+                      <button
+                        class="lab-copy-btn"
+                        type="button"
+                        data-copy="#cmd-step-1"
+                      >
+                        Copy
+                      </button>
+                    </div>
+                    <pre><code id="cmd-step-1">docker images</code></pre>
+                  </div>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <pre><code>REPOSITORY   TAG       IMAGE ID       CREATED       SIZE</code></pre>
+                  </div>
+                </div>
+
+                <!-- Step 2 -->
+                <div class="lab-step">
+                  <div class="lab-step-title">
+                    <strong class="font-alt">Step 2</strong>
+                    : Pull the alpine image.
+                  </div>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <div class="lab-codeblock-header">
+                      <span>Command</span>
+                      <button
+                        class="lab-copy-btn"
+                        type="button"
+                        data-copy="#cmd-step-2"
+                      >
+                        Copy
+                      </button>
+                    </div>
+                    <pre><code id="cmd-step-2">docker pull alpine:latest</code></pre>
+                  </div>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <pre><code>latest: Pulling from library/alpine
+Digest: sha256:........................................................
+Status: Downloaded newer image for alpine:latest
+docker.io/library/alpine:latest</code></pre>
+                  </div>
+                </div>
+
+                <!-- Step 3 -->
+                <div class="lab-step">
+                  <div class="lab-step-title">
+                    <strong class="font-alt">Step 3</strong>
+                    : Add an internal tag: <code>corp/alpine:transfer</code>
+                  </div>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <div class="lab-codeblock-header">
+                      <span>Command</span>
+                      <button
+                        class="lab-copy-btn"
+                        type="button"
+                        data-copy="#cmd-step-3"
+                      >
+                        Copy
+                      </button>
+                    </div>
+                    <pre><code id="cmd-step-3">docker tag alpine:latest corp/alpine:transfer</code></pre>
+                  </div>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <pre><code>(tag created)</code></pre>
+                  </div>
+                </div>
+
+                <!-- Step 4 -->
+                <div class="lab-step">
+                  <div class="lab-step-title">
+                    <strong class="font-alt">Step 4</strong>
+                    : Verify both tags appear.
+                  </div>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <div class="lab-codeblock-header">
+                      <span>Command</span>
+                      <button
+                        class="lab-copy-btn"
+                        type="button"
+                        data-copy="#cmd-step-4"
+                      >
+                        Copy
+                      </button>
+                    </div>
+                    <pre><code id="cmd-step-4">docker images | grep -E "^(alpine|corp/alpine)"</code></pre>
+                  </div>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <pre><code>alpine       latest     4e38e38c8ce0   2 weeks ago   7.3MB
+corp/alpine  transfer   4e38e38c8ce0   2 weeks ago   7.3MB</code></pre>
+                  </div>
+                </div>
+
+                <!-- Step 5 -->
+                <div class="lab-step">
+                  <div class="lab-step-title">
+                    <strong class="font-alt">Step 5</strong>
+                    : Save the internal tag to a tar archive.
+                  </div>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <div class="lab-codeblock-header">
+                      <span>Command</span>
+                      <button
+                        class="lab-copy-btn"
+                        type="button"
+                        data-copy="#cmd-step-5"
+                      >
+                        Copy
+                      </button>
+                    </div>
+                    <pre><code id="cmd-step-5">docker save -o /root/alpine-transfer.tar corp/alpine:transfer</code></pre>
+                  </div>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <pre><code>(image saved)</code></pre>
+                  </div>
+                </div>
+
+                <!-- Step 6 -->
+                <div class="lab-step">
+                  <div class="lab-step-title">
+                    <strong class="font-alt">Step 6</strong>
+                    : Remove both tags from the local host.
+                  </div>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <div class="lab-codeblock-header">
+                      <span>Command</span>
+                      <button
+                        class="lab-copy-btn"
+                        type="button"
+                        data-copy="#cmd-step-6"
+                      >
+                        Copy
+                      </button>
+                    </div>
+                    <pre><code id="cmd-step-6">docker rmi corp/alpine:transfer alpine:latest</code></pre>
+                  </div>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <pre><code>Untagged: corp/alpine:transfer
+Untagged: alpine:latest
+Deleted: sha256:........................................................</code></pre>
+                  </div>
+                </div>
+
+                <!-- Step 7 -->
+                <div class="lab-step">
+                  <div class="lab-step-title">
+                    <strong class="font-alt">Step 7</strong>
+                    : Confirm alpine no longer appears.
+                  </div>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <div class="lab-codeblock-header">
+                      <span>Command</span>
+                      <button
+                        class="lab-copy-btn"
+                        type="button"
+                        data-copy="#cmd-step-7"
+                      >
+                        Copy
+                      </button>
+                    </div>
+                    <pre><code id="cmd-step-7">docker images | grep -E "^(alpine|corp/alpine)" || true</code></pre>
+                  </div>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <pre><code>(no output)</code></pre>
+                  </div>
+                </div>
+
+                <!-- Step 8 -->
+                <div class="lab-step">
+                  <div class="lab-step-title">
+                    <strong class="font-alt">Step 8</strong>
+                    : Load the image back from the tar archive.
+                  </div>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <div class="lab-codeblock-header">
+                      <span>Command</span>
+                      <button
+                        class="lab-copy-btn"
+                        type="button"
+                        data-copy="#cmd-step-8"
+                      >
+                        Copy
+                      </button>
+                    </div>
+                    <pre><code id="cmd-step-8">docker load -i /root/alpine-transfer.tar</code></pre>
+                  </div>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <pre><code>Loaded image: corp/alpine:transfer</code></pre>
+                  </div>
+                </div>
+
+                <!-- Step 9 -->
+                <div class="lab-step">
+                  <div class="lab-step-title">
+                    <strong class="font-alt">Step 9</strong>
+                    : Prove the loaded image runs (print <code>/etc/os-release</code>).
+                  </div>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <div class="lab-codeblock-header">
+                      <span>Command</span>
+                      <button
+                        class="lab-copy-btn"
+                        type="button"
+                        data-copy="#cmd-step-9"
+                      >
+                        Copy
+                      </button>
+                    </div>
+                    <pre><code id="cmd-step-9">docker run --rm corp/alpine:transfer cat /etc/os-release</code></pre>
+                  </div>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <pre><code>NAME="Alpine Linux"
+ID=alpine
+VERSION_ID=3.19.1</code></pre>
+                  </div>
+                </div>
+
+                <!-- Step 10 -->
+                <div class="lab-step">
+                  <div class="lab-step-title">
+                    <strong class="font-alt">Step 10</strong>
+                    : Remove the loaded image.
+                  </div>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <div class="lab-codeblock-header">
+                      <span>Command</span>
+                      <button
+                        class="lab-copy-btn"
+                        type="button"
+                        data-copy="#cmd-step-10"
+                      >
+                        Copy
+                      </button>
+                    </div>
+                    <pre><code id="cmd-step-10">docker rmi corp/alpine:transfer</code></pre>
+                  </div>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <pre><code>Untagged: corp/alpine:transfer
+Deleted: sha256:........................................................</code></pre>
+                  </div>
+                </div>
+
+                <!-- Step 11 -->
+                <div class="lab-step">
+                  <div class="lab-step-title">
+                    <strong class="font-alt">Step 11</strong>
+                    : Remove the tar archive.
+                  </div>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <div class="lab-codeblock-header">
+                      <span>Command</span>
+                      <button
+                        class="lab-copy-btn"
+                        type="button"
+                        data-copy="#cmd-step-11"
+                      >
+                        Copy
+                      </button>
+                    </div>
+                    <pre><code id="cmd-step-11">rm -f /root/alpine-transfer.tar</code></pre>
+                  </div>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <pre><code>(removed)</code></pre>
+                  </div>
+                </div>
+              </section>
+
+              <!-- Common breakpoints -->
+              <section class="lab-section" id="breakpoints">
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  Common breakpoints
+                </h3>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">
+                    Tag exists but docker rmi does not delete the image
+                  </div>
+                  <p class="m-b-0">
+                    Multiple tags can reference the same image ID. Remove all tags
+                    pointing to the image before expecting the underlying image
+                    to be deleted.
+                  </p>
+                </div>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">
+                    docker load succeeds but image name is unexpected
+                  </div>
+                  <p class="m-b-0">
+                    docker load restores whatever repository and tag names are in
+                    the tar archive. Confirm what was saved before transfer.
+                  </p>
+                </div>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">
+                    docker run fails after load
+                  </div>
+                  <p class="m-b-0">
+                    Confirm the correct tag is present with docker images and run
+                    the exact repository and tag you loaded.
+                  </p>
+                </div>
+              </section>
+
+              <!-- Cleanup -->
+              <section class="lab-section alt-background" id="cleanup">
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  Cleanup checklist
+                </h3>
+
+                <p>
+                  Remove the transferred image tag and the tar archive to prevent
+                  disk drift and stale artifacts.
+                </p>
+
+                <div class="lab-codeblock m-b-40 m-t-40">
+                  <div class="lab-codeblock-header">
+                    <span>Commands</span>
+                    <button
+                      class="lab-copy-btn"
+                      type="button"
+                      data-copy="#cmd-cleanup"
+                    >
+                      Copy
+                    </button>
+                  </div>
+                  <pre><code id="cmd-cleanup">docker images | grep -E "^(alpine|corp/alpine)" || true
+docker rmi corp/alpine:transfer || true
+rm -f /root/alpine-transfer.tar</code></pre>
+                </div>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">Success signal</div>
+                  <p class="m-b-0">
+                    <code>docker images</code> shows no alpine or corp/alpine tags,
+                    and the tar file is removed from <code>/root</code>.
+                  </p>
+                </div>
+              </section>
+
+              <!-- Reference -->
+              <section class="lab-section" id="reference">
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  Reference
+                </h3>
+
+                <ul class="lab-reference-list">
+                  <li>
+                    <code>docker images</code>
+                    : Lists local images.
+                  </li>
+
+                  <li>
+                    <code>docker pull &lt;image&gt;:&lt;tag&gt;</code>
+                    : Downloads an image from a registry.
+                  </li>
+
+                  <li>
+                    <code>docker tag &lt;src&gt;:&lt;tag&gt; &lt;dst&gt;:&lt;tag&gt;</code>
+                    : Adds a new tag pointing to an existing image ID.
+                  </li>
+
+                  <li>
+                    <code>docker save -o &lt;file.tar&gt; &lt;image&gt;:&lt;tag&gt;</code>
+                    : Exports an image to a tar archive for offline transfer.
+                    <ul>
+                      <li>
+                        <code>-o</code>
+                        : Writes output to a file path.
+                      </li>
+                    </ul>
+                  </li>
+
+                  <li>
+                    <code>docker load -i &lt;file.tar&gt;</code>
+                    : Imports an image tar archive into the local image store.
+                    <ul>
+                      <li>
+                        <code>-i</code>
+                        : Reads input from a file path.
+                      </li>
+                    </ul>
+                  </li>
+
+                  <li>
+                    <code>docker rmi &lt;image&gt;:&lt;tag&gt;</code>
+                    : Removes an image tag (and deletes the image only when no tags remain).
+                  </li>
+
+                  <li>
+                    <code>docker run --rm &lt;image&gt;:&lt;tag&gt; &lt;cmd&gt;</code>
+                    : Runs a container from an image and removes it on exit.
+                    <ul>
+                      <li>
+                        <code>--rm</code>
+                        : Automatically removes the container when it exits.
+                      </li>
+                    </ul>
+                  </li>
+
+                  <li>
+                    <code>grep -E &lt;pattern&gt;</code>
+                    : Filters output using an extended regular expression.
+                    <ul>
+                      <li>
+                        <code>-E</code>
+                        : Enables extended regex syntax.
+                      </li>
+                    </ul>
+                  </li>
+
+                  <li>
+                    <code>|| true</code>
+                    : Prevents a non-zero exit status from breaking a command chain.
+                  </li>
+
+                  <li>
+                    <code>rm -f &lt;path&gt;</code>
+                    : Removes a file without prompting.
+                    <ul>
+                      <li>
+                        <code>-f</code>
+                        : Ignores missing files and suppresses prompts.
+                      </li>
+                    </ul>
+                  </li>
+                </ul>
+              </section>
+            </div>
+            <!-- /main -->
+          </div>
+          <!-- /row -->
+        </div>
+        <!-- /container -->
+      </section>
+
+      <!-- FOOTER -->
+      <footer class="module bg-light">
+        <div class="container">
+          <div class="row">
+            <div class="col-sm-12">
+              <ul class="social-text-links font-alt text-center m-b-20">
+                <li>
+                  <a
+                    href="https://github.com/vonds"
+                    target="_blank"
+                    rel="noopener"
+                  >
+                    Github
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="https://www.linkedin.com/in/vonds/"
+                    target="_blank"
+                    rel="noopener"
+                  >
+                    Linkedin
+                  </a>
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-sm-12">
+              <p class="copyright text-center m-b-0">
+                VONDS &copy;
+                <span id="year"></span>
+              </p>
+
+              <div class="scroll-up">
+                <a href="#totop"><i class="fa fa-angle-double-up"></i></a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <!-- Javascript files (your existing) -->
+    <script src="../assets/js/jquery-2.2.4.min.js"></script>
+    <script src="../assets/bootstrap/js/bootstrap.min.css"></script>
+    <script src="../assets/js/jquery.superslides.min.js"></script>
+    <script src="../assets/js/jquery.mb.YTPlayer.min.js"></script>
+    <script src="../assets/js/jquery.magnific-popup.min.js"></script>
+    <script src="../assets/js/owl.carousel.min.js"></script>
+    <script src="../assets/js/jquery.simple-text-rotator.min.js"></script>
+    <script src="../assets/js/imagesloaded.pkgd.js"></script>
+    <script src="../assets/js/isotope.pkgd.min.js"></script>
+    <script src="../assets/js/packery-mode.pkgd.min.js"></script>
+    <script src="../assets/js/appear.js"></script>
+    <script src="../assets/js/jquery.easing.1.3.js"></script>
+    <script src="../assets/js/wow.min.js"></script>
+    <script src="../assets/js/jqBootstrapValidation.js"></script>
+    <script src="../assets/js/jquery.fitvids.js"></script>
+    <script src="../assets/js/jquery.parallax-1.1.3.js"></script>
+    <script src="../assets/js/smoothscroll.js"></script>
+    <script src="../assets/js/custom.js"></script>
+
+    <!-- Lab page JS (new) -->
+    <script src="../assets/js/lab.js"></script>
+
+    <script>
+      document.getElementById('year').textContent = new Date().getFullYear()
+    </script>
+  </body>
+</html>

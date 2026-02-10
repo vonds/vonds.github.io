@@ -41,10 +41,7 @@
     <link href="../assets/css/lab.css" rel="stylesheet" />
 
     <!-- Fonts -->
-    <link
-      href="https://fonts.googleapis.com/css?family=Dosis"
-      rel="stylesheet"
-    />
+    <link href="https://fonts.googleapis.com/css?family=Dosis" rel="stylesheet" />
   </head>
 
   <body>
@@ -67,18 +64,26 @@
             <li class="slidedown">
               <a href="#">Portfolio</a>
               <ul>
-                <li><a href="https://github.com/vonds/exit_0" target="_blank" rel="noopener">exit_0</a></li>
-                <li><a href="docs.html" target="_blank" rel="noopener">exit_0 Documentation</a></li>
-                <li><a href="https://github.com/vonds/sentinel" target="_blank" rel="noopener">Sentinel</a></li>
+                <li>
+                  <a href="https://github.com/vonds/exit_0" target="_blank" rel="noopener">
+                    exit_0
+                  </a>
+                </li>
+                <li>
+                  <a href="docs.html" target="_blank" rel="noopener">
+                    exit_0 Documentation
+                  </a>
+                </li>
+                <li>
+                  <a href="https://github.com/vonds/sentinel" target="_blank" rel="noopener">
+                    Sentinel
+                  </a>
+                </li>
               </ul>
             </li>
 
             <li>
-              <a
-                href="https://www.linkedin.com/in/vonds/"
-                target="_blank"
-                rel="noopener"
-              >
+              <a href="https://www.linkedin.com/in/vonds/" target="_blank" rel="noopener">
                 LinkedIn
               </a>
             </li>
@@ -113,9 +118,7 @@
     <!-- WRAPPER -->
     <div class="wrapper">
       <!-- NAVIGATION -->
-      <nav
-        class="navbar navbar-custom navbar-transparent navbar-light navbar-fixed-top"
-      >
+      <nav class="navbar navbar-custom navbar-transparent navbar-light navbar-fixed-top">
         <div class="container">
           <div class="navbar-header">
             <a class="navbar-brand" href="../index.html">
@@ -143,20 +146,10 @@
           </h2>
 
           <nav class="lab-pagination">
-            <a
-              id="prev-lab"
-              class="lab-nav-link"
-              href="#"
-              aria-label="Previous lab"
-            >
+            <a id="prev-lab" class="lab-nav-link" href="#" aria-label="Previous lab">
               &laquo;
             </a>
-            <a
-              id="next-lab"
-              class="lab-nav-link"
-              href="#"
-              aria-label="Next lab"
-            >
+            <a id="next-lab" class="lab-nav-link" href="#" aria-label="Next lab">
               &raquo;
             </a>
           </nav>
@@ -167,11 +160,15 @@
               <div class="docs-sidebar">
                 <div class="docs-widget">
                   <h5 class="widget-title">
-                    <a href="./docs.html">Lab Index</a>
+                    <a href="./docs.html">Back to Lab Index</a>
                   </h5>
                   <ul class="docs-nav">
                     <li><a href="#scenario">Scenario</a></li>
+                    <li><a href="#objective">Objective</a></li>
+                    <li><a href="#concepts">Concepts</a></li>
                     <li><a href="#walkthrough">Walkthrough</a></li>
+                    <li><a href="#breakpoints">Breakpoints</a></li>
+                    <li><a href="#cleanup">Cleanup</a></li>
                     <li><a href="#reference">Reference</a></li>
                   </ul>
                 </div>
@@ -180,32 +177,29 @@
 
             <!-- MAIN CONTENT -->
             <div class="col-sm-8 col-md-9 lab-doc">
-              <!-- 1) Title + Summary (2 sentences max) -->
               <p class="m-b-20 lab-summary">
-                Notify active users about an upcoming maintenance window using
-                the built-in terminal messaging tools. Identify active sessions,
-                broadcast a message to all users, and send a targeted message to
-                a specific TTY.
+                Notify active users about an upcoming maintenance window using the built-in terminal messaging tools. Identify active sessions,
+                broadcast a message to all users, and send a targeted message to a specific TTY.
               </p>
 
               <section class="lab-section" id="video" aria-label="Lab video">
-  				<div class="lab-video">
-    				<div class="lab-video-embed text-center">
-      					<iframe 
-							width="560" 
-							height="315" 
-							src="https://www.youtube.com/embed/uJk54bhaadA?si=seGSukCoMFN7ohRo" 
-							title="YouTube video player" 
-							frameborder="0" 
-							allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
-							referrerpolicy="strict-origin-when-cross-origin" 
-							allowfullscreen>
-						</iframe>
-    				</div>
-  				</div>
-			</section>
+                <div class="lab-video">
+                  <div class="lab-video-embed text-center">
+                    <iframe
+                      width="560"
+                      height="315"
+                      src="https://www.youtube.com/embed/uJk54bhaadA?si=seGSukCoMFN7ohRo"
+                      title="YouTube video player"
+                      frameborder="0"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                      referrerpolicy="strict-origin-when-cross-origin"
+                      allowfullscreen
+                    ></iframe>
+                  </div>
+                </div>
+              </section>
 
-              <!-- 2) Scenario -->
+              <!-- Scenario -->
               <section class="lab-section" id="scenario">
                 <div class="lab-chips" aria-label="Tags">
                   <span class="lab-chip">
@@ -224,59 +218,57 @@
                 </h3>
 
                 <p>
-                  A scheduled maintenance window is about to begin. You need to
-                  alert everyone currently logged into the host, then notify a
-                  specific user that they still have an open session and should
-                  log off before the work begins.
+                  A scheduled maintenance window is about to begin. You need to alert everyone currently logged into the host, then notify a specific
+                  user that they still have an open session and should log off before the work begins.
                 </p>
 
                 <div class="lab-callout">
                   <div class="lab-callout-label">Operator context</div>
                   <p class="m-b-0">
-                    This is the kind of quick comms you do right before a reboot,
-                    patch cycle, storage maintenance, or network change.
+                    This is the kind of quick comms you do right before a reboot, patch cycle, storage maintenance, or network change.
                   </p>
                 </div>
               </section>
 
-              <!-- 3) Objective -->
+              <!-- Objective -->
               <section class="lab-section alt-background" id="objective">
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">
                   Objective
                 </h3>
 
                 <ul>
-                  <li>List who is logged in (and capture TTYs).</li>
+                  <li>List who is logged in and capture TTYs.</li>
                   <li>Broadcast a one-line message to all users.</li>
                   <li>Send a targeted message to a specific user session.</li>
                 </ul>
               </section>
 
-              <!-- 4) What You'll Practice -->
-              <section class="lab-section" id="practice">
+              <!-- Concepts -->
+              <section class="lab-section" id="concepts">
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">
-                  What You’ll Practice
+                  Concepts
                 </h3>
 
-                <ul class="m-t-10">
+                <ul>
                   <li>
-                    Session visibility with <code>who</code> and basic listing
-                    with <code>users</code>.
+                    You cannot message a specific session without the TTY. Use <code>who</code> when the target matters.
                   </li>
                   <li>
-                    System-wide broadcast messaging with <code>wall</code>.
+                    <code>users</code> is a fast glance, but it drops session context. Use it when you only need names.
                   </li>
                   <li>
-                    Direct user messaging to a specific terminal with
-                    <code>write</code>.
+                    <code>wall</code> is broadcast. Keep the message short, time-bound, and actionable so users can respond quickly.
                   </li>
                   <li>
-                    Understanding when you need a TTY (for targeted messaging).
+                    <code>write</code> is session-targeted. It is useful for the last straggler you need off the host before maintenance.
+                  </li>
+                  <li>
+                    Messaging can be blocked by user settings. If the target has messaging disabled, you will need another channel.
                   </li>
                 </ul>
               </section>
 
-              <!-- 5) Commands Walkthrough -->
+              <!-- Walkthrough -->
               <section class="lab-section alt-background" id="walkthrough">
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">
                   Walkthrough
@@ -292,11 +284,7 @@
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
-                      <button
-                        class="lab-copy-btn"
-                        type="button"
-                        data-copy="#cmd-step-1"
-                      >
+                      <button class="lab-copy-btn" type="button" data-copy="#cmd-step-1">
                         Copy
                       </button>
                     </div>
@@ -304,9 +292,8 @@
                   </div>
 
                   <p>
-                    <code>who</code> is the preferred tool when you need to
-                    target a specific session because it includes the TTY (for
-                    example, <code>pts/2</code>).
+                    <code>who</code> is the preferred tool when you need to target a specific session because it includes the TTY, for example
+                    <code>pts/2</code>.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -318,11 +305,7 @@ analyst    pts/2  2025-07-19 08:34 (10.0.0.42)</code></pre>
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Alternate</span>
-                      <button
-                        class="lab-copy-btn"
-                        type="button"
-                        data-copy="#alt-step-1"
-                      >
+                      <button class="lab-copy-btn" type="button" data-copy="#alt-step-1">
                         Copy
                       </button>
                     </div>
@@ -330,9 +313,7 @@ analyst    pts/2  2025-07-19 08:34 (10.0.0.42)</code></pre>
                   </div>
 
                   <p>
-                    <code>users</code> is a quick glance at who is logged in,
-                    but it does not show TTYs, so it is weaker for targeted
-                    messaging.
+                    <code>users</code> is a quick glance at who is logged in, but it does not show TTYs, so it is weaker for targeted messaging.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -350,11 +331,7 @@ analyst    pts/2  2025-07-19 08:34 (10.0.0.42)</code></pre>
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
-                      <button
-                        class="lab-copy-btn"
-                        type="button"
-                        data-copy="#cmd-step-2"
-                      >
+                      <button class="lab-copy-btn" type="button" data-copy="#cmd-step-2">
                         Copy
                       </button>
                     </div>
@@ -362,8 +339,7 @@ analyst    pts/2  2025-07-19 08:34 (10.0.0.42)</code></pre>
                   </div>
 
                   <p>
-                    <code>wall</code> writes to all logged-in terminals. Keep it
-                    short, actionable, and time-bound.
+                    <code>wall</code> writes to all logged-in terminals. Keep it short, actionable, and time-bound.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -382,11 +358,7 @@ System maintenance starts in 10 minutes. Please save your work.</code></pre>
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
-                      <button
-                        class="lab-copy-btn"
-                        type="button"
-                        data-copy="#cmd-step-3"
-                      >
+                      <button class="lab-copy-btn" type="button" data-copy="#cmd-step-3">
                         Copy
                       </button>
                     </div>
@@ -394,10 +366,8 @@ System maintenance starts in 10 minutes. Please save your work.</code></pre>
                   </div>
 
                   <p>
-                    <code>write</code> targets one session, so the TTY must
-                    match what you discovered in Step 1. After starting the
-                    write session, type your message and press <code>Ctrl+D</code>
-                    to send.
+                    <code>write</code> targets one session, so the TTY must match what you discovered in Step 1. After starting the write session,
+                    type your message and press <code>Ctrl+D</code> to send.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -406,33 +376,107 @@ Hi analyst, please log off before 08:45 for scheduled maintenance.
 [Message sent]</code></pre>
                   </div>
                 </div>
+
+                <!-- Step 4 -->
+                <div class="lab-step">
+                  <div class="lab-step-title">
+                    <strong class="font-alt">Step 4</strong>
+                    : Confirm whether messaging is enabled for the target.
+                  </div>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <div class="lab-codeblock-header">
+                      <span>Command</span>
+                      <button class="lab-copy-btn" type="button" data-copy="#cmd-step-4">
+                        Copy
+                      </button>
+                    </div>
+                    <pre><code id="cmd-step-4">who -T</code></pre>
+                  </div>
+
+                  <p>
+                    If the target has messaging disabled, <code>write</code> will fail. The <code>who -T</code> output shows whether each session accepts messages.
+                  </p>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <pre><code id="verify-step-4">devstudent + pts/0  2025-07-19 08:31 (:0)
+sysmon     - pts/1  2025-07-19 08:33 (10.0.0.15)
+analyst    + pts/2  2025-07-19 08:34 (10.0.0.42)</code></pre>
+                  </div>
+                </div>
               </section>
 
-              <!-- 6) Reference -->
+              <!-- Breakpoints -->
+              <section class="lab-section" id="breakpoints">
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  Breakpoints
+                </h3>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">write says messaging is disabled</div>
+                  <p class="m-b-0">
+                    The target user may have used mesg n. Verify with who -T. If the session is not accepting messages, use another communication channel.
+                  </p>
+                </div>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">No TTY shown</div>
+                  <p class="m-b-0">
+                    If you only ran users, you do not have the TTY. Run who to get the exact terminal name before using write.
+                  </p>
+                </div>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">wall did not appear</div>
+                  <p class="m-b-0">
+                    Some terminals or environments may not display wall output as expected. Confirm you have logged-in sessions and that they are real TTYs.
+                  </p>
+                </div>
+              </section>
+
+              <!-- Cleanup -->
+              <section class="lab-section alt-background" id="cleanup">
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  Cleanup checklist
+                </h3>
+
+                <ul>
+                  <li>Confirm the announcement was delivered.</li>
+                  <li>Confirm the targeted user logged off.</li>
+                </ul>
+
+                <div class="lab-codeblock m-b-40 m-t-40">
+                  <div class="lab-codeblock-header">
+                    <span>Commands</span>
+                    <button class="lab-copy-btn" type="button" data-copy="#cmd-cleanup">
+                      Copy
+                    </button>
+                  </div>
+                  <pre><code id="cmd-cleanup">who
+last | head</code></pre>
+                </div>
+              </section>
+
+              <!-- Reference -->
               <section class="lab-section" id="reference">
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">
                   Reference
                 </h3>
 
                 <ul class="lab-reference-list">
+                  <li><code>who</code>: Show logged-in users with TTY and source.</li>
                   <li>
-                    <code>who</code>
-                    : Shows logged-in users with TTY and source address (best for
-                    targeted messages).
+                    <code>who -T</code>: Show logged-in users and whether each session accepts messages.
+                    <ul>
+                      <li><code>+</code>: messaging allowed</li>
+                      <li><code>-</code>: messaging disabled</li>
+                      <li><code>?</code>: unknown</li>
+                    </ul>
                   </li>
-                  <li>
-                    <code>users</code>
-                    : Quick list of usernames currently logged in (no TTY info).
-                  </li>
-                  <li>
-                    <code>wall &lt;message&gt;</code>
-                    : Broadcasts a message to all logged-in terminals.
-                  </li>
-                  <li>
-                    <code>write &lt;user&gt; &lt;tty&gt;</code>
-                    : Sends a message to a specific user session; finish input
-                    with <code>Ctrl+D</code>.
-                  </li>
+                  <li><code>users</code>: Quick list of usernames logged in (no TTY info).</li>
+                  <li><code>wall &lt;message&gt;</code>: Broadcast a message to all logged-in terminals.</li>
+                  <li><code>write &lt;user&gt; &lt;tty&gt;</code>: Send a message to a specific user session; finish input with Ctrl+D.</li>
+                  <li><code>mesg y|n</code>: Enable or disable messages to your terminal.</li>
                 </ul>
               </section>
             </div>
@@ -441,12 +485,7 @@ Hi analyst, please log off before 08:45 for scheduled maintenance.
           <!-- /row -->
 
           <nav class="lab-pagination">
-            <a
-              id="prev-lab"
-              class="lab-nav-link"
-              href="#"
-              aria-label="Previous lab"
-            >
+            <a id="prev-lab" class="lab-nav-link" href="#" aria-label="Previous lab">
               &uArr;
             </a>
           </nav>
@@ -461,20 +500,12 @@ Hi analyst, please log off before 08:45 for scheduled maintenance.
             <div class="col-sm-12">
               <ul class="social-text-links font-alt text-center m-b-20">
                 <li>
-                  <a
-                    href="https://github.com/vonds"
-                    target="_blank"
-                    rel="noopener"
-                  >
+                  <a href="https://github.com/vonds" target="_blank" rel="noopener">
                     Github
                   </a>
                 </li>
                 <li>
-                  <a
-                    href="https://www.linkedin.com/in/vonds/"
-                    target="_blank"
-                    rel="noopener"
-                  >
+                  <a href="https://www.linkedin.com/in/vonds/" target="_blank" rel="noopener">
                     Linkedin
                   </a>
                 </li>

@@ -41,10 +41,7 @@
     <link href="../assets/css/lab.css" rel="stylesheet" />
 
     <!-- Fonts -->
-    <link
-      href="https://fonts.googleapis.com/css?family=Dosis"
-      rel="stylesheet"
-    />
+    <link href="https://fonts.googleapis.com/css?family=Dosis" rel="stylesheet" />
   </head>
 
   <body>
@@ -77,15 +74,19 @@
                   </a>
                 </li>
                 <li>
-                  <a
-                    href="docs.html"
-                    target="_blank"
-                    rel="noopener"
-                  >
+                  <a href="docs.html" target="_blank" rel="noopener">
                     exit_0 Documentation
                   </a>
                 </li>
-                <li><a href="https://github.com/vonds/sentinel" target="_blank" rel="noopener">Sentinel</a></li>
+                <li>
+                  <a
+                    href="https://github.com/vonds/sentinel"
+                    target="_blank"
+                    rel="noopener"
+                  >
+                    Sentinel
+                  </a>
+                </li>
               </ul>
             </li>
 
@@ -183,11 +184,15 @@
               <div class="docs-sidebar">
                 <div class="docs-widget">
                   <h5 class="widget-title">
-                    <a href="./docs.html">Lab Index</a>
+                    <a href="./docs.html">Back to Lab Index</a>
                   </h5>
                   <ul class="docs-nav">
                     <li><a href="#scenario">Scenario</a></li>
+                    <li><a href="#objective">Objective</a></li>
+                    <li><a href="#concepts">Concepts</a></li>
                     <li><a href="#walkthrough">Walkthrough</a></li>
+                    <li><a href="#breakpoints">Breakpoints</a></li>
+                    <li><a href="#cleanup">Cleanup</a></li>
                     <li><a href="#reference">Reference</a></li>
                   </ul>
                 </div>
@@ -196,30 +201,31 @@
 
             <!-- MAIN CONTENT -->
             <div class="col-sm-8 col-md-9 lab-doc">
-              <!-- 1) Title + Summary (2 sentences max) -->
               <p class="m-b-20 lab-summary">
-                Audit and correct dangerous permission changes on shared paths, then apply special bits correctly where they belong.
-                Validate your fixes using long listings and numeric modes so the system behaves safely under real multi-user conditions.
+                Audit and correct dangerous permission changes on shared paths,
+                then apply special bits correctly where they belong. Validate
+                your fixes using long listings and numeric modes so the system
+                behaves safely under real multi-user conditions.
               </p>
 
               <section class="lab-section" id="video" aria-label="Lab video">
-  				<div class="lab-video">
-    				<div class="lab-video-embed text-center">
-      					<iframe 
-							width="560" 
-							height="315" 
-							src="https://www.youtube.com/embed/HF2SQNz5gk0?si=EGmP03OHkO9xyzx4" 
-							title="YouTube video player" 
-							frameborder="0" 
-							allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
-							referrerpolicy="strict-origin-when-cross-origin" 
-							allowfullscreen>
-						</iframe>
-    				</div>
-  				</div>
-			</section>
+                <div class="lab-video">
+                  <div class="lab-video-embed text-center">
+                    <iframe
+                      width="560"
+                      height="315"
+                      src="https://www.youtube.com/embed/HF2SQNz5gk0?si=EGmP03OHkO9xyzx4"
+                      title="YouTube video player"
+                      frameborder="0"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                      referrerpolicy="strict-origin-when-cross-origin"
+                      allowfullscreen
+                    ></iframe>
+                  </div>
+                </div>
+              </section>
 
-              <!-- 2) Scenario -->
+              <!-- Scenario -->
               <section class="lab-section" id="scenario">
                 <div class="lab-chips" aria-label="Tags">
                   <span class="lab-chip">
@@ -237,60 +243,84 @@
                   Scenario
                 </h3>
                 <p>
-                  A junior admin “fixed” access problems by loosening permissions in the wrong places.
-                  You’re brought in to investigate the damage, restore safe defaults, and apply special bits with intention.
-                  The priority is preventing cross-user deletion in shared directories and understanding when setuid/setgid are appropriate.
+                  A junior admin “fixed” access problems by loosening
+                  permissions in the wrong places. You’re brought in to
+                  investigate the damage, restore safe defaults, and apply
+                  special bits with intention. The priority is preventing
+                  cross-user deletion in shared directories and understanding
+                  when setuid and setgid are appropriate.
                 </p>
 
                 <div class="lab-callout">
                   <div class="lab-callout-label">Operator context</div>
                   <p class="m-b-0">
-                    Permission issues are rarely isolated. A sloppy chmod can silently create a security incident.
-                    Your job is to restore correct behavior and prove it with evidence.
+                    Permission issues are rarely isolated. A sloppy chmod can
+                    silently create a security incident. Your job is to restore
+                    correct behavior and prove it with evidence.
                   </p>
                 </div>
               </section>
 
-              <!-- 3) Objective -->
+              <!-- Objective -->
               <section class="lab-section alt-background" id="objective">
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">
                   Objective
                 </h3>
                 <ul>
-                  <li>Inspect the current permissions on <code>/tmp</code> and identify what is missing.</li>
-                  <li>Restore proper permissions on <code>/tmp</code> using numeric mode.</li>
-                  <li>Identify which special bit allows execution with the file owner’s privileges.</li>
-                  <li>Apply setuid correctly to a target binary/script path.</li>
-                  <li>Compute the numeric mode for a setgid directory with restricted access.</li>
+                  <li>
+                    Inspect the current permissions on <code>/tmp</code> and
+                    identify what is missing.
+                  </li>
+                  <li>
+                    Restore proper permissions on <code>/tmp</code> using numeric
+                    mode.
+                  </li>
+                  <li>
+                    Identify which special bit allows execution with the file
+                    owner’s privileges.
+                  </li>
+                  <li>
+                    Apply setuid correctly to a target path and validate the bit
+                    is set.
+                  </li>
+                  <li>
+                    Compute the numeric mode for a setgid directory with
+                    restricted access.
+                  </li>
                 </ul>
               </section>
 
-              <!-- 4) What You'll Practice -->
-              <section class="lab-section" id="practice">
+              <!-- Concepts -->
+              <section class="lab-section" id="concepts">
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">
-                  What You’ll Practice
+                  Concepts
                 </h3>
-
-                <ul class="m-t-10">
+                <ul>
                   <li>
-                    Validating directory permissions with <code>ls -ld</code>.
+                    Directory permissions are not file permissions. A directory
+                    needs execute (<code>x</code>) to traverse and read
+                    (<code>r</code>) to list names.
                   </li>
                   <li>
-                    Sticky bit behavior on world-writable directories (<code>chmod 1777</code>, <code>chmod +t</code>).
+                    The sticky bit on a world-writable directory prevents users
+                    from deleting or renaming files they do not own.
                   </li>
                   <li>
-                    Special permission bits: setuid and setgid meaning and usage.
+                    setuid runs an executable with the file owner’s effective
+                    UID; setgid runs it with the file group’s effective GID.
                   </li>
                   <li>
-                    Switching between symbolic and numeric permission modes with confidence.
+                    On directories, setgid controls group inheritance for new
+                    files created under that directory (shared collaboration).
                   </li>
                   <li>
-                    Translating a requirement into a correct octal mode (example: <code>2770</code>).
+                    Numeric modes are a compact “policy spec” you can audit
+                    quickly (example: <code>1777</code>, <code>2770</code>).
                   </li>
                 </ul>
               </section>
 
-              <!-- 5) Commands Walkthrough -->
+              <!-- Walkthrough -->
               <section class="lab-section alt-background" id="walkthrough">
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">
                   Walkthrough
@@ -318,8 +348,10 @@
                   </div>
 
                   <p>
-                    This shows directory permissions, ownership, and whether the sticky bit is enabled.
-                    In a multi-user system, <code>/tmp</code> must be world-writable, but it must also prevent users from deleting each other’s files.
+                    This shows directory permissions, ownership, and whether the
+                    sticky bit is enabled. In a multi-user system,
+                    <code>/tmp</code> must be world-writable, but it must also
+                    prevent users from deleting each other’s files.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -353,8 +385,9 @@ drwxrwxrwt  ... /tmp</code></pre>
                   </div>
 
                   <p>
-                    <code>1777</code> means: sticky bit (<code>1</code>) plus world-writable directory permissions (<code>777</code>).
-                    This is the standard safe default for <code>/tmp</code>.
+                    <code>1777</code> means: sticky bit (<code>1</code>) plus
+                    world-writable directory permissions (<code>777</code>). This
+                    is the standard safe default for <code>/tmp</code>.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -385,8 +418,10 @@ drwxrwxrwt  ... /tmp</code></pre>
                   </div>
 
                   <p>
-                    setuid changes the effective user ID during execution, allowing a program to run with the file owner’s privileges.
-                    This is powerful and risky, so it must be used intentionally and sparingly.
+                    setuid changes the effective user ID during execution,
+                    allowing a program to run with the file owner’s privileges.
+                    This is powerful and risky, so it must be used intentionally
+                    and sparingly.
                   </p>
                 </div>
 
@@ -399,7 +434,7 @@ drwxrwxrwt  ... /tmp</code></pre>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
-                      <span>Command</span>
+                      <span>Commands</span>
                       <button
                         class="lab-copy-btn"
                         type="button"
@@ -414,8 +449,10 @@ chmod 4755 /usr/local/bin/myscript</code></pre>
                   </div>
 
                   <p>
-                    Symbolic mode is explicit and readable. Numeric mode is fast and unambiguous.
-                    After applying setuid, validate with a long listing and confirm an <code>s</code> appears in the owner execute position.
+                    Symbolic mode is explicit and readable. Numeric mode is fast
+                    and unambiguous. After applying setuid, validate with a long
+                    listing and confirm an <code>s</code> appears in the owner
+                    execute position.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -428,7 +465,7 @@ chmod 4755 /usr/local/bin/myscript</code></pre>
                 <div class="lab-step">
                   <div class="lab-step-title">
                     <strong class="font-alt">Step 5</strong>
-                    : Compute numeric mode for a setgid directory with full owner/group access only.
+                    : Compute numeric mode for a setgid directory with full owner and group access only.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -446,8 +483,10 @@ chmod 4755 /usr/local/bin/myscript</code></pre>
                   </div>
 
                   <p>
-                    <code>2</code> sets setgid on a directory so newly created files inherit the directory’s group ownership.
-                    <code>770</code> means owner and group have full permissions, and others have none.
+                    <code>2</code> sets setgid on a directory so newly created
+                    files inherit the directory’s group ownership.
+                    <code>770</code> means owner and group have full permissions,
+                    and others have none.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -461,16 +500,98 @@ chmod 4755 /usr/local/bin/myscript</code></pre>
                         Copy
                       </button>
                     </div>
-                    <pre><code id="verify-step-5"># Example application:
-chmod 2770 /srv/shared
+                    <pre><code id="verify-step-5">chmod 2770 /srv/shared
 ls -ld /srv/shared
 # Expect: drwxrws--- ... /srv/shared</code></pre>
                   </div>
                 </div>
               </section>
 
-              <!-- 8) Reference -->
-              <!-- 9) Reference -->
+              <!-- Breakpoints -->
+              <section class="lab-section" id="breakpoints">
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  Breakpoints
+                </h3>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">/tmp still missing sticky bit after chmod</div>
+                  <p class="m-b-0">
+                    You likely changed the wrong path or you are looking at a
+                    different mount namespace (containers). Re-run
+                    <code>ls -ld /tmp</code> and confirm the trailing character
+                    is <code>t</code>.
+                  </p>
+                </div>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">Uppercase T appears instead of t</div>
+                  <p class="m-b-0">
+                    <code>T</code> means the sticky bit is set but the directory
+                    does not have execute (<code>x</code>) for others. On
+                    <code>/tmp</code>, you want <code>drwxrwxrwt</code>, not
+                    <code>drwxrwxrwT</code>.
+                  </p>
+                </div>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">setuid on scripts does not behave as expected</div>
+                  <p class="m-b-0">
+                    On many systems, setuid scripts are ignored for safety. This
+                    bit is intended for binaries that are audited and designed
+                    to run with elevated effective privileges.
+                  </p>
+                </div>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">Accidentally set special bits broadly</div>
+                  <p class="m-b-0">
+                    If you applied <code>chmod -R</code> or setuid to more than a
+                    single intended file, stop and roll back. Special bits
+                    should be rare and tightly scoped.
+                  </p>
+                </div>
+              </section>
+
+              <!-- Cleanup -->
+              <section class="lab-section alt-background" id="cleanup">
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  Cleanup checklist
+                </h3>
+
+                <p>
+                  This lab is mostly validation plus targeted permission fixes.
+                  Your cleanup is confirming the expected mode and special bits
+                  are present only where intended.
+                </p>
+
+                <div class="lab-codeblock m-b-40 m-t-40">
+                  <div class="lab-codeblock-header">
+                    <span>Commands</span>
+                    <button
+                      class="lab-copy-btn"
+                      type="button"
+                      data-copy="#cmd-cleanup"
+                    >
+                      Copy
+                    </button>
+                  </div>
+                  <pre><code id="cmd-cleanup">ls -ld /tmp
+ls -l /usr/local/bin/myscript
+ls -ld /srv/shared</code></pre>
+                </div>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">Success signal</div>
+                  <p class="m-b-0">
+                    <code>/tmp</code> shows <code>drwxrwxrwt</code>, your setuid
+                    target shows an <code>s</code> in the owner execute position,
+                    and the setgid directory shows <code>drwxrws---</code> with
+                    no permissions for others.
+                  </p>
+                </div>
+              </section>
+
+              <!-- Reference -->
               <section class="lab-section" id="reference">
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">
                   Reference
@@ -480,51 +601,96 @@ ls -ld /srv/shared
                   <li>
                     <code>ls -ld &lt;dir&gt;</code>
                     : Shows directory permissions and special bits in long format.
+                    <ul>
+                      <li>
+                        <code>-l</code>
+                        : Uses long listing format (modes, owner, group, timestamps).
+                      </li>
+                      <li>
+                        <code>-d</code>
+                        : Lists the directory itself, not its contents.
+                      </li>
+                    </ul>
+                  </li>
+
+                  <li>
+                    <code>chmod &lt;mode&gt; &lt;path&gt;</code>
+                    : Changes permissions using numeric or symbolic mode.
                   </li>
 
                   <li>
                     <code>chmod 1777 /tmp</code>
-                    : World-writable directory with sticky bit (safe <code>/tmp</code> default).
+                    : Sets sticky bit and world-writable permissions for /tmp.
+                    <ul>
+                      <li>
+                        <code>1</code>
+                        : Sticky bit.
+                      </li>
+                      <li>
+                        <code>777</code>
+                        : rwx for owner, group, and others.
+                      </li>
+                    </ul>
                   </li>
 
                   <li>
-                    Sticky bit (<code>+t</code>)
-                    : On a directory, only the file owner (or root) can delete/rename files inside it.
+                    <code>chmod +t &lt;dir&gt;</code>
+                    : Enables sticky bit on a directory.
+                    <ul>
+                      <li>
+                        <code>+t</code>
+                        : Sticky bit (directory deletion protection).
+                      </li>
+                    </ul>
                   </li>
 
                   <li>
-                    setuid (<code>u+s</code>, leading <code>4</code>)
-                    : Executes a file with the file owner’s effective privileges.
+                    <code>chmod u+s &lt;file&gt;</code>
+                    : Enables setuid on an executable.
+                    <ul>
+                      <li>
+                        <code>u+s</code>
+                        : setuid (execute with owner’s effective UID).
+                      </li>
+                    </ul>
                   </li>
 
                   <li>
-                    setgid (<code>g+s</code>, leading <code>2</code> on directories)
-                    : New files inherit the directory group; useful for shared group collaboration.
+                    <code>chmod g+s &lt;dir&gt;</code>
+                    : Enables setgid on a directory.
+                    <ul>
+                      <li>
+                        <code>g+s</code>
+                        : setgid (new files inherit directory group).
+                      </li>
+                    </ul>
                   </li>
 
                   <li>
-                    Numeric mode example: <code>2770</code>
-                    : setgid + <code>rwx</code> for owner and group, none for others.
+                    <code>2770</code>
+                    : Numeric mode for a setgid directory with full owner and group access.
+                    <ul>
+                      <li>
+                        <code>2</code>
+                        : setgid.
+                      </li>
+                      <li>
+                        <code>770</code>
+                        : rwx for owner and group, none for others.
+                      </li>
+                    </ul>
                   </li>
                 </ul>
               </section>
-
-              <!-- Lab Pagination -->
             </div>
             <!-- /main -->
           </div>
           <!-- /row -->
 
           <nav class="lab-pagination">
-            <a
-                id="prev-lab"
-                class="lab-nav-link"
-                href="#"
-                aria-label="Previous lab"
-            >
-                &uArr;
+            <a id="prev-lab" class="lab-nav-link" href="#" aria-label="Top">
+              &uArr;
             </a>
-
           </nav>
         </div>
         <!-- /container -->
@@ -537,7 +703,11 @@ ls -ld /srv/shared
             <div class="col-sm-12">
               <ul class="social-text-links font-alt text-center m-b-20">
                 <li>
-                  <a href="https://github.com/vonds" target="_blank" rel="noopener">
+                  <a
+                    href="https://github.com/vonds"
+                    target="_blank"
+                    rel="noopener"
+                  >
                     Github
                   </a>
                 </li>
@@ -592,5 +762,9 @@ ls -ld /srv/shared
 
     <!-- Lab page JS (new) -->
     <script src="../assets/js/lab.js"></script>
+
+    <script>
+      document.getElementById('year').textContent = new Date().getFullYear()
+    </script>
   </body>
 </html>

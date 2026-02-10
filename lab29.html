@@ -41,10 +41,7 @@
     <link href="../assets/css/lab.css" rel="stylesheet" />
 
     <!-- Fonts -->
-    <link
-      href="https://fonts.googleapis.com/css?family=Dosis"
-      rel="stylesheet"
-    />
+    <link href="https://fonts.googleapis.com/css?family=Dosis" rel="stylesheet" />
   </head>
 
   <body>
@@ -67,18 +64,26 @@
             <li class="slidedown">
               <a href="#">Portfolio</a>
               <ul>
-                <li><a href="https://github.com/vonds/exit_0" target="_blank" rel="noopener">exit_0</a></li>
-                <li><a href="docs.html" target="_blank" rel="noopener">exit_0 Documentation</a></li>
-                <li><a href="https://github.com/vonds/sentinel" target="_blank" rel="noopener">Sentinel</a></li>
+                <li>
+                  <a href="https://github.com/vonds/exit_0" target="_blank" rel="noopener">
+                    exit_0
+                  </a>
+                </li>
+                <li>
+                  <a href="docs.html" target="_blank" rel="noopener">
+                    exit_0 Documentation
+                  </a>
+                </li>
+                <li>
+                  <a href="https://github.com/vonds/sentinel" target="_blank" rel="noopener">
+                    Sentinel
+                  </a>
+                </li>
               </ul>
             </li>
 
             <li>
-              <a
-                href="https://www.linkedin.com/in/vonds/"
-                target="_blank"
-                rel="noopener"
-              >
+              <a href="https://www.linkedin.com/in/vonds/" target="_blank" rel="noopener">
                 LinkedIn
               </a>
             </li>
@@ -113,9 +118,7 @@
     <!-- WRAPPER -->
     <div class="wrapper">
       <!-- NAVIGATION -->
-      <nav
-        class="navbar navbar-custom navbar-transparent navbar-light navbar-fixed-top"
-      >
+      <nav class="navbar navbar-custom navbar-transparent navbar-light navbar-fixed-top">
         <div class="container">
           <div class="navbar-header">
             <a class="navbar-brand" href="../index.html">
@@ -143,20 +146,10 @@
           </h2>
 
           <nav class="lab-pagination">
-            <a
-              id="prev-lab"
-              class="lab-nav-link"
-              href="#"
-              aria-label="Previous lab"
-            >
+            <a id="prev-lab" class="lab-nav-link" href="#" aria-label="Previous lab">
               &laquo;
             </a>
-            <a
-              id="next-lab"
-              class="lab-nav-link"
-              href="#"
-              aria-label="Next lab"
-            >
+            <a id="next-lab" class="lab-nav-link" href="#" aria-label="Next lab">
               &raquo;
             </a>
           </nav>
@@ -167,11 +160,15 @@
               <div class="docs-sidebar">
                 <div class="docs-widget">
                   <h5 class="widget-title">
-                    <a href="./docs.html">Lab Index</a>
+                    <a href="./docs.html">Back to Lab Index</a>
                   </h5>
                   <ul class="docs-nav">
                     <li><a href="#scenario">Scenario</a></li>
+                    <li><a href="#objective">Objective</a></li>
+                    <li><a href="#concepts">Concepts</a></li>
                     <li><a href="#walkthrough">Walkthrough</a></li>
+                    <li><a href="#breakpoints">Breakpoints</a></li>
+                    <li><a href="#cleanup">Cleanup</a></li>
                     <li><a href="#reference">Reference</a></li>
                   </ul>
                 </div>
@@ -180,33 +177,30 @@
 
             <!-- MAIN CONTENT -->
             <div class="col-sm-8 col-md-9 lab-doc">
-              <!-- 1) Title + Summary (2 sentences max) -->
               <p class="m-b-20 lab-summary">
-                Investigate a suspicious after-hours login using core user
-                activity tools and simple log filtering. Identify who is on the
-                system, review historical sessions, validate privilege scope,
-                confirm failed login patterns, then mitigate by locking the
+                Investigate a suspicious after-hours login using core user activity tools and simple log filtering. Identify who is on the
+                system, review historical sessions, validate privilege scope, confirm failed login patterns, then mitigate by locking the
                 account.
               </p>
 
               <section class="lab-section" id="video" aria-label="Lab video">
-  				<div class="lab-video">
-    				<div class="lab-video-embed text-center">
-      					<iframe 
-							width="560" 
-							height="315" 
-							src="https://www.youtube.com/embed/uJk54bhaadA?si=seGSukCoMFN7ohRo" 
-							title="YouTube video player" 
-							frameborder="0" 
-							allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
-							referrerpolicy="strict-origin-when-cross-origin" 
-							allowfullscreen>
-						</iframe>
-    				</div>
-  				</div>
-			</section>
+                <div class="lab-video">
+                  <div class="lab-video-embed text-center">
+                    <iframe
+                      width="560"
+                      height="315"
+                      src="https://www.youtube.com/embed/uJk54bhaadA?si=seGSukCoMFN7ohRo"
+                      title="YouTube video player"
+                      frameborder="0"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                      referrerpolicy="strict-origin-when-cross-origin"
+                      allowfullscreen
+                    ></iframe>
+                  </div>
+                </div>
+              </section>
 
-              <!-- 2) Scenario -->
+              <!-- Scenario -->
               <section class="lab-section" id="scenario">
                 <div class="lab-chips" aria-label="Tags">
                   <span class="lab-chip">
@@ -225,24 +219,20 @@
                 </h3>
 
                 <p>
-                  An overnight access review flagged an unapproved login. A user
-                  account that should have been inactive was observed logging in
-                  after hours from an unfamiliar IP. Your task is to determine
-                  who accessed the system, assess privilege risk, confirm the
-                  activity pattern, then decide whether the account should be
-                  disabled immediately.
+                  An overnight access review flagged an unapproved login. A user account that should have been inactive was observed logging in
+                  after hours from an unfamiliar IP. Your task is to determine who accessed the system, assess privilege risk, confirm the activity
+                  pattern, then decide whether the account should be disabled immediately.
                 </p>
 
                 <div class="lab-callout">
                   <div class="lab-callout-label">Operator context</div>
                   <p class="m-b-0">
-                    This is the kind of triage you do before escalating to SOC,
-                    collecting forensics, or changing network controls.
+                    This is the kind of triage you do before escalating to SOC, collecting forensics, or changing network controls.
                   </p>
                 </div>
               </section>
 
-              <!-- 3) Objective -->
+              <!-- Objective -->
               <section class="lab-section alt-background" id="objective">
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">
                   Objective
@@ -258,38 +248,32 @@
                 </ul>
               </section>
 
-              <!-- 4) What You'll Practice -->
-              <section class="lab-section" id="practice">
+              <!-- Concepts -->
+              <section class="lab-section" id="concepts">
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">
-                  What You’ll Practice
+                  Concepts
                 </h3>
 
-                <ul class="m-t-10">
+                <ul>
                   <li>
-                    Current session visibility with <code>who</code> and
-                    <code>w</code>.
+                    Current sessions come from terminal records, not guesswork. Start with <code>who</code>, then use <code>w</code> for context.
                   </li>
                   <li>
-                    Historical login review with <code>last</code>.
+                    Historical sessions come from wtmp. <code>last</code> gives the fastest timeline of logins and sources.
                   </li>
                   <li>
-                    Identity and group verification with <code>id</code>.
+                    Privilege risk is not just root logins. You check group membership, sudo authorization patterns, and any admin groups.
                   </li>
                   <li>
-                    Validating sudo-eligible users with
-                    <code>getent group sudo</code>.
+                    Failed login patterns around a successful session can indicate credential guessing or compromise, even if the account is not in sudo.
                   </li>
                   <li>
-                    Quick log filtering using <code>grep</code>.
-                  </li>
-                  <li>
-                    Mitigation by locking an account using
-                    <code>passwd -l</code>.
+                    Locking an account preserves evidence while preventing continued access. It is a safe first mitigation while you escalate.
                   </li>
                 </ul>
               </section>
 
-              <!-- 5) Commands Walkthrough -->
+              <!-- Walkthrough -->
               <section class="lab-section alt-background" id="walkthrough">
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">
                   Walkthrough
@@ -305,11 +289,7 @@
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
-                      <button
-                        class="lab-copy-btn"
-                        type="button"
-                        data-copy="#cmd-step-1"
-                      >
+                      <button class="lab-copy-btn" type="button" data-copy="#cmd-step-1">
                         Copy
                       </button>
                     </div>
@@ -317,9 +297,7 @@
                   </div>
 
                   <p>
-                    <code>who</code> gives a clean list of active logins and
-                    the remote source addresses, which is often the first “who
-                    is on the box” signal during triage.
+                    <code>who</code> gives a clean list of active logins and the remote source addresses, which is often the first signal during triage.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -339,11 +317,7 @@ analyst     pts/2        2025-07-18 08:21 (192.168.1.12)</code></pre>
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
-                      <button
-                        class="lab-copy-btn"
-                        type="button"
-                        data-copy="#cmd-step-2"
-                      >
+                      <button class="lab-copy-btn" type="button" data-copy="#cmd-step-2">
                         Copy
                       </button>
                     </div>
@@ -351,9 +325,7 @@ analyst     pts/2        2025-07-18 08:21 (192.168.1.12)</code></pre>
                   </div>
 
                   <p>
-                    <code>w</code> is useful when you need session context fast:
-                    how long they have been logged in, idle time, and what is
-                    running in the foreground.
+                    <code>w</code> is useful when you need session context fast: how long they have been logged in, idle time, and what is running.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -375,11 +347,7 @@ analyst    pts/2    192.168.1.12      08:21    1:15   0.30s  0.03s vim</code></p
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
-                      <button
-                        class="lab-copy-btn"
-                        type="button"
-                        data-copy="#cmd-step-3"
-                      >
+                      <button class="lab-copy-btn" type="button" data-copy="#cmd-step-3">
                         Copy
                       </button>
                     </div>
@@ -387,26 +355,23 @@ analyst    pts/2    192.168.1.12      08:21    1:15   0.30s  0.03s vim</code></p
                   </div>
 
                   <p>
-                    <code>last</code> reads login history and is your quickest
-                    way to confirm whether an account was active after hours,
-                    and from where.
+                    <code>last</code> reads login history and is your quickest way to confirm whether an account was active after hours, and from where.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code id="verify-step-3">analyst   pts/2        192.168.1.12    Fri Jul 19 08:21   still logged in
-sysmon    pts/1        192.168.1.23    Fri Jul 19 08:15   still logged in
-devstudent pts/0       192.168.1.25    Fri Jul 19 08:13   still logged in
-intern    pts/3        192.168.1.30    Thu Jul 18 23:59 - 00:15  (00:16)
-tester    pts/4        192.168.1.55    Thu Jul 18 23:00 - 23:55  (00:55)
-backup    pts/6        127.0.0.1       Thu Jul 18 02:00 - 02:30  (00:30)
-root      pts/7        192.168.1.10    Thu Jul 18 01:00 - 01:45  (00:45)</code></pre>
+                    <pre><code id="verify-step-3">analyst    pts/2        192.168.1.12    Fri Jul 19 08:21   still logged in
+sysmon     pts/1        192.168.1.23    Fri Jul 19 08:15   still logged in
+devstudent pts/0        192.168.1.25    Fri Jul 19 08:13   still logged in
+intern     pts/3        192.168.1.30    Thu Jul 18 23:59 - 00:15  (00:16)
+tester     pts/4        192.168.1.55    Thu Jul 18 23:00 - 23:55  (00:55)
+backup     pts/6        127.0.0.1       Thu Jul 18 02:00 - 02:30  (00:30)
+root       pts/7        192.168.1.10    Thu Jul 18 01:00 - 01:45  (00:45)</code></pre>
                   </div>
 
                   <div class="lab-callout">
                     <div class="lab-callout-label">Triage note</div>
                     <p class="m-b-0">
-                      “tester” logged in from <code>192.168.1.55</code> at 11 PM,
-                      which is outside normal work hours in this scenario.
+                      The account tester logged in from 192.168.1.55 at 23:00, which is outside normal work hours in this scenario.
                     </p>
                   </div>
                 </div>
@@ -421,11 +386,7 @@ root      pts/7        192.168.1.10    Thu Jul 18 01:00 - 01:45  (00:45)</code><
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
-                      <button
-                        class="lab-copy-btn"
-                        type="button"
-                        data-copy="#cmd-step-4"
-                      >
+                      <button class="lab-copy-btn" type="button" data-copy="#cmd-step-4">
                         Copy
                       </button>
                     </div>
@@ -433,9 +394,7 @@ root      pts/7        192.168.1.10    Thu Jul 18 01:00 - 01:45  (00:45)</code><
                   </div>
 
                   <p>
-                    <code>id</code> shows UID/GID and group memberships. This
-                    tells you whether the account has obvious privilege paths
-                    through admin groups.
+                    <code>id</code> shows UID/GID and group memberships. This tells you whether the account has obvious privilege paths through admin groups.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -453,11 +412,7 @@ root      pts/7        192.168.1.10    Thu Jul 18 01:00 - 01:45  (00:45)</code><
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
-                      <button
-                        class="lab-copy-btn"
-                        type="button"
-                        data-copy="#cmd-step-5"
-                      >
+                      <button class="lab-copy-btn" type="button" data-copy="#cmd-step-5">
                         Copy
                       </button>
                     </div>
@@ -465,11 +420,8 @@ root      pts/7        192.168.1.10    Thu Jul 18 01:00 - 01:45  (00:45)</code><
                   </div>
 
                   <p>
-                    This checks membership in the <code>sudo</code> group
-                    (common on Debian/Ubuntu). In a real environment, the admin
-                    group might be <code>wheel</code> or controlled in
-                    <code>/etc/sudoers</code>, but group checks are still a fast
-                    first pass.
+                    This checks membership in the sudo group. On some hosts, the admin group is wheel, or authorization is controlled through
+                    sudoers includes, but group membership is still a fast first pass.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -487,11 +439,7 @@ root      pts/7        192.168.1.10    Thu Jul 18 01:00 - 01:45  (00:45)</code><
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
-                      <button
-                        class="lab-copy-btn"
-                        type="button"
-                        data-copy="#cmd-step-6"
-                      >
+                      <button class="lab-copy-btn" type="button" data-copy="#cmd-step-6">
                         Copy
                       </button>
                     </div>
@@ -499,8 +447,7 @@ root      pts/7        192.168.1.10    Thu Jul 18 01:00 - 01:45  (00:45)</code><
                   </div>
 
                   <p>
-                    This isolates the activity to one account so you can quickly
-                    confirm time window, duration, and source address.
+                    This isolates the activity to one account so you can confirm time window, duration, and source address.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -518,11 +465,7 @@ root      pts/7        192.168.1.10    Thu Jul 18 01:00 - 01:45  (00:45)</code><
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
-                      <button
-                        class="lab-copy-btn"
-                        type="button"
-                        data-copy="#cmd-step-7"
-                      >
+                      <button class="lab-copy-btn" type="button" data-copy="#cmd-step-7">
                         Copy
                       </button>
                     </div>
@@ -530,10 +473,8 @@ root      pts/7        192.168.1.10    Thu Jul 18 01:00 - 01:45  (00:45)</code><
                   </div>
 
                   <p>
-                    Failed authentication attempts can confirm brute-force
-                    probing or password guessing before a successful session.
-                    In RHEL-based systems, this would often be
-                    <code>/var/log/secure</code>.
+                    Failed authentication attempts can confirm probing before a successful session. On many RHEL-based systems, this is commonly
+                    logged in /var/log/secure.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -544,8 +485,7 @@ Jul 18 23:02:15 server01 sshd[19113]: Failed password for tester from 192.168.1.
                   <div class="lab-callout">
                     <div class="lab-callout-label">Signal</div>
                     <p class="m-b-0">
-                      Multiple failed attempts followed by a successful session
-                      is a strong indicator of compromise or credential abuse.
+                      Multiple failed attempts followed by a successful session is a strong indicator of compromise or credential abuse.
                     </p>
                   </div>
                 </div>
@@ -560,11 +500,7 @@ Jul 18 23:02:15 server01 sshd[19113]: Failed password for tester from 192.168.1.
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
-                      <button
-                        class="lab-copy-btn"
-                        type="button"
-                        data-copy="#cmd-step-8"
-                      >
+                      <button class="lab-copy-btn" type="button" data-copy="#cmd-step-8">
                         Copy
                       </button>
                     </div>
@@ -572,9 +508,7 @@ Jul 18 23:02:15 server01 sshd[19113]: Failed password for tester from 192.168.1.
                   </div>
 
                   <p>
-                    Account locking is fast mitigation while you investigate
-                    further. It preserves the account and artifacts while
-                    preventing authentication.
+                    Account locking is fast mitigation while you investigate further. It preserves the account and artifacts while preventing authentication.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -583,42 +517,75 @@ Jul 18 23:02:15 server01 sshd[19113]: Failed password for tester from 192.168.1.
                 </div>
               </section>
 
-              <!-- 8) Reference -->
+              <!-- Breakpoints -->
+              <section class="lab-section" id="breakpoints">
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  Breakpoints
+                </h3>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">No entries from last</div>
+                  <p class="m-b-0">
+                    If last returns nothing, the wtmp file may be missing or rotated. Verify the host logs login sessions and that wtmp exists.
+                  </p>
+                </div>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">Auth log path differs</div>
+                  <p class="m-b-0">
+                    On some systems the SSH auth log is not in auth.log. If you do not see failed password entries, check the platform’s auth log location.
+                  </p>
+                </div>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">Group check is not definitive</div>
+                  <p class="m-b-0">
+                    Sudo access can be controlled in sudoers includes even if the user is not in a sudo group. Group membership is a fast first pass,
+                    not a final authorization report.
+                  </p>
+                </div>
+              </section>
+
+              <!-- Cleanup -->
+              <section class="lab-section alt-background" id="cleanup">
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  Cleanup checklist
+                </h3>
+
+                <ul>
+                  <li>Confirm the account is locked.</li>
+                  <li>Capture the relevant session lines for escalation if needed.</li>
+                </ul>
+
+                <div class="lab-codeblock m-b-40 m-t-40">
+                  <div class="lab-codeblock-header">
+                    <span>Commands</span>
+                    <button class="lab-copy-btn" type="button" data-copy="#cmd-cleanup">
+                      Copy
+                    </button>
+                  </div>
+                  <pre><code id="cmd-cleanup">passwd -S tester
+last | grep tester</code></pre>
+                </div>
+              </section>
+
+              <!-- Reference -->
               <section class="lab-section" id="reference">
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">
                   Reference
                 </h3>
 
                 <ul class="lab-reference-list">
-                  <li>
-                    <code>who</code>
-                    : Lists users currently logged in (TTY, time, source).
-                  </li>
-                  <li>
-                    <code>w</code>
-                    : Shows logged-in users and what they are doing.
-                  </li>
-                  <li>
-                    <code>last</code>
-                    : Displays login history from wtmp.
-                  </li>
-                  <li>
-                    <code>id &lt;user&gt;</code>
-                    : Displays UID/GID and group membership.
-                  </li>
-                  <li>
-                    <code>getent group sudo</code>
-                    : Lists members of the sudo group (Debian/Ubuntu pattern).
-                  </li>
-                  <li>
-                    <code>grep 'Failed password' /var/log/auth.log</code>
-                    : Filters auth logs for failed SSH password attempts
-                    (Debian/Ubuntu path).
-                  </li>
-                  <li>
-                    <code>passwd -l &lt;user&gt;</code>
-                    : Locks a user account to prevent login.
-                  </li>
+                  <li><code>who</code>: List users currently logged in.</li>
+                  <li><code>w</code>: Show logged-in users and what they are doing.</li>
+                  <li><code>last</code>: Show login history.</li>
+                  <li><code>id</code>: Show UID, GID, and group memberships.</li>
+                  <li><code>getent</code>: Query system databases.</li>
+                  <li><code>getent group sudo</code>: Show members of the sudo group.</li>
+                  <li><code>grep</code>: Search text using patterns.</li>
+                  <li><code>passwd -l</code>: Lock a user account.</li>
+                  <li><code>passwd -S</code>: Show account status and password state.</li>
+                  <li><code>/var/log/auth.log</code>: Authentication log location on many Debian-family systems.</li>
                 </ul>
               </section>
             </div>
@@ -627,12 +594,7 @@ Jul 18 23:02:15 server01 sshd[19113]: Failed password for tester from 192.168.1.
           <!-- /row -->
 
           <nav class="lab-pagination">
-            <a
-              id="prev-lab"
-              class="lab-nav-link"
-              href="#"
-              aria-label="Previous lab"
-            >
+            <a id="prev-lab" class="lab-nav-link" href="#" aria-label="Previous lab">
               &uArr;
             </a>
           </nav>
@@ -647,20 +609,12 @@ Jul 18 23:02:15 server01 sshd[19113]: Failed password for tester from 192.168.1.
             <div class="col-sm-12">
               <ul class="social-text-links font-alt text-center m-b-20">
                 <li>
-                  <a
-                    href="https://github.com/vonds"
-                    target="_blank"
-                    rel="noopener"
-                  >
+                  <a href="https://github.com/vonds" target="_blank" rel="noopener">
                     Github
                   </a>
                 </li>
                 <li>
-                  <a
-                    href="https://www.linkedin.com/in/vonds/"
-                    target="_blank"
-                    rel="noopener"
-                  >
+                  <a href="https://www.linkedin.com/in/vonds/" target="_blank" rel="noopener">
                     Linkedin
                   </a>
                 </li>
@@ -695,6 +649,7 @@ Jul 18 23:02:15 server01 sshd[19113]: Failed password for tester from 192.168.1.
     <script src="../assets/js/imagesloaded.pkgd.js"></script>
     <script src="../assets/js/isotope.pkgd.min.js"></script>
     <script src="../assets/js/packery-mode.pkgd.min.js"></script>
+    <script src="../assets/js/packery-mode.pkgd.min.js"></script>
     <script src="../assets/js/appear.js"></script>
     <script src="../assets/js/jquery.easing.1.3.js"></script>
     <script src="../assets/js/wow.min.js"></script>
@@ -706,5 +661,9 @@ Jul 18 23:02:15 server01 sshd[19113]: Failed password for tester from 192.168.1.
 
     <!-- Lab page JS (new) -->
     <script src="../assets/js/lab.js"></script>
+
+    <script>
+      document.getElementById('year').textContent = new Date().getFullYear()
+    </script>
   </body>
 </html>

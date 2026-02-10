@@ -37,7 +37,7 @@
     <link href="../assets/css/style.css" rel="stylesheet" />
     <link href="../assets/css/docs.css" rel="stylesheet" />
 
-    <!-- Lab page styles (new) -->
+    <!-- Lab page styles -->
     <link href="../assets/css/lab.css" rel="stylesheet" />
 
     <!-- Fonts -->
@@ -68,28 +68,21 @@
               <a href="#">Portfolio</a>
               <ul>
                 <li>
-                  <a
-                    href="https://github.com/vonds/exit_0"
-                    target="_blank"
-                    rel="noopener"
-                  >
+                  <a href="https://github.com/vonds/exit_0" target="_blank">
                     exit_0
                   </a>
                 </li>
                 <li>
-                  <a
-                    href="docs.html"
-                    target="_blank"
-                    rel="noopener"
-                  >
-                    exit_0 Documentation
+                  <a href="https://github.com/vonds/sentinel" target="_blank">
+                    Sentinel
                   </a>
                 </li>
-                <li><a href="https://github.com/vonds/sentinel" target="_blank" rel="noopener">Sentinel</a></li>
+                <li>
+                  <a href="docs.html" target="_blank">exit_0 Documentation</a>
+                </li>
               </ul>
             </li>
 
-            <li><a href="./index.html" class="active">Lab Write-ups</a></li>
             <li>
               <a
                 href="https://www.linkedin.com/in/vonds/"
@@ -184,11 +177,15 @@
               <div class="docs-sidebar">
                 <div class="docs-widget">
                   <h5 class="widget-title">
-                    <a href="./docs.html">Lab Index</a>
+                    <a href="./docs.html">Back to Lab Index</a>
                   </h5>
                   <ul class="docs-nav">
                     <li><a href="#scenario">Scenario</a></li>
+                    <li><a href="#objective">Objective</a></li>
+                    <li><a href="#concepts">Concepts</a></li>
                     <li><a href="#walkthrough">Walkthrough</a></li>
+                    <li><a href="#breakpoints">Breakpoints</a></li>
+                    <li><a href="#cleanup">Cleanup</a></li>
                     <li><a href="#reference">Reference</a></li>
                   </ul>
                 </div>
@@ -197,7 +194,6 @@
 
             <!-- MAIN CONTENT -->
             <div class="col-sm-8 col-md-9 lab-doc">
-              <!-- 1) Title + Summary (2 sentences max) -->
               <p class="m-b-20 lab-summary">
                 Bring printing online on a Rocky Linux host by enabling the CUPS
                 service, validating queues, and managing print jobs from the CLI.
@@ -205,24 +201,23 @@
                 the two configuration files that control the daemon and queues.
               </p>
 
+              <!-- Video (kept on page; removed from left panel) -->
               <section class="lab-section" id="video" aria-label="Lab video">
-  				<div class="lab-video">
-    				<div class="lab-video-embed text-center">
-      					<iframe 
-							width="560" 
-							height="315" 
-							src="https://www.youtube.com/embed/8hmHJOisLck?si=oh1RmlUO8CAg0xe5" 
-							title="YouTube video player" 
-							frameborder="0" 
-							allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
-							referrerpolicy="strict-origin-when-cross-origin" 
-							allowfullscreen>
-						</iframe>
-    				</div>
-  				</div>
-			</section>
+                <div class="lab-video">
+                  <div class="lab-video-embed text-center">
+                    <iframe
+                      src="https://www.youtube.com/embed/8hmHJOisLck?si=oh1RmlUO8CAg0xe5"
+                      title="YouTube video player"
+                      frameborder="0"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                      referrerpolicy="strict-origin-when-cross-origin"
+                      allowfullscreen
+                    ></iframe>
+                  </div>
+                </div>
+              </section>
 
-              <!-- 2) Scenario -->
+              <!-- Scenario -->
               <section class="lab-section" id="scenario">
                 <div class="lab-chips" aria-label="Tags">
                   <span class="lab-chip">
@@ -239,6 +234,7 @@
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">
                   Scenario
                 </h3>
+
                 <p>
                   You’ve been asked to bring printing online on a new Rocky Linux
                   host. A queue already exists (<code>Demo_Printer</code>), but
@@ -260,7 +256,7 @@
                 </div>
               </section>
 
-              <!-- 3) Objective -->
+              <!-- Objective -->
               <section class="lab-section alt-background" id="objective">
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">
                   Objective
@@ -277,42 +273,38 @@
                 </ul>
               </section>
 
-              <!-- 4) What You'll Practice -->
-              <section class="lab-section" id="practice">
+              <!-- Concepts (no alt-background moving forward) -->
+              <section class="lab-section" id="concepts">
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">
-                  What You’ll Practice
+                  Concepts
                 </h3>
-
-                <ul class="m-t-10">
+                <ul>
                   <li>
-                    Service lifecycle management with
-                    <code>systemctl enable --now</code>.
+                    Service lifecycle management for print scheduling using
+                    <code>systemctl</code>.
                   </li>
                   <li>
-                    CUPS visibility checks with <code>lpstat</code> and queue/job
-                    inspection with <code>lpq</code>.
+                    “Scheduler running” versus “queues enabled/accepting” as separate
+                    operational states.
                   </li>
                   <li>
-                    Queue control using <code>cupsenable</code> and
-                    <code>cupsaccept</code>.
+                    Queue visibility and server status inspection with
+                    <code>lpstat</code>.
                   </li>
                   <li>
-                    Default destination management with <code>lpadmin -d</code>.
+                    Default destination behavior (what happens when no <code>-d</code>
+                    is supplied).
                   </li>
                   <li>
-                    Job submission and cancellation with <code>lp</code> and
-                    <code>cancel</code>.
+                    Job submission, job IDs, and safe cancellation using exact identifiers.
                   </li>
                   <li>
-                    Temporary remote admin toggles using <code>cupsctl</code>.
-                  </li>
-                  <li>
-                    Locating key configuration files under <code>/etc/cups</code>.
+                    Temporary remote admin toggles as an intentional troubleshooting action.
                   </li>
                 </ul>
               </section>
 
-              <!-- 5) Commands Walkthrough -->
+              <!-- Walkthrough -->
               <section class="lab-section alt-background" id="walkthrough">
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">
                   Walkthrough
@@ -346,7 +338,7 @@
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code id="verify-step-1">systemctl status cups</code></pre>
+                    <pre><code>systemctl status cups</code></pre>
                   </div>
                 </div>
 
@@ -378,7 +370,7 @@
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code id="verify-step-2"># Look for:
+                    <pre><code># Look for:
 # scheduler is running
 # printer Demo_Printer is idle. enabled ...</code></pre>
                   </div>
@@ -412,7 +404,7 @@
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code id="verify-step-3">lpstat -t</code></pre>
+                    <pre><code>lpstat -t</code></pre>
                   </div>
                 </div>
 
@@ -444,7 +436,7 @@
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code id="verify-step-4">lpstat -t
+                    <pre><code>lpstat -t
 # Look for:
 # system default destination: Demo_Printer</code></pre>
                   </div>
@@ -478,7 +470,7 @@
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code id="verify-step-5"># Expect a request id like:
+                    <pre><code># Expect a request id like:
 # request id is Demo_Printer-42 (1 file(s))</code></pre>
                   </div>
                 </div>
@@ -506,12 +498,14 @@
 
                   <p>
                     This is your “what is stuck right now” view. It helps confirm
-                    the job exists and whether it is active/pending.
+                    the job exists and whether it is active or pending.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code id="verify-step-6"># Expect something like:
-# active lab 42 hosts ...</code></pre>
+                    <pre><code># Expect something like:
+# Demo_Printer is ready
+# Rank  Owner  Job  File(s)      Total Size
+# active lab    42  hosts        ...</code></pre>
                   </div>
                 </div>
 
@@ -537,14 +531,12 @@
                   </div>
 
                   <p>
-                    Canceling by exact destination + job id prevents you from
-                    accidentally nuking an entire queue when you only meant to stop
-                    one job.
+                    Canceling by exact destination plus job id prevents you from
+                    canceling the wrong job or clearing more than you intended.
                   </p>
 
-                  <!-- FIXED: bad closing tags were breaking the DOM -->
                   <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code id="verify-step-7">lpq -P Demo_Printer</code></pre>
+                    <pre><code>lpq -P Demo_Printer</code></pre>
                   </div>
                 </div>
 
@@ -585,7 +577,7 @@
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code id="verify-step-8">lpstat -t</code></pre>
+                    <pre><code>lpstat -t</code></pre>
                   </div>
                 </div>
 
@@ -639,8 +631,93 @@
 
                   <p>
                     Even if you manage CUPS primarily from the CLI, the web UI is
-                    the fastest way to print a test page and visually confirm queue
-                    state.
+                    the fastest way to confirm queue state and print a test page.
+                  </p>
+                </div>
+              </section>
+
+              <!-- Breakpoints -->
+              <section class="lab-section" id="breakpoints">
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  Breakpoints
+                </h3>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">cups service is inactive</div>
+                  <p class="m-b-0">
+                    If <code>lpstat -t</code> reports the scheduler is not running,
+                    start and enable CUPS and re-check status.
+                  </p>
+                </div>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">queue exists but is disabled</div>
+                  <p class="m-b-0">
+                    A printer can exist but refuse work. Ensure the queue is enabled
+                    and accepting jobs before troubleshooting client behavior.
+                  </p>
+                </div>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">no default destination</div>
+                  <p class="m-b-0">
+                    If there is no system default destination, printing without
+                    specifying a queue can appear to “do nothing.” Set the default
+                    with <code>lpadmin -d</code>.
+                  </p>
+                </div>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">job stuck in queue</div>
+                  <p class="m-b-0">
+                    Confirm the job exists with <code>lpq -P</code>, then cancel by
+                    exact job id (<code>queue-jobid</code>) to avoid canceling the
+                    wrong work.
+                  </p>
+                </div>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">remote admin left enabled</div>
+                  <p class="m-b-0">
+                    If you enabled remote admin for troubleshooting, revert it
+                    when you are done to reduce exposure.
+                  </p>
+                </div>
+              </section>
+
+              <!-- Cleanup -->
+              <section class="lab-section alt-background" id="cleanup">
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  Cleanup checklist
+                </h3>
+
+                <p>
+                  If you enabled remote admin for troubleshooting, revert to a local-only
+                  posture and confirm the queue is healthy.
+                </p>
+
+                <div class="lab-codeblock m-b-40 m-t-40">
+                  <div class="lab-codeblock-header">
+                    <span>Commands</span>
+                    <button
+                      class="lab-copy-btn"
+                      type="button"
+                      data-copy="#cmd-cleanup"
+                    >
+                      Copy
+                    </button>
+                  </div>
+                  <pre><code id="cmd-cleanup">lpstat -t
+lpq -P Demo_Printer
+# If you changed remote-access settings, revert intentionally (site policy may differ)
+sudo cupsctl --no-remote-admin --no-remote-any</code></pre>
+                </div>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">Success signal</div>
+                  <p class="m-b-0">
+                    <code>lpstat -t</code> shows the scheduler running, the queue is
+                    enabled and accepting jobs, and the job queue is not stuck.
                   </p>
                 </div>
               </section>
@@ -655,11 +732,27 @@
                   <li>
                     <code>systemctl enable --now cups</code>
                     : Enables and starts the CUPS scheduler service.
+                    <ul>
+                      <li>
+                        <code>enable</code>
+                        : Enables the service to start at boot.
+                      </li>
+                      <li>
+                        <code>--now</code>
+                        : Starts the service immediately.
+                      </li>
+                    </ul>
                   </li>
 
                   <li>
                     <code>lpstat -t</code>
                     : Full CUPS status summary (scheduler, default destination, printers).
+                    <ul>
+                      <li>
+                        <code>-t</code>
+                        : Displays the full status view.
+                      </li>
+                    </ul>
                   </li>
 
                   <li>
@@ -675,26 +768,63 @@
                   <li>
                     <code>lpadmin -d &lt;queue&gt;</code>
                     : Sets the system default destination.
+                    <ul>
+                      <li>
+                        <code>-d</code>
+                        : Sets the default destination.
+                      </li>
+                    </ul>
                   </li>
 
                   <li>
                     <code>lp &lt;file&gt;</code>
-                    : Submits a print job.
+                    : Submits a print job to the default destination.
                   </li>
 
                   <li>
                     <code>lpq -P &lt;queue&gt;</code>
                     : Lists jobs for a specific destination.
+                    <ul>
+                      <li>
+                        <code>-P</code>
+                        : Selects the destination (printer/queue).
+                      </li>
+                    </ul>
                   </li>
 
                   <li>
                     <code>cancel &lt;queue&gt;-&lt;jobid&gt;</code>
-                    : Cancels a specific job.
+                    : Cancels a specific job by destination and job id.
                   </li>
 
                   <li>
                     <code>cupsctl --remote-admin --remote-any</code>
                     : Enables remote admin and remote access (use intentionally; revert when done).
+                    <ul>
+                      <li>
+                        <code>--remote-admin</code>
+                        : Allows remote administrative access.
+                      </li>
+                      <li>
+                        <code>--remote-any</code>
+                        : Allows remote access from any host.
+                      </li>
+                    </ul>
+                  </li>
+
+                  <li>
+                    <code>cupsctl --no-remote-admin --no-remote-any</code>
+                    : Reverts remote admin and remote access toggles.
+                    <ul>
+                      <li>
+                        <code>--no-remote-admin</code>
+                        : Disables remote administrative access.
+                      </li>
+                      <li>
+                        <code>--no-remote-any</code>
+                        : Disables remote access from any host.
+                      </li>
+                    </ul>
                   </li>
 
                   <li>
@@ -717,18 +847,6 @@
             <!-- /main -->
           </div>
           <!-- /row -->
-
-          <!-- Bottom pagination -->
-          <nav class="lab-pagination">
-            <a
-              id="to-top"
-              class="lab-nav-link"
-              href="#"
-              aria-label="Back to top"
-            >
-              &uArr;
-            </a>
-          </nav>
         </div>
         <!-- /container -->
       </section>
@@ -740,11 +858,7 @@
             <div class="col-sm-12">
               <ul class="social-text-links font-alt text-center m-b-20">
                 <li>
-                  <a
-                    href="https://github.com/vonds"
-                    target="_blank"
-                    rel="noopener"
-                  >
+                  <a href="https://github.com/vonds" target="_blank" rel="noopener">
                     Github
                   </a>
                 </li>
@@ -767,6 +881,10 @@
                 VONDS &copy;
                 <span id="year"></span>
               </p>
+
+              <div class="scroll-up">
+                <a href="#totop"><i class="fa fa-angle-double-up"></i></a>
+              </div>
             </div>
           </div>
         </div>
@@ -795,5 +913,9 @@
 
     <!-- Lab page JS (new) -->
     <script src="../assets/js/lab.js"></script>
+
+    <script>
+      document.getElementById('year').textContent = new Date().getFullYear()
+    </script>
   </body>
 </html>

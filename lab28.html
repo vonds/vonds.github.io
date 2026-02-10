@@ -41,10 +41,7 @@
     <link href="../assets/css/lab.css" rel="stylesheet" />
 
     <!-- Fonts -->
-    <link
-      href="https://fonts.googleapis.com/css?family=Dosis"
-      rel="stylesheet"
-    />
+    <link href="https://fonts.googleapis.com/css?family=Dosis" rel="stylesheet" />
   </head>
 
   <body>
@@ -67,18 +64,26 @@
             <li class="slidedown">
               <a href="#">Portfolio</a>
               <ul>
-                <li><a href="https://github.com/vonds/exit_0" target="_blank" rel="noopener">exit_0</a></li>
-                <li><a href="docs.html" target="_blank" rel="noopener">exit_0 Documentation</a></li>
-                <li><a href="https://github.com/vonds/sentinel" target="_blank" rel="noopener">Sentinel</a></li>
+                <li>
+                  <a href="https://github.com/vonds/exit_0" target="_blank" rel="noopener">
+                    exit_0
+                  </a>
+                </li>
+                <li>
+                  <a href="docs.html" target="_blank" rel="noopener">
+                    exit_0 Documentation
+                  </a>
+                </li>
+                <li>
+                  <a href="https://github.com/vonds/sentinel" target="_blank" rel="noopener">
+                    Sentinel
+                  </a>
+                </li>
               </ul>
             </li>
 
             <li>
-              <a
-                href="https://www.linkedin.com/in/vonds/"
-                target="_blank"
-                rel="noopener"
-              >
+              <a href="https://www.linkedin.com/in/vonds/" target="_blank" rel="noopener">
                 LinkedIn
               </a>
             </li>
@@ -113,9 +118,7 @@
     <!-- WRAPPER -->
     <div class="wrapper">
       <!-- NAVIGATION -->
-      <nav
-        class="navbar navbar-custom navbar-transparent navbar-light navbar-fixed-top"
-      >
+      <nav class="navbar navbar-custom navbar-transparent navbar-light navbar-fixed-top">
         <div class="container">
           <div class="navbar-header">
             <a class="navbar-brand" href="../index.html">
@@ -143,20 +146,10 @@
           </h2>
 
           <nav class="lab-pagination">
-            <a
-              id="prev-lab"
-              class="lab-nav-link"
-              href="#"
-              aria-label="Previous lab"
-            >
+            <a id="prev-lab" class="lab-nav-link" href="#" aria-label="Previous lab">
               &laquo;
             </a>
-            <a
-              id="next-lab"
-              class="lab-nav-link"
-              href="#"
-              aria-label="Next lab"
-            >
+            <a id="next-lab" class="lab-nav-link" href="#" aria-label="Next lab">
               &raquo;
             </a>
           </nav>
@@ -167,11 +160,15 @@
               <div class="docs-sidebar">
                 <div class="docs-widget">
                   <h5 class="widget-title">
-                    <a href="./docs.html">Lab Index</a>
+                    <a href="./docs.html">Back to Lab Index</a>
                   </h5>
                   <ul class="docs-nav">
                     <li><a href="#scenario">Scenario</a></li>
+                    <li><a href="#objective">Objective</a></li>
+                    <li><a href="#concepts">Concepts</a></li>
                     <li><a href="#walkthrough">Walkthrough</a></li>
+                    <li><a href="#breakpoints">Breakpoints</a></li>
+                    <li><a href="#cleanup">Cleanup</a></li>
                     <li><a href="#reference">Reference</a></li>
                   </ul>
                 </div>
@@ -180,32 +177,29 @@
 
             <!-- MAIN CONTENT -->
             <div class="col-sm-8 col-md-9 lab-doc">
-              <!-- 1) Title + Summary (2 sentences max) -->
               <p class="m-b-20 lab-summary">
-                Practice privilege escalation the way it looks on a real host:
-                run targeted commands with <code>sudo</code>, enter a root login
-                shell, switch users with a full login environment, then verify
-                sudo access through group membership.
+                Practice privilege escalation the way it looks on a real host: run targeted commands with <code>sudo</code>, enter a root login
+                shell, switch users with a full login environment, then verify sudo access through group membership.
               </p>
 
               <section class="lab-section" id="video" aria-label="Lab video">
-  				<div class="lab-video">
-    				<div class="lab-video-embed text-center">
-      					<iframe 
-							width="560" 
-							height="315" 
-							src="https://www.youtube.com/embed/uJk54bhaadA?si=seGSukCoMFN7ohRo" 
-							title="YouTube video player" 
-							frameborder="0" 
-							allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
-							referrerpolicy="strict-origin-when-cross-origin" 
-							allowfullscreen>
-						</iframe>
-    				</div>
-  				</div>
-			</section>
+                <div class="lab-video">
+                  <div class="lab-video-embed text-center">
+                    <iframe
+                      width="560"
+                      height="315"
+                      src="https://www.youtube.com/embed/uJk54bhaadA?si=seGSukCoMFN7ohRo"
+                      title="YouTube video player"
+                      frameborder="0"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                      referrerpolicy="strict-origin-when-cross-origin"
+                      allowfullscreen
+                    ></iframe>
+                  </div>
+                </div>
+              </section>
 
-              <!-- 2) Scenario -->
+              <!-- Scenario -->
               <section class="lab-section" id="scenario">
                 <div class="lab-chips" aria-label="Tags">
                   <span class="lab-chip">
@@ -224,25 +218,21 @@
                 </h3>
 
                 <p>
-                  You are training a junior admin on switching users and using
-                  sudo correctly. The goal is to demonstrate safe escalation
-                  patterns: run a single privileged command, open a root login
-                  shell for multi-step work, create a temporary admin user, grant
-                  them sudo via the correct group, validate access, then clean
-                  everything up.
+                  You are training a junior admin on switching users and using sudo correctly. The goal is to demonstrate safe escalation
+                  patterns: run a single privileged command, open a root login shell for multi-step work, create a temporary admin user,
+                  grant them sudo via the correct group, validate access, then clean everything up.
                 </p>
 
                 <div class="lab-callout">
                   <div class="lab-callout-label">Operator context</div>
                   <p class="m-b-0">
-                    The difference between “I can run sudo” and “I understand
-                    privilege boundaries” shows up in the command choices you
-                    make under pressure.
+                    The difference between I can run sudo and I understand privilege boundaries shows up in the command choices you make
+                    under pressure.
                   </p>
                 </div>
               </section>
 
-              <!-- 3) Objective -->
+              <!-- Objective -->
               <section class="lab-section alt-background" id="objective">
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">
                   Objective
@@ -252,54 +242,35 @@
                   <li>Run a privileged command with <code>sudo</code>.</li>
                   <li>Enter a root login shell using <code>sudo -i</code>.</li>
                   <li>Create a temporary user account.</li>
-                  <li>
-                    Grant sudo access using group membership
-                    (<code>sudo</code> or <code>wheel</code>).
-                  </li>
-                  <li>
-                    Switch into the new account with a full login environment.
-                  </li>
-                  <li>Prove sudo works and clean up the account.</li>
+                  <li>Grant sudo access via group membership.</li>
+                  <li>Switch into the new account with a full login environment using <code>su -</code>.</li>
+                  <li>Prove sudo works with <code>sudo whoami</code> and clean up with <code>userdel -r</code>.</li>
                 </ul>
               </section>
 
-              <!-- 4) What You'll Practice -->
-              <section class="lab-section" id="practice">
+              <!-- Concepts -->
+              <section class="lab-section" id="concepts">
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">
-                  What You’ll Practice
+                  Concepts
                 </h3>
 
-                <ul class="m-t-10">
+                <ul>
                   <li>
-                    Targeted escalation with <code>sudo &lt;command&gt;</code>
-                    versus opening a root shell.
+                    Use <code>sudo</code> for single commands when possible. A full root shell increases blast radius if you mistype.
                   </li>
                   <li>
-                    Root login shell behavior using <code>sudo -i</code>.
+                    A root login shell via <code>sudo -i</code> matters because it loads root’s login environment, not just a root UID.
                   </li>
                   <li>
-                    Creating a user with <code>useradd</code> and setting a
-                    password with <code>passwd</code>.
+                    Group-based sudo is common. The allowed group name varies by distro family, so you verify group membership and then verify behavior.
                   </li>
                   <li>
-                    Granting sudo via group membership:
-                    <code>sudo</code> (Debian/Ubuntu) vs <code>wheel</code>
-                    (RHEL family).
-                  </li>
-                  <li>
-                    Switching users correctly with <code>su -</code> to load the
-                    target user's login environment.
-                  </li>
-                  <li>
-                    Validating effective identity with <code>sudo whoami</code>.
-                  </li>
-                  <li>
-                    Cleanup discipline with <code>userdel -r</code>.
+                    Switching users with <code>su -</code> loads the target user’s login environment, which affects PATH and profile behavior.
                   </li>
                 </ul>
               </section>
 
-              <!-- 5) Commands Walkthrough -->
+              <!-- Walkthrough -->
               <section class="lab-section alt-background" id="walkthrough">
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">
                   Walkthrough
@@ -309,17 +280,13 @@
                 <div class="lab-step">
                   <div class="lab-step-title">
                     <strong class="font-alt">Step 1</strong>
-                    : Run a single privileged command with sudo.
+                    : Run a single privileged command.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
-                      <button
-                        class="lab-copy-btn"
-                        type="button"
-                        data-copy="#cmd-step-1"
-                      >
+                      <button class="lab-copy-btn" type="button" data-copy="#cmd-step-1">
                         Copy
                       </button>
                     </div>
@@ -327,8 +294,7 @@
                   </div>
 
                   <p>
-                    Use <code>sudo</code> for one-off privileged commands. It
-                    limits blast radius and keeps a clean audit trail.
+                    Use <code>sudo</code> for one-off privileged commands. It limits blast radius and keeps a clean audit trail.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -341,17 +307,13 @@ file1.txt  backup.tar.gz</code></pre>
                 <div class="lab-step">
                   <div class="lab-step-title">
                     <strong class="font-alt">Step 2</strong>
-                    : Open a root login shell for multi-step admin work.
+                    : Open a root login shell for multi-step work.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
-                      <button
-                        class="lab-copy-btn"
-                        type="button"
-                        data-copy="#cmd-step-2"
-                      >
+                      <button class="lab-copy-btn" type="button" data-copy="#cmd-step-2">
                         Copy
                       </button>
                     </div>
@@ -359,8 +321,7 @@ file1.txt  backup.tar.gz</code></pre>
                   </div>
 
                   <p>
-                    <code>sudo -i</code> simulates a root login shell. Use it when
-                    you have several admin tasks to perform and want consistent
+                    <code>sudo -i</code> simulates a root login shell. Use it when you have several admin tasks to perform and want consistent
                     root environment behavior.
                   </p>
                 </div>
@@ -375,11 +336,7 @@ file1.txt  backup.tar.gz</code></pre>
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
-                      <button
-                        class="lab-copy-btn"
-                        type="button"
-                        data-copy="#cmd-step-3"
-                      >
+                      <button class="lab-copy-btn" type="button" data-copy="#cmd-step-3">
                         Copy
                       </button>
                     </div>
@@ -387,8 +344,7 @@ file1.txt  backup.tar.gz</code></pre>
                   </div>
 
                   <p>
-                    Creating a temporary account is a safe way to validate group
-                    rules and sudo policy without touching production users.
+                    Creating a temporary account is a safe way to validate group rules and sudo policy without touching production users.
                   </p>
                 </div>
 
@@ -402,11 +358,7 @@ file1.txt  backup.tar.gz</code></pre>
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
-                      <button
-                        class="lab-copy-btn"
-                        type="button"
-                        data-copy="#cmd-step-4"
-                      >
+                      <button class="lab-copy-btn" type="button" data-copy="#cmd-step-4">
                         Copy
                       </button>
                     </div>
@@ -414,8 +366,7 @@ file1.txt  backup.tar.gz</code></pre>
                   </div>
 
                   <p>
-                    This makes the account usable for <code>su -</code> and for
-                    interactive sudo prompts.
+                    This makes the account usable for <code>su -</code> and for interactive sudo prompts.
                   </p>
                 </div>
 
@@ -426,40 +377,35 @@ file1.txt  backup.tar.gz</code></pre>
                     : Grant sudo via group membership.
                   </div>
 
-                  <div class="lab-codeblock m-b-40 m-t-40">
-                    <div class="lab-codeblock-header">
-                      <span>Command</span>
-                      <button
-                        class="lab-copy-btn"
-                        type="button"
-                        data-copy="#cmd-step-5a"
-                      >
-                        Copy
-                      </button>
-                    </div>
-                    <pre><code id="cmd-step-5a"># Debian/Ubuntu:
-usermod -aG sudo tempsudo</code></pre>
+                  <div class="lab-callout">
+                    <div class="lab-callout-label">Operator note</div>
+                    <p class="m-b-0">
+                      The privileged group name differs by distro family. Use the appropriate command for your host, then verify.
+                    </p>
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
-                      <button
-                        class="lab-copy-btn"
-                        type="button"
-                        data-copy="#cmd-step-5b"
-                      >
+                      <button class="lab-copy-btn" type="button" data-copy="#cmd-step-5a">
                         Copy
                       </button>
                     </div>
-                    <pre><code id="cmd-step-5b"># RHEL family:
-usermod -aG wheel tempsudo</code></pre>
+                    <pre><code id="cmd-step-5a">usermod -aG sudo tempsudo</code></pre>
+                  </div>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <div class="lab-codeblock-header">
+                      <span>Command</span>
+                      <button class="lab-copy-btn" type="button" data-copy="#cmd-step-5b">
+                        Copy
+                      </button>
+                    </div>
+                    <pre><code id="cmd-step-5b">usermod -aG wheel tempsudo</code></pre>
                   </div>
 
                   <p>
-                    Many systems delegate sudo authorization through a privileged
-                    group. The group name differs by distro family, so you need
-                    to recognize both patterns.
+                    Group membership is not the same as effective capability. You still prove behavior with an actual sudo command.
                   </p>
                 </div>
 
@@ -473,11 +419,7 @@ usermod -aG wheel tempsudo</code></pre>
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
-                      <button
-                        class="lab-copy-btn"
-                        type="button"
-                        data-copy="#cmd-step-6"
-                      >
+                      <button class="lab-copy-btn" type="button" data-copy="#cmd-step-6">
                         Copy
                       </button>
                     </div>
@@ -485,8 +427,7 @@ usermod -aG wheel tempsudo</code></pre>
                   </div>
 
                   <p>
-                    Dropping back to an unprivileged context is part of clean
-                    operational discipline.
+                    Dropping back to an unprivileged context is part of clean operational discipline.
                   </p>
                 </div>
 
@@ -500,11 +441,7 @@ usermod -aG wheel tempsudo</code></pre>
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
-                      <button
-                        class="lab-copy-btn"
-                        type="button"
-                        data-copy="#cmd-step-7"
-                      >
+                      <button class="lab-copy-btn" type="button" data-copy="#cmd-step-7">
                         Copy
                       </button>
                     </div>
@@ -512,9 +449,8 @@ usermod -aG wheel tempsudo</code></pre>
                   </div>
 
                   <p>
-                    <code>su -</code> loads the target user’s login environment,
-                    which matters when you are testing PATH, profiles, and
-                    group membership behavior.
+                    <code>su -</code> loads the target user’s login environment, which matters when you are testing PATH, profiles, and group
+                    membership behavior.
                   </p>
                 </div>
 
@@ -528,11 +464,7 @@ usermod -aG wheel tempsudo</code></pre>
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
-                      <button
-                        class="lab-copy-btn"
-                        type="button"
-                        data-copy="#cmd-step-8"
-                      >
+                      <button class="lab-copy-btn" type="button" data-copy="#cmd-step-8">
                         Copy
                       </button>
                     </div>
@@ -540,8 +472,7 @@ usermod -aG wheel tempsudo</code></pre>
                   </div>
 
                   <p>
-                    This is the quick identity proof: if sudo is working, the
-                    output should be <code>root</code>.
+                    This is the quick identity proof. If sudo is working, the output should be root.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -559,11 +490,7 @@ usermod -aG wheel tempsudo</code></pre>
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
-                      <button
-                        class="lab-copy-btn"
-                        type="button"
-                        data-copy="#cmd-step-9"
-                      >
+                      <button class="lab-copy-btn" type="button" data-copy="#cmd-step-9">
                         Copy
                       </button>
                     </div>
@@ -571,73 +498,108 @@ usermod -aG wheel tempsudo</code></pre>
                   </div>
 
                   <p>
-                    Always remove training accounts and test access once the
-                    verification is complete.
+                    Always remove training accounts and test access once verification is complete.
                   </p>
                 </div>
               </section>
 
-              <!-- 8) Reference -->
+              <!-- Breakpoints -->
+              <section class="lab-section" id="breakpoints">
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  Breakpoints
+                </h3>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">Sudo still fails after group change</div>
+                  <p class="m-b-0">
+                    Group membership may not apply to an existing session. Re-enter a full login session with <code>su -</code>, or log out and
+                    back in, then test again with <code>sudo whoami</code>.
+                  </p>
+                </div>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">Root shell confusion</div>
+                  <p class="m-b-0">
+                    If you used <code>sudo -i</code> and forget you are root, you may accidentally run risky commands. Confirm identity with
+                    <code>whoami</code> before changes, and exit back to a normal shell when you are done.
+                  </p>
+                </div>
+              </section>
+
+              <!-- Cleanup -->
+              <section class="lab-section alt-background" id="cleanup">
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  Cleanup checklist
+                </h3>
+
+                <ul>
+                  <li>Confirm the test account is gone.</li>
+                  <li>Confirm there are no remaining processes owned by the test account.</li>
+                </ul>
+
+                <div class="lab-codeblock m-b-40 m-t-40">
+                  <div class="lab-codeblock-header">
+                    <span>Commands</span>
+                    <button class="lab-copy-btn" type="button" data-copy="#cmd-cleanup">
+                      Copy
+                    </button>
+                  </div>
+                  <pre><code id="cmd-cleanup">getent passwd tempsudo
+ps -u tempsudo</code></pre>
+                </div>
+              </section>
+
+              <!-- Reference -->
               <section class="lab-section" id="reference">
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">
                   Reference
                 </h3>
 
                 <ul class="lab-reference-list">
+                  <li><code>sudo</code>: Run commands with elevated privileges.</li>
                   <li>
-                    <code>sudo &lt;command&gt;</code>
-                    : Runs a single command with elevated privileges.
+                    <code>sudo -i</code>: Start a root login shell.
+                    <ul>
+                      <li><code>-i</code>: Use a login shell environment.</li>
+                    </ul>
                   </li>
+                  <li><code>su</code>: Switch user.</li>
                   <li>
-                    <code>sudo -i</code>
-                    : Starts a root login shell (root environment).
+                    <code>su -</code>: Switch user with a full login environment.
+                    <ul>
+                      <li><code>-</code>: Load the target user’s login environment.</li>
+                    </ul>
                   </li>
+                  <li><code>useradd</code>: Create a user account.</li>
+                  <li><code>passwd</code>: Set or change a user password.</li>
                   <li>
-                    <code>useradd &lt;user&gt;</code>
-                    : Creates a new user.
+                    <code>usermod</code>: Modify a user account.
+                    <ul>
+                      <li><code>-a</code>: Append to supplementary groups.</li>
+                      <li><code>-G</code>: Set supplementary groups.</li>
+                    </ul>
                   </li>
+                  <li><code>userdel</code>: Delete a user account.</li>
                   <li>
-                    <code>passwd &lt;user&gt;</code>
-                    : Sets or changes a user password.
+                    <code>userdel -r</code>: Delete a user and remove their home directory.
+                    <ul>
+                      <li><code>-r</code>: Remove home directory and mail spool.</li>
+                    </ul>
                   </li>
-                  <li>
-                    <code>usermod -aG sudo &lt;user&gt;</code>
-                    : Grants sudo on Debian/Ubuntu by adding to the <code>sudo</code>
-                    group.
-                  </li>
-                  <li>
-                    <code>usermod -aG wheel &lt;user&gt;</code>
-                    : Grants sudo on RHEL family by adding to the <code>wheel</code>
-                    group.
-                  </li>
-                  <li>
-                    <code>su - &lt;user&gt;</code>
-                    : Switches to another user and loads their login environment.
-                  </li>
-                  <li>
-                    <code>sudo whoami</code>
-                    : Prints the effective user when running under sudo.
-                  </li>
-                  <li>
-                    <code>userdel -r &lt;user&gt;</code>
-                    : Removes a user and their home directory.
-                  </li>
+                  <li><code>whoami</code>: Print effective username.</li>
+                  <li><code>ls</code>: List directory contents.</li>
+                  <li><code>/root</code>: Root user’s home directory.</li>
+                  <li><code>getent</code>: Query system databases.</li>
+                  <li><code>ps</code>: List processes.</li>
                 </ul>
               </section>
-
-              <!-- Lab Pagination -->
             </div>
             <!-- /main -->
           </div>
           <!-- /row -->
 
           <nav class="lab-pagination">
-            <a
-              id="prev-lab"
-              class="lab-nav-link"
-              href="#"
-              aria-label="Previous lab"
-            >
+            <a id="prev-lab" class="lab-nav-link" href="#" aria-label="Previous lab">
               &uArr;
             </a>
           </nav>
@@ -652,20 +614,12 @@ usermod -aG wheel tempsudo</code></pre>
             <div class="col-sm-12">
               <ul class="social-text-links font-alt text-center m-b-20">
                 <li>
-                  <a
-                    href="https://github.com/vonds"
-                    target="_blank"
-                    rel="noopener"
-                  >
+                  <a href="https://github.com/vonds" target="_blank" rel="noopener">
                     Github
                   </a>
                 </li>
                 <li>
-                  <a
-                    href="https://www.linkedin.com/in/vonds/"
-                    target="_blank"
-                    rel="noopener"
-                  >
+                  <a href="https://www.linkedin.com/in/vonds/" target="_blank" rel="noopener">
                     Linkedin
                   </a>
                 </li>
@@ -711,5 +665,9 @@ usermod -aG wheel tempsudo</code></pre>
 
     <!-- Lab page JS (new) -->
     <script src="../assets/js/lab.js"></script>
+
+    <script>
+      document.getElementById('year').textContent = new Date().getFullYear()
+    </script>
   </body>
 </html>

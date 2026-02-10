@@ -1,0 +1,801 @@
+<!-- lab151.html -->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="exit_0 Documentation" />
+    <meta name="name" content="Vonds" />
+
+    <title>Vonds | Lab 151</title>
+
+    <!-- Favicons -->
+    <link rel="shortcut icon" href="../assets/images/favicon.png" />
+    <link rel="apple-touch-icon" href="../assets/images/apple-touch-icon.png" />
+    <link
+      rel="apple-touch-icon"
+      sizes="72x72"
+      href="../assets/images/apple-touch-icon-72x72.png"
+    />
+    <link
+      rel="apple-touch-icon"
+      sizes="114x114"
+      href="../assets/images/apple-touch-icon-114x114.png"
+    />
+
+    <!-- Site styles (your existing) -->
+    <link href="../assets/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="../assets/css/font-awesome.min.css" rel="stylesheet" />
+    <link href="../assets/css/linea-icons.css" rel="stylesheet" />
+    <link href="../assets/css/ionicons.min.css" rel="stylesheet" />
+    <link href="../assets/css/simpletextrotator.css" rel="stylesheet" />
+    <link href="../assets/css/magnific-popup.css" rel="stylesheet" />
+    <link href="../assets/css/owl.carousel.css" rel="stylesheet" />
+    <link href="../assets/css/superslides.css" rel="stylesheet" />
+    <link href="../assets/css/vertical.css" rel="stylesheet" />
+    <link href="../assets/css/animate.css" rel="stylesheet" />
+    <link href="../assets/css/style.css" rel="stylesheet" />
+    <link href="../assets/css/docs.css" rel="stylesheet" />
+
+    <!-- Lab page styles -->
+    <link href="../assets/css/lab.css" rel="stylesheet" />
+
+    <!-- Fonts -->
+    <link
+      href="https://fonts.googleapis.com/css?family=Dosis"
+      rel="stylesheet"
+    />
+  </head>
+
+  <body>
+    <!-- PRELOADER -->
+    <div class="page-loader">
+      <div class="loader">Loading...</div>
+    </div>
+
+    <!-- OVERLAY MENU -->
+    <div id="overlay-menu" class="overlay-menu">
+      <a href="#" id="overlay-menu-hide" class="navigation-hide">
+        <i class="ion-close-round"></i>
+      </a>
+
+      <div class="overlay-menu-inner">
+        <nav class="overlay-menu-nav">
+          <ul id="nav">
+            <li><a href="../index.html">Home</a></li>
+
+            <li class="slidedown">
+              <a href="#">Portfolio</a>
+              <ul>
+                <li>
+                  <a href="https://github.com/vonds/exit_0" target="_blank">
+                    exit_0
+                  </a>
+                </li>
+                <li>
+                  <a href="https://github.com/vonds/sentinel" target="_blank">
+                    Sentinel
+                  </a>
+                </li>
+                <li>
+                  <a href="docs.html" target="_blank">exit_0 Documentation</a>
+                </li>
+              </ul>
+            </li>
+
+            <li>
+              <a
+                href="https://www.linkedin.com/in/vonds/"
+                target="_blank"
+                rel="noopener"
+              >
+                LinkedIn
+              </a>
+            </li>
+            <li>
+              <a href="https://github.com/vonds" target="_blank" rel="noopener">
+                Github
+              </a>
+            </li>
+            <li>
+              <a href="mailto:vonds13@gmail.com?subject=Hello Vonds">Contact</a>
+            </li>
+          </ul>
+        </nav>
+      </div>
+
+      <div class="overlay-navigation-footer">
+        <div class="container">
+          <div class="row">
+            <div class="col-sm-12 text-center">
+              <p class="copyright font-alt m-b-0">
+                VONDS &copy;
+                <script>
+                  document.write(new Date().getFullYear())
+                </script>
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- WRAPPER -->
+    <div class="wrapper">
+      <!-- NAVIGATION -->
+      <nav
+        class="navbar navbar-custom navbar-transparent navbar-light navbar-fixed-top"
+      >
+        <div class="container">
+          <div class="navbar-header">
+            <a class="navbar-brand" href="../index.html">
+              <img src="../assets/images/logo-dark.png" width="95" alt="" />
+            </a>
+          </div>
+
+          <ul id="icons-navbar" class="nav navbar-nav navbar-right">
+            <li>
+              <a href="#" id="toggle-menu" class="show-overlay" title="Menu">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </nav>
+
+      <!-- DOCS PAGE -->
+      <section class="module">
+        <div class="container">
+          <h2 class="font-alt module-title m-t-60">
+            Lab 151: usermod User Account Modification
+          </h2>
+
+          <nav class="lab-pagination">
+            <a
+              id="prev-lab"
+              class="lab-nav-link"
+              href="#"
+              aria-label="Previous lab"
+            >
+              &laquo;
+            </a>
+            <a
+              id="next-lab"
+              class="lab-nav-link"
+              href="#"
+              aria-label="Next lab"
+            >
+              &raquo;
+            </a>
+          </nav>
+
+          <div class="row">
+            <!-- LEFT SIDEBAR -->
+            <div class="col-sm-4 col-md-3 lab-sidebar">
+              <div class="docs-sidebar">
+                <div class="docs-widget">
+                  <h5 class="widget-title">
+                    <a href="./docs.html">Back to Lab Index</a>
+                  </h5>
+                  <ul class="docs-nav">
+                    <li><a href="#scenario">Scenario</a></li>
+                    <li><a href="#objective">Objective</a></li>
+                    <li><a href="#concepts">Concepts</a></li>
+                    <li><a href="#walkthrough">Walkthrough</a></li>
+                    <li><a href="#breakpoints">Breakpoints</a></li>
+                    <li><a href="#cleanup">Cleanup</a></li>
+                    <li><a href="#reference">Reference</a></li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            <!-- MAIN CONTENT -->
+            <div class="col-sm-8 col-md-9 lab-doc">
+              <p class="m-b-20 lab-summary">
+                Collect baseline identity evidence for an existing user, apply a
+                realistic set of account changes efficiently with usermod,
+                perform a separate login rename operation, then verify the final
+                state through NSS and filesystem ownership checks.
+              </p>
+
+              <!-- Video (kept on page; removed from left panel) -->
+              <section class="lab-section" id="video" aria-label="Lab video">
+                <div class="lab-video">
+                  <div class="lab-video-embed text-center">
+                    <iframe
+                      src="https://www.youtube.com/embed/uJk54bhaadA?si=seGSukCoMFN7ohRo"
+                      title="YouTube video player"
+                      frameborder="0"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                      referrerpolicy="strict-origin-when-cross-origin"
+                      allowfullscreen
+                    ></iframe>
+                  </div>
+                </div>
+              </section>
+
+              <!-- Scenario -->
+              <section class="lab-section" id="scenario">
+                <div class="lab-chips" aria-label="Tags">
+                  <span class="lab-chip">
+                    <span class="lab-chip-key">users</span>
+                  </span>
+                  <span class="lab-chip">
+                    <span class="lab-chip-key">security</span>
+                  </span>
+                  <span class="lab-chip">
+                    <span class="lab-chip-key">core</span>
+                  </span>
+                </div>
+
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  Scenario
+                </h3>
+
+                <p>
+                  User Satoshi has moved teams. You must update access and
+                  account settings with minimal disruption. Capture baseline
+                  evidence first, apply changes efficiently, rename the login,
+                  then verify the final state with proof.
+                </p>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">Requested changes</div>
+                  <p class="m-b-0">
+                    Primary group developers, add docker and wheel, set shell
+                    to /bin/zsh, move home to /srv/satoshi, set account expiry
+                    to 2025-12-31, set UID to 1055, set comment to Satoshi
+                    Nakamoto, and rename login satoshi to satoshi-renamed.
+                  </p>
+                </div>
+              </section>
+
+              <!-- Objective -->
+              <section class="lab-section alt-background" id="objective">
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  Objective
+                </h3>
+                <ul>
+                  <li>Capture baseline account identity and group membership.</li>
+                  <li>Apply primary group, supplementary groups, shell, home move, expiry, UID, and comment changes.</li>
+                  <li>Rename the login from satoshi to satoshi-renamed.</li>
+                  <li>Verify final NSS passwd entry for the renamed account.</li>
+                  <li>Confirm the new home path exists and ownership looks sane.</li>
+                </ul>
+              </section>
+
+              <!-- Concepts (no alt-background moving forward) -->
+              <section class="lab-section" id="concepts">
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  Concepts
+                </h3>
+                <ul>
+                  <li>
+                    Baseline evidence first:
+                    <code>id</code>
+                    captures uid, gid, groups before changes.
+                  </li>
+                  <li>
+                    Primary versus supplementary groups:
+                    <code>-g</code>
+                    sets primary;
+                    <code>-aG</code>
+                    appends supplementary groups without overwriting.
+                  </li>
+                  <li>
+                    Home directory move:
+                    <code>-d</code>
+                    sets new home;
+                    <code>-m</code>
+                    moves contents.
+                  </li>
+                  <li>
+                    Account identity changes:
+                    <code>-u</code>
+                    changes UID and can affect file ownership outside the home directory.
+                  </li>
+                  <li>
+                    Account expiry:
+                    <code>-e</code>
+                    sets login expiration date.
+                  </li>
+                  <li>
+                    Login rename:
+                    <code>-l</code>
+                    changes the username and is commonly done as a separate, explicit step.
+                  </li>
+                  <li>
+                    Verification:
+                    <code>getent passwd</code>
+                    proves NSS state;
+                    <code>ls -ld</code>
+                    validates directory ownership and permissions.
+                  </li>
+                </ul>
+              </section>
+
+              <!-- Walkthrough -->
+              <section class="lab-section alt-background" id="walkthrough">
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  Walkthrough
+                </h3>
+
+                <!-- Step 1 -->
+                <div class="lab-step">
+                  <div class="lab-step-title">
+                    <strong class="font-alt">Step 1</strong>
+                    : Capture baseline state for satoshi.
+                  </div>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <div class="lab-codeblock-header">
+                      <span>Command</span>
+                      <button
+                        class="lab-copy-btn"
+                        type="button"
+                        data-copy="#cmd-step-1"
+                      >
+                        Copy
+                      </button>
+                    </div>
+                    <pre><code id="cmd-step-1">id satoshi</code></pre>
+                  </div>
+
+                  <p>
+                    Start with baseline evidence. If something breaks, this is
+                    what you compare against and what you paste into a ticket
+                    update. It captures uid, primary gid, and supplementary
+                    groups.
+                  </p>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <pre><code>uid=1003(satoshi) gid=1003(satoshi) groups=1003(satoshi)</code></pre>
+                  </div>
+                </div>
+
+                <!-- Step 2 -->
+                <div class="lab-step">
+                  <div class="lab-step-title">
+                    <strong class="font-alt">Step 2</strong>
+                    : Apply requested changes in one usermod command.
+                  </div>
+
+                  <div class="lab-callout">
+                    <div class="lab-callout-label">Operational note</div>
+                    <p class="m-b-0">
+                      Combining changes reduces steps, but you still validate
+                      outcomes and separate the login rename to keep operations
+                      explicit and easier to roll back.
+                    </p>
+                  </div>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <div class="lab-codeblock-header">
+                      <span>Command</span>
+                      <button
+                        class="lab-copy-btn"
+                        type="button"
+                        data-copy="#cmd-step-2"
+                      >
+                        Copy
+                      </button>
+                    </div>
+                    <pre><code id="cmd-step-2">sudo usermod -g developers -aG docker,wheel -s /bin/zsh -d /srv/satoshi -m -e 2025-12-31 -u 1055 -c "Satoshi Nakamoto" satoshi</code></pre>
+                  </div>
+
+                  <p>
+                    This updates group membership, login shell, home directory
+                    location and moves the home contents, sets the account expiry
+                    date, changes the UID, and updates the comment field. The
+                    <code>-aG</code>
+                    is critical because it appends groups; omitting
+                    <code>-a</code>
+                    overwrites the supplementary group list.
+                  </p>
+                </div>
+
+                <!-- Step 3 -->
+                <div class="lab-step">
+                  <div class="lab-step-title">
+                    <strong class="font-alt">Step 3</strong>
+                    : Rename the login from satoshi to satoshi-renamed.
+                  </div>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <div class="lab-codeblock-header">
+                      <span>Command</span>
+                      <button
+                        class="lab-copy-btn"
+                        type="button"
+                        data-copy="#cmd-step-3"
+                      >
+                        Copy
+                      </button>
+                    </div>
+                    <pre><code id="cmd-step-3">sudo usermod -l satoshi-renamed satoshi</code></pre>
+                  </div>
+
+                  <p>
+                    This changes the username. Separating it from the bulk
+                    modification makes it obvious when the identity shift
+                    happened and helps keep verification steps clean.
+                  </p>
+                </div>
+
+                <!-- Step 4 -->
+                <div class="lab-step">
+                  <div class="lab-step-title">
+                    <strong class="font-alt">Step 4</strong>
+                    : Verify the final account state via NSS.
+                  </div>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <div class="lab-codeblock-header">
+                      <span>Command</span>
+                      <button
+                        class="lab-copy-btn"
+                        type="button"
+                        data-copy="#cmd-step-4"
+                      >
+                        Copy
+                      </button>
+                    </div>
+                    <pre><code id="cmd-step-4">getent passwd satoshi-renamed</code></pre>
+                  </div>
+
+                  <p>
+                    This is the authoritative user record view. Confirm UID,
+                    primary group mapping, comment, home, and shell. If your
+                    environment uses directory services, getent is still the
+                    right tool because it reflects NSS resolution.
+                  </p>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <pre><code>satoshi-renamed:x:1055:2001:Satoshi Nakamoto:/srv/satoshi:/bin/zsh</code></pre>
+                  </div>
+                </div>
+
+                <!-- Step 5 -->
+                <div class="lab-step">
+                  <div class="lab-step-title">
+                    <strong class="font-alt">Step 5</strong>
+                    : Confirm the new home exists and ownership looks sane.
+                  </div>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <div class="lab-codeblock-header">
+                      <span>Command</span>
+                      <button
+                        class="lab-copy-btn"
+                        type="button"
+                        data-copy="#cmd-step-5"
+                      >
+                        Copy
+                      </button>
+                    </div>
+                    <pre><code id="cmd-step-5">ls -ld /srv/satoshi</code></pre>
+                  </div>
+
+                  <p>
+                    This confirms the directory exists and validates ownership
+                    and permissions. This is a practical check that the home move
+                    happened and the primary group aligns with the new team.
+                  </p>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <pre><code>drwx------ 4 satoshi-renamed developers 4096 Feb  8 07:11 /srv/satoshi</code></pre>
+                  </div>
+                </div>
+              </section>
+
+              <!-- Common breakpoints -->
+              <section class="lab-section" id="breakpoints">
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  Common breakpoints
+                </h3>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">
+                    usermod fails because the user is logged in
+                  </div>
+                  <p class="m-b-0">
+                    Changing UID, home, and login names is risky while a user
+                    has active sessions. Ensure the account is not logged in and
+                    processes are stopped before applying identity changes.
+                  </p>
+                </div>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">
+                    Groups were overwritten instead of appended
+                  </div>
+                  <p class="m-b-0">
+                    If you used
+                    <code>-G</code>
+                    without
+                    <code>-a</code>
+                    you replaced the supplementary group list. Use
+                    <code>-aG</code>
+                    to append additional groups safely.
+                  </p>
+                </div>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">
+                    UID change causes unexpected file ownership issues
+                  </div>
+                  <p class="m-b-0">
+                    Files outside the home directory may still be owned by the
+                    old UID. After a UID change, locate and correct ownership on
+                    impacted paths when required by your environment.
+                  </p>
+                </div>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">
+                    Home directory move did not move contents
+                  </div>
+                  <p class="m-b-0">
+                    Ensure you included
+                    <code>-m</code>
+                    along with
+                    <code>-d</code>
+                    . Without
+                    <code>-m</code>
+                    , usermod updates the home path in metadata but does not
+                    relocate files.
+                  </p>
+                </div>
+              </section>
+
+              <!-- Cleanup -->
+              <section class="lab-section alt-background" id="cleanup">
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  Cleanup checklist
+                </h3>
+
+                <p>
+                  This lab is intentionally condensed and does not include a
+                  teardown step. If you are running in a disposable environment,
+                  your cleanup is reverting the identity changes or deleting the
+                  test account per your lab reset workflow.
+                </p>
+
+                <div class="lab-codeblock m-b-40 m-t-40">
+                  <div class="lab-codeblock-header">
+                    <span>Commands</span>
+                    <button
+                      class="lab-copy-btn"
+                      type="button"
+                      data-copy="#cmd-cleanup"
+                    >
+                      Copy
+                    </button>
+                  </div>
+                  <pre><code id="cmd-cleanup">getent passwd satoshi-renamed
+ls -ld /srv/satoshi</code></pre>
+                </div>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">Success signal</div>
+                  <p class="m-b-0">
+                    The passwd entry shows the renamed login, the expected home,
+                    and the updated shell. The home directory exists with sane
+                    ownership and permissions.
+                  </p>
+                </div>
+              </section>
+
+              <!-- Reference -->
+              <section class="lab-section" id="reference">
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  Reference
+                </h3>
+
+                <ul class="lab-reference-list">
+                  <li>
+                    <code>id &lt;user&gt;</code>
+                    : Displays UID, primary group, and supplementary groups.
+                  </li>
+
+                  <li>
+                    <code>usermod -g &lt;group&gt; &lt;user&gt;</code>
+                    : Sets the primary group for a user.
+                    <ul>
+                      <li>
+                        <code>-g</code>
+                        : Primary group.
+                      </li>
+                    </ul>
+                  </li>
+
+                  <li>
+                    <code>usermod -aG &lt;g1,g2&gt; &lt;user&gt;</code>
+                    : Appends supplementary groups without overwriting existing groups.
+                    <ul>
+                      <li>
+                        <code>-a</code>
+                        : Append to supplementary groups.
+                      </li>
+                      <li>
+                        <code>-G</code>
+                        : Supplementary groups (comma-separated).
+                      </li>
+                    </ul>
+                  </li>
+
+                  <li>
+                    <code>usermod -s &lt;shell&gt; &lt;user&gt;</code>
+                    : Sets the login shell.
+                    <ul>
+                      <li>
+                        <code>-s</code>
+                        : Login shell.
+                      </li>
+                    </ul>
+                  </li>
+
+                  <li>
+                    <code>usermod -d &lt;home&gt; -m &lt;user&gt;</code>
+                    : Sets home directory path and moves the contents.
+                    <ul>
+                      <li>
+                        <code>-d</code>
+                        : New home directory path.
+                      </li>
+                      <li>
+                        <code>-m</code>
+                        : Move the content to the new home directory.
+                      </li>
+                    </ul>
+                  </li>
+
+                  <li>
+                    <code>usermod -e &lt;YYYY-MM-DD&gt; &lt;user&gt;</code>
+                    : Sets the account expiration date.
+                    <ul>
+                      <li>
+                        <code>-e</code>
+                        : Account expires on specified date.
+                      </li>
+                    </ul>
+                  </li>
+
+                  <li>
+                    <code>usermod -u &lt;uid&gt; &lt;user&gt;</code>
+                    : Changes the numeric UID for a user.
+                    <ul>
+                      <li>
+                        <code>-u</code>
+                        : New UID.
+                      </li>
+                    </ul>
+                  </li>
+
+                  <li>
+                    <code>usermod -c "&lt;comment&gt;" &lt;user&gt;</code>
+                    : Sets the account comment (GECOS).
+                    <ul>
+                      <li>
+                        <code>-c</code>
+                        : Comment field.
+                      </li>
+                    </ul>
+                  </li>
+
+                  <li>
+                    <code>usermod -l &lt;new&gt; &lt;old&gt;</code>
+                    : Renames the login username.
+                    <ul>
+                      <li>
+                        <code>-l</code>
+                        : New login name.
+                      </li>
+                    </ul>
+                  </li>
+
+                  <li>
+                    <code>getent passwd &lt;user&gt;</code>
+                    : Shows the NSS passwd entry for a user.
+                  </li>
+
+                  <li>
+                    <code>ls -ld &lt;path&gt;</code>
+                    : Shows directory permissions and ownership.
+                    <ul>
+                      <li>
+                        <code>-l</code>
+                        : Long listing format.
+                      </li>
+                      <li>
+                        <code>-d</code>
+                        : List the directory entry itself, not its contents.
+                      </li>
+                    </ul>
+                  </li>
+                </ul>
+              </section>
+            </div>
+            <!-- /main -->
+          </div>
+          <!-- /row -->
+        </div>
+        <!-- /container -->
+      </section>
+
+      <!-- FOOTER -->
+      <footer class="module bg-light">
+        <div class="container">
+          <div class="row">
+            <div class="col-sm-12">
+              <ul class="social-text-links font-alt text-center m-b-20">
+                <li>
+                  <a
+                    href="https://github.com/vonds"
+                    target="_blank"
+                    rel="noopener"
+                  >
+                    Github
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="https://www.linkedin.com/in/vonds/"
+                    target="_blank"
+                    rel="noopener"
+                  >
+                    Linkedin
+                  </a>
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-sm-12">
+              <p class="copyright text-center m-b-0">
+                VONDS &copy;
+                <span id="year"></span>
+              </p>
+
+              <div class="scroll-up">
+                <a href="#totop"><i class="fa fa-angle-double-up"></i></a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <!-- Javascript files (your existing) -->
+    <script src="../assets/js/jquery-2.2.4.min.js"></script>
+    <script src="../assets/bootstrap/js/bootstrap.min.css"></script>
+    <script src="../assets/js/jquery.superslides.min.js"></script>
+    <script src="../assets/js/jquery.mb.YTPlayer.min.js"></script>
+    <script src="../assets/js/jquery.magnific-popup.min.js"></script>
+    <script src="../assets/js/owl.carousel.min.js"></script>
+    <script src="../assets/js/jquery.simple-text-rotator.min.js"></script>
+    <script src="../assets/js/imagesloaded.pkgd.js"></script>
+    <script src="../assets/js/isotope.pkgd.min.js"></script>
+    <script src="../assets/js/packery-mode.pkgd.min.js"></script>
+    <script src="../assets/js/packery-mode.pkgd.min.js"></script>
+    <script src="../assets/js/appear.js"></script>
+    <script src="../assets/js/jquery.easing.1.3.js"></script>
+    <script src="../assets/js/wow.min.js"></script>
+    <script src="../assets/js/jqBootstrapValidation.js"></script>
+    <script src="../assets/js/jquery.fitvids.js"></script>
+    <script src="../assets/js/jquery.parallax-1.1.3.js"></script>
+    <script src="../assets/js/smoothscroll.js"></script>
+    <script src="../assets/js/custom.js"></script>
+
+    <!-- Lab page JS (new) -->
+    <script src="../assets/js/lab.js"></script>
+
+    <script>
+      document.getElementById('year').textContent = new Date().getFullYear()
+    </script>
+  </body>
+</html>

@@ -1,0 +1,664 @@
+<!-- lab146.html -->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="exit_0 Documentation" />
+    <meta name="name" content="Vonds" />
+
+    <title>Vonds | Lab 146</title>
+
+    <!-- Favicons -->
+    <link rel="shortcut icon" href="../assets/images/favicon.png" />
+    <link rel="apple-touch-icon" href="../assets/images/apple-touch-icon.png" />
+    <link
+      rel="apple-touch-icon"
+      sizes="72x72"
+      href="../assets/images/apple-touch-icon-72x72.png"
+    />
+    <link
+      rel="apple-touch-icon"
+      sizes="114x114"
+      href="../assets/images/apple-touch-icon-114x114.png"
+    />
+
+    <!-- Site styles (your existing) -->
+    <link href="../assets/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="../assets/css/font-awesome.min.css" rel="stylesheet" />
+    <link href="../assets/css/linea-icons.css" rel="stylesheet" />
+    <link href="../assets/css/ionicons.min.css" rel="stylesheet" />
+    <link href="../assets/css/simpletextrotator.css" rel="stylesheet" />
+    <link href="../assets/css/magnific-popup.css" rel="stylesheet" />
+    <link href="../assets/css/owl.carousel.css" rel="stylesheet" />
+    <link href="../assets/css/superslides.css" rel="stylesheet" />
+    <link href="../assets/css/vertical.css" rel="stylesheet" />
+    <link href="../assets/css/animate.css" rel="stylesheet" />
+    <link href="../assets/css/style.css" rel="stylesheet" />
+    <link href="../assets/css/docs.css" rel="stylesheet" />
+
+    <!-- Lab page styles -->
+    <link href="../assets/css/lab.css" rel="stylesheet" />
+
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css?family=Dosis" rel="stylesheet" />
+  </head>
+
+  <body>
+    <!-- PRELOADER -->
+    <div class="page-loader">
+      <div class="loader">Loading...</div>
+    </div>
+
+    <!-- OVERLAY MENU -->
+    <div id="overlay-menu" class="overlay-menu">
+      <a href="#" id="overlay-menu-hide" class="navigation-hide">
+        <i class="ion-close-round"></i>
+      </a>
+
+      <div class="overlay-menu-inner">
+        <nav class="overlay-menu-nav">
+          <ul id="nav">
+            <li><a href="../index.html">Home</a></li>
+
+            <li class="slidedown">
+              <a href="#">Portfolio</a>
+              <ul>
+                <li>
+                  <a href="https://github.com/vonds/exit_0" target="_blank" rel="noopener">
+                    exit_0
+                  </a>
+                </li>
+                <li>
+                  <a href="docs.html" target="_blank" rel="noopener">
+                    exit_0
+                  </a>
+                </li>
+              </ul>
+            </li>
+
+            <li>
+              <a href="https://www.linkedin.com/in/vonds/" target="_blank" rel="noopener">
+                LinkedIn
+              </a>
+            </li>
+            <li>
+              <a href="https://github.com/vonds" target="_blank" rel="noopener">
+                Github
+              </a>
+            </li>
+            <li>
+              <a href="mailto:vonds13@gmail.com?subject=Hello Vonds">Contact</a>
+            </li>
+          </ul>
+        </nav>
+      </div>
+
+      <div class="overlay-navigation-footer">
+        <div class="container">
+          <div class="row">
+            <div class="col-sm-12 text-center">
+              <p class="copyright font-alt m-b-0">
+                VONDS &copy;
+                <script>
+                  document.write(new Date().getFullYear())
+                </script>
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- WRAPPER -->
+    <div class="wrapper">
+      <!-- NAVIGATION -->
+      <nav class="navbar navbar-custom navbar-transparent navbar-light navbar-fixed-top">
+        <div class="container">
+          <div class="navbar-header">
+            <a class="navbar-brand" href="../index.html">
+              <img src="../assets/images/logo-dark.png" width="95" alt="" />
+            </a>
+          </div>
+
+          <ul id="icons-navbar" class="nav navbar-nav navbar-right">
+            <li>
+              <a href="#" id="toggle-menu" class="show-overlay" title="Menu">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </nav>
+
+      <!-- DOCS PAGE -->
+      <section class="module">
+        <div class="container">
+          <h2 class="font-alt module-title m-t-60">
+            Lab 146: Administrative Tasks, Users, Groups, and Account Aging
+          </h2>
+
+          <nav class="lab-pagination">
+            <a id="prev-lab" class="lab-nav-link" href="#" aria-label="Previous lab">
+              &laquo;
+            </a>
+            <a id="next-lab" class="lab-nav-link" href="#" aria-label="Next lab">
+              &raquo;
+            </a>
+          </nav>
+
+          <div class="row">
+            <!-- LEFT SIDEBAR -->
+            <div class="col-sm-4 col-md-3 lab-sidebar">
+              <div class="docs-sidebar">
+                <div class="docs-widget">
+                  <h5 class="widget-title">
+                    <a href="./docs.html">Back to Back to Back to Lab Index</a>
+                  </h5>
+                  <ul class="docs-nav">
+                    <li><a href="#scenario">Scenario</a></li>
+                    <li><a href="#objective">Objective</a></li>
+                    <li><a href="#concepts">Concepts</a></li>
+                    <li><a href="#walkthrough">Walkthrough</a></li>
+                    <li><a href="#breakpoints">Common breakpoints</a></li>
+                    <li><a href="#cleanup">Cleanup</a></li>
+                    <li><a href="#reference">Reference</a></li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            <!-- MAIN CONTENT -->
+            <div class="col-sm-8 col-md-9 lab-doc">
+              <p class="m-b-20 lab-summary">
+                Run a focused admin workflow: create groups, provision users with primary and secondary group control,
+                adjust memberships safely, set a password, inspect and change account expiration, then clean up users
+                and groups to return the host to a known state.
+              </p>
+
+              <section class="lab-section" id="video" aria-label="Lab video">
+                <div class="lab-video">
+                  <div class="lab-video-embed text-center">
+                    <iframe
+                      src="https://www.youtube.com/embed/REPLACE_WITH_LAB146_VIDEO"
+                      title="YouTube video player"
+                      frameborder="0"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                      referrerpolicy="strict-origin-when-cross-origin"
+                      allowfullscreen
+                    ></iframe>
+                  </div>
+                </div>
+              </section>
+
+              <!-- Scenario -->
+              <section class="lab-section" id="scenario">
+                <div class="lab-chips" aria-label="Tags">
+                  <span class="lab-chip"><span class="lab-chip-key">rhel</span></span>
+                  <span class="lab-chip"><span class="lab-chip-key">rhcsa</span></span>
+                  <span class="lab-chip"><span class="lab-chip-key">users</span></span>
+                  <span class="lab-chip"><span class="lab-chip-key">groups</span></span>
+                  <span class="lab-chip"><span class="lab-chip-key">aging</span></span>
+                  <span class="lab-chip"><span class="lab-chip-key">cleanup</span></span>
+                </div>
+
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">Scenario</h3>
+
+                <p>
+                  Ops needs a quick admin run: create groups, provision users, adjust memberships, set passwords,
+                  verify account aging, simulate an expiration issue, then clean up.
+                </p>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">Operator context</div>
+                  <p class="m-b-0">
+                    This lab emphasizes safe user and group changes with verification. You will avoid partial edits,
+                    validate results with <code>id</code> and <code>chage</code>, and always return the system to a clean state.
+                  </p>
+                </div>
+              </section>
+
+              <!-- Objective -->
+              <section class="lab-section alt-background" id="objective">
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">Objective</h3>
+                <ul>
+                  <li>Create groups for administration and development workflows.</li>
+                  <li>Create a user with multiple secondary groups.</li>
+                  <li>Create a group, rename it, then add a user to it.</li>
+                  <li>Remove a single secondary group membership without impacting other memberships.</li>
+                  <li>Set a user password as an administrator.</li>
+                  <li>Inspect account aging and change the account expiration date using two valid methods.</li>
+                  <li>Create a second user with a specific UID and primary group, then add secondary groups and set the shell.</li>
+                  <li>Clean up users and groups to restore a known baseline.</li>
+                </ul>
+              </section>
+
+              <!-- Concepts -->
+              <section class="lab-section" id="concepts">
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">Concepts</h3>
+                <ul>
+                  <li>
+                    <strong>Primary vs secondary groups</strong>: a user has one primary group (stored in <code>/etc/passwd</code>)
+                    and zero or more secondary groups (stored in <code>/etc/group</code>).
+                  </li>
+                  <li>
+                    <strong>Safe group membership edits</strong>: use <code>usermod -aG</code> to append secondary groups without
+                    overwriting existing memberships.
+                  </li>
+                  <li>
+                    <strong>Targeted removal</strong>: <code>gpasswd -d</code> removes a user from a specific group without touching
+                    other groups.
+                  </li>
+                  <li>
+                    <strong>Verification first</strong>: <code>id &lt;user&gt;</code> confirms group membership after each change.
+                  </li>
+                  <li>
+                    <strong>Account aging and expiration</strong>: <code>chage</code> manages aging policy and expiration;
+                    <code>usermod -e</code> can also set the account expiration date.
+                  </li>
+                  <li>
+                    <strong>Cleanup discipline</strong>: deleting users with <code>userdel -r</code> and removing created groups
+                    prevents lab residue from polluting later labs.
+                  </li>
+                </ul>
+              </section>
+
+              <!-- Walkthrough -->
+              <section class="lab-section alt-background" id="walkthrough">
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">Walkthrough</h3>
+
+                <!-- Step 1 -->
+                <div class="lab-step">
+                  <div class="lab-step-title">
+                    <strong class="font-alt">Step 1</strong>: Create baseline groups.
+                  </div>
+
+                  <p class="m-b-20">
+                    Create the groups <code>administrators</code> and <code>developers</code>.
+                  </p>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <div class="lab-codeblock-header">
+                      <span>Commands</span>
+                      <button class="lab-copy-btn" type="button" data-copy="#cmd-step-1">Copy</button>
+                    </div>
+                    <pre><code id="cmd-step-1">sudo groupadd administrators
+sudo groupadd developers</code></pre>
+                  </div>
+
+                  <p>
+                    Group creation requires elevated privileges. On success, there is typically no output.
+                  </p>
+                </div>
+
+                <!-- Step 2 -->
+                <div class="lab-step">
+                  <div class="lab-step-title">
+                    <strong class="font-alt">Step 2</strong>: Create user kevin with secondary groups.
+                  </div>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <div class="lab-codeblock-header">
+                      <span>Command</span>
+                      <button class="lab-copy-btn" type="button" data-copy="#cmd-step-2">Copy</button>
+                    </div>
+                    <pre><code id="cmd-step-2">sudo useradd -G administrators,developers kevin</code></pre>
+                  </div>
+
+                  <p>
+                    <code>-G</code> sets secondary groups at creation. The user’s primary group will be created automatically
+                    (user private group behavior can vary by distro policy, but this lab focuses on group membership control).
+                  </p>
+                </div>
+
+                <!-- Step 3 -->
+                <div class="lab-step">
+                  <div class="lab-step-title">
+                    <strong class="font-alt">Step 3</strong>: Create a group, rename it, then add kevin to it.
+                  </div>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <div class="lab-codeblock-header">
+                      <span>Commands</span>
+                      <button class="lab-copy-btn" type="button" data-copy="#cmd-step-3">Copy</button>
+                    </div>
+                    <pre><code id="cmd-step-3">sudo groupadd designers
+sudo groupmod -n web-designers designers
+sudo usermod -aG web-designers kevin</code></pre>
+                  </div>
+
+                  <div class="lab-callout">
+                    <div class="lab-callout-label">Why -a matters</div>
+                    <p class="m-b-0">
+                      Without <code>-a</code>, <code>usermod -G</code> replaces the entire secondary group list.
+                      Always use <code>-aG</code> when you mean “append.”
+                    </p>
+                  </div>
+                </div>
+
+                <!-- Step 4 -->
+                <div class="lab-step">
+                  <div class="lab-step-title">
+                    <strong class="font-alt">Step 4</strong>: Remove one group membership and verify.
+                  </div>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <div class="lab-codeblock-header">
+                      <span>Commands</span>
+                      <button class="lab-copy-btn" type="button" data-copy="#cmd-step-4">Copy</button>
+                    </div>
+                    <pre><code id="cmd-step-4">sudo gpasswd -d kevin developers
+id kevin</code></pre>
+                  </div>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <pre><code>Removing user kevin from group developers
+uid=1001(kevin) gid=1001(kevin) groups=1001(kevin),1000(administrators),1003(web-designers)</code></pre>
+                  </div>
+                </div>
+
+                <!-- Step 5 -->
+                <div class="lab-step">
+                  <div class="lab-step-title">
+                    <strong class="font-alt">Step 5</strong>: Set a password for kevin.
+                  </div>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <div class="lab-codeblock-header">
+                      <span>Command</span>
+                      <button class="lab-copy-btn" type="button" data-copy="#cmd-step-5">Copy</button>
+                    </div>
+                    <pre><code id="cmd-step-5">sudo passwd kevin</code></pre>
+                  </div>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <pre><code>Changing password for user kevin.
+New password:
+Retype new password:
+passwd: all authentication tokens updated successfully.</code></pre>
+                  </div>
+                </div>
+
+                <!-- Step 6 -->
+                <div class="lab-step">
+                  <div class="lab-step-title">
+                    <strong class="font-alt">Step 6</strong>: Inspect and change account expiration for kevin.
+                  </div>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <div class="lab-codeblock-header">
+                      <span>Commands</span>
+                      <button class="lab-copy-btn" type="button" data-copy="#cmd-step-6">Copy</button>
+                    </div>
+                    <pre><code id="cmd-step-6">sudo chage -l kevin
+sudo chage -E 2022-12-31 kevin
+sudo usermod -e 2022-12-31 kevin</code></pre>
+                  </div>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <pre><code>Last password change                                    : Aug 20, 2025
+Password expires                                        : never
+Password inactive                                       : never
+Account expires                                         : never
+Minimum number of days between password change          : 0
+Maximum number of days between password change          : 99999
+Number of days of warning before password expires       : 7</code></pre>
+                  </div>
+
+                  <div class="lab-callout">
+                    <div class="lab-callout-label">What you are proving</div>
+                    <p class="m-b-0">
+                      You can set expiration using two different admin interfaces. In practice you choose one standard,
+                      but you should recognize both during troubleshooting.
+                    </p>
+                  </div>
+                </div>
+
+                <!-- Step 7 -->
+                <div class="lab-step">
+                  <div class="lab-step-title">
+                    <strong class="font-alt">Step 7</strong>: Create emma with a specific UID and primary group.
+                  </div>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <div class="lab-codeblock-header">
+                      <span>Commands</span>
+                      <button class="lab-copy-btn" type="button" data-copy="#cmd-step-7">Copy</button>
+                    </div>
+                    <pre><code id="cmd-step-7">sudo useradd -u 1050 -g administrators emma
+sudo usermod -aG developers,web-designers emma</code></pre>
+                  </div>
+
+                  <p>
+                    <code>-u</code> pins the UID. <code>-g</code> sets the primary group. Then you append secondary groups.
+                  </p>
+                </div>
+
+                <!-- Step 8 -->
+                <div class="lab-step">
+                  <div class="lab-step-title">
+                    <strong class="font-alt">Step 8</strong>: Change emma’s login shell.
+                  </div>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <div class="lab-codeblock-header">
+                      <span>Command</span>
+                      <button class="lab-copy-btn" type="button" data-copy="#cmd-step-8">Copy</button>
+                    </div>
+                    <pre><code id="cmd-step-8">sudo usermod -s /bin/sh emma</code></pre>
+                  </div>
+
+                  <p>
+                    Shell changes should be deliberate. Restrict shells only when you understand how it affects user workflows.
+                  </p>
+                </div>
+              </section>
+
+              <!-- Common breakpoints -->
+              <section class="lab-section" id="breakpoints">
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">Common breakpoints</h3>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">usermod replaced group memberships</div>
+                  <p class="m-b-0">
+                    If you forgot <code>-a</code>, your user may lose prior memberships. Re-add groups using
+                    <code>sudo usermod -aG ...</code>, then verify with <code>id</code>.
+                  </p>
+                </div>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">gpasswd reports user is not in the group</div>
+                  <p class="m-b-0">
+                    Verify membership first with <code>id kevin</code>. Remove only when the user is actually listed in that group.
+                  </p>
+                </div>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">passwd fails due to policy or lock</div>
+                  <p class="m-b-0">
+                    If password policy blocks the change, check configured PAM quality rules. If the account is locked,
+                    inspect with <code>passwd -S kevin</code> and correct lock state intentionally.
+                  </p>
+                </div>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">Expiration date format issues</div>
+                  <p class="m-b-0">
+                    Use ISO format <code>YYYY-MM-DD</code>. If you get unexpected results, confirm with
+                    <code>sudo chage -l kevin</code>.
+                  </p>
+                </div>
+              </section>
+
+              <!-- Cleanup -->
+              <section class="lab-section alt-background" id="cleanup">
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">Cleanup checklist</h3>
+
+                <p>
+                  Return the system to a clean baseline by deleting created users and groups.
+                </p>
+
+                <div class="lab-codeblock m-b-40 m-t-40">
+                  <div class="lab-codeblock-header">
+                    <span>Commands</span>
+                    <button class="lab-copy-btn" type="button" data-copy="#cmd-cleanup">Copy</button>
+                  </div>
+                  <pre><code id="cmd-cleanup">sudo userdel -r emma
+sudo userdel -r kevin
+sudo groupdel administrators
+sudo groupdel developers
+sudo groupdel web-designers</code></pre>
+                </div>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">Success signal</div>
+                  <p class="m-b-0">
+                    <code>id kevin</code> and <code>id emma</code> fail (users removed), and <code>getent group</code> for the created groups
+                    returns no output.
+                  </p>
+                </div>
+              </section>
+
+              <!-- Reference -->
+              <section class="lab-section" id="reference">
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">Reference</h3>
+
+                <ul class="lab-reference-list">
+                  <li>
+                    <code>groupadd &lt;group&gt;</code>: create a new group.
+                  </li>
+                  <li>
+                    <code>groupmod -n &lt;new&gt; &lt;old&gt;</code>: rename an existing group.
+                  </li>
+                  <li>
+                    <code>useradd -G g1,g2 &lt;user&gt;</code>: create a user with secondary groups.
+                    <ul>
+                      <li><code>-G</code>: sets the initial secondary group list.</li>
+                    </ul>
+                  </li>
+                  <li>
+                    <code>useradd -u &lt;uid&gt; -g &lt;group&gt; &lt;user&gt;</code>: create a user with a specific UID and primary group.
+                    <ul>
+                      <li><code>-u</code>: sets the UID.</li>
+                      <li><code>-g</code>: sets the primary group.</li>
+                    </ul>
+                  </li>
+                  <li>
+                    <code>usermod -aG g1,g2 &lt;user&gt;</code>: append secondary groups without overwriting.
+                    <ul>
+                      <li><code>-a</code>: append mode.</li>
+                      <li><code>-G</code>: group list.</li>
+                    </ul>
+                  </li>
+                  <li>
+                    <code>gpasswd -d &lt;user&gt; &lt;group&gt;</code>: remove a user from a specific group.
+                  </li>
+                  <li>
+                    <code>id &lt;user&gt;</code>: display UID, primary group, and secondary groups.
+                  </li>
+                  <li>
+                    <code>passwd &lt;user&gt;</code>: set or change a user password.
+                  </li>
+                  <li>
+                    <code>chage -l &lt;user&gt;</code>: display account aging and expiration.
+                  </li>
+                  <li>
+                    <code>chage -E &lt;date&gt; &lt;user&gt;</code>: set account expiration date.
+                    <ul>
+                      <li><code>-E</code>: expire date (use <code>YYYY-MM-DD</code>).</li>
+                    </ul>
+                  </li>
+                  <li>
+                    <code>usermod -e &lt;date&gt; &lt;user&gt;</code>: set account expiration date.
+                    <ul>
+                      <li><code>-e</code>: expire date (use <code>YYYY-MM-DD</code>).</li>
+                    </ul>
+                  </li>
+                  <li>
+                    <code>usermod -s &lt;shell&gt; &lt;user&gt;</code>: change login shell.
+                    <ul>
+                      <li><code>-s</code>: set the shell.</li>
+                    </ul>
+                  </li>
+                  <li>
+                    <code>userdel -r &lt;user&gt;</code>: delete a user and their home directory.
+                    <ul>
+                      <li><code>-r</code>: remove the home directory and mail spool.</li>
+                    </ul>
+                  </li>
+                  <li>
+                    <code>groupdel &lt;group&gt;</code>: delete a group.
+                  </li>
+                </ul>
+              </section>
+            </div>
+            <!-- /main -->
+          </div>
+          <!-- /row -->
+        </div>
+        <!-- /container -->
+      </section>
+
+      <!-- FOOTER -->
+      <footer class="module bg-light">
+        <div class="container">
+          <div class="row">
+            <div class="col-sm-12">
+              <ul class="social-text-links font-alt text-center m-b-20">
+                <li>
+                  <a href="https://github.com/vonds" target="_blank" rel="noopener">Github</a>
+                </li>
+                <li>
+                  <a href="https://www.linkedin.com/in/vonds/" target="_blank" rel="noopener">
+                    Linkedin
+                  </a>
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-sm-12">
+              <p class="copyright text-center m-b-0">
+                VONDS &copy; <span id="year"></span>
+              </p>
+
+              <div class="scroll-up">
+                <a href="#totop"><i class="fa fa-angle-double-up"></i></a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <!-- Javascript files (your existing) -->
+    <script src="../assets/js/jquery-2.2.4.min.js"></script>
+    <script src="../assets/bootstrap/js/bootstrap.min.css"></script>
+    <script src="../assets/js/jquery.superslides.min.js"></script>
+    <script src="../assets/js/jquery.mb.YTPlayer.min.js"></script>
+    <script src="../assets/js/jquery.magnific-popup.min.js"></script>
+    <script src="../assets/js/owl.carousel.min.js"></script>
+    <script src="../assets/js/jquery.simple-text-rotator.min.js"></script>
+    <script src="../assets/js/imagesloaded.pkgd.js"></script>
+    <script src="../assets/js/isotope.pkgd.min.js"></script>
+    <script src="../assets/js/packery-mode.pkgd.min.js"></script>
+    <script src="../assets/js/appear.js"></script>
+    <script src="../assets/js/jquery.easing.1.3.js"></script>
+    <script src="../assets/js/wow.min.js"></script>
+    <script src="../assets/js/jqBootstrapValidation.js"></script>
+    <script src="../assets/js/jquery.fitvids.js"></script>
+    <script src="../assets/js/jquery.parallax-1.1.3.js"></script>
+    <script src="../assets/js/smoothscroll.js"></script>
+    <script src="../assets/js/custom.js"></script>
+
+    <!-- Lab page JS (new) -->
+    <script src="../assets/js/lab.js"></script>
+
+    <script>
+      document.getElementById("year").textContent = new Date().getFullYear()
+    </script>
+  </body>
+</html>

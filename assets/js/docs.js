@@ -179,3 +179,115 @@ document.addEventListener("DOMContentLoaded", function () {
 	// Initial render
 	applyFilters();
 })();
+
+/* Put this in ../assets/js/docs.js (or below your existing docs.js code).
+   Builds a dropdown nav from the FIRST token in each lab card's data-filter.
+*/
+(function () {
+  const PRIMARY_ORDER = [
+    "shell",
+    "users",
+    "services",
+    "storage",
+    "networking",
+    "security",
+    "containers",
+    "packages",
+    "processes",
+    "SELinux",
+    "scheduling",
+    "permissions",
+    "logging",
+  ];
+
+  function getPrimaryToken(filterValue) {
+    if (!filterValue) return null;
+    const tokens = filterValue.trim().split(/\s+/);
+    return tokens[0] || null;
+  }
+
+  function escapeHtml(s) {
+    return String(s)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#039;");
+  }
+
+  function buildPrimaryDropdownNav() {
+    const nav = document.getElementById("docsNavPrimary");
+    const grid = document.getElementById("labsGrid");
+    if (!nav || !grid) return;
+
+    const labItems = Array.from(grid.querySelectorAll("li[data-filter]"));
+    const groups = new Map(); // primary -> [{title, href}...]
+
+    labItems.forEach((li) => {
+      const primary = getPrimaryToken(li.getAttribute("data-filter"));
+      const a = li.querySelector("a");
+      if (!primary || !a) return;
+
+      if (!groups.has(primary)) groups.set(primary, []);
+      groups.get(primary).push({
+        title: a.textContent.trim(),
+        href: a.getAttribute("href"),
+      });
+    });
+
+    // Render: only primaries that actually exist in the labs list
+    const primariesToRender = PRIMARY_ORDER.filter((p) => groups.has(p));
+
+    nav.innerHTML = primariesToRender
+      .map((primary, idx) => {
+        const labs = groups.get(primary) || [];
+        const submenuId = `docsNavGroup_${idx}`;
+
+        const labsHtml = labs
+          .map(
+            (lab) =>
+              `<li><a href="${escapeHtml(lab.href)}">${escapeHtml(
+                lab.title
+              )}</a></li>`
+          )
+          .join("");
+
+        return `
+          <li class="docs-nav-group">
+            <a href="#" class="docs-nav-toggle" data-filter="${escapeHtml(
+              primary
+            )}" data-target="#${submenuId}" aria-expanded="false">
+              ${escapeHtml(primary)}
+              <span class="docs-nav-caret">▾</span>
+            </a>
+            <ul class="docs-nav-submenu" id="${submenuId}" hidden>
+              ${labsHtml}
+            </ul>
+          </li>
+        `;
+      })
+      .join("");
+
+    // Toggle behavior + keep your existing filter behavior
+    nav.addEventListener("click", function (e) {
+      const toggle = e.target.closest(".docs-nav-toggle");
+      if (!toggle) return;
+
+      e.preventDefault();
+
+      const targetSel = toggle.getAttribute("data-target");
+      const submenu = targetSel ? document.querySelector(targetSel) : null;
+      if (!submenu) return;
+
+      const isOpen = submenu.hidden === false;
+      submenu.hidden = isOpen; // toggle
+      toggle.setAttribute("aria-expanded", String(!isOpen));
+    });
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", buildPrimaryDropdownNav);
+  } else {
+    buildPrimaryDropdownNav();
+  }
+})();
