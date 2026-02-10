@@ -37,7 +37,7 @@
     <link href="../assets/css/style.css" rel="stylesheet" />
     <link href="../assets/css/docs.css" rel="stylesheet" />
 
-    <!-- Lab page styles (new) -->
+    <!-- Lab page styles -->
     <link href="../assets/css/lab.css" rel="stylesheet" />
 
     <!-- Fonts -->
@@ -67,9 +67,29 @@
             <li class="slidedown">
               <a href="#">Portfolio</a>
               <ul>
-                <li><a href="https://github.com/vonds/exit_0" target="_blank" rel="noopener">exit_0</a></li>
-                <li><a href="docs.html" target="_blank" rel="noopener">exit_0 Documentation</a></li>
-                <li><a href="https://github.com/vonds/sentinel" target="_blank" rel="noopener">Sentinel</a></li>
+                <li>
+                  <a
+                    href="https://github.com/vonds/exit_0"
+                    target="_blank"
+                    rel="noopener"
+                  >
+                    exit_0
+                  </a>
+                </li>
+                <li>
+                  <a href="docs.html" target="_blank" rel="noopener">
+                    exit_0 Documentation
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="https://github.com/vonds/sentinel"
+                    target="_blank"
+                    rel="noopener"
+                  >
+                    Sentinel
+                  </a>
+                </li>
               </ul>
             </li>
 
@@ -141,6 +161,7 @@
           <h2 class="font-alt module-title m-t-60">
             Lab 40: Mastering Process Signals in Linux
           </h2>
+
           <nav class="lab-pagination">
             <a
               id="prev-lab"
@@ -159,6 +180,7 @@
               &raquo;
             </a>
           </nav>
+
           <div class="row">
             <!-- LEFT SIDEBAR -->
             <div class="col-sm-4 col-md-3 lab-sidebar">
@@ -169,7 +191,11 @@
                   </h5>
                   <ul class="docs-nav">
                     <li><a href="#scenario">Scenario</a></li>
+                    <li><a href="#objective">Objective</a></li>
+                    <li><a href="#concepts">Concepts</a></li>
                     <li><a href="#walkthrough">Walkthrough</a></li>
+                    <li><a href="#breakpoints">Breakpoints</a></li>
+                    <li><a href="#cleanup">Cleanup</a></li>
                     <li><a href="#reference">Reference</a></li>
                   </ul>
                 </div>
@@ -178,32 +204,30 @@
 
             <!-- MAIN CONTENT -->
             <div class="col-sm-8 col-md-9 lab-doc">
-              <!-- 1) Title + Summary (2 sentences max) -->
               <p class="m-b-20 lab-summary">
                 Identify a memory-hogging process, terminate it gracefully with
                 SIGTERM, and escalate to SIGKILL only when it refuses to exit.
-                Enumerate available signals and use a shell trap to handle SIGINT
-                with a custom message.
+                Enumerate available signals and use a shell trap to handle
+                SIGINT with a custom message.
               </p>
 
+              <!-- Video (kept on page; not listed in left panel) -->
               <section class="lab-section" id="video" aria-label="Lab video">
-  				<div class="lab-video">
-    				<div class="lab-video-embed text-center">
-      					<iframe 
-							width="560" 
-							height="315" 
-							src="https://www.youtube.com/embed/uJk54bhaadA?si=seGSukCoMFN7ohRo" 
-							title="YouTube video player" 
-							frameborder="0" 
-							allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
-							referrerpolicy="strict-origin-when-cross-origin" 
-							allowfullscreen>
-						</iframe>
-    				</div>
-  				</div>
-			</section>
+                <div class="lab-video">
+                  <div class="lab-video-embed text-center">
+                    <iframe
+                      src="https://www.youtube.com/embed/uJk54bhaadA?si=seGSukCoMFN7ohRo"
+                      title="YouTube video player"
+                      frameborder="0"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                      referrerpolicy="strict-origin-when-cross-origin"
+                      allowfullscreen
+                    ></iframe>
+                  </div>
+                </div>
+              </section>
 
-              <!-- 2) Scenario -->
+              <!-- Scenario -->
               <section class="lab-section" id="scenario">
                 <div class="lab-chips" aria-label="Tags">
                   <span class="lab-chip">
@@ -220,65 +244,101 @@
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">
                   Scenario
                 </h3>
+
                 <p>
                   A teammate started a background process called
-                  <code>memhog</code> that is consuming excessive memory and
-                  impacting system performance. You need to locate the PID,
-                  attempt a clean stop using <code>SIGTERM</code>, confirm whether
-                  it exited, then force-stop it with <code>SIGKILL</code> if it
-                  continues running.
+                  <code>memhog</code>
+                  that is consuming excessive memory and impacting system
+                  performance. You need to locate the PID, attempt a clean stop
+                  using
+                  <code>SIGTERM</code>
+                  , confirm whether it exited, then force-stop it with
+                  <code>SIGKILL</code>
+                  if it continues running.
                 </p>
+
                 <div class="lab-callout">
                   <div class="lab-callout-label">Operator context</div>
                   <p class="m-b-0">
                     Signals are an operator’s control surface. Prefer graceful
-                    termination for predictable cleanup, but know when to escalate
-                    and how to prove what happened with verifiable checks.
+                    termination for predictable cleanup, but know when to
+                    escalate and how to prove what happened with verifiable
+                    checks.
                   </p>
                 </div>
               </section>
 
-              <!-- 3) Objective -->
+              <!-- Objective -->
               <section class="lab-section alt-background" id="objective">
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">
                   Objective
                 </h3>
                 <ul>
-                  <li>Find the <code>memhog</code> process and capture its PID.</li>
-                  <li>Send <code>SIGTERM</code> using signal name or number.</li>
-                  <li>Verify whether the process stopped using PID or name checks.</li>
-                  <li>Escalate to <code>SIGKILL</code> when <code>SIGTERM</code> fails.</li>
-                  <li>List signal names/numbers available on the system.</li>
-                  <li>Use <code>trap</code> so Ctrl+C (SIGINT) prints a message.</li>
+                  <li>
+                    Find the
+                    <code>memhog</code>
+                    process and capture its PID.
+                  </li>
+                  <li>
+                    Send
+                    <code>SIGTERM</code>
+                    using signal name or number.
+                  </li>
+                  <li>
+                    Verify whether the process stopped using PID or name checks.
+                  </li>
+                  <li>
+                    Escalate to
+                    <code>SIGKILL</code>
+                    when
+                    <code>SIGTERM</code>
+                    fails.
+                  </li>
+                  <li>
+                    List signal names and numbers available on the system.
+                  </li>
+                  <li>
+                    Use
+                    <code>trap</code>
+                    so Ctrl+C (SIGINT) prints a message.
+                  </li>
                 </ul>
               </section>
 
-              <!-- 4) What You'll Practice -->
-              <section class="lab-section" id="practice">
+              <!-- Concepts -->
+              <section class="lab-section" id="concepts">
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">
-                  What You’ll Practice
+                  Concepts
                 </h3>
-
-                <ul class="m-t-10">
+                <ul>
                   <li>
-                    Process discovery with <code>ps</code> and filtering via <code>grep</code>.
+                    <code>SIGTERM</code>
+                    (15) requests a graceful shutdown so the process can clean
+                    up and exit.
                   </li>
                   <li>
-                    Signal basics: <code>SIGTERM</code> (15) vs <code>SIGKILL</code> (9).
+                    <code>SIGKILL</code>
+                    (9) is non-negotiable; the kernel terminates the process
+                    immediately with no cleanup.
                   </li>
                   <li>
-                    Verifying termination using <code>ps -p</code> and <code>pgrep</code>.
+                    Always verify outcome with PID and name-based checks; do not
+                    assume a signal “worked.”
                   </li>
                   <li>
-                    Enumerating signals with <code>kill -l</code>.
+                    <code>kill</code>
+                    sends signals; it does not only “kill.” You can send many
+                    signals besides 9 and 15.
                   </li>
                   <li>
-                    Handling <code>SIGINT</code> interactively using <code>trap</code>.
+                    <code>trap</code>
+                    lets shells run custom handlers when signals like SIGINT
+                    (Ctrl+C) are received.
                   </li>
                 </ul>
               </section>
 
-              <!-- 5) Commands Walkthrough -->
+              <!-- Walkthrough -->
               <section class="lab-section alt-background" id="walkthrough">
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">
                   Walkthrough
@@ -288,7 +348,9 @@
                 <div class="lab-step">
                   <div class="lab-step-title">
                     <strong class="font-alt">Step 1</strong>
-                    : View processes related to <code>memhog</code>.
+                    : View processes related to
+                    <code>memhog</code>
+                    .
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -306,9 +368,12 @@
                   </div>
 
                   <p>
-                    This gives you the PID plus resource usage context. Expect to
-                    see your <code>grep</code> process too, so focus on the row
-                    that is actually running <code>memhog</code>.
+                    This gives you the PID plus resource usage context. Expect
+                    to see your
+                    <code>grep</code>
+                    process too, so focus on the row that is actually running
+                    <code>memhog</code>
+                    .
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -320,7 +385,9 @@
                 <div class="lab-step">
                   <div class="lab-step-title">
                     <strong class="font-alt">Step 2</strong>
-                    : Send <code>SIGTERM</code> to request a clean shutdown.
+                    : Send
+                    <code>SIGTERM</code>
+                    to request a clean shutdown.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -340,9 +407,10 @@ kill -15 5268</code></pre>
                   </div>
 
                   <p>
-                    <code>SIGTERM</code> (15) asks the process to exit gracefully.
-                    Many well-behaved programs trap this signal to flush buffers,
-                    close files, and release locks before shutting down.
+                    <code>SIGTERM</code>
+                    (15) asks the process to exit gracefully. Many programs
+                    handle it by closing files, flushing buffers, and releasing
+                    locks before shutting down.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -390,15 +458,18 @@ pgrep memhog</code></pre>
                 <div class="lab-step">
                   <div class="lab-step-title">
                     <strong class="font-alt">Step 4</strong>
-                    : Escalate to <code>SIGKILL</code> to force-stop it.
+                    : Escalate to
+                    <code>SIGKILL</code>
+                    to force-stop it.
                   </div>
 
                   <div class="lab-callout">
                     <div class="lab-callout-label">Safety note</div>
                     <p class="m-b-0">
-                      <code>SIGKILL</code> cannot be handled. The process is
-                      terminated immediately with no cleanup, which can leave
-                      partial output or locked resources depending on workload.
+                      <code>SIGKILL</code>
+                      cannot be handled. The process is terminated immediately
+                      with no cleanup, which can leave partial output or locked
+                      resources depending on workload.
                     </p>
                   </div>
 
@@ -419,8 +490,10 @@ kill -SIGKILL 5268</code></pre>
                   </div>
 
                   <p>
-                    Use <code>SIGKILL</code> (9) only when graceful termination
-                    fails and the impact justifies the forced stop.
+                    Use
+                    <code>SIGKILL</code>
+                    (9) only when graceful termination fails and the impact
+                    justifies the forced stop.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -454,8 +527,8 @@ pgrep memhog</code></pre>
                   </div>
 
                   <p>
-                    Your confirmation is the proof. If there is no PID row and no
-                    name match, the process is gone.
+                    Your confirmation is the proof. If there is no PID row and
+                    no name match, the process is gone.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -486,9 +559,10 @@ pgrep memhog</code></pre>
                   </div>
 
                   <p>
-                    <code>kill -l</code> prints signal names and numbers for the
-                    platform you are running. This is useful when you remember a
-                    name but not the number (or the other way around).
+                    <code>kill -l</code>
+                    prints signal names and numbers for the platform you are
+                    running. This is useful when you remember a name but not the
+                    number (or the other way around).
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -503,7 +577,7 @@ pgrep memhog</code></pre>
                 <!-- Step 7 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
-                    <strong class="font-alt">Step 7</strong>
+                    <strong class="font-alt bold">Step 7</strong>
                     : Trap Ctrl+C (SIGINT) and print a message.
                   </div>
 
@@ -522,10 +596,11 @@ pgrep memhog</code></pre>
                   </div>
 
                   <p>
-                    <code>trap</code> lets you define a handler for signals in
-                    your current shell session. After setting this, pressing
-                    Ctrl+C will run your handler instead of immediately interrupting
-                    the shell’s current foreground job.
+                    <code>trap</code>
+                    lets you define a handler for signals in your current shell
+                    session. After setting this, pressing Ctrl+C will run your
+                    handler instead of immediately interrupting the shell’s
+                    current foreground job.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -535,8 +610,86 @@ Signal caught!</code></pre>
                 </div>
               </section>
 
-              <!-- 8) Reference -->
-              <!-- 9) Reference -->
+              <!-- Breakpoints -->
+              <section class="lab-section" id="breakpoints">
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  Breakpoints
+                </h3>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">grep false positives</div>
+                  <p class="m-b-0">
+                    <code>ps aux | grep memhog</code>
+                    may show the
+                    <code>grep</code>
+                    command itself. Use
+                    <code>pgrep memhog</code>
+                    or
+                    <code>ps -p &lt;pid&gt;</code>
+                    for cleaner verification.
+                  </p>
+                </div>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">
+                    PID still exists after SIGTERM
+                  </div>
+                  <p class="m-b-0">
+                    If the process stays running after
+                    <code>SIGTERM</code>
+                    , validate the PID is correct, then escalate to
+                    <code>SIGKILL</code>
+                    only if impact justifies it.
+                  </p>
+                </div>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">Permission denied</div>
+                  <p class="m-b-0">
+                    If
+                    <code>kill</code>
+                    returns “Operation not permitted,” you likely do not own the
+                    process. Use
+                    <code>sudo</code>
+                    or coordinate with the owner/operator as appropriate.
+                  </p>
+                </div>
+              </section>
+
+              <!-- Cleanup -->
+              <section class="lab-section alt-background" id="cleanup">
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  Cleanup checklist
+                </h3>
+                <ul>
+                  <li>
+                    Confirm
+                    <code>memhog</code>
+                    is not running.
+                  </li>
+                  <li>
+                    Remove any temporary signal traps if you set them for
+                    testing.
+                  </li>
+                </ul>
+
+                <div class="lab-codeblock m-b-40 m-t-40">
+                  <div class="lab-codeblock-header">
+                    <span>Commands</span>
+                    <button
+                      class="lab-copy-btn"
+                      type="button"
+                      data-copy="#cmd-cleanup"
+                    >
+                      Copy
+                    </button>
+                  </div>
+                  <pre><code id="cmd-cleanup">pgrep memhog
+trap - SIGINT</code></pre>
+                </div>
+              </section>
+
+              <!-- Reference -->
               <section class="lab-section" id="reference">
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">
                   Reference
@@ -544,61 +697,89 @@ Signal caught!</code></pre>
 
                 <ul class="lab-reference-list">
                   <li>
-                    <code>ps aux | grep &lt;pattern&gt;</code>
-                    : Finds matching processes and shows resource usage context.
+                    <code>ps aux</code>
+                    : List all processes (BSD-style listing).
+                    <ul>
+                      <li>
+                        <code>aux</code>
+                        : Show all users’ processes (
+                        <code>a</code>
+                        ), include processes without a TTY (
+                        <code>x</code>
+                        ), and display in user-oriented format (
+                        <code>u</code>
+                        ).
+                      </li>
+                    </ul>
                   </li>
 
                   <li>
-                    <code>kill -SIGTERM &lt;pid&gt;</code>
-                    / <code>kill -15 &lt;pid&gt;</code>
-                    : Requests graceful termination.
+                    <code>grep &lt;pattern&gt;</code>
+                    : Filter output lines that match a pattern.
                   </li>
 
                   <li>
-                    <code>kill -SIGKILL &lt;pid&gt;</code>
-                    / <code>kill -9 &lt;pid&gt;</code>
-                    : Forces immediate termination with no cleanup.
+                    <code>kill</code>
+                    : Send a signal to a PID.
+                    <ul>
+                      <li>
+                        <code>-SIGTERM</code>
+                        /
+                        <code>-15</code>
+                        : Request graceful termination.
+                      </li>
+                      <li>
+                        <code>-SIGKILL</code>
+                        /
+                        <code>-9</code>
+                        : Force immediate termination (no cleanup).
+                      </li>
+                      <li>
+                        <code>-l</code>
+                        : List available signals.
+                      </li>
+                    </ul>
                   </li>
 
                   <li>
                     <code>ps -p &lt;pid&gt;</code>
-                    : Checks whether a PID still exists.
+                    : Show a specific PID (useful for “does it still exist?”
+                    verification).
+                    <ul>
+                      <li>
+                        <code>-p </code>
+                        : Target a specific process ID.
+                      </li>
+                    </ul>
                   </li>
 
                   <li>
                     <code>pgrep &lt;name&gt;</code>
-                    : Checks whether any processes match a name/pattern.
-                  </li>
-
-                  <li>
-                    <code>kill -l</code>
-                    : Lists signal names and numbers available on the system.
+                    : Return PIDs that match a process name or pattern.
                   </li>
 
                   <li>
                     <code>trap '&lt;commands&gt;' &lt;signal&gt;</code>
-                    : Runs commands when the shell receives the specified signal.
+                    : Run commands when the shell receives a signal.
                   </li>
                 </ul>
               </section>
 
-              <!-- Lab Pagination -->
+              <!-- /main -->
             </div>
-            <!-- /main -->
           </div>
-          <!-- /row -->
+
           <nav class="lab-pagination">
             <a
               id="prev-lab"
               class="lab-nav-link"
               href="#"
-              aria-label="Previous lab"
+              aria-label="Back to top"
             >
               &uArr;
             </a>
           </nav>
         </div>
-        <!-- /container -->
       </section>
 
       <!-- FOOTER -->
@@ -665,7 +846,7 @@ Signal caught!</code></pre>
     <script src="../assets/js/smoothscroll.js"></script>
     <script src="../assets/js/custom.js"></script>
 
-    <!-- Lab page JS (new) -->
+    <!-- Lab page JS -->
     <script src="../assets/js/lab.js"></script>
   </body>
 </html>
