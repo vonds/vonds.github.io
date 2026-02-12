@@ -27,7 +27,6 @@
     <link href="../assets/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
     <link href="../assets/css/font-awesome.min.css" rel="stylesheet" />
     <link href="../assets/css/linea-icons.css" rel="stylesheet" />
-    <link href="../assets/css/linea-icons.css" rel="stylesheet" />
     <link href="../assets/css/ionicons.min.css" rel="stylesheet" />
     <link href="../assets/css/simpletextrotator.css" rel="stylesheet" />
     <link href="../assets/css/magnific-popup.css" rel="stylesheet" />
@@ -38,14 +37,11 @@
     <link href="../assets/css/style.css" rel="stylesheet" />
     <link href="../assets/css/docs.css" rel="stylesheet" />
 
-    <!-- Lab page styles (new) -->
+    <!-- Lab page styles -->
     <link href="../assets/css/lab.css" rel="stylesheet" />
 
     <!-- Fonts -->
-    <link
-      href="https://fonts.googleapis.com/css?family=Dosis"
-      rel="stylesheet"
-    />
+    <link href="https://fonts.googleapis.com/css?family=Dosis" rel="stylesheet" />
   </head>
 
   <body>
@@ -84,6 +80,11 @@
                     rel="noopener"
                   >
                     Sentinel
+                  </a>
+                </li>
+                <li>
+                  <a href="docs.html" target="_blank" rel="noopener">
+                    exit_0 Documentation
                   </a>
                 </li>
               </ul>
@@ -159,20 +160,10 @@
           </h2>
 
           <nav class="lab-pagination">
-            <a
-              id="prev-lab"
-              class="lab-nav-link"
-              href="#"
-              aria-label="Previous lab"
-            >
+            <a id="prev-lab" class="lab-nav-link" href="#" aria-label="Previous lab">
               &laquo;
             </a>
-            <a
-              id="next-lab"
-              class="lab-nav-link"
-              href="#"
-              aria-label="Next lab"
-            >
+            <a id="next-lab" class="lab-nav-link" href="#" aria-label="Next lab">
               &raquo;
             </a>
           </nav>
@@ -187,7 +178,11 @@
                   </h5>
                   <ul class="docs-nav">
                     <li><a href="#scenario">Scenario</a></li>
+                    <li><a href="#objective">Objective</a></li>
+                    <li><a href="#concepts">Concepts</a></li>
                     <li><a href="#walkthrough">Walkthrough</a></li>
+                    <li><a href="#breakpoints">Breakpoints</a></li>
+                    <li><a href="#cleanup">Cleanup</a></li>
                     <li><a href="#reference">Reference</a></li>
                   </ul>
                 </div>
@@ -196,33 +191,29 @@
 
             <!-- MAIN CONTENT -->
             <div class="col-sm-8 col-md-9 lab-doc">
-              <!-- 1) Title + Summary (2 sentences max) -->
               <p class="m-b-20 lab-summary">
-                Inspect and manage system time configuration using
-                <code>timedatectl</code> on a systemd-based Linux host. Validate
-                current time and timezone, switch to UTC, toggle NTP
-                synchronization, and perform a controlled manual time set for
-                troubleshooting.
+                Inspect and manage system time configuration using <code>timedatectl</code> on a systemd-based host. Verify
+                timezone and NTP state, switch to UTC for consistent logs, perform a controlled manual time set, then restore
+                synchronization.
               </p>
 
+              <!-- Video (kept on page; not in left nav) -->
               <section class="lab-section" id="video" aria-label="Lab video">
-  				<div class="lab-video">
-    				<div class="lab-video-embed text-center">
-      					<iframe 
-							width="560" 
-							height="315" 
-							src="https://www.youtube.com/embed/uJk54bhaadA?si=seGSukCoMFN7ohRo" 
-							title="YouTube video player" 
-							frameborder="0" 
-							allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
-							referrerpolicy="strict-origin-when-cross-origin" 
-							allowfullscreen>
-						</iframe>
-    				</div>
-  				</div>
-			</section>
+                <div class="lab-video">
+                  <div class="lab-video-embed text-center">
+                    <iframe
+                      src="https://www.youtube.com/embed/uJk54bhaadA?si=seGSukCoMFN7ohRo"
+                      title="YouTube video player"
+                      frameborder="0"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                      referrerpolicy="strict-origin-when-cross-origin"
+                      allowfullscreen
+                    ></iframe>
+                  </div>
+                </div>
+              </section>
 
-              <!-- 2) Scenario -->
+              <!-- Scenario -->
               <section class="lab-section" id="scenario">
                 <div class="lab-chips" aria-label="Tags">
                   <span class="lab-chip">
@@ -241,69 +232,60 @@
                 </h3>
 
                 <p>
-                  You need to confirm your host’s clock settings and adjust them
-                  to support a troubleshooting workflow. The system uses systemd
-                  and may be relying on NTP to maintain accurate time. Your job
-                  is to inspect current time state, switch timezone to UTC,
-                  temporarily disable NTP, set a manual time value, then restore
-                  NTP synchronization.
+                  You need to confirm a host’s clock settings and adjust them for a troubleshooting workflow. The system uses
+                  systemd and may rely on NTP to maintain accurate time. Your job is to inspect time state, switch the host to
+                  UTC, temporarily disable NTP, set a manual time value, then restore synchronization.
                 </p>
 
                 <div class="lab-callout">
                   <div class="lab-callout-label">Operator context</div>
                   <p class="m-b-0">
-                    Time changes can impact logs, certificates, scheduled jobs,
-                    and time-sensitive applications. Keep changes scoped and
-                    reversible, and re-enable synchronization when you are done.
+                    Time changes can impact logs, certificates, scheduled jobs, and time-sensitive applications. Keep changes
+                    scoped and reversible, and re-enable synchronization when you are done.
                   </p>
                 </div>
               </section>
 
-              <!-- 3) Objective -->
+              <!-- Objective -->
               <section class="lab-section alt-background" id="objective">
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">
                   Objective
                 </h3>
 
                 <ul>
-                  <li>
-                    Display current time, timezone, and NTP sync state with
-                    <code>timedatectl</code>.
-                  </li>
+                  <li>Display current time, timezone, and NTP sync state with <code>timedatectl</code>.</li>
                   <li>Change timezone to UTC.</li>
                   <li>Disable NTP synchronization temporarily.</li>
                   <li>Manually set system time to a known value.</li>
-                  <li>Re-enable NTP synchronization.</li>
+                  <li>Re-enable NTP synchronization and confirm health.</li>
                 </ul>
               </section>
 
-              <!-- 4) What You'll Practice -->
-              <section class="lab-section" id="practice">
+              <!-- Concepts (no alt-background moving forward) -->
+              <section class="lab-section" id="concepts">
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">
-                  What You’ll Practice
+                  Concepts
                 </h3>
 
-                <ul class="m-t-10">
+                <ul>
                   <li>
-                    Reading system clock state and RTC configuration via
-                    <code>timedatectl</code>.
+                    <code>timedatectl</code> provides a single view of local time, UTC time, timezone, RTC settings, and NTP
+                    status.
                   </li>
                   <li>
-                    Changing timezone with
-                    <code>timedatectl set-timezone</code>.
+                    UTC on servers reduces ambiguity across regions and standardizes logs.
                   </li>
                   <li>
-                    Toggling NTP with
-                    <code>timedatectl set-ntp</code>.
+                    Manual time sets require NTP to be disabled; otherwise an active NTP client may immediately override the
+                    change.
                   </li>
                   <li>
-                    Performing a controlled manual time set with
-                    <code>timedatectl set-time</code>.
+                    Time changes have a blast radius: TLS, Kerberos, cron/systemd timers, and log correlation.
                   </li>
                 </ul>
               </section>
 
-              <!-- 5) Commands Walkthrough -->
+              <!-- Walkthrough -->
               <section class="lab-section alt-background" id="walkthrough">
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">
                   Walkthrough
@@ -319,11 +301,7 @@
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
-                      <button
-                        class="lab-copy-btn"
-                        type="button"
-                        data-copy="#cmd-step-1"
-                      >
+                      <button class="lab-copy-btn" type="button" data-copy="#cmd-step-1">
                         Copy
                       </button>
                     </div>
@@ -331,14 +309,12 @@
                   </div>
 
                   <p>
-                    This provides a consolidated view of local time, UTC time,
-                    RTC settings, timezone, and NTP sync status. It is often the
-                    fastest way to confirm whether time issues are configuration
-                    related.
+                    This is the fastest way to confirm timezone, UTC time, RTC configuration, and whether the system thinks it is
+                    synchronized.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code id="verify-step-1">Local time: Tue 2025-07-29 09:34:15 EDT
+                    <pre><code>Local time: Tue 2025-07-29 09:34:15 EDT
 Universal time: Tue 2025-07-29 13:34:15 UTC
 RTC time: Tue 2025-07-29 13:34:14
 Time zone: America/New_York (EDT, -0400)
@@ -358,11 +334,7 @@ RTC in local TZ: no</code></pre>
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
-                      <button
-                        class="lab-copy-btn"
-                        type="button"
-                        data-copy="#cmd-step-2"
-                      >
+                      <button class="lab-copy-btn" type="button" data-copy="#cmd-step-2">
                         Copy
                       </button>
                     </div>
@@ -370,12 +342,12 @@ RTC in local TZ: no</code></pre>
                   </div>
 
                   <p>
-                    Switching to UTC is common on servers to standardize logs
-                    and reduce ambiguity across regions.
+                    Many production environments run in UTC to keep timestamps consistent across regions and simplify incident
+                    response.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code id="verify-step-2">Time zone set to UTC.</code></pre>
+                    <pre><code>Time zone set to UTC.</code></pre>
                   </div>
                 </div>
 
@@ -389,20 +361,15 @@ RTC in local TZ: no</code></pre>
                   <div class="lab-callout">
                     <div class="lab-callout-label">Safety note</div>
                     <p class="m-b-0">
-                      Disabling NTP removes automatic correction and can cause
-                      drift. Only disable it for controlled troubleshooting or
-                      when you must set time manually.
+                      Disabling NTP removes automatic correction and can introduce drift. Only disable it for controlled
+                      troubleshooting or when you must set time manually.
                     </p>
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
-                      <button
-                        class="lab-copy-btn"
-                        type="button"
-                        data-copy="#cmd-step-3"
-                      >
+                      <button class="lab-copy-btn" type="button" data-copy="#cmd-step-3">
                         Copy
                       </button>
                     </div>
@@ -410,13 +377,11 @@ RTC in local TZ: no</code></pre>
                   </div>
 
                   <p>
-                    Systemd-managed NTP integration must be off to set time
-                    manually. If an NTP client is running, it may override your
-                    manual changes.
+                    NTP must be off before manual changes. If time sync remains enabled, your manual set may be overwritten.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code id="verify-step-3">NTP synchronization disabled.</code></pre>
+                    <pre><code>NTP synchronization disabled.</code></pre>
                   </div>
                 </div>
 
@@ -424,31 +389,26 @@ RTC in local TZ: no</code></pre>
                 <div class="lab-step">
                   <div class="lab-step-title">
                     <strong class="font-alt">Step 4</strong>
-                    : Manually set system time to 10:00:00.
+                    : Set a controlled manual time value.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
-                      <button
-                        class="lab-copy-btn"
-                        type="button"
-                        data-copy="#cmd-step-4"
-                      >
+                      <button class="lab-copy-btn" type="button" data-copy="#cmd-step-4">
                         Copy
                       </button>
                     </div>
-                    <pre><code id="cmd-step-4">sudo timedatectl set-time 10:00:00</code></pre>
+                    <pre><code id="cmd-step-4">sudo timedatectl set-time "2025-07-29 10:00:00"</code></pre>
                   </div>
 
                   <p>
-                    Manual time setting is sometimes required to recover from a
-                    misconfigured RTC, virtualization issues, or accidental time
-                    skew. Keep manual changes as short-lived as possible.
+                    Setting a full timestamp is clearer and easier to verify than time-only updates. Keep manual offsets short-lived
+                    and revert to synchronization when finished.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code id="verify-step-4">Time set to 10:00:00.</code></pre>
+                    <pre><code>Time set to 2025-07-29 10:00:00.</code></pre>
                   </div>
                 </div>
 
@@ -462,11 +422,7 @@ RTC in local TZ: no</code></pre>
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
-                      <button
-                        class="lab-copy-btn"
-                        type="button"
-                        data-copy="#cmd-step-5"
-                      >
+                      <button class="lab-copy-btn" type="button" data-copy="#cmd-step-5">
                         Copy
                       </button>
                     </div>
@@ -474,14 +430,12 @@ RTC in local TZ: no</code></pre>
                   </div>
 
                   <p>
-                    Restore synchronization so the host converges back to
-                    accurate time automatically. After re-enabling, re-run
-                    <code>timedatectl</code> to confirm the sync state returns to
-                    healthy.
+                    Restore synchronization so the host converges back to accurate time automatically. After re-enabling, re-check
+                    state with <code>timedatectl</code>.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code id="verify-step-5">NTP synchronization re-enabled.</code></pre>
+                    <pre><code>NTP synchronization enabled.</code></pre>
                   </div>
                 </div>
 
@@ -495,11 +449,7 @@ RTC in local TZ: no</code></pre>
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
-                      <button
-                        class="lab-copy-btn"
-                        type="button"
-                        data-copy="#cmd-step-6"
-                      >
+                      <button class="lab-copy-btn" type="button" data-copy="#cmd-step-6">
                         Copy
                       </button>
                     </div>
@@ -507,12 +457,11 @@ RTC in local TZ: no</code></pre>
                   </div>
 
                   <p>
-                    Confirm timezone, NTP service state, and synchronization
-                    status are correct before closing the incident or ticket.
+                    Confirm timezone and synchronization are in the expected state before closing the incident or handing off.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code id="verify-step-6"># Confirm:
+                    <pre><code># Confirm:
 # Time zone: UTC
 # NTP service: active
 # System clock synchronized: yes</code></pre>
@@ -520,7 +469,77 @@ RTC in local TZ: no</code></pre>
                 </div>
               </section>
 
-              <!-- 6) Reference -->
+              <!-- Breakpoints -->
+              <section class="lab-section" id="breakpoints">
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  Common breakpoints
+                </h3>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">
+                    timedatectl set-time fails even with sudo
+                  </div>
+                  <p class="m-b-0">
+                    Confirm NTP is disabled first (<code>timedatectl</code> should show <code>NTP service: inactive</code> or
+                    synchronization disabled). If a separate time service is enforcing sync (chrony, timesyncd), stop it
+                    temporarily and retry.
+                  </p>
+                </div>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">
+                    NTP enabled but System clock synchronized stays "no"
+                  </div>
+                  <p class="m-b-0">
+                    The service may be active but not synchronized yet. Validate network access, DNS resolution for time sources,
+                    and review time service logs. On chrony systems, check <code>chronyc tracking</code> and
+                    <code>chronyc sources -v</code>.
+                  </p>
+                </div>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">
+                    Logs become confusing after timezone changes
+                  </div>
+                  <p class="m-b-0">
+                    Changing timezone changes how timestamps render. When troubleshooting, note the time of change and use UTC as
+                    your standard to reduce ambiguity.
+                  </p>
+                </div>
+              </section>
+
+              <!-- Cleanup -->
+              <section class="lab-section alt-background" id="cleanup">
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  Cleanup checklist
+                </h3>
+
+                <p>
+                  Ensure the host is back in a safe steady state: UTC configured (if that is your standard) and synchronization
+                  enabled.
+                </p>
+
+                <div class="lab-codeblock m-b-40 m-t-40">
+                  <div class="lab-codeblock-header">
+                    <span>Commands</span>
+                    <button class="lab-copy-btn" type="button" data-copy="#cmd-cleanup">
+                      Copy
+                    </button>
+                  </div>
+                  <pre><code id="cmd-cleanup">timedatectl
+sudo timedatectl set-timezone UTC
+sudo timedatectl set-ntp true</code></pre>
+                </div>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">Success signal</div>
+                  <p class="m-b-0">
+                    <code>Time zone: UTC</code>, NTP is enabled, and the system reports synchronization is healthy.
+                  </p>
+                </div>
+              </section>
+
+              <!-- Reference (commands -> options hierarchy preserved) -->
               <section class="lab-section" id="reference">
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">
                   Reference
@@ -529,23 +548,43 @@ RTC in local TZ: no</code></pre>
                 <ul class="lab-reference-list">
                   <li>
                     <code>timedatectl</code>
-                    : Displays current time, timezone, RTC status, and NTP
-                    synchronization state.
+                    : Displays current time, timezone, RTC status, and NTP synchronization state.
                   </li>
 
                   <li>
                     <code>timedatectl set-timezone &lt;TZ&gt;</code>
-                    : Sets the system timezone (for example <code>UTC</code>).
+                    : Sets the system timezone.
+                    <ul>
+                      <li>
+                        <code>UTC</code>
+                        : Common server standard for consistent timestamps.
+                      </li>
+                    </ul>
                   </li>
 
                   <li>
                     <code>timedatectl set-ntp true|false</code>
-                    : Enables or disables NTP synchronization via systemd.
+                    : Enables or disables systemd-managed NTP synchronization.
+                    <ul>
+                      <li>
+                        <code>true</code>
+                        : Enables synchronization.
+                      </li>
+                      <li>
+                        <code>false</code>
+                        : Disables synchronization for controlled manual changes.
+                      </li>
+                    </ul>
                   </li>
 
                   <li>
-                    <code>timedatectl set-time &lt;TIME&gt;</code>
+                    <code>timedatectl set-time "&lt;YYYY-MM-DD HH:MM:SS&gt;"</code>
                     : Sets system time manually (requires NTP disabled).
+                    <ul>
+                      <li>
+                        Use a full timestamp for clarity when capturing evidence.
+                      </li>
+                    </ul>
                   </li>
                 </ul>
               </section>
@@ -553,17 +592,6 @@ RTC in local TZ: no</code></pre>
             <!-- /main -->
           </div>
           <!-- /row -->
-
-          <nav class="lab-pagination">
-            <a
-              id="prev-lab"
-              class="lab-nav-link"
-              href="#"
-              aria-label="Back to top"
-            >
-              &uArr;
-            </a>
-          </nav>
         </div>
         <!-- /container -->
       </section>
@@ -575,11 +603,7 @@ RTC in local TZ: no</code></pre>
             <div class="col-sm-12">
               <ul class="social-text-links font-alt text-center m-b-20">
                 <li>
-                  <a
-                    href="https://github.com/vonds"
-                    target="_blank"
-                    rel="noopener"
-                  >
+                  <a href="https://github.com/vonds" target="_blank" rel="noopener">
                     Github
                   </a>
                 </li>
@@ -623,7 +647,6 @@ RTC in local TZ: no</code></pre>
     <script src="../assets/js/imagesloaded.pkgd.js"></script>
     <script src="../assets/js/isotope.pkgd.min.js"></script>
     <script src="../assets/js/packery-mode.pkgd.min.js"></script>
-    <script src="../assets/js/packery-mode.pkgd.min.js"></script>
     <script src="../assets/js/appear.js"></script>
     <script src="../assets/js/jquery.easing.1.3.js"></script>
     <script src="../assets/js/wow.min.js"></script>
@@ -635,5 +658,9 @@ RTC in local TZ: no</code></pre>
 
     <!-- Lab page JS (new) -->
     <script src="../assets/js/lab.js"></script>
+
+    <script>
+      document.getElementById('year').textContent = new Date().getFullYear()
+    </script>
   </body>
 </html>

@@ -37,7 +37,7 @@
     <link href="../assets/css/style.css" rel="stylesheet" />
     <link href="../assets/css/docs.css" rel="stylesheet" />
 
-    <!-- Lab page styles (new) -->
+    <!-- Lab page styles -->
     <link href="../assets/css/lab.css" rel="stylesheet" />
 
     <!-- Fonts -->
@@ -67,9 +67,29 @@
             <li class="slidedown">
               <a href="#">Portfolio</a>
               <ul>
-                <li><a href="https://github.com/vonds/exit_0" target="_blank" rel="noopener">exit_0</a></li>
-                <li><a href="docs.html" target="_blank" rel="noopener">exit_0 Documentation</a></li>
-                <li><a href="https://github.com/vonds/sentinel" target="_blank" rel="noopener">Sentinel</a></li>
+                <li>
+                  <a
+                    href="https://github.com/vonds/exit_0"
+                    target="_blank"
+                    rel="noopener"
+                  >
+                    exit_0
+                  </a>
+                </li>
+                <li>
+                  <a href="docs.html" target="_blank" rel="noopener">
+                    exit_0 Documentation
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="https://github.com/vonds/sentinel"
+                    target="_blank"
+                    rel="noopener"
+                  >
+                    Sentinel
+                  </a>
+                </li>
               </ul>
             </li>
 
@@ -139,7 +159,7 @@
       <section class="module">
         <div class="container">
           <h2 class="font-alt module-title m-t-60">
-            Lab 64: SSH Keys - Access Remote Server without Password
+            Lab 64: SSH Keys - Passwordless Authentication
           </h2>
 
           <nav class="lab-pagination">
@@ -171,7 +191,11 @@
                   </h5>
                   <ul class="docs-nav">
                     <li><a href="#scenario">Scenario</a></li>
+                    <li><a href="#objective">Objective</a></li>
+                    <li><a href="#concepts">Concepts</a></li>
                     <li><a href="#walkthrough">Walkthrough</a></li>
+                    <li><a href="#breakpoints">Breakpoints</a></li>
+                    <li><a href="#cleanup">Cleanup</a></li>
                     <li><a href="#reference">Reference</a></li>
                   </ul>
                 </div>
@@ -180,39 +204,36 @@
 
             <!-- MAIN CONTENT -->
             <div class="col-sm-8 col-md-9 lab-doc">
-              <!-- 1) Title + Summary (2 sentences max) -->
               <p class="m-b-20 lab-summary">
-                Set up SSH key-based authentication to enable passwordless logins
-                to a remote host. Generate a key pair, install the public key on
-                the server, then validate that the connection succeeds without a
-                password prompt.
+                Set up SSH key-based authentication so routine logins no longer
+                depend on passwords. Generate a key pair, install the public key
+                on the remote account, then validate that the connection
+                succeeds without prompting.
               </p>
 
               <section class="lab-section" id="video" aria-label="Lab video">
-  				<div class="lab-video">
-    				<div class="lab-video-embed text-center">
-      					<iframe 
-							width="560" 
-							height="315" 
-							src="https://www.youtube.com/embed/uJk54bhaadA?si=seGSukCoMFN7ohRo" 
-							title="YouTube video player" 
-							frameborder="0" 
-							allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
-							referrerpolicy="strict-origin-when-cross-origin" 
-							allowfullscreen>
-						</iframe>
-    				</div>
-  				</div>
-			</section>
+                <div class="lab-video">
+                  <div class="lab-video-embed text-center">
+                    <iframe
+                      src="https://www.youtube.com/embed/uJk54bhaadA?si=seGSukCoMFN7ohRo"
+                      title="YouTube video player"
+                      frameborder="0"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                      referrerpolicy="strict-origin-when-cross-origin"
+                      allowfullscreen
+                    ></iframe>
+                  </div>
+                </div>
+              </section>
 
-              <!-- 2) Scenario -->
+              <!-- Scenario -->
               <section class="lab-section" id="scenario">
                 <div class="lab-chips" aria-label="Tags">
                   <span class="lab-chip">
                     <span class="lab-chip-key">ssh</span>
                   </span>
                   <span class="lab-chip">
-                    <span class="lab-chip-key">authentication</span>
+                    <span class="lab-chip-key">auth</span>
                   </span>
                   <span class="lab-chip">
                     <span class="lab-chip-key">core</span>
@@ -224,76 +245,71 @@
                 </h3>
 
                 <p>
-                  You connect to the same remote server frequently and want to
-                  remove repeated password entry from your workflow. Your task
-                  is to generate an SSH key pair locally, copy the public key to
-                  the remote account, and confirm that you can log in using the
-                  key. This is a standard operational setup that improves both
-                  efficiency and security when combined with strong key
-                  protection and server-side policy.
+                  You connect to the same server frequently and want to remove
+                  repeated password entry from your workflow. Your task is to
+                  generate an SSH key pair locally, copy the public key to the
+                  remote account, and confirm that you can log in using the key.
+                  This improves efficiency and security when the private key is
+                  protected and server policy is configured correctly.
                 </p>
 
                 <div class="lab-callout">
                   <div class="lab-callout-label">Operator context</div>
                   <p class="m-b-0">
-                    In production environments, key-based access is often paired
-                    with disabling password authentication, enforcing modern key
-                    types, and constraining access through least-privilege
-                    accounts. This lab focuses on the core setup and validation
-                    workflow.
+                    In production, key-based access is typically paired with a
+                    passphrase, an agent (<code>ssh-agent</code>), and tighter
+                    server-side controls (often disabling password auth after
+                    validation). This lab focuses on the core setup and proof.
                   </p>
                 </div>
               </section>
 
-              <!-- 3) Objective -->
+              <!-- Objective -->
               <section class="lab-section alt-background" id="objective">
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">
                   Objective
                 </h3>
                 <ul>
+                  <li>Generate a new SSH key pair for the local user.</li>
                   <li>
-                    Generate a new SSH key pair for the local user.
-                  </li>
-                  <li>
-                    Install the public key on a remote account using
+                    Install the public key on the remote account using
                     <code>ssh-copy-id</code>.
                   </li>
                   <li>
                     Validate that SSH login completes without a password prompt.
                   </li>
-                  <li>
-                    Exit the remote session cleanly.
-                  </li>
+                  <li>Exit the remote session cleanly.</li>
                 </ul>
               </section>
 
-              <!-- 4) What You'll Practice -->
-              <section class="lab-section" id="practice">
+              <!-- Concepts -->
+              <section class="lab-section" id="concepts">
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">
-                  What You’ll Practice
+                  Concepts
                 </h3>
-
-                <ul class="m-t-10">
+                <ul>
                   <li>
-                    Creating SSH key pairs with <code>ssh-keygen</code>.
+                    The private key stays on your machine and proves identity.
+                    The public key is installed on the server.
                   </li>
                   <li>
-                    Deploying public keys to a remote host using
-                    <code>ssh-copy-id</code>.
+                    Server-side authorization is controlled by
+                    <code>~/.ssh/authorized_keys</code> for that account.
                   </li>
                   <li>
-                    Verifying key-based authentication with a standard
-                    <code>ssh user@host</code> login.
+                    Correct permissions matter. SSH may ignore keys if
+                    <code>~/.ssh</code> or <code>authorized_keys</code> is too
+                    permissive.
                   </li>
                   <li>
-                    Understanding the relationship between public keys
-                    (<code>~/.ssh/*.pub</code>) and private keys
-                    (<code>~/.ssh/id_*</code>).
+                    “Passwordless” usually means “no password prompt” because
+                    the key is used. In real setups, you still protect the
+                    private key with a passphrase and an agent.
                   </li>
                 </ul>
               </section>
 
-              <!-- 5) Commands Walkthrough -->
+              <!-- Walkthrough -->
               <section class="lab-section alt-background" id="walkthrough">
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">
                   Walkthrough
@@ -317,7 +333,7 @@
                         Copy
                       </button>
                     </div>
-                    <pre><code id="cmd-step-1">ssh-keygen -t rsa</code></pre>
+                    <pre><code id="cmd-step-1">ssh-keygen -t ed25519</code></pre>
                   </div>
 
                   <p>
@@ -328,9 +344,21 @@
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code id="verify-step-1">Generating public/private rsa key pair.
-Enter file in which to save the key (/home/lab/.ssh/id_rsa):
-Created key at /home/lab/.ssh/id_rsa.pub</code></pre>
+                    <pre><code>Generating public/private ed25519 key pair.
+Enter file in which to save the key (/home/lab/.ssh/id_ed25519):
+Enter passphrase (empty for no passphrase):
+Enter same passphrase again:
+Your identification has been saved in /home/lab/.ssh/id_ed25519
+Your public key has been saved in /home/lab/.ssh/id_ed25519.pub</code></pre>
+                  </div>
+
+                  <div class="lab-callout">
+                    <div class="lab-callout-label">Recommendation</div>
+                    <p class="m-b-0">
+                      Use a passphrase. Pair it with <code>ssh-agent</code> so
+                      you keep usability without leaving the private key
+                      unprotected.
+                    </p>
                   </div>
                 </div>
 
@@ -352,7 +380,7 @@ Created key at /home/lab/.ssh/id_rsa.pub</code></pre>
                         Copy
                       </button>
                     </div>
-                    <pre><code id="cmd-step-2">ssh-copy-id labuser@192.168.1.50</code></pre>
+                    <pre><code id="cmd-step-2">ssh-copy-id -i ~/.ssh/id_ed25519.pub labuser@192.168.1.50</code></pre>
                   </div>
 
                   <p>
@@ -362,10 +390,10 @@ Created key at /home/lab/.ssh/id_rsa.pub</code></pre>
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code id="verify-step-2">/usr/bin/ssh-copy-id: INFO: Source of key: /home/lab/.ssh/id_rsa.pub
+                    <pre><code>/usr/bin/ssh-copy-id: INFO: Source of key(s) to be installed: "/home/lab/.ssh/id_ed25519.pub"
 Number of key(s) added: 1
 Now try logging into the machine, with:
-  ssh labuser@192.168.1.50</code></pre>
+  ssh 'labuser@192.168.1.50'</code></pre>
                   </div>
                 </div>
 
@@ -392,19 +420,22 @@ Now try logging into the machine, with:
 
                   <p>
                     If the key is accepted and permissions are correct, the
-                    session should start without prompting for a password.
+                    session should start without prompting for the account
+                    password. If you set a key passphrase, you may be prompted
+                    for the passphrase (or your agent will handle it).
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code id="verify-step-3">Welcome to 192.168.1.50. No password required.</code></pre>
+                    <pre><code>Welcome to 192.168.1.50.
+Last login: Tue Feb 10 21:03:11 2026 from 192.168.1.10</code></pre>
                   </div>
                 </div>
 
                 <!-- Step 4 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
-                    <strong class="font-alt bold">Step 4</strong>
-                    : Exit the SSH session.
+                    <strong class="font-alt">Step 4</strong>
+                    : Confirm the key is being used.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -418,7 +449,40 @@ Now try logging into the machine, with:
                         Copy
                       </button>
                     </div>
-                    <pre><code id="cmd-step-4">exit</code></pre>
+                    <pre><code id="cmd-step-4">echo "$SSH_CONNECTION"</code></pre>
+                  </div>
+
+                  <p>
+                    This prints connection metadata for the current SSH session.
+                    If you are logged in, SSH authentication has already
+                    succeeded. This is a simple “sanity check” that you are in a
+                    remote session.
+                  </p>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <pre><code>192.168.1.10 53422 192.168.1.50 22</code></pre>
+                  </div>
+                </div>
+
+                <!-- Step 5 -->
+                <div class="lab-step">
+                  <div class="lab-step-title">
+                    <strong class="font-alt bold">Step 5</strong>
+                    : Exit the SSH session.
+                  </div>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <div class="lab-codeblock-header">
+                      <span>Command</span>
+                      <button
+                        class="lab-copy-btn"
+                        type="button"
+                        data-copy="#cmd-step-5"
+                      >
+                        Copy
+                      </button>
+                    </div>
+                    <pre><code id="cmd-step-5">exit</code></pre>
                   </div>
 
                   <p>
@@ -427,12 +491,94 @@ Now try logging into the machine, with:
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code id="verify-step-4">Connection to 192.168.1.50 closed.</code></pre>
+                    <pre><code>Connection to 192.168.1.50 closed.</code></pre>
                   </div>
                 </div>
               </section>
 
-              <!-- Reference (no tags in this section) -->
+              <!-- Breakpoints -->
+              <section class="lab-section" id="breakpoints">
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  Common breakpoints
+                </h3>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">
+                    Still prompted for the account password
+                  </div>
+                  <p class="m-b-0">
+                    The key may not be installed, or the server may be refusing
+                    it. Confirm the public key exists in
+                    <code>~/.ssh/authorized_keys</code> on the remote account and
+                    verify permissions are not too open.
+                  </p>
+                </div>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">
+                    ssh-copy-id fails or command not found
+                  </div>
+                  <p class="m-b-0">
+                    Some minimal systems do not ship <code>ssh-copy-id</code>. You
+                    can manually append the public key to
+                    <code>~/.ssh/authorized_keys</code> on the remote host.
+                  </p>
+                </div>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">
+                    Permission denied (publickey)
+                  </div>
+                  <p class="m-b-0">
+                    The server is requiring a key, but it is not accepting yours.
+                    Ensure you are using the correct private key and the matching
+                    public key is installed for that user.
+                  </p>
+                </div>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">Key ignored due to permissions</div>
+                  <p class="m-b-0">
+                    SSH can ignore keys if <code>~/.ssh</code> or
+                    <code>authorized_keys</code> is group/world-writable. Fix
+                    permissions and try again.
+                  </p>
+                </div>
+              </section>
+
+              <!-- Cleanup -->
+              <section class="lab-section alt-background" id="cleanup">
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  Cleanup checklist
+                </h3>
+
+                <p>
+                  If you want to remove access, delete the key line from the
+                  remote user’s <code>~/.ssh/authorized_keys</code>. If this was
+                  a throwaway key, remove the local key pair from
+                  <code>~/.ssh</code>.
+                </p>
+
+                <div class="lab-codeblock m-b-40 m-t-40">
+                  <div class="lab-codeblock-header">
+                    <span>Commands</span>
+                    <button
+                      class="lab-copy-btn"
+                      type="button"
+                      data-copy="#cmd-cleanup"
+                    >
+                      Copy
+                    </button>
+                  </div>
+                  <pre><code id="cmd-cleanup"># remote (on 192.168.1.50 as labuser)
+vim ~/.ssh/authorized_keys
+
+# local (on your machine)
+rm -f ~/.ssh/id_ed25519 ~/.ssh/id_ed25519.pub</code></pre>
+                </div>
+              </section>
+
+              <!-- Reference -->
               <section class="lab-section" id="reference">
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">
                   Reference
@@ -440,27 +586,37 @@ Now try logging into the machine, with:
 
                 <ul class="lab-reference-list">
                   <li>
-                    <code>ssh-keygen -t rsa</code>
-                    : Generates a new RSA key pair in <code>~/.ssh/</code>
-                    (private key + public key).
+                    <code>ssh-keygen -t ed25519</code>
+                    : Generates a new Ed25519 key pair in <code>~/.ssh/</code>.
+                    <ul>
+                      <li>
+                        <code>-t ed25519</code>
+                        : Selects the Ed25519 key type.
+                      </li>
+                    </ul>
                   </li>
 
                   <li>
-                    <code>~/.ssh/id_rsa</code>
-                    : Default private key file. Keep this file protected and
-                    never copy it to remote systems.
+                    <code>~/.ssh/id_ed25519</code>
+                    : Private key file. Keep protected and never copy to remote
+                    systems.
                   </li>
 
                   <li>
-                    <code>~/.ssh/id_rsa.pub</code>
-                    : Default public key file. This is the key that gets
-                    installed on the remote server.
+                    <code>~/.ssh/id_ed25519.pub</code>
+                    : Public key file. Install this on remote systems.
                   </li>
 
                   <li>
-                    <code>ssh-copy-id user@host</code>
-                    : Installs a public key into the remote user's
+                    <code>ssh-copy-id -i &lt;pubkey&gt; user@host</code>
+                    : Installs a public key into the remote user’s
                     <code>~/.ssh/authorized_keys</code>.
+                    <ul>
+                      <li>
+                        <code>-i &lt;pubkey&gt;</code>
+                        : Selects the public key file to install.
+                      </li>
+                    </ul>
                   </li>
 
                   <li>
@@ -472,8 +628,8 @@ Now try logging into the machine, with:
                   <li>
                     <code>ssh user@host</code>
                     : Initiates an SSH session. If key-based authentication is
-                    configured correctly, it can succeed without a password
-                    prompt.
+                    configured correctly, it can succeed without prompting for
+                    the account password.
                   </li>
 
                   <li>
@@ -567,5 +723,9 @@ Now try logging into the machine, with:
 
     <!-- Lab page JS (new) -->
     <script src="../assets/js/lab.js"></script>
+
+    <script>
+      document.getElementById('year').textContent = new Date().getFullYear()
+    </script>
   </body>
 </html>

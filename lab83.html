@@ -37,14 +37,11 @@
     <link href="../assets/css/style.css" rel="stylesheet" />
     <link href="../assets/css/docs.css" rel="stylesheet" />
 
-    <!-- Lab page styles (new) -->
+    <!-- Lab page styles -->
     <link href="../assets/css/lab.css" rel="stylesheet" />
 
     <!-- Fonts -->
-    <link
-      href="https://fonts.googleapis.com/css?family=Dosis"
-      rel="stylesheet"
-    />
+    <link href="https://fonts.googleapis.com/css?family=Dosis" rel="stylesheet" />
   </head>
 
   <body>
@@ -154,24 +151,14 @@
       <section class="module">
         <div class="container">
           <h2 class="font-alt module-title m-t-60">
-            Lab 83: Linux Web-Based Administration (Cockpit)
+            Lab 83: Linux Web-Based Administration
           </h2>
 
           <nav class="lab-pagination">
-            <a
-              id="prev-lab"
-              class="lab-nav-link"
-              href="#"
-              aria-label="Previous lab"
-            >
+            <a id="prev-lab" class="lab-nav-link" href="#" aria-label="Previous lab">
               &laquo;
             </a>
-            <a
-              id="next-lab"
-              class="lab-nav-link"
-              href="#"
-              aria-label="Next lab"
-            >
+            <a id="next-lab" class="lab-nav-link" href="#" aria-label="Next lab">
               &raquo;
             </a>
           </nav>
@@ -186,7 +173,11 @@
                   </h5>
                   <ul class="docs-nav">
                     <li><a href="#scenario">Scenario</a></li>
+                    <li><a href="#objective">Objective</a></li>
+                    <li><a href="#concepts">Concepts</a></li>
                     <li><a href="#walkthrough">Walkthrough</a></li>
+                    <li><a href="#breakpoints">Breakpoints</a></li>
+                    <li><a href="#cleanup">Cleanup</a></li>
                     <li><a href="#reference">Reference</a></li>
                   </ul>
                 </div>
@@ -195,11 +186,10 @@
 
             <!-- MAIN CONTENT -->
             <div class="col-sm-8 col-md-9 lab-doc">
-              <!-- 1) Title + Summary (2 sentences max) -->
+              <!-- Summary (2 sentences max) -->
               <p class="m-b-20 lab-summary">
-                Install and enable Cockpit to provide a secure web-based
-                administration dashboard for Linux systems. Verify socket
-                activation and confirm the service is listening on port 9090.
+                Install and enable Cockpit to provide a secure web-based administration dashboard for Linux systems. Verify socket activation
+                and confirm the service is listening on port 9090.
               </p>
 
               <!-- Optional Video (leave in place; swap src when you have it) -->
@@ -215,13 +205,12 @@
                       allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                       referrerpolicy="strict-origin-when-cross-origin"
                       allowfullscreen
-                    >
-                    </iframe>
+                    ></iframe>
                   </div>
                 </div>
               </section>
 
-              <!-- 2) Scenario -->
+              <!-- Scenario -->
               <section class="lab-section" id="scenario">
                 <div class="lab-chips" aria-label="Tags">
                   <span class="lab-chip">
@@ -238,89 +227,57 @@
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">
                   Scenario
                 </h3>
+
                 <p>
-                  A team wants to manage Linux systems through a secure web-based
-                  dashboard. Your task is to install and configure Cockpit so
-                  administrators can access a browser-based interface for
-                  system visibility and management.
+                  A team wants to manage Linux systems through a secure web-based dashboard. Your task is to install and configure Cockpit so
+                  administrators can access a browser-based interface for system visibility and management.
                 </p>
 
                 <div class="lab-callout">
                   <div class="lab-callout-label">Operator context</div>
                   <p class="m-b-0">
-                    This is a typical ops enablement task: install the management
-                    surface, ensure it is reachable only through a controlled
-                    port, and prove readiness with both a browser check and a
-                    socket-level listener verification.
+                    This is a typical ops enablement task: install the management surface, ensure it is reachable only through a controlled
+                    port, and prove readiness with a browser check plus socket-level verification.
                   </p>
                 </div>
               </section>
 
-              <!-- 3) Objective -->
+              <!-- Objective -->
               <section class="lab-section alt-background" id="objective">
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">
                   Objective
                 </h3>
+
                 <ul>
                   <li>Install Cockpit using your distro’s package manager.</li>
-                  <li>
-                    Enable and start Cockpit via
-                    <code>cockpit.socket</code>
-                    .
-                  </li>
-                  <li>
-                    Open the local Cockpit UI in a browser at
-                    <code>https://localhost:9090</code>
-                    .
-                  </li>
-                  <li>
-                    Verify Cockpit is listening on port
-                    <code>9090</code>
-                    using
-                    <code>ss</code>
-                    .
-                  </li>
+                  <li>Enable and start Cockpit via <code>cockpit.socket</code>.</li>
+                  <li>Confirm the UI is reachable at <code>https://localhost:9090</code>.</li>
+                  <li>Verify Cockpit is listening on port <code>9090</code> using <code>ss</code>.</li>
                 </ul>
               </section>
 
-              <!-- 4) What You'll Practice -->
-              <section class="lab-section" id="practice">
+              <!-- Concepts -->
+              <section class="lab-section" id="concepts">
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">
-                  What You’ll Practice
+                  Concepts
                 </h3>
 
-                <ul class="m-t-10">
+                <ul>
                   <li>
-                    Installing admin tooling via
-                    <code>apt</code>
-                    ,
-                    <code>dnf</code>
-                    ,
-                    <code>yum</code>
-                    , or
-                    <code>pacman</code>
-                    .
+                    Cockpit commonly uses systemd socket activation (<code>cockpit.socket</code>) so the listener is managed by systemd and the
+                    service can be started on-demand.
                   </li>
                   <li>
-                    socket activation vs service activation in systemd (
-                    <code>cockpit.socket</code>
-                    ).
+                    Cockpit defaults to HTTPS on port <code>9090</code>. In lab environments, you may see a browser warning due to a self-signed
+                    certificate; the key validation is reachability and successful login.
                   </li>
                   <li>
-                    Accessing a local TLS-enabled management UI on a non-default
-                    port (
-                    <code>9090</code>
-                    ).
-                  </li>
-                  <li>
-                    Confirming listener state with
-                    <code>ss -tuln</code>
-                    .
+                    Prove readiness two ways: a socket-level check (<code>ss</code>) and an application-level check (browser or <code>curl -k</code>).
                   </li>
                 </ul>
               </section>
 
-              <!-- 5) Commands Walkthrough -->
+              <!-- Walkthrough -->
               <section class="lab-section alt-background" id="walkthrough">
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">
                   Walkthrough
@@ -330,44 +287,35 @@
                 <div class="lab-step">
                   <div class="lab-step-title">
                     <strong class="font-alt">Step 1</strong>
-                    : Install the Cockpit package.
+                    : Install Cockpit.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
-                      <span>Command</span>
-                      <button
-                        class="lab-copy-btn"
-                        type="button"
-                        data-copy="#cmd-step-1"
-                      >
+                      <span>Commands</span>
+                      <button class="lab-copy-btn" type="button" data-copy="#cmd-step-1">
                         Copy
                       </button>
                     </div>
-                    <pre><code id="cmd-step-1"># Pick the command that matches your distro:
+                    <pre><code id="cmd-step-1"># Debian/Ubuntu
+sudo apt update
+sudo apt install -y cockpit
 
-# Debian/Ubuntu
-sudo apt install cockpit -y
-
-# RHEL/CentOS/Fedora
-sudo dnf install cockpit -y
+# RHEL / CentOS / Fedora
+sudo dnf install -y cockpit
 # or (older flows)
-sudo yum install cockpit -y
+sudo yum install -y cockpit
 
 # Arch
 sudo pacman -S cockpit</code></pre>
                   </div>
 
                   <p>
-                    Installing Cockpit provides the web UI packages and systemd
-                    units needed to expose the management interface. On many
-                    systems, Cockpit is designed to be started via a systemd
-                    socket, which provides controlled activation and a clean
-                    readiness model.
+                    Installing Cockpit provides the web UI packages and systemd units needed to expose the management interface.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code id="verify-step-1"># Example result (varies by distro):
+                    <pre><code># Example result (varies by distro):
 # cockpit installed successfully.</code></pre>
                   </div>
                 </div>
@@ -376,17 +324,13 @@ sudo pacman -S cockpit</code></pre>
                 <div class="lab-step">
                   <div class="lab-step-title">
                     <strong class="font-alt">Step 2</strong>
-                    : Enable and start the Cockpit socket.
+                    : Enable and start Cockpit via socket activation.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
-                      <button
-                        class="lab-copy-btn"
-                        type="button"
-                        data-copy="#cmd-step-2"
-                      >
+                      <button class="lab-copy-btn" type="button" data-copy="#cmd-step-2">
                         Copy
                       </button>
                     </div>
@@ -394,16 +338,12 @@ sudo pacman -S cockpit</code></pre>
                   </div>
 
                   <p>
-                    Cockpit is commonly exposed via
-                    <code>cockpit.socket</code>
-                    rather than running continuously as a long-lived service.
-                    Enabling the socket ensures the UI is available and will be
-                    activated when a client connects.
+                    Enabling the socket ensures the management interface is available and will be activated when a client connects.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code id="verify-step-2"># Quick verification:
-systemctl status cockpit.socket</code></pre>
+                    <pre><code># Quick verification:
+systemctl status cockpit.socket --no-pager</code></pre>
                   </div>
                 </div>
 
@@ -411,39 +351,27 @@ systemctl status cockpit.socket</code></pre>
                 <div class="lab-step">
                   <div class="lab-step-title">
                     <strong class="font-alt">Step 3</strong>
-                    : Open Cockpit in your browser.
+                    : Confirm Cockpit is listening on port 9090.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
-                      <button
-                        class="lab-copy-btn"
-                        type="button"
-                        data-copy="#cmd-step-3"
-                      >
+                      <button class="lab-copy-btn" type="button" data-copy="#cmd-step-3">
                         Copy
                       </button>
                     </div>
-                    <pre><code id="cmd-step-3"># Any of the following are acceptable:
-xdg-open https://localhost:9090
-# or
-firefox https://localhost:9090
-# or
-chromium https://localhost:9090</code></pre>
+                    <pre><code id="cmd-step-3">sudo ss -lntp | grep -E ':\b9090\b' || true</code></pre>
                   </div>
 
                   <p>
-                    Cockpit runs over HTTPS on port
-                    <code>9090</code>
-                    by default. In lab environments, you may see a browser
-                    warning about the certificate; the key validation is that
-                    you can reach the login page locally.
+                    This is your socket-level proof that Cockpit is reachable. You should see a listener on <code>:9090</code>.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code id="verify-step-3"># Expected result:
-# Cockpit login page loads at https://localhost:9090</code></pre>
+                    <pre><code># Example:
+LISTEN 0 128 0.0.0.0:9090 ... systemd
+LISTEN 0 128 [::]:9090    ... systemd</code></pre>
                   </div>
                 </div>
 
@@ -451,41 +379,104 @@ chromium https://localhost:9090</code></pre>
                 <div class="lab-step">
                   <div class="lab-step-title">
                     <strong class="font-alt">Step 4</strong>
-                    : Verify Cockpit is listening on port 9090.
+                    : Open the Cockpit UI and verify the login page loads.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
-                      <span>Command</span>
-                      <button
-                        class="lab-copy-btn"
-                        type="button"
-                        data-copy="#cmd-step-4"
-                      >
+                      <span>Commands</span>
+                      <button class="lab-copy-btn" type="button" data-copy="#cmd-step-4">
                         Copy
                       </button>
                     </div>
-                    <pre><code id="cmd-step-4">ss -tuln | grep 9090</code></pre>
+                    <pre><code id="cmd-step-4"># Browser (choose one):
+xdg-open https://localhost:9090
+# or
+firefox https://localhost:9090
+# or
+chromium https://localhost:9090
+
+# Terminal validation (useful on headless systems):
+curl -kI https://localhost:9090</code></pre>
                   </div>
 
                   <p>
-                    This is your socket-level proof that the management interface
-                    is reachable. You should see a listener on
-                    <code>0.0.0.0:9090</code>
-                    and often on
-                    <code>[::]:9090</code>
-                    as well.
+                    Cockpit runs over HTTPS by default. The browser may warn about the certificate in lab environments; the goal is to confirm
+                    the endpoint responds and the login page is reachable.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code id="verify-step-4">Netid State  Recv-Q Send-Q Local Address:Port   Peer Address:Port
-tcp   LISTEN 0      128    0.0.0.0:9090        0.0.0.0:*
-tcp   LISTEN 0      128       [::]:9090           [::]:*</code></pre>
+                    <pre><code># Expected result:
+# Cockpit login page loads at https://localhost:9090
+# (or curl returns an HTTP response header)</code></pre>
                   </div>
                 </div>
               </section>
 
-              <!-- 6) Reference -->
+              <!-- Breakpoints -->
+              <section class="lab-section" id="breakpoints">
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  Breakpoints
+                </h3>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">Port 9090 not listening</div>
+                  <p class="m-b-0">
+                    Confirm <code>cockpit.socket</code> is enabled and active. If it’s inactive, start it. If it fails, inspect logs with
+                    <code>journalctl -u cockpit.socket</code>.
+                  </p>
+                </div>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">Browser can’t connect</div>
+                  <p class="m-b-0">
+                    Verify the listener exists on <code>:9090</code>. If you’re connecting remotely, confirm firewall rules allow TCP/9090 and
+                    that you’re targeting the correct host/IP.
+                  </p>
+                </div>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">TLS warning</div>
+                  <p class="m-b-0">
+                    In lab environments, a self-signed certificate is normal. The key check is that the endpoint responds and the login page
+                    loads.
+                  </p>
+                </div>
+              </section>
+
+              <!-- Cleanup -->
+              <section class="lab-section alt-background" id="cleanup">
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  Cleanup checklist
+                </h3>
+
+                <p>
+                  If you want to remove the management surface after practice, disable the socket. Remove the package only if you’re done.
+                </p>
+
+                <div class="lab-codeblock m-b-40 m-t-40">
+                  <div class="lab-codeblock-header">
+                    <span>Commands</span>
+                    <button class="lab-copy-btn" type="button" data-copy="#cmd-cleanup">
+                      Copy
+                    </button>
+                  </div>
+                  <pre><code id="cmd-cleanup"># Stop/disable socket activation
+sudo systemctl disable --now cockpit.socket
+
+# Optional: remove package (choose your distro)
+# Debian/Ubuntu
+# sudo apt remove -y cockpit
+
+# RHEL-family
+# sudo dnf remove -y cockpit
+
+# Arch
+# sudo pacman -R cockpit</code></pre>
+                </div>
+              </section>
+
+              <!-- Reference (minimal; command listed once; sub-bullets only for flags/options) -->
               <section class="lab-section" id="reference">
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">
                   Reference
@@ -493,45 +484,76 @@ tcp   LISTEN 0      128       [::]:9090           [::]:*</code></pre>
 
                 <ul class="lab-reference-list">
                   <li>
-                    <code>cockpit</code>
-                    : Web-based administration interface for Linux servers.
+                    <code>apt install cockpit</code>: Install Cockpit on Debian/Ubuntu.
+                    <ul>
+                      <li><code>-y</code>: assume “yes” to prompts</li>
+                    </ul>
                   </li>
+
                   <li>
-                    <code>systemctl enable --now cockpit.socket</code>
-                    : Enables Cockpit socket activation and starts it immediately.
+                    <code>dnf install cockpit</code>: Install Cockpit on RHEL-family systems.
+                    <ul>
+                      <li><code>-y</code>: assume “yes” to prompts</li>
+                    </ul>
                   </li>
+
                   <li>
-                    <code>https://localhost:9090</code>
-                    : Default Cockpit UI endpoint (HTTPS, port 9090).
+                    <code>pacman -S cockpit</code>: Install Cockpit on Arch.
                   </li>
+
                   <li>
-                    <code>ss -tuln</code>
-                    : Lists listening sockets without name resolution.
+                    <code>systemctl enable --now cockpit.socket</code>: Enable socket activation and start immediately.
+                    <ul>
+                      <li><code>enable</code>: start at boot</li>
+                      <li><code>--now</code>: start immediately</li>
+                    </ul>
                   </li>
+
                   <li>
-                    <code>ss -tuln | grep 9090</code>
-                    : Confirms Cockpit is listening on port 9090.
+                    <code>systemctl status cockpit.socket</code>: Check socket activation state.
+                    <ul>
+                      <li><code>--no-pager</code>: print directly</li>
+                    </ul>
                   </li>
+
                   <li>
-                    <code>xdg-open</code>
-                    : Opens a URL using the system’s default browser.
+                    <code>ss -lntp</code>: Show listening TCP sockets and owning processes.
+                    <ul>
+                      <li><code>-l</code>: listening sockets</li>
+                      <li><code>-n</code>: numeric output</li>
+                      <li><code>-t</code>: TCP sockets</li>
+                      <li><code>-p</code>: process info</li>
+                    </ul>
+                  </li>
+
+                  <li>
+                    <code>xdg-open https://localhost:9090</code>: Open the Cockpit UI in the default browser (desktop environments).
+                  </li>
+
+                  <li>
+                    <code>curl -kI https://localhost:9090</code>: Validate HTTPS reachability from the terminal.
+                    <ul>
+                      <li><code>-k</code>: ignore certificate verification (lab use)</li>
+                      <li><code>-I</code>: headers only</li>
+                    </ul>
+                  </li>
+
+                  <li>
+                    <code>journalctl -u cockpit.socket</code>: View logs for socket activation issues.
+                    <ul>
+                      <li><code>-n 50</code>: last 50 lines</li>
+                      <li><code>--no-pager</code>: print directly</li>
+                    </ul>
                   </li>
                 </ul>
               </section>
-
-              <!-- Lab Pagination -->
             </div>
             <!-- /main -->
           </div>
           <!-- /row -->
 
           <nav class="lab-pagination">
-            <a
-              id="prev-lab"
-              class="lab-nav-link"
-              href="#"
-              aria-label="Previous lab"
-            >
+            <a id="prev-lab" class="lab-nav-link" href="#" aria-label="Back to top">
               &uArr;
             </a>
           </nav>
@@ -546,11 +568,7 @@ tcp   LISTEN 0      128       [::]:9090           [::]:*</code></pre>
             <div class="col-sm-12">
               <ul class="social-text-links font-alt text-center m-b-20">
                 <li>
-                  <a
-                    href="https://github.com/vonds"
-                    target="_blank"
-                    rel="noopener"
-                  >
+                  <a href="https://github.com/vonds" target="_blank" rel="noopener">
                     Github
                   </a>
                 </li>
@@ -603,7 +621,7 @@ tcp   LISTEN 0      128       [::]:9090           [::]:*</code></pre>
     <script src="../assets/js/smoothscroll.js"></script>
     <script src="../assets/js/custom.js"></script>
 
-    <!-- Lab page JS (new) -->
+    <!-- Lab page JS -->
     <script src="../assets/js/lab.js"></script>
   </body>
 </html>

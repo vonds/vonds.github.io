@@ -37,7 +37,7 @@
     <link href="../assets/css/style.css" rel="stylesheet" />
     <link href="../assets/css/docs.css" rel="stylesheet" />
 
-    <!-- Lab page styles (new) -->
+    <!-- Lab page styles -->
     <link href="../assets/css/lab.css" rel="stylesheet" />
 
     <!-- Fonts -->
@@ -84,6 +84,9 @@
                   >
                     Sentinel
                   </a>
+                </li>
+                <li>
+                  <a href="docs.html" target="_blank">exit_0 Documentation</a>
                 </li>
               </ul>
             </li>
@@ -186,7 +189,11 @@
                   </h5>
                   <ul class="docs-nav">
                     <li><a href="#scenario">Scenario</a></li>
+                    <li><a href="#objective">Objective</a></li>
+                    <li><a href="#concepts">Concepts</a></li>
                     <li><a href="#walkthrough">Walkthrough</a></li>
+                    <li><a href="#breakpoints">Breakpoints</a></li>
+                    <li><a href="#cleanup">Cleanup</a></li>
                     <li><a href="#reference">Reference</a></li>
                   </ul>
                 </div>
@@ -195,34 +202,30 @@
 
             <!-- MAIN CONTENT -->
             <div class="col-sm-8 col-md-9 lab-doc">
-              <!-- 1) Title + Summary (2 sentences max) -->
               <p class="m-b-20 lab-summary">
                 Apply a tuned profile to align system behavior with workload goals,
-                then control CPU scheduling pressure by adjusting process priorities
-                with nice and renice. Verify active profiles and confirm that your
+                then reduce CPU scheduling pressure by adjusting process priorities
+                with nice and renice. Verify the active profile and confirm your
                 priority changes took effect on running processes.
               </p>
 
-              <!-- Optional Video (leave in place; swap src when you have it) -->
+              <!-- Optional Video -->
               <section class="lab-section" id="video" aria-label="Lab video">
                 <div class="lab-video">
                   <div class="lab-video-embed text-center">
                     <iframe
-                      width="560"
-                      height="315"
                       src="https://www.youtube.com/embed/REPLACE_ME"
                       title="YouTube video player"
                       frameborder="0"
                       allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                       referrerpolicy="strict-origin-when-cross-origin"
                       allowfullscreen
-                    >
-                    </iframe>
+                    ></iframe>
                   </div>
                 </div>
               </section>
 
-              <!-- 2) Scenario -->
+              <!-- Scenario -->
               <section class="lab-section" id="scenario">
                 <div class="lab-chips" aria-label="Tags">
                   <span class="lab-chip">
@@ -239,25 +242,26 @@
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">
                   Scenario
                 </h3>
+
                 <p>
                   A host is being repurposed to handle a heavier workload. Your job is
-                  to apply a tuned performance profile appropriate for throughput and
-                  then reduce the impact of noisy background CPU jobs by controlling
-                  process priorities. You’ll verify tuned state, start test workloads,
-                  and use nice/renice to adjust scheduling priority safely.
+                  to apply a tuned profile appropriate for throughput and then reduce
+                  the impact of noisy background CPU jobs by controlling process
+                  priorities. You will verify tuned state, start test workloads, and
+                  use nice and renice to adjust scheduling priority safely.
                 </p>
 
                 <div class="lab-callout">
                   <div class="lab-callout-label">Operator context</div>
                   <p class="m-b-0">
-                    tuned changes system behavior at a profile level. nice/renice is
-                    a per-process control and won’t “fix” a broken workload, but it
-                    can keep low-value jobs from competing with critical services.
+                    tuned changes system behavior at a profile level. nice and renice are
+                    per-process controls and will not fix a broken workload, but they can
+                    keep low-value jobs from competing with critical services.
                   </p>
                 </div>
               </section>
 
-              <!-- 3) Objective -->
+              <!-- Objective -->
               <section class="lab-section alt-background" id="objective">
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">
                   Objective
@@ -268,34 +272,37 @@
                   <li>Verify the currently active profile.</li>
                   <li>Generate CPU load for testing and compare priorities.</li>
                   <li>Start a process with a lower priority using nice.</li>
-                  <li>Change a running process’s nice value using renice.</li>
+                  <li>Change a running process nice value using renice.</li>
                   <li>Clean up background workloads.</li>
                 </ul>
               </section>
 
-              <!-- 4) What You'll Practice -->
-              <section class="lab-section" id="practice">
+              <!-- Concepts -->
+              <section class="lab-section" id="concepts">
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">
-                  What You’ll Practice
+                  Concepts
                 </h3>
-
-                <ul class="m-t-10">
-                  <li><code>tuned</code> service lifecycle and profile management.</li>
-                  <li><code>tuned-adm</code> commands: list, profile, active.</li>
+                <ul>
                   <li>
-                    Process priority basics: lower priority (higher nice number)
-                    vs higher priority (lower nice number).
+                    tuned applies system-level profile settings, which can affect CPU
+                    governor, disk behavior, and other performance-related knobs.
                   </li>
                   <li>
-                    Verifying priority with <code>ps</code> output (NI column).
+                    nice values influence scheduler priority. Higher nice means lower
+                    priority, and lower nice means higher priority.
                   </li>
                   <li>
-                    Safer cleanup patterns: kill by PID, pkill/killall when appropriate.
+                    In real ops work, you usually increase nice for background jobs
+                    instead of decreasing nice for critical services.
+                  </li>
+                  <li>
+                    Always verify changes with process inspection. Do not assume your
+                    intent matched the effective state.
                   </li>
                 </ul>
               </section>
 
-              <!-- 5) Walkthrough -->
+              <!-- Walkthrough -->
               <section class="lab-section alt-background" id="walkthrough">
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">
                   Walkthrough
@@ -305,12 +312,12 @@
                 <div class="lab-step">
                   <div class="lab-step-title">
                     <strong class="font-alt">Step 1</strong>
-                    : Install tuned (if needed).
+                    : Install tuned if needed.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
-                      <span>Command</span>
+                      <span>Commands</span>
                       <button
                         class="lab-copy-btn"
                         type="button"
@@ -330,9 +337,14 @@ sudo pacman -S tuned</code></pre>
                   </div>
 
                   <p>
-                    tuned is most common in RHEL-family environments, but the workflow
-                    is consistent: install it, start it, then manage profiles.
+                    tuned is most common in RHEL-family environments, but the workflow is the same:
+                    install it, start it, then manage profiles.
                   </p>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <pre><code># Expected pattern:
+Package installs successfully (or reports already installed).</code></pre>
+                  </div>
                 </div>
 
                 <!-- Step 2 -->
@@ -344,7 +356,7 @@ sudo pacman -S tuned</code></pre>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
-                      <span>Command</span>
+                      <span>Commands</span>
                       <button
                         class="lab-copy-btn"
                         type="button"
@@ -357,8 +369,13 @@ sudo pacman -S tuned</code></pre>
                   </div>
 
                   <p>
-                    This turns on profile enforcement and ensures tuned will start on boot.
+                    This starts profile enforcement and ensures tuned starts on boot.
                   </p>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <pre><code># Expected pattern:
+Active: active (running)</code></pre>
+                  </div>
                 </div>
 
                 <!-- Step 3 -->
@@ -370,7 +387,7 @@ sudo pacman -S tuned</code></pre>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
-                      <span>Command</span>
+                      <span>Commands</span>
                       <button
                         class="lab-copy-btn"
                         type="button"
@@ -383,9 +400,13 @@ sudo pacman -S tuned</code></pre>
                   </div>
 
                   <p>
-                    You’re looking for profiles like <code>balanced</code>,
-                    <code>powersave</code>, <code>throughput-performance</code>,
-                    and other workload-specific options depending on distro/version.
+                    Look for profiles like
+                    <code>balanced</code>
+                    ,
+                    <code>powersave</code>
+                    ,
+                    <code>throughput-performance</code>
+                    , and other workload-specific options depending on distro and version.
                   </p>
                 </div>
 
@@ -393,12 +414,12 @@ sudo pacman -S tuned</code></pre>
                 <div class="lab-step">
                   <div class="lab-step-title">
                     <strong class="font-alt">Step 4</strong>
-                    : Apply the throughput profile.
+                    : Apply a throughput-oriented profile.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
-                      <span>Command</span>
+                      <span>Commands</span>
                       <button
                         class="lab-copy-btn"
                         type="button"
@@ -411,10 +432,14 @@ sudo pacman -S tuned</code></pre>
                   </div>
 
                   <p>
-                    This is a common server-oriented profile that tends to favor
-                    throughput over power savings. Always verify the active profile
-                    after changing it.
+                    This is a common server profile that favors throughput over power savings.
+                    Always verify the active profile after changing it.
                   </p>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <pre><code># Expected pattern:
+Profile set to throughput-performance</code></pre>
+                  </div>
                 </div>
 
                 <!-- Step 5 -->
@@ -426,7 +451,7 @@ sudo pacman -S tuned</code></pre>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
-                      <span>Command</span>
+                      <span>Commands</span>
                       <button
                         class="lab-copy-btn"
                         type="button"
@@ -439,8 +464,13 @@ sudo pacman -S tuned</code></pre>
                   </div>
 
                   <p>
-                    Treat this as a verification step before moving on to process-level tuning.
+                    Treat this as a verification step before you start process-level tuning.
                   </p>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <pre><code># Expected pattern:
+Current active profile: throughput-performance</code></pre>
+                  </div>
                 </div>
 
                 <!-- Step 6 -->
@@ -452,7 +482,7 @@ sudo pacman -S tuned</code></pre>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
-                      <span>Command</span>
+                      <span>Commands</span>
                       <button
                         class="lab-copy-btn"
                         type="button"
@@ -465,20 +495,25 @@ sudo pacman -S tuned</code></pre>
                   </div>
 
                   <p>
-                    This creates a predictable CPU load so you can see how priority changes behave.
+                    This creates predictable CPU load so you can see how priority changes behave.
                   </p>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <pre><code># Expected pattern:
+Job starts in the background and returns a PID.</code></pre>
+                  </div>
                 </div>
 
                 <!-- Step 7 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
                     <strong class="font-alt">Step 7</strong>
-                    : Start the same workload with a lower priority using nice.
+                    : Start the same workload at a lower priority using nice.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
-                      <span>Command</span>
+                      <span>Commands</span>
                       <button
                         class="lab-copy-btn"
                         type="button"
@@ -491,21 +526,26 @@ sudo pacman -S tuned</code></pre>
                   </div>
 
                   <p>
-                    A higher nice value means lower scheduling priority. This is the “be nice”
-                    version of the workload so it competes less aggressively for CPU.
+                    Higher nice means lower scheduling priority. This is a clean way to ensure a
+                    background job competes less aggressively for CPU.
                   </p>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <pre><code># Expected pattern:
+Job starts in the background and returns a PID.</code></pre>
+                  </div>
                 </div>
 
                 <!-- Step 8 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
                     <strong class="font-alt">Step 8</strong>
-                    : Identify PIDs and inspect nice values.
+                    : Inspect nice values for the running processes.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
-                      <span>Command</span>
+                      <span>Commands</span>
                       <button
                         class="lab-copy-btn"
                         type="button"
@@ -514,29 +554,36 @@ sudo pacman -S tuned</code></pre>
                         Copy
                       </button>
                     </div>
-                    <pre><code id="cmd-step-8"># find PIDs
+                    <pre><code id="cmd-step-8"># list PIDs for the test workload
 pgrep yes
 
-# inspect priority (NI column shows nice)
+# verify NI values (NI column shows nice)
 ps -o pid,ni,cmd -C yes</code></pre>
                   </div>
 
                   <p>
-                    Use <code>ps -o pid,ni,cmd -C yes</code> to confirm one process has NI 0
-                    and the nice-started one has NI 10.
+                    You should see one process with NI 0 and one process with NI 10.
+                    If you started more than two, stop them and repeat the test with one at a time.
                   </p>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <pre><code># Expected pattern:
+  PID  NI CMD
+ 1234   0 yes
+ 5678  10 yes</code></pre>
+                  </div>
                 </div>
 
                 <!-- Step 9 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
                     <strong class="font-alt">Step 9</strong>
-                    : Adjust priority of a running process with renice.
+                    : Adjust a running process nice value with renice.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
-                      <span>Command</span>
+                      <span>Commands</span>
                       <button
                         class="lab-copy-btn"
                         type="button"
@@ -545,7 +592,7 @@ ps -o pid,ni,cmd -C yes</code></pre>
                         Copy
                       </button>
                     </div>
-                    <pre><code id="cmd-step-9"># Example: lower priority (increase nice) of PID 1234
+                    <pre><code id="cmd-step-9"># Example: lower the priority of PID 1234 by increasing nice
 sudo renice 15 -p 1234
 
 # Verify the change
@@ -553,10 +600,14 @@ ps -o pid,ni,cmd -p 1234</code></pre>
                   </div>
 
                   <p>
-                    In practice, you typically increase nice values (lower priority) for background
-                    jobs. Decreasing nice values (higher priority) requires elevated privileges and
-                    should be used sparingly.
+                    In practice, increasing nice values is the safer move for background jobs.
+                    Decreasing nice values requires elevated privileges and should be used sparingly.
                   </p>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <pre><code># Expected pattern:
+1234 (process ID) old priority 0, new priority 15</code></pre>
+                  </div>
                 </div>
 
                 <!-- Step 10 -->
@@ -568,7 +619,7 @@ ps -o pid,ni,cmd -p 1234</code></pre>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
-                      <span>Command</span>
+                      <span>Commands</span>
                       <button
                         class="lab-copy-btn"
                         type="button"
@@ -577,19 +628,100 @@ ps -o pid,ni,cmd -p 1234</code></pre>
                         Copy
                       </button>
                     </div>
-                    <pre><code id="cmd-step-10"># Either option is fine in a lab environment:
+                    <pre><code id="cmd-step-10"># lab cleanup options
 killall yes
 # OR
 pkill yes</code></pre>
                   </div>
 
                   <p>
-                    Clean shutdown of test noise matters—especially in a repeatable lab cycle.
+                    Clean shutdown of test noise matters, especially if you repeat labs frequently.
                   </p>
                 </div>
               </section>
 
-              <!-- 6) Reference -->
+              <!-- Common breakpoints -->
+              <section class="lab-section" id="breakpoints">
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  Common breakpoints
+                </h3>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">tuned-adm not found</div>
+                  <p class="m-b-0">
+                    tuned may be installed but not started, or you installed a package set that
+                    does not include the CLI tooling. Confirm with
+                    <code>rpm -q tuned</code>
+                    or
+                    <code>dpkg -l tuned</code>
+                    and re-check
+                    <code>systemctl status tuned</code>
+                    .
+                  </p>
+                </div>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">Profile name differs</div>
+                  <p class="m-b-0">
+                    Some distros ship different profile sets or names. Use
+                    <code>tuned-adm list</code>
+                    and choose the closest match to your intent instead of guessing.
+                  </p>
+                </div>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">ps output does not match</div>
+                  <p class="m-b-0">
+                    If you see more than two
+                    <code>yes</code>
+                    processes, your earlier runs are still active. Kill them, then repeat the test
+                    so you can compare two processes cleanly.
+                  </p>
+                </div>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">renice permission denied</div>
+                  <p class="m-b-0">
+                    Increasing nice values is usually allowed for your own processes, but lowering
+                    nice values requires elevated privileges. Use
+                    <code>sudo</code>
+                    and prefer increasing nice for background workloads.
+                  </p>
+                </div>
+              </section>
+
+              <!-- Cleanup -->
+              <section class="lab-section alt-background" id="cleanup">
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">Cleanup</h3>
+
+                <p>
+                  Stop test workloads and optionally return to a default tuned profile if this host
+                  is not intended to run with the throughput profile.
+                </p>
+
+                <div class="lab-codeblock m-b-40 m-t-40">
+                  <div class="lab-codeblock-header">
+                    <span>Commands</span>
+                    <button
+                      class="lab-copy-btn"
+                      type="button"
+                      data-copy="#cmd-cleanup"
+                    >
+                      Copy
+                    </button>
+                  </div>
+                  <pre><code id="cmd-cleanup"># stop the lab load
+pkill yes
+
+# optional: switch back to a general profile
+sudo tuned-adm profile balanced
+
+# verify
+tuned-adm active</code></pre>
+                </div>
+              </section>
+
+              <!-- Reference (minimal format) -->
               <section class="lab-section" id="reference">
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">
                   Reference
@@ -598,33 +730,88 @@ pkill yes</code></pre>
                 <ul class="lab-reference-list">
                   <li>
                     <code>tuned-adm</code>
-                    <ul>
-                      <li><code>tuned-adm list</code> : List profiles and show current selection.</li>
-                      <li><code>tuned-adm profile NAME</code> : Apply a profile.</li>
-                      <li><code>tuned-adm active</code> : Show the active profile.</li>
-                    </ul>
-                  </li>
-
-                  <li>
-                    <code>nice</code> / <code>renice</code>
+                    : Profile management CLI for tuned.
                     <ul>
                       <li>
-                        <code>nice -n N cmd</code> : Start a process with nice value N (higher is lower priority).
+                        <code>list</code>
+                        : Show available profiles and selection.
                       </li>
                       <li>
-                        <code>renice N -p PID</code> : Change nice value of an existing PID.
+                        <code>profile &lt;name&gt;</code>
+                        : Apply a profile.
                       </li>
                       <li>
-                        <code>ps -o pid,ni,cmd</code> : Verify NI values for running processes.
+                        <code>active</code>
+                        : Show the active profile.
                       </li>
                     </ul>
                   </li>
 
                   <li>
                     <code>systemctl</code>
+                    : Service control for enabling tuned.
                     <ul>
-                      <li><code>systemctl enable --now tuned</code> : Enable and start tuned immediately.</li>
+                      <li>
+                        <code>enable --now tuned</code>
+                        : Enable on boot and start immediately.
+                      </li>
+                      <li>
+                        <code>status tuned</code>
+                        : Check service state.
+                      </li>
                     </ul>
+                  </li>
+
+                  <li>
+                    <code>nice</code>
+                    : Start a process with a specific nice value.
+                    <ul>
+                      <li>
+                        <code>-n &lt;N&gt;</code>
+                        : Set nice value (higher means lower priority).
+                      </li>
+                    </ul>
+                  </li>
+
+                  <li>
+                    <code>renice</code>
+                    : Change nice value of a running process.
+                    <ul>
+                      <li>
+                        <code>-p &lt;PID&gt;</code>
+                        : Target a specific process ID.
+                      </li>
+                    </ul>
+                  </li>
+
+                  <li>
+                    <code>ps</code>
+                    : Inspect process attributes including NI.
+                    <ul>
+                      <li>
+                        <code>-o pid,ni,cmd</code>
+                        : Show PID, nice value, and command line.
+                      </li>
+                      <li>
+                        <code>-C &lt;name&gt;</code>
+                        : Select by command name.
+                      </li>
+                    </ul>
+                  </li>
+
+                  <li>
+                    <code>pgrep</code>
+                    : Find PIDs by process name.
+                  </li>
+
+                  <li>
+                    <code>pkill</code>
+                    : Stop processes by name (use carefully).
+                  </li>
+
+                  <li>
+                    <code>killall</code>
+                    : Stop processes by name (use carefully).
                   </li>
                 </ul>
               </section>
@@ -702,6 +889,7 @@ pkill yes</code></pre>
     <script src="../assets/js/imagesloaded.pkgd.js"></script>
     <script src="../assets/js/isotope.pkgd.min.js"></script>
     <script src="../assets/js/packery-mode.pkgd.min.js"></script>
+    <script src="../assets/js/packery-mode.pkgd.min.js"></script>
     <script src="../assets/js/appear.js"></script>
     <script src="../assets/js/jquery.easing.1.3.js"></script>
     <script src="../assets/js/wow.min.js"></script>
@@ -713,5 +901,9 @@ pkill yes</code></pre>
 
     <!-- Lab page JS (new) -->
     <script src="../assets/js/lab.js"></script>
+
+    <script>
+      document.getElementById('year').textContent = new Date().getFullYear()
+    </script>
   </body>
 </html>

@@ -37,7 +37,7 @@
     <link href="../assets/css/style.css" rel="stylesheet" />
     <link href="../assets/css/docs.css" rel="stylesheet" />
 
-    <!-- Lab page styles (new) -->
+    <!-- Lab page styles -->
     <link href="../assets/css/lab.css" rel="stylesheet" />
 
     <!-- Fonts -->
@@ -152,16 +152,26 @@
 
       <!-- DOCS PAGE -->
       <section class="module">
-        <div class="container" id="totop">
+        <div class="container">
           <h2 class="font-alt module-title m-t-60">
             Lab 97: Set up a basic NTP client with chronyd
           </h2>
 
           <nav class="lab-pagination">
-            <a id="prev-lab" class="lab-nav-link" href="#" aria-label="Previous lab">
+            <a
+              id="prev-lab"
+              class="lab-nav-link"
+              href="#"
+              aria-label="Previous lab"
+            >
               &laquo;
             </a>
-            <a id="next-lab" class="lab-nav-link" href="#" aria-label="Next lab">
+            <a
+              id="next-lab"
+              class="lab-nav-link"
+              href="#"
+              aria-label="Next lab"
+            >
               &raquo;
             </a>
           </nav>
@@ -176,7 +186,11 @@
                   </h5>
                   <ul class="docs-nav">
                     <li><a href="#scenario">Scenario</a></li>
+                    <li><a href="#objective">Objective</a></li>
+                    <li><a href="#concepts">Concepts</a></li>
                     <li><a href="#walkthrough">Walkthrough</a></li>
+                    <li><a href="#breakpoints">Breakpoints</a></li>
+                    <li><a href="#cleanup">Cleanup</a></li>
                     <li><a href="#reference">Reference</a></li>
                   </ul>
                 </div>
@@ -185,311 +199,543 @@
 
             <!-- MAIN CONTENT -->
             <div class="col-sm-8 col-md-9 lab-doc">
-              <!-- 1) Title + Summary (2 sentences max) -->
               <p class="m-b-20 lab-summary">
-                Configure a host as an NTP client using <code>chronyd</code> so logs and
-                timestamps stay consistent across systems. Verify sync health with
-                <code>timedatectl</code> and <code>chronyc</code>, then apply a one-time
-                step correction when drift is large.
+                Configure a host as an NTP client using <code>chronyd</code> to
+                keep logs and timestamps consistent across systems. Verify sync
+                health with <code>timedatectl</code> and <code>chronyc</code>,
+                then apply a one-time step correction when drift is large.
               </p>
 
-              <!-- Optional Video (leave in place; swap src when you have it) -->
+              <!-- Video (kept on page; removed from left panel) -->
               <section class="lab-section" id="video" aria-label="Lab video">
                 <div class="lab-video">
                   <div class="lab-video-embed text-center">
                     <iframe
-                      width="560"
-                      height="315"
                       src="https://www.youtube.com/embed/REPLACE_ME"
                       title="YouTube video player"
                       frameborder="0"
                       allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                       referrerpolicy="strict-origin-when-cross-origin"
                       allowfullscreen
-                    >
-                    </iframe>
+                    ></iframe>
                   </div>
                 </div>
               </section>
 
-              <!-- 2) Scenario -->
+              <!-- Scenario -->
               <section class="lab-section" id="scenario">
                 <div class="lab-chips" aria-label="Tags">
-                  <span class="lab-chip"><span class="lab-chip-key">chrony</span></span>
-                  <span class="lab-chip"><span class="lab-chip-key">ntp</span></span>
-                  <span class="lab-chip"><span class="lab-chip-key">time-sync</span></span>
-                  <span class="lab-chip"><span class="lab-chip-key">rhel</span></span>
+                  <span class="lab-chip">
+                    <span class="lab-chip-key">chrony</span>
+                  </span>
+                  <span class="lab-chip">
+                    <span class="lab-chip-key">ntp</span>
+                  </span>
+                  <span class="lab-chip">
+                    <span class="lab-chip-key">timesync</span>
+                  </span>
+                  <span class="lab-chip">
+                    <span class="lab-chip-key">rhel</span>
+                  </span>
                 </div>
 
-                <h3 class="font-alt lab-section-title m-b-40 m-t-40">Scenario</h3>
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  Scenario
+                </h3>
+
                 <p>
-                  A server’s clock is drifting and logs are no longer ordered correctly.
-                  Your job is to install <code>chrony</code>, enable <code>chronyd</code>,
-                  verify that the system is synchronized, and confirm the active NTP
-                  sources and tracking statistics.
+                  A server’s clock is drifting and logs are no longer ordered
+                  correctly. You need to install <code>chrony</code>, enable
+                  <code>chronyd</code>, verify the system is synchronized, and
+                  confirm the active NTP sources and tracking statistics.
                 </p>
 
                 <div class="lab-callout">
                   <div class="lab-callout-label">Operator context</div>
                   <p class="m-b-0">
-                    Time drift causes subtle failures: TLS issues, confusing incident timelines,
-                    broken log correlation, and unpredictable authentication behavior. The goal
-                    is “enable time sync, prove it’s working, then document what it’s using.”
+                    Time drift creates subtle failures: TLS issues, confusing
+                    incident timelines, broken log correlation, and
+                    unpredictable authentication behavior. The goal is enable
+                    time sync, prove it’s working, then document what it’s
+                    using.
                   </p>
                 </div>
               </section>
 
-              <!-- 3) Objective -->
+              <!-- Objective -->
               <section class="lab-section alt-background" id="objective">
-                <h3 class="font-alt lab-section-title m-b-40 m-t-40">Objective</h3>
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  Objective
+                </h3>
                 <ul>
                   <li>Install <code>chrony</code> and enable <code>chronyd</code>.</li>
                   <li>Verify service health with <code>systemctl</code>.</li>
                   <li>Confirm OS time sync status with <code>timedatectl</code>.</li>
                   <li>Validate active NTP sources with <code>chronyc sources -v</code>.</li>
                   <li>Apply a one-time step correction using <code>chronyc makestep</code>.</li>
-                  <li>Review tracking stats and confirm config file location.</li>
+                  <li>Confirm the primary configuration file location.</li>
                 </ul>
               </section>
 
-              <!-- 4) What You'll Practice -->
-              <section class="lab-section" id="practice">
+              <!-- Concepts (no alt-background moving forward) -->
+              <section class="lab-section" id="concepts">
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">
-                  What You’ll Practice
+                  Concepts
                 </h3>
-                <ul class="m-t-10">
+                <ul>
                   <li>
-                    Service control and verification:
-                    <code>systemctl enable --now</code>,
-                    <code>systemctl status --no-pager</code>
+                    Time synchronization as baseline infrastructure for
+                    distributed systems and log integrity.
                   </li>
                   <li>
-                    Time sync verification:
-                    <code>timedatectl status</code>
+                    Service enablement and runtime validation using
+                    <code>systemctl</code>.
                   </li>
                   <li>
-                    Chrony admin tooling:
-                    <code>chronyc sources -v</code>,
-                    <code>chronyc tracking</code>,
-                    <code>chronyc makestep</code>
+                    OS-level sync state validation using <code>timedatectl</code>.
                   </li>
                   <li>
-                    Basic config awareness:
-                    <code>/etc/chrony.conf</code>
+                    Source selection and health checks with
+                    <code>chronyc sources -v</code>.
+                  </li>
+                  <li>
+                    Offset and reference tracking with <code>chronyc tracking</code>.
+                  </li>
+                  <li>
+                    Controlled step correction with <code>chronyc makestep</code>.
                   </li>
                 </ul>
               </section>
 
-              <!-- 5) Walkthrough -->
+              <!-- Walkthrough -->
               <section class="lab-section alt-background" id="walkthrough">
-                <h3 class="font-alt lab-section-title m-b-40 m-t-40">Walkthrough</h3>
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  Walkthrough
+                </h3>
 
                 <!-- Step 1 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
-                    <strong class="font-alt">Step 1</strong>: Install chrony.
+                    <strong class="font-alt">Step 1</strong>
+                    : Install chrony.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
-                      <button class="lab-copy-btn" type="button" data-copy="#cmd-97-1">
+                      <button
+                        class="lab-copy-btn"
+                        type="button"
+                        data-copy="#cmd-step-1"
+                      >
                         Copy
                       </button>
                     </div>
-                    <pre><code id="cmd-97-1">sudo dnf install chrony -y
-# (older systems may use yum)
-# sudo yum install chrony -y</code></pre>
+                    <pre><code id="cmd-step-1">sudo dnf install chrony -y</code></pre>
                   </div>
 
                   <p>
-                    Once installed, treat time sync as “baseline infrastructure” the same way
-                    you treat logging and DNS: enable it early and verify it often.
+                    Install the client tooling and the daemon. On managed
+                    systems, this is usually standard build baseline work,
+                    not an emergency fix.
                   </p>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <pre><code># Expected signal:
+# Installed: chrony</code></pre>
+                  </div>
                 </div>
 
                 <!-- Step 2 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
-                    <strong class="font-alt">Step 2</strong>: Enable and start chronyd.
+                    <strong class="font-alt">Step 2</strong>
+                    : Enable and start chronyd.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
-                      <button class="lab-copy-btn" type="button" data-copy="#cmd-97-2">
+                      <button
+                        class="lab-copy-btn"
+                        type="button"
+                        data-copy="#cmd-step-2"
+                      >
                         Copy
                       </button>
                     </div>
-                    <pre><code id="cmd-97-2">sudo systemctl enable --now chronyd</code></pre>
+                    <pre><code id="cmd-step-2">sudo systemctl enable --now chronyd</code></pre>
                   </div>
 
                   <p>
-                    This activates sync immediately and ensures it persists across reboots.
+                    This starts synchronization immediately and ensures it comes
+                    back after reboot.
                   </p>
                 </div>
 
                 <!-- Step 3 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
-                    <strong class="font-alt">Step 3</strong>: Check service status.
+                    <strong class="font-alt">Step 3</strong>
+                    : Confirm service health.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
-                      <button class="lab-copy-btn" type="button" data-copy="#cmd-97-3">
+                      <button
+                        class="lab-copy-btn"
+                        type="button"
+                        data-copy="#cmd-step-3"
+                      >
                         Copy
                       </button>
                     </div>
-                    <pre><code id="cmd-97-3">systemctl status chronyd --no-pager</code></pre>
+                    <pre><code id="cmd-step-3">systemctl status chronyd --no-pager</code></pre>
                   </div>
 
                   <p>
-                    You’re confirming “active (running)” and scanning for obvious errors before
-                    moving on to source and tracking validation.
+                    Confirm the unit is active and scan for obvious failures
+                    before you trust anything downstream.
                   </p>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <pre><code># Expected patterns:
+# Active: active (running)</code></pre>
+                  </div>
                 </div>
 
                 <!-- Step 4 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
-                    <strong class="font-alt">Step 4</strong>: Verify sync status via timedatectl.
+                    <strong class="font-alt">Step 4</strong>
+                    : Validate OS sync state.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
-                      <button class="lab-copy-btn" type="button" data-copy="#cmd-97-4">
+                      <button
+                        class="lab-copy-btn"
+                        type="button"
+                        data-copy="#cmd-step-4"
+                      >
                         Copy
                       </button>
                     </div>
-                    <pre><code id="cmd-97-4">timedatectl status</code></pre>
+                    <pre><code id="cmd-step-4">timedatectl status</code></pre>
                   </div>
 
                   <p>
-                    Look for signals like <code>System clock synchronized: yes</code> and
-                    an active NTP service.
+                    You’re looking for a synchronized clock and an active NTP
+                    service. If the OS doesn’t agree, treat chrony output as
+                    incomplete evidence.
                   </p>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <pre><code># Expected patterns:
+# System clock synchronized: yes
+# NTP service: active</code></pre>
+                  </div>
                 </div>
 
                 <!-- Step 5 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
-                    <strong class="font-alt">Step 5</strong>: Check NTP sources.
+                    <strong class="font-alt">Step 5</strong>
+                    : Confirm active time sources.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
-                      <button class="lab-copy-btn" type="button" data-copy="#cmd-97-5">
+                      <button
+                        class="lab-copy-btn"
+                        type="button"
+                        data-copy="#cmd-step-5"
+                      >
                         Copy
                       </button>
                     </div>
-                    <pre><code id="cmd-97-5">chronyc sources -v</code></pre>
+                    <pre><code id="cmd-step-5">chronyc sources -v</code></pre>
                   </div>
 
                   <p>
-                    The selected source is typically marked with <code>*</code>. You’re verifying
-                    that the host can reach time sources and that at least one is healthy.
+                    Validate that the host can reach sources and that at least
+                    one is healthy. The selected source is typically marked
+                    with <code>*</code>.
                   </p>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <pre><code># Expected patterns:
+# ^* time.example.net ...</code></pre>
+                  </div>
                 </div>
 
                 <!-- Step 6 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
-                    <strong class="font-alt">Step 6</strong>: Force a one-time step correction.
+                    <strong class="font-alt">Step 6</strong>
+                    : Review tracking statistics.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
-                      <button class="lab-copy-btn" type="button" data-copy="#cmd-97-6">
+                      <button
+                        class="lab-copy-btn"
+                        type="button"
+                        data-copy="#cmd-step-6"
+                      >
                         Copy
                       </button>
                     </div>
-                    <pre><code id="cmd-97-6">sudo chronyc makestep</code></pre>
+                    <pre><code id="cmd-step-6">chronyc tracking</code></pre>
                   </div>
 
                   <p>
-                    This is appropriate when drift is large and you need timestamps corrected quickly.
-                    Afterward, you still verify tracking and source state.
+                    Tracking output shows the current offset, correction
+                    behavior, stratum, and reference source being used. This is
+                    what you document when troubleshooting drift.
                   </p>
                 </div>
 
                 <!-- Step 7 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
-                    <strong class="font-alt">Step 7</strong>: Review tracking statistics.
+                    <strong class="font-alt">Step 7</strong>
+                    : Apply a one-time step correction.
+                  </div>
+
+                  <div class="lab-callout">
+                    <div class="lab-callout-label">Safety note</div>
+                    <p class="m-b-0">
+                      Stepping time can be disruptive for time-sensitive
+                      applications. Use this when drift is large and you need a
+                      fast correction, then confirm sync and sources again.
+                    </p>
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
-                      <button class="lab-copy-btn" type="button" data-copy="#cmd-97-7">
+                      <button
+                        class="lab-copy-btn"
+                        type="button"
+                        data-copy="#cmd-step-7"
+                      >
                         Copy
                       </button>
                     </div>
-                    <pre><code id="cmd-97-7">chronyc tracking</code></pre>
+                    <pre><code id="cmd-step-7">sudo chronyc makestep</code></pre>
                   </div>
 
-                  <p>
-                    This is where you confirm the current offset, frequency correction, stratum,
-                    and the reference source being used.
-                  </p>
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <pre><code># Re-verify:
+timedatectl status
+chronyc sources -v</code></pre>
+                  </div>
                 </div>
 
                 <!-- Step 8 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
-                    <strong class="font-alt">Step 8</strong>: Confirm config file location.
+                    <strong class="font-alt">Step 8</strong>
+                    : Confirm the configuration file location.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
-                      <button class="lab-copy-btn" type="button" data-copy="#cmd-97-8">
+                      <button
+                        class="lab-copy-btn"
+                        type="button"
+                        data-copy="#cmd-step-8"
+                      >
                         Copy
                       </button>
                     </div>
-                    <pre><code id="cmd-97-8">ls -l /etc/chrony.conf</code></pre>
+                    <pre><code id="cmd-step-8">ls -l /etc/chrony.conf</code></pre>
                   </div>
 
                   <p>
-                    This is the primary place you’d document or adjust servers/pools, access controls,
-                    and any local policy decisions.
+                    This is where you document or adjust servers/pools and
+                    local policy. If the environment uses internal NTP, this
+                    file is where you confirm what the host is configured to
+                    trust.
                   </p>
                 </div>
               </section>
 
-              <!-- 6) Reference -->
+              <!-- Common breakpoints -->
+              <section class="lab-section" id="breakpoints">
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  Common breakpoints
+                </h3>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">
+                    chronyd is not active or fails to start
+                  </div>
+                  <p class="m-b-0">
+                    If the service is not running, start with
+                    <code>systemctl status</code>
+                    and then review logs. Fix the service state before trying to
+                    validate sources or tracking output.
+                  </p>
+                </div>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">
+                    timedatectl shows not synchronized
+                  </div>
+                  <p class="m-b-0">
+                    Confirm network reachability to NTP sources and verify at
+                    least one source is selectable in
+                    <code>chronyc sources -v</code>
+                    . If sources are unreachable, investigate DNS, routing, and
+                    firewall policy.
+                  </p>
+                </div>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">
+                    No selected source in chronyc sources output
+                  </div>
+                  <p class="m-b-0">
+                    If nothing is marked with <code>*</code>, the host has not
+                    selected a usable source. Confirm configuration and verify
+                    you are not blocked upstream by egress controls.
+                  </p>
+                </div>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">
+                    makestep causes application warnings
+                  </div>
+                  <p class="m-b-0">
+                    Stepping time can confuse systems that assume monotonic
+                    timestamps. If this is a risk, prefer gradual correction and
+                    coordinate the change window for sensitive workloads.
+                  </p>
+                </div>
+              </section>
+
+              <!-- Cleanup -->
+              <section class="lab-section alt-background" id="cleanup">
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  Cleanup checklist
+                </h3>
+
+                <p>
+                  This lab is non-destructive. Cleanup is confirming the service
+                  is enabled, the system reports synchronized time, and at least
+                  one usable source is selected.
+                </p>
+
+                <div class="lab-codeblock m-b-40 m-t-40">
+                  <div class="lab-codeblock-header">
+                    <span>Commands</span>
+                    <button
+                      class="lab-copy-btn"
+                      type="button"
+                      data-copy="#cmd-cleanup"
+                    >
+                      Copy
+                    </button>
+                  </div>
+                  <pre><code id="cmd-cleanup">systemctl is-enabled chronyd
+systemctl is-active chronyd
+timedatectl status
+chronyc sources -v
+chronyc tracking</code></pre>
+                </div>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">Success signal</div>
+                  <p class="m-b-0">
+                    <code>timedatectl</code>
+                    reports the clock is synchronized and
+                    <code>chronyc sources</code>
+                    shows a selected source with stable tracking output.
+                  </p>
+                </div>
+              </section>
+
+              <!-- Reference -->
               <section class="lab-section" id="reference">
-                <h3 class="font-alt lab-section-title m-b-40 m-t-40">Reference</h3>
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  Reference
+                </h3>
 
                 <ul class="lab-reference-list">
                   <li>
-                    Install + service
+                    <code>dnf install chrony -y</code>
+                    : Installs the chrony package.
                     <ul>
-                      <li><code>sudo dnf install chrony -y</code></li>
-                      <li><code>sudo systemctl enable --now chronyd</code></li>
-                      <li><code>systemctl status chronyd --no-pager</code></li>
+                      <li>
+                        <code>-y</code>
+                        : Automatically answers yes to prompts.
+                      </li>
                     </ul>
                   </li>
 
                   <li>
-                    Verify sync
+                    <code>systemctl enable --now chronyd</code>
+                    : Enables chronyd at boot and starts it immediately.
                     <ul>
-                      <li><code>timedatectl status</code></li>
-                      <li><code>chronyc sources -v</code></li>
-                      <li><code>chronyc tracking</code></li>
-                      <li><code>sudo chronyc makestep</code></li>
+                      <li>
+                        <code>--now</code>
+                        : Starts the service immediately after enabling.
+                      </li>
                     </ul>
                   </li>
 
                   <li>
-                    Config
+                    <code>systemctl status chronyd --no-pager</code>
+                    : Shows chronyd service status.
                     <ul>
-                      <li><code>/etc/chrony.conf</code></li>
+                      <li>
+                        <code>--no-pager</code>
+                        : Prints output without paging.
+                      </li>
+                    </ul>
+                  </li>
+
+                  <li>
+                    <code>timedatectl status</code>
+                    : Shows system time settings and synchronization status.
+                  </li>
+
+                  <li>
+                    <code>chronyc sources -v</code>
+                    : Shows configured and active NTP sources.
+                    <ul>
+                      <li>
+                        <code>-v</code>
+                        : Enables verbose output.
+                      </li>
+                    </ul>
+                  </li>
+
+                  <li>
+                    <code>chronyc tracking</code>
+                    : Shows chrony tracking statistics (offset, stratum, reference source).
+                  </li>
+
+                  <li>
+                    <code>chronyc makestep</code>
+                    : Steps the clock to correct large drift.
+                  </li>
+
+                  <li>
+                    <code>ls -l /etc/chrony.conf</code>
+                    : Confirms the primary chrony configuration file path.
+                    <ul>
+                      <li>
+                        <code>/etc/chrony.conf</code>
+                        : File containing chrony server/pool configuration and policy.
+                      </li>
                     </ul>
                   </li>
                 </ul>
@@ -498,10 +744,6 @@
             <!-- /main -->
           </div>
           <!-- /row -->
-
-          <nav class="lab-pagination">
-            <a class="lab-nav-link" href="#totop" aria-label="Back to top">&uArr;</a>
-          </nav>
         </div>
         <!-- /container -->
       </section>
@@ -556,6 +798,7 @@
     <script src="../assets/js/imagesloaded.pkgd.js"></script>
     <script src="../assets/js/isotope.pkgd.min.js"></script>
     <script src="../assets/js/packery-mode.pkgd.min.js"></script>
+    <script src="../assets/js/packery-mode.pkgd.min.js"></script>
     <script src="../assets/js/appear.js"></script>
     <script src="../assets/js/jquery.easing.1.3.js"></script>
     <script src="../assets/js/wow.min.js"></script>
@@ -567,5 +810,9 @@
 
     <!-- Lab page JS (new) -->
     <script src="../assets/js/lab.js"></script>
+
+    <script>
+      document.getElementById('year').textContent = new Date().getFullYear()
+    </script>
   </body>
 </html>

@@ -37,11 +37,14 @@
     <link href="../assets/css/style.css" rel="stylesheet" />
     <link href="../assets/css/docs.css" rel="stylesheet" />
 
-    <!-- Lab page styles (new) -->
+    <!-- Lab page styles -->
     <link href="../assets/css/lab.css" rel="stylesheet" />
 
     <!-- Fonts -->
-    <link href="https://fonts.googleapis.com/css?family=Dosis" rel="stylesheet" />
+    <link
+      href="https://fonts.googleapis.com/css?family=Dosis"
+      rel="stylesheet"
+    />
   </head>
 
   <body>
@@ -155,10 +158,20 @@
           </h2>
 
           <nav class="lab-pagination">
-            <a id="prev-lab" class="lab-nav-link" href="#" aria-label="Previous lab">
+            <a
+              id="prev-lab"
+              class="lab-nav-link"
+              href="#"
+              aria-label="Previous lab"
+            >
               &laquo;
             </a>
-            <a id="next-lab" class="lab-nav-link" href="#" aria-label="Next lab">
+            <a
+              id="next-lab"
+              class="lab-nav-link"
+              href="#"
+              aria-label="Next lab"
+            >
               &raquo;
             </a>
           </nav>
@@ -173,7 +186,11 @@
                   </h5>
                   <ul class="docs-nav">
                     <li><a href="#scenario">Scenario</a></li>
+                    <li><a href="#objective">Objective</a></li>
+                    <li><a href="#concepts">Concepts</a></li>
                     <li><a href="#walkthrough">Walkthrough</a></li>
+                    <li><a href="#breakpoints">Breakpoints</a></li>
+                    <li><a href="#cleanup">Cleanup</a></li>
                     <li><a href="#reference">Reference</a></li>
                   </ul>
                 </div>
@@ -182,20 +199,17 @@
 
             <!-- MAIN CONTENT -->
             <div class="col-sm-8 col-md-9 lab-doc">
-              <!-- 1) Title + Summary (2 sentences max) -->
               <p class="m-b-20 lab-summary">
-                Convert a growing playbook into a reusable Ansible role with tasks,
-                handlers, and templates. You’ll deploy a simple Nginx site using a
-                production-style structure that scales cleanly as your automation grows.
+                Convert a growing playbook into a reusable role with tasks,
+                handlers, and templates. Deploy a simple Nginx site using a
+                production-style structure that scales as your automation grows.
               </p>
 
-              <!-- Optional Video -->
+              <!-- Video -->
               <section class="lab-section" id="video" aria-label="Lab video">
                 <div class="lab-video">
                   <div class="lab-video-embed text-center">
                     <iframe
-                      width="560"
-                      height="315"
                       src="https://www.youtube.com/embed/REPLACE_ME"
                       title="YouTube video player"
                       frameborder="0"
@@ -207,37 +221,53 @@
                 </div>
               </section>
 
-              <!-- 2) Scenario -->
+              <!-- Scenario -->
               <section class="lab-section" id="scenario">
                 <div class="lab-chips" aria-label="Tags">
-                  <span class="lab-chip"><span class="lab-chip-key">ansible</span></span>
-                  <span class="lab-chip"><span class="lab-chip-key">roles</span></span>
-                  <span class="lab-chip"><span class="lab-chip-key">handlers</span></span>
-                  <span class="lab-chip"><span class="lab-chip-key">templates</span></span>
-                  <span class="lab-chip"><span class="lab-chip-key">ansible-lint</span></span>
+                  <span class="lab-chip">
+                    <span class="lab-chip-key">ansible</span>
+                  </span>
+                  <span class="lab-chip">
+                    <span class="lab-chip-key">roles</span>
+                  </span>
+                  <span class="lab-chip">
+                    <span class="lab-chip-key">handlers</span>
+                  </span>
+                  <span class="lab-chip">
+                    <span class="lab-chip-key">templates</span>
+                  </span>
+                  <span class="lab-chip">
+                    <span class="lab-chip-key">ansible-lint</span>
+                  </span>
                 </div>
 
-                <h3 class="font-alt lab-section-title m-b-40 m-t-40">Scenario</h3>
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  Scenario
+                </h3>
+
                 <p>
-                  You’re managing a growing set of Ansible playbooks and the structure is
-                  starting to sprawl. To keep things clean and reusable, you’ll migrate to
-                  roles and implement a production-grade pattern: tasks install and configure,
-                  handlers restart services only when needed, and templates render host-specific
-                  content.
+                  You are managing a growing set of playbooks and the structure
+                  is starting to sprawl. To keep things clean and reusable, you
+                  migrate to roles and implement a production pattern: tasks
+                  install and configure, handlers restart services only when
+                  needed, and templates render host-specific content.
                 </p>
 
                 <div class="lab-callout">
                   <div class="lab-callout-label">Operator context</div>
                   <p class="m-b-0">
-                    Roles are the “unit of reuse” in Ansible. The goal is a layout you can
-                    drop into any repo, compose into a site playbook, and lint for consistency.
+                    Roles are the unit of reuse in Ansible. The goal is a layout
+                    you can drop into any repo, compose into a site playbook,
+                    and lint for consistency.
                   </p>
                 </div>
               </section>
 
-              <!-- 3) Objective -->
+              <!-- Objective -->
               <section class="lab-section alt-background" id="objective">
-                <h3 class="font-alt lab-section-title m-b-40 m-t-40">Objective</h3>
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  Objective
+                </h3>
                 <ul>
                   <li>Create a role skeleton with <code>ansible-galaxy init</code>.</li>
                   <li>Define tasks to install Nginx and deploy a templated landing page.</li>
@@ -247,34 +277,57 @@
                 </ul>
               </section>
 
-              <!-- 4) What You'll Practice -->
-              <section class="lab-section" id="practice">
+              <!-- Concepts -->
+              <section class="lab-section" id="concepts">
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">
-                  What You’ll Practice
+                  Concepts
                 </h3>
-                <ul class="m-t-10">
-                  <li>Role scaffolding: <code>ansible-galaxy init</code></li>
-                  <li>Role anatomy: <code>tasks/</code>, <code>handlers/</code>, <code>templates/</code>, <code>defaults/</code></li>
-                  <li>Template rendering: <code>template:</code> with facts like <code>ansible_hostname</code></li>
-                  <li>Change-driven restarts: <code>notify:</code> + handlers</li>
-                  <li>Quality gates: <code>ansible-lint</code></li>
+                <ul>
+                  <li>
+                    Role anatomy: standard directories (<code>tasks/</code>,
+                    <code>handlers/</code>, <code>templates/</code>,
+                    <code>defaults/</code>) and predictable entry points.
+                  </li>
+                  <li>
+                    Handlers as change-controlled operations: restart services
+                    only when configuration changes.
+                  </li>
+                  <li>
+                    Templates as configuration rendering: use facts and variables
+                    to generate host-specific output.
+                  </li>
+                  <li>
+                    Site playbooks as composition: keep orchestration readable by
+                    attaching roles to groups.
+                  </li>
+                  <li>
+                    Linting as a quality gate: enforce consistent patterns as
+                    roles become shared artifacts.
+                  </li>
                 </ul>
               </section>
 
-              <!-- 5) Walkthrough -->
+              <!-- Walkthrough -->
               <section class="lab-section alt-background" id="walkthrough">
-                <h3 class="font-alt lab-section-title m-b-40 m-t-40">Walkthrough</h3>
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  Walkthrough
+                </h3>
 
                 <!-- Step 1 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
-                    <strong class="font-alt">Step 1</strong>: Create a new role named <code>nginx</code>.
+                    <strong class="font-alt">Step 1</strong>
+                    : Create a new role named <code>nginx</code>.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
-                      <button class="lab-copy-btn" type="button" data-copy="#cmd-99-1">
+                      <button
+                        class="lab-copy-btn"
+                        type="button"
+                        data-copy="#cmd-99-1"
+                      >
                         Copy
                       </button>
                     </div>
@@ -282,70 +335,95 @@
                   </div>
 
                   <p>
-                    This creates the standard role layout. You’ll primarily work in
-                    <code>tasks/main.yml</code>, <code>handlers/main.yml</code>, and
-                    <code>templates/</code>.
+                    This creates the standard role layout. You will primarily work
+                    in <code>tasks/main.yml</code>, <code>handlers/main.yml</code>,
+                    and <code>templates/</code>.
                   </p>
                 </div>
 
                 <!-- Step 2 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
-                    <strong class="font-alt">Step 2</strong>: Define a task to install Nginx.
+                    <strong class="font-alt">Step 2</strong>
+                    : Define the role tasks to install and run Nginx.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
-                      <button class="lab-copy-btn" type="button" data-copy="#cmd-99-2">
+                      <button
+                        class="lab-copy-btn"
+                        type="button"
+                        data-copy="#cmd-99-2"
+                      >
                         Copy
                       </button>
                     </div>
                     <pre><code id="cmd-99-2">nano nginx/tasks/main.yml
-# or
+# OR
 vim nginx/tasks/main.yml</code></pre>
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-10">
                     <div class="lab-codeblock-header">
                       <span>nginx/tasks/main.yml (baseline)</span>
-                      <button class="lab-copy-btn" type="button" data-copy="#file-99-tasks-1">
+                      <button
+                        class="lab-copy-btn"
+                        type="button"
+                        data-copy="#file-99-tasks-1"
+                      >
                         Copy
                       </button>
                     </div>
                     <pre><code id="file-99-tasks-1">- name: Install nginx
   package:
     name: nginx
-    state: present</code></pre>
+    state: present
+
+- name: Ensure nginx is enabled and running
+  service:
+    name: nginx
+    state: started
+    enabled: yes</code></pre>
                   </div>
 
                   <p>
-                    The <code>package</code> module keeps this role portable across distros.
+                    The <code>package</code> module keeps installs portable across
+                    distros. The <code>service</code> task enforces runtime state.
                   </p>
                 </div>
 
                 <!-- Step 3 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
-                    <strong class="font-alt">Step 3</strong>: Add a handler to restart Nginx.
+                    <strong class="font-alt">Step 3</strong>
+                    : Add a handler to restart Nginx only when notified.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
-                      <button class="lab-copy-btn" type="button" data-copy="#cmd-99-3">
+                      <button
+                        class="lab-copy-btn"
+                        type="button"
+                        data-copy="#cmd-99-3"
+                      >
                         Copy
                       </button>
                     </div>
                     <pre><code id="cmd-99-3">nano nginx/handlers/main.yml
-# or
+# OR
 vim nginx/handlers/main.yml</code></pre>
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-10">
                     <div class="lab-codeblock-header">
                       <span>nginx/handlers/main.yml</span>
-                      <button class="lab-copy-btn" type="button" data-copy="#file-99-handlers">
+                      <button
+                        class="lab-copy-btn"
+                        type="button"
+                        data-copy="#file-99-handlers"
+                      >
                         Copy
                       </button>
                     </div>
@@ -356,32 +434,42 @@ vim nginx/handlers/main.yml</code></pre>
                   </div>
 
                   <p>
-                    Handlers run only when notified, which prevents unnecessary restarts.
+                    Handlers are designed for change-driven operations. You only
+                    restart when something actually changed.
                   </p>
                 </div>
 
                 <!-- Step 4 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
-                    <strong class="font-alt">Step 4</strong>: Create the HTML template.
+                    <strong class="font-alt">Step 4</strong>
+                    : Create the HTML template.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
-                      <button class="lab-copy-btn" type="button" data-copy="#cmd-99-4">
+                      <button
+                        class="lab-copy-btn"
+                        type="button"
+                        data-copy="#cmd-99-4"
+                      >
                         Copy
                       </button>
                     </div>
                     <pre><code id="cmd-99-4">nano nginx/templates/index.html.j2
-# or
+# OR
 vim nginx/templates/index.html.j2</code></pre>
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-10">
                     <div class="lab-codeblock-header">
                       <span>nginx/templates/index.html.j2</span>
-                      <button class="lab-copy-btn" type="button" data-copy="#file-99-template">
+                      <button
+                        class="lab-copy-btn"
+                        type="button"
+                        data-copy="#file-99-template"
+                      >
                         Copy
                       </button>
                     </div>
@@ -400,32 +488,42 @@ vim nginx/templates/index.html.j2</code></pre>
                   </div>
 
                   <p>
-                    This uses <code>ansible_hostname</code> from gathered facts to render host-specific output.
+                    This uses <code>ansible_hostname</code> from gathered facts to
+                    render host-specific output.
                   </p>
                 </div>
 
                 <!-- Step 5 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
-                    <strong class="font-alt">Step 5</strong>: Deploy the template from the role and notify the handler.
+                    <strong class="font-alt">Step 5</strong>
+                    : Deploy the template and notify the handler.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
-                      <button class="lab-copy-btn" type="button" data-copy="#cmd-99-5">
+                      <button
+                        class="lab-copy-btn"
+                        type="button"
+                        data-copy="#cmd-99-5"
+                      >
                         Copy
                       </button>
                     </div>
                     <pre><code id="cmd-99-5">nano nginx/tasks/main.yml
-# or
+# OR
 vim nginx/tasks/main.yml</code></pre>
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-10">
                     <div class="lab-codeblock-header">
                       <span>nginx/tasks/main.yml (final)</span>
-                      <button class="lab-copy-btn" type="button" data-copy="#file-99-tasks-2">
+                      <button
+                        class="lab-copy-btn"
+                        type="button"
+                        data-copy="#file-99-tasks-2"
+                      >
                         Copy
                       </button>
                     </div>
@@ -451,32 +549,42 @@ vim nginx/tasks/main.yml</code></pre>
                   </div>
 
                   <p>
-                    The handler only runs if the template task reports a change.
+                    The handler runs only if the template task reports a change.
                   </p>
                 </div>
 
                 <!-- Step 6 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
-                    <strong class="font-alt">Step 6</strong>: Create a site playbook that uses the role.
+                    <strong class="font-alt">Step 6</strong>
+                    : Create a site playbook that applies the role to the
+                    <code>web</code> group.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
-                      <button class="lab-copy-btn" type="button" data-copy="#cmd-99-6">
+                      <button
+                        class="lab-copy-btn"
+                        type="button"
+                        data-copy="#cmd-99-6"
+                      >
                         Copy
                       </button>
                     </div>
                     <pre><code id="cmd-99-6">nano site.yml
-# or
+# OR
 vim site.yml</code></pre>
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-10">
                     <div class="lab-codeblock-header">
                       <span>site.yml</span>
-                      <button class="lab-copy-btn" type="button" data-copy="#file-99-site">
+                      <button
+                        class="lab-copy-btn"
+                        type="button"
+                        data-copy="#file-99-site"
+                      >
                         Copy
                       </button>
                     </div>
@@ -488,21 +596,27 @@ vim site.yml</code></pre>
                   </div>
 
                   <p>
-                    This composes the role into a clean entry point. As you add roles,
-                    you keep <code>site.yml</code> readable and predictable.
+                    This gives you a clean entry point. As you add more roles,
+                    keep <code>site.yml</code> readable by composing roles per
+                    host group.
                   </p>
                 </div>
 
                 <!-- Step 7 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
-                    <strong class="font-alt">Step 7</strong>: Run the role-based playbook.
+                    <strong class="font-alt">Step 7</strong>
+                    : Run the role-based playbook.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
-                      <button class="lab-copy-btn" type="button" data-copy="#cmd-99-7">
+                      <button
+                        class="lab-copy-btn"
+                        type="button"
+                        data-copy="#cmd-99-7"
+                      >
                         Copy
                       </button>
                     </div>
@@ -510,21 +624,26 @@ vim site.yml</code></pre>
                   </div>
 
                   <p>
-                    First run should show changes; subsequent runs should converge to mostly <code>ok</code>
-                    unless you modify templates or tasks.
+                    First run should show changes. Subsequent runs should converge
+                    to mostly <code>ok</code> unless tasks or templates change.
                   </p>
                 </div>
 
                 <!-- Step 8 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
-                    <strong class="font-alt">Step 8</strong>: Lint the playbook (and role) for best practices.
+                    <strong class="font-alt">Step 8</strong>
+                    : Lint the playbook and role for best practices.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
-                      <button class="lab-copy-btn" type="button" data-copy="#cmd-99-8">
+                      <button
+                        class="lab-copy-btn"
+                        type="button"
+                        data-copy="#cmd-99-8"
+                      >
                         Copy
                       </button>
                     </div>
@@ -532,44 +651,212 @@ vim site.yml</code></pre>
                   </div>
 
                   <p>
-                    Linting is your “production hygiene” step: consistent patterns, fewer surprises,
-                    and cleaner reviews when roles become shared artifacts across teams.
+                    Linting is production hygiene. It helps keep roles consistent
+                    and reduces surprises when roles get shared across teams.
                   </p>
                 </div>
               </section>
 
-              <!-- 6) Reference -->
+              <!-- Breakpoints -->
+              <section class="lab-section" id="breakpoints">
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  Common breakpoints
+                </h3>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">
+                    ansible-lint not installed
+                  </div>
+                  <p class="m-b-0">
+                    Install it with your Python tooling or distro package and
+                    keep it pinned in your environment so linting is reproducible.
+                  </p>
+                </div>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">
+                    template deploy succeeds but page does not change
+                  </div>
+                  <p class="m-b-0">
+                    Confirm the destination path matches your Nginx document root
+                    and that the service is running. Also confirm you are
+                    targeting the correct inventory and group.
+                  </p>
+                </div>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">
+                    handler does not run
+                  </div>
+                  <p class="m-b-0">
+                    Handlers only run when notified and a task reports a change.
+                    If the template is identical on disk, no restart will occur.
+                  </p>
+                </div>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">
+                    role not found when running site.yml
+                  </div>
+                  <p class="m-b-0">
+                    Ensure the role directory (for example <code>./nginx</code>)
+                    is in the playbook working directory or in your configured
+                    <code>roles_path</code>.
+                  </p>
+                </div>
+              </section>
+
+              <!-- Cleanup -->
+              <section class="lab-section alt-background" id="cleanup">
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  Cleanup checklist
+                </h3>
+
+                <p>
+                  Remove Nginx from the web group and keep your repo clean by
+                  removing the role directory if you are rebuilding from scratch.
+                </p>
+
+                <div class="lab-codeblock m-b-40 m-t-40">
+                  <div class="lab-codeblock-header">
+                    <span>Commands</span>
+                    <button
+                      class="lab-copy-btn"
+                      type="button"
+                      data-copy="#cmd-99-cleanup"
+                    >
+                      Copy
+                    </button>
+                  </div>
+                  <pre><code id="cmd-99-cleanup">ansible web -i ~/inventory -m package -a "name=nginx state=absent" -b
+ansible web -i ~/inventory -m service -a "name=nginx state=stopped" -b</code></pre>
+                </div>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">Success signal</div>
+                  <p class="m-b-0">
+                    Nginx is absent on web hosts and re-running the playbook
+                    converges predictably with minimal changes.
+                  </p>
+                </div>
+              </section>
+
+              <!-- Reference (minimal command: description format) -->
               <section class="lab-section" id="reference">
-                <h3 class="font-alt lab-section-title m-b-40 m-t-40">Reference</h3>
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  Reference
+                </h3>
 
                 <ul class="lab-reference-list">
                   <li>
-                    Role scaffolding
+                    <code>ansible-galaxy init &lt;role&gt;</code>
+                    : Creates a standard role directory structure.
+                  </li>
+
+                  <li>
+                    <code>ansible-playbook -i &lt;inventory&gt; &lt;playbook&gt;</code>
+                    : Runs a playbook using the specified inventory.
                     <ul>
-                      <li><code>ansible-galaxy init nginx</code></li>
+                      <li>
+                        <code>-i &lt;inventory&gt;</code>
+                        : Points Ansible at a specific inventory file.
+                      </li>
                     </ul>
                   </li>
 
                   <li>
-                    Core role files
+                    <code>ansible-lint &lt;playbook&gt;</code>
+                    : Lints a playbook (and referenced roles) for best practices.
+                  </li>
+
+                  <li>
+                    <code>package:</code>
+                    : Installs or removes packages in an idempotent way.
                     <ul>
-                      <li><code>nginx/tasks/main.yml</code></li>
-                      <li><code>nginx/handlers/main.yml</code></li>
-                      <li><code>nginx/templates/index.html.j2</code></li>
+                      <li>
+                        <code>state: present</code>
+                        : Ensures the package is installed.
+                      </li>
+                      <li>
+                        <code>state: absent</code>
+                        : Ensures the package is removed.
+                      </li>
                     </ul>
                   </li>
 
                   <li>
-                    Deploy
+                    <code>service:</code>
+                    : Manages service state and enablement.
                     <ul>
-                      <li><code>ansible-playbook -i ~/inventory site.yml</code></li>
+                      <li>
+                        <code>state: started</code>
+                        : Ensures the service is running.
+                      </li>
+                      <li>
+                        <code>state: restarted</code>
+                        : Restarts the service.
+                      </li>
+                      <li>
+                        <code>enabled: yes</code>
+                        : Enables the service at boot.
+                      </li>
                     </ul>
                   </li>
 
                   <li>
-                    Quality gate
+                    <code>template:</code>
+                    : Renders a Jinja2 template to a destination on the target host.
                     <ul>
-                      <li><code>ansible-lint site.yml</code></li>
+                      <li>
+                        <code>src:</code>
+                        : Template file inside the role <code>templates/</code> directory.
+                      </li>
+                      <li>
+                        <code>dest:</code>
+                        : Destination path on the managed host.
+                      </li>
+                      <li>
+                        <code>notify:</code>
+                        : Triggers a handler when the task changes.
+                      </li>
+                    </ul>
+                  </li>
+
+                  <li>
+                    <code>ansible &lt;group&gt; -i &lt;inventory&gt; -m package -a "&lt;args&gt;" -b</code>
+                    : Runs the <code>package</code> module ad-hoc against a target group.
+                    <ul>
+                      <li>
+                        <code>-m package</code>
+                        : Selects the package module.
+                      </li>
+                      <li>
+                        <code>-a "&lt;args&gt;"</code>
+                        : Supplies module args (for example <code>name=nginx state=absent</code>).
+                      </li>
+                      <li>
+                        <code>-b</code>
+                        : Enables privilege escalation (become).
+                      </li>
+                    </ul>
+                  </li>
+
+                  <li>
+                    <code>ansible &lt;group&gt; -i &lt;inventory&gt; -m service -a "&lt;args&gt;" -b</code>
+                    : Runs the <code>service</code> module ad-hoc against a target group.
+                    <ul>
+                      <li>
+                        <code>-m service</code>
+                        : Selects the service module.
+                      </li>
+                      <li>
+                        <code>-a "&lt;args&gt;"</code>
+                        : Supplies module args (for example <code>name=nginx state=stopped</code>).
+                      </li>
+                      <li>
+                        <code>-b</code>
+                        : Enables privilege escalation (become).
+                      </li>
                     </ul>
                   </li>
                 </ul>
@@ -580,7 +867,9 @@ vim site.yml</code></pre>
           <!-- /row -->
 
           <nav class="lab-pagination">
-            <a class="lab-nav-link" href="#totop" aria-label="Back to top">&uArr;</a>
+            <a class="lab-nav-link" href="#totop" aria-label="Back to top"
+              >&uArr;</a
+            >
           </nav>
         </div>
         <!-- /container -->
@@ -645,7 +934,7 @@ vim site.yml</code></pre>
     <script src="../assets/js/smoothscroll.js"></script>
     <script src="../assets/js/custom.js"></script>
 
-    <!-- Lab page JS (new) -->
+    <!-- Lab page JS -->
     <script src="../assets/js/lab.js"></script>
 
     <script>

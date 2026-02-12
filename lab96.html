@@ -85,6 +85,9 @@
                     Sentinel
                   </a>
                 </li>
+                <li>
+                  <a href="docs.html" target="_blank">exit_0 Documentation</a>
+                </li>
               </ul>
             </li>
 
@@ -186,7 +189,11 @@
                   </h5>
                   <ul class="docs-nav">
                     <li><a href="#scenario">Scenario</a></li>
+                    <li><a href="#objective">Objective</a></li>
+                    <li><a href="#concepts">Concepts</a></li>
                     <li><a href="#walkthrough">Walkthrough</a></li>
+                    <li><a href="#breakpoints">Breakpoints</a></li>
+                    <li><a href="#cleanup">Cleanup</a></li>
                     <li><a href="#reference">Reference</a></li>
                   </ul>
                 </div>
@@ -195,11 +202,10 @@
 
             <!-- MAIN CONTENT -->
             <div class="col-sm-8 col-md-9 lab-doc">
-              <!-- 1) Title + Summary (2 sentences max) -->
               <p class="m-b-20 lab-summary">
                 Run containers with Podman using a rootless workflow, then inspect,
-                restart, log, and clean up containers and images. Practice basic
-                volume mounts so you can persist data between container runs.
+                restart, log, and clean up containers and images. Practice a bind
+                mount so you can persist data between container runs.
               </p>
 
               <!-- Optional Video (leave in place; swap src when you have it) -->
@@ -207,21 +213,18 @@
                 <div class="lab-video">
                   <div class="lab-video-embed text-center">
                     <iframe
-                      width="560"
-                      height="315"
                       src="https://www.youtube.com/embed/REPLACE_ME"
                       title="YouTube video player"
                       frameborder="0"
                       allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                       referrerpolicy="strict-origin-when-cross-origin"
                       allowfullscreen
-                    >
-                    </iframe>
+                    ></iframe>
                   </div>
                 </div>
               </section>
 
-              <!-- 2) Scenario -->
+              <!-- Scenario -->
               <section class="lab-section" id="scenario">
                 <div class="lab-chips" aria-label="Tags">
                   <span class="lab-chip">
@@ -241,26 +244,25 @@
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">
                   Scenario
                 </h3>
+
                 <p>
-                  You’re preparing a host to run containerized utilities and small
-                  services using Podman. Your job is to install Podman, pull an image,
-                  run a named container, inspect its state, view logs, practice a
-                  bind mount for persistence, and then clean up containers and images
-                  in a controlled way.
+                  You are preparing a host to run containerized utilities and small services
+                  using Podman. Your job is to install Podman, pull an image, run a named
+                  container, inspect state, view logs, practice a bind mount for persistence,
+                  and then clean up containers and images in a controlled way.
                 </p>
 
                 <div class="lab-callout">
                   <div class="lab-callout-label">Operator context</div>
                   <p class="m-b-0">
-                    Rootless Podman is a common default on modern systems. The goal
-                    is to build the habit of verifying state (<code>ps</code>,
-                    <code>inspect</code>, <code>logs</code>) before you destroy or
-                    replace anything.
+                    Rootless Podman is a common default on modern systems. Build the habit of
+                    verifying state with <code>ps</code>, <code>inspect</code>, and
+                    <code>logs</code> before you destroy or replace anything.
                   </p>
                 </div>
               </section>
 
-              <!-- 3) Objective -->
+              <!-- Objective -->
               <section class="lab-section alt-background" id="objective">
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">
                   Objective
@@ -268,40 +270,42 @@
                 <ul>
                   <li>Install Podman and confirm it runs as a non-root user.</li>
                   <li>Pull an image and run a named interactive container.</li>
-                  <li>Verify stopped/running state and restart by name.</li>
+                  <li>Verify stopped and running state and restart by name.</li>
                   <li>Read container logs and inspect container JSON.</li>
                   <li>Run a container with a bind mount for persistent data.</li>
                   <li>Remove containers and images cleanly.</li>
                 </ul>
               </section>
 
-              <!-- 4) What You'll Practice -->
-              <section class="lab-section" id="practice">
+              <!-- Concepts -->
+              <section class="lab-section" id="concepts">
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">
-                  What You’ll Practice
+                  Concepts
                 </h3>
-
-                <ul class="m-t-10">
+                <ul>
                   <li>
-                    Podman image lifecycle: <code>pull</code>, <code>images</code>,
-                    <code>rmi</code>.
+                    Rootless containers run under your user and use user namespaces. The goal is
+                    fewer privileged workflows by default.
                   </li>
                   <li>
-                    Container lifecycle: <code>run</code>, <code>ps -a</code>,
-                    <code>start</code>, <code>logs</code>, <code>inspect</code>,
-                    <code>rm</code>.
+                    Images are templates. Containers are instances created from images, and they
+                    can be running or stopped.
                   </li>
                   <li>
-                    Bind mounts: <code>-v HOST:CONTAINER</code> to persist data.
+                    <code>podman ps</code> shows running containers. <code>podman ps -a</code>
+                    shows running and stopped containers.
                   </li>
                   <li>
-                    Safer cleanup patterns (remove a target container/image first,
-                    then do broader cleanup when you mean it).
+                    Bind mounts map a host directory into a container. It is the simplest way to
+                    persist files between container runs.
+                  </li>
+                  <li>
+                    In real environments, prefer targeted cleanup over broad wipe commands.
                   </li>
                 </ul>
               </section>
 
-              <!-- 5) Walkthrough -->
+              <!-- Walkthrough -->
               <section class="lab-section alt-background" id="walkthrough">
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">
                   Walkthrough
@@ -316,7 +320,7 @@
 
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
-                      <span>Command</span>
+                      <span>Commands</span>
                       <button
                         class="lab-copy-btn"
                         type="button"
@@ -336,21 +340,26 @@ sudo pacman -S podman</code></pre>
                   </div>
 
                   <p>
-                    After installation, your default workflow should be to run Podman
-                    as your normal user unless you have a specific reason to escalate.
+                    After installation, default to a rootless workflow unless you have a specific
+                    reason to escalate.
                   </p>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <pre><code># Expected pattern:
+Package installs successfully (or reports already installed).</code></pre>
+                  </div>
                 </div>
 
                 <!-- Step 2 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
                     <strong class="font-alt">Step 2</strong>
-                    : Confirm Podman is installed and usable as non-root.
+                    : Confirm Podman is usable as a non-root user.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
-                      <span>Command</span>
+                      <span>Commands</span>
                       <button
                         class="lab-copy-btn"
                         type="button"
@@ -359,12 +368,13 @@ sudo pacman -S podman</code></pre>
                         Copy
                       </button>
                     </div>
-                    <pre><code id="cmd-step-2">podman --version</code></pre>
+                    <pre><code id="cmd-step-2">podman --version
+podman info</code></pre>
                   </div>
 
                   <p>
-                    This confirms the binary is available and helps you sanity-check
-                    environment issues before troubleshooting deeper.
+                    This is a quick sanity check before you troubleshoot deeper. If rootless
+                    networking is not available on your host, it usually shows up in <code>podman info</code>.
                   </p>
                 </div>
 
@@ -372,12 +382,12 @@ sudo pacman -S podman</code></pre>
                 <div class="lab-step">
                   <div class="lab-step-title">
                     <strong class="font-alt">Step 3</strong>
-                    : Pull a base image.
+                    : Pull a small image.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
-                      <span>Command</span>
+                      <span>Commands</span>
                       <button
                         class="lab-copy-btn"
                         type="button"
@@ -386,12 +396,12 @@ sudo pacman -S podman</code></pre>
                         Copy
                       </button>
                     </div>
-                    <pre><code id="cmd-step-3">podman pull alpine</code></pre>
+                    <pre><code id="cmd-step-3">podman pull alpine
+podman images</code></pre>
                   </div>
 
                   <p>
-                    Keep the mental model: an image is a template; a container is a
-                    running (or stopped) instance created from that template.
+                    Keep the mental model: image equals template, container equals instance.
                   </p>
                 </div>
 
@@ -404,7 +414,7 @@ sudo pacman -S podman</code></pre>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
-                      <span>Command</span>
+                      <span>Commands</span>
                       <button
                         class="lab-copy-btn"
                         type="button"
@@ -417,21 +427,26 @@ sudo pacman -S podman</code></pre>
                   </div>
 
                   <p>
-                    You can exit the shell with <code>exit</code> or <code>Ctrl+D</code>.
-                    After that, verify state from the host.
+                    Exit the shell with <code>exit</code> or <code>Ctrl+D</code>. After that,
+                    verify state from the host.
                   </p>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <pre><code># Expected pattern:
+Inside-container prompt appears, then returns to host after exit.</code></pre>
+                  </div>
                 </div>
 
                 <!-- Step 5 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
                     <strong class="font-alt">Step 5</strong>
-                    : Verify the container exists and is stopped.
+                    : Verify the container exists and check its state.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
-                      <span>Command</span>
+                      <span>Commands</span>
                       <button
                         class="lab-copy-btn"
                         type="button"
@@ -440,25 +455,31 @@ sudo pacman -S podman</code></pre>
                         Copy
                       </button>
                     </div>
-                    <pre><code id="cmd-step-5">podman ps -a</code></pre>
+                    <pre><code id="cmd-step-5">podman ps
+podman ps -a</code></pre>
                   </div>
 
                   <p>
-                    <code>podman ps</code> only shows running containers. Add <code>-a</code>
-                    when you want the full picture.
+                    <code>podman ps</code> shows only running containers. <code>podman ps -a</code>
+                    gives you the full inventory.
                   </p>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <pre><code># Expected pattern:
+lab-alpine appears in the -a list even if it is stopped.</code></pre>
+                  </div>
                 </div>
 
                 <!-- Step 6 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
                     <strong class="font-alt">Step 6</strong>
-                    : Start the container by name.
+                    : Start the container by name and verify it is running.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
-                      <span>Command</span>
+                      <span>Commands</span>
                       <button
                         class="lab-copy-btn"
                         type="button"
@@ -467,12 +488,13 @@ sudo pacman -S podman</code></pre>
                         Copy
                       </button>
                     </div>
-                    <pre><code id="cmd-step-6">podman start lab-alpine</code></pre>
+                    <pre><code id="cmd-step-6">podman start lab-alpine
+podman ps</code></pre>
                   </div>
 
                   <p>
-                    If you want to attach interactively after starting, you can use
-                    <code>podman attach lab-alpine</code>.
+                    If you need an interactive session again, attach with
+                    <code>podman attach lab-alpine</code> or run a new container.
                   </p>
                 </div>
 
@@ -480,12 +502,12 @@ sudo pacman -S podman</code></pre>
                 <div class="lab-step">
                   <div class="lab-step-title">
                     <strong class="font-alt">Step 7</strong>
-                    : View logs for the container.
+                    : View logs and inspect the container configuration.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
-                      <span>Command</span>
+                      <span>Commands</span>
                       <button
                         class="lab-copy-btn"
                         type="button"
@@ -494,12 +516,13 @@ sudo pacman -S podman</code></pre>
                         Copy
                       </button>
                     </div>
-                    <pre><code id="cmd-step-7">podman logs lab-alpine</code></pre>
+                    <pre><code id="cmd-step-7">podman logs lab-alpine
+podman inspect lab-alpine</code></pre>
                   </div>
 
                   <p>
-                    Logs are often the fastest signal for what the container actually
-                    did when it started.
+                    Logs are your fastest signal about what happened. Inspect is your source of truth for
+                    mounts, networking, environment, and runtime configuration.
                   </p>
                 </div>
 
@@ -507,12 +530,12 @@ sudo pacman -S podman</code></pre>
                 <div class="lab-step">
                   <div class="lab-step-title">
                     <strong class="font-alt">Step 8</strong>
-                    : Practice a bind mount.
+                    : Practice a bind mount for persistence.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
-                      <span>Command</span>
+                      <span>Commands</span>
                       <button
                         class="lab-copy-btn"
                         type="button"
@@ -521,29 +544,36 @@ sudo pacman -S podman</code></pre>
                         Copy
                       </button>
                     </div>
-                    <pre><code id="cmd-step-8"># Create a host directory first (so the mount is predictable)
-mkdir -p ~/data
+                    <pre><code id="cmd-step-8">mkdir -p ~/data
 
-# Run an interactive container with a host directory mounted at /data
-podman run -v ~/data:/data -it alpine /bin/sh</code></pre>
+podman run --name lab-mount -v ~/data:/data -it alpine /bin/sh</code></pre>
                   </div>
 
                   <p>
-                    Anything written under <code>/data</code> inside the container lands in
-                    <code>~/data</code> on the host.
+                    Inside the container, create a file under <code>/data</code> and then exit.
+                    On the host, confirm the file exists in <code>~/data</code>.
                   </p>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <pre><code># Example inside the container:
+echo "hello from podman" &gt; /data/hello.txt
+exit
+
+# Example on the host:
+cat ~/data/hello.txt</code></pre>
+                  </div>
                 </div>
 
                 <!-- Step 9 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
                     <strong class="font-alt">Step 9</strong>
-                    : Inspect container metadata in JSON.
+                    : Stop and remove containers cleanly.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
-                      <span>Command</span>
+                      <span>Commands</span>
                       <button
                         class="lab-copy-btn"
                         type="button"
@@ -552,12 +582,15 @@ podman run -v ~/data:/data -it alpine /bin/sh</code></pre>
                         Copy
                       </button>
                     </div>
-                    <pre><code id="cmd-step-9">podman inspect lab-alpine</code></pre>
+                    <pre><code id="cmd-step-9">podman stop lab-alpine
+podman stop lab-mount
+
+podman rm lab-alpine
+podman rm lab-mount</code></pre>
                   </div>
 
                   <p>
-                    This is the “source of truth” view for mounts, networking, entrypoint,
-                    environment variables, and runtime configuration.
+                    Stop first, then remove. In production, this pattern makes your intent obvious.
                   </p>
                 </div>
 
@@ -565,12 +598,12 @@ podman run -v ~/data:/data -it alpine /bin/sh</code></pre>
                 <div class="lab-step">
                   <div class="lab-step-title">
                     <strong class="font-alt">Step 10</strong>
-                    : Clean up containers and images.
+                    : Remove images (targeted first).
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
-                      <span>Command</span>
+                      <span>Commands</span>
                       <button
                         class="lab-copy-btn"
                         type="button"
@@ -579,26 +612,82 @@ podman run -v ~/data:/data -it alpine /bin/sh</code></pre>
                         Copy
                       </button>
                     </div>
-                    <pre><code id="cmd-step-10"># Remove the named container explicitly first
-podman rm -f lab-alpine
+                    <pre><code id="cmd-step-10">podman rmi alpine
 
-# If you created additional containers during mounts, remove them too:
-podman rm -a
-
-# Remove the alpine image (or all images if you truly intend to wipe)
-podman rmi alpine
-# OR (broad wipe)
-podman rmi -a</code></pre>
+# verify inventory
+podman images</code></pre>
                   </div>
 
                   <p>
-                    Prefer targeted removal in real environments. Use “remove all”
-                    commands when you’re sure the host is dedicated to labs.
+                    Prefer targeted removal. Broad wipes like <code>podman rm -a</code> or
+                    <code>podman rmi -a</code> are fine for lab hosts, but keep them deliberate.
                   </p>
                 </div>
               </section>
 
-              <!-- 6) Reference -->
+              <!-- Breakpoints -->
+              <section class="lab-section" id="breakpoints">
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  Breakpoints
+                </h3>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">Cannot run rootless containers</div>
+                  <p class="m-b-0">
+                    If <code>podman run</code> fails with user namespace or storage errors, check
+                    <code>podman info</code> and confirm your environment supports rootless mode.
+                    On some systems, you may need subuid and subgid ranges configured.
+                  </p>
+                </div>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">Bind mount path confusion</div>
+                  <p class="m-b-0">
+                    Use a fully-expanded path like <code>/home/USER/data</code> if you suspect shell expansion
+                    issues. Also confirm the host directory exists before mounting so behavior stays predictable.
+                  </p>
+                </div>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">Image cannot be removed</div>
+                  <p class="m-b-0">
+                    If <code>podman rmi alpine</code> fails, a container may still reference the image.
+                    Re-check with <code>podman ps -a</code>, remove containers first, then remove the image.
+                  </p>
+                </div>
+              </section>
+
+              <!-- Cleanup -->
+              <section class="lab-section alt-background" id="cleanup">
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  Cleanup
+                </h3>
+
+                <p>
+                  Confirm you removed the lab containers, and keep your host data directory if you want
+                  it for the next lab cycle.
+                </p>
+
+                <div class="lab-codeblock m-b-40 m-t-40">
+                  <div class="lab-codeblock-header">
+                    <span>Commands</span>
+                    <button
+                      class="lab-copy-btn"
+                      type="button"
+                      data-copy="#cmd-cleanup"
+                    >
+                      Copy
+                    </button>
+                  </div>
+                  <pre><code id="cmd-cleanup">podman ps -a
+podman images
+
+# optional: remove the host data directory created for the lab
+rm -rf ~/data</code></pre>
+                </div>
+              </section>
+
+              <!-- Reference (minimal format) -->
               <section class="lab-section" id="reference">
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">
                   Reference
@@ -606,30 +695,89 @@ podman rmi -a</code></pre>
 
                 <ul class="lab-reference-list">
                   <li>
-                    Images
+                    <code>podman</code>
+                    : Rootless-capable container engine.
+                  </li>
+
+                  <li>
+                    <code>podman pull &lt;image&gt;</code>
+                    : Download an image.
+                  </li>
+
+                  <li>
+                    <code>podman images</code>
+                    : List local images.
+                  </li>
+
+                  <li>
+                    <code>podman run</code>
+                    : Create and start a container from an image.
                     <ul>
-                      <li><code>podman pull IMAGE</code></li>
-                      <li><code>podman images</code></li>
-                      <li><code>podman rmi IMAGE</code></li>
+                      <li>
+                        <code>--name &lt;name&gt;</code>
+                        : Assign a container name.
+                      </li>
+                      <li>
+                        <code>-it</code>
+                        : Interactive TTY session.
+                      </li>
+                      <li>
+                        <code>-v HOST:CONTAINER</code>
+                        : Bind mount a host path into the container.
+                      </li>
                     </ul>
                   </li>
 
                   <li>
-                    Containers
+                    <code>podman ps</code>
+                    : List running containers.
                     <ul>
-                      <li><code>podman run ...</code></li>
-                      <li><code>podman ps</code> / <code>podman ps -a</code></li>
-                      <li><code>podman start NAME</code></li>
-                      <li><code>podman logs NAME</code></li>
-                      <li><code>podman inspect NAME</code></li>
-                      <li><code>podman rm NAME</code> / <code>podman rm -a</code></li>
+                      <li>
+                        <code>-a</code>
+                        : Include stopped containers.
+                      </li>
                     </ul>
                   </li>
 
                   <li>
-                    Volumes / Mounts
+                    <code>podman start &lt;name&gt;</code>
+                    : Start an existing container.
+                  </li>
+
+                  <li>
+                    <code>podman stop &lt;name&gt;</code>
+                    : Stop a running container.
+                  </li>
+
+                  <li>
+                    <code>podman logs &lt;name&gt;</code>
+                    : Show container logs.
+                  </li>
+
+                  <li>
+                    <code>podman inspect &lt;name&gt;</code>
+                    : Show container metadata as JSON.
+                  </li>
+
+                  <li>
+                    <code>podman rm &lt;name&gt;</code>
+                    : Remove a container.
                     <ul>
-                      <li><code>-v HOST_DIR:CONTAINER_DIR</code></li>
+                      <li>
+                        <code>-f</code>
+                        : Force removal (stops container if needed).
+                      </li>
+                    </ul>
+                  </li>
+
+                  <li>
+                    <code>podman rmi &lt;image&gt;</code>
+                    : Remove an image.
+                    <ul>
+                      <li>
+                        <code>-a</code>
+                        : Remove all images (use deliberately).
+                      </li>
                     </ul>
                   </li>
                 </ul>
@@ -718,5 +866,9 @@ podman rmi -a</code></pre>
 
     <!-- Lab page JS (new) -->
     <script src="../assets/js/lab.js"></script>
+
+    <script>
+      document.getElementById('year').textContent = new Date().getFullYear()
+    </script>
   </body>
 </html>

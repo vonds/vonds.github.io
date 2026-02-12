@@ -37,14 +37,11 @@
     <link href="../assets/css/style.css" rel="stylesheet" />
     <link href="../assets/css/docs.css" rel="stylesheet" />
 
-    <!-- Lab page styles (new) -->
+    <!-- Lab page styles -->
     <link href="../assets/css/lab.css" rel="stylesheet" />
 
     <!-- Fonts -->
-    <link
-      href="https://fonts.googleapis.com/css?family=Dosis"
-      rel="stylesheet"
-    />
+    <link href="https://fonts.googleapis.com/css?family=Dosis" rel="stylesheet" />
   </head>
 
   <body>
@@ -154,23 +151,14 @@
       <section class="module">
         <div class="container">
           <h2 class="font-alt module-title m-t-60">
-            Lab 81: Setting Up a Web Server (Apache - HTTP)
+            Lab 81: Setting Up a Web Server
           </h2>
+
           <nav class="lab-pagination">
-            <a
-              id="prev-lab"
-              class="lab-nav-link"
-              href="#"
-              aria-label="Previous lab"
-            >
+            <a id="prev-lab" class="lab-nav-link" href="#" aria-label="Previous lab">
               &laquo;
             </a>
-            <a
-              id="next-lab"
-              class="lab-nav-link"
-              href="#"
-              aria-label="Next lab"
-            >
+            <a id="next-lab" class="lab-nav-link" href="#" aria-label="Next lab">
               &raquo;
             </a>
           </nav>
@@ -185,7 +173,11 @@
                   </h5>
                   <ul class="docs-nav">
                     <li><a href="#scenario">Scenario</a></li>
+                    <li><a href="#objective">Objective</a></li>
+                    <li><a href="#concepts">Concepts</a></li>
                     <li><a href="#walkthrough">Walkthrough</a></li>
+                    <li><a href="#breakpoints">Breakpoints</a></li>
+                    <li><a href="#cleanup">Cleanup</a></li>
                     <li><a href="#reference">Reference</a></li>
                   </ul>
                 </div>
@@ -194,11 +186,9 @@
 
             <!-- MAIN CONTENT -->
             <div class="col-sm-8 col-md-9 lab-doc">
-              <!-- 1) Title + Summary (2 sentences max) -->
               <p class="m-b-20 lab-summary">
-                Deploy a basic Apache HTTP web server and serve static content on
-                port 80. Verify service state and confirm delivery end-to-end
-                with a local HTTP request.
+                Deploy a basic Apache HTTP server and publish a static landing page on port 80. Verify the unit is healthy, confirm the
+                daemon is listening, then prove end-to-end delivery with a local HTTP request.
               </p>
 
               <!-- Optional Video (leave in place; swap src when you have it) -->
@@ -206,21 +196,18 @@
                 <div class="lab-video">
                   <div class="lab-video-embed text-center">
                     <iframe
-                      width="560"
-                      height="315"
                       src="https://www.youtube.com/embed/REPLACE_ME"
                       title="YouTube video player"
                       frameborder="0"
                       allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                       referrerpolicy="strict-origin-when-cross-origin"
                       allowfullscreen
-                    >
-                    </iframe>
+                    ></iframe>
                   </div>
                 </div>
               </section>
 
-              <!-- 2) Scenario -->
+              <!-- Scenario -->
               <section class="lab-section" id="scenario">
                 <div class="lab-chips" aria-label="Tags">
                   <span class="lab-chip">
@@ -237,86 +224,56 @@
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">
                   Scenario
                 </h3>
+
                 <p>
-                  You need to deploy a basic Apache HTTP web server to serve a
-                  static landing page over
-                  <strong>port 80</strong>
-                  . Your job is to install the package, enable and start the
-                  service, place a custom
-                  <code>index.html</code>
-                  in the web root, then validate the result with a local HTTP
-                  request.
+                  You need to deploy a basic Apache HTTP web server to serve a static landing page over <strong>port 80</strong>. Your job
+                  is to install the package, enable and start the service, publish a custom <code>index.html</code> into the default web
+                  root, then validate the response with a local HTTP request.
                 </p>
 
                 <div class="lab-callout">
                   <div class="lab-callout-label">Operator context</div>
                   <p class="m-b-0">
-                    This is a common “get it online safely” workflow: install,
-                    enable, verify status, publish content, then prove it’s
-                    reachable with a simple client check before you add TLS,
-                    virtual hosts, or firewall rules.
+                    This is the standard “get it online safely” workflow: install, enable, verify status, publish content, then prove it’s
+                    reachable with a simple client check before you add TLS, virtual hosts, or firewall rules.
                   </p>
                 </div>
               </section>
 
-              <!-- 3) Objective -->
+              <!-- Objective -->
               <section class="lab-section alt-background" id="objective">
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">
                   Objective
                 </h3>
+
                 <ul>
-                  <li>Install Apache (httpd/apache2) using your package manager.</li>
+                  <li>Install Apache (<code>httpd</code>/<code>apache2</code>) with the system package manager.</li>
                   <li>Enable and start the web server service with systemd.</li>
-                  <li>
-                    Publish a custom
-                    <code>/var/www/html/index.html</code>
-                    .
-                  </li>
-                  <li>
-                    Confirm the server responds locally using
-                    <code>curl</code>
-                    .
-                  </li>
+                  <li>Publish a custom <code>/var/www/html/index.html</code>.</li>
+                  <li>Confirm the server responds locally using <code>curl</code>.</li>
                 </ul>
               </section>
 
-              <!-- 4) What You'll Practice -->
-              <section class="lab-section" id="practice">
+              <!-- Concepts -->
+              <section class="lab-section" id="concepts">
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">
-                  What You’ll Practice
+                  Concepts
                 </h3>
 
-                <ul class="m-t-10">
+                <ul>
                   <li>
-                    Package installation on common distros (
-                    <code>pacman</code>
-                    /
-                    <code>apt</code>
-                    /
-                    <code>yum</code>
-                    ).
+                    Apache’s service unit name differs by distro: <code>httpd</code> on RHEL-family, <code>apache2</code> on Debian/Ubuntu.
                   </li>
                   <li>
-                    Service enablement and immediate start with
-                    <code>systemctl enable --now</code>
-                    .
+                    The default document root is commonly <code>/var/www/html</code>, but distro configs can override it.
                   </li>
                   <li>
-                    Writing privileged content safely using
-                    <code>tee</code>
-                    .
-                  </li>
-                  <li>
-                    Quick HTTP validation using
-                    <code>curl</code>
-                    against
-                    <code>localhost</code>
-                    .
+                    Verification means: unit is active, port is listening, and an HTTP request returns your expected content.
                   </li>
                 </ul>
               </section>
 
-              <!-- 5) Commands Walkthrough -->
+              <!-- Walkthrough -->
               <section class="lab-section alt-background" id="walkthrough">
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">
                   Walkthrough
@@ -329,38 +286,39 @@
                     : Install the Apache web server package.
                   </div>
 
+                  <div class="lab-callout">
+                    <div class="lab-callout-label">Note</div>
+                    <p class="m-b-0">
+                      Use the native package manager for your distro. On RHEL-family systems, prefer <code>dnf</code> over legacy
+                      <code>yum</code>.
+                    </p>
+                  </div>
+
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
-                      <span>Command</span>
-                      <button
-                        class="lab-copy-btn"
-                        type="button"
-                        data-copy="#cmd-step-1"
-                      >
+                      <span>Commands</span>
+                      <button class="lab-copy-btn" type="button" data-copy="#cmd-step-1">
                         Copy
                       </button>
                     </div>
-                    <pre><code id="cmd-step-1"># Pick the command that matches your distro:
-
-# Arch
-sudo pacman -S apache
+                    <pre><code id="cmd-step-1"># RHEL / CentOS / Fedora
+sudo dnf install -y httpd
 
 # Debian/Ubuntu
-sudo apt install apache2 -y
+sudo apt update
+sudo apt install -y apache2
 
-# RHEL/CentOS/Fedora (traditional)
-sudo yum install httpd -y</code></pre>
+# Arch
+sudo pacman -S apache</code></pre>
                   </div>
 
                   <p>
-                    Installing Apache is the prerequisite for systemd service
-                    management and content publishing. The package name varies
-                    by distro, but the outcome is the same: Apache binaries and
-                    service unit files are placed on the system.
+                    Installing Apache provides the server binaries, default configuration, and a systemd service unit. Next you will start
+                    the service and publish content.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code id="verify-step-1"># Example result (varies by distro):
+                    <pre><code># Example result (varies by distro):
 # httpd/apache2 installed successfully.</code></pre>
                   </div>
                 </div>
@@ -374,12 +332,8 @@ sudo yum install httpd -y</code></pre>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
-                      <span>Command</span>
-                      <button
-                        class="lab-copy-btn"
-                        type="button"
-                        data-copy="#cmd-step-2"
-                      >
+                      <span>Commands</span>
+                      <button class="lab-copy-btn" type="button" data-copy="#cmd-step-2">
                         Copy
                       </button>
                     </div>
@@ -391,17 +345,14 @@ sudo systemctl enable --now apache2</code></pre>
                   </div>
 
                   <p>
-                    <code>enable --now</code>
-                    ensures Apache starts immediately and also comes back after
-                    reboot. If this step fails, check the unit name for your
-                    distro and confirm the package installed correctly.
+                    <code>enable --now</code> starts the service immediately and ensures it returns after reboot.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code id="verify-step-2"># Quick verification options:
-systemctl status httpd
+                    <pre><code># Quick check:
+systemctl status httpd --no-pager
 # or
-systemctl status apache2</code></pre>
+systemctl status apache2 --no-pager</code></pre>
                   </div>
                 </div>
 
@@ -409,35 +360,27 @@ systemctl status apache2</code></pre>
                 <div class="lab-step">
                   <div class="lab-step-title">
                     <strong class="font-alt">Step 3</strong>
-                    : Create a custom landing page.
+                    : Confirm Apache is listening on port 80.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
-                      <button
-                        class="lab-copy-btn"
-                        type="button"
-                        data-copy="#cmd-step-3"
-                      >
+                      <button class="lab-copy-btn" type="button" data-copy="#cmd-step-3">
                         Copy
                       </button>
                     </div>
-                    <pre><code id="cmd-step-3">echo 'Hello from LPIC Lab!' | sudo tee /var/www/html/index.html</code></pre>
+                    <pre><code id="cmd-step-3">sudo ss -lntp | grep -E ':\b80\b' || true</code></pre>
                   </div>
 
                   <p>
-                    Writing to
-                    <code>/var/www/html</code>
-                    typically requires elevated privileges. Using
-                    <code>tee</code>
-                    is a reliable way to write as root while keeping the command
-                    simple and auditable.
+                    This verifies the daemon is actually bound to the HTTP port. If you see no output, confirm the service is active and
+                    review unit logs.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code id="verify-step-3"># Confirm file exists and contains the expected content:
-sudo cat /var/www/html/index.html</code></pre>
+                    <pre><code># Example:
+LISTEN 0 511 0.0.0.0:80 ... httpd</code></pre>
                   </div>
                 </div>
 
@@ -445,37 +388,119 @@ sudo cat /var/www/html/index.html</code></pre>
                 <div class="lab-step">
                   <div class="lab-step-title">
                     <strong class="font-alt">Step 4</strong>
-                    : Test the web server locally with curl.
+                    : Publish a custom landing page.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
-                      <button
-                        class="lab-copy-btn"
-                        type="button"
-                        data-copy="#cmd-step-4"
-                      >
+                      <button class="lab-copy-btn" type="button" data-copy="#cmd-step-4">
                         Copy
                       </button>
                     </div>
-                    <pre><code id="cmd-step-4">curl http://localhost</code></pre>
+                    <pre><code id="cmd-step-4">echo 'Hello from exit_0 (Lab 81)!' | sudo tee /var/www/html/index.html</code></pre>
                   </div>
 
                   <p>
-                    This confirms the full chain: service is listening, request
-                    is handled, and content is served from the expected web root.
-                    If you don’t get the expected output, verify the service is
-                    active and that the file path is correct.
+                    Writing to <code>/var/www/html</code> requires elevated privileges. Using <code>tee</code> is a clean way to write as root
+                    without opening an editor.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code id="verify-step-4">Hello from LPIC Lab!</code></pre>
+                    <pre><code># Confirm file exists:
+sudo cat /var/www/html/index.html</code></pre>
+                  </div>
+                </div>
+
+                <!-- Step 5 -->
+                <div class="lab-step">
+                  <div class="lab-step-title">
+                    <strong class="font-alt">Step 5</strong>
+                    : Validate end-to-end HTTP response locally.
+                  </div>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <div class="lab-codeblock-header">
+                      <span>Commands</span>
+                      <button class="lab-copy-btn" type="button" data-copy="#cmd-step-5">
+                        Copy
+                      </button>
+                    </div>
+                    <pre><code id="cmd-step-5">curl -s http://localhost
+curl -I http://localhost</code></pre>
+                  </div>
+
+                  <p>
+                    The first command proves content delivery. The second confirms you are getting a normal HTTP response (status, server,
+                    content type).
+                  </p>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <pre><code>Hello from exit_0 (Lab 81)!
+HTTP/1.1 200 OK</code></pre>
                   </div>
                 </div>
               </section>
 
-              <!-- 6) Reference -->
+              <!-- Breakpoints -->
+              <section class="lab-section" id="breakpoints">
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  Breakpoints
+                </h3>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">service won’t start</div>
+                  <p class="m-b-0">
+                    Confirm the correct unit name for your distro (<code>httpd</code> vs <code>apache2</code>) and inspect logs with
+                    <code>journalctl -u &lt;unit&gt;</code>.
+                  </p>
+                </div>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">curl returns connection refused</div>
+                  <p class="m-b-0">
+                    Check the daemon is listening on port 80 (<code>ss -lntp</code>). If it’s not, re-check the unit state and recent log
+                    output.
+                  </p>
+                </div>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">wrong page is displayed</div>
+                  <p class="m-b-0">
+                    Confirm the document root is <code>/var/www/html</code> for your build, and verify your file contents. Some distros use
+                    different defaults or ship a default index page from another path.
+                  </p>
+                </div>
+              </section>
+
+              <!-- Cleanup -->
+              <section class="lab-section alt-background" id="cleanup">
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  Cleanup checklist
+                </h3>
+
+                <p>
+                  If you want to revert to a clean state, stop/disable the service and remove the package using your distro’s package
+                  manager.
+                </p>
+
+                <div class="lab-codeblock m-b-40 m-t-40">
+                  <div class="lab-codeblock-header">
+                    <span>Commands</span>
+                    <button class="lab-copy-btn" type="button" data-copy="#cmd-cleanup">
+                      Copy
+                    </button>
+                  </div>
+                  <pre><code id="cmd-cleanup"># Stop/disable
+sudo systemctl disable --now httpd 2>/dev/null || true
+sudo systemctl disable --now apache2 2>/dev/null || true
+
+# Remove the custom page
+sudo rm -f /var/www/html/index.html</code></pre>
+                </div>
+              </section>
+
+              <!-- Reference (minimal; commands listed once; sub-bullets only for options/flags) -->
               <section class="lab-section" id="reference">
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">
                   Reference
@@ -483,53 +508,67 @@ sudo cat /var/www/html/index.html</code></pre>
 
                 <ul class="lab-reference-list">
                   <li>
-                    <code>pacman -S apache</code>
-                    : Installs Apache on Arch-based systems.
+                    <code>dnf install httpd</code>: Install Apache on RHEL-family systems.
                   </li>
+
                   <li>
-                    <code>apt install apache2 -y</code>
-                    : Installs Apache on Debian/Ubuntu systems.
+                    <code>apt install apache2</code>: Install Apache on Debian/Ubuntu systems.
                   </li>
+
                   <li>
-                    <code>yum install httpd -y</code>
-                    : Installs Apache on RHEL-family systems (package name
-                    <code>httpd</code>
-                    ).
+                    <code>pacman -S apache</code>: Install Apache on Arch.
                   </li>
+
                   <li>
-                    <code>systemctl enable --now &lt;unit&gt;</code>
-                    : Enables a service at boot and starts it immediately.
+                    <code>systemctl enable --now &lt;unit&gt;</code>: Enable at boot and start immediately.
+                    <ul>
+                      <li><code>httpd</code>: Unit name on RHEL-family systems.</li>
+                      <li><code>apache2</code>: Unit name on Debian/Ubuntu systems.</li>
+                    </ul>
                   </li>
+
                   <li>
-                    <code>/var/www/html</code>
-                    : Common default document root for Apache.
+                    <code>ss -lntp</code>: Show listening TCP sockets and owning processes.
+                    <ul>
+                      <li><code>-l</code>: listening sockets</li>
+                      <li><code>-n</code>: numeric output</li>
+                      <li><code>-t</code>: TCP sockets</li>
+                      <li><code>-p</code>: process info</li>
+                    </ul>
                   </li>
+
                   <li>
-                    <code>tee</code>
-                    : Writes to privileged paths cleanly when used with
-                    <code>sudo</code>
-                    .
+                    <code>/var/www/html</code>: Common default Apache document root.
                   </li>
+
                   <li>
-                    <code>curl http://localhost</code>
-                    : Simple HTTP client validation for local service checks.
+                    <code>tee</code>: Write to privileged paths cleanly when used with <code>sudo</code>.
+                  </li>
+
+                  <li>
+                    <code>curl http://localhost</code>: Validate a local HTTP response.
+                    <ul>
+                      <li><code>-I</code>: fetch headers only</li>
+                      <li><code>-s</code>: silent mode</li>
+                    </ul>
+                  </li>
+
+                  <li>
+                    <code>journalctl -u &lt;unit&gt;</code>: View service logs for troubleshooting.
+                    <ul>
+                      <li><code>-n 50</code>: last 50 lines</li>
+                      <li><code>--no-pager</code>: print directly</li>
+                    </ul>
                   </li>
                 </ul>
               </section>
-
-              <!-- Lab Pagination -->
             </div>
             <!-- /main -->
           </div>
           <!-- /row -->
 
           <nav class="lab-pagination">
-            <a
-              id="prev-lab"
-              class="lab-nav-link"
-              href="#"
-              aria-label="Previous lab"
-            >
+            <a id="prev-lab" class="lab-nav-link" href="#" aria-label="Back to top">
               &uArr;
             </a>
           </nav>
@@ -544,7 +583,11 @@ sudo cat /var/www/html/index.html</code></pre>
             <div class="col-sm-12">
               <ul class="social-text-links font-alt text-center m-b-20">
                 <li>
-                  <a href="https://github.com/vonds" target="_blank" rel="noopener">
+                  <a
+                    href="https://github.com/vonds"
+                    target="_blank"
+                    rel="noopener"
+                  >
                     Github
                   </a>
                 </li>

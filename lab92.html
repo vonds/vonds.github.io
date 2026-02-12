@@ -37,7 +37,7 @@
     <link href="../assets/css/style.css" rel="stylesheet" />
     <link href="../assets/css/docs.css" rel="stylesheet" />
 
-    <!-- Lab page styles (new) -->
+    <!-- Lab page styles -->
     <link href="../assets/css/lab.css" rel="stylesheet" />
 
     <!-- Fonts -->
@@ -84,6 +84,9 @@
                   >
                     Sentinel
                   </a>
+                </li>
+                <li>
+                  <a href="docs.html" target="_blank">exit_0 Documentation</a>
                 </li>
               </ul>
             </li>
@@ -186,7 +189,11 @@
                   </h5>
                   <ul class="docs-nav">
                     <li><a href="#scenario">Scenario</a></li>
+                    <li><a href="#objective">Objective</a></li>
+                    <li><a href="#concepts">Concepts</a></li>
                     <li><a href="#walkthrough">Walkthrough</a></li>
+                    <li><a href="#breakpoints">Breakpoints</a></li>
+                    <li><a href="#cleanup">Cleanup</a></li>
                     <li><a href="#reference">Reference</a></li>
                   </ul>
                 </div>
@@ -195,34 +202,29 @@
 
             <!-- MAIN CONTENT -->
             <div class="col-sm-8 col-md-9 lab-doc">
-              <!-- 1) Title + Summary (2 sentences max) -->
               <p class="m-b-20 lab-summary">
                 Trace packet paths to a remote host and use hop-by-hop evidence
-                to localize network failures and routing anomalies. Practice
-                multiple traceroute modes (UDP, ICMP, TCP) and produce an
-                artifact you can attach to an incident ticket.
+                to localize routing issues and latency spikes. Capture output as
+                an artifact you can attach to an incident ticket.
               </p>
 
-              <!-- Optional Video (leave in place; swap src when you have it) -->
+              <!-- Video (kept on page; removed from left panel) -->
               <section class="lab-section" id="video" aria-label="Lab video">
                 <div class="lab-video">
                   <div class="lab-video-embed text-center">
                     <iframe
-                      width="560"
-                      height="315"
                       src="https://www.youtube.com/embed/REPLACE_ME"
                       title="YouTube video player"
                       frameborder="0"
                       allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                       referrerpolicy="strict-origin-when-cross-origin"
                       allowfullscreen
-                    >
-                    </iframe>
+                    ></iframe>
                   </div>
                 </div>
               </section>
 
-              <!-- 2) Scenario -->
+              <!-- Scenario -->
               <section class="lab-section" id="scenario">
                 <div class="lab-chips" aria-label="Tags">
                   <span class="lab-chip">
@@ -239,24 +241,23 @@
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">
                   Scenario
                 </h3>
+
                 <p>
-                  You need to trace the route taken by packets to a remote
-                  server. You’ll use traceroute to observe the hop path,
-                  identify where latency spikes, and detect where packets stop
-                  receiving replies.
+                  A remote service is intermittently slow and users report timeouts.
+                  You need hop-by-hop visibility to identify where latency increases, where replies stop, and whether filtering is impacting probes.
                 </p>
 
                 <div class="lab-callout">
                   <div class="lab-callout-label">Operator context</div>
                   <p class="m-b-0">
-                    traceroute is evidence, not a verdict. Some routers rate
-                    limit or drop TTL-expired replies, so interpret “* * *” with
-                    context and validate with alternate probe types when needed.
+                    traceroute is evidence, not a verdict. Some routers rate limit or drop TTL-expired replies, so interpret
+                    <code>* * *</code>
+                    with context and validate with alternate probe types when needed.
                   </p>
                 </div>
               </section>
 
-              <!-- 3) Objective -->
+              <!-- Objective -->
               <section class="lab-section alt-background" id="objective">
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">
                   Objective
@@ -272,43 +273,37 @@
                 </ul>
               </section>
 
-              <!-- 4) What You'll Practice -->
-              <section class="lab-section" id="practice">
+              <!-- Concepts (no alt-background moving forward) -->
+              <section class="lab-section" id="concepts">
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">
-                  What You’ll Practice
+                  Concepts
                 </h3>
-
-                <ul class="m-t-10">
+                <ul>
                   <li>
-                    Installing diagnostic tooling and validating availability.
+                    TTL-based path discovery: each hop reports where the probe expires.
                   </li>
                   <li>
-                    Interpreting hop-by-hop RTT output and spotting anomalies.
+                    RTT interpretation: three probe timings per hop highlight jitter and spikes.
                   </li>
                   <li>
-                    Reducing variables with
-                    <code>-n</code>
-                    (no DNS lookups).
+                    DNS influence: name resolution can add delay and noise; numeric output reduces variables.
                   </li>
                   <li>
-                    Using
-                    <code>-m</code>
-                    to control maximum hop depth.
+                    Probe modes:
+                    <code>UDP</code>
+                    (default),
+                    <code>ICMP</code>
+                    , and
+                    <code>TCP</code>
+                    can produce different results depending on filtering.
                   </li>
                   <li>
-                    Selecting probe types:
-                    <code>-I</code>
-                    (ICMP) and
-                    <code>-T</code>
-                    (TCP SYN).
-                  </li>
-                  <li>
-                    Capturing command output to an artifact file for tickets.
+                    Evidence handling: redirect output to a file for incident tickets and follow-up analysis.
                   </li>
                 </ul>
               </section>
 
-              <!-- 5) Commands Walkthrough -->
+              <!-- Walkthrough -->
               <section class="lab-section alt-background" id="walkthrough">
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">
                   Walkthrough
@@ -339,8 +334,13 @@ sudo dnf install traceroute -y
 sudo pacman -S traceroute</code></pre>
                   </div>
 
+                  <p>
+                    Install the tool before you start collecting evidence. If the package is already present, verify the binary is available and runnable.
+                  </p>
+
                   <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code id="verify-step-1"># Expected: traceroute package installs or reports already installed.</code></pre>
+                    <pre><code># Expected pattern:
+traceroute package installs or reports already installed.</code></pre>
                   </div>
                 </div>
 
@@ -366,13 +366,11 @@ sudo pacman -S traceroute</code></pre>
                   </div>
 
                   <p>
-                    Each line is a hop where the TTL expired and the router (or
-                    host) returned a reply. The three RTT values are repeated
-                    probes per hop.
+                    Each line is a hop where the TTL expired and a router (or the destination) returned a reply. The three RTT values are repeated probes per hop.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code id="verify-step-2">traceroute to google.com (142.250.72.46), 30 hops max, 60 byte packets
+                    <pre><code>traceroute to google.com (142.250.72.46), 30 hops max, 60 byte packets
  1  192.168.1.1 (192.168.1.1)           1.123 ms   0.956 ms   0.902 ms
  2  10.0.0.1 (10.0.0.1)                 7.412 ms   6.983 ms   7.201 ms
  3  96.120.45.1 (96.120.45.1)          12.881 ms  12.604 ms  12.447 ms
@@ -403,12 +401,11 @@ sudo pacman -S traceroute</code></pre>
                   </div>
 
                   <p>
-                    Numeric-only output removes DNS resolution as a factor and
-                    speeds up traces when reverse lookups are slow or blocked.
+                    Numeric-only output removes DNS resolution as a factor and speeds up traces when reverse lookups are slow or blocked.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code id="verify-step-3">traceroute to 142.250.72.46 (142.250.72.46), 30 hops max, 60 byte packets
+                    <pre><code>traceroute to 142.250.72.46 (142.250.72.46), 30 hops max, 60 byte packets
  1  192.168.1.1           0.945 ms   0.881 ms   0.864 ms
  2  10.0.0.1              6.972 ms   6.751 ms   6.538 ms
  3  96.120.45.1          12.204 ms  12.093 ms  11.984 ms
@@ -421,7 +418,7 @@ sudo pacman -S traceroute</code></pre>
                 <div class="lab-step">
                   <div class="lab-step-title">
                     <strong class="font-alt">Step 4</strong>
-                    : Trace to a non-responding IP and observe timeouts.
+                    : Observe timeout behavior.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -439,12 +436,12 @@ sudo pacman -S traceroute</code></pre>
                   </div>
 
                   <p>
-                    “* * *” means no TTL-expired reply was received for that hop.
-                    This could be filtering, rate limiting, or genuine loss.
+                    <code>* * *</code>
+                    means no TTL-expired reply was received for that hop. This can be filtering, rate limiting, or genuine loss.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code id="verify-step-4">traceroute to 10.255.255.1 (10.255.255.1), 30 hops max, 60 byte packets
+                    <pre><code>traceroute to 10.255.255.1 (10.255.255.1), 30 hops max, 60 byte packets
  1  192.168.1.1 (192.168.1.1)           1.011 ms   0.948 ms   0.932 ms
  2  * * *
  3  * * *
@@ -457,7 +454,7 @@ sudo pacman -S traceroute</code></pre>
                 <div class="lab-step">
                   <div class="lab-step-title">
                     <strong class="font-alt">Step 5</strong>
-                    : Limit maximum hops to 5.
+                    : Limit maximum hops for a targeted trace.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -474,8 +471,12 @@ sudo pacman -S traceroute</code></pre>
                     <pre><code id="cmd-step-5">traceroute -m 5 google.com</code></pre>
                   </div>
 
+                  <p>
+                    A lower hop limit is useful when you only need to validate early-path behavior (local gateway, ISP edge, first transit).
+                  </p>
+
                   <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code id="verify-step-5">traceroute to google.com (142.250.72.46), 5 hops max, 60 byte packets
+                    <pre><code>traceroute to google.com (142.250.72.46), 5 hops max, 60 byte packets
  1  192.168.1.1           0.987 ms   0.921 ms   0.904 ms
  2  10.0.0.1              6.822 ms   6.599 ms   6.447 ms
  3  96.120.45.1          11.947 ms  11.853 ms  11.774 ms
@@ -488,7 +489,7 @@ sudo pacman -S traceroute</code></pre>
                 <div class="lab-step">
                   <div class="lab-step-title">
                     <strong class="font-alt">Step 6</strong>
-                    : Use ICMP instead of UDP.
+                    : Use ICMP probes as an alternate signal.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -506,13 +507,11 @@ sudo pacman -S traceroute</code></pre>
                   </div>
 
                   <p>
-                    ICMP echo probes can succeed where UDP-based traceroute is
-                    filtered (or vice versa). Use it as an alternate signal
-                    source.
+                    ICMP echo probes can succeed where UDP-based traceroute is filtered (or vice versa). Use this to validate whether probes are being blocked.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code id="verify-step-6">traceroute: using ICMP ECHO</code></pre>
+                    <pre><code>traceroute: using ICMP ECHO</code></pre>
                   </div>
                 </div>
 
@@ -520,7 +519,7 @@ sudo pacman -S traceroute</code></pre>
                 <div class="lab-step">
                   <div class="lab-step-title">
                     <strong class="font-alt">Step 7</strong>
-                    : Use TCP SYN packets (firewall-friendly).
+                    : Use TCP SYN probes for firewall-friendly tracing.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -538,13 +537,11 @@ sudo pacman -S traceroute</code></pre>
                   </div>
 
                   <p>
-                    TCP-based traceroute can be useful in environments where
-                    ICMP/UDP are blocked. This uses TCP SYN probes (often toward
-                    port 80 by default).
+                    TCP-based traceroute can be useful in environments where ICMP and UDP are blocked. This uses TCP SYN probes (commonly toward port 80 by default).
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code id="verify-step-7">traceroute: using TCP SYN, port 80</code></pre>
+                    <pre><code>traceroute: using TCP SYN, port 80</code></pre>
                   </div>
                 </div>
 
@@ -570,8 +567,7 @@ sudo pacman -S traceroute</code></pre>
                   </div>
 
                   <p>
-                    Redirecting stdout creates an artifact you can attach to an
-                    incident or troubleshooting notes.
+                    Redirecting stdout creates an artifact you can attach to an incident or troubleshooting notes.
                   </p>
                 </div>
 
@@ -596,13 +592,87 @@ sudo pacman -S traceroute</code></pre>
                     <pre><code id="cmd-step-9">less trace.log</code></pre>
                   </div>
 
-                  <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code id="verify-step-9"># In a real session, press 'q' to exit less.</code></pre>
-                  </div>
+                  <p>
+                    Use a pager to review the hop list, RTTs, and where responses stop. This is the view you copy into a ticket when you need to show the path behavior.
+                  </p>
                 </div>
               </section>
 
-              <!-- 6) Reference -->
+              <!-- Common breakpoints -->
+              <section class="lab-section" id="breakpoints">
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  Common breakpoints
+                </h3>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">
+                    traceroute is installed but requires elevated privileges
+                  </div>
+                  <p class="m-b-0">
+                    Some systems restrict raw socket usage. If you see permission errors, run traceroute with appropriate privileges or use TCP mode where allowed.
+                  </p>
+                </div>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">
+                    Many hops show * * * intermittently
+                  </div>
+                  <p class="m-b-0">
+                    This can be normal when routers rate limit TTL-expired responses. Compare results across
+                    <code>-I</code>
+                    and
+                    <code>-T</code>
+                    and look for a consistent point where responses stop.
+                  </p>
+                </div>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">
+                    Path changes between runs
+                  </div>
+                  <p class="m-b-0">
+                    Routing can shift due to load balancing or network changes. Capture multiple traces and compare the divergence point to localize the unstable segment.
+                  </p>
+                </div>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">
+                    DNS lookups are slow and the trace stalls
+                  </div>
+                  <p class="m-b-0">
+                    Disable name resolution with
+                    <code>-n</code>
+                    to reduce noise and speed up collection when reverse DNS is unreliable.
+                  </p>
+                </div>
+              </section>
+
+              <!-- Cleanup -->
+              <section class="lab-section alt-background" id="cleanup">
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  Cleanup checklist
+                </h3>
+
+                <p>
+                  This lab is read-only aside from installing packages and writing an output file. If you created artifacts, remove them when you are done and keep only what you intend to attach to a ticket.
+                </p>
+
+                <div class="lab-codeblock m-b-40 m-t-40">
+                  <div class="lab-codeblock-header">
+                    <span>Commands</span>
+                    <button
+                      class="lab-copy-btn"
+                      type="button"
+                      data-copy="#cmd-cleanup"
+                    >
+                      Copy
+                    </button>
+                  </div>
+                  <pre><code id="cmd-cleanup">rm -f trace.log</code></pre>
+                </div>
+              </section>
+
+              <!-- Reference -->
               <section class="lab-section" id="reference">
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">
                   Reference
@@ -611,51 +681,76 @@ sudo pacman -S traceroute</code></pre>
                 <ul class="lab-reference-list">
                   <li>
                     <code>traceroute &lt;host&gt;</code>
-                    : Displays hop-by-hop path to a destination.
+                    : Displays the hop-by-hop path to a destination.
                   </li>
+
                   <li>
-                    <code>-n</code>
-                    : Numeric output only (no DNS).
+                    <code>traceroute -n &lt;host&gt;</code>
+                    : Runs traceroute with numeric output only (no DNS lookups).
+                    <ul>
+                      <li>
+                        <code>-n</code>
+                        : Disables name resolution to reduce noise and speed up output.
+                      </li>
+                    </ul>
                   </li>
+
                   <li>
-                    <code>-m &lt;hops&gt;</code>
-                    : Maximum hop limit.
+                    <code>traceroute -m &lt;hops&gt; &lt;host&gt;</code>
+                    : Limits the maximum hop depth.
+                    <ul>
+                      <li>
+                        <code>-m &lt;hops&gt;</code>
+                        : Sets the max TTL/hop count (for example
+                        <code>5</code>
+                        ).
+                      </li>
+                    </ul>
                   </li>
+
                   <li>
-                    <code>-I</code>
-                    : ICMP echo-based traceroute.
+                    <code>traceroute -I &lt;host&gt;</code>
+                    : Uses ICMP echo probes.
+                    <ul>
+                      <li>
+                        <code>-I</code>
+                        : Switches probing to ICMP ECHO for alternate signal.
+                      </li>
+                    </ul>
                   </li>
+
                   <li>
-                    <code>-T</code>
-                    : TCP SYN-based traceroute (often more firewall-friendly).
+                    <code>traceroute -T &lt;host&gt;</code>
+                    : Uses TCP SYN probes (often more firewall-friendly).
+                    <ul>
+                      <li>
+                        <code>-T</code>
+                        : Switches probing to TCP SYN (commonly toward port 80 by default).
+                      </li>
+                    </ul>
                   </li>
+
                   <li>
-                    <code>&gt; file</code>
-                    : Redirect stdout to a file for later review.
+                    <code>traceroute &lt;host&gt; &gt; &lt;file&gt;</code>
+                    : Redirects stdout to a file for later review.
+                    <ul>
+                      <li>
+                        <code>&gt;</code>
+                        : Redirects standard output to a file.
+                      </li>
+                    </ul>
                   </li>
+
                   <li>
-                    <code>less</code>
-                    : Pager for reading captured output and logs.
+                    <code>less &lt;file&gt;</code>
+                    : Opens a file in a pager for review.
                   </li>
                 </ul>
               </section>
-
-              <!-- Lab Pagination -->
             </div>
             <!-- /main -->
           </div>
           <!-- /row -->
-
-          <nav class="lab-pagination">
-            <a
-              id="prev-lab"
-              class="lab-nav-link"
-              href="#"
-              aria-label="Previous lab"
-            >
-              &uArr;
-            </a>
-          </nav>
         </div>
         <!-- /container -->
       </section>
@@ -726,5 +821,9 @@ sudo pacman -S traceroute</code></pre>
 
     <!-- Lab page JS (new) -->
     <script src="../assets/js/lab.js"></script>
+
+    <script>
+      document.getElementById('year').textContent = new Date().getFullYear()
+    </script>
   </body>
 </html>

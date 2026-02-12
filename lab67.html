@@ -67,9 +67,29 @@
             <li class="slidedown">
               <a href="#">Portfolio</a>
               <ul>
-                <li><a href="https://github.com/vonds/exit_0" target="_blank" rel="noopener">exit_0</a></li>
-                <li><a href="docs.html" target="_blank" rel="noopener">exit_0 Documentation</a></li>
-                <li><a href="https://github.com/vonds/sentinel" target="_blank" rel="noopener">Sentinel</a></li>
+                <li>
+                  <a
+                    href="https://github.com/vonds/exit_0"
+                    target="_blank"
+                    rel="noopener"
+                  >
+                    exit_0
+                  </a>
+                </li>
+                <li>
+                  <a href="docs.html" target="_blank" rel="noopener">
+                    exit_0 Documentation
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="https://github.com/vonds/sentinel"
+                    target="_blank"
+                    rel="noopener"
+                  >
+                    Sentinel
+                  </a>
+                </li>
               </ul>
             </li>
 
@@ -171,7 +191,11 @@
                   </h5>
                   <ul class="docs-nav">
                     <li><a href="#scenario">Scenario</a></li>
+                    <li><a href="#objective">Objective</a></li>
+                    <li><a href="#concepts">Concepts</a></li>
                     <li><a href="#walkthrough">Walkthrough</a></li>
+                    <li><a href="#breakpoints">Breakpoints</a></li>
+                    <li><a href="#cleanup">Cleanup</a></li>
                     <li><a href="#reference">Reference</a></li>
                   </ul>
                 </div>
@@ -180,40 +204,38 @@
 
             <!-- MAIN CONTENT -->
             <div class="col-sm-8 col-md-9 lab-doc">
-              <!-- 1) Title + Summary (2 sentences max) -->
               <p class="m-b-20 lab-summary">
                 Perform basic file transfer operations against an FTP server:
                 connect, authenticate, list remote files, download artifacts,
                 upload a report, and exit cleanly. Use this workflow to move
-                backup data in legacy environments while documenting what was
+                data in legacy environments while documenting what was
                 transferred.
               </p>
 
+              <!-- Video (kept on page; removed from left panel) -->
               <section class="lab-section" id="video" aria-label="Lab video">
-  				<div class="lab-video">
-    				<div class="lab-video-embed text-center">
-      					<iframe 
-							width="560" 
-							height="315" 
-							src="https://www.youtube.com/embed/uJk54bhaadA?si=seGSukCoMFN7ohRo" 
-							title="YouTube video player" 
-							frameborder="0" 
-							allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
-							referrerpolicy="strict-origin-when-cross-origin" 
-							allowfullscreen>
-						</iframe>
-    				</div>
-  				</div>
-			</section>
+                <div class="lab-video">
+                  <div class="lab-video-embed text-center">
+                    <iframe
+                      src="https://www.youtube.com/embed/uJk54bhaadA?si=seGSukCoMFN7ohRo"
+                      title="YouTube video player"
+                      frameborder="0"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                      referrerpolicy="strict-origin-when-cross-origin"
+                      allowfullscreen
+                    ></iframe>
+                  </div>
+                </div>
+              </section>
 
-              <!-- 2) Scenario -->
+              <!-- Scenario -->
               <section class="lab-section" id="scenario">
                 <div class="lab-chips" aria-label="Tags">
                   <span class="lab-chip">
-                    <span class="lab-chip-key">network</span>
+                    <span class="lab-chip-key">networking</span>
                   </span>
                   <span class="lab-chip">
-                    <span class="lab-chip-key">remote-access</span>
+                    <span class="lab-chip-key">access</span>
                   </span>
                   <span class="lab-chip">
                     <span class="lab-chip-key">core</span>
@@ -226,10 +248,10 @@
 
                 <p>
                   You need to upload and download files from an FTP server to
-                  support a legacy backup workflow. You will connect to an FTP
+                  support a legacy transfer workflow. You will connect to an FTP
                   server, authenticate using anonymous login, list available
                   files, download <code>readme.txt</code>, upload a local
-                  <code>report.log</code>, and then close the session properly.
+                  <code>report.log</code>, and then close the session cleanly.
                 </p>
 
                 <div class="lab-callout">
@@ -237,13 +259,13 @@
                   <p class="m-b-0">
                     FTP is legacy and typically unencrypted. In production,
                     prefer SFTP/SSH or HTTPS-based transfers when possible. When
-                    FTP is unavoidable, focus on precise commands, clear
-                    validation of transfers, and leaving an audit trail.
+                    FTP is unavoidable, validate each transfer and leave an
+                    audit trail.
                   </p>
                 </div>
               </section>
 
-              <!-- 3) Objective -->
+              <!-- Objective -->
               <section class="lab-section alt-background" id="objective">
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">
                   Objective
@@ -251,41 +273,45 @@
                 <ul>
                   <li>Connect to an FTP server from the terminal.</li>
                   <li>Authenticate using anonymous login.</li>
-                  <li>List remote files and verify what is available.</li>
+                  <li>List remote files and confirm availability.</li>
                   <li>Download a file and upload a file.</li>
                   <li>Exit the FTP client cleanly.</li>
                 </ul>
               </section>
 
-              <!-- 4) What You'll Practice -->
-              <section class="lab-section" id="practice">
+              <!-- Concepts (no alt-background moving forward) -->
+              <section class="lab-section" id="concepts">
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">
-                  What You’ll Practice
+                  Concepts
                 </h3>
-
-                <ul class="m-t-10">
+                <ul>
                   <li>
-                    Starting an interactive FTP session with
-                    <code>ftp &lt;host&gt;</code>.
+                    FTP control channel versus data channel behavior during
+                    transfers.
                   </li>
                   <li>
-                    Performing anonymous login and navigating FTP prompts.
+                    Why FTP is considered insecure (credentials and data can be
+                    sent in cleartext).
                   </li>
                   <li>
-                    Using <code>ls</code> to list remote directory contents.
+                    Anonymous FTP authentication and common policy constraints.
                   </li>
                   <li>
-                    Transferring files using <code>get</code> and
-                    <code>put</code>.
+                    Verifying intent before action: list remote contents prior
+                    to transfer.
                   </li>
                   <li>
-                    Closing sessions safely with <code>bye</code> or
-                    <code>quit</code>.
+                    Transfer validation: confirm completion messages and verify
+                    local/remote results.
+                  </li>
+                  <li>
+                    Session hygiene: terminate cleanly to avoid hanging sessions
+                    and stale state.
                   </li>
                 </ul>
               </section>
 
-              <!-- 5) Commands Walkthrough -->
+              <!-- Walkthrough -->
               <section class="lab-section alt-background" id="walkthrough">
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">
                   Walkthrough
@@ -318,7 +344,7 @@
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code id="verify-step-1">Connected to ftp.lpic-server.org.
+                    <pre><code>Connected to ftp.lpic-server.org.
 220 (vsFTPd 3.0.3)
 Name (ftp.lpic-server.org:lab):</code></pre>
                   </div>
@@ -346,13 +372,13 @@ Name (ftp.lpic-server.org:lab):</code></pre>
                   </div>
 
                   <p>
-                    Anonymous FTP commonly accepts any password (often an email
-                    address) depending on server policy. The key outcome is a
-                    successful login and transfer mode selection.
+                    Anonymous FTP commonly accepts any password depending on
+                    server policy. The operational goal is a successful login
+                    and a usable transfer mode.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code id="verify-step-2">331 Please specify the password.
+                    <pre><code>331 Please specify the password.
 230 Login successful.
 Remote system type is UNIX.
 Using binary mode to transfer files.</code></pre>
@@ -382,11 +408,11 @@ Using binary mode to transfer files.</code></pre>
 
                   <p>
                     Validate what is available before transferring. This also
-                    helps confirm you are in the expected remote directory.
+                    confirms you are operating in the expected remote directory.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code id="verify-step-3">-rw-r--r--   1 ftp  ftp        1048576 Jan 01 12:00 backup.tar.gz
+                    <pre><code>-rw-r--r--   1 ftp  ftp        1048576 Jan 01 12:00 backup.tar.gz
 -rw-r--r--   1 ftp  ftp          20480 Jan 01 12:01 readme.txt</code></pre>
                   </div>
                 </div>
@@ -418,7 +444,7 @@ Using binary mode to transfer files.</code></pre>
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code id="verify-step-4">local: readme.txt remote: readme.txt
+                    <pre><code>local: readme.txt remote: readme.txt
 200 PORT command successful. Consider using PASV.
 150 Opening BINARY mode data connection.
 226 Transfer complete.</code></pre>
@@ -452,7 +478,7 @@ Using binary mode to transfer files.</code></pre>
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code id="verify-step-5">local: report.log remote: report.log
+                    <pre><code>local: report.log remote: report.log
 200 PORT command successful.
 150 Opening BINARY mode data connection.
 226 Transfer complete.</code></pre>
@@ -462,7 +488,7 @@ Using binary mode to transfer files.</code></pre>
                 <!-- Step 6 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
-                    <strong class="font-alt bold">Step 6</strong>
+                    <strong class="font-alt">Step 6</strong>
                     : Close the FTP session cleanly.
                   </div>
 
@@ -481,17 +507,105 @@ Using binary mode to transfer files.</code></pre>
                   </div>
 
                   <p>
-                    Properly exiting ensures the control connection is closed
-                    and prevents hanging sessions on the server.
+                    Exiting cleanly closes the control connection and prevents
+                    hanging sessions on the server.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code id="verify-step-6">221 Goodbye.</code></pre>
+                    <pre><code>221 Goodbye.</code></pre>
                   </div>
                 </div>
               </section>
 
-              <!-- Reference (no tags in this section) -->
+              <!-- Common breakpoints -->
+              <section class="lab-section" id="breakpoints">
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  Common breakpoints
+                </h3>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">
+                    Connection fails before login prompt
+                  </div>
+                  <p class="m-b-0">
+                    Confirm DNS resolution and reachability to TCP/21. If the
+                    environment blocks FTP, pivot to SFTP/SSH or an approved
+                    transfer method.
+                  </p>
+                </div>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">
+                    Anonymous login rejected
+                  </div>
+                  <p class="m-b-0">
+                    Not all servers allow anonymous access. Use the correct
+                    account credentials or request access through the proper
+                    channel.
+                  </p>
+                </div>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">
+                    Transfers fail with passive/active mode issues
+                  </div>
+                  <p class="m-b-0">
+                    NAT and firewalls commonly interfere with FTP data
+                    connections. If you see repeated data connection failures,
+                    switch transfer mode per policy or use a modern protocol.
+                  </p>
+                </div>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">
+                    File transferred but content is not correct
+                  </div>
+                  <p class="m-b-0">
+                    Confirm you are in the expected remote directory and that
+                    you pulled the correct filename. Validate checksums when
+                    integrity matters.
+                  </p>
+                </div>
+              </section>
+
+              <!-- Cleanup -->
+              <section class="lab-section alt-background" id="cleanup">
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  Cleanup checklist
+                </h3>
+
+                <p>
+                  This lab is operationally stateful only in terms of files you
+                  transferred. Cleanup is verifying what landed locally and
+                  what was uploaded remotely, then exiting the client.
+                </p>
+
+                <div class="lab-codeblock m-b-40 m-t-40">
+                  <div class="lab-codeblock-header">
+                    <span>Commands</span>
+                    <button
+                      class="lab-copy-btn"
+                      type="button"
+                      data-copy="#cmd-cleanup"
+                    >
+                      Copy
+                    </button>
+                  </div>
+                  <pre><code id="cmd-cleanup">ls -l readme.txt report.log
+# If still connected:
+# bye</code></pre>
+                </div>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">Success signal</div>
+                  <p class="m-b-0">
+                    You can show a completed download and upload with clear
+                    file names, and the FTP session is closed cleanly.
+                  </p>
+                </div>
+              </section>
+
+              <!-- Reference -->
               <section class="lab-section" id="reference">
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">
                   Reference
@@ -500,12 +614,8 @@ Using binary mode to transfer files.</code></pre>
                 <ul class="lab-reference-list">
                   <li>
                     <code>ftp &lt;host&gt;</code>
-                    : Starts an interactive FTP client session to the specified server.
-                  </li>
-
-                  <li>
-                    <code>anonymous</code>
-                    : Common username for anonymous FTP access when enabled by the server.
+                    : Starts an interactive FTP client session to the specified
+                    server.
                   </li>
 
                   <li>
@@ -524,8 +634,14 @@ Using binary mode to transfer files.</code></pre>
                   </li>
 
                   <li>
-                    <code>bye</code> / <code>quit</code>
+                    <code>bye</code>
                     : Terminates the FTP session and closes the connection.
+                    <ul>
+                      <li>
+                        <code>quit</code>
+                        is an equivalent command in many FTP clients.
+                      </li>
+                    </ul>
                   </li>
                 </ul>
               </section>
@@ -613,5 +729,9 @@ Using binary mode to transfer files.</code></pre>
 
     <!-- Lab page JS (new) -->
     <script src="../assets/js/lab.js"></script>
+
+    <script>
+      document.getElementById('year').textContent = new Date().getFullYear()
+    </script>
   </body>
 </html>

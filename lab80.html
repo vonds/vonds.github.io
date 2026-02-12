@@ -30,7 +30,6 @@
     <link href="../assets/css/ionicons.min.css" rel="stylesheet" />
     <link href="../assets/css/simpletextrotator.css" rel="stylesheet" />
     <link href="../assets/css/magnific-popup.css" rel="stylesheet" />
-    <link href="../assets/css/magnific-popup.css" rel="stylesheet" />
     <link href="../assets/css/owl.carousel.css" rel="stylesheet" />
     <link href="../assets/css/superslides.css" rel="stylesheet" />
     <link href="../assets/css/vertical.css" rel="stylesheet" />
@@ -38,14 +37,11 @@
     <link href="../assets/css/style.css" rel="stylesheet" />
     <link href="../assets/css/docs.css" rel="stylesheet" />
 
-    <!-- Lab page styles (new) -->
+    <!-- Lab page styles -->
     <link href="../assets/css/lab.css" rel="stylesheet" />
 
     <!-- Fonts -->
-    <link
-      href="https://fonts.googleapis.com/css?family=Dosis"
-      rel="stylesheet"
-    />
+    <link href="https://fonts.googleapis.com/css?family=Dosis" rel="stylesheet" />
   </head>
 
   <body>
@@ -84,6 +80,11 @@
                     rel="noopener"
                   >
                     Sentinel
+                  </a>
+                </li>
+                <li>
+                  <a href="docs.html" target="_blank" rel="noopener">
+                    exit_0 Documentation
                   </a>
                 </li>
               </ul>
@@ -187,7 +188,11 @@
                   </h5>
                   <ul class="docs-nav">
                     <li><a href="#scenario">Scenario</a></li>
+                    <li><a href="#objective">Objective</a></li>
+                    <li><a href="#concepts">Concepts</a></li>
                     <li><a href="#walkthrough">Walkthrough</a></li>
+                    <li><a href="#breakpoints">Breakpoints</a></li>
+                    <li><a href="#cleanup">Cleanup</a></li>
                     <li><a href="#reference">Reference</a></li>
                   </ul>
                 </div>
@@ -196,32 +201,29 @@
 
             <!-- MAIN CONTENT -->
             <div class="col-sm-8 col-md-9 lab-doc">
-              <!-- 1) Title + Summary (2 sentences max) -->
               <p class="m-b-20 lab-summary">
-                Install and start Postfix as a local Mail Transfer Agent (MTA)
-                so the system can deliver service notifications and cron output.
-                Validate service health, set a basic mail domain, and send a
-                test message to the local <code>root</code> mailbox.
+                Install and start Postfix as a local Mail Transfer Agent (MTA) so the host can deliver service notifications and cron
+                output. Validate service health, set a basic mail identity, send a test message to the local <code>root</code> mailbox,
+                and confirm the message is actually delivered.
               </p>
 
+              <!-- Video (kept on page; not in left nav) -->
               <section class="lab-section" id="video" aria-label="Lab video">
-  				<div class="lab-video">
-    				<div class="lab-video-embed text-center">
-      					<iframe 
-							width="560" 
-							height="315" 
-							src="https://www.youtube.com/embed/uJk54bhaadA?si=seGSukCoMFN7ohRo" 
-							title="YouTube video player" 
-							frameborder="0" 
-							allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
-							referrerpolicy="strict-origin-when-cross-origin" 
-							allowfullscreen>
-						</iframe>
-    				</div>
-  				</div>
-			</section>
+                <div class="lab-video">
+                  <div class="lab-video-embed text-center">
+                    <iframe
+                      src="https://www.youtube.com/embed/uJk54bhaadA?si=seGSukCoMFN7ohRo"
+                      title="YouTube video player"
+                      frameborder="0"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                      referrerpolicy="strict-origin-when-cross-origin"
+                      allowfullscreen
+                    ></iframe>
+                  </div>
+                </div>
+              </section>
 
-              <!-- 2) Scenario -->
+              <!-- Scenario -->
               <section class="lab-section" id="scenario">
                 <div class="lab-chips" aria-label="Tags">
                   <span class="lab-chip">
@@ -240,80 +242,58 @@
                 </h3>
 
                 <p>
-                  You are responsible for ensuring that system-generated mail
-                  (cron output, security alerts, logrotate notices, and service
-                  notifications) is delivered locally. The host does not need to
-                  relay mail to the internet, but it must have a working local
-                  MTA. You will deploy Postfix, enable it at boot, verify it is
-                  running, set the system mail domain, and send a test message
-                  to confirm delivery is functional.
+                  You need a working local MTA so system-generated mail (cron output, security alerts, logrotate notices, and service
+                  notifications) does not disappear silently. This host does not need to relay mail to the internet, but it must deliver
+                  mail locally and reliably across reboots.
                 </p>
 
                 <div class="lab-callout">
                   <div class="lab-callout-label">Operator context</div>
                   <p class="m-b-0">
-                    A local MTA is often part of baseline Linux operations even
-                    in hardened environments. It ensures alerts and automation
-                    output do not disappear silently when no external mail relay
-                    is configured.
+                    A local MTA is still common in hardened environments. Even without an external relay, local delivery preserves
+                    operational signal (alerts, automation output) when something goes wrong.
                   </p>
                 </div>
               </section>
 
-              <!-- 3) Objective -->
+              <!-- Objective -->
               <section class="lab-section alt-background" id="objective">
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">
                   Objective
                 </h3>
 
                 <ul>
-                  <li>Install Postfix using the system package manager.</li>
-                  <li>
-                    Enable and start the <code>postfix</code> service.
-                  </li>
-                  <li>
-                    Verify service health using <code>systemctl status</code>.
-                  </li>
-                  <li>
-                    Configure the system mail name (basic mail domain).
-                  </li>
-                  <li>
-                    Send a test message to the local <code>root</code> user.
-                  </li>
+                  <li>Install Postfix with the system package manager.</li>
+                  <li>Enable and start <code>postfix</code> at boot.</li>
+                  <li>Verify service health with <code>systemctl</code>.</li>
+                  <li>Set a basic mail identity (local domain/hostname context).</li>
+                  <li>Send and verify a test message to <code>root</code>.</li>
                 </ul>
               </section>
 
-              <!-- 4) What You'll Practice -->
-              <section class="lab-section" id="practice">
+              <!-- Concepts -->
+              <section class="lab-section" id="concepts">
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">
-                  What You’ll Practice
+                  Concepts
                 </h3>
 
-                <ul class="m-t-10">
+                <ul>
                   <li>
-                    Installing packages using a distro package manager
-                    (<code>apt</code>, <code>pacman</code>, or <code>yum</code>).
+                    Postfix accepts mail from local processes and delivers it to local mailboxes (or relays it if configured).
                   </li>
                   <li>
-                    Managing services with
-                    <code>systemctl enable --now</code>.
+                    “Local MTA” does not mean “public mail server.” The default target here is local delivery for system accounts.
                   </li>
                   <li>
-                    Service verification with
-                    <code>systemctl status</code>.
+                    Verification means checking the service, queue/logs, and the mailbox itself (not just “command ran”).
                   </li>
                   <li>
-                    Setting a basic mail domain via
-                    <code>/etc/mailname</code>.
-                  </li>
-                  <li>
-                    Sending local mail with the
-                    <code>mail</code> command.
+                    Mail identity (hostname/domain) impacts sender headers and how local mail tools format addresses.
                   </li>
                 </ul>
               </section>
 
-              <!-- 5) Commands Walkthrough -->
+              <!-- Walkthrough -->
               <section class="lab-section alt-background" id="walkthrough">
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">
                   Walkthrough
@@ -329,42 +309,36 @@
                   <div class="lab-callout">
                     <div class="lab-callout-label">Note</div>
                     <p class="m-b-0">
-                      LPIC environments can vary. Use the package manager that
-                      matches your system. In production, prefer the native
-                      toolchain (for example, <code>apt</code> on Debian/Ubuntu,
-                      <code>dnf</code> on RHEL, <code>pacman</code> on Arch).
+                      Use the native package manager for your distro. If you are on RHEL-based systems, use <code>dnf</code> (not legacy
+                      <code>yum</code>).
                     </p>
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
-                      <span>Command</span>
-                      <button
-                        class="lab-copy-btn"
-                        type="button"
-                        data-copy="#cmd-step-1"
-                      >
+                      <span>Commands</span>
+                      <button class="lab-copy-btn" type="button" data-copy="#cmd-step-1">
                         Copy
                       </button>
                     </div>
-                    <pre><code id="cmd-step-1"># Debian/Ubuntu
-sudo apt install postfix
+                    <pre><code id="cmd-step-1"># RHEL / CentOS / Fedora
+sudo dnf install -y postfix mailx
+
+# Debian/Ubuntu
+sudo apt update
+sudo apt install -y postfix bsd-mailx
 
 # Arch
-sudo pacman -S postfix
-
-# RHEL/CentOS (legacy)
-sudo yum install postfix</code></pre>
+sudo pacman -S postfix mailutils</code></pre>
                   </div>
 
                   <p>
-                    Installing Postfix provides the MTA components that accept
-                    mail from local processes and deliver it to local mailboxes
-                    (or relay it if configured).
+                    Postfix provides the MTA. The mail client package provides <code>mail</code> so you can send and read local test mail
+                    during validation.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code id="verify-step-1">Installing Postfix... Done.</code></pre>
+                    <pre><code>Installing Postfix and mail client... Done.</code></pre>
                   </div>
                 </div>
 
@@ -372,17 +346,13 @@ sudo yum install postfix</code></pre>
                 <div class="lab-step">
                   <div class="lab-step-title">
                     <strong class="font-alt">Step 2</strong>
-                    : Enable and start the Postfix service.
+                    : Enable and start Postfix.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
-                      <button
-                        class="lab-copy-btn"
-                        type="button"
-                        data-copy="#cmd-step-2"
-                      >
+                      <button class="lab-copy-btn" type="button" data-copy="#cmd-step-2">
                         Copy
                       </button>
                     </div>
@@ -390,12 +360,12 @@ sudo yum install postfix</code></pre>
                   </div>
 
                   <p>
-                    This ensures Postfix starts at boot and begins accepting
-                    local mail immediately.
+                    <code>enable</code> ensures it starts on boot; <code>--now</code> starts it immediately so you can verify state.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code id="verify-step-2">Postfix enabled and started.</code></pre>
+                    <pre><code>Created symlink .../multi-user.target.wants/postfix.service → .../postfix.service.
+Job for postfix.service started successfully.</code></pre>
                   </div>
                 </div>
 
@@ -403,34 +373,30 @@ sudo yum install postfix</code></pre>
                 <div class="lab-step">
                   <div class="lab-step-title">
                     <strong class="font-alt">Step 3</strong>
-                    : Check the Postfix service status.
+                    : Verify service health.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
-                      <span>Command</span>
-                      <button
-                        class="lab-copy-btn"
-                        type="button"
-                        data-copy="#cmd-step-3"
-                      >
+                      <span>Commands</span>
+                      <button class="lab-copy-btn" type="button" data-copy="#cmd-step-3">
                         Copy
                       </button>
                     </div>
-                    <pre><code id="cmd-step-3">systemctl status postfix</code></pre>
+                    <pre><code id="cmd-step-3">systemctl status postfix --no-pager
+ss -lntp | grep -E ':(25|587)\s' || true</code></pre>
                   </div>
 
                   <p>
-                    Confirm the unit is active and that the master process is
-                    running. This is your baseline verification before you start
-                    troubleshooting delivery behavior.
+                    Confirm the unit is active and that Postfix is listening locally. Depending on defaults, you may see port 25 (SMTP)
+                    and possibly 587 (submission).
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code id="verify-step-3">● postfix.service - Postfix Mail Transport Agent
-Loaded: loaded (...; enabled; vendor preset: disabled)
-Active: active (running) since Fri 2025-11-28 10:23:45 EST; 5min ago
-Main PID: 2143 (master)</code></pre>
+                    <pre><code>● postfix.service - Postfix Mail Transport Agent
+Active: active (running)
+
+LISTEN 0 100 127.0.0.1:25 ... master</code></pre>
                   </div>
                 </div>
 
@@ -438,32 +404,34 @@ Main PID: 2143 (master)</code></pre>
                 <div class="lab-step">
                   <div class="lab-step-title">
                     <strong class="font-alt">Step 4</strong>
-                    : Set the system mail name (mail domain).
+                    : Set a basic mail identity (mail domain/hostname context).
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
-                      <span>Command</span>
-                      <button
-                        class="lab-copy-btn"
-                        type="button"
-                        data-copy="#cmd-step-4"
-                      >
+                      <span>Commands</span>
+                      <button class="lab-copy-btn" type="button" data-copy="#cmd-step-4">
                         Copy
                       </button>
                     </div>
-                    <pre><code id="cmd-step-4">echo 'example.local' | sudo tee /etc/mailname</code></pre>
+                    <pre><code id="cmd-step-4"># Set a minimal mailname (common on Debian-based systems)
+echo 'example.local' | sudo tee /etc/mailname
+
+# Set Postfix myhostname/mydomain explicitly (works everywhere)
+sudo postconf -e 'myhostname=mail01.example.local'
+sudo postconf -e 'mydomain=example.local'
+sudo postconf -e 'myorigin=$mydomain'
+
+sudo systemctl restart postfix</code></pre>
                   </div>
 
                   <p>
-                    Setting a mail name establishes a default domain identity
-                    used by some mail tooling and Postfix configurations. In a
-                    real environment, choose a domain that matches your naming
-                    standards.
+                    This establishes predictable sender identity for local mail. Restart Postfix so settings are applied.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code id="verify-step-4">Mail name set to 'example.local'.</code></pre>
+                    <pre><code>postfix/postconf: updated configuration
+postfix restarted.</code></pre>
                   </div>
                 </div>
 
@@ -471,32 +439,25 @@ Main PID: 2143 (master)</code></pre>
                 <div class="lab-step">
                   <div class="lab-step-title">
                     <strong class="font-alt">Step 5</strong>
-                    : Send a test message to local root.
+                    : Send a test message to local <code>root</code>.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
-                      <button
-                        class="lab-copy-btn"
-                        type="button"
-                        data-copy="#cmd-step-5"
-                      >
+                      <button class="lab-copy-btn" type="button" data-copy="#cmd-step-5">
                         Copy
                       </button>
                     </div>
-                    <pre><code id="cmd-step-5">echo 'Test message' | mail -s 'Hello' root</code></pre>
+                    <pre><code id="cmd-step-5">echo 'Postfix local delivery test' | mail -s 'postfix-test' root</code></pre>
                   </div>
 
                   <p>
-                    This validates the local delivery path. In a real workflow,
-                    you would also verify the mailbox contents (for example with
-                    <code>mail</code> or by inspecting the local spool) and
-                    check logs if delivery fails.
+                    This validates local submission into the MTA. Next you confirm the message lands in root’s mailbox.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code id="verify-step-5">Message sent to local root user.</code></pre>
+                    <pre><code>Message accepted for delivery.</code></pre>
                   </div>
                 </div>
 
@@ -504,41 +465,92 @@ Main PID: 2143 (master)</code></pre>
                 <div class="lab-step">
                   <div class="lab-step-title">
                     <strong class="font-alt">Step 6</strong>
-                    : Common verification points when mail does not arrive.
+                    : Verify delivery (mailbox, queue, logs).
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Commands</span>
-                      <button
-                        class="lab-copy-btn"
-                        type="button"
-                        data-copy="#cmd-step-6"
-                      >
+                      <button class="lab-copy-btn" type="button" data-copy="#cmd-step-6">
                         Copy
                       </button>
                     </div>
-                    <pre><code id="cmd-step-6"># View mail queue (if configured)
+                    <pre><code id="cmd-step-6"># Read root mail (interactive)
+sudo mail -u root
+
+# Check queue (should be empty for local delivery)
 mailq
 
-# Inspect logs (varies by distro)
-journalctl -u postfix --no-pager
-# or
-tail -n 50 /var/log/mail.log
-tail -n 50 /var/log/maillog</code></pre>
+# Check service logs (systemd journal)
+sudo journalctl -u postfix --no-pager -n 50</code></pre>
                   </div>
 
                   <p>
-                    These checks help you determine whether mail is stuck in a
-                    queue, failing delivery due to configuration, or being
-                    rejected by policy. For this lab, the goal is to understand
-                    the standard “install, enable, validate, send test mail”
-                    workflow.
+                    Your “done” signal is: message visible in the root mailbox, queue not building up, and no obvious delivery errors in logs.
+                  </p>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <pre><code># Example: mail shows a new message with subject "postfix-test"
+# Example: mailq returns "Mail queue is empty"</code></pre>
+                  </div>
+                </div>
+              </section>
+
+              <!-- Breakpoints -->
+              <section class="lab-section" id="breakpoints">
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  Common breakpoints
+                </h3>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">postfix is running, but mail never arrives</div>
+                  <p class="m-b-0">
+                    Check <code>mailq</code> for stuck messages, then inspect <code>journalctl -u postfix</code> for local delivery errors.
+                    Also confirm you installed a mail client package so you can read local mail.
+                  </p>
+                </div>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">port 25 is not listening</div>
+                  <p class="m-b-0">
+                    Re-check the unit state (<code>systemctl status postfix</code>) and whether Postfix is configured for loopback-only binding.
+                    If you hardened the host, confirm firewall rules and SELinux context if applicable.
+                  </p>
+                </div>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">hostname/domain looks wrong in headers</div>
+                  <p class="m-b-0">
+                    Validate <code>postconf -n</code> output and ensure <code>myhostname</code>, <code>mydomain</code>, and <code>myorigin</code>
+                    match your intended identity.
                   </p>
                 </div>
               </section>
 
-              <!-- 6) Reference -->
+              <!-- Cleanup -->
+              <section class="lab-section alt-background" id="cleanup">
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  Cleanup checklist
+                </h3>
+
+                <p>
+                  This lab is safe to leave in place if you want local system mail. If you need to revert, stop/disable the service and
+                  remove the packages using your distro’s package manager.
+                </p>
+
+                <div class="lab-codeblock m-b-40 m-t-40">
+                  <div class="lab-codeblock-header">
+                    <span>Commands</span>
+                    <button class="lab-copy-btn" type="button" data-copy="#cmd-cleanup">
+                      Copy
+                    </button>
+                  </div>
+                  <pre><code id="cmd-cleanup">sudo systemctl disable --now postfix
+mailq</code></pre>
+                </div>
+              </section>
+
+              <!-- Reference (minimal; commands listed once; sub-bullets only for flags/options) -->
               <section class="lab-section" id="reference">
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">
                   Reference
@@ -546,35 +558,66 @@ tail -n 50 /var/log/maillog</code></pre>
 
                 <ul class="lab-reference-list">
                   <li>
-                    <code>postfix</code>
-                    : Mail Transfer Agent (MTA) commonly used for local and relay
-                    mail delivery.
+                    <code>dnf install postfix mailx</code>: Install Postfix and a local mail client on RHEL-based systems.
                   </li>
 
                   <li>
-                    <code>systemctl enable --now postfix</code>
-                    : Enables Postfix at boot and starts it immediately.
+                    <code>apt install postfix bsd-mailx</code>: Install Postfix and a local mail client on Debian-based systems.
                   </li>
 
                   <li>
-                    <code>systemctl status postfix</code>
-                    : Verifies whether the Postfix service is active and running.
+                    <code>pacman -S postfix mailutils</code>: Install Postfix and a local mail client on Arch.
                   </li>
 
                   <li>
-                    <code>/etc/mailname</code>
-                    : Stores the system mail domain on Debian-based systems; may
-                    be referenced by local mail tooling.
+                    <code>systemctl enable --now postfix</code>: Enable Postfix at boot and start it immediately.
                   </li>
 
                   <li>
-                    <code>mail -s</code>
-                    : Sends a message with a subject to a local user.
+                    <code>systemctl status postfix</code>: Show Postfix unit health and current runtime state.
                   </li>
 
                   <li>
-                    <code>mailq</code>
-                    : Shows queued mail messages waiting for delivery.
+                    <code>postconf -e 'key=value'</code>: Set Postfix configuration values non-interactively.
+                    <ul>
+                      <li><code>myhostname</code>: Host identity used in mail headers.</li>
+                      <li><code>mydomain</code>: Domain portion for local mail identity.</li>
+                      <li><code>myorigin</code>: Domain appended to locally-posted mail.</li>
+                    </ul>
+                  </li>
+
+                  <li>
+                    <code>/etc/mailname</code>: Mail name file used on some systems (commonly Debian-based).
+                  </li>
+
+                  <li>
+                    <code>mail -s '&lt;subject&gt;' &lt;user&gt;</code>: Send a local message with a subject.
+                  </li>
+
+                  <li>
+                    <code>mail -u &lt;user&gt;</code>: Read a local user’s mailbox interactively.
+                  </li>
+
+                  <li>
+                    <code>mailq</code>: Display queued messages waiting for delivery.
+                  </li>
+
+                  <li>
+                    <code>journalctl -u postfix</code>: View Postfix logs from the systemd journal.
+                    <ul>
+                      <li><code>-n 50</code>: Show the most recent 50 lines.</li>
+                      <li><code>--no-pager</code>: Print directly to stdout.</li>
+                    </ul>
+                  </li>
+
+                  <li>
+                    <code>ss -lntp</code>: List listening TCP sockets and owning processes.
+                    <ul>
+                      <li><code>-l</code>: listening sockets</li>
+                      <li><code>-n</code>: numeric addresses/ports</li>
+                      <li><code>-t</code>: TCP</li>
+                      <li><code>-p</code>: process info</li>
+                    </ul>
                   </li>
                 </ul>
               </section>
@@ -582,17 +625,6 @@ tail -n 50 /var/log/maillog</code></pre>
             <!-- /main -->
           </div>
           <!-- /row -->
-
-          <nav class="lab-pagination">
-            <a
-              id="prev-lab"
-              class="lab-nav-link"
-              href="#"
-              aria-label="Back to top"
-            >
-              &uArr;
-            </a>
-          </nav>
         </div>
         <!-- /container -->
       </section>
@@ -663,5 +695,9 @@ tail -n 50 /var/log/maillog</code></pre>
 
     <!-- Lab page JS (new) -->
     <script src="../assets/js/lab.js"></script>
+
+    <script>
+      document.getElementById('year').textContent = new Date().getFullYear()
+    </script>
   </body>
 </html>

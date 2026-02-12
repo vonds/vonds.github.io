@@ -37,11 +37,14 @@
     <link href="../assets/css/style.css" rel="stylesheet" />
     <link href="../assets/css/docs.css" rel="stylesheet" />
 
-    <!-- Lab page styles (new) -->
+    <!-- Lab page styles -->
     <link href="../assets/css/lab.css" rel="stylesheet" />
 
     <!-- Fonts -->
-    <link href="https://fonts.googleapis.com/css?family=Dosis" rel="stylesheet" />
+    <link
+      href="https://fonts.googleapis.com/css?family=Dosis"
+      rel="stylesheet"
+    />
   </head>
 
   <body>
@@ -155,10 +158,20 @@
           </h2>
 
           <nav class="lab-pagination">
-            <a id="prev-lab" class="lab-nav-link" href="./lab099.html" aria-label="Previous lab">
+            <a
+              id="prev-lab"
+              class="lab-nav-link"
+              href="./lab099.html"
+              aria-label="Previous lab"
+            >
               &laquo;
             </a>
-            <a id="next-lab" class="lab-nav-link" href="./lab101.html" aria-label="Next lab">
+            <a
+              id="next-lab"
+              class="lab-nav-link"
+              href="./lab101.html"
+              aria-label="Next lab"
+            >
               &raquo;
             </a>
           </nav>
@@ -173,7 +186,12 @@
                   </h5>
                   <ul class="docs-nav">
                     <li><a href="#scenario">Scenario</a></li>
+                    <li><a href="#objective">Objective</a></li>
+                    <li><a href="#concepts">Concepts</a></li>
                     <li><a href="#walkthrough">Walkthrough</a></li>
+                    <li><a href="#ops-notes">Ops Notes</a></li>
+                    <li><a href="#breakpoints">Common breakpoints</a></li>
+                    <li><a href="#cleanup">Cleanup checklist</a></li>
                     <li><a href="#reference">Reference</a></li>
                   </ul>
                 </div>
@@ -182,11 +200,11 @@
 
             <!-- MAIN CONTENT -->
             <div class="col-sm-8 col-md-9 lab-doc">
-              <!-- 1) Title + Summary (2 sentences max) -->
               <p class="m-b-20 lab-summary">
-                Configure a host to pull and apply its desired state from a Git repository using
-                <code>ansible-pull</code>. You’ll run a local self-apply, then schedule it so the node
-                continuously converges without a central controller.
+                Configure a host to pull and apply its desired state from a Git
+                repository using <code>ansible-pull</code>. Run a local self-apply,
+                then schedule it so the node continuously converges without a
+                central controller.
               </p>
 
               <!-- Optional Video -->
@@ -194,8 +212,6 @@
                 <div class="lab-video">
                   <div class="lab-video-embed text-center">
                     <iframe
-                      width="560"
-                      height="315"
                       src="https://www.youtube.com/embed/REPLACE_ME"
                       title="YouTube video player"
                       frameborder="0"
@@ -207,7 +223,7 @@
                 </div>
               </section>
 
-              <!-- 2) Scenario -->
+              <!-- Scenario -->
               <section class="lab-section" id="scenario">
                 <div class="lab-chips" aria-label="Tags">
                   <span class="lab-chip"><span class="lab-chip-key">ansible</span></span>
@@ -217,27 +233,34 @@
                   <span class="lab-chip"><span class="lab-chip-key">desired-state</span></span>
                 </div>
 
-                <h3 class="font-alt lab-section-title m-b-40 m-t-40">Scenario</h3>
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  Scenario
+                </h3>
+
                 <p>
-                  You want Linux systems to self-configure by pulling their desired state from a Git
-                  repository and applying it locally. This is useful when hosts can reach Git but a
-                  central controller can’t reliably reach them (branch networks, NAT, limited inbound
-                  access, or “pull-only” environments).
+                  You want Linux systems to self-configure by pulling their
+                  desired state from a Git repository and applying it locally.
+                  This is useful when hosts can reach Git but a central
+                  controller cannot reliably reach them, such as branch networks,
+                  NAT, or pull-only environments with limited inbound access.
                 </p>
 
                 <div class="lab-callout">
                   <div class="lab-callout-label">Operator context</div>
                   <p class="m-b-0">
-                    With <code>ansible-pull</code>, the node is the “controller.” It clones (or updates)
-                    a repo, runs a playbook against <code>localhost</code>, and repeats on a schedule so it
-                    stays converged.
+                    With <code>ansible-pull</code>, the node becomes the controller.
+                    It clones or updates a repo, runs a playbook against
+                    <code>localhost</code>, and repeats on a schedule so it stays
+                    converged.
                   </p>
                 </div>
               </section>
 
-              <!-- 3) Objective -->
+              <!-- Objective -->
               <section class="lab-section alt-background" id="objective">
-                <h3 class="font-alt lab-section-title m-b-40 m-t-40">Objective</h3>
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  Objective
+                </h3>
                 <ul>
                   <li>Install Ansible and Git on the managed node.</li>
                   <li>Inspect a repo-hosted playbook intended for localhost configuration.</li>
@@ -247,123 +270,181 @@
                 </ul>
               </section>
 
-              <!-- 4) What You'll Practice -->
-              <section class="lab-section" id="practice">
+              <!-- Concepts -->
+              <section class="lab-section" id="concepts">
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">
-                  What You’ll Practice
+                  Concepts
                 </h3>
-                <ul class="m-t-10">
-                  <li>Agent-based config model with <code>ansible-pull</code></li>
-                  <li>Git-backed desired state</li>
-                  <li>Local execution targeting <code>localhost</code></li>
-                  <li>Recurring convergence via <code>cron</code></li>
-                  <li>Operational logging for scheduled automation</li>
+                <ul>
+                  <li>
+                    Push vs pull: central controllers push changes, while
+                    <code>ansible-pull</code> lets the node pull its desired state.
+                  </li>
+                  <li>
+                    Desired state: the repo is the source of truth and each run
+                    converges toward that configuration.
+                  </li>
+                  <li>
+                    Local targeting: <code>hosts: localhost</code> is the standard
+                    pattern for self-application.
+                  </li>
+                  <li>
+                    Scheduling: repeated runs close drift, but you need safe
+                    execution patterns to avoid overlaps.
+                  </li>
+                  <li>
+                    Operational visibility: logs are non-negotiable for
+                    unattended automation.
+                  </li>
                 </ul>
               </section>
 
-              <!-- 5) Walkthrough -->
+              <!-- Walkthrough -->
               <section class="lab-section alt-background" id="walkthrough">
-                <h3 class="font-alt lab-section-title m-b-40 m-t-40">Walkthrough</h3>
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  Walkthrough
+                </h3>
 
                 <!-- Step 1 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
-                    <strong class="font-alt">Step 1</strong>: Install Ansible and Git.
+                    <strong class="font-alt">Step 1</strong>
+                    : Install Ansible and Git.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
-                      <button class="lab-copy-btn" type="button" data-copy="#cmd-100-1">
+                      <button
+                        class="lab-copy-btn"
+                        type="button"
+                        data-copy="#cmd-100-1"
+                      >
                         Copy
                       </button>
                     </div>
                     <pre><code id="cmd-100-1">sudo dnf install ansible git -y
-# (or apt/pacman equivalents)</code></pre>
+# Debian/Ubuntu:
+# sudo apt install ansible git -y
+# Arch:
+# sudo pacman -S ansible git</code></pre>
                   </div>
 
                   <p>
-                    Both are required: Git pulls your desired state, Ansible applies it.
+                    Git pulls your desired state, and Ansible applies it locally.
                   </p>
                 </div>
 
                 <!-- Step 2 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
-                    <strong class="font-alt">Step 2</strong>: Clone the remote repository.
+                    <strong class="font-alt">Step 2</strong>
+                    : Inspect the repo-hosted playbook (without editing anything yet).
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
-                      <span>Command</span>
-                      <button class="lab-copy-btn" type="button" data-copy="#cmd-100-2">
+                      <span>Commands</span>
+                      <button
+                        class="lab-copy-btn"
+                        type="button"
+                        data-copy="#cmd-100-2"
+                      >
                         Copy
                       </button>
                     </div>
-                    <pre><code id="cmd-100-2">git clone https://github.com/example/ansible-lab100.git</code></pre>
+                    <pre><code id="cmd-100-2">git clone https://github.com/example/ansible-lab100.git
+cd ansible-lab100
+ls -la
+sed -n '1,200p' site.yml</code></pre>
                   </div>
 
                   <p>
-                    In production you’d typically point at an internal repo or a locked-down private repo.
+                    Look for <code>hosts: localhost</code> and <code>become: true</code>.
+                    That is the standard self-apply pattern.
                   </p>
                 </div>
 
                 <!-- Step 3 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
-                    <strong class="font-alt">Step 3</strong>: Inspect the playbook that targets localhost.
+                    <strong class="font-alt">Step 3</strong>
+                    : Apply the desired state locally using <code>ansible-pull</code>.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
-                      <button class="lab-copy-btn" type="button" data-copy="#cmd-100-3">
+                      <button
+                        class="lab-copy-btn"
+                        type="button"
+                        data-copy="#cmd-100-3"
+                      >
                         Copy
                       </button>
                     </div>
-                    <pre><code id="cmd-100-3">cat ansible-lab100/site.yml
-# or
-less ansible-lab100/site.yml</code></pre>
+                    <pre><code id="cmd-100-3">sudo ansible-pull -U https://github.com/example/ansible-lab100.git -i localhost, site.yml</code></pre>
                   </div>
 
                   <p>
-                    For <code>ansible-pull</code>, the pattern is usually <code>hosts: localhost</code> with
-                    <code>become: true</code>, since the node configures itself.
+                    This clones or updates the repo into Ansible’s pull directory
+                    and runs the playbook against <code>localhost</code>. On later
+                    runs, you should see fewer changes as the system converges.
                   </p>
+
+                  <div class="lab-callout">
+                    <div class="lab-callout-label">Why the trailing comma matters</div>
+                    <p class="m-b-0">
+                      <code>-i localhost,</code> is a one-host inline inventory. Without
+                      the comma, Ansible may treat <code>localhost</code> as a path.
+                    </p>
+                  </div>
                 </div>
 
                 <!-- Step 4 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
-                    <strong class="font-alt">Step 4</strong>: Apply the desired state locally using <code>ansible-pull</code>.
+                    <strong class="font-alt">Step 4</strong>
+                    : Create a log path for unattended runs.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
-                      <span>Command</span>
-                      <button class="lab-copy-btn" type="button" data-copy="#cmd-100-4">
+                      <span>Commands</span>
+                      <button
+                        class="lab-copy-btn"
+                        type="button"
+                        data-copy="#cmd-100-4"
+                      >
                         Copy
                       </button>
                     </div>
-                    <pre><code id="cmd-100-4">sudo ansible-pull -U https://github.com/example/ansible-lab100.git -i localhost site.yml</code></pre>
+                    <pre><code id="cmd-100-4">sudo mkdir -p /var/log/ansible
+sudo touch /var/log/ansible/pull.log
+sudo chmod 0644 /var/log/ansible/pull.log</code></pre>
                   </div>
 
                   <p>
-                    This clones (or updates) the repo into the default pull directory and runs the playbook against
-                    <code>localhost</code>. On later runs, you should see fewer changes as the system converges.
+                    Logging is how you prove convergence happened and how you
+                    debug failures without guessing.
                   </p>
                 </div>
 
                 <!-- Step 5 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
-                    <strong class="font-alt">Step 5</strong>: Schedule the node to self-apply every 30 minutes.
+                    <strong class="font-alt">Step 5</strong>
+                    : Schedule <code>ansible-pull</code> every 30 minutes with safer execution.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
-                      <button class="lab-copy-btn" type="button" data-copy="#cmd-100-5">
+                      <button
+                        class="lab-copy-btn"
+                        type="button"
+                        data-copy="#cmd-100-5"
+                      >
                         Copy
                       </button>
                     </div>
@@ -372,102 +453,193 @@ less ansible-lab100/site.yml</code></pre>
 
                   <div class="lab-codeblock m-b-40 m-t-10">
                     <div class="lab-codeblock-header">
-                      <span>Cron entry</span>
-                      <button class="lab-copy-btn" type="button" data-copy="#file-100-cron">
+                      <span>Cron entry (recommended)</span>
+                      <button
+                        class="lab-copy-btn"
+                        type="button"
+                        data-copy="#file-100-cron"
+                      >
                         Copy
                       </button>
                     </div>
-                    <pre><code id="file-100-cron">*/30 * * * * /usr/bin/ansible-pull -U https://github.com/example/ansible-lab100.git -i localhost site.yml</code></pre>
+                    <pre><code id="file-100-cron">*/30 * * * * flock -n /var/lock/ansible-pull.lock /usr/bin/ansible-pull -U https://github.com/example/ansible-lab100.git -i localhost, site.yml >> /var/log/ansible/pull.log 2>&1</code></pre>
                   </div>
 
                   <p>
-                    This is the simplest convergence loop. In production, you’ll usually add logging (next step)
-                    and sometimes a lock to prevent overlap if a run takes longer than the interval.
+                    This uses absolute paths, prevents overlap, and captures output
+                    so scheduled runs are observable.
                   </p>
                 </div>
 
                 <!-- Step 6 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
-                    <strong class="font-alt">Step 6</strong>: Prepare a log file for scheduled run output.
+                    <strong class="font-alt">Step 6</strong>
+                    : Verify that the schedule is in place and validate logs after a run.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
-                      <span>Command</span>
-                      <button class="lab-copy-btn" type="button" data-copy="#cmd-100-6">
+                      <span>Commands</span>
+                      <button
+                        class="lab-copy-btn"
+                        type="button"
+                        data-copy="#cmd-100-6"
+                      >
                         Copy
                       </button>
                     </div>
-                    <pre><code id="cmd-100-6">sudo mkdir -p /var/log/ansible
-sudo touch /var/log/ansible/pull.log</code></pre>
+                    <pre><code id="cmd-100-6">crontab -l
+sudo tail -n 50 /var/log/ansible/pull.log</code></pre>
                   </div>
 
                   <p>
-                    At minimum, capture output so you can verify runs and troubleshoot failures quickly.
+                    After the first scheduled run, you should see play recap output
+                    and a clear success or failure signal.
                   </p>
                 </div>
               </section>
 
               <!-- Ops Notes -->
               <section class="lab-section" id="ops-notes">
-                <h3 class="font-alt lab-section-title m-b-40 m-t-40">Ops Notes</h3>
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  Ops Notes
+                </h3>
 
-                <div class="lab-callout">
-                  <div class="lab-callout-label">Make cron safer (typical production pattern)</div>
-                  <p>
-                    Cron often runs with a minimal environment. Use absolute paths, and redirect stdout/stderr to a log.
-                    Also consider a lock to prevent overlapping runs.
-                  </p>
-
-                  <div class="lab-codeblock m-b-0 m-t-10">
-                    <div class="lab-codeblock-header">
-                      <span>Example cron line (safer)</span>
-                      <button class="lab-copy-btn" type="button" data-copy="#file-100-cron-safe">
-                        Copy
-                      </button>
-                    </div>
-                    <pre><code id="file-100-cron-safe">*/30 * * * * flock -n /var/lock/ansible-pull.lock /usr/bin/ansible-pull -U https://github.com/example/ansible-lab100.git -i localhost site.yml >> /var/log/ansible/pull.log 2>&1</code></pre>
-                  </div>
-                </div>
-
-                <ul class="m-t-20">
+                <ul>
                   <li>
-                    If you’re pulling from a private repo, the usual approaches are deploy keys, a machine identity (SSO),
-                    or a secret manager flow. Keep credentials out of the repo.
+                    If you are pulling from a private repo, the standard approaches are
+                    deploy keys, a machine identity flow, or a secret manager integration.
+                    Keep credentials out of the repo.
                   </li>
                   <li>
-                    For larger setups, pairing <code>ansible-pull</code> with systemd timers can be cleaner than cron.
+                    Cron runs with a minimal environment. Prefer absolute paths and log redirection.
+                  </li>
+                  <li>
+                    For larger setups, consider systemd timers for better observability and control.
                   </li>
                 </ul>
               </section>
 
-              <!-- Reference -->
+              <!-- Common breakpoints -->
+              <section class="lab-section" id="breakpoints">
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  Common breakpoints
+                </h3>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">ansible-pull runs manually but not in cron</div>
+                  <p class="m-b-0">
+                    Cron may not have the same PATH. Use absolute paths
+                    (for example <code>/usr/bin/ansible-pull</code>) and redirect output
+                    to a log.
+                  </p>
+                </div>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">git clone fails in scheduled runs</div>
+                  <p class="m-b-0">
+                    The node needs network access to the repo and, for private repos,
+                    a non-interactive auth method. Avoid prompts in unattended runs.
+                  </p>
+                </div>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">inventory errors for localhost</div>
+                  <p class="m-b-0">
+                    Use <code>-i localhost,</code> for an inline one-host inventory.
+                    The trailing comma matters.
+                  </p>
+                </div>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">runs overlap and fight each other</div>
+                  <p class="m-b-0">
+                    Use <code>flock</code> to prevent overlapping executions when a run
+                    takes longer than your schedule interval.
+                  </p>
+                </div>
+              </section>
+
+              <!-- Cleanup -->
+              <section class="lab-section alt-background" id="cleanup">
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  Cleanup checklist
+                </h3>
+
+                <ul>
+                  <li>Remove the crontab entry if you are done testing.</li>
+                  <li>Remove the cloned repo directory in your working path if needed.</li>
+                  <li>Optionally remove the log directory if you want a clean slate.</li>
+                </ul>
+
+                <div class="lab-codeblock m-b-40 m-t-40">
+                  <div class="lab-codeblock-header">
+                    <span>Commands</span>
+                    <button
+                      class="lab-copy-btn"
+                      type="button"
+                      data-copy="#cmd-100-cleanup"
+                    >
+                      Copy
+                    </button>
+                  </div>
+                  <pre><code id="cmd-100-cleanup">crontab -e
+# delete the ansible-pull line and save
+
+rm -rf ~/ansible-lab100
+sudo rm -f /var/lock/ansible-pull.lock
+sudo rm -rf /var/log/ansible</code></pre>
+                </div>
+              </section>
+
+              <!-- Reference (minimal command: description format) -->
               <section class="lab-section" id="reference">
-                <h3 class="font-alt lab-section-title m-b-40 m-t-40">Reference</h3>
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  Reference
+                </h3>
 
                 <ul class="lab-reference-list">
                   <li>
-                    Pull + apply
+                    <code>ansible-pull -U &lt;repo_url&gt; -i localhost, &lt;playbook&gt;</code>
+                    : Clones or updates a repo and applies the playbook locally against localhost.
                     <ul>
-                      <li>
-                        <code>sudo ansible-pull -U &lt;repo_url&gt; -i localhost site.yml</code>
-                      </li>
+                      <li><code>-U &lt;repo_url&gt;</code>: Git repository URL to pull from.</li>
+                      <li><code>-i localhost,</code>: Inline one-host inventory for localhost.</li>
                     </ul>
                   </li>
 
                   <li>
-                    Schedule
+                    <code>crontab -e</code>
+                    : Edit the current user crontab.
+                  </li>
+
+                  <li>
+                    <code>crontab -l</code>
+                    : List the current user crontab.
+                  </li>
+
+                  <li>
+                    <code>flock -n &lt;lockfile&gt; &lt;command&gt;</code>
+                    : Prevents overlapping scheduled runs by using a non-blocking lock.
                     <ul>
-                      <li><code>crontab -e</code></li>
-                      <li><code>*/30 * * * * ...</code></li>
+                      <li><code>-n</code>: Do not wait if lock is held; exit immediately.</li>
                     </ul>
                   </li>
 
                   <li>
-                    Logging
+                    <code>mkdir -p &lt;dir&gt;</code>
+                    : Creates a directory path, including parents if needed.
                     <ul>
-                      <li><code>/var/log/ansible/pull.log</code></li>
+                      <li><code>-p</code>: Create parent directories as required.</li>
+                    </ul>
+                  </li>
+
+                  <li>
+                    <code>tail -n &lt;lines&gt; &lt;file&gt;</code>
+                    : Shows the last N lines of a file for quick log inspection.
+                    <ul>
+                      <li><code>-n</code>: Number of lines to show.</li>
                     </ul>
                   </li>
                 </ul>
@@ -478,7 +650,12 @@ sudo touch /var/log/ansible/pull.log</code></pre>
           <!-- /row -->
 
           <nav class="lab-pagination">
-            <a class="lab-nav-link" href="#totop" aria-label="Back to top">&uArr;</a>
+            <a
+              class="lab-nav-link"
+              href="#totop"
+              aria-label="Back to top"
+              >&uArr;</a
+            >
           </nav>
         </div>
         <!-- /container -->
@@ -543,7 +720,7 @@ sudo touch /var/log/ansible/pull.log</code></pre>
     <script src="../assets/js/smoothscroll.js"></script>
     <script src="../assets/js/custom.js"></script>
 
-    <!-- Lab page JS (new) -->
+    <!-- Lab page JS -->
     <script src="../assets/js/lab.js"></script>
 
     <script>

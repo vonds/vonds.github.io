@@ -67,9 +67,29 @@
             <li class="slidedown">
               <a href="#">Portfolio</a>
               <ul>
-                <li><a href="https://github.com/vonds/exit_0" target="_blank" rel="noopener">exit_0</a></li>
-                <li><a href="docs.html" target="_blank" rel="noopener">exit_0 Documentation</a></li>
-                <li><a href="https://github.com/vonds/sentinel" target="_blank" rel="noopener">Sentinel</a></li>
+                <li>
+                  <a
+                    href="https://github.com/vonds/exit_0"
+                    target="_blank"
+                    rel="noopener"
+                  >
+                    exit_0
+                  </a>
+                </li>
+                <li>
+                  <a href="docs.html" target="_blank" rel="noopener">
+                    exit_0 Documentation
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="https://github.com/vonds/sentinel"
+                    target="_blank"
+                    rel="noopener"
+                  >
+                    Sentinel
+                  </a>
+                </li>
               </ul>
             </li>
 
@@ -171,7 +191,11 @@
                   </h5>
                   <ul class="docs-nav">
                     <li><a href="#scenario">Scenario</a></li>
+                    <li><a href="#objective">Objective</a></li>
+                    <li><a href="#concepts">Concepts</a></li>
                     <li><a href="#walkthrough">Walkthrough</a></li>
+                    <li><a href="#breakpoints">Breakpoints</a></li>
+                    <li><a href="#cleanup">Cleanup</a></li>
                     <li><a href="#reference">Reference</a></li>
                   </ul>
                 </div>
@@ -180,7 +204,6 @@
 
             <!-- MAIN CONTENT -->
             <div class="col-sm-8 col-md-9 lab-doc">
-              <!-- 1) Title + Summary (2 sentences max) -->
               <p class="m-b-20 lab-summary">
                 Inspect socket state on a production host using <code>ss</code>
                 to enumerate listening services, UDP endpoints, established TCP
@@ -188,28 +211,27 @@
                 is exposed, what is active, and what to investigate next.
               </p>
 
+              <!-- Video (kept on page; removed from left panel) -->
               <section class="lab-section" id="video" aria-label="Lab video">
-  				<div class="lab-video">
-    				<div class="lab-video-embed text-center">
-      					<iframe 
-							width="560" 
-							height="315" 
-							src="https://www.youtube.com/embed/uJk54bhaadA?si=seGSukCoMFN7ohRo" 
-							title="YouTube video player" 
-							frameborder="0" 
-							allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
-							referrerpolicy="strict-origin-when-cross-origin" 
-							allowfullscreen>
-						</iframe>
-    				</div>
-  				</div>
-			</section>
+                <div class="lab-video">
+                  <div class="lab-video-embed text-center">
+                    <iframe
+                      src="https://www.youtube.com/embed/uJk54bhaadA?si=seGSukCoMFN7ohRo"
+                      title="YouTube video player"
+                      frameborder="0"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                      referrerpolicy="strict-origin-when-cross-origin"
+                      allowfullscreen
+                    ></iframe>
+                  </div>
+                </div>
+              </section>
 
-              <!-- 2) Scenario -->
+              <!-- Scenario -->
               <section class="lab-section" id="scenario">
                 <div class="lab-chips" aria-label="Tags">
                   <span class="lab-chip">
-                    <span class="lab-chip-key">network</span>
+                    <span class="lab-chip-key">networking</span>
                   </span>
                   <span class="lab-chip">
                     <span class="lab-chip-key">troubleshooting</span>
@@ -224,38 +246,39 @@
                 </h3>
 
                 <p>
-                  You need to inspect network socket activity on a production
-                  server to understand what is listening, what is communicating,
-                  and whether there are unexpected services exposed. Your task
-                  is to use <code>ss</code> to list listening TCP sockets, view
-                  UDP endpoints, filter for established TCP sessions, and
-                  produce a socket summary.
+                  You are validating socket activity on a production server to
+                  confirm what is listening, what is communicating, and whether
+                  any unexpected services are exposed. Your task is to use
+                  <code>ss</code>
+                  to enumerate listening TCP sockets, inspect UDP endpoints,
+                  isolate established TCP sessions, and collect a high-level
+                  socket summary for triage.
                 </p>
 
                 <div class="lab-callout">
                   <div class="lab-callout-label">Operator context</div>
                   <p class="m-b-0">
-                    <code>ss</code> is the modern replacement for
-                    <code>netstat</code> in many environments. When diagnosing
-                    incidents or validating a change, socket state gives you a
-                    fast truth: what ports are open, which processes are bound,
-                    and which connections are active right now.
+                    <code>ss</code>
+                    is the modern replacement for
+                    <code>netstat</code>
+                    in many environments. When diagnosing incidents or
+                    validating a change, socket state is the fastest truth:
+                    open ports, active sessions, and immediate exposure.
                   </p>
                 </div>
               </section>
 
-              <!-- 3) Objective -->
+              <!-- Objective -->
               <section class="lab-section alt-background" id="objective">
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">
                   Objective
                 </h3>
                 <ul>
                   <li>
-                    Display all listening TCP sockets with numeric output.
+                    Display listening TCP sockets with numeric output.
                   </li>
                   <li>
-                    Display UDP sockets using an accepted <code>ss</code>
-                    variant.
+                    Display UDP sockets using an accepted <code>ss</code> variant.
                   </li>
                   <li>
                     Filter for established TCP connections.
@@ -266,33 +289,40 @@
                 </ul>
               </section>
 
-              <!-- 4) What You'll Practice -->
-              <section class="lab-section" id="practice">
+              <!-- Concepts (no alt-background moving forward) -->
+              <section class="lab-section" id="concepts">
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">
-                  What You’ll Practice
+                  Concepts
                 </h3>
-
-                <ul class="m-t-10">
+                <ul>
                   <li>
-                    Enumerating listening TCP services using
-                    <code>ss -tln</code>.
+                    Socket visibility as a reality check: what is listening and
+                    what is connected right now.
                   </li>
                   <li>
-                    Inspecting UDP endpoints using common <code>ss</code>
-                    filters (<code>-u</code>, <code>-a</code>, <code>-n</code>,
-                    <code>-l</code>).
+                    Listening sockets versus established sessions and why they
+                    answer different operational questions.
                   </li>
                   <li>
-                    Filtering socket state using <code>state</code> selectors.
+                    Numeric output for fast, deterministic triage (avoid DNS and
+                    service-name resolution).
                   </li>
                   <li>
-                    Getting an at-a-glance socket summary using
-                    <code>ss -s</code>.
+                    UDP inspection and the meaning of <code>UNCONN</code> for
+                    connectionless sockets.
+                  </li>
+                  <li>
+                    State filtering to isolate active TCP sessions during load
+                    or incident response.
+                  </li>
+                  <li>
+                    Summary statistics as an early signal for connection storms
+                    or runaway clients.
                   </li>
                 </ul>
               </section>
 
-              <!-- 5) Commands Walkthrough -->
+              <!-- Walkthrough -->
               <section class="lab-section alt-background" id="walkthrough">
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">
                   Walkthrough
@@ -302,7 +332,7 @@
                 <div class="lab-step">
                   <div class="lab-step-title">
                     <strong class="font-alt">Step 1</strong>
-                    : Display all listening TCP sockets.
+                    : Display listening TCP sockets.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -320,13 +350,13 @@
                   </div>
 
                   <p>
-                    This shows listening TCP sockets with numeric ports. It is a
-                    fast way to confirm what services are bound and accepting
-                    inbound connections.
+                    This shows listening TCP sockets with numeric ports. Use it
+                    to confirm what services are bound and accepting inbound
+                    connections.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code id="verify-step-1">State      Recv-Q Send-Q  Local Address:Port  Peer Address:Port
+                    <pre><code>State      Recv-Q Send-Q  Local Address:Port  Peer Address:Port
 LISTEN     0      128     127.0.0.1:5432      *:*
 LISTEN     0      128     0.0.0.0:22          *:*</code></pre>
                   </div>
@@ -360,7 +390,7 @@ LISTEN     0      128     0.0.0.0:22          *:*</code></pre>
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code id="verify-step-2">Netid  State   Recv-Q Send-Q Local Address:Port   Peer Address:Port
+                    <pre><code>Netid  State   Recv-Q Send-Q Local Address:Port   Peer Address:Port
 udp    UNCONN  0      0      127.0.0.1:123        *:*</code></pre>
                   </div>
                 </div>
@@ -369,7 +399,7 @@ udp    UNCONN  0      0      127.0.0.1:123        *:*</code></pre>
                 <div class="lab-step">
                   <div class="lab-step-title">
                     <strong class="font-alt">Step 3</strong>
-                    : Show all established TCP connections.
+                    : Show established TCP connections.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -388,12 +418,12 @@ udp    UNCONN  0      0      127.0.0.1:123        *:*</code></pre>
 
                   <p>
                     This filters to established TCP sessions and prints numeric
-                    addresses and ports, which is useful for quick triage when a
-                    host is under load or unexpectedly busy.
+                    addresses and ports. Use it to validate active sessions when
+                    a host is unexpectedly busy.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code id="verify-step-3">State  Recv-Q Send-Q  Local Address:Port   Peer Address:Port
+                    <pre><code>State  Recv-Q Send-Q  Local Address:Port   Peer Address:Port
 ESTAB  0      0       192.168.1.10:22      192.168.1.5:53324</code></pre>
                   </div>
                 </div>
@@ -401,8 +431,8 @@ ESTAB  0      0       192.168.1.10:22      192.168.1.5:53324</code></pre>
                 <!-- Step 4 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
-                    <strong class="font-alt bold">Step 4</strong>
-                    : Display summary statistics for all sockets.
+                    <strong class="font-alt">Step 4</strong>
+                    : Display socket summary statistics.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -421,18 +451,118 @@ ESTAB  0      0       192.168.1.10:22      192.168.1.5:53324</code></pre>
 
                   <p>
                     The summary view provides a quick count of sockets by
-                    protocol and state. It is useful when validating whether the
-                    system is accumulating large numbers of connections.
+                    protocol and state. Use it to spot unusually high connection
+                    volume and state accumulation.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code id="verify-step-4">Total: 3 (kernel 4)
+                    <pre><code>Total: 3 (kernel 4)
 TCP:   1 (estab 1, closed 0, orphaned 0, timewait 0)</code></pre>
                   </div>
                 </div>
               </section>
 
-              <!-- Reference (no tags in this section) -->
+              <!-- Common breakpoints -->
+              <section class="lab-section" id="breakpoints">
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  Common breakpoints
+                </h3>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">
+                    Output shows service names instead of ports
+                  </div>
+                  <p class="m-b-0">
+                    If you see names like
+                    <code>ssh</code>
+                    or
+                    <code>http</code>
+                    instead of port numbers, add
+                    <code>-n</code>
+                    to force numeric output and avoid resolution delays.
+                  </p>
+                </div>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">
+                    No listening sockets appear
+                  </div>
+                  <p class="m-b-0">
+                    Confirm you are using
+                    <code>-l</code>
+                    for listeners, and verify the host actually has services
+                    bound to interfaces beyond loopback. On minimal systems,
+                    the expected output may be small.
+                  </p>
+                </div>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">
+                    UDP output is confusing
+                  </div>
+                  <p class="m-b-0">
+                    UDP is connectionless, so you often see
+                    <code>UNCONN</code>
+                    . Use
+                    <code>-l</code>
+                    when you want listeners only, and
+                    <code>-a</code>
+                    when you want all UDP endpoints.
+                  </p>
+                </div>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">
+                    Established connections are missing
+                  </div>
+                  <p class="m-b-0">
+                    Confirm you are filtering the correct state and protocol.
+                    If the issue is intermittent, capture multiple snapshots or
+                    run the command during the suspected activity window.
+                  </p>
+                </div>
+              </section>
+
+              <!-- Cleanup -->
+              <section class="lab-section alt-background" id="cleanup">
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  Cleanup checklist
+                </h3>
+
+                <p>
+                  This lab is read-only. Cleanup is documenting findings and
+                  confirming you did not misinterpret name-resolved output as a
+                  port-level fact.
+                </p>
+
+                <div class="lab-codeblock m-b-40 m-t-40">
+                  <div class="lab-codeblock-header">
+                    <span>Commands</span>
+                    <button
+                      class="lab-copy-btn"
+                      type="button"
+                      data-copy="#cmd-cleanup"
+                    >
+                      Copy
+                    </button>
+                  </div>
+                  <pre><code id="cmd-cleanup">ss -tln
+ss -uan
+ss -tn state established
+ss -s</code></pre>
+                </div>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">Success signal</div>
+                  <p class="m-b-0">
+                    You can state which ports are listening, which UDP endpoints
+                    are active, whether established sessions exist, and whether
+                    socket counts look normal for the host.
+                  </p>
+                </div>
+              </section>
+
+              <!-- Reference -->
               <section class="lab-section" id="reference">
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">
                   Reference
@@ -454,19 +584,19 @@ TCP:   1 (estab 1, closed 0, orphaned 0, timewait 0)</code></pre>
                     : Displays UDP sockets (often shown as <code>UNCONN</code>).
                     <ul>
                       <li><code>-u</code> UDP sockets.</li>
-                      <li><code>-a</code> all sockets (not just listening).</li>
+                      <li><code>-a</code> all sockets.</li>
                       <li>
-                        Common variants include <code>ss -un</code> (numeric) and
-                        <code>ss -uln</code> (listening + numeric).
+                        Use <code>-n</code> for numeric output and <code>-l</code>
+                        for listeners only when needed.
                       </li>
                     </ul>
                   </li>
 
                   <li>
                     <code>ss -tn state established</code>
-                    : Filters to established TCP connections.
+                    : Filters to established TCP connections with numeric output.
                     <ul>
-                      <li><code>state established</code> restricts output to active sessions.</li>
+                      <li><code>state established</code> restricts to active sessions.</li>
                       <li><code>-n</code> avoids DNS/service name resolution for faster output.</li>
                     </ul>
                   </li>
@@ -477,10 +607,10 @@ TCP:   1 (estab 1, closed 0, orphaned 0, timewait 0)</code></pre>
                   </li>
                 </ul>
               </section>
-
-              <!-- /main -->
             </div>
+            <!-- /main -->
           </div>
+          <!-- /row -->
 
           <nav class="lab-pagination">
             <a
@@ -493,6 +623,7 @@ TCP:   1 (estab 1, closed 0, orphaned 0, timewait 0)</code></pre>
             </a>
           </nav>
         </div>
+        <!-- /container -->
       </section>
 
       <!-- FOOTER -->
@@ -561,5 +692,9 @@ TCP:   1 (estab 1, closed 0, orphaned 0, timewait 0)</code></pre>
 
     <!-- Lab page JS (new) -->
     <script src="../assets/js/lab.js"></script>
+
+    <script>
+      document.getElementById('year').textContent = new Date().getFullYear()
+    </script>
   </body>
 </html>

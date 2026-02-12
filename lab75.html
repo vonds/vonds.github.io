@@ -12,8 +12,16 @@
     <!-- Favicons -->
     <link rel="shortcut icon" href="../assets/images/favicon.png" />
     <link rel="apple-touch-icon" href="../assets/images/apple-touch-icon.png" />
-    <link rel="apple-touch-icon" sizes="72x72" href="../assets/images/apple-touch-icon-72x72.png" />
-    <link rel="apple-touch-icon" sizes="114x114" href="../assets/images/apple-touch-icon-114x114.png" />
+    <link
+      rel="apple-touch-icon"
+      sizes="72x72"
+      href="../assets/images/apple-touch-icon-72x72.png"
+    />
+    <link
+      rel="apple-touch-icon"
+      sizes="114x114"
+      href="../assets/images/apple-touch-icon-114x114.png"
+    />
 
     <!-- Site styles (your existing) -->
     <link href="../assets/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
@@ -29,7 +37,7 @@
     <link href="../assets/css/style.css" rel="stylesheet" />
     <link href="../assets/css/docs.css" rel="stylesheet" />
 
-    <!-- Lab page styles (new) -->
+    <!-- Lab page styles -->
     <link href="../assets/css/lab.css" rel="stylesheet" />
 
     <!-- Fonts -->
@@ -59,6 +67,11 @@
                 <li>
                   <a href="https://github.com/vonds/exit_0" target="_blank" rel="noopener">
                     exit_0
+                  </a>
+                </li>
+                <li>
+                  <a href="docs.html" target="_blank" rel="noopener">
+                    exit_0 Documentation
                   </a>
                 </li>
                 <li>
@@ -129,7 +142,7 @@
       <section class="module">
         <div class="container">
           <h2 class="font-alt module-title m-t-60">
-            Lab 75: DNS - Download, Install, and Configure
+            Lab 75: DNS Service Bring-Up 
           </h2>
 
           <nav class="lab-pagination">
@@ -151,7 +164,11 @@
                   </h5>
                   <ul class="docs-nav">
                     <li><a href="#scenario">Scenario</a></li>
+                    <li><a href="#objective">Objective</a></li>
+                    <li><a href="#concepts">Concepts</a></li>
                     <li><a href="#walkthrough">Walkthrough</a></li>
+                    <li><a href="#breakpoints">Breakpoints</a></li>
+                    <li><a href="#cleanup">Cleanup</a></li>
                     <li><a href="#reference">Reference</a></li>
                   </ul>
                 </div>
@@ -160,96 +177,121 @@
 
             <!-- MAIN CONTENT -->
             <div class="col-sm-8 col-md-9 lab-doc">
-              <!-- 1) Title + Summary (2 sentences max) -->
               <p class="m-b-20 lab-summary">
-                Install and stand up a minimal BIND name server, then publish a simple forward zone for
-                <code>example.com</code> with internal A records. Validate local resolution using <code>dig</code>
-                to confirm the daemon is answering queries and your zone data loads correctly.
+                Install and bring up a minimal BIND name server, then publish a forward zone for
+                <code>example.com</code> with internal A records. Validate authoritative answers by querying
+                localhost directly with <code>dig</code>.
               </p>
 
+              <!-- Video (kept on page; removed from left panel) -->
               <section class="lab-section" id="video" aria-label="Lab video">
-  				<div class="lab-video">
-    				<div class="lab-video-embed text-center">
-      					<iframe 
-							width="560" 
-							height="315" 
-							src="https://www.youtube.com/embed/uJk54bhaadA?si=seGSukCoMFN7ohRo" 
-							title="YouTube video player" 
-							frameborder="0" 
-							allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
-							referrerpolicy="strict-origin-when-cross-origin" 
-							allowfullscreen>
-						</iframe>
-    				</div>
-  				</div>
-			</section>
+                <div class="lab-video">
+                  <div class="lab-video-embed text-center">
+                    <iframe
+                      src="https://www.youtube.com/embed/uJk54bhaadA?si=seGSukCoMFN7ohRo"
+                      title="YouTube video player"
+                      frameborder="0"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                      referrerpolicy="strict-origin-when-cross-origin"
+                      allowfullscreen
+                    ></iframe>
+                  </div>
+                </div>
+              </section>
 
-              <!-- 2) Scenario -->
+              <!-- Scenario -->
               <section class="lab-section" id="scenario">
                 <div class="lab-chips" aria-label="Tags">
-                  <span class="lab-chip"><span class="lab-chip-key">dns</span></span>
-                  <span class="lab-chip"><span class="lab-chip-key">network</span></span>
-                  <span class="lab-chip"><span class="lab-chip-key">services</span></span>
-                  <span class="lab-chip"><span class="lab-chip-key">core</span></span>
+                  <span class="lab-chip">
+                    <span class="lab-chip-key">dns</span>
+                  </span>
+                  <span class="lab-chip">
+                    <span class="lab-chip-key">networking</span>
+                  </span>
+                  <span class="lab-chip">
+                    <span class="lab-chip-key">services</span>
+                  </span>
+                  <span class="lab-chip">
+                    <span class="lab-chip-key">core</span>
+                  </span>
                 </div>
 
-                <h3 class="font-alt lab-section-title m-b-40 m-t-40">Scenario</h3>
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  Scenario
+                </h3>
 
                 <p>
-                  You are tasked with deploying a basic internal DNS service so machines can resolve
-                  hostnames without relying on external resolvers. You will install BIND, create a minimal
-                  configuration, publish a forward zone for <code>example.com</code>, start the service, and
-                  verify resolution locally.
+                  You are deploying a basic internal DNS service so hosts can resolve names without relying on external
+                  resolvers. You will install BIND, define a forward zone for <code>example.com</code>, start the daemon,
+                  and confirm the server answers queries locally.
                 </p>
 
                 <div class="lab-callout">
                   <div class="lab-callout-label">Operator context</div>
                   <p class="m-b-0">
-                    DNS failures look like “everything is down.” The first win is proving the daemon is
-                    answering queries, then proving your zone loads, then proving clients can reach it.
-                    This lab focuses on the server-side baseline.
+                    DNS issues present as “everything is down.” The first step is proving the daemon answers, the second
+                    is proving the zone loads, and the third is proving clients can reach it. This lab focuses on the
+                    server-side baseline and local validation.
                   </p>
                 </div>
               </section>
 
-              <!-- 3) Objective -->
+              <!-- Objective -->
               <section class="lab-section alt-background" id="objective">
-                <h3 class="font-alt lab-section-title m-b-40 m-t-40">Objective</h3>
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  Objective
+                </h3>
                 <ul>
-                  <li>Install BIND on the system using the appropriate package manager.</li>
-                  <li>Create a minimal <code>named.conf</code> with safe baseline options.</li>
-                  <li>Publish a forward zone for <code>example.com</code> with A records for <code>ns1</code> and <code>www</code>.</li>
-                  <li>Start the DNS service and validate local queries with <code>dig</code>.</li>
+                  <li>Install BIND for your distro family.</li>
+                  <li>Create a minimal <code>named.conf</code> and define a master forward zone.</li>
+                  <li>Publish a forward zone for <code>example.com</code> with <code>ns1</code> and <code>www</code> A records.</li>
+                  <li>Start the DNS service and validate answers with <code>dig</code> against localhost.</li>
                 </ul>
               </section>
 
-              <!-- 4) What You'll Practice -->
-              <section class="lab-section" id="practice">
-                <h3 class="font-alt lab-section-title m-b-40 m-t-40">What You’ll Practice</h3>
-
-                <ul class="m-t-10">
-                  <li>Installing server packages across distro families (RHEL/Debian/Arch).</li>
-                  <li>Editing the primary BIND configuration location for your platform.</li>
-                  <li>Building a basic forward zone file: SOA, NS, and A records.</li>
-                  <li>Validating DNS responses directly against localhost using <code>dig</code>.</li>
+              <!-- Concepts (no alt-background moving forward) -->
+              <section class="lab-section" id="concepts">
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  Concepts
+                </h3>
+                <ul>
+                  <li>
+                    Authoritative versus recursive resolution, and why you validate server bring-up with direct queries.
+                  </li>
+                  <li>
+                    BIND configuration layout: global <code>options</code> and per-zone stanzas.
+                  </li>
+                  <li>
+                    Forward zone file structure: <code>SOA</code>, <code>NS</code>, and <code>A</code> records.
+                  </li>
+                  <li>
+                    Serial numbers and reload behavior: why a zone can “exist” but not serve updated data.
+                  </li>
+                  <li>
+                    Service verification flow: service state, logs, then query results.
+                  </li>
                 </ul>
               </section>
 
-              <!-- 5) Commands Walkthrough -->
+              <!-- Walkthrough -->
               <section class="lab-section alt-background" id="walkthrough">
-                <h3 class="font-alt lab-section-title m-b-40 m-t-40">Walkthrough</h3>
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  Walkthrough
+                </h3>
 
                 <!-- Step 1 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
                     <strong class="font-alt">Step 1</strong>
-                    : Install BIND (DNS server).
+                    : Install the DNS server package.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
-                      <span>Command</span>
-                      <button class="lab-copy-btn" type="button" data-copy="#cmd-step-1">Copy</button>
+                      <span>Commands</span>
+                      <button class="lab-copy-btn" type="button" data-copy="#cmd-step-1">
+                        Copy
+                      </button>
                     </div>
                     <pre><code id="cmd-step-1"># RHEL-family
 sudo yum install bind
@@ -262,27 +304,24 @@ sudo pacman -S bind</code></pre>
                   </div>
 
                   <p>
-                    Install the DNS server package for your distro family. In the lab script, any one of the
-                    supported commands satisfies the install step.
+                    Install the DNS server package for your platform. Package names vary, but the goal is the same:
+                    get BIND installed so you can define a zone and start the daemon.
                   </p>
-
-                  <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code id="verify-step-1">Installing BIND...
-Success! DNS server installed.</code></pre>
-                  </div>
                 </div>
 
                 <!-- Step 2 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
                     <strong class="font-alt">Step 2</strong>
-                    : Create a minimal <code>named.conf</code>.
+                    : Define a minimal <code>named.conf</code> and a forward zone.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
-                      <span>Command</span>
-                      <button class="lab-copy-btn" type="button" data-copy="#cmd-step-2">Copy</button>
+                      <span>Commands</span>
+                      <button class="lab-copy-btn" type="button" data-copy="#cmd-step-2">
+                        Copy
+                      </button>
                     </div>
                     <pre><code id="cmd-step-2"># RHEL/Arch common path
 sudo vim /etc/named.conf
@@ -292,18 +331,21 @@ sudo vim /etc/bind/named.conf</code></pre>
                   </div>
 
                   <p>
-                    Open the appropriate config file for your platform. The lab uses a minimal options block
-                    to establish a basic working server layout.
+                    Create an <code>options</code> block with a safe baseline and define a master zone for
+                    <code>example.com</code>. The zone stanza must point to the zone file you will create next.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code id="verify-step-2">options {
+                    <pre><code>options {
     directory "/var/named";
     listen-on port 53 { any; };
     allow-query { any; };
 };
 
-File edited successfully.</code></pre>
+zone "example.com" IN {
+    type master;
+    file "example.com.zone";
+};</code></pre>
                   </div>
                 </div>
 
@@ -311,13 +353,15 @@ File edited successfully.</code></pre>
                 <div class="lab-step">
                   <div class="lab-step-title">
                     <strong class="font-alt">Step 3</strong>
-                    : Create a forward zone for <code>example.com</code>.
+                    : Create the forward zone file.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
-                      <span>Command</span>
-                      <button class="lab-copy-btn" type="button" data-copy="#cmd-step-3">Copy</button>
+                      <span>Commands</span>
+                      <button class="lab-copy-btn" type="button" data-copy="#cmd-step-3">
+                        Copy
+                      </button>
                     </div>
                     <pre><code id="cmd-step-3"># RHEL-style zone location
 sudo vim /var/named/example.com.zone
@@ -327,23 +371,31 @@ sudo vim /etc/bind/db.example.com</code></pre>
                   </div>
 
                   <p>
-                    Publish a simple zone containing SOA and NS records plus A records for internal targets.
-                    This is the minimum you need to prove your server can answer for a domain you control.
+                    Publish the minimum required records to prove the server can answer authoritatively for the zone.
+                    Keep record names consistent with the domain you defined in <code>named.conf</code>.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code id="verify-step-3">$TTL 86400
+                    <pre><code>$TTL 86400
 @   IN  SOA ns1.example.com. admin.example.com. (
-            2025072901 ; Serial
+            2026021101 ; Serial
             3600       ; Refresh
             1800       ; Retry
             604800     ; Expire
             86400 )    ; Minimum TTL
-    IN  NS  ns1.example.com.
-ns1 IN  A   192.168.1.10
-www IN  A   192.168.1.20
 
-Zone file created successfully.</code></pre>
+    IN  NS  ns1.example.com.
+
+ns1 IN  A   192.168.1.10
+www IN  A   192.168.1.20</code></pre>
+                  </div>
+
+                  <div class="lab-callout">
+                    <div class="lab-callout-label">Field note</div>
+                    <p class="m-b-0">
+                      If you edit the zone later, increment the serial. A common failure mode is “the file is correct”
+                      but the daemon is still serving the old serial.
+                    </p>
                   </div>
                 </div>
 
@@ -351,13 +403,15 @@ Zone file created successfully.</code></pre>
                 <div class="lab-step">
                   <div class="lab-step-title">
                     <strong class="font-alt">Step 4</strong>
-                    : Start and enable the DNS service.
+                    : Start the daemon and confirm it loads configuration.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
-                      <span>Command</span>
-                      <button class="lab-copy-btn" type="button" data-copy="#cmd-step-4">Copy</button>
+                      <span>Commands</span>
+                      <button class="lab-copy-btn" type="button" data-copy="#cmd-step-4">
+                        Copy
+                      </button>
                     </div>
                     <pre><code id="cmd-step-4"># RHEL/Arch (named)
 sudo systemctl start named
@@ -367,12 +421,12 @@ sudo systemctl start bind9</code></pre>
                   </div>
 
                   <p>
-                    Start the daemon so it can load configuration and zones. In production you would also
-                    enable the service and validate logs, but this lab focuses on bring-up plus query checks.
+                    Starting the service forces BIND to parse configuration and load zones. If the service fails, treat
+                    it as a configuration or permissions problem until proven otherwise.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code id="verify-step-4">DNS service started successfully.</code></pre>
+                    <pre><code>DNS service started successfully.</code></pre>
                   </div>
                 </div>
 
@@ -380,59 +434,205 @@ sudo systemctl start bind9</code></pre>
                 <div class="lab-step">
                   <div class="lab-step-title">
                     <strong class="font-alt">Step 5</strong>
-                    : Verify local resolution with <code>dig</code>.
+                    : Validate authoritative answers using <code>dig</code>.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
-                      <button class="lab-copy-btn" type="button" data-copy="#cmd-step-5">Copy</button>
+                      <button class="lab-copy-btn" type="button" data-copy="#cmd-step-5">
+                        Copy
+                      </button>
                     </div>
                     <pre><code id="cmd-step-5">dig @localhost www.example.com</code></pre>
                   </div>
 
                   <p>
-                    Query the local server directly to avoid client resolver variables. A correct answer section
-                    confirms the server is responding and your zone data is available.
+                    Query localhost directly to remove client-side resolver variables. A correct answer section confirms
+                    the daemon is responding and the zone is available.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code id="verify-step-5">;; QUESTION SECTION:
+                    <pre><code>;; QUESTION SECTION:
 ;www.example.com.        IN      A
+
 ;; ANSWER SECTION:
 www.example.com.  86400  IN      A   192.168.1.20</code></pre>
                   </div>
                 </div>
               </section>
 
+              <!-- Common breakpoints -->
+              <section class="lab-section" id="breakpoints">
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  Common breakpoints
+                </h3>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">
+                    Service fails to start
+                  </div>
+                  <p class="m-b-0">
+                    Treat this as a config, zone-path, or permissions issue. Confirm the zone file path matches the
+                    stanza in <code>named.conf</code> and validate the daemon status and logs before touching clients.
+                  </p>
+                </div>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">
+                    dig returns SERVFAIL or no answer
+                  </div>
+                  <p class="m-b-0">
+                    The daemon is reachable, but the zone did not load correctly. Re-check syntax in the zone file,
+                    confirm the serial is valid, and verify the zone file is readable by the service user.
+                  </p>
+                </div>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">
+                    dig works for localhost but clients cannot resolve
+                  </div>
+                  <p class="m-b-0">
+                    The server is healthy, but clients are not using it. Confirm the client resolver points to this
+                    host and that the network path to port 53 is open. Do not rewrite the zone until you confirm the
+                    traffic is reaching the daemon.
+                  </p>
+                </div>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">
+                    Zone changes do not appear after edits
+                  </div>
+                  <p class="m-b-0">
+                    Increment the zone serial and reload the service. A common failure mode is making correct edits
+                    without updating the serial, which results in stale answers.
+                  </p>
+                </div>
+              </section>
+
+              <!-- Cleanup -->
+              <section class="lab-section alt-background" id="cleanup">
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  Cleanup checklist
+                </h3>
+
+                <p>
+                  This lab is safe to leave in place if you want an internal resolver for future exercises. If you are
+                  resetting the system, stop the service and remove the zone artifacts you created.
+                </p>
+
+                <div class="lab-codeblock m-b-40 m-t-40">
+                  <div class="lab-codeblock-header">
+                    <span>Commands</span>
+                    <button class="lab-copy-btn" type="button" data-copy="#cmd-cleanup">
+                      Copy
+                    </button>
+                  </div>
+                  <pre><code id="cmd-cleanup"># Stop the daemon
+sudo systemctl stop named
+# OR
+sudo systemctl stop bind9
+
+# Remove the zone file you created (choose the path you used)
+sudo rm -f /var/named/example.com.zone
+# OR
+sudo rm -f /etc/bind/db.example.com</code></pre>
+                </div>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">Success signal</div>
+                  <p class="m-b-0">
+                    The service is stopped cleanly and the zone file is removed from the path referenced by your
+                    configuration.
+                  </p>
+                </div>
+              </section>
+
               <!-- Reference -->
               <section class="lab-section" id="reference">
-                <h3 class="font-alt lab-section-title m-b-40 m-t-40">Reference</h3>
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  Reference
+                </h3>
 
                 <ul class="lab-reference-list">
                   <li>
-                    <code>bind</code>/<code>bind9</code>
-                    : BIND DNS server packages (name varies by distro family).
+                    <code>yum install bind</code>
+                    : Installs BIND on RHEL-family systems.
                   </li>
 
                   <li>
-                    <code>/etc/named.conf</code> / <code>/etc/bind/named.conf</code>
-                    : Primary daemon configuration location (platform-dependent).
+                    <code>apt install bind9</code>
+                    : Installs BIND on Debian/Ubuntu systems.
                   </li>
 
                   <li>
-                    <code>SOA</code>, <code>NS</code>, <code>A</code> records
-                    : Core building blocks for a forward DNS zone.
+                    <code>pacman -S bind</code>
+                    : Installs BIND on Arch systems.
                   </li>
 
                   <li>
-                    <code>systemctl start named</code> / <code>systemctl start bind9</code>
-                    : Starts the DNS service for your platform.
+                    <code>vim &lt;file&gt;</code>
+                    : Edits configuration and zone files.
+                    <ul>
+                      <li>
+                        <code>/etc/named.conf</code>
+                        : Common BIND configuration path on RHEL/Arch.
+                      </li>
+                      <li>
+                        <code>/etc/bind/named.conf</code>
+                        : Common BIND configuration path on Debian/Ubuntu.
+                      </li>
+                      <li>
+                        <code>/var/named/example.com.zone</code>
+                        : Common forward zone path on RHEL-family systems.
+                      </li>
+                      <li>
+                        <code>/etc/bind/db.example.com</code>
+                        : Common forward zone path on Debian/Ubuntu systems.
+                      </li>
+                    </ul>
                   </li>
 
                   <li>
-                    <code>dig @localhost &lt;name&gt;</code>
-                    : Queries the local DNS daemon directly to validate authoritative answers.
+                    <code>systemctl start &lt;unit&gt;</code>
+                    : Starts the DNS service.
+                    <ul>
+                      <li>
+                        <code>named</code>
+                        : Common service name on RHEL/Arch.
+                      </li>
+                      <li>
+                        <code>bind9</code>
+                        : Common service name on Debian/Ubuntu.
+                      </li>
+                    </ul>
+                  </li>
+
+                  <li>
+                    <code>dig @&lt;server&gt; &lt;name&gt;</code>
+                    : Queries a specific DNS server directly.
+                    <ul>
+                      <li>
+                        <code>@localhost</code>
+                        : Forces the query to the local daemon.
+                      </li>
+                    </ul>
+                  </li>
+
+                  <li>
+                    <code>systemctl stop &lt;unit&gt;</code>
+                    : Stops the DNS service.
+                  </li>
+
+                  <li>
+                    <code>rm -f &lt;path&gt;</code>
+                    : Removes the zone file created for the lab.
+                    <ul>
+                      <li>
+                        <code>-f</code>
+                        : Removes without prompting (and ignores missing files).
+                      </li>
+                    </ul>
                   </li>
                 </ul>
               </section>
@@ -507,5 +707,9 @@ www.example.com.  86400  IN      A   192.168.1.20</code></pre>
 
     <!-- Lab page JS (new) -->
     <script src="../assets/js/lab.js"></script>
+
+    <script>
+      document.getElementById('year').textContent = new Date().getFullYear()
+    </script>
   </body>
 </html>

@@ -37,7 +37,7 @@
     <link href="../assets/css/style.css" rel="stylesheet" />
     <link href="../assets/css/docs.css" rel="stylesheet" />
 
-    <!-- Lab page styles (new) -->
+    <!-- Lab page styles -->
     <link href="../assets/css/lab.css" rel="stylesheet" />
 
     <!-- Fonts -->
@@ -78,11 +78,16 @@
                 </li>
                 <li>
                   <a
-                    href="docs.html"
+                    href="https://github.com/vonds/sentinel"
                     target="_blank"
                     rel="noopener"
                   >
-                    exit_0
+                    Sentinel
+                  </a>
+                </li>
+                <li>
+                  <a href="docs.html" target="_blank" rel="noopener">
+                    exit_0 Documentation
                   </a>
                 </li>
               </ul>
@@ -156,34 +161,35 @@
           <h2 class="font-alt module-title m-t-60">
             Lab 105: Installing, Configuring, and Managing a DHCP Server
           </h2>
-		  <nav class="lab-pagination">
+
+          <nav class="lab-pagination">
             <a
-              id="prev-lab"
               class="lab-nav-link"
-              href="#"
+              href="./lab104.html"
               aria-label="Previous lab"
             >
               &laquo;
             </a>
-            <a
-              id="next-lab"
-              class="lab-nav-link"
-              href="#"
-              aria-label="Next lab"
-            >
+            <a class="lab-nav-link" href="./lab106.html" aria-label="Next lab">
               &raquo;
             </a>
           </nav>
+
           <div class="row">
             <!-- LEFT SIDEBAR -->
             <div class="col-sm-4 col-md-3 lab-sidebar">
               <div class="docs-sidebar">
                 <div class="docs-widget">
-                  <h5 class="widget-title"><a href="./docs.html">Back to Lab Index</a></h5>
+                  <h5 class="widget-title">
+                    <a href="./docs.html">Back to Lab Index</a>
+                  </h5>
                   <ul class="docs-nav">
                     <li><a href="#scenario">Scenario</a></li>
-
+                    <li><a href="#objective">Objective</a></li>
+                    <li><a href="#concepts">Concepts</a></li>
                     <li><a href="#walkthrough">Walkthrough</a></li>
+                    <li><a href="#breakpoints">Breakpoints</a></li>
+                    <li><a href="#cleanup">Cleanup</a></li>
                     <li><a href="#reference">Reference</a></li>
                   </ul>
                 </div>
@@ -192,27 +198,31 @@
 
             <!-- MAIN CONTENT -->
             <div class="col-sm-8 col-md-9 lab-doc">
-              <!-- 1) Title + Summary (2 sentences max) -->
               <p class="m-b-20 lab-summary">
-                Install and configure a DHCP server to provide automatic IPv4 address assignment for a subnet, including lease ranges, DNS, and default gateway options. Validate service health, confirm interface binding, and inspect active lease records to verify end-to-end operation.
+                Install and configure a DHCP server to provide automatic IPv4
+                address assignment for a subnet, including lease ranges, DNS,
+                and default gateway options. Validate service health, confirm
+                interface binding, and inspect active lease records to verify
+                end-to-end operation.
               </p>
 
-			  <section class="lab-section" id="video" aria-label="Lab video">
-  				<div class="lab-video">
-    				<div class="lab-video-embed text-center">
-      					<iframe 
-							src="https://www.youtube.com/embed/uJk54bhaadA?si=seGSukCoMFN7ohRo" 
-							title="YouTube video player" 
-							frameborder="0" 
-							allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
-							referrerpolicy="strict-origin-when-cross-origin" 
-							allowfullscreen>
-						</iframe>
-    				</div>
-  				</div>
-			</section>
+              <!-- Video -->
+              <section class="lab-section" id="video" aria-label="Lab video">
+                <div class="lab-video">
+                  <div class="lab-video-embed text-center">
+                    <iframe
+                      src="https://www.youtube.com/embed/uJk54bhaadA?si=seGSukCoMFN7ohRo"
+                      title="YouTube video player"
+                      frameborder="0"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                      referrerpolicy="strict-origin-when-cross-origin"
+                      allowfullscreen
+                    ></iframe>
+                  </div>
+                </div>
+              </section>
 
-              <!-- 2) Scenario -->
+              <!-- Scenario -->
               <section class="lab-section" id="scenario">
                 <div class="lab-chips" aria-label="Tags">
                   <span class="lab-chip">
@@ -229,73 +239,74 @@
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">
                   Scenario
                 </h3>
+
                 <p>
-                  Your network requires automatic IP assignment for client devices. You are tasked with deploying a DHCP server, defining an IPv4 scope, setting DNS servers and a default gateway, and verifying that leases are being issued correctly.
+                  Your network requires automatic IP assignment for client
+                  devices. You are tasked with deploying a DHCP server, defining
+                  an IPv4 scope, setting DNS servers and a default gateway, and
+                  verifying that leases are being issued correctly.
                 </p>
+
                 <div class="lab-callout">
                   <div class="lab-callout-label">Operator context</div>
                   <p class="m-b-0">
-                    Treat DHCP changes as infrastructure changes. Validate syntax and service state before allowing clients to rely on the new scope, and always confirm the server is listening on the correct interface and subnet.
+                    Treat DHCP changes as infrastructure changes. Validate syntax
+                    and service state before allowing clients to rely on the new
+                    scope, and always confirm the server is listening on the
+                    correct interface and subnet.
                   </p>
                 </div>
               </section>
 
-              <!-- 3) Objective -->
+              <!-- Objective -->
               <section class="lab-section alt-background" id="objective">
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">
                   Objective
                 </h3>
                 <ul>
+                  <li>Install a DHCP server package on the system.</li>
                   <li>
-                    Install a DHCP server package on the system.
+                    Configure an IPv4 subnet scope with a lease range, DNS
+                    servers, and default gateway.
                   </li>
-                  <li>
-                    Configure an IPv4 subnet scope with a lease range, DNS servers, and default gateway.
-                  </li>
-                  <li>
-                    Bind the DHCP service to the correct network interface.
-                  </li>
-                  <li>
-                    Enable and start the service and confirm it is running.
-                  </li>
+                  <li>Bind the DHCP service to the correct network interface.</li>
+                  <li>Enable and start the service and confirm it is running.</li>
                   <li>
                     Validate lease issuance by inspecting the leases database.
                   </li>
                 </ul>
               </section>
 
-              <!-- 4) What You'll Practice -->
-              <section class="lab-section" id="practice">
+              <!-- Concepts -->
+              <section class="lab-section" id="concepts">
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">
-                  What You’ll Practice
+                  Concepts
                 </h3>
-
-                <ul class="m-t-10">
+                <ul>
                   <li>
-                    Package installation workflows for network services across distros.
+                    DHCP roles: server offers leases and options; clients request
+                    configuration during boot or network changes.
                   </li>
                   <li>
-                    DHCP scope design and core options (
-                    <code>range</code>
-                    ,
-                    <code>option domain-name-servers</code>
-                    ,
-                    <code>option routers</code>
-                    ).
+                    Scope design: subnet definition, address range, and excluded
+                    addresses.
                   </li>
                   <li>
-                    Interface binding and service configuration differences across distributions.
+                    Core options: DNS servers, default gateway (router), and
+                    lease timers.
                   </li>
                   <li>
-                    Service lifecycle management with systemd.
+                    Interface binding: limiting where the daemon listens to avoid
+                    unintended lease offers.
                   </li>
                   <li>
-                    Lease verification using the DHCP leases database.
+                    Validation: confirming UDP/67 listening state and verifying
+                    leases on disk.
                   </li>
                 </ul>
               </section>
 
-              <!-- 5) Commands Walkthrough -->
+              <!-- Walkthrough -->
               <section class="lab-section alt-background" id="walkthrough">
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">
                   Walkthrough
@@ -310,16 +321,16 @@
 
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
-                      <span>Command</span>
+                      <span>Commands</span>
                       <button
                         class="lab-copy-btn"
                         type="button"
-                        data-copy="#cmd-step-1"
+                        data-copy="#cmd-105-1"
                       >
                         Copy
                       </button>
                     </div>
-                    <pre><code id="cmd-step-1"># Debian/Ubuntu
+                    <pre><code id="cmd-105-1"># Debian/Ubuntu
 sudo apt install isc-dhcp-server -y
 
 # RHEL/Rocky/Alma
@@ -329,24 +340,24 @@ sudo dnf install dhcp-server -y
 sudo pacman -S dhcp</code></pre>
                   </div>
 
-                  <p>
-                    DHCP is typically provided by the ISC DHCP daemon (
-                    <code>dhcpd</code>
-                    ) or a distro-packaged equivalent. Installing the package places the main configuration file on disk and registers the systemd service unit.
-                  </p>
-
                   <div class="lab-codeblock m-b-40 m-t-40">
-                    
-                    <pre><code id="verify-step-1"># Confirm the server binary exists (one example):
+                    <pre><code># Confirm the server binary exists (one example):
 command -v dhcpd</code></pre>
                   </div>
+
+                  <p>
+                    DHCP is typically provided by the ISC DHCP daemon
+                    (<code>dhcpd</code>) or a distro-packaged equivalent.
+                    Installing the package places the configuration file on disk
+                    and registers the systemd service unit.
+                  </p>
                 </div>
 
                 <!-- Step 2 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
                     <strong class="font-alt">Step 2</strong>
-                    : Edit the main DHCP configuration file.
+                    : Configure an IPv4 scope in the main config file.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -355,24 +366,18 @@ command -v dhcpd</code></pre>
                       <button
                         class="lab-copy-btn"
                         type="button"
-                        data-copy="#cmd-step-2"
+                        data-copy="#cmd-105-2"
                       >
                         Copy
                       </button>
                     </div>
-                    <pre><code id="cmd-step-2">sudo vim /etc/dhcp/dhcpd.conf
+                    <pre><code id="cmd-105-2">sudo vim /etc/dhcp/dhcpd.conf
 # or
 sudo nano /etc/dhcp/dhcpd.conf</code></pre>
                   </div>
 
-                  <p>
-                    The DHCP configuration defines which subnets the server will manage and what options it will hand out to clients. At minimum you need a subnet declaration and a lease range. Most environments also include DNS and a default gateway (
-                    <code>routers</code>
-                    ).
-                  </p>
-
                   <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code id="verify-step-2">subnet 192.168.50.0 netmask 255.255.255.0 {
+                    <pre><code>subnet 192.168.50.0 netmask 255.255.255.0 {
   range 192.168.50.10 192.168.50.100;
   option domain-name-servers 8.8.8.8, 1.1.1.1;
   option routers 192.168.50.1;
@@ -380,41 +385,49 @@ sudo nano /etc/dhcp/dhcpd.conf</code></pre>
   max-lease-time 7200;
 }</code></pre>
                   </div>
+
+                  <p>
+                    At minimum you need a subnet declaration and a lease range.
+                    Most environments also include DNS and a default gateway
+                    (<code>routers</code>).
+                  </p>
                 </div>
 
                 <!-- Step 3 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
                     <strong class="font-alt">Step 3</strong>
-                    : Bind the service to the correct network interface.
+                    : Bind the DHCP service to the correct interface.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
-                      <span>Command</span>
+                      <span>Commands</span>
                       <button
                         class="lab-copy-btn"
                         type="button"
-                        data-copy="#cmd-step-3"
+                        data-copy="#cmd-105-3"
                       >
                         Copy
                       </button>
                     </div>
-                    <pre><code id="cmd-step-3"># Debian/Ubuntu (isc-dhcp-server)
+                    <pre><code id="cmd-105-3"># Debian/Ubuntu (isc-dhcp-server)
 echo 'INTERFACESv4="eth0"' | sudo tee /etc/default/isc-dhcp-server &gt; /dev/null
 
 # RHEL-style (dhcpd)
 echo 'DHCPDARGS=eth0' | sudo tee /etc/sysconfig/dhcpd &gt; /dev/null</code></pre>
                   </div>
 
-                  <p>
-                    DHCP should listen only on the interface connected to the client network. Binding prevents accidental lease offers on unintended networks and avoids confusing multi-interface hosts. The exact configuration path varies by distribution.
-                  </p>
-
                   <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code id="verify-step-3"># Confirm the interface exists and has the expected subnet:
+                    <pre><code># Confirm the interface exists and has the expected subnet:
 ip -br addr show eth0</code></pre>
                   </div>
+
+                  <p>
+                    Binding prevents accidental lease offers on unintended
+                    networks and avoids confusing multi-interface hosts. The
+                    exact binding file varies by distribution.
+                  </p>
                 </div>
 
                 <!-- Step 4 -->
@@ -426,98 +439,98 @@ ip -br addr show eth0</code></pre>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
-                      <span>Command</span>
+                      <span>Commands</span>
                       <button
                         class="lab-copy-btn"
                         type="button"
-                        data-copy="#cmd-step-4"
+                        data-copy="#cmd-105-4"
                       >
                         Copy
                       </button>
                     </div>
-                    <pre><code id="cmd-step-4"># Debian/Ubuntu
+                    <pre><code id="cmd-105-4"># Debian/Ubuntu
 sudo systemctl enable --now isc-dhcp-server
 
 # RHEL-style
 sudo systemctl enable --now dhcpd</code></pre>
                   </div>
 
-                  <p>
-                    Enabling the service ensures DHCP starts after boot. Starting it immediately lets you validate configuration correctness and listening behavior before any clients depend on it.
-                  </p>
-
                   <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code id="verify-step-4"># Confirm it is listening on UDP/67:
+                    <pre><code># Confirm it is listening on UDP/67:
 sudo ss -lunp | grep -E ':67\b'</code></pre>
                   </div>
+
+                  <p>
+                    Enabling ensures DHCP starts after boot. Starting it
+                    immediately lets you validate configuration correctness and
+                    listening behavior before clients depend on it.
+                  </p>
                 </div>
 
                 <!-- Step 5 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
                     <strong class="font-alt">Step 5</strong>
-                    : Check service status and confirm the server is dispatching leases.
+                    : Confirm healthy startup and correct subnet binding.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
-                      <span>Command</span>
+                      <span>Commands</span>
                       <button
                         class="lab-copy-btn"
                         type="button"
-                        data-copy="#cmd-step-5"
+                        data-copy="#cmd-105-5"
                       >
                         Copy
                       </button>
                     </div>
-                    <pre><code id="cmd-step-5"># Debian/Ubuntu
+                    <pre><code id="cmd-105-5"># Debian/Ubuntu
 sudo systemctl status isc-dhcp-server
 
 # RHEL-style
 sudo systemctl status dhcpd</code></pre>
                   </div>
 
-                  <p>
-                    A healthy DHCP daemon will show an active running state and log that it is listening on the correct interface and subnet. If it fails to start, the most common causes are syntax errors, missing interface binding, or subnet mismatches with the server’s own IP configuration.
-                  </p>
-
                   <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code id="verify-step-5"># Typical success indicators:
+                    <pre><code># Typical success indicators:
 # Listening on LPF/eth0/.../192.168.50.0/24
 # Sending on   LPF/eth0/.../192.168.50.0/24</code></pre>
                   </div>
+
+                  <p>
+                    If the daemon fails to start, common causes are config syntax
+                    errors, incorrect interface binding, or a subnet mismatch
+                    between <code>dhcpd.conf</code> and the server’s own IP.
+                  </p>
                 </div>
 
                 <!-- Step 6 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
                     <strong class="font-alt">Step 6</strong>
-                    : Inspect the leases file to verify clients are receiving addresses.
+                    : Inspect the leases database to verify lease issuance.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
-                      <span>Command</span>
+                      <span>Commands</span>
                       <button
                         class="lab-copy-btn"
                         type="button"
-                        data-copy="#cmd-step-6"
+                        data-copy="#cmd-105-6"
                       >
                         Copy
                       </button>
                     </div>
-                    <pre><code id="cmd-step-6"># Path varies by distro
+                    <pre><code id="cmd-105-6"># Path varies by distro
 sudo cat /var/lib/dhcp/dhcpd.leases
 # or
 sudo cat /var/lib/dhcpd/dhcpd.leases</code></pre>
                   </div>
 
-                  <p>
-                    The leases database is the authoritative record of which clients have been assigned addresses, including start/end times and client identifiers. Verifying leases is a direct proof that the server is functioning, and it also helps diagnose “client cannot get an IP” reports by confirming whether the request is reaching the server.
-                  </p>
-
                   <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code id="verify-step-6">lease 192.168.50.10 {
+                    <pre><code>lease 192.168.50.10 {
   starts 5 2025/12/19 22:05:01;
   ends 5 2025/12/19 22:15:01;
   binding state active;
@@ -525,10 +538,95 @@ sudo cat /var/lib/dhcpd/dhcpd.leases</code></pre>
   client-hostname "laptop-qa";
 }</code></pre>
                   </div>
+
+                  <p>
+                    The leases file is the authoritative record of issued
+                    addresses, including timestamps and client identifiers. This
+                    is your fastest “proof” that DHCP is working end-to-end.
+                  </p>
                 </div>
               </section>
 
-              <!-- 8) Reference -->
+              <!-- Breakpoints -->
+              <section class="lab-section" id="breakpoints">
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  Common breakpoints
+                </h3>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">Service will not start</div>
+                  <p class="m-b-0">
+                    Most failures come from a syntax error in
+                    <code>/etc/dhcp/dhcpd.conf</code>
+                    or a subnet mismatch. Confirm the server interface IP is in
+                    the same subnet you declared, then inspect logs with
+                    <code>journalctl -u dhcpd</code>
+                    (or <code>journalctl -u isc-dhcp-server</code>).
+                  </p>
+                </div>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">No leases are being issued</div>
+                  <p class="m-b-0">
+                    Confirm UDP/67 is listening and bound to the correct
+                    interface. Then verify the interface binding file is set
+                    correctly for your distro and the client is on the expected
+                    L2 network.
+                  </p>
+                </div>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">Wrong network gets offers</div>
+                  <p class="m-b-0">
+                    Restrict the daemon to a single interface and re-check the
+                    system has only the intended interface connected to client
+                    networks.
+                  </p>
+                </div>
+              </section>
+
+              <!-- Cleanup -->
+              <section class="lab-section alt-background" id="cleanup">
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  Cleanup checklist
+                </h3>
+
+                <p>
+                  If this is a disposable lab host, stop the service and remove
+                  configuration and lease data created during the exercise.
+                </p>
+
+                <div class="lab-codeblock m-b-40 m-t-40">
+                  <div class="lab-codeblock-header">
+                    <span>Commands</span>
+                    <button
+                      class="lab-copy-btn"
+                      type="button"
+                      data-copy="#cmd-105-cleanup"
+                    >
+                      Copy
+                    </button>
+                  </div>
+                  <pre><code id="cmd-105-cleanup"># Stop/disable (choose the service name that applies)
+sudo systemctl disable --now dhcpd
+sudo systemctl disable --now isc-dhcp-server
+
+# Remove config (and leases if desired)
+sudo rm -f /etc/dhcp/dhcpd.conf
+sudo rm -f /var/lib/dhcp/dhcpd.leases /var/lib/dhcpd/dhcpd.leases</code></pre>
+                </div>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">Success signal</div>
+                  <p class="m-b-0">
+                    The DHCP service is stopped and disabled, and the host no
+                    longer has an active scope configuration or lease records
+                    from this lab.
+                  </p>
+                </div>
+              </section>
+
+              <!-- Reference -->
               <section class="lab-section" id="reference">
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">
                   Reference
@@ -536,70 +634,60 @@ sudo cat /var/lib/dhcpd/dhcpd.leases</code></pre>
 
                 <ul class="lab-reference-list">
                   <li>
-                    <code>dhcpd</code>
-                    : DHCP server daemon that hands out IP leases and options to clients.
+                    <code>dhcpd</code>: DHCP server daemon that issues IPv4
+                    leases and options.
                   </li>
-
                   <li>
-                    <code>/etc/dhcp/dhcpd.conf</code>
-                    : Main DHCP server configuration file (subnets, ranges, and options).
+                    <code>/etc/dhcp/dhcpd.conf</code>: Main DHCP server config
+                    file (subnets, ranges, options).
                   </li>
-
                   <li>
-                    <code>systemctl enable --now &lt;service&gt;</code>
-                    : Enables a service at boot and starts it immediately.
-                  </li>
-
-                  <li>
-                    <code>ss -lunp</code>
-                    : Shows UDP listening sockets and the owning process.
+                    <code>systemctl enable --now &lt;service&gt;</code>: Enable a
+                    service at boot and start it immediately.
                     <ul>
-                      <li>
-                        <code>-l</code>
-                        : Listening sockets only.
-                      </li>
-                      <li>
-                        <code>-u</code>
-                        : UDP sockets.
-                      </li>
-                      <li>
-                        <code>-n</code>
-                        : Do not resolve names.
-                      </li>
-                      <li>
-                        <code>-p</code>
-                        : Show process info (requires privileges).
-                      </li>
+                      <li><code>--now</code>: Start the unit immediately.</li>
                     </ul>
                   </li>
-
                   <li>
-                    <code>/var/lib/dhcp*/dhcpd.leases</code>
-                    : Lease database used to confirm active and historical leases.
+                    <code>ss -lunp</code>: Show UDP listening sockets and the
+                    owning process.
+                    <ul>
+                      <li><code>-l</code>: Listening sockets only.</li>
+                      <li><code>-u</code>: UDP sockets.</li>
+                      <li><code>-n</code>: No name resolution.</li>
+                      <li><code>-p</code>: Show process info.</li>
+                    </ul>
                   </li>
-
                   <li>
-                    <code>journalctl -u dhcpd</code>
-                    : Service logs for DHCP startup, binding, and lease activity.
+                    <code>ip -br addr</code>: Quick view of interface addresses
+                    to confirm the server is on the expected subnet.
+                    <ul>
+                      <li><code>-br</code>: Brief output format.</li>
+                    </ul>
+                  </li>
+                  <li>
+                    <code>journalctl -u &lt;service&gt;</code>: View service logs
+                    for startup, binding, and lease activity.
+                    <ul>
+                      <li><code>-u</code>: Filter by unit name.</li>
+                    </ul>
+                  </li>
+                  <li>
+                    <code>/var/lib/dhcp*/dhcpd.leases</code>: Lease database used
+                    to confirm active and historical leases.
                   </li>
                 </ul>
               </section>
 
-              <!-- Lab Pagination -->
+              <nav class="lab-pagination">
+                <a class="lab-nav-link" href="#totop" aria-label="Back to top">
+                  &uArr;
+                </a>
+              </nav>
             </div>
             <!-- /main -->
           </div>
           <!-- /row -->
-          <nav class="lab-pagination">
-            <a
-                id="prev-lab"
-                class="lab-nav-link"
-                href="#"
-                aria-label="Previous lab"
-            >
-                &uArr;
-            </a>
-          </nav>
         </div>
         <!-- /container -->
       </section>
@@ -670,5 +758,9 @@ sudo cat /var/lib/dhcpd/dhcpd.leases</code></pre>
 
     <!-- Lab page JS (new) -->
     <script src="../assets/js/lab.js"></script>
+
+    <script>
+      document.getElementById("year").textContent = new Date().getFullYear()
+    </script>
   </body>
 </html>
