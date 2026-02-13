@@ -182,7 +182,11 @@
                   </h5>
                   <ul class="docs-nav">
                     <li><a href="#scenario">Scenario</a></li>
+                    <li><a href="#objective">Objective</a></li>
+                    <li><a href="#concepts">Concepts</a></li>
                     <li><a href="#walkthrough">Walkthrough</a></li>
+                    <li><a href="#breakpoints">Breakpoints</a></li>
+                    <li><a href="#cleanup">Cleanup</a></li>
                     <li><a href="#reference">Reference</a></li>
                   </ul>
                 </div>
@@ -191,17 +195,14 @@
 
             <!-- MAIN CONTENT -->
             <div class="col-sm-8 col-md-9 lab-doc">
-              <!-- 1) Title + Summary (2 sentences max) -->
+              <!-- Summary (2 sentences max) -->
               <p class="m-b-20 lab-summary">
                 Re-apply system configuration safely on a RHEL-like host without
-                <code>dpkg-reconfigure</code>
-                by using system tools and RPM/DNF workflows. Verify timezone and
-                locale state, restore SSH availability, regenerate host keys, and
-                validate package integrity with
-                <code>rpm -V</code>
-                before performing a controlled
-                <code>dnf reinstall</code>
-                repair.
+                <code>dpkg-reconfigure</code> by using system tools and RPM/DNF
+                workflows. Validate timezone and locale state, restore SSH
+                availability, regenerate host keys, verify package integrity
+                with <code>rpm -V</code>, and only then use a controlled
+                <code>dnf reinstall</code> repair.
               </p>
 
               <section class="lab-section" id="video" aria-label="Lab video">
@@ -219,7 +220,7 @@
                 </div>
               </section>
 
-              <!-- 2) Scenario -->
+              <!-- Scenario -->
               <section class="lab-section" id="scenario">
                 <div class="lab-chips" aria-label="Tags">
                   <span class="lab-chip">
@@ -249,15 +250,15 @@
                   <div class="lab-callout-label">Operator context</div>
                   <p class="m-b-0">
                     On RHEL-family systems there is no direct equivalent to
-                    <code>dpkg-reconfigure</code>
-                    . You re-apply state by using systemd tooling, regenerating
-                    artifacts (like host keys), verifying package integrity, and
-                    reinstalling packages when appropriate.
+                    <code>dpkg-reconfigure</code>. You re-apply state by using
+                    system tooling, regenerating artifacts (like host keys),
+                    verifying package integrity, and reinstalling packages when
+                    appropriate.
                   </p>
                 </div>
               </section>
 
-              <!-- 3) Objective -->
+              <!-- Objective -->
               <section class="lab-section alt-background" id="objective">
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">
                   Objective
@@ -265,91 +266,70 @@
                 <ul>
                   <li>
                     Inspect current timezone configuration using
-                    <code>timedatectl</code>
-                    .
+                    <code>timedatectl</code>.
                   </li>
                   <li>
                     Confirm the desired timezone exists on the system.
                   </li>
                   <li>
-                    Set the correct timezone and verify
-                    <code>/etc/localtime</code>
+                    Set the correct timezone and verify <code>/etc/localtime</code>
                     points to the expected zoneinfo file.
                   </li>
                   <li>
                     Inspect current locale configuration using
-                    <code>localectl</code>
-                    .
+                    <code>localectl</code>.
                   </li>
                   <li>
-                    Ensure
-                    <code>sshd</code>
-                    is enabled and running via
-                    <code>systemctl</code>
-                    .
+                    Ensure <code>sshd</code> is enabled and running via
+                    <code>systemctl</code>.
                   </li>
                   <li>
                     Regenerate OpenSSH host keys safely using
-                    <code>ssh-keygen -A</code>
-                    .
+                    <code>ssh-keygen -A</code>.
                   </li>
                   <li>
-                    Restart
-                    <code>sshd</code>
-                    to pick up changes.
+                    Restart <code>sshd</code> to pick up changes.
                   </li>
                   <li>
-                    Verify package integrity for
-                    <code>openssh-server</code>
-                    using
-                    <code>rpm -V</code>
-                    .
+                    Verify package integrity for <code>openssh-server</code>
+                    using <code>rpm -V</code>.
                   </li>
                   <li>
-                    Perform a controlled repair using
-                    <code>dnf reinstall</code>
+                    Perform a controlled repair using <code>dnf reinstall</code>
                     when appropriate.
                   </li>
                 </ul>
               </section>
 
-              <!-- 4) What You'll Practice -->
-              <section class="lab-section" id="practice">
+              <!-- Concepts -->
+              <section class="lab-section" id="concepts">
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">
-                  What You’ll Practice
+                  Concepts
                 </h3>
-
-                <ul class="m-t-10">
+                <ul>
                   <li>
-                    Evidence-driven configuration on RHEL (inspect first, change
-                    second, verify immediately).
+                    On RHEL, you “reconfigure” by re-applying system state using
+                    system tools (<code>timedatectl</code>,
+                    <code>localectl</code>, <code>systemctl</code>) and by
+                    regenerating missing artifacts (like SSH host keys).
                   </li>
                   <li>
-                    Using
-                    <code>timedatectl</code>
-                    and
-                    <code>localectl</code>
-                    to manage “system identity” settings.
+                    Use evidence first: inspect, change, verify. Repairs like
+                    <code>dnf reinstall</code> are your last-mile baseline
+                    restore, not your first move.
                   </li>
                   <li>
-                    Restoring service availability with
-                    <code>systemctl enable --now</code>
-                    .
+                    <code>rpm -V</code> compares installed files to RPM’s
+                    database for drift (size, checksum, perms, ownership, etc.).
                   </li>
                   <li>
-                    OpenSSH host key regeneration and service restart workflows.
-                  </li>
-                  <li>
-                    Using
-                    <code>rpm -V</code>
-                    and
-                    <code>dnf reinstall</code>
-                    as a safe repair path.
+                    Reinstall restores packaged files. Config handling respects
+                    RPM rules and may preserve locally modified config.
                   </li>
                 </ul>
               </section>
 
-              <!-- 5) Commands Walkthrough -->
+              <!-- Walkthrough -->
               <section class="lab-section alt-background" id="walkthrough">
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">
                   Walkthrough
@@ -378,13 +358,13 @@
 
                   <p>
                     This is your baseline: current time, UTC, timezone, and NTP
-                    state. If logs look “wrong,” confirm whether the host
-                    timezone is incorrect or whether the issue is an application
-                    logging mismatch.
+                    state. If logs look wrong, confirm whether the host timezone
+                    is incorrect or whether the issue is an application logging
+                    mismatch.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code id="verify-step-1">Local time: Sun 2026-01-04 19:12:01 EST
+                    <pre><code>Local time: Sun 2026-01-04 19:12:01 EST
 Universal time: Sun 2026-01-05 00:12:01 UTC
 RTC time: Sun 2026-01-05 00:12:01
 Time zone: America/New_York (EST, -0500)
@@ -416,13 +396,13 @@ RTC in local TZ: no</code></pre>
                   </div>
 
                   <p>
-                    Always confirm the intended target is available before you
-                    change state. This avoids typos and lets you validate that
-                    the zoneinfo database is present and usable.
+                    Confirm the intended target is available before you change
+                    state. This avoids typos and validates that the zoneinfo
+                    database is present.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code id="verify-step-2">America/New_York</code></pre>
+                    <pre><code>America/New_York</code></pre>
                   </div>
                 </div>
 
@@ -430,9 +410,7 @@ RTC in local TZ: no</code></pre>
                 <div class="lab-step">
                   <div class="lab-step-title">
                     <strong class="font-alt">Step 3</strong>
-                    : Set the system time zone to
-                    <code>America/New_York</code>
-                    .
+                    : Set the system time zone to <code>America/New_York</code>.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -450,10 +428,8 @@ RTC in local TZ: no</code></pre>
                   </div>
 
                   <p>
-                    This updates the host timezone setting. You should verify the
-                    backing symlink in
-                    <code>/etc/localtime</code>
-                    next to confirm the change landed as expected.
+                    This updates the host timezone setting. Next you verify the
+                    backing symlink in <code>/etc/localtime</code>.
                   </p>
                 </div>
 
@@ -461,9 +437,7 @@ RTC in local TZ: no</code></pre>
                 <div class="lab-step">
                   <div class="lab-step-title">
                     <strong class="font-alt">Step 4</strong>
-                    : Verify
-                    <code>/etc/localtime</code>
-                    points to the expected zoneinfo file.
+                    : Verify <code>/etc/localtime</code> points to the expected zoneinfo file.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -481,16 +455,13 @@ RTC in local TZ: no</code></pre>
                   </div>
 
                   <p>
-                    On modern RHEL-family systems,
-                    <code>/etc/localtime</code>
-                    is typically a symlink into
-                    <code>/usr/share/zoneinfo</code>
-                    . This is simple, auditable evidence of the configured
-                    timezone.
+                    On modern RHEL-family systems, <code>/etc/localtime</code> is
+                    typically a symlink into <code>/usr/share/zoneinfo</code>.
+                    This is simple evidence of the configured timezone.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code id="verify-step-4">lrwxrwxrwx. 1 root root 33 Jan  4 19:12 /etc/localtime -> ../usr/share/zoneinfo/America/New_York</code></pre>
+                    <pre><code>lrwxrwxrwx. 1 root root 33 Jan  4 19:12 /etc/localtime -> ../usr/share/zoneinfo/America/New_York</code></pre>
                   </div>
                 </div>
 
@@ -517,12 +488,12 @@ RTC in local TZ: no</code></pre>
 
                   <p>
                     Locale settings influence how services format messages,
-                    dates, and character encodings. This step is an inspection
-                    checkpoint to ensure system identity settings are stable.
+                    dates, and character encodings. This is an inspection
+                    checkpoint for system identity settings.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code id="verify-step-5">System Locale: LANG=en_US.UTF-8
+                    <pre><code>System Locale: LANG=en_US.UTF-8
     VC Keymap: us
    X11 Layout: us</code></pre>
                   </div>
@@ -532,9 +503,7 @@ RTC in local TZ: no</code></pre>
                 <div class="lab-step">
                   <div class="lab-step-title">
                     <strong class="font-alt">Step 6</strong>
-                    : Ensure
-                    <code>sshd</code>
-                    is enabled and running.
+                    : Ensure <code>sshd</code> is enabled and running.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -553,16 +522,13 @@ RTC in local TZ: no</code></pre>
 
                   <p>
                     If SSH was unavailable after restart, validate both the
-                    “enabled at boot” state and the current runtime state.
-                    <code>enable --now</code>
-                    is a safe way to bring the service up and keep it up across
+                    enabled-at-boot state and the current runtime state. This is
+                    a safe way to bring the service up and keep it up across
                     reboots.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code id="verify-step-6">Synchronizing state of sshd.service with SysV service script with /usr/lib/systemd/systemd-sysv-install.
-Executing: /usr/lib/systemd/systemd-sysv-install enable sshd
-Created symlink /etc/systemd/system/multi-user.target.wants/sshd.service → /usr/lib/systemd/system/sshd.service.</code></pre>
+                    <pre><code>Created symlink /etc/systemd/system/multi-user.target.wants/sshd.service → /usr/lib/systemd/system/sshd.service.</code></pre>
                   </div>
                 </div>
 
@@ -570,7 +536,7 @@ Created symlink /etc/systemd/system/multi-user.target.wants/sshd.service → /us
                 <div class="lab-step">
                   <div class="lab-step-title">
                     <strong class="font-alt">Step 7</strong>
-                    : Regenerate OpenSSH host keys safely.
+                    : Regenerate OpenSSH host keys safely (only creates missing keys).
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -588,14 +554,13 @@ Created symlink /etc/systemd/system/multi-user.target.wants/sshd.service → /us
                   </div>
 
                   <p>
-                    <code>ssh-keygen -A</code>
-                    generates any missing host keys using defaults. This is a
-                    controlled recovery step when host key files were removed,
-                    corrupted, or mislabeled during hardening.
+                    This generates any missing host keys using defaults. It is a
+                    controlled recovery step when key files were removed or
+                    corrupted during hardening.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code id="verify-step-7">ssh-keygen: generating new host keys: RSA ECDSA ED25519</code></pre>
+                    <pre><code>ssh-keygen: generating new host keys: RSA ECDSA ED25519</code></pre>
                   </div>
                 </div>
 
@@ -603,9 +568,7 @@ Created symlink /etc/systemd/system/multi-user.target.wants/sshd.service → /us
                 <div class="lab-step">
                   <div class="lab-step-title">
                     <strong class="font-alt">Step 8</strong>
-                    : Restart
-                    <code>sshd</code>
-                    to pick up changes.
+                    : Restart <code>sshd</code> to pick up changes.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -623,11 +586,8 @@ Created symlink /etc/systemd/system/multi-user.target.wants/sshd.service → /us
                   </div>
 
                   <p>
-                    Restarting forces
-                    <code>sshd</code>
-                    to re-read configuration and keys. You use this after key
-                    regeneration or configuration repairs so the running service
-                    reflects what is on disk.
+                    Restart forces <code>sshd</code> to re-read configuration and
+                    keys so the running service matches what is on disk.
                   </p>
                 </div>
 
@@ -635,9 +595,7 @@ Created symlink /etc/systemd/system/multi-user.target.wants/sshd.service → /us
                 <div class="lab-step">
                   <div class="lab-step-title">
                     <strong class="font-alt">Step 9</strong>
-                    : Verify package integrity for
-                    <code>openssh-server</code>
-                    .
+                    : Verify package integrity for <code>openssh-server</code>.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -655,14 +613,13 @@ Created symlink /etc/systemd/system/multi-user.target.wants/sshd.service → /us
                   </div>
 
                   <p>
-                    <code>rpm -V</code>
-                    verifies installed files against RPM’s database (size,
-                    checksum, permissions, etc.). No output typically indicates
-                    no detected drift for packaged files.
+                    <code>rpm -V</code> verifies installed files against RPM’s
+                    database. No output typically means no detected drift for
+                    packaged files.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code id="verify-step-9"># (no output)</code></pre>
+                    <pre><code># (no output)</code></pre>
                   </div>
                 </div>
 
@@ -670,17 +627,14 @@ Created symlink /etc/systemd/system/multi-user.target.wants/sshd.service → /us
                 <div class="lab-step">
                   <div class="lab-step-title">
                     <strong class="font-alt">Step 10</strong>
-                    : Reinstall
-                    <code>openssh-server</code>
-                    as a repair workflow.
+                    : Reinstall <code>openssh-server</code> as a baseline restore.
                   </div>
 
                   <div class="lab-callout">
                     <div class="lab-callout-label">Repair rule</div>
                     <p class="m-b-0">
-                      Reinstall is a last-mile fix after you have inspected state
-                      and verified drift. Use it to restore packaged files to a
-                      known-good baseline.
+                      Reinstall is a last-mile fix after inspection and verification.
+                      Use it to restore packaged files to a known-good baseline.
                     </p>
                   </div>
 
@@ -699,14 +653,14 @@ Created symlink /etc/systemd/system/multi-user.target.wants/sshd.service → /us
                   </div>
 
                   <p>
-                    <code>dnf reinstall</code>
-                    restores packaged files while respecting local configuration
-                    handling rules. This is a safe repair technique when you
-                    suspect a package’s files were damaged or partially removed.
+                    <code>dnf reinstall</code> restores packaged files while
+                    respecting config handling rules. This is a safe repair
+                    technique when you suspect packaged files were damaged or
+                    removed.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code id="verify-step-10">Last metadata expiration check: 0:01:18 ago on Sun 04 Jan 2026.
+                    <pre><code>Last metadata expiration check: 0:01:18 ago on Sun 04 Jan 2026.
 Dependencies resolved.
 Reinstalling:
   openssh-server.x86_64  8.7p1-38.el9  baseos
@@ -715,7 +669,80 @@ Complete!</code></pre>
                 </div>
               </section>
 
-              <!-- 8) Reference -->
+              <!-- Breakpoints -->
+              <section class="lab-section" id="breakpoints">
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  Common breakpoints
+                </h3>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">Timezone changes but apps still log differently</div>
+                  <p class="m-b-0">
+                    Some applications log in UTC regardless of system timezone.
+                    Use <code>timedatectl</code> as the host truth, then check the
+                    application logging configuration if outputs still disagree.
+                  </p>
+                </div>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">SSH is enabled but still unreachable</div>
+                  <p class="m-b-0">
+                    If <code>sshd</code> is active but you cannot connect, you
+                    typically check firewall rules and SELinux context next. This
+                    lab focuses on service and package recovery, not network policy.
+                  </p>
+                </div>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">rpm -V shows drift</div>
+                  <p class="m-b-0">
+                    Drift output usually indicates modified packaged files.
+                    Treat it as evidence: confirm which files changed, then use
+                    <code>dnf reinstall</code> to restore packaged content when
+                    that aligns with your repair goal.
+                  </p>
+                </div>
+              </section>
+
+              <!-- Cleanup -->
+              <section class="lab-section alt-background" id="cleanup">
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  Cleanup checklist
+                </h3>
+
+                <p>
+                  Confirm your changes are stable and that SSH is healthy before
+                  you leave the system.
+                </p>
+
+                <div class="lab-codeblock m-b-40 m-t-40">
+                  <div class="lab-codeblock-header">
+                    <span>Commands</span>
+                    <button
+                      class="lab-copy-btn"
+                      type="button"
+                      data-copy="#cmd-cleanup"
+                    >
+                      Copy
+                    </button>
+                  </div>
+                  <pre><code id="cmd-cleanup">timedatectl | egrep 'Time zone|System clock synchronized|NTP service'
+localectl status | egrep 'System Locale|VC Keymap|X11 Layout'
+systemctl is-enabled sshd && systemctl is-active sshd
+rpm -V openssh-server || true</code></pre>
+                </div>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">Success signal</div>
+                  <p class="m-b-0">
+                    Timezone and locale match expectation, <code>sshd</code> is
+                    enabled and active, host keys exist, and RPM verification
+                    output matches the state you intended.
+                  </p>
+                </div>
+              </section>
+
+              <!-- Reference -->
               <section class="lab-section" id="reference">
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">
                   Reference
@@ -724,47 +751,47 @@ Complete!</code></pre>
                 <ul class="lab-reference-list">
                   <li>
                     <code>timedatectl</code>
-                    : Shows and configures system time and timezone.
+                    : Show and configure system time and timezone.
                     <ul>
                       <li>
-                        <code>timedatectl list-timezones</code>
-                        : Lists available zoneinfo targets.
+                        <code>list-timezones</code>
+                        : List available timezones.
                       </li>
                       <li>
-                        <code>timedatectl set-timezone &lt;Zone&gt;</code>
-                        : Sets the system timezone.
+                        <code>set-timezone &lt;Zone&gt;</code>
+                        : Set the system timezone.
                       </li>
                     </ul>
                   </li>
 
                   <li>
                     <code>localectl status</code>
-                    : Displays system locale and keyboard settings.
+                    : Display system locale and keyboard settings.
                   </li>
 
                   <li>
                     <code>systemctl enable --now sshd</code>
-                    : Enables the SSH service at boot and starts it immediately.
-                  </li>
-
-                  <li>
-                    <code>ssh-keygen -A</code>
-                    : Generates any missing default SSH host keys.
+                    : Enable SSH at boot and start it immediately.
                   </li>
 
                   <li>
                     <code>systemctl restart sshd</code>
-                    : Restarts SSH to reload config/keys.
+                    : Restart SSH to reload config/keys.
+                  </li>
+
+                  <li>
+                    <code>ssh-keygen -A</code>
+                    : Generate any missing default SSH host keys.
                   </li>
 
                   <li>
                     <code>rpm -V &lt;pkg&gt;</code>
-                    : Verifies installed package files against the RPM database.
+                    : Verify installed package files against the RPM database.
                   </li>
 
                   <li>
                     <code>dnf reinstall &lt;pkg&gt;</code>
-                    : Reinstalls a package to restore packaged files.
+                    : Reinstall a package to restore packaged files.
                   </li>
 
                   <li>
@@ -777,17 +804,6 @@ Complete!</code></pre>
             <!-- /main -->
           </div>
           <!-- /row -->
-
-          <nav class="lab-pagination">
-            <a
-              id="prev-lab"
-              class="lab-nav-link"
-              href="#"
-              aria-label="Previous lab"
-            >
-              &uArr;
-            </a>
-          </nav>
         </div>
         <!-- /container -->
       </section>
@@ -858,5 +874,9 @@ Complete!</code></pre>
 
     <!-- Lab page JS (new) -->
     <script src="../assets/js/lab.js"></script>
+
+    <script>
+      document.getElementById('year').textContent = new Date().getFullYear()
+    </script>
   </body>
 </html>

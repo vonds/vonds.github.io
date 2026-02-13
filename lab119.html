@@ -149,7 +149,9 @@
       <!-- DOCS PAGE -->
       <section class="module">
         <div class="container">
-          <h2 class="font-alt module-title m-t-60">Lab 119: YUM Basics</h2>
+          <h2 class="font-alt module-title m-t-60">
+            Lab 119: YUM Basics
+          </h2>
 
           <nav class="lab-pagination">
             <a
@@ -180,7 +182,11 @@
                   </h5>
                   <ul class="docs-nav">
                     <li><a href="#scenario">Scenario</a></li>
+                    <li><a href="#objective">Objective</a></li>
+                    <li><a href="#concepts">Concepts</a></li>
                     <li><a href="#walkthrough">Walkthrough</a></li>
+                    <li><a href="#breakpoints">Breakpoints</a></li>
+                    <li><a href="#cleanup">Cleanup</a></li>
                     <li><a href="#reference">Reference</a></li>
                   </ul>
                 </div>
@@ -189,13 +195,11 @@
 
             <!-- MAIN CONTENT -->
             <div class="col-sm-8 col-md-9 lab-doc">
-              <!-- 1) Title + Summary (2 sentences max) -->
+              <!-- Summary (2 sentences max) -->
               <p class="m-b-20 lab-summary">
-                Use
-                <code>yum</code>
-                to verify repositories, discover packages, identify file
-                ownership, review transaction history, and perform safe repair
-                workflows. Practice the commands you use on real RHEL-family
+                Use <code>yum</code> to verify repositories, discover packages,
+                identify file ownership, review transaction history, and perform
+                safe repair workflows. Practice the commands you use on RHEL-family
                 systems when you need evidence first and changes second.
               </p>
 
@@ -214,7 +218,7 @@
                 </div>
               </section>
 
-              <!-- 2) Scenario -->
+              <!-- Scenario -->
               <section class="lab-section" id="scenario">
                 <div class="lab-chips" aria-label="Tags">
                   <span class="lab-chip">
@@ -233,27 +237,25 @@
                 </h3>
                 <p>
                   You are onboarding to a RHEL-like system where you must use
-                  <code>yum</code>
-                  to verify repositories, discover packages, identify which
-                  package owns a specific file, review transaction history, and
-                  perform safe package management actions. Your goal is to
-                  complete common workflows you will use when troubleshooting
+                  <code>yum</code> to verify repositories, discover packages,
+                  identify which package owns a specific file, review transaction
+                  history, and perform safe package management actions. Your goal
+                  is to complete common workflows you will use when troubleshooting
                   real servers.
                 </p>
 
                 <div class="lab-callout">
                   <div class="lab-callout-label">Operator context</div>
                   <p class="m-b-0">
-                    Treat
-                    <code>yum</code>
-                    as an evidence tool as much as an installer. Start by
-                    confirming repos and package metadata, then make targeted
-                    changes only after you can explain what will happen and why.
+                    Treat <code>yum</code> as an evidence tool as much as an
+                    installer. Confirm repos and metadata first, then make
+                    targeted changes only after you can explain what will happen
+                    and why.
                   </p>
                 </div>
               </section>
 
-              <!-- 3) Objective -->
+              <!-- Objective -->
               <section class="lab-section alt-background" id="objective">
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">
                   Objective
@@ -263,22 +265,17 @@
                     List enabled repositories and confirm the system’s repo set.
                   </li>
                   <li>
-                    List installed packages using a name/pattern match.
+                    List installed packages using a name or pattern match.
                   </li>
                   <li>
                     Search for packages by keyword to discover candidates.
                   </li>
                   <li>
-                    Inspect package details using
-                    <code>yum info</code>
-                    .
+                    Inspect package details using <code>yum info</code>.
                   </li>
                   <li>
                     Identify which package provides a file path using
-                    <code>yum provides</code>
-                    /
-                    <code>yum whatprovides</code>
-                    .
+                    <code>yum provides</code> / <code>yum whatprovides</code>.
                   </li>
                   <li>
                     Check for available updates without installing them.
@@ -295,47 +292,37 @@
                 </ul>
               </section>
 
-              <!-- 4) What You'll Practice -->
-              <section class="lab-section" id="practice">
+              <!-- Concepts -->
+              <section class="lab-section" id="concepts">
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">
-                  What You’ll Practice
+                  Concepts
                 </h3>
-
-                <ul class="m-t-10">
+                <ul>
                   <li>
-                    Repo verification with
-                    <code>yum repolist</code>
-                    before you trust results.
+                    Your repo configuration is your supply chain. If repos are
+                    missing or stale, your package results will be misleading.
                   </li>
                   <li>
-                    Package discovery workflows:
-                    <code>yum list</code>
-                    ,
-                    <code>yum search</code>
-                    ,
-                    <code>yum info</code>
-                    .
+                    Discovery is a workflow: <code>search</code> to find candidates,
+                    <code>info</code> to validate, then act.
                   </li>
                   <li>
-                    File ownership and “what package contains this binary”
-                    triage.
+                    “What owns this file?” is a core troubleshooting path:
+                    <code>yum provides</code> lets you tie a symptom on disk to
+                    the package you can repair.
                   </li>
                   <li>
-                    Safe maintenance signals:
-                    <code>yum check-update</code>
-                    and
-                    <code>yum history</code>
-                    .
+                    <code>yum history</code> gives provenance: what changed, when,
+                    and which transaction likely caused a regression.
                   </li>
                   <li>
-                    Repair patterns:
-                    <code>yum reinstall</code>
-                    and cache cleanup.
+                    Use reinstall as a targeted baseline restore when you already
+                    know the owning package.
                   </li>
                 </ul>
               </section>
 
-              <!-- 5) Commands Walkthrough -->
+              <!-- Walkthrough -->
               <section class="lab-section alt-background" id="walkthrough">
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">
                   Walkthrough
@@ -364,12 +351,11 @@
 
                   <p>
                     Repos are your supply chain. If a repo is missing, disabled,
-                    or stale, package discovery and troubleshooting results will
-                    be misleading.
+                    or stale, package discovery results will be misleading.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code id="verify-step-1">repo id                               repo name
+                    <pre><code>repo id                               repo name
 appstream                             Rocky Linux 9 - AppStream
 baseos                                Rocky Linux 9 - BaseOS
 extras                                Rocky Linux 9 - Extras</code></pre>
@@ -380,9 +366,7 @@ extras                                Rocky Linux 9 - Extras</code></pre>
                 <div class="lab-step">
                   <div class="lab-step-title">
                     <strong class="font-alt">Step 2</strong>
-                    : List installed packages matching
-                    <code>bash</code>
-                    .
+                    : Confirm whether <code>bash</code> is installed.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -400,15 +384,13 @@ extras                                Rocky Linux 9 - Extras</code></pre>
                   </div>
 
                   <p>
-                    This is a fast way to confirm whether a package is installed
-                    and which repo it was sourced from. For broader matches,
-                    use wildcards (for example
-                    <code>'*bash*'</code>
-                    ) when appropriate.
+                    This confirms a package is installed and shows where it came
+                    from. For broader matches, use wildcards like
+                    <code>'*bash*'</code>.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code id="verify-step-2">Installed Packages
+                    <pre><code>Installed Packages
 bash.x86_64                          5.1.8-6.el9                      @baseos</code></pre>
                   </div>
                 </div>
@@ -417,7 +399,7 @@ bash.x86_64                          5.1.8-6.el9                      @baseos</c
                 <div class="lab-step">
                   <div class="lab-step-title">
                     <strong class="font-alt">Step 3</strong>
-                    : Search repos for packages related to “http server”.
+                    : Search for packages related to “http server”.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -435,14 +417,12 @@ bash.x86_64                          5.1.8-6.el9                      @baseos</c
                   </div>
 
                   <p>
-                    Use
-                    <code>yum search</code>
-                    for discovery. It matches package names and summaries,
-                    helping you identify likely candidates quickly.
+                    Use <code>yum search</code> to discover candidates quickly.
+                    It matches package names and summaries.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code id="verify-step-3">==================== Name & Summary Matched: http =====================
+                    <pre><code>==================== Name & Summary Matched: http =====================
 httpd.x86_64 : Apache HTTP Server
 mod_ssl.x86_64 : SSL/TLS module for the Apache HTTP Server</code></pre>
                   </div>
@@ -452,9 +432,7 @@ mod_ssl.x86_64 : SSL/TLS module for the Apache HTTP Server</code></pre>
                 <div class="lab-step">
                   <div class="lab-step-title">
                     <strong class="font-alt">Step 4</strong>
-                    : Show detailed info about
-                    <code>httpd</code>
-                    .
+                    : Inspect package metadata for <code>httpd</code>.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -472,13 +450,13 @@ mod_ssl.x86_64 : SSL/TLS module for the Apache HTTP Server</code></pre>
                   </div>
 
                   <p>
-                    This provides package metadata (version, release, repo,
-                    summary). You typically check this before installing or
-                    troubleshooting a dependency chain.
+                    This shows version, release, repo source, and summary.
+                    You typically check this before installing or debugging
+                    dependencies.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code id="verify-step-4">Available Packages
+                    <pre><code>Available Packages
 Name        : httpd
 Version     : 2.4.57
 Release     : 8.el9
@@ -492,9 +470,7 @@ Summary     : Apache HTTP Server</code></pre>
                 <div class="lab-step">
                   <div class="lab-step-title">
                     <strong class="font-alt">Step 5</strong>
-                    : Identify which package provides
-                    <code>/usr/bin/top</code>
-                    .
+                    : Identify which package provides <code>/usr/bin/top</code>.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -512,14 +488,12 @@ Summary     : Apache HTTP Server</code></pre>
                   </div>
 
                   <p>
-                    This is one of the most common admin tasks: “I found a file
-                    on disk, what package owns it?” It’s how you move from a
-                    symptom (missing binary) to a repair action (reinstall the
-                    owning package).
+                    This is a core admin workflow: map a file on disk to the
+                    owning package so you can choose a targeted repair action.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code id="verify-step-5">procps-ng-3.3.17-13.el9.x86_64 : System and process monitoring utilities
+                    <pre><code>procps-ng-3.3.17-13.el9.x86_64 : System and process monitoring utilities
 Repo        : baseos
 Matched from:
 Filename    : /usr/bin/top</code></pre>
@@ -530,7 +504,7 @@ Filename    : /usr/bin/top</code></pre>
                 <div class="lab-step">
                   <div class="lab-step-title">
                     <strong class="font-alt">Step 6</strong>
-                    : Check for available updates without installing them.
+                    : Check for updates without installing.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -548,13 +522,13 @@ Filename    : /usr/bin/top</code></pre>
                   </div>
 
                   <p>
-                    This is your non-invasive “what would change” view. In
-                    production, it’s useful for planning maintenance windows and
-                    identifying security-relevant updates.
+                    This is your non-invasive “what would change” view. It’s
+                    useful for planning maintenance windows and spotting
+                    security-relevant updates.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code id="verify-step-6">curl.x86_64                         7.76.1-26.el9_4                 baseos
+                    <pre><code>curl.x86_64                         7.76.1-26.el9_4                 baseos
 openssl-libs.x86_64                 3.0.7-25.el9_4                  baseos</code></pre>
                   </div>
                 </div>
@@ -563,7 +537,7 @@ openssl-libs.x86_64                 3.0.7-25.el9_4                  baseos</code
                 <div class="lab-step">
                   <div class="lab-step-title">
                     <strong class="font-alt">Step 7</strong>
-                    : View transaction history.
+                    : Review transaction history.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -581,13 +555,13 @@ openssl-libs.x86_64                 3.0.7-25.el9_4                  baseos</code
                   </div>
 
                   <p>
-                    History answers “what changed on this host and when.” This is
-                    critical when troubleshooting regressions after updates or
-                    proving what actions were performed during an incident.
+                    History answers “what changed and when.” It’s critical when
+                    debugging regressions after updates or reconstructing actions
+                    during an incident.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code id="verify-step-7">ID     | Command line             | Date and time    | Action(s) | Altered
+                    <pre><code>ID     | Command line             | Date and time    | Action(s) | Altered
 12     | install vim-enhanced     | 2026-01-02 12:20 | Install   |    1
 11     | update                   | 2026-01-01 09:10 | Update    |   14</code></pre>
                   </div>
@@ -597,16 +571,14 @@ openssl-libs.x86_64                 3.0.7-25.el9_4                  baseos</code
                 <div class="lab-step">
                   <div class="lab-step-title">
                     <strong class="font-alt">Step 8</strong>
-                    : Reinstall
-                    <code>bash</code>
-                    to repair missing files.
+                    : Reinstall <code>bash</code> as a repair workflow.
                   </div>
 
                   <div class="lab-callout">
                     <div class="lab-callout-label">Repair note</div>
                     <p class="m-b-0">
-                      Reinstall is a safe, targeted repair when the owning
-                      package is known and you suspect file loss or corruption.
+                      Reinstall is a safe, targeted repair when you know the
+                      owning package and suspect file loss or corruption.
                     </p>
                   </div>
 
@@ -625,13 +597,12 @@ openssl-libs.x86_64                 3.0.7-25.el9_4                  baseos</code
                   </div>
 
                   <p>
-                    This restores packaged files from the repo while respecting
-                    configuration handling rules. It’s a common workflow after a
-                    hardening script or mis-edit breaks something fundamental.
+                    This restores packaged files from repos while respecting
+                    config handling rules.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code id="verify-step-8">Dependencies resolved.
+                    <pre><code>Dependencies resolved.
 Reinstalling:
   bash.x86_64  5.1.8-6.el9  baseos
 Complete!</code></pre>
@@ -660,13 +631,12 @@ Complete!</code></pre>
                   </div>
 
                   <p>
-                    Cache cleanup is useful when repo metadata is stale or you
-                    suspect corrupted caches. It forces a fresh metadata fetch on
-                    the next operation.
+                    Use this when you suspect stale or broken metadata. It forces
+                    a fresh metadata fetch on the next operation.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code id="verify-step-9">0 files removed</code></pre>
+                    <pre><code>0 files removed</code></pre>
                   </div>
                 </div>
 
@@ -692,12 +662,12 @@ Complete!</code></pre>
                   </div>
 
                   <p>
-                    This is a simple verification step to confirm your repo view
-                    is still sane after cleanup and package operations.
+                    Quick verification that your repo view is still sane after
+                    cleanup and package operations.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code id="verify-step-10">repo id                               repo name
+                    <pre><code>repo id                               repo name
 appstream                             Rocky Linux 9 - AppStream
 baseos                                Rocky Linux 9 - BaseOS
 extras                                Rocky Linux 9 - Extras</code></pre>
@@ -705,7 +675,76 @@ extras                                Rocky Linux 9 - Extras</code></pre>
                 </div>
               </section>
 
-              <!-- 8) Reference -->
+              <!-- Breakpoints -->
+              <section class="lab-section" id="breakpoints">
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  Common breakpoints
+                </h3>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">repolist is empty or missing expected repos</div>
+                  <p class="m-b-0">
+                    If repos are missing or disabled, discovery and installs will
+                    fail or look incomplete. Fix repo configuration first, then
+                    re-run <code>yum repolist</code>.
+                  </p>
+                </div>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">yum provides returns no matches</div>
+                  <p class="m-b-0">
+                    Ensure you are using the full path and that repos/metadata
+                    are available. If the file is local and not packaged, there
+                    may not be an owning RPM.
+                  </p>
+                </div>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">yum check-update output changes across runs</div>
+                  <p class="m-b-0">
+                    That can be normal as mirrors update. Treat it as a snapshot
+                    and re-check close to your maintenance window.
+                  </p>
+                </div>
+              </section>
+
+              <!-- Cleanup -->
+              <section class="lab-section alt-background" id="cleanup">
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  Cleanup checklist
+                </h3>
+
+                <p>
+                  Confirm repos are visible and that your package tooling is in a
+                  healthy state.
+                </p>
+
+                <div class="lab-codeblock m-b-40 m-t-40">
+                  <div class="lab-codeblock-header">
+                    <span>Commands</span>
+                    <button
+                      class="lab-copy-btn"
+                      type="button"
+                      data-copy="#cmd-cleanup"
+                    >
+                      Copy
+                    </button>
+                  </div>
+                  <pre><code id="cmd-cleanup">yum repolist
+yum history | head -n 15
+yum clean metadata</code></pre>
+                </div>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">Success signal</div>
+                  <p class="m-b-0">
+                    Repos are listed, history is available, and metadata cleanup
+                    completes without errors.
+                  </p>
+                </div>
+              </section>
+
+              <!-- Reference -->
               <section class="lab-section" id="reference">
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">
                   Reference
@@ -717,56 +756,66 @@ extras                                Rocky Linux 9 - Extras</code></pre>
                     : Lists enabled repositories.
                     <ul>
                       <li>
-                        Use
-                        <code>yum repolist enabled</code>
-                        to explicitly scope to enabled repos.
+                        <code>enabled</code>
+                        : Show enabled repos explicitly.
                       </li>
                     </ul>
                   </li>
 
                   <li>
                     <code>yum list installed &lt;name&gt;</code>
-                    : Shows installed packages matching the name/pattern.
+                    : Show installed packages matching a name or pattern.
                   </li>
 
                   <li>
                     <code>yum search &lt;terms&gt;</code>
-                    : Searches package names and summaries for keywords.
+                    : Search package names and summaries for keywords.
                   </li>
 
                   <li>
                     <code>yum info &lt;pkg&gt;</code>
-                    : Displays package metadata (version, release, repo, summary).
+                    : Display package metadata (version, release, repo, summary).
                   </li>
 
                   <li>
                     <code>yum provides &lt;path&gt;</code>
-                    /
-                    <code>yum whatprovides &lt;path&gt;</code>
-                    : Finds which package provides a specific file path.
+                    : Find which package provides a specific file path.
+                    <ul>
+                      <li>
+                        <code>whatprovides</code>
+                        : Alias for provides (same intent).
+                      </li>
+                    </ul>
                   </li>
 
                   <li>
                     <code>yum check-update</code>
-                    : Lists available package updates without installing them.
+                    : List available updates without installing.
                   </li>
 
                   <li>
                     <code>yum history</code>
-                    : Shows transaction history and change provenance.
+                    : Show transaction history and change provenance.
                   </li>
 
                   <li>
                     <code>yum reinstall &lt;pkg&gt;</code>
-                    : Reinstalls a package to restore packaged files.
+                    : Reinstall a package to restore packaged files.
                   </li>
 
                   <li>
-                    <code>yum clean metadata</code>
-                    /
-                    <code>yum clean all</code>
-                    : Removes cached metadata (and optionally packages) to force
-                    fresh repo data.
+                    <code>yum clean</code>
+                    : Remove cached data to force fresh repo information.
+                    <ul>
+                      <li>
+                        <code>metadata</code>
+                        : Remove repo metadata only.
+                      </li>
+                      <li>
+                        <code>all</code>
+                        : Remove metadata and cached packages.
+                      </li>
+                    </ul>
                   </li>
                 </ul>
               </section>
@@ -774,17 +823,6 @@ extras                                Rocky Linux 9 - Extras</code></pre>
             <!-- /main -->
           </div>
           <!-- /row -->
-
-          <nav class="lab-pagination">
-            <a
-              id="prev-lab"
-              class="lab-nav-link"
-              href="#"
-              aria-label="Previous lab"
-            >
-              &uArr;
-            </a>
-          </nav>
         </div>
         <!-- /container -->
       </section>
@@ -855,5 +893,9 @@ extras                                Rocky Linux 9 - Extras</code></pre>
 
     <!-- Lab page JS (new) -->
     <script src="../assets/js/lab.js"></script>
+
+    <script>
+      document.getElementById('year').textContent = new Date().getFullYear()
+    </script>
   </body>
 </html>

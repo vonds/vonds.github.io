@@ -41,7 +41,10 @@
     <link href="../assets/css/lab.css" rel="stylesheet" />
 
     <!-- Fonts -->
-    <link href="https://fonts.googleapis.com/css?family=Dosis" rel="stylesheet" />
+    <link
+      href="https://fonts.googleapis.com/css?family=Dosis"
+      rel="stylesheet"
+    />
   </head>
 
   <body>
@@ -65,20 +68,26 @@
               <a href="#">Portfolio</a>
               <ul>
                 <li>
-                  <a href="https://github.com/vonds/exit_0" target="_blank" rel="noopener">
+                  <a
+                    href="https://github.com/vonds/exit_0"
+                    target="_blank"
+                    rel="noopener"
+                  >
                     exit_0
                   </a>
                 </li>
                 <li>
-                  <a href="docs.html" target="_blank" rel="noopener">
-                    exit_0
-                  </a>
+                  <a href="docs.html" target="_blank" rel="noopener"> exit_0 </a>
                 </li>
               </ul>
             </li>
 
             <li>
-              <a href="https://www.linkedin.com/in/vonds/" target="_blank" rel="noopener">
+              <a
+                href="https://www.linkedin.com/in/vonds/"
+                target="_blank"
+                rel="noopener"
+              >
                 LinkedIn
               </a>
             </li>
@@ -113,7 +122,9 @@
     <!-- WRAPPER -->
     <div class="wrapper">
       <!-- NAVIGATION -->
-      <nav class="navbar navbar-custom navbar-transparent navbar-light navbar-fixed-top">
+      <nav
+        class="navbar navbar-custom navbar-transparent navbar-light navbar-fixed-top"
+      >
         <div class="container">
           <div class="navbar-header">
             <a class="navbar-brand" href="../index.html">
@@ -137,12 +148,26 @@
       <section class="module">
         <div class="container">
           <h2 class="font-alt module-title m-t-60">
-            Lab 127: Networking troubleshooting
+            Lab 127: Network Troubleshooting
           </h2>
 
           <nav class="lab-pagination">
-            <a id="prev-lab" class="lab-nav-link" href="#" aria-label="Previous lab">&laquo;</a>
-            <a id="next-lab" class="lab-nav-link" href="#" aria-label="Next lab">&raquo;</a>
+            <a
+              id="prev-lab"
+              class="lab-nav-link"
+              href="#"
+              aria-label="Previous lab"
+            >
+              &laquo;
+            </a>
+            <a
+              id="next-lab"
+              class="lab-nav-link"
+              href="#"
+              aria-label="Next lab"
+            >
+              &raquo;
+            </a>
           </nav>
 
           <div class="row">
@@ -155,7 +180,11 @@
                   </h5>
                   <ul class="docs-nav">
                     <li><a href="#scenario">Scenario</a></li>
+                    <li><a href="#objective">Objective</a></li>
+                    <li><a href="#concepts">Concepts</a></li>
                     <li><a href="#walkthrough">Walkthrough</a></li>
+                    <li><a href="#breakpoints">Breakpoints</a></li>
+                    <li><a href="#cleanup">Cleanup</a></li>
                     <li><a href="#reference">Reference</a></li>
                   </ul>
                 </div>
@@ -165,11 +194,14 @@
             <!-- MAIN CONTENT -->
             <div class="col-sm-8 col-md-9 lab-doc">
               <p class="m-b-20 lab-summary">
-                Fix a Linux VM that can reach the local gateway but cannot reach the internet. Diagnose in a clean order:
-                interface addressing, local reachability, routing to public IPs, then DNS. Restore connectivity by adding a
-                missing default route and correcting systemd-resolved DNS with <code>resolvectl</code>.
+                Restore outbound connectivity on a Linux VM that can reach its
+                gateway but cannot reach the internet. Diagnose in order:
+                addressing, local reachability, routing to public IPs, then DNS,
+                and fix the missing default route and broken systemd-resolved
+                configuration.
               </p>
 
+              <!-- Video (kept on page; removed from left panel) -->
               <section class="lab-section" id="video" aria-label="Lab video">
                 <div class="lab-video">
                   <div class="lab-video-embed text-center">
@@ -188,171 +220,269 @@
               <!-- Scenario -->
               <section class="lab-section" id="scenario">
                 <div class="lab-chips" aria-label="Tags">
-                  <span class="lab-chip"><span class="lab-chip-key">networking</span></span>
-                  <span class="lab-chip"><span class="lab-chip-key">routing</span></span>
-                  <span class="lab-chip"><span class="lab-chip-key">dns</span></span>
-                  <span class="lab-chip"><span class="lab-chip-key">troubleshooting</span></span>
-                  <span class="lab-chip"><span class="lab-chip-key">systemd-resolved</span></span>
+                  <span class="lab-chip">
+                    <span class="lab-chip-key">networking</span>
+                  </span>
+                  <span class="lab-chip">
+                    <span class="lab-chip-key">routing</span>
+                  </span>
+                  <span class="lab-chip">
+                    <span class="lab-chip-key">dns</span>
+                  </span>
+                  <span class="lab-chip">
+                    <span class="lab-chip-key">troubleshooting</span>
+                  </span>
+                  <span class="lab-chip">
+                    <span class="lab-chip-key">resolved</span>
+                  </span>
                 </div>
 
-                <h3 class="font-alt lab-section-title m-b-40 m-t-40">Scenario</h3>
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  Scenario
+                </h3>
 
                 <p>
-                  You SSH into a Linux VM (<code>net-ops-127</code>) after an app deploy. The node can reach the local
-                  gateway (<code>192.168.56.1</code>) but cannot reach the internet. Your job is to restore outbound
-                  connectivity and ensure DNS works again.
+                  You SSH into a Linux VM (
+                  <code>net-ops-127</code>
+                  ) after an app deploy. The node can reach the local gateway (
+                  <code>192.168.56.1</code>
+                  ) but cannot reach the internet. Your job is to restore
+                  outbound connectivity and ensure DNS works again.
                 </p>
 
                 <div class="lab-callout">
-                  <div class="lab-callout-label">Constraints</div>
+                  <div class="lab-callout-label">Operator context</div>
                   <p class="m-b-0">
-                    Interface: <code>eth0</code>. Gateway should be <code>192.168.56.1</code>. DNS should end up using
-                    <code>1.1.1.1</code> and <code>8.8.8.8</code>. Resolver stack is systemd-resolved, so use
-                    <code>resolvectl</code>.
+                    Interface is
+                    <code>eth0</code>
+                    and the gateway should be
+                    <code>192.168.56.1</code>
+                    . Validate public IP reachability before chasing DNS, then
+                    repair systemd-resolved using
+                    <code>resolvectl</code>
+                    with
+                    <code>1.1.1.1</code>
+                    and
+                    <code>8.8.8.8</code>
+                    .
                   </p>
                 </div>
               </section>
 
               <!-- Objective -->
               <section class="lab-section alt-background" id="objective">
-                <h3 class="font-alt lab-section-title m-b-40 m-t-40">Objective</h3>
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  Objective
+                </h3>
                 <ul>
-                  <li>Confirm an IPv4 address is present on <code>eth0</code>.</li>
+                  <li>
+                    Confirm an IPv4 address is present on
+                    <code>eth0</code>
+                    .
+                  </li>
                   <li>Validate local reachability to the gateway.</li>
                   <li>Differentiate routing failures from DNS failures.</li>
                   <li>Detect a missing default route and add it correctly.</li>
-                  <li>Use <code>resolvectl</code> to inspect and repair DNS server configuration.</li>
+                  <li>
+                    Use
+                    <code>resolvectl</code>
+                    to inspect and repair DNS server configuration.
+                  </li>
                   <li>Verify success with both IP and hostname tests.</li>
                 </ul>
               </section>
 
-              <!-- Mental model -->
-              <section class="lab-section" id="mentalmodel">
-                <h3 class="font-alt lab-section-title m-b-40 m-t-40">Mental model</h3>
-
-                <p>
-                  “No internet” is not one problem. It is usually one of these layers:
-                </p>
+              <!-- Concepts (no alt-background moving forward) -->
+              <section class="lab-section" id="concepts">
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  Concepts
+                </h3>
 
                 <ul>
-                  <li><strong>Addressing</strong>: the interface has no IP, or the IP/subnet is wrong.</li>
-                  <li><strong>Local path</strong>: you cannot reach the gateway (L2/L3 local issue).</li>
-                  <li><strong>Routing</strong>: you can reach the gateway, but there is no default route to the internet.</li>
-                  <li><strong>DNS</strong>: you can reach public IPs, but hostnames fail to resolve.</li>
+                  <li>
+                    Layered troubleshooting: addressing, local path, routing,
+                    DNS.
+                  </li>
+                  <li>
+                    Bypassing DNS by testing a public IP (
+                    <code>ping 1.1.1.1</code>
+                    ) before hostname tests.
+                  </li>
+                  <li>
+                    Default route requirements for outbound connectivity (
+                    <code>default via ...</code>
+                    ).
+                  </li>
+                  <li>
+                    Runtime route repair with
+                    <code>ip route add</code>
+                    .
+                  </li>
+                  <li>
+                    systemd-resolved inspection and link-scoped DNS using
+                    <code>resolvectl</code>
+                    .
+                  </li>
+                  <li>
+                    NSS validation with
+                    <code>getent hosts</code>
+                    .
+                  </li>
                 </ul>
-
-                <div class="lab-callout">
-                  <div class="lab-callout-label">Order matters</div>
-                  <p class="m-b-0">
-                    Always test public IP reachability before you chase DNS. If <code>ping 1.1.1.1</code> fails, DNS is not
-                    the root cause yet.
-                  </p>
-                </div>
               </section>
 
               <!-- Walkthrough -->
               <section class="lab-section alt-background" id="walkthrough">
-                <h3 class="font-alt lab-section-title m-b-40 m-t-40">Walkthrough</h3>
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  Walkthrough
+                </h3>
 
                 <!-- Step 1 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
-                    <strong class="font-alt">Step 1</strong>: Confirm IPv4 addressing on <code>eth0</code>.
+                    <strong class="font-alt">Step 1</strong>
+                    : Confirm IPv4 addressing on
+                    <code>eth0</code>
+                    .
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
-                      <button class="lab-copy-btn" type="button" data-copy="#cmd-127-1">Copy</button>
+                      <button
+                        class="lab-copy-btn"
+                        type="button"
+                        data-copy="#cmd-step-1"
+                      >
+                        Copy
+                      </button>
                     </div>
-                    <pre><code id="cmd-127-1">ip -4 addr show eth0</code></pre>
+                    <pre><code id="cmd-step-1">ip -4 addr show eth0</code></pre>
                   </div>
 
                   <p>
-                    You want a valid <code>inet</code> address and the correct prefix (here, <code>/24</code>) before you
-                    go further.
+                    You want a valid
+                    <code>inet</code>
+                    address and the expected prefix (for example
+                    <code>/24</code>
+                    ) before you proceed.
                   </p>
                 </div>
 
                 <!-- Step 2 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
-                    <strong class="font-alt">Step 2</strong>: Prove the gateway is reachable.
+                    <strong class="font-alt">Step 2</strong>
+                    : Prove the gateway is reachable.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
-                      <button class="lab-copy-btn" type="button" data-copy="#cmd-127-2">Copy</button>
+                      <button
+                        class="lab-copy-btn"
+                        type="button"
+                        data-copy="#cmd-step-2"
+                      >
+                        Copy
+                      </button>
                     </div>
-                    <pre><code id="cmd-127-2">ping -c 2 192.168.56.1</code></pre>
+                    <pre><code id="cmd-step-2">ping -c 2 192.168.56.1</code></pre>
                   </div>
 
                   <p>
-                    This confirms local L2/L3 connectivity. If this fails, fix the local network first (cable, VLAN, NIC,
-                    IP/subnet, firewall).
+                    This confirms local L2/L3 connectivity. If this fails, fix
+                    the local network first (interface state, IP/subnet, L2
+                    path, firewall).
                   </p>
                 </div>
 
                 <!-- Step 3 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
-                    <strong class="font-alt">Step 3</strong>: Test routing with a public IP (bypass DNS).
+                    <strong class="font-alt">Step 3</strong>
+                    : Test routing with a public IP (bypass DNS).
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
-                      <button class="lab-copy-btn" type="button" data-copy="#cmd-127-3">Copy</button>
+                      <button
+                        class="lab-copy-btn"
+                        type="button"
+                        data-copy="#cmd-step-3"
+                      >
+                        Copy
+                      </button>
                     </div>
-                    <pre><code id="cmd-127-3">ping -c 2 1.1.1.1</code></pre>
+                    <pre><code id="cmd-step-3">ping -c 2 1.1.1.1</code></pre>
                   </div>
 
                   <p>
-                    If this fails while the gateway ping succeeds, the problem is usually routing (often a missing default
-                    route) or an upstream firewall/NAT issue.
+                    If this fails while the gateway ping succeeds, the problem
+                    is usually routing (often a missing default route) or an
+                    upstream policy/NAT issue.
                   </p>
                 </div>
 
                 <!-- Step 4 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
-                    <strong class="font-alt">Step 4</strong>: Inspect the routing table.
+                    <strong class="font-alt">Step 4</strong>
+                    : Inspect the routing table.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
-                      <button class="lab-copy-btn" type="button" data-copy="#cmd-127-4">Copy</button>
+                      <button
+                        class="lab-copy-btn"
+                        type="button"
+                        data-copy="#cmd-step-4"
+                      >
+                        Copy
+                      </button>
                     </div>
-                    <pre><code id="cmd-127-4">ip route</code></pre>
+                    <pre><code id="cmd-step-4">ip route</code></pre>
                   </div>
 
                   <p>
-                    You should see a line starting with <code>default via ...</code>. If it is missing, the host has no
-                    path to networks outside its local subnet.
+                    You should see a line starting with
+                    <code>default via ...</code>
+                    . If it is missing, the host has no path to networks outside
+                    its local subnet.
                   </p>
                 </div>
 
                 <!-- Step 5 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
-                    <strong class="font-alt">Step 5</strong>: Add the missing default route.
+                    <strong class="font-alt">Step 5</strong>
+                    : Add the missing default route.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
-                      <button class="lab-copy-btn" type="button" data-copy="#cmd-127-5">Copy</button>
+                      <button
+                        class="lab-copy-btn"
+                        type="button"
+                        data-copy="#cmd-step-5"
+                      >
+                        Copy
+                      </button>
                     </div>
-                    <pre><code id="cmd-127-5">sudo ip route add default via 192.168.56.1 dev eth0</code></pre>
+                    <pre><code id="cmd-step-5">sudo ip route add default via 192.168.56.1 dev eth0</code></pre>
                   </div>
 
                   <div class="lab-callout">
-                    <div class="lab-callout-label">Note</div>
+                    <div class="lab-callout-label">Operational note</div>
                     <p class="m-b-0">
-                      This fixes routing immediately but may not persist across reboot depending on how networking is
-                      managed (NetworkManager, systemd-networkd, etc.). The lab focuses on incident-style restore first.
+                      This restores routing immediately, but may not persist
+                      across reboot depending on how networking is managed
+                      (NetworkManager, systemd-networkd, distro config files).
+                      The incident goal is restore first, then make it
+                      persistent through the correct manager.
                     </p>
                   </div>
                 </div>
@@ -360,188 +490,371 @@
                 <!-- Step 6 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
-                    <strong class="font-alt">Step 6</strong>: Verify the default route exists.
+                    <strong class="font-alt">Step 6</strong>
+                    : Confirm the default route is present.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
-                      <button class="lab-copy-btn" type="button" data-copy="#cmd-127-6">Copy</button>
+                      <button
+                        class="lab-copy-btn"
+                        type="button"
+                        data-copy="#cmd-step-6"
+                      >
+                        Copy
+                      </button>
                     </div>
-                    <pre><code id="cmd-127-6">ip route</code></pre>
+                    <pre><code id="cmd-step-6">ip route</code></pre>
                   </div>
 
                   <p>
-                    Confirm you now see <code>default via 192.168.56.1 dev eth0</code>.
+                    Confirm you now see
+                    <code>default via 192.168.56.1 dev eth0</code>
+                    .
                   </p>
                 </div>
 
                 <!-- Step 7 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
-                    <strong class="font-alt">Step 7</strong>: Re-test public IP reachability.
+                    <strong class="font-alt">Step 7</strong>
+                    : Re-test public IP reachability.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
-                      <button class="lab-copy-btn" type="button" data-copy="#cmd-127-7">Copy</button>
+                      <button
+                        class="lab-copy-btn"
+                        type="button"
+                        data-copy="#cmd-step-7"
+                      >
+                        Copy
+                      </button>
                     </div>
-                    <pre><code id="cmd-127-7">ping -c 2 1.1.1.1</code></pre>
+                    <pre><code id="cmd-step-7">ping -c 2 1.1.1.1</code></pre>
                   </div>
 
                   <p>
-                    At this point, public IP pings should work. Now you can move to DNS.
+                    Public IP tests should work before you move on to DNS.
                   </p>
                 </div>
 
                 <!-- Step 8 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
-                    <strong class="font-alt">Step 8</strong>: Test DNS resolution with a hostname.
+                    <strong class="font-alt">Step 8</strong>
+                    : Test DNS resolution with a hostname.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
-                      <button class="lab-copy-btn" type="button" data-copy="#cmd-127-8">Copy</button>
+                      <button
+                        class="lab-copy-btn"
+                        type="button"
+                        data-copy="#cmd-step-8"
+                      >
+                        Copy
+                      </button>
                     </div>
-                    <pre><code id="cmd-127-8">ping -c 1 example.com</code></pre>
+                    <pre><code id="cmd-step-8">ping -c 1 example.com</code></pre>
                   </div>
 
                   <p>
-                    If you see a name resolution error, DNS is misconfigured (or blocked) even if routing is now correct.
+                    If you see a name resolution error, DNS is misconfigured (or
+                    blocked) even though routing is now correct.
                   </p>
                 </div>
 
                 <!-- Step 9 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
-                    <strong class="font-alt">Step 9</strong>: Inspect resolver configuration (systemd-resolved).
+                    <strong class="font-alt">Step 9</strong>
+                    : Inspect resolver configuration (systemd-resolved).
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
-                      <button class="lab-copy-btn" type="button" data-copy="#cmd-127-9">Copy</button>
+                      <button
+                        class="lab-copy-btn"
+                        type="button"
+                        data-copy="#cmd-step-9"
+                      >
+                        Copy
+                      </button>
                     </div>
-                    <pre><code id="cmd-127-9">resolvectl status</code></pre>
+                    <pre><code id="cmd-step-9">resolvectl status</code></pre>
                   </div>
 
                   <p>
-                    Look at the DNS servers assigned to <code>eth0</code>. In this lab, a bad resolver is configured
-                    (<code>192.168.56.250</code>).
+                    Look at DNS servers assigned to
+                    <code>eth0</code>
+                    . In this lab, a bad resolver is configured and needs to be
+                    replaced with known-good servers.
                   </p>
                 </div>
 
                 <!-- Step 10 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
-                    <strong class="font-alt">Step 10</strong>: Set working DNS servers on <code>eth0</code>.
+                    <strong class="font-alt">Step 10</strong>
+                    : Set working DNS servers on
+                    <code>eth0</code>
+                    .
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
-                      <button class="lab-copy-btn" type="button" data-copy="#cmd-127-10">Copy</button>
+                      <button
+                        class="lab-copy-btn"
+                        type="button"
+                        data-copy="#cmd-step-10"
+                      >
+                        Copy
+                      </button>
                     </div>
-                    <pre><code id="cmd-127-10">sudo resolvectl dns eth0 1.1.1.1 8.8.8.8</code></pre>
+                    <pre><code id="cmd-step-10">sudo resolvectl dns eth0 1.1.1.1 8.8.8.8</code></pre>
                   </div>
 
                   <p>
-                    This updates the link-scoped DNS configuration for <code>eth0</code>.
+                    This updates link-scoped DNS configuration for
+                    <code>eth0</code>
+                    .
                   </p>
                 </div>
 
                 <!-- Step 11 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
-                    <strong class="font-alt">Step 11</strong>: Validate name resolution using <code>getent</code>.
+                    <strong class="font-alt">Step 11</strong>
+                    : Validate name resolution using
+                    <code>getent</code>
+                    .
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
-                      <button class="lab-copy-btn" type="button" data-copy="#cmd-127-11">Copy</button>
+                      <button
+                        class="lab-copy-btn"
+                        type="button"
+                        data-copy="#cmd-step-11"
+                      >
+                        Copy
+                      </button>
                     </div>
-                    <pre><code id="cmd-127-11">getent hosts example.com</code></pre>
+                    <pre><code id="cmd-step-11">getent hosts example.com</code></pre>
                   </div>
 
                   <p>
-                    <code>getent</code> confirms NSS resolution is working. This is a clean validation step before you
-                    rely on application behavior.
+                    <code>getent</code>
+                    confirms NSS resolution is working. This is a clean
+                    validation step before you rely on application behavior.
                   </p>
                 </div>
 
                 <!-- Step 12 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
-                    <strong class="font-alt">Step 12</strong>: Final check with a hostname ping.
+                    <strong class="font-alt">Step 12</strong>
+                    : Final check with a hostname ping.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
-                      <button class="lab-copy-btn" type="button" data-copy="#cmd-127-12">Copy</button>
+                      <button
+                        class="lab-copy-btn"
+                        type="button"
+                        data-copy="#cmd-step-12"
+                      >
+                        Copy
+                      </button>
                     </div>
-                    <pre><code id="cmd-127-12">ping -c 1 example.com</code></pre>
+                    <pre><code id="cmd-step-12">ping -c 1 example.com</code></pre>
                   </div>
 
                   <p>
-                    If this works, outbound connectivity is restored and DNS is functioning.
+                    If this works, outbound connectivity is restored and DNS is
+                    functioning.
                   </p>
                 </div>
               </section>
 
               <!-- Common breakpoints -->
               <section class="lab-section" id="breakpoints">
-                <h3 class="font-alt lab-section-title m-b-40 m-t-40">Common breakpoints</h3>
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  Common breakpoints
+                </h3>
 
                 <div class="lab-callout">
                   <div class="lab-callout-label">Gateway ping fails</div>
                   <p class="m-b-0">
-                    Check the interface state, IP/prefix, and L2 connectivity. Confirm the correct interface name
-                    (<code>ip link</code>) and verify local subnet settings.
+                    Check interface state, IP/prefix, and local path. Confirm
+                    the correct interface name with
+                    <code>ip link</code>
+                    and verify subnet settings.
                   </p>
                 </div>
 
                 <div class="lab-callout">
-                  <div class="lab-callout-label">Public IP ping fails even with a default route</div>
+                  <div class="lab-callout-label">
+                    Public IP ping fails even with a default route
+                  </div>
                   <p class="m-b-0">
-                    The upstream device may not be performing NAT, a firewall may block egress ICMP, or the VM network may
-                    be isolated. In real systems, follow up with <code>traceroute</code> and policy checks.
+                    Upstream NAT may be missing, an egress firewall may block
+                    ICMP, or the VM network may be isolated. In real systems,
+                    validate the path with
+                    <code>traceroute</code>
+                    and review policy.
                   </p>
                 </div>
 
                 <div class="lab-callout">
-                  <div class="lab-callout-label">DNS still fails after resolvectl dns</div>
+                  <div class="lab-callout-label">
+                    DNS still fails after resolvectl dns
+                  </div>
                   <p class="m-b-0">
-                    Confirm systemd-resolved is running, confirm the link-scoped DNS shows under <code>Link (eth0)</code>,
-                    and retest with <code>resolvectl query example.com</code>. Also consider firewall rules for UDP/TCP 53.
+                    Confirm systemd-resolved is running, confirm the DNS servers
+                    appear under the correct link, then retest with
+                    <code>resolvectl query example.com</code>
+                    . Also consider firewall rules for UDP/TCP 53.
                   </p>
                 </div>
 
                 <div class="lab-callout">
-                  <div class="lab-callout-label">Route change disappears later</div>
+                  <div class="lab-callout-label">
+                    Route change disappears later
+                  </div>
                   <p class="m-b-0">
-                    <code>ip route add</code> is runtime state. For persistence, set it in the network manager used by the
-                    system (NetworkManager, systemd-networkd, or distro config files).
+                    <code>ip route add</code>
+                    is runtime state. For persistence, set the default route in
+                    the network manager used by the system.
+                  </p>
+                </div>
+              </section>
+
+              <!-- Cleanup -->
+              <section class="lab-section alt-background" id="cleanup">
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  Cleanup checklist
+                </h3>
+
+                <p>
+                  This lab modifies runtime networking state. If you need to
+                  revert the changes, remove the default route and restore the
+                  prior link-scoped DNS configuration.
+                </p>
+
+                <div class="lab-codeblock m-b-40 m-t-40">
+                  <div class="lab-codeblock-header">
+                    <span>Commands</span>
+                    <button
+                      class="lab-copy-btn"
+                      type="button"
+                      data-copy="#cmd-cleanup"
+                    >
+                      Copy
+                    </button>
+                  </div>
+                  <pre><code id="cmd-cleanup">sudo ip route del default via 192.168.56.1 dev eth0
+sudo resolvectl revert eth0
+ip route
+resolvectl status</code></pre>
+                </div>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">Success signal</div>
+                  <p class="m-b-0">
+                    The default route and DNS configuration reflect the intended
+                    state, and your reachability tests match expectations for
+                    the environment.
                   </p>
                 </div>
               </section>
 
               <!-- Reference -->
               <section class="lab-section" id="reference">
-                <h3 class="font-alt lab-section-title m-b-40 m-t-40">Reference</h3>
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  Reference
+                </h3>
 
                 <ul class="lab-reference-list">
-                  <li><code>ip -4 addr show eth0</code>: confirm IPv4 address and prefix.</li>
-                  <li><code>ip route</code>: inspect routing table and default route.</li>
-                  <li><code>ip route add default via &lt;gw&gt; dev &lt;if&gt;</code>: restore outbound routing.</li>
-                  <li><code>ping -c N &lt;ip&gt;</code>: test reachability (use an IP to bypass DNS).</li>
-                  <li><code>resolvectl status</code>: inspect systemd-resolved resolver state.</li>
-                  <li><code>resolvectl dns eth0 1.1.1.1 8.8.8.8</code>: set DNS servers for a link.</li>
-                  <li><code>getent hosts example.com</code>: validate NSS name resolution.</li>
+                  <li>
+                    <code>ip -4 addr show &lt;if&gt;</code>
+                    : Confirms IPv4 address and prefix on an interface.
+                    <ul>
+                      <li>
+                        <code>-4</code>
+                        : Limits output to IPv4 addresses.
+                      </li>
+                    </ul>
+                  </li>
+
+                  <li>
+                    <code>ip route</code>
+                    : Displays the routing table (including the default route).
+                  </li>
+
+                  <li>
+                    <code>ip route add default via &lt;gw&gt; dev &lt;if&gt;</code>
+                    : Adds a default route for outbound traffic.
+                    <ul>
+                      <li>
+                        <code>default</code>
+                        : Route used when no more specific route matches.
+                      </li>
+                      <li>
+                        <code>via &lt;gw&gt;</code>
+                        : Sets the next-hop gateway.
+                      </li>
+                      <li>
+                        <code>dev &lt;if&gt;</code>
+                        : Sets the egress interface.
+                      </li>
+                    </ul>
+                  </li>
+
+                  <li>
+                    <code>ping -c &lt;n&gt; &lt;target&gt;</code>
+                    : Tests reachability to an IP or hostname.
+                    <ul>
+                      <li>
+                        <code>-c &lt;n&gt;</code>
+                        : Sends a fixed number of probes.
+                      </li>
+                    </ul>
+                  </li>
+
+                  <li>
+                    <code>resolvectl status</code>
+                    : Shows systemd-resolved status and per-link DNS servers.
+                  </li>
+
+                  <li>
+                    <code>resolvectl dns &lt;if&gt; &lt;dns1&gt; &lt;dns2&gt;</code>
+                    : Sets DNS servers for a specific link.
+                    <ul>
+                      <li>
+                        <code>dns</code>
+                        : Updates link-scoped DNS server assignment.
+                      </li>
+                    </ul>
+                  </li>
+
+                  <li>
+                    <code>resolvectl revert &lt;if&gt;</code>
+                    : Reverts link-scoped resolver settings to the prior state.
+                  </li>
+
+                  <li>
+                    <code>getent hosts &lt;name&gt;</code>
+                    : Validates NSS hostname resolution for a target name.
+                  </li>
                 </ul>
               </section>
             </div>
@@ -559,10 +872,20 @@
             <div class="col-sm-12">
               <ul class="social-text-links font-alt text-center m-b-20">
                 <li>
-                  <a href="https://github.com/vonds" target="_blank" rel="noopener">Github</a>
+                  <a
+                    href="https://github.com/vonds"
+                    target="_blank"
+                    rel="noopener"
+                    >Github</a
+                  >
                 </li>
                 <li>
-                  <a href="https://www.linkedin.com/in/vonds/" target="_blank" rel="noopener">Linkedin</a>
+                  <a
+                    href="https://www.linkedin.com/in/vonds/"
+                    target="_blank"
+                    rel="noopener"
+                    >Linkedin</a
+                  >
                 </li>
               </ul>
             </div>
@@ -594,6 +917,7 @@
     <script src="../assets/js/imagesloaded.pkgd.js"></script>
     <script src="../assets/js/isotope.pkgd.min.js"></script>
     <script src="../assets/js/packery-mode.pkgd.min.js"></script>
+    <script src="../assets/js/packery-mode.pkgd.min.js"></script>
     <script src="../assets/js/appear.js"></script>
     <script src="../assets/js/jquery.easing.1.3.js"></script>
     <script src="../assets/js/wow.min.js"></script>
@@ -607,7 +931,7 @@
     <script src="../assets/js/lab.js"></script>
 
     <script>
-      document.getElementById("year").textContent = new Date().getFullYear()
+      document.getElementById('year').textContent = new Date().getFullYear()
     </script>
   </body>
 </html>

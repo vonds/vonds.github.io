@@ -1,645 +1,554 @@
 <!-- lab131.html -->
 <!DOCTYPE html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="exit_0 Documentation" />
+    <meta name="name" content="Vonds" />
 
-<head>
-	<meta charset="UTF-8" />
-	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-	<meta name="description" content="exit_0 Documentation" />
-	<meta name="name" content="Vonds" />
+    <title>Vonds | Lab 131</title>
 
-	<title>Vonds | Lab 131</title>
+    <!-- Favicons -->
+    <link rel="shortcut icon" href="../assets/images/favicon.png" />
+    <link rel="apple-touch-icon" href="../assets/images/apple-touch-icon.png" />
+    <link rel="apple-touch-icon" sizes="72x72" href="../assets/images/apple-touch-icon-72x72.png" />
+    <link rel="apple-touch-icon" sizes="114x114" href="../assets/images/apple-touch-icon-114x114.png" />
 
-	<!-- Favicons -->
-	<link rel="shortcut icon" href="../assets/images/favicon.png" />
-	<link rel="apple-touch-icon" href="../assets/images/apple-touch-icon.png" />
-	<link rel="apple-touch-icon" sizes="72x72" href="../assets/images/apple-touch-icon-72x72.png" />
-	<link rel="apple-touch-icon" sizes="114x114" href="../assets/images/apple-touch-icon-114x114.png" />
+    <!-- Site styles (your existing) -->
+    <link href="../assets/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="../assets/css/font-awesome.min.css" rel="stylesheet" />
+    <link href="../assets/css/linea-icons.css" rel="stylesheet" />
+    <link href="../assets/css/ionicons.min.css" rel="stylesheet" />
+    <link href="../assets/css/simpletextrotator.css" rel="stylesheet" />
+    <link href="../assets/css/magnific-popup.css" rel="stylesheet" />
+    <link href="../assets/css/owl.carousel.css" rel="stylesheet" />
+    <link href="../assets/css/superslides.css" rel="stylesheet" />
+    <link href="../assets/css/vertical.css" rel="stylesheet" />
+    <link href="../assets/css/animate.css" rel="stylesheet" />
+    <link href="../assets/css/style.css" rel="stylesheet" />
+    <link href="../assets/css/docs.css" rel="stylesheet" />
 
-	<!-- Site styles (your existing) -->
-	<link href="../assets/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
-	<link href="../assets/css/font-awesome.min.css" rel="stylesheet" />
-	<link href="../assets/css/linea-icons.css" rel="stylesheet" />
-	<link href="../assets/css/linea-icons.css" rel="stylesheet" />
-	<link href="../assets/css/ionicons.min.css" rel="stylesheet" />
-	<link href="../assets/css/simpletextrotator.css" rel="stylesheet" />
-	<link href="../assets/css/magnific-popup.css" rel="stylesheet" />
-	<link href="../assets/css/owl.carousel.css" rel="stylesheet" />
-	<link href="../assets/css/superslides.css" rel="stylesheet" />
-	<link href="../assets/css/vertical.css" rel="stylesheet" />
-	<link href="../assets/css/animate.css" rel="stylesheet" />
-	<link href="../assets/css/style.css" rel="stylesheet" />
-	<link href="../assets/css/docs.css" rel="stylesheet" />
+    <!-- Lab page styles -->
+    <link href="../assets/css/lab.css" rel="stylesheet" />
 
-	<!-- Lab page styles (new) -->
-	<link href="../assets/css/lab.css" rel="stylesheet" />
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css?family=Dosis" rel="stylesheet" />
+  </head>
 
-	<!-- Fonts -->
-	<link href="https://fonts.googleapis.com/css?family=Dosis" rel="stylesheet" />
-</head>
+  <body>
+    <!-- PRELOADER -->
+    <div class="page-loader">
+      <div class="loader">Loading...</div>
+    </div>
 
-<body>
-	<!-- PRELOADER -->
-	<div class="page-loader">
-		<div class="loader">Loading...</div>
-	</div>
+    <!-- OVERLAY MENU -->
+    <div id="overlay-menu" class="overlay-menu">
+      <a href="#" id="overlay-menu-hide" class="navigation-hide">
+        <i class="ion-close-round"></i>
+      </a>
 
-	<!-- OVERLAY MENU -->
-	<div id="overlay-menu" class="overlay-menu">
-		<a href="#" id="overlay-menu-hide" class="navigation-hide">
-			<i class="ion-close-round"></i>
-		</a>
+      <div class="overlay-menu-inner">
+        <nav class="overlay-menu-nav">
+          <ul id="nav">
+            <li><a href="../index.html">Home</a></li>
 
-		<div class="overlay-menu-inner">
-			<nav class="overlay-menu-nav">
-				<ul id="nav">
-					<li><a href="../index.html">Home</a></li>
+            <li class="slidedown">
+              <a href="#">Portfolio</a>
+              <ul>
+                <li>
+                  <a href="https://github.com/vonds/exit_0" target="_blank" rel="noopener">
+                    exit_0
+                  </a>
+                </li>
+                <li>
+                  <a href="docs.html" target="_blank" rel="noopener">
+                    exit_0 Documentation
+                  </a>
+                </li>
+                <li>
+                  <a href="https://github.com/vonds/sentinel" target="_blank" rel="noopener">
+                    Sentinel
+                  </a>
+                </li>
+              </ul>
+            </li>
 
-					<li class="slidedown">
-						<a href="#">Portfolio</a>
-						<ul>
-							<li>
-								<a href="https://github.com/vonds/exit_0" target="_blank" rel="noopener">
-									exit_0
-								</a>
-							</li>
-							<li>
-								<a href="docs.html" target="_blank" rel="noopener">
-									exit_0 Documentation
-								</a>
-							</li>
-							<li><a href="https://github.com/vonds/sentinel" target="_blank" rel="noopener">Sentinel</a></li>
-						</ul>
-					</li>
+            <li>
+              <a href="https://www.linkedin.com/in/vonds/" target="_blank" rel="noopener">
+                LinkedIn
+              </a>
+            </li>
+            <li>
+              <a href="https://github.com/vonds" target="_blank" rel="noopener">
+                Github
+              </a>
+            </li>
+            <li>
+              <a href="mailto:vonds13@gmail.com?subject=Hello Vonds">Contact</a>
+            </li>
+          </ul>
+        </nav>
+      </div>
 
-					<li>
-						<a href="https://www.linkedin.com/in/vonds/" target="_blank" rel="noopener">
-							LinkedIn
-						</a>
-					</li>
-					<li>
-						<a href="https://github.com/vonds" target="_blank" rel="noopener">
-							Github
-						</a>
-					</li>
-					<li>
-						<a href="mailto:vonds13@gmail.com?subject=Hello Vonds">Contact</a>
-					</li>
-				</ul>
-			</nav>
-		</div>
+      <div class="overlay-navigation-footer">
+        <div class="container">
+          <div class="row">
+            <div class="col-sm-12 text-center">
+              <p class="copyright font-alt m-b-0">
+                VONDS &copy;
+                <script>
+                  document.write(new Date().getFullYear())
+                </script>
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
 
-		<div class="overlay-navigation-footer">
-			<div class="container">
-				<div class="row">
-					<div class="col-sm-12 text-center">
-						<p class="copyright font-alt m-b-0">
-							VONDS &copy;
-							<script>
-								document.write(new Date().getFullYear())
-							</script>
-						</p>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
+    <!-- WRAPPER -->
+    <div class="wrapper">
+      <!-- NAVIGATION -->
+      <nav class="navbar navbar-custom navbar-transparent navbar-light navbar-fixed-top">
+        <div class="container">
+          <div class="navbar-header">
+            <a class="navbar-brand" href="../index.html">
+              <img src="../assets/images/logo-dark.png" width="95" alt="" />
+            </a>
+          </div>
 
-	<!-- WRAPPER -->
-	<div class="wrapper">
-		<!-- NAVIGATION -->
-		<nav class="navbar navbar-custom navbar-transparent navbar-light navbar-fixed-top">
-			<div class="container">
-				<div class="navbar-header">
-					<a class="navbar-brand" href="../index.html">
-						<img src="../assets/images/logo-dark.png" width="95" alt="" />
-					</a>
-				</div>
+          <ul id="icons-navbar" class="nav navbar-nav navbar-right">
+            <li>
+              <a href="#" id="toggle-menu" class="show-overlay" title="Menu">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </nav>
 
-				<ul id="icons-navbar" class="nav navbar-nav navbar-right">
-					<li>
-						<a href="#" id="toggle-menu" class="show-overlay" title="Menu">
-							<span class="icon-bar"></span>
-							<span class="icon-bar"></span>
-							<span class="icon-bar"></span>
-						</a>
-					</li>
-				</ul>
-			</div>
-		</nav>
+      <!-- DOCS PAGE -->
+      <section class="module">
+        <div class="container">
+          <h2 class="font-alt module-title m-t-60">
+            Lab 131: Fix Wrong Hostname Resolution (hosts override)
+          </h2>
 
-		<!-- DOCS PAGE -->
-		<section class="module">
-			<div class="container">
-				<h2 class="font-alt module-title m-t-60">
-					Lab 131: Networking Fundamentals
-				</h2>
-				<nav class="lab-pagination">
-					<a id="prev-lab" class="lab-nav-link" href="#" aria-label="Previous lab">
-						&laquo;
-					</a>
-					<a id="next-lab" class="lab-nav-link" href="#" aria-label="Next lab">
-						&raquo;
-					</a>
-				</nav>
-				<div class="row">
-					<!-- LEFT SIDEBAR -->
-					<div class="col-sm-4 col-md-3 lab-sidebar">
-						<div class="docs-sidebar">
-							<div class="docs-widget">
-								<h5 class="widget-title">
-									<a href="./docs.html">Back to Lab Index</a>
-								</h5>
-								<ul class="docs-nav">
-									<li><a href="#scenario">Scenario</a></li>
+          <nav class="lab-pagination">
+            <a id="prev-lab" class="lab-nav-link" href="#" aria-label="Previous lab">&laquo;</a>
+            <a id="next-lab" class="lab-nav-link" href="#" aria-label="Next lab">&raquo;</a>
+          </nav>
 
-									<li><a href="#walkthrough">Walkthrough</a></li>
-									<li><a href="#reference">Reference</a></li>
-								</ul>
-							</div>
-						</div>
-					</div>
+          <div class="row">
+            <!-- LEFT SIDEBAR -->
+            <div class="col-sm-4 col-md-3 lab-sidebar">
+              <div class="docs-sidebar">
+                <div class="docs-widget">
+                  <h5 class="widget-title">
+                    <a href="./docs.html">Back to Lab Index</a>
+                  </h5>
+                  <ul class="docs-nav">
+                    <li><a href="#scenario">Scenario</a></li>
+                    <li><a href="#objective">Objective</a></li>
+                    <li><a href="#concepts">Concepts</a></li>
+                    <li><a href="#walkthrough">Walkthrough</a></li>
+                    <li><a href="#breakpoints">Breakpoints</a></li>
+                    <li><a href="#cleanup">Cleanup</a></li>
+                    <li><a href="#reference">Reference</a></li>
+                  </ul>
+                </div>
+              </div>
+            </div>
 
-					<!-- MAIN CONTENT -->
-					<div class="col-sm-8 col-md-9 lab-doc">
-						<!-- 1) Title + Summary (2 sentences max) -->
-						<p class="m-b-20 lab-summary">
-							Fix an application misrouting issue caused by a bad
-							<code>/etc/hosts</code>
-							override that forces an internal hostname to resolve to
-							<code>127.0.0.1</code>
-							instead of DNS.
-							Confirm the resolution path, remove the override safely, verify DNS resolution to the expected IP, then validate the HTTP endpoint.
-						</p>
+            <!-- MAIN CONTENT -->
+            <div class="col-sm-8 col-md-9 lab-doc">
+              <p class="m-b-20 lab-summary">
+                Fix an application misrouting issue caused by a bad <code>/etc/hosts</code> override that forces
+                <code>portal.lab.local</code> to resolve to <code>127.0.0.1</code> instead of DNS.
+                Confirm the resolution path, remove the override safely, verify DNS resolution to <code>10.0.2.50</code>,
+                then validate the HTTP endpoint.
+              </p>
 
-						<section class="lab-section" id="video" aria-label="Lab video">
-							<div class="lab-video">
-								<div class="lab-video-embed text-center">
-									<iframe src="https://www.youtube.com/embed/uJk54bhaadA?si=seGSukCoMFN7ohRo"
-										title="YouTube video player" frameborder="0"
-										allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-										referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
-								</div>
-							</div>
-						</section>
+              <section class="lab-section" id="video" aria-label="Lab video">
+                <div class="lab-video">
+                  <div class="lab-video-embed text-center">
+                    <iframe
+                      src="https://www.youtube.com/embed/REPLACE_WITH_LAB131_VIDEO"
+                      title="YouTube video player"
+                      frameborder="0"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                      referrerpolicy="strict-origin-when-cross-origin"
+                      allowfullscreen
+                    ></iframe>
+                  </div>
+                </div>
+              </section>
 
-						<!-- 2) Scenario -->
-						<section class="lab-section" id="scenario">
-							<div class="lab-chips" aria-label="Tags">
-								<span class="lab-chip">
-									<span class="lab-chip-key">networking</span>
-								</span>
-								<span class="lab-chip">
-									<span class="lab-chip-key">troubleshooting</span>
-								</span>
-								<span class="lab-chip">
-									<span class="lab-chip-key">dns</span>
-								</span>
-								<span class="lab-chip">
-									<span class="lab-chip-key">core</span>
-								</span>
-								<span class="lab-chip">
-									<span class="lab-chip-key">nss</span>
-								</span>
-							</div>
+              <!-- Scenario -->
+              <section class="lab-section" id="scenario">
+                <div class="lab-chips" aria-label="Tags">
+                  <span class="lab-chip"><span class="lab-chip-key">networking</span></span>
+                  <span class="lab-chip"><span class="lab-chip-key">troubleshooting</span></span>
+                  <span class="lab-chip"><span class="lab-chip-key">dns</span></span>
+                  <span class="lab-chip"><span class="lab-chip-key">nss</span></span>
+                  <span class="lab-chip"><span class="lab-chip-key">core</span></span>
+                </div>
 
-							<h3 class="font-alt lab-section-title m-b-40 m-t-40">
-								Scenario
-							</h3>
-							<p>
-								Users report the internal app at
-								<code>portal.lab.local</code>
-								is loading the wrong environment. The ticket notes: “It looks like this host resolves
-								<code>portal.lab.local</code>
-								to
-								<code>127.0.0.1</code>
-								.” You must confirm the resolution path, remove any bad
-								<code>/etc/hosts</code>
-								override, verify DNS is used, and confirm the service is reachable.
-							</p>
-							<div class="lab-callout">
-								<div class="lab-callout-label">Expected result</div>
-								<p class="m-b-0">
-									From the ticket:
-									<code>portal.lab.local</code>
-									should resolve to
-									<code>10.0.2.50</code>
-									. Verification target:
-									<code>http://portal.lab.local</code>
-									.
-								</p>
-							</div>
-						</section>
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">Scenario</h3>
 
-						<!-- 3) Objective -->
-						<section class="lab-section alt-background" id="objective">
-							<h3 class="font-alt lab-section-title m-b-40 m-t-40">
-								Objective
-							</h3>
-							<ul>
-								<li>
-									Confirm what IP
-									<code>portal.lab.local</code>
-									resolves to on this host.
-								</li>
-								<li>
-									Locate any
-									<code>/etc/hosts</code>
-									override that forces a bad mapping.
-								</li>
-								<li>
-									Remove the override safely and re-check resolution.
-								</li>
-								<li>
-									Verify the active DNS server configuration as a sanity check.
-								</li>
-								<li>
-									Confirm the portal responds over HTTP after resolution is corrected.
-								</li>
-							</ul>
-						</section>
+                <p>
+                  Users report the internal app at <code>portal.lab.local</code> is loading the wrong environment.
+                  The ticket notes: “It looks like this host resolves <code>portal.lab.local</code> to <code>127.0.0.1</code>.”
+                  You must confirm the resolution path, remove any bad <code>/etc/hosts</code> override, verify DNS is used,
+                  and confirm the service is reachable.
+                </p>
 
-						<!-- 4) What You'll Practice -->
-						<section class="lab-section" id="practice">
-							<h3 class="font-alt lab-section-title m-b-40 m-t-40">
-								What You’ll Practice
-							</h3>
+                <div class="lab-callout">
+                  <div class="lab-callout-label">Expected result</div>
+                  <p class="m-b-0">
+                    <code>portal.lab.local</code> should resolve to <code>10.0.2.50</code>. Verification target:
+                    <code>http://portal.lab.local</code>.
+                  </p>
+                </div>
+              </section>
 
-							<ul class="m-t-10">
-								<li>
-									Resolution path testing using
-									<code>getent</code>
-									vs
-									<code>dig</code>
-									(to distinguish NSS behavior from direct DNS queries).
-								</li>
-								<li>
-									Finding hostname overrides in
-									<code>/etc/hosts</code>
-									with
-									<code>grep -n</code>
-									.
-								</li>
-								<li>
-									Safe system file edits using a privileged editor (
-									<code>sudoedit</code>
-									/
-									<code>vim</code>
-									/
-									<code>vi</code>
-									/
-									<code>nano</code>
-									).
-								</li>
-								<li>
-									Checking resolver configuration using
-									<code>resolvectl</code>
-									or
-									<code>/etc/resolv.conf</code>
-									.
-								</li>
-								<li>
-									Application endpoint verification using
-									<code>curl</code>
-									.
-								</li>
-							</ul>
-						</section>
+              <!-- Objective -->
+              <section class="lab-section alt-background" id="objective">
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">Objective</h3>
+                <ul>
+                  <li>Confirm what IP <code>portal.lab.local</code> resolves to on this host.</li>
+                  <li>Locate any <code>/etc/hosts</code> override that forces a bad mapping.</li>
+                  <li>Remove the override safely and re-check resolution.</li>
+                  <li>Verify the active DNS server configuration as a sanity check.</li>
+                  <li>Confirm the portal responds over HTTP after resolution is corrected.</li>
+                </ul>
+              </section>
 
-						<!-- 5) Commands Walkthrough -->
-						<section class="lab-section alt-background" id="walkthrough">
-							<h3 class="font-alt lab-section-title m-b-40 m-t-40">
-								Walkthrough
-							</h3>
+              <!-- Concepts -->
+              <section class="lab-section" id="concepts">
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">Concepts</h3>
 
-							<!-- Step 1 -->
-							<div class="lab-step">
-								<div class="lab-step-title">
-									<strong class="font-alt">Step 1</strong>
-									: Check what IP portal.lab.local resolves to on this host.
-								</div>
+                <p>
+                  Hostname resolution on Linux typically follows the system NSS configuration (often <code>/etc/nsswitch.conf</code>),
+                  and <code>/etc/hosts</code> frequently takes precedence over DNS.
+                </p>
 
-								<div class="lab-codeblock m-b-40 m-t-40">
-									<div class="lab-codeblock-header">
-										<span>Command</span>
-										<button class="lab-copy-btn" type="button" data-copy="#cmd-step-1">
-											Copy
-										</button>
-									</div>
-									<pre><code id="cmd-step-1">getent hosts portal.lab.local
-# OR
+                <ul>
+                  <li><strong>NSS path</strong>: what applications use (hosts file + DNS based on system configuration).</li>
+                  <li><strong>Direct DNS query</strong>: what <code>dig</code> shows (ignores <code>/etc/hosts</code>).</li>
+                  <li><strong>Mismatch signal</strong>: if <code>getent</code> and <code>dig</code> disagree, you likely have a local override.</li>
+                </ul>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">Operational habit</div>
+                  <p class="m-b-0">
+                    Use <code>getent hosts</code> to confirm what applications actually see. Use <code>dig</code> to confirm what DNS says.
+                    When they differ, trust <code>getent</code> for user impact.
+                  </p>
+                </div>
+              </section>
+
+              <!-- Walkthrough -->
+              <section class="lab-section alt-background" id="walkthrough">
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">Walkthrough</h3>
+
+                <!-- Step 1 -->
+                <div class="lab-step">
+                  <div class="lab-step-title">
+                    <strong class="font-alt">Step 1</strong>: Check what IP <code>portal.lab.local</code> resolves to (NSS vs DNS).
+                  </div>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <div class="lab-codeblock-header">
+                      <span>Commands</span>
+                      <button class="lab-copy-btn" type="button" data-copy="#cmd-131-1">Copy</button>
+                    </div>
+                    <pre><code id="cmd-131-1">getent hosts portal.lab.local
 getent ahosts portal.lab.local
-# OR
 dig +short portal.lab.local</code></pre>
-								</div>
+                  </div>
 
-								<p>
-									<code>getent</code>
-									tests the system’s real resolution path (NSS), which can include
-									<code>/etc/hosts</code>
-									entries before DNS. By contrast,
-									<code>dig</code>
-									queries DNS directly and will not show
-									<code>/etc/hosts</code>
-									overrides. When these disagree, the problem is usually local name resolution order or a bad hosts file entry.
-								</p>
+                  <p>
+                    <code>getent</code> tests the system’s real resolution path (NSS), which can include <code>/etc/hosts</code> before DNS.
+                    <code>dig</code> queries DNS directly and will not show <code>/etc/hosts</code> overrides.
+                  </p>
 
-								<div class="lab-codeblock m-b-40 m-t-40">
-									<pre><code id="verify-step-1"># Bad NSS resolution (hosts override):
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <pre><code># Example mismatch:
 127.0.0.1   portal.lab.local
-
-# Direct DNS (expected):
+# DNS:
 10.0.2.50</code></pre>
-								</div>
-							</div>
+                  </div>
+                </div>
 
-							<!-- Step 2 -->
-							<div class="lab-step">
-								<div class="lab-step-title">
-									<strong class="font-alt">Step 2</strong>
-									: Check /etc/hosts for an entry that mentions portal.lab.local.
-								</div>
+                <!-- Step 2 -->
+                <div class="lab-step">
+                  <div class="lab-step-title">
+                    <strong class="font-alt">Step 2</strong>: Find the <code>/etc/hosts</code> override.
+                  </div>
 
-								<div class="lab-codeblock m-b-40 m-t-40">
-									<div class="lab-codeblock-header">
-										<span>Command</span>
-										<button class="lab-copy-btn" type="button" data-copy="#cmd-step-2">
-											Copy
-										</button>
-									</div>
-									<pre><code id="cmd-step-2">grep -n portal.lab.local /etc/hosts</code></pre>
-								</div>
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <div class="lab-codeblock-header">
+                      <span>Command</span>
+                      <button class="lab-copy-btn" type="button" data-copy="#cmd-131-2">Copy</button>
+                    </div>
+                    <pre><code id="cmd-131-2">grep -n 'portal.lab.local' /etc/hosts</code></pre>
+                  </div>
 
-								<p>
-									This searches for a hostname override and prints the line number. Any mapping for
-									<code>portal.lab.local</code>
-									here will typically win over DNS when resolving through normal system tools.
-								</p>
+                  <p>
+                    Any mapping for <code>portal.lab.local</code> here will typically win over DNS for normal system tools.
+                  </p>
 
-								<div class="lab-codeblock m-b-40 m-t-40">
-									<pre><code id="verify-step-2">6:127.0.0.1 portal.lab.local portal</code></pre>
-								</div>
-							</div>
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <pre><code># Example:
+6:127.0.0.1 portal.lab.local portal</code></pre>
+                  </div>
+                </div>
 
-							<!-- Step 3 -->
-							<div class="lab-step">
-								<div class="lab-step-title">
-									<strong class="font-alt">Step 3</strong>
-									: Edit /etc/hosts and remove the portal.lab.local override line.
-								</div>
+                <!-- Step 3 -->
+                <div class="lab-step">
+                  <div class="lab-step-title">
+                    <strong class="font-alt">Step 3</strong>: Remove the offending line safely.
+                  </div>
 
-								<div class="lab-codeblock m-b-40 m-t-40">
-									<div class="lab-codeblock-header">
-										<span>Command</span>
-										<button class="lab-copy-btn" type="button" data-copy="#cmd-step-3">
-											Copy
-										</button>
-									</div>
-									<pre><code id="cmd-step-3">sudoedit /etc/hosts
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <div class="lab-codeblock-header">
+                      <span>Commands</span>
+                      <button class="lab-copy-btn" type="button" data-copy="#cmd-131-3">Copy</button>
+                    </div>
+                    <pre><code id="cmd-131-3">sudoedit /etc/hosts
 # OR
 sudo vim /etc/hosts
 # OR
 sudo vi /etc/hosts
 # OR
 sudo nano /etc/hosts</code></pre>
-								</div>
+                  </div>
 
-								<p>
-									Remove only the offending line and keep legitimate entries intact. Using
-									<code>sudoedit</code>
-									is a safe default because it edits a temp file and then writes back with the correct permissions.
-								</p>
+                  <p>
+                    Remove only the bad mapping and keep legitimate entries intact. <code>sudoedit</code> is a safe default because it edits a temp file
+                    and then writes back with the correct permissions.
+                  </p>
 
-								<div class="lab-codeblock m-b-40 m-t-40">
-									<pre><code id="verify-step-3"># Remove the line:
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <pre><code># Remove:
 127.0.0.1 portal.lab.local portal</code></pre>
-								</div>
-							</div>
+                  </div>
+                </div>
 
-							<!-- Step 4 -->
-							<div class="lab-step">
-								<div class="lab-step-title">
-									<strong class="font-alt">Step 4</strong>
-									: Re-check resolution and confirm portal.lab.local resolves to 10.0.2.50.
-								</div>
+                <!-- Step 4 -->
+                <div class="lab-step">
+                  <div class="lab-step-title">
+                    <strong class="font-alt">Step 4</strong>: Re-check resolution and confirm <code>10.0.2.50</code>.
+                  </div>
 
-								<div class="lab-codeblock m-b-40 m-t-40">
-									<div class="lab-codeblock-header">
-										<span>Command</span>
-										<button class="lab-copy-btn" type="button" data-copy="#cmd-step-4">
-											Copy
-										</button>
-									</div>
-									<pre><code id="cmd-step-4">getent hosts portal.lab.local
-# OR
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <div class="lab-codeblock-header">
+                      <span>Commands</span>
+                      <button class="lab-copy-btn" type="button" data-copy="#cmd-131-4">Copy</button>
+                    </div>
+                    <pre><code id="cmd-131-4">getent hosts portal.lab.local
 dig +short portal.lab.local</code></pre>
-								</div>
+                  </div>
 
-								<p>
-									After removing the override, NSS should fall back to DNS and return the ticketed IP. This is your proof that the system is no longer
-									forcing a local mapping.
-								</p>
+                  <p>
+                    After removing the override, NSS should fall back to DNS and return the ticketed IP.
+                  </p>
 
-								<div class="lab-codeblock m-b-40 m-t-40">
-									<pre><code id="verify-step-4">10.0.2.50   portal.lab.local</code></pre>
-								</div>
-							</div>
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <pre><code>10.0.2.50   portal.lab.local</code></pre>
+                  </div>
+                </div>
 
-							<!-- Step 5 -->
-							<div class="lab-step">
-								<div class="lab-step-title">
-									<strong class="font-alt">Step 5</strong>
-									: Check which DNS server(s) this host is using.
-								</div>
+                <!-- Step 5 -->
+                <div class="lab-step">
+                  <div class="lab-step-title">
+                    <strong class="font-alt">Step 5</strong>: Sanity check the resolver configuration.
+                  </div>
 
-								<div class="lab-codeblock m-b-40 m-t-40">
-									<div class="lab-codeblock-header">
-										<span>Command</span>
-										<button class="lab-copy-btn" type="button" data-copy="#cmd-step-5">
-											Copy
-										</button>
-									</div>
-									<pre><code id="cmd-step-5">resolvectl status
-# OR
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <div class="lab-codeblock-header">
+                      <span>Commands</span>
+                      <button class="lab-copy-btn" type="button" data-copy="#cmd-131-5">Copy</button>
+                    </div>
+                    <pre><code id="cmd-131-5">resolvectl status
 cat /etc/resolv.conf</code></pre>
-								</div>
+                  </div>
 
-								<p>
-									This is a sanity check: you want to ensure the host is pointed at the expected DNS server, and not a stale or local-only resolver.
-									It also helps when a hostname resolves correctly on one host but not another.
-								</p>
+                  <p>
+                    Confirm the host is pointed at the expected DNS server (in this environment, typically <code>10.0.2.3</code>).
+                  </p>
+                </div>
 
-								<div class="lab-codeblock m-b-40 m-t-40">
-									<pre><code id="verify-step-5"># Example:
-nameserver 10.0.2.3
+                <!-- Step 6 -->
+                <div class="lab-step">
+                  <div class="lab-step-title">
+                    <strong class="font-alt">Step 6</strong>: Verify the portal responds over HTTP.
+                  </div>
 
-# or (systemd-resolved):
-DNS Servers: 10.0.2.3</code></pre>
-								</div>
-							</div>
-
-							<!-- Step 6 -->
-							<div class="lab-step">
-								<div class="lab-step-title">
-									<strong class="font-alt">Step 6</strong>
-									: Verify the portal responds over HTTP.
-								</div>
-
-								<div class="lab-codeblock m-b-40 m-t-40">
-									<div class="lab-codeblock-header">
-										<span>Command</span>
-										<button class="lab-copy-btn" type="button" data-copy="#cmd-step-6">
-											Copy
-										</button>
-									</div>
-									<pre><code id="cmd-step-6">curl -I http://portal.lab.local
-# OR
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <div class="lab-codeblock-header">
+                      <span>Commands</span>
+                      <button class="lab-copy-btn" type="button" data-copy="#cmd-131-6">Copy</button>
+                    </div>
+                    <pre><code id="cmd-131-6">curl -I http://portal.lab.local
 curl -sS http://portal.lab.local | head</code></pre>
-								</div>
+                  </div>
 
-								<p>
-									This confirms the hostname resolves correctly and the service is reachable over the network. If DNS looks correct but HTTP fails,
-									pivot to service state, firewalling, routing, or application health checks on
-									<code>10.0.2.50</code>
-									.
-								</p>
+                  <p>
+                    This confirms correct resolution plus service reachability. If DNS looks correct but HTTP fails,
+                    pivot to service health on <code>10.0.2.50</code>, firewalling, routing, or application issues.
+                  </p>
 
-								<div class="lab-codeblock m-b-40 m-t-40">
-									<pre><code id="verify-step-6">HTTP/1.1 200 OK
-Content-Type: text/html; charset=UTF-8
-Server: nginx</code></pre>
-								</div>
-							</div>
-						</section>
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <pre><code>HTTP/1.1 200 OK</code></pre>
+                  </div>
+                </div>
+              </section>
 
-						<!-- 8) Reference -->
-						<!-- 9) Reference -->
-						<section class="lab-section" id="reference">
-							<h3 class="font-alt lab-section-title m-b-40 m-t-40">
-								Reference
-							</h3>
+              <!-- Breakpoints -->
+              <section class="lab-section" id="breakpoints">
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">Breakpoints</h3>
 
-							<ul class="lab-reference-list">
-								<li>
-									<code>getent hosts &lt;name&gt;</code>
-									: Resolves a hostname through the system’s NSS stack (hosts file + DNS per configuration).
-								</li>
+                <div class="lab-callout">
+                  <div class="lab-callout-label">getent and dig both show 10.0.2.50 but users still see the wrong app</div>
+                  <p class="m-b-0">
+                    The issue may be caching (browser, proxy, CDN), a load balancer routing problem, or an application-side environment mapping issue.
+                    Prove which backend you reached with <code>curl -v</code> or app headers.
+                  </p>
+                </div>
 
-								<li>
-									<code>getent ahosts &lt;name&gt;</code>
-									: Shows resolved address records as seen by NSS, often including address family variants.
-								</li>
+                <div class="lab-callout">
+                  <div class="lab-callout-label">dig fails or returns no records</div>
+                  <p class="m-b-0">
+                    DNS may be down or the zone is missing records. Confirm the configured DNS server is reachable and validate resolution against the DNS server directly.
+                  </p>
+                </div>
 
-								<li>
-									<code>dig +short &lt;name&gt;</code>
-									: Queries DNS directly and prints the resolved address, ignoring
-									<code>/etc/hosts</code>
-									.
-								</li>
+                <div class="lab-callout">
+                  <div class="lab-callout-label">You edited /etc/hosts but resolution still returns 127.0.0.1</div>
+                  <p class="m-b-0">
+                    Check for additional aliases in <code>/etc/hosts</code> (another line), or an application/container using its own hosts file or custom resolver.
+                  </p>
+                </div>
 
-								<li>
-									<code>/etc/hosts</code>
-									: Local hostname-to-IP override file. Entries here typically take precedence over DNS for normal resolution.
-								</li>
+                <div class="lab-callout">
+                  <div class="lab-callout-label">HTTP fails after resolution is corrected</div>
+                  <p class="m-b-0">
+                    Test reachability to the IP directly (<code>curl -I http://10.0.2.50</code>) and confirm the service is listening and allowed through firewall policy.
+                  </p>
+                </div>
+              </section>
 
-								<li>
-									<code>grep -n &lt;pattern&gt; /etc/hosts</code>
-									: Finds matching entries and prints line numbers for targeted edits.
-								</li>
+              <!-- Cleanup -->
+              <section class="lab-section alt-background" id="cleanup">
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">Cleanup checklist</h3>
 
-								<li>
-									<code>sudoedit /etc/hosts</code>
-									: Safely edits a root-owned file using a temp copy, then writes back with correct permissions.
-								</li>
+                <p>
+                  If you need to restore the previous lab state, you can re-add the bad mapping. Do this only in a lab environment.
+                </p>
 
-								<li>
-									<code>resolvectl status</code>
-									: Shows active resolver configuration in systemd-resolved environments.
-								</li>
+                <div class="lab-codeblock m-b-40 m-t-40">
+                  <div class="lab-codeblock-header">
+                    <span>Commands</span>
+                    <button class="lab-copy-btn" type="button" data-copy="#cmd-131-cleanup">Copy</button>
+                  </div>
+                  <pre><code id="cmd-131-cleanup">sudoedit /etc/hosts
+# Add back (lab-only):
+# 127.0.0.1 portal.lab.local portal
 
-								<li>
-									<code>/etc/resolv.conf</code>
-									: Resolver configuration file (often generated by NetworkManager/systemd-resolved).
-								</li>
+getent hosts portal.lab.local
+dig +short portal.lab.local</code></pre>
+                </div>
+              </section>
 
-								<li>
-									<code>curl -I &lt;url&gt;</code>
-									: Fetches HTTP headers to confirm reachability and basic service response.
-								</li>
-							</ul>
-						</section>
-					</div>
-					<!-- /main -->
-				</div>
-				<!-- /row -->
+              <!-- Reference -->
+              <section class="lab-section" id="reference">
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">Reference</h3>
 
-				<nav class="lab-pagination">
-					<a id="prev-lab" class="lab-nav-link" href="#" aria-label="Previous lab">
-						&uArr;
-					</a>
-				</nav>
-			</div>
-			<!-- /container -->
-		</section>
+                <ul class="lab-reference-list">
+                  <li><code>getent hosts &lt;name&gt;</code>: resolve a hostname through the system NSS stack.</li>
+                  <li><code>getent ahosts &lt;name&gt;</code>: show resolved address records as seen by NSS.</li>
+                  <li><code>dig +short &lt;name&gt;</code>: query DNS directly (ignores <code>/etc/hosts</code>).</li>
+                  <li><code>/etc/hosts</code>: local hostname-to-IP override file (often takes precedence over DNS).</li>
+                  <li><code>grep -n &lt;pattern&gt; /etc/hosts</code>: find matching entries with line numbers.</li>
+                  <li><code>sudoedit /etc/hosts</code>: safely edit a root-owned file via a temp copy.</li>
+                  <li><code>resolvectl status</code>: show active resolver configuration (systemd-resolved).</li>
+                  <li><code>/etc/resolv.conf</code>: resolver config file (often generated by NetworkManager/systemd-resolved).</li>
+                  <li><code>curl -I &lt;url&gt;</code>: fetch HTTP headers to confirm reachability and response.</li>
+                </ul>
+              </section>
+            </div>
+            <!-- /main -->
+          </div>
+          <!-- /row -->
 
-		<!-- FOOTER -->
-		<footer class="module bg-light">
-			<div class="container">
-				<div class="row">
-					<div class="col-sm-12">
-						<ul class="social-text-links font-alt text-center">
-							<li>
-								<a href="https://github.com/vonds" target="_blank" rel="noopener">
-									Github
-								</a>
-							</li>
-							<li>
-								<a href="https://www.linkedin.com/in/vonds/" target="_blank" rel="noopener">
-									Linkedin
-								</a>
-							</li>
-						</ul>
-					</div>
-				</div>
-				<div class="row"></div>
-				<div class="row">
-					<div class="col-sm-12">
-						<p class="copyright text-center m-b-0">
-							VONDS &copy;
-							<span id="year"></span>
-						</p>
+          <nav class="lab-pagination">
+            <a class="lab-nav-link" href="#totop" aria-label="Back to top">&uArr;</a>
+          </nav>
+        </div>
+        <!-- /container -->
+      </section>
 
-						<div class="scroll-up">
-							<a href="#totop"><i class="fa fa-angle-double-up"></i></a>
-						</div>
-					</div>
-				</div>
-			</div>
-		</footer>
-	</div>
+      <!-- FOOTER -->
+      <footer class="module bg-light">
+        <div class="container">
+          <div class="row">
+            <div class="col-sm-12">
+              <ul class="social-text-links font-alt text-center m-b-20">
+                <li>
+                  <a href="https://github.com/vonds" target="_blank" rel="noopener">Github</a>
+                </li>
+                <li>
+                  <a href="https://www.linkedin.com/in/vonds/" target="_blank" rel="noopener">Linkedin</a>
+                </li>
+              </ul>
+            </div>
+          </div>
 
-	<!-- Javascript files (your existing) -->
-	<script src="../assets/js/jquery-2.2.4.min.js"></script>
-	<script src="../assets/bootstrap/js/bootstrap.min.css"></script>
-	<script src="../assets/js/jquery.superslides.min.js"></script>
-	<script src="../assets/js/jquery.mb.YTPlayer.min.js"></script>
-	<script src="../assets/js/jquery.magnific-popup.min.js"></script>
-	<script src="../assets/js/owl.carousel.min.js"></script>
-	<script src="../assets/js/jquery.simple-text-rotator.min.js"></script>
-	<script src="../assets/js/imagesloaded.pkgd.js"></script>
-	<script src="../assets/js/isotope.pkgd.min.js"></script>
-	<script src="../assets/js/packery-mode.pkgd.min.js"></script>
-	<script src="../assets/js/appear.js"></script>
-	<script src="../assets/js/jquery.easing.1.3.js"></script>
-	<script src="../assets/js/wow.min.js"></script>
-	<script src="../assets/js/jqBootstrapValidation.js"></script>
-	<script src="../assets/js/jquery.fitvids.js"></script>
-	<script src="../assets/js/jquery.parallax-1.1.3.js"></script>
-	<script src="../assets/js/smoothscroll.js"></script>
-	<script src="../assets/js/custom.js"></script>
+          <div class="row">
+            <div class="col-sm-12">
+              <p class="copyright text-center m-b-0">
+                VONDS &copy; <span id="year"></span>
+              </p>
 
-	<!-- Lab page JS (new) -->
-	<script src="../assets/js/lab.js"></script>
-</body>
+              <div class="scroll-up">
+                <a href="#totop"><i class="fa fa-angle-double-up"></i></a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </footer>
+    </div>
 
+    <!-- Javascript files (your existing) -->
+    <script src="../assets/js/jquery-2.2.4.min.js"></script>
+    <script src="../assets/bootstrap/js/bootstrap.min.js"></script>
+    <script src="../assets/js/jquery.superslides.min.js"></script>
+    <script src="../assets/js/jquery.mb.YTPlayer.min.js"></script>
+    <script src="../assets/js/jquery.magnific-popup.min.js"></script>
+    <script src="../assets/js/owl.carousel.min.js"></script>
+    <script src="../assets/js/jquery.simple-text-rotator.min.js"></script>
+    <script src="../assets/js/imagesloaded.pkgd.js"></script>
+    <script src="../assets/js/isotope.pkgd.min.js"></script>
+    <script src="../assets/js/packery-mode.pkgd.min.js"></script>
+    <script src="../assets/js/appear.js"></script>
+    <script src="../assets/js/jquery.easing.1.3.js"></script>
+    <script src="../assets/js/wow.min.js"></script>
+    <script src="../assets/js/jqBootstrapValidation.js"></script>
+    <script src="../assets/js/jquery.fitvids.js"></script>
+    <script src="../assets/js/jquery.parallax-1.1.3.js"></script>
+    <script src="../assets/js/smoothscroll.js"></script>
+    <script src="../assets/js/custom.js"></script>
+
+    <!-- Lab page JS (new) -->
+    <script src="../assets/js/lab.js"></script>
+
+    <script>
+      document.getElementById("year").textContent = new Date().getFullYear()
+    </script>
+  </body>
 </html>

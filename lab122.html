@@ -159,7 +159,11 @@
                   </h5>
                   <ul class="docs-nav">
                     <li><a href="#scenario">Scenario</a></li>
+                    <li><a href="#objective">Objective</a></li>
+                    <li><a href="#concepts">Concepts</a></li>
                     <li><a href="#walkthrough">Walkthrough</a></li>
+                    <li><a href="#breakpoints">Breakpoints</a></li>
+                    <li><a href="#cleanup">Cleanup</a></li>
                     <li><a href="#reference">Reference</a></li>
                   </ul>
                 </div>
@@ -169,11 +173,13 @@
             <!-- MAIN CONTENT -->
             <div class="col-sm-8 col-md-9 lab-doc">
               <p class="m-b-20 lab-summary">
-                Use <code>rpm</code> directly to query installed packages, identify file ownership,
-                verify integrity, validate signatures on local RPMs, install/upgrade from a local
-                file, remove a package, and rebuild the RPM database safely.
+                Use <code>rpm</code> directly to query installed packages and file ownership, verify
+                package integrity, validate a local RPM, and perform controlled local install/remove
+                workflows. Finish by rebuilding the RPM database as a recovery step when state is
+                inconsistent.
               </p>
 
+              <!-- Video (kept on page; removed from left panel) -->
               <section class="lab-section" id="video" aria-label="Lab video">
                 <div class="lab-video">
                   <div class="lab-video-embed text-center">
@@ -192,63 +198,159 @@
               <!-- Scenario -->
               <section class="lab-section" id="scenario">
                 <div class="lab-chips" aria-label="Tags">
-                  <span class="lab-chip"><span class="lab-chip-key">packages</span></span>
-                  <span class="lab-chip"><span class="lab-chip-key">rpm</span></span>
-                  <span class="lab-chip"><span class="lab-chip-key">verification</span></span>
-                  <span class="lab-chip"><span class="lab-chip-key">rhel</span></span>
+                  <span class="lab-chip">
+                    <span class="lab-chip-key">packages</span>
+                  </span>
+                  <span class="lab-chip">
+                    <span class="lab-chip-key">rpm</span>
+                  </span>
+                  <span class="lab-chip">
+                    <span class="lab-chip-key">verification</span>
+                  </span>
+                  <span class="lab-chip">
+                    <span class="lab-chip-key">rhel</span>
+                  </span>
                 </div>
 
-                <h3 class="font-alt lab-section-title m-b-40 m-t-40">Scenario</h3>
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  Scenario
+                </h3>
 
                 <p>
                   You are working on an RPM-based system where you need low-level package visibility
                   and repair options without relying on higher-level workflows. Your goal is to use
-                  <code>rpm</code> to query what’s installed, validate ownership of files, verify package
-                  integrity, confirm signatures on a local RPM, install/upgrade it, remove it cleanly,
-                  and perform basic database maintenance.
+                  <code>rpm</code> to query what’s installed, validate ownership of files, verify
+                  package integrity, confirm signatures on a local RPM, install or upgrade it, remove
+                  it cleanly, and perform basic database maintenance.
                 </p>
 
                 <div class="lab-callout">
                   <div class="lab-callout-label">Operator context</div>
                   <p class="m-b-0">
-                    In production, <code>rpm</code> is your source of truth for “what owns this file,”
-                    “was this package modified,” and “is this RPM trustworthy.” You use it to validate
-                    system state before making changes and to verify repairs after.
+                    In production,
+                    <code>rpm</code>
+                    is your source of truth for “what owns this file,” “was this package modified,”
+                    and “is this RPM trustworthy.” Use it to validate state before changes and to
+                    confirm repairs after.
                   </p>
                 </div>
               </section>
 
               <!-- Objective -->
               <section class="lab-section alt-background" id="objective">
-                <h3 class="font-alt lab-section-title m-b-40 m-t-40">Objective</h3>
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  Objective
+                </h3>
                 <ul>
                   <li>List installed RPM packages (quick inventory).</li>
-                  <li>Inspect package metadata with <code>rpm -qi</code>.</li>
-                  <li>List installed files with <code>rpm -ql</code>.</li>
-                  <li>Resolve file ownership with <code>rpm -qf</code>.</li>
-                  <li>Verify integrity with <code>rpm -V</code>.</li>
-                  <li>Validate signature/digests on a local RPM with <code>rpm -K</code>.</li>
-                  <li>Query metadata from an uninstalled RPM with <code>rpm -qp --info</code>.</li>
-                  <li>Install/upgrade a local RPM with <code>rpm -Uvh</code>.</li>
-                  <li>Remove a package with <code>rpm -e</code>.</li>
-                  <li>Rebuild the RPM database with <code>rpm --rebuilddb</code>.</li>
+                  <li>
+                    Inspect installed package metadata with
+                    <code>rpm -qi</code>
+                    .
+                  </li>
+                  <li>
+                    List files installed by a package with
+                    <code>rpm -ql</code>
+                    .
+                  </li>
+                  <li>
+                    Resolve file ownership with
+                    <code>rpm -qf</code>
+                    .
+                  </li>
+                  <li>
+                    Verify package integrity with
+                    <code>rpm -V</code>
+                    .
+                  </li>
+                  <li>
+                    Validate signature and digests on a local RPM with
+                    <code>rpm -K</code>
+                    .
+                  </li>
+                  <li>
+                    Query metadata from an uninstalled RPM with
+                    <code>rpm -qp --info</code>
+                    .
+                  </li>
+                  <li>
+                    Install or upgrade a local RPM with
+                    <code>rpm -Uvh</code>
+                    .
+                  </li>
+                  <li>
+                    Remove a package with
+                    <code>rpm -e</code>
+                    .
+                  </li>
+                  <li>
+                    Rebuild the RPM database with
+                    <code>rpm --rebuilddb</code>
+                    .
+                  </li>
+                </ul>
+              </section>
+
+              <!-- Concepts (no alt-background moving forward) -->
+              <section class="lab-section" id="concepts">
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  Concepts
+                </h3>
+                <ul>
+                  <li>
+                    RPM database queries are local truth for installed package state (
+                    <code>rpm -qa</code>
+                    ,
+                    <code>rpm -qi</code>
+                    ).
+                  </li>
+                  <li>
+                    File ownership and provenance is an RPM workflow (
+                    <code>rpm -qf</code>
+                    ) and is a core troubleshooting primitive.
+                  </li>
+                  <li>
+                    Verification checks detect drift from packaged state (
+                    <code>rpm -V</code>
+                    ) and help triage suspected tampering or corruption.
+                  </li>
+                  <li>
+                    Signature and digest checks validate trust before local installation (
+                    <code>rpm -K</code>
+                    ).
+                  </li>
+                  <li>
+                    Local file installation is controlled and explicit (
+                    <code>rpm -Uvh</code>
+                    ) and should be used when repos are unavailable or when you need an exact build.
+                  </li>
+                  <li>
+                    Database rebuild is a recovery operation (
+                    <code>rpm --rebuilddb</code>
+                    ), not a routine step.
+                  </li>
                 </ul>
               </section>
 
               <!-- Walkthrough -->
               <section class="lab-section alt-background" id="walkthrough">
-                <h3 class="font-alt lab-section-title m-b-40 m-t-40">Walkthrough</h3>
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  Walkthrough
+                </h3>
 
                 <!-- Step 1 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
-                    <strong class="font-alt">Step 1</strong>: List the first 10 installed RPM packages.
+                    <strong class="font-alt">Step 1</strong>
+                    : List the first 10 installed RPM packages.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
-                      <button class="lab-copy-btn" type="button" data-copy="#cmd-step-1">Copy</button>
+                      <button class="lab-copy-btn" type="button" data-copy="#cmd-step-1">
+                        Copy
+                      </button>
                     </div>
                     <pre><code id="cmd-step-1">rpm -qa | head -n 10</code></pre>
                   </div>
@@ -258,7 +360,7 @@
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code id="verify-step-1">bash-5.1.8-3.el9.x86_64
+                    <pre><code>bash-5.1.8-3.el9.x86_64
 coreutils-8.32-34.el9.x86_64
 filesystem-3.16-2.el9.x86_64
 glibc-2.34-100.el9.x86_64
@@ -274,13 +376,18 @@ which-2.21-29.el9.x86_64</code></pre>
                 <!-- Step 2 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
-                    <strong class="font-alt">Step 2</strong>: Show package info for installed <code>bash</code>.
+                    <strong class="font-alt">Step 2</strong>
+                    : Show installed package info for
+                    <code>bash</code>
+                    .
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
-                      <button class="lab-copy-btn" type="button" data-copy="#cmd-step-2">Copy</button>
+                      <button class="lab-copy-btn" type="button" data-copy="#cmd-step-2">
+                        Copy
+                      </button>
                     </div>
                     <pre><code id="cmd-step-2">rpm -qi bash</code></pre>
                   </div>
@@ -290,7 +397,7 @@ which-2.21-29.el9.x86_64</code></pre>
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code id="verify-step-2">Name        : bash
+                    <pre><code>Name        : bash
 Version     : 5.1.8
 Release     : 3.el9
 Architecture: x86_64
@@ -302,23 +409,28 @@ License     : GPLv3+</code></pre>
                 <!-- Step 3 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
-                    <strong class="font-alt">Step 3</strong>: List files installed by <code>bash</code>.
+                    <strong class="font-alt">Step 3</strong>
+                    : List files installed by
+                    <code>bash</code>
+                    .
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
-                      <button class="lab-copy-btn" type="button" data-copy="#cmd-step-3">Copy</button>
+                      <button class="lab-copy-btn" type="button" data-copy="#cmd-step-3">
+                        Copy
+                      </button>
                     </div>
                     <pre><code id="cmd-step-3">rpm -ql bash</code></pre>
                   </div>
 
                   <p>
-                    This helps when you need to confirm expected files exist (or identify what should exist).
+                    This helps when you need to confirm expected files exist or identify what should exist.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code id="verify-step-3">/bin/bash
+                    <pre><code>/bin/bash
 /etc/skel/.bashrc
 /usr/share/man/man1/bash.1.gz</code></pre>
                   </div>
@@ -327,13 +439,18 @@ License     : GPLv3+</code></pre>
                 <!-- Step 4 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
-                    <strong class="font-alt">Step 4</strong>: Identify which package owns <code>/bin/bash</code>.
+                    <strong class="font-alt">Step 4</strong>
+                    : Identify which package owns
+                    <code>/bin/bash</code>
+                    .
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
-                      <button class="lab-copy-btn" type="button" data-copy="#cmd-step-4">Copy</button>
+                      <button class="lab-copy-btn" type="button" data-copy="#cmd-step-4">
+                        Copy
+                      </button>
                     </div>
                     <pre><code id="cmd-step-4">rpm -qf /bin/bash</code></pre>
                   </div>
@@ -343,27 +460,32 @@ License     : GPLv3+</code></pre>
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code id="verify-step-4">bash-5.1.8-3.el9.x86_64</code></pre>
+                    <pre><code>bash-5.1.8-3.el9.x86_64</code></pre>
                   </div>
                 </div>
 
                 <!-- Step 5 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
-                    <strong class="font-alt">Step 5</strong>: Verify integrity of installed <code>bash</code>.
+                    <strong class="font-alt">Step 5</strong>
+                    : Verify integrity of installed
+                    <code>bash</code>
+                    .
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
-                      <button class="lab-copy-btn" type="button" data-copy="#cmd-step-5">Copy</button>
+                      <button class="lab-copy-btn" type="button" data-copy="#cmd-step-5">
+                        Copy
+                      </button>
                     </div>
                     <pre><code id="cmd-step-5">rpm -V bash</code></pre>
                   </div>
 
                   <p>
-                    Integrity verification reports unexpected changes. Clean output usually means no differences
-                    from packaged state (excluding expected config behavior).
+                    Verification reports unexpected changes. Clean output usually means no differences from packaged
+                    state, excluding expected config behavior.
                   </p>
 
                   <div class="lab-callout">
@@ -378,46 +500,60 @@ License     : GPLv3+</code></pre>
                 <!-- Step 6 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
-                    <strong class="font-alt">Step 6</strong>: Check the signature/digests of a local RPM.
+                    <strong class="font-alt">Step 6</strong>
+                    : Validate signature and digests of a local RPM.
+                  </div>
+
+                  <div class="lab-callout">
+                    <div class="lab-callout-label">Safety note</div>
+                    <p class="m-b-0">
+                      Do not install RPMs from unknown sources. If digests or signatures fail, stop and validate the
+                      origin and transport path.
+                    </p>
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
-                      <button class="lab-copy-btn" type="button" data-copy="#cmd-step-6">Copy</button>
+                      <button class="lab-copy-btn" type="button" data-copy="#cmd-step-6">
+                        Copy
+                      </button>
                     </div>
                     <pre><code id="cmd-step-6">rpm -K htop-3.3.0-1.el9.x86_64.rpm</code></pre>
                   </div>
 
                   <p>
-                    This is a trust check before installation. If digests/signatures fail, stop and validate the source.
+                    This is a trust check before installation. You want clean digests and a valid signature status.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code id="verify-step-6">htop-3.3.0-1.el9.x86_64.rpm: digests signatures OK</code></pre>
+                    <pre><code>htop-3.3.0-1.el9.x86_64.rpm: digests signatures OK</code></pre>
                   </div>
                 </div>
 
                 <!-- Step 7 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
-                    <strong class="font-alt">Step 7</strong>: Query metadata from a local RPM (not installed).
+                    <strong class="font-alt">Step 7</strong>
+                    : Query metadata from a local RPM (not installed).
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
-                      <button class="lab-copy-btn" type="button" data-copy="#cmd-step-7">Copy</button>
+                      <button class="lab-copy-btn" type="button" data-copy="#cmd-step-7">
+                        Copy
+                      </button>
                     </div>
                     <pre><code id="cmd-step-7">rpm -qp --info htop-3.3.0-1.el9.x86_64.rpm</code></pre>
                   </div>
 
                   <p>
-                    Use this to confirm name/version/arch and what you are about to install.
+                    Use this to confirm name, version, and architecture before you install a local file.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code id="verify-step-7">Name        : htop
+                    <pre><code>Name        : htop
 Version     : 3.3.0
 Release     : 1.el9
 Architecture: x86_64
@@ -428,24 +564,31 @@ Summary     : Interactive process viewer</code></pre>
                 <!-- Step 8 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
-                    <strong class="font-alt">Step 8</strong>: Install or upgrade the local RPM with progress output.
+                    <strong class="font-alt">Step 8</strong>
+                    : Install or upgrade the local RPM with progress output.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
-                      <button class="lab-copy-btn" type="button" data-copy="#cmd-step-8">Copy</button>
+                      <button class="lab-copy-btn" type="button" data-copy="#cmd-step-8">
+                        Copy
+                      </button>
                     </div>
                     <pre><code id="cmd-step-8">sudo rpm -Uvh htop-3.3.0-1.el9.x86_64.rpm</code></pre>
                   </div>
 
                   <p>
-                    <code>-U</code> upgrades or installs, <code>-v</code> is verbose, and <code>-h</code> shows a progress bar.
-                    This is typically used for controlled local installs (not repo-based).
+                    <code>-U</code>
+                    upgrades or installs,
+                    <code>-v</code>
+                    increases detail, and
+                    <code>-h</code>
+                    prints a progress bar. Use this for controlled local installs outside of repo workflows.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code id="verify-step-8">Preparing...                          ################################# [100%]
+                    <pre><code>Preparing...                          ################################# [100%]
 Updating / installing...
    1:htop-3.3.0-1.el9                 ################################# [100%]</code></pre>
                   </div>
@@ -454,24 +597,29 @@ Updating / installing...
                 <!-- Step 9 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
-                    <strong class="font-alt">Step 9</strong>: Remove the <code>htop</code> package.
+                    <strong class="font-alt">Step 9</strong>
+                    : Remove the
+                    <code>htop</code>
+                    package.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
-                      <button class="lab-copy-btn" type="button" data-copy="#cmd-step-9">Copy</button>
+                      <button class="lab-copy-btn" type="button" data-copy="#cmd-step-9">
+                        Copy
+                      </button>
                     </div>
                     <pre><code id="cmd-step-9">sudo rpm -e htop</code></pre>
                   </div>
 
                   <p>
-                    This removes the package from the RPM database and erases files the package owns.
-                    Dependency checks may block removal.
+                    This erases files owned by the package and removes it from the RPM database. Dependency checks may
+                    block removal.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code id="verify-step-9">Preparing packages...
+                    <pre><code>Preparing packages...
 Erasing     : htop-3.3.0-1.el9.x86_64
 Verifying   : htop-3.3.0-1.el9.x86_64</code></pre>
                   </div>
@@ -480,53 +628,244 @@ Verifying   : htop-3.3.0-1.el9.x86_64</code></pre>
                 <!-- Step 10 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
-                    <strong class="font-alt">Step 10</strong>: Rebuild the RPM database (maintenance).
+                    <strong class="font-alt">Step 10</strong>
+                    : Rebuild the RPM database (maintenance).
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
-                      <button class="lab-copy-btn" type="button" data-copy="#cmd-step-10">Copy</button>
+                      <button class="lab-copy-btn" type="button" data-copy="#cmd-step-10">
+                        Copy
+                      </button>
                     </div>
                     <pre><code id="cmd-step-10">sudo rpm --rebuilddb</code></pre>
                   </div>
 
                   <p>
-                    This is a repair step when the RPM database becomes inconsistent or corrupted.
-                    It is not a routine operation, but it is a useful recovery tool.
+                    This is a repair step when the RPM database becomes inconsistent or corrupted. Treat it as a
+                    recovery operation, not a routine action.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code id="verify-step-10">Rebuilding RPM database...
+                    <pre><code>Rebuilding RPM database...
 Done.</code></pre>
                   </div>
                 </div>
               </section>
 
-              <!-- Reference -->
-              <section class="lab-section" id="reference">
-                <h3 class="font-alt lab-section-title m-b-40 m-t-40">Reference</h3>
-
-                <ul class="lab-reference-list">
-                  <li><code>rpm -qa</code>: List installed packages.</li>
-                  <li><code>rpm -qi &lt;pkg&gt;</code>: Installed package metadata.</li>
-                  <li><code>rpm -ql &lt;pkg&gt;</code>: Files installed by a package.</li>
-                  <li><code>rpm -qf &lt;path&gt;</code>: Which package owns a file.</li>
-                  <li><code>rpm -V &lt;pkg&gt;</code>: Verify installed package (detect drift).</li>
-                  <li><code>rpm -K &lt;file.rpm&gt;</code>: Signature/digest validation for a local RPM.</li>
-                  <li><code>rpm -qp --info &lt;file.rpm&gt;</code>: Query metadata from an RPM file.</li>
-                  <li><code>rpm -Uvh &lt;file.rpm&gt;</code>: Install/upgrade from a local RPM with progress.</li>
-                  <li><code>rpm -e &lt;pkg&gt;</code>: Erase a package.</li>
-                  <li><code>rpm --rebuilddb</code>: Rebuild RPM database.</li>
-                </ul>
+              <!-- Common breakpoints -->
+              <section class="lab-section" id="breakpoints">
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  Common breakpoints
+                </h3>
 
                 <div class="lab-callout">
-                  <div class="lab-callout-label">Tip</div>
+                  <div class="lab-callout-label">
+                    rpm -V reports unexpected differences
+                  </div>
                   <p class="m-b-0">
-                    For most day-to-day package work on RHEL-like systems, prefer <code>dnf</code>.
-                    Use <code>rpm</code> when you need low-level inspection, verification, and ownership checks.
+                    Drift is not always compromise. Compare against known policy, and pay attention to config files
+                    and expected admin changes. Use the output as a triage signal, then validate the specific files.
                   </p>
                 </div>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">
+                    rpm -K reports NOT OK
+                  </div>
+                  <p class="m-b-0">
+                    Do not install the RPM. Validate the source, re-download over a trusted path, and confirm you
+                    are checking the correct file. Treat failed checks as an integrity incident until proven otherwise.
+                  </p>
+                </div>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">
+                    rpm -e fails due to dependencies
+                  </div>
+                  <p class="m-b-0">
+                    The package is required by something else. Identify dependents before removal, or use a higher-level
+                    workflow that can resolve dependency changes safely.
+                  </p>
+                </div>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">
+                    rpm --rebuilddb takes a long time or errors
+                  </div>
+                  <p class="m-b-0">
+                    This can indicate filesystem problems or a damaged database directory. Confirm disk health and
+                    available space, then retry. If the database is severely corrupted, recovery may require backups
+                    or vendor guidance.
+                  </p>
+                </div>
+              </section>
+
+              <!-- Cleanup -->
+              <section class="lab-section alt-background" id="cleanup">
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  Cleanup checklist
+                </h3>
+
+                <p>
+                  If you installed a local test RPM, remove it and confirm package state is clean. If you rebuilt the
+                  database as part of recovery, verify RPM queries still work normally.
+                </p>
+
+                <div class="lab-codeblock m-b-40 m-t-40">
+                  <div class="lab-codeblock-header">
+                    <span>Commands</span>
+                    <button class="lab-copy-btn" type="button" data-copy="#cmd-cleanup">
+                      Copy
+                    </button>
+                  </div>
+                  <pre><code id="cmd-cleanup">rpm -q htop || true
+sudo rpm -e htop || true
+rpm -qa | head -n 5</code></pre>
+                </div>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">Success signal</div>
+                  <p class="m-b-0">
+                    The test package is absent (if installed), and RPM queries complete without database errors.
+                  </p>
+                </div>
+              </section>
+
+              <!-- Reference -->
+              <section class="lab-section" id="reference">
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  Reference
+                </h3>
+
+                <ul class="lab-reference-list">
+                  <li>
+                    <code>rpm -qa</code>
+                    : Lists installed packages.
+                    <ul>
+                      <li>
+                        <code>-q</code>
+                        : Query mode.
+                      </li>
+                      <li>
+                        <code>-a</code>
+                        : Queries all installed packages.
+                      </li>
+                    </ul>
+                  </li>
+
+                  <li>
+                    <code>rpm -qi &lt;pkg&gt;</code>
+                    : Shows installed package metadata.
+                    <ul>
+                      <li>
+                        <code>-i</code>
+                        : Displays package information (name, version, release, summary, etc.).
+                      </li>
+                    </ul>
+                  </li>
+
+                  <li>
+                    <code>rpm -ql &lt;pkg&gt;</code>
+                    : Lists files installed by a package.
+                    <ul>
+                      <li>
+                        <code>-l</code>
+                        : Lists files for the queried package.
+                      </li>
+                    </ul>
+                  </li>
+
+                  <li>
+                    <code>rpm -qf &lt;path&gt;</code>
+                    : Identifies which package owns a file path.
+                    <ul>
+                      <li>
+                        <code>-f</code>
+                        : Queries by file ownership.
+                      </li>
+                    </ul>
+                  </li>
+
+                  <li>
+                    <code>rpm -V &lt;pkg&gt;</code>
+                    : Verifies installed package contents against packaged state.
+                    <ul>
+                      <li>
+                        <code>-V</code>
+                        : Verification mode (checksums, permissions, sizes, timestamps, etc.).
+                      </li>
+                    </ul>
+                  </li>
+
+                  <li>
+                    <code>rpm -K &lt;file.rpm&gt;</code>
+                    : Validates digests and signatures for a local RPM file.
+                    <ul>
+                      <li>
+                        <code>-K</code>
+                        : Checks package signature and digest information.
+                      </li>
+                    </ul>
+                  </li>
+
+                  <li>
+                    <code>rpm -qp --info &lt;file.rpm&gt;</code>
+                    : Queries metadata from an RPM file without installing it.
+                    <ul>
+                      <li>
+                        <code>-p</code>
+                        : Operates on a package file instead of the installed database.
+                      </li>
+                      <li>
+                        <code>--info</code>
+                        : Displays package information for the file.
+                      </li>
+                    </ul>
+                  </li>
+
+                  <li>
+                    <code>rpm -Uvh &lt;file.rpm&gt;</code>
+                    : Installs or upgrades from a local RPM file.
+                    <ul>
+                      <li>
+                        <code>-U</code>
+                        : Upgrades if installed, otherwise installs.
+                      </li>
+                      <li>
+                        <code>-v</code>
+                        : Verbose output.
+                      </li>
+                      <li>
+                        <code>-h</code>
+                        : Prints hash marks to show progress.
+                      </li>
+                    </ul>
+                  </li>
+
+                  <li>
+                    <code>rpm -e &lt;pkg&gt;</code>
+                    : Removes a package (erase).
+                    <ul>
+                      <li>
+                        <code>-e</code>
+                        : Erases the package and owned files (dependency checks apply).
+                      </li>
+                    </ul>
+                  </li>
+
+                  <li>
+                    <code>rpm --rebuilddb</code>
+                    : Rebuilds the RPM database as a recovery operation.
+                    <ul>
+                      <li>
+                        <code>--rebuilddb</code>
+                        : Recreates database indexes from installed package headers.
+                      </li>
+                    </ul>
+                  </li>
+                </ul>
               </section>
             </div>
             <!-- /main -->
@@ -591,7 +930,7 @@ Done.</code></pre>
     <script src="../assets/js/lab.js"></script>
 
     <script>
-      document.getElementById("year").textContent = new Date().getFullYear()
+      document.getElementById('year').textContent = new Date().getFullYear()
     </script>
   </body>
 </html>

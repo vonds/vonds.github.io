@@ -37,7 +37,7 @@
     <link href="../assets/css/style.css" rel="stylesheet" />
     <link href="../assets/css/docs.css" rel="stylesheet" />
 
-    <!-- Lab page styles (new) -->
+    <!-- Lab page styles -->
     <link href="../assets/css/lab.css" rel="stylesheet" />
 
     <!-- Fonts -->
@@ -77,8 +77,17 @@
                   </a>
                 </li>
                 <li>
+                  <a
+                    href="https://github.com/vonds/sentinel"
+                    target="_blank"
+                    rel="noopener"
+                  >
+                    Sentinel
+                  </a>
+                </li>
+                <li>
                   <a href="docs.html" target="_blank" rel="noopener">
-                    exit_0
+                    exit_0 Documentation
                   </a>
                 </li>
               </ul>
@@ -157,7 +166,7 @@
             <a
               id="prev-lab"
               class="lab-nav-link"
-              href="#"
+              href="./lab106.html"
               aria-label="Previous lab"
             >
               &laquo;
@@ -165,7 +174,7 @@
             <a
               id="next-lab"
               class="lab-nav-link"
-              href="#"
+              href="./lab108.html"
               aria-label="Next lab"
             >
               &raquo;
@@ -182,7 +191,11 @@
                   </h5>
                   <ul class="docs-nav">
                     <li><a href="#scenario">Scenario</a></li>
+                    <li><a href="#objective">Objective</a></li>
+                    <li><a href="#concepts">Concepts</a></li>
                     <li><a href="#walkthrough">Walkthrough</a></li>
+                    <li><a href="#breakpoints">Breakpoints</a></li>
+                    <li><a href="#cleanup">Cleanup</a></li>
                     <li><a href="#reference">Reference</a></li>
                   </ul>
                 </div>
@@ -191,11 +204,13 @@
 
             <!-- MAIN CONTENT -->
             <div class="col-sm-8 col-md-9 lab-doc">
-              <!-- 1) Title + Summary (2 sentences max) -->
               <p class="m-b-20 lab-summary">
-                Inventory PCI, USB, and block devices using standard CLI tooling, then map a target PCI device to its bound kernel driver. Confirm the driver module is loaded using module inspection paths.
+                Inventory PCI, USB, and block devices using standard CLI tooling,
+                then map a target PCI device to its bound kernel driver. Confirm
+                the driver module state using module inspection paths.
               </p>
 
+              <!-- Video (kept on page; removed from left panel) -->
               <section class="lab-section" id="video" aria-label="Lab video">
                 <div class="lab-video">
                   <div class="lab-video-embed text-center">
@@ -211,7 +226,7 @@
                 </div>
               </section>
 
-              <!-- 2) Scenario -->
+              <!-- Scenario -->
               <section class="lab-section" id="scenario">
                 <div class="lab-chips" aria-label="Tags">
                   <span class="lab-chip">
@@ -228,70 +243,83 @@
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">
                   Scenario
                 </h3>
+
                 <p>
-                  You need a quick, reliable hardware inventory baseline for a Linux host. Your task is to enumerate PCI and USB devices, inspect block devices and mount points, then pick a PCI device and prove which kernel driver is bound to it and whether that driver module is loaded.
+                  You need a quick, reliable hardware inventory baseline for a
+                  Linux host. Enumerate PCI and USB devices, inspect block
+                  devices and mount points, then pick a PCI device and prove
+                  which kernel driver is bound to it and whether that driver
+                  module is loaded.
                 </p>
 
                 <div class="lab-callout">
                   <div class="lab-callout-label">Operator context</div>
                   <p class="m-b-0">
-                    Establish this inventory baseline before deeper debugging. You cannot troubleshoot drivers, storage, or connectivity if you do not first confirm what the kernel can actually see.
+                    Establish this baseline before deeper debugging. You cannot
+                    troubleshoot drivers, storage, or connectivity if you do not
+                    first confirm what the kernel can actually see.
                   </p>
                 </div>
               </section>
 
-              <!-- 3) Objective -->
+              <!-- Objective -->
               <section class="lab-section alt-background" id="objective">
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">
                   Objective
                 </h3>
                 <ul>
-                  <li>Enumerate PCI devices including numeric vendor and device IDs.</li>
-                  <li>Map a PCI device to its bound kernel driver and candidate modules.</li>
+                  <li>
+                    Enumerate PCI devices including numeric vendor and device
+                    IDs.
+                  </li>
+                  <li>
+                    Map a PCI device to its bound kernel driver and candidate
+                    modules.
+                  </li>
                   <li>Enumerate attached USB devices.</li>
                   <li>Inspect block devices and mount points.</li>
-                  <li>Confirm the target driver module is loaded.</li>
+                  <li>Confirm the target driver module state.</li>
                 </ul>
               </section>
 
-              <!-- 4) What You'll Practice -->
-              <section class="lab-section" id="practice">
+              <!-- Concepts (no alt-background moving forward) -->
+              <section class="lab-section" id="concepts">
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">
-                  What You’ll Practice
+                  Concepts
                 </h3>
-
-                <ul class="m-t-10">
+                <ul>
                   <li>
-                    PCI enumeration with
+                    Stable PCI identification using vendor:device IDs from
                     <code>lspci -nn</code>
-                    for stable device identification.
+                    .
                   </li>
                   <li>
-                    Driver binding inspection with
-                    <code>lspci -nnk</code>
-                    to distinguish “driver in use” from “available modules.”
+                    Driver binding evidence: “kernel driver in use” versus
+                    “kernel modules” from
+                    <code>lspci -k</code>
+                    output.
                   </li>
                   <li>
-                    USB inventory with
+                    Peripheral inventory using
                     <code>lsusb</code>
-                    .
+                    for USB buses and devices.
                   </li>
                   <li>
-                    Block device and mount inspection with
+                    Block device and mount visibility with
                     <code>lsblk</code>
-                    .
+                    before you touch storage.
                   </li>
                   <li>
-                    Module load verification with
+                    Module load validation with
                     <code>lsmod</code>
-                    and
+                    and kernel-provided module state (
                     <code>/proc/modules</code>
-                    .
+                    ).
                   </li>
                 </ul>
               </section>
 
-              <!-- 5) Commands Walkthrough -->
+              <!-- Walkthrough -->
               <section class="lab-section alt-background" id="walkthrough">
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">
                   Walkthrough
@@ -319,11 +347,13 @@
                   </div>
 
                   <p>
-                    Numeric IDs provide stable identification across vendors and distributions. This helps when correlating devices with driver support matrices or kernel module names.
+                    Numeric IDs provide stable identification across vendors and
+                    distributions. Use them when correlating devices with driver
+                    support matrices or kernel module names.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code id="verify-step-1">00:03.0 Ethernet controller [0200]: Intel Corporation 82540EM Gigabit Ethernet [8086:100e]</code></pre>
+                    <pre><code>00:03.0 Ethernet controller [0200]: Intel Corporation 82540EM Gigabit Ethernet [8086:100e]</code></pre>
                   </div>
                 </div>
 
@@ -331,7 +361,7 @@
                 <div class="lab-step">
                   <div class="lab-step-title">
                     <strong class="font-alt">Step 2</strong>
-                    : Show which kernel driver is in use for PCI devices.
+                    : Map a PCI device to the bound kernel driver.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -349,12 +379,26 @@
                   </div>
 
                   <p>
-                    This reveals the active binding state. “Kernel driver in use” is the actual runtime driver, while “Kernel modules” lists candidate modules that could handle the device.
+                    This reveals the binding state.
+                    <code>Kernel driver in use</code>
+                    is the runtime driver.
+                    <code>Kernel modules</code>
+                    lists candidate modules that could handle the device.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code id="verify-step-2">Kernel driver in use: e1000
+                    <pre><code>Kernel driver in use: e1000
 Kernel modules: e1000</code></pre>
+                  </div>
+
+                  <div class="lab-callout">
+                    <div class="lab-callout-label">Target selection</div>
+                    <p class="m-b-0">
+                      Pick one PCI device line from your output and use that
+                      driver/module name in Step 5. The example uses
+                      <code>e1000</code>
+                      as the module name.
+                    </p>
                   </div>
                 </div>
 
@@ -362,7 +406,7 @@ Kernel modules: e1000</code></pre>
                 <div class="lab-step">
                   <div class="lab-step-title">
                     <strong class="font-alt">Step 3</strong>
-                    : List attached USB devices on the system.
+                    : Inventory attached USB devices.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -380,11 +424,13 @@ Kernel modules: e1000</code></pre>
                   </div>
 
                   <p>
-                    USB inventory is useful for validating keyboards, storage adapters, wireless receivers, and other peripherals that may not show up in PCI output.
+                    USB inventory helps validate keyboards, storage adapters,
+                    wireless receivers, and other peripherals that may not show
+                    up in PCI output.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code id="verify-step-3">Bus 001 Device 003: ID 046d:c534 Logitech, Inc. Unifying Receiver</code></pre>
+                    <pre><code>Bus 001 Device 003: ID 046d:c534 Logitech, Inc. Unifying Receiver</code></pre>
                   </div>
                 </div>
 
@@ -392,7 +438,7 @@ Kernel modules: e1000</code></pre>
                 <div class="lab-step">
                   <div class="lab-step-title">
                     <strong class="font-alt">Step 4</strong>
-                    : Show block devices with size and mountpoints columns.
+                    : Inspect block devices and mount points.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -411,11 +457,13 @@ Kernel modules: e1000</code></pre>
 
                   <p>
                     <code>lsblk</code>
-                    provides a clean view of disks, partitions, and mountpoints. This helps you confirm what is actually mounted and where before you touch storage.
+                    provides a clean view of disks, partitions, and mount
+                    points. Confirm what is mounted and where before you touch
+                    storage.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code id="verify-step-4">sda
+                    <pre><code>sda
 ├─sda1 /boot
 └─sda2 /</code></pre>
                   </div>
@@ -425,7 +473,7 @@ Kernel modules: e1000</code></pre>
                 <div class="lab-step">
                   <div class="lab-step-title">
                     <strong class="font-alt">Step 5</strong>
-                    : Verify that the Ethernet driver’s kernel module is currently loaded.
+                    : Confirm the target driver module state.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -443,11 +491,13 @@ Kernel modules: e1000</code></pre>
                   </div>
 
                   <p>
-                    This confirms the driver module is loaded in the running kernel. If the module is not present, the driver may be built-in, blacklisted, missing, or not bound to the device.
+                    This confirms the module is loaded in the running kernel. If
+                    the module is not present, it may be built-in, blacklisted,
+                    missing, or not bound to the device.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code id="verify-step-5a">e1000               155648  0</code></pre>
+                    <pre><code>e1000               155648  0</code></pre>
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -466,12 +516,113 @@ Kernel modules: e1000</code></pre>
 
                   <p>
                     <code>/proc/modules</code>
-                    is another direct view of currently loaded modules. It can be useful in minimal environments where output parsing is preferred.
+                    is a direct view of loaded modules (name, size, use count).
+                    It can be useful in minimal environments and scripting
+                    contexts.
                   </p>
                 </div>
               </section>
 
-              <!-- 6) Reference -->
+              <!-- Common breakpoints -->
+              <section class="lab-section" id="breakpoints">
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  Common breakpoints
+                </h3>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">
+                    lspci output is empty or missing expected devices
+                  </div>
+                  <p class="m-b-0">
+                    If devices are missing, validate BIOS/UEFI settings,
+                    passthrough mappings (virtualization), and that the host is
+                    seeing the bus at all. Hardware and platform configuration
+                    issues must be resolved before driver debugging.
+                  </p>
+                </div>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">
+                    Kernel driver in use is blank
+                  </div>
+                  <p class="m-b-0">
+                    The device is present but unbound. Confirm candidate modules
+                    from
+                    <code>Kernel modules</code>
+                    output, then check kernel logs for probe or binding errors.
+                  </p>
+                </div>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">
+                    Module not shown in lsmod
+                  </div>
+                  <p class="m-b-0">
+                    Some drivers are built into the kernel and will not appear
+                    in
+                    <code>lsmod</code>
+                    . Cross-check with
+                    <code>/proc/modules</code>
+                    and confirm binding again with
+                    <code>lspci -k</code>
+                    for the target device.
+                  </p>
+                </div>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">
+                    Device present but block/mount output looks wrong
+                  </div>
+                  <p class="m-b-0">
+                    If storage is missing or mount points are unexpected,
+                    validate with multiple views. Confirm device nodes exist
+                    under
+                    <code>/dev</code>
+                    and check recent kernel messages for hotplug or bus resets.
+                  </p>
+                </div>
+              </section>
+
+              <!-- Cleanup -->
+              <section class="lab-section alt-background" id="cleanup">
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  Cleanup checklist
+                </h3>
+
+                <p>
+                  This lab is read-only. Your cleanup is capturing output for
+                  documentation or escalation and leaving the host unchanged.
+                </p>
+
+                <div class="lab-codeblock m-b-40 m-t-40">
+                  <div class="lab-codeblock-header">
+                    <span>Commands</span>
+                    <button
+                      class="lab-copy-btn"
+                      type="button"
+                      data-copy="#cmd-cleanup"
+                    >
+                      Copy
+                    </button>
+                  </div>
+                  <pre><code id="cmd-cleanup">lspci -nn
+lspci -nnk
+lsusb
+lsblk -o NAME,MAJ:MIN,RM,SIZE,RO,TYPE,MOUNTPOINTS
+lsmod | head</code></pre>
+                </div>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">Success signal</div>
+                  <p class="m-b-0">
+                    You can name the target device by vendor:device ID, identify
+                    the bound kernel driver, and show module state without
+                    guessing.
+                  </p>
+                </div>
+              </section>
+
+              <!-- Reference -->
               <section class="lab-section" id="reference">
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">
                   Reference
@@ -480,13 +631,14 @@ Kernel modules: e1000</code></pre>
                 <ul class="lab-reference-list">
                   <li>
                     <code>lspci -nn</code>
-                    : Lists PCI devices and includes numeric vendor and device IDs.
+                    : Lists PCI devices and includes numeric vendor and device
+                    IDs.
                     <ul>
                       <li>
                         <code>-n</code>
-                        : Displays numeric IDs; typically used as
+                        : Displays numeric IDs (often used twice as
                         <code>-nn</code>
-                        to show both text and numeric IDs.
+                        to show both text and numeric IDs).
                       </li>
                     </ul>
                   </li>
@@ -497,7 +649,8 @@ Kernel modules: e1000</code></pre>
                     <ul>
                       <li>
                         <code>-k</code>
-                        : Displays the kernel driver currently bound to each device.
+                        : Displays the kernel driver currently bound to each
+                        device.
                       </li>
                     </ul>
                   </li>
@@ -508,12 +661,12 @@ Kernel modules: e1000</code></pre>
                   </li>
 
                   <li>
-                    <code>lsblk -o ...</code>
-                    : Lists block devices with custom columns like size and mountpoints.
+                    <code>lsblk -o &lt;cols&gt;</code>
+                    : Lists block devices with selected columns.
                     <ul>
                       <li>
                         <code>MOUNTPOINTS</code>
-                        : Shows all mountpoints associated with a device.
+                        : Shows all mount points associated with a device.
                       </li>
                     </ul>
                   </li>
@@ -525,7 +678,27 @@ Kernel modules: e1000</code></pre>
 
                   <li>
                     <code>/proc/modules</code>
-                    : Kernel-exported view of loaded modules (name, size, use count).
+                    : Kernel-exported view of loaded modules (name, size, use
+                    count).
+                  </li>
+
+                  <li>
+                    <code>grep &lt;pattern&gt; &lt;file&gt;</code>
+                    : Filters lines that match a pattern.
+                    <ul>
+                      <li>
+                        <code>&lt;pattern&gt;</code>
+                        : The string or regex you are matching (for example
+                        <code>e1000</code>
+                        ).
+                      </li>
+                      <li>
+                        <code>&lt;file&gt;</code>
+                        : The file to search (for example
+                        <code>/proc/modules</code>
+                        ).
+                      </li>
+                    </ul>
                   </li>
                 </ul>
               </section>
@@ -533,17 +706,6 @@ Kernel modules: e1000</code></pre>
             <!-- /main -->
           </div>
           <!-- /row -->
-
-          <nav class="lab-pagination">
-            <a
-              id="prev-lab"
-              class="lab-nav-link"
-              href="#"
-              aria-label="Previous lab"
-            >
-              &uArr;
-            </a>
-          </nav>
         </div>
         <!-- /container -->
       </section>
@@ -603,6 +765,7 @@ Kernel modules: e1000</code></pre>
     <script src="../assets/js/imagesloaded.pkgd.js"></script>
     <script src="../assets/js/isotope.pkgd.min.js"></script>
     <script src="../assets/js/packery-mode.pkgd.min.js"></script>
+    <script src="../assets/js/packery-mode.pkgd.min.js"></script>
     <script src="../assets/js/appear.js"></script>
     <script src="../assets/js/jquery.easing.1.3.js"></script>
     <script src="../assets/js/wow.min.js"></script>
@@ -614,5 +777,9 @@ Kernel modules: e1000</code></pre>
 
     <!-- Lab page JS (new) -->
     <script src="../assets/js/lab.js"></script>
+
+    <script>
+      document.getElementById("year").textContent = new Date().getFullYear()
+    </script>
   </body>
 </html>

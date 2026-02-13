@@ -182,7 +182,11 @@
                   </h5>
                   <ul class="docs-nav">
                     <li><a href="#scenario">Scenario</a></li>
+                    <li><a href="#objective">Objective</a></li>
+                    <li><a href="#concepts">Concepts</a></li>
                     <li><a href="#walkthrough">Walkthrough</a></li>
+                    <li><a href="#breakpoints">Breakpoints</a></li>
+                    <li><a href="#cleanup">Cleanup</a></li>
                     <li><a href="#reference">Reference</a></li>
                   </ul>
                 </div>
@@ -191,15 +195,13 @@
 
             <!-- MAIN CONTENT -->
             <div class="col-sm-8 col-md-9 lab-doc">
-              <!-- 1) Title + Summary (2 sentences max) -->
+              <!-- Summary (2 sentences max) -->
               <p class="m-b-20 lab-summary">
                 Verify suspected package tampering and broken shell behavior by
-                combining
-                <code>rpm</code>
-                integrity checks with
-                <code>dnf</code>
-                inspection and repair workflows. Confirm ownership of key files,
-                detect modifications, and restore expected state safely.
+                combining <code>rpm</code> integrity checks with
+                <code>dnf</code> inspection and repair workflows. Confirm
+                ownership of key files, detect modifications, and restore
+                expected state safely.
               </p>
 
               <section class="lab-section" id="video" aria-label="Lab video">
@@ -217,7 +219,7 @@
                 </div>
               </section>
 
-              <!-- 2) Scenario -->
+              <!-- Scenario -->
               <section class="lab-section" id="scenario">
                 <div class="lab-chips" aria-label="Tags">
                   <span class="lab-chip">
@@ -236,125 +238,89 @@
                 </h3>
                 <p>
                   A teammate reports:
-                  <strong>“bash completion stopped working and a binary might be
-                    modified.”</strong>
+                  <strong>
+                    “bash completion stopped working and a binary might be
+                    modified.”
+                  </strong>
                   You need to confirm what is installed, identify which package
                   owns key files, verify whether packaged files were modified,
                   and restore expected state using safe
-                  <code>rpm</code>
-                  /
-                  <code>dnf</code>
-                  workflows.
+                  <code>rpm</code>/<code>dnf</code> workflows.
                 </p>
 
                 <div class="lab-callout">
                   <div class="lab-callout-label">Operator context</div>
                   <p class="m-b-0">
-                    Start with evidence. Use
-                    <code>rpm</code>
-                    to determine what the system believes is installed and
-                    whether it matches the packaged baseline, then use
-                    <code>dnf</code>
-                    only for targeted repair.
+                    Start with evidence. Use <code>rpm</code> to determine what
+                    the system believes is installed and whether it matches the
+                    packaged baseline, then use <code>dnf</code> only for
+                    targeted repair.
                   </p>
                 </div>
               </section>
 
-              <!-- 3) Objective -->
+              <!-- Objective -->
               <section class="lab-section alt-background" id="objective">
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">
                   Objective
                 </h3>
                 <ul>
-                  <li>
-                    Confirm the installed version of
-                    <code>bash</code>
-                    .
-                  </li>
-                  <li>
-                    Inspect package metadata with
-                    <code>rpm -qi</code>
-                    .
-                  </li>
+                  <li>Confirm the installed version of <code>bash</code>.</li>
+                  <li>Inspect package metadata with <code>rpm -qi</code>.</li>
                   <li>
                     List installed files for a package and spot relevant paths.
                   </li>
+                  <li>Identify which package owns a specific file path.</li>
                   <li>
-                    Identify which package owns a specific file path.
+                    Verify package integrity to detect modified or missing
+                    files.
                   </li>
                   <li>
-                    Verify package integrity to detect modified/missing files.
+                    Restore packaged state using <code>dnf reinstall</code>.
+                  </li>
+                  <li>Re-verify integrity after the repair.</li>
+                  <li>
+                    Inspect repo visibility for installed and available versions.
                   </li>
                   <li>
-                    Restore packaged state using
-                    <code>dnf reinstall</code>
-                    .
-                  </li>
-                  <li>
-                    Re-verify integrity after the repair.
-                  </li>
-                  <li>
-                    Inspect repo visibility for installed/available versions.
-                  </li>
-                  <li>
-                    Use
-                    <code>dnf repoquery</code>
-                    to confirm repository source for a package.
+                    Use <code>dnf repoquery</code> to confirm repository source.
                   </li>
                   <li>Clean metadata safely.</li>
                 </ul>
               </section>
 
-              <!-- 4) What You'll Practice -->
-              <section class="lab-section" id="practice">
+              <!-- Concepts -->
+              <section class="lab-section" id="concepts">
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">
-                  What You’ll Practice
+                  Concepts
                 </h3>
-
-                <ul class="m-t-10">
+                <ul>
                   <li>
-                    Package presence and version checks with
-                    <code>rpm -q</code>
-                    .
+                    <code>rpm</code> is your source of truth for “what is installed
+                    right now” and “what files should exist for that package.”
                   </li>
                   <li>
-                    Package metadata inspection with
-                    <code>rpm -qi</code>
-                    .
+                    <code>rpm -V</code> shows drift from the packaged baseline.
+                    That drift can be legitimate (especially config files), but
+                    it is still evidence you must account for.
                   </li>
                   <li>
-                    File listings with
-                    <code>rpm -ql</code>
-                    and file ownership with
-                    <code>rpm -qf</code>
-                    .
+                    Use file ownership (<code>rpm -qf</code>) to move from a
+                    symptom on disk to the package you can repair.
                   </li>
                   <li>
-                    Integrity verification with
-                    <code>rpm -V</code>
-                    to detect modifications.
+                    Use <code>dnf</code> for controlled repair after you have
+                    verified drift, not as your first instinct.
                   </li>
                   <li>
-                    Targeted repair using
-                    <code>dnf reinstall</code>
-                    and post-repair verification.
-                  </li>
-                  <li>
-                    Repo-side inspection with
-                    <code>dnf list</code>
-                    and
-                    <code>dnf repoquery</code>
-                    .
-                  </li>
-                  <li>
-                    Safe cleanup with
-                    <code>dnf clean</code>
-                    .
+                    If you suspect tampering beyond a normal config change, treat
+                    it as an incident: preserve evidence and widen your scope
+                    before “fixing” everything.
                   </li>
                 </ul>
               </section>
 
-              <!-- 5) Commands Walkthrough -->
+              <!-- Walkthrough -->
               <section class="lab-section alt-background" id="walkthrough">
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">
                   Walkthrough
@@ -364,9 +330,7 @@
                 <div class="lab-step">
                   <div class="lab-step-title">
                     <strong class="font-alt">Step 1</strong>
-                    : Confirm the installed version of
-                    <code>bash</code>
-                    .
+                    : Confirm the installed version of <code>bash</code>.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -384,12 +348,12 @@
                   </div>
 
                   <p>
-                    This is your baseline: if the package is not installed, you
+                    This is your baseline. If the package is not installed, you
                     have a different problem than “modified files.”
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code id="verify-step-1">bash-5.1.8-6.el9.x86_64</code></pre>
+                    <pre><code>bash-5.1.8-6.el9.x86_64</code></pre>
                   </div>
                 </div>
 
@@ -397,9 +361,7 @@
                 <div class="lab-step">
                   <div class="lab-step-title">
                     <strong class="font-alt">Step 2</strong>
-                    : Show package info for
-                    <code>bash</code>
-                    .
+                    : Show package info for <code>bash</code>.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -417,13 +379,12 @@
                   </div>
 
                   <p>
-                    Package metadata helps confirm what release you are on and
-                    gives context for troubleshooting (“what did we actually
-                    install on this host?”).
+                    Metadata confirms what release you are on and gives context
+                    for troubleshooting and audit trails.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code id="verify-step-2">Name        : bash
+                    <pre><code>Name        : bash
 Version     : 5.1.8
 Release     : 6.el9
 Architecture: x86_64
@@ -435,9 +396,7 @@ Summary     : The GNU Bourne Again shell</code></pre>
                 <div class="lab-step">
                   <div class="lab-step-title">
                     <strong class="font-alt">Step 3</strong>
-                    : List a few files installed by
-                    <code>bash</code>
-                    .
+                    : List a few files installed by <code>bash</code>.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -455,13 +414,12 @@ Summary     : The GNU Bourne Again shell</code></pre>
                   </div>
 
                   <p>
-                    Use this when you need to confirm whether a specific file
-                    should exist and where the package places configuration,
-                    docs, or helper scripts.
+                    Use this to confirm whether a file should exist and where
+                    the package places configuration and helper scripts.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code id="verify-step-3">/bin/bash
+                    <pre><code>/bin/bash
 /etc/bashrc
 /usr/share/doc/bash</code></pre>
                   </div>
@@ -471,9 +429,7 @@ Summary     : The GNU Bourne Again shell</code></pre>
                 <div class="lab-step">
                   <div class="lab-step-title">
                     <strong class="font-alt">Step 4</strong>
-                    : Find which package owns
-                    <code>/etc/bashrc</code>
-                    .
+                    : Find which package owns <code>/etc/bashrc</code>.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -491,12 +447,12 @@ Summary     : The GNU Bourne Again shell</code></pre>
                   </div>
 
                   <p>
-                    This maps a file on disk back to its owning RPM. It is the
-                    fastest way to move from a path to a repair workflow.
+                    This maps a file back to its owning RPM and is often the
+                    first step before a targeted repair.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code id="verify-step-4">bash-5.1.8-6.el9.x86_64</code></pre>
+                    <pre><code>bash-5.1.8-6.el9.x86_64</code></pre>
                   </div>
                 </div>
 
@@ -504,20 +460,15 @@ Summary     : The GNU Bourne Again shell</code></pre>
                 <div class="lab-step">
                   <div class="lab-step-title">
                     <strong class="font-alt">Step 5</strong>
-                    : Verify package integrity for
-                    <code>bash</code>
-                    .
+                    : Verify package integrity for <code>bash</code>.
                   </div>
 
                   <div class="lab-callout">
                     <div class="lab-callout-label">What this means</div>
                     <p class="m-b-0">
-                      <code>rpm -V</code>
-                      compares installed files to RPM metadata. Output indicates
-                      differences (size, permissions, mtime, checksum) and flags
-                      config files with
-                      <code>c</code>
-                      .
+                      <code>rpm -V</code> compares installed files to RPM
+                      metadata. Output indicates differences (size, permissions,
+                      mtime, checksum) and flags config files with <code>c</code>.
                     </p>
                   </div>
 
@@ -536,15 +487,13 @@ Summary     : The GNU Bourne Again shell</code></pre>
                   </div>
 
                   <p>
-                    In this case,
-                    <code>/etc/bashrc</code>
-                    is a config file and was modified. That is not automatically
-                    malicious, but it is evidence you should account for before
-                    reinstalling or overwriting anything.
+                    In this example, <code>/etc/bashrc</code> is a config file and
+                    was modified. That is not automatically malicious, but it is
+                    evidence you should account for before restoring baselines.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code id="verify-step-5">S.5....T.  c /etc/bashrc
+                    <pre><code>S.5....T.  c /etc/bashrc
 (size and mtime differ: /etc/bashrc was modified)</code></pre>
                   </div>
                 </div>
@@ -553,17 +502,15 @@ Summary     : The GNU Bourne Again shell</code></pre>
                 <div class="lab-step">
                   <div class="lab-step-title">
                     <strong class="font-alt">Step 6</strong>
-                    : Reinstall
-                    <code>bash</code>
-                    to restore packaged files.
+                    : Reinstall <code>bash</code> to restore packaged files.
                   </div>
 
                   <div class="lab-callout">
                     <div class="lab-callout-label">Safety note</div>
                     <p class="m-b-0">
-                      Reinstalling restores packaged files, but config file
-                      behavior depends on packaging rules. Always validate shell
-                      behavior after the change.
+                      Reinstall restores packaged files, but config file handling
+                      depends on packaging rules. Validate shell behavior after
+                      changes.
                     </p>
                   </div>
 
@@ -582,12 +529,12 @@ Summary     : The GNU Bourne Again shell</code></pre>
                   </div>
 
                   <p>
-                    This is a targeted repair workflow when integrity checks show
-                    drift and you need to re-apply the packaged baseline.
+                    Use this when integrity checks show drift and you need to
+                    re-apply the packaged baseline.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code id="verify-step-6">Last metadata expiration check: 0:02:11 ago on Sun 04 Jan 2026.
+                    <pre><code>Last metadata expiration check: 0:02:11 ago on Sun 04 Jan 2026.
 Dependencies resolved.
 Reinstalling:
   bash.x86_64  5.1.8-6.el9  baseos
@@ -617,13 +564,13 @@ Complete!</code></pre>
                   </div>
 
                   <p>
-                    A clean verify run produces no output. If you still see
-                    unexpected changes, you need to narrow down which files are
-                    drifting and why.
+                    A clean verify run typically produces no output. If you still
+                    see unexpected drift, narrow down which files are changing
+                    and why.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code id="verify-step-7">(no output)</code></pre>
+                    <pre><code>(no output)</code></pre>
                   </div>
                 </div>
 
@@ -631,9 +578,7 @@ Complete!</code></pre>
                 <div class="lab-step">
                   <div class="lab-step-title">
                     <strong class="font-alt">Step 8</strong>
-                    : List available versions of
-                    <code>bash</code>
-                    (installed and available).
+                    : Compare installed and available versions of <code>bash</code>.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -651,12 +596,11 @@ Complete!</code></pre>
                   </div>
 
                   <p>
-                    This is a quick sanity check for what your repos expose
-                    compared to what is installed.
+                    Sanity check: what your repos expose versus what is installed.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code id="verify-step-8">Installed Packages
+                    <pre><code>Installed Packages
 bash.x86_64     5.1.8-6.el9     @baseos
 Available Packages
 bash.x86_64     5.1.8-6.el9     baseos</code></pre>
@@ -667,11 +611,7 @@ bash.x86_64     5.1.8-6.el9     baseos</code></pre>
                 <div class="lab-step">
                   <div class="lab-step-title">
                     <strong class="font-alt">Step 9</strong>
-                    : Use
-                    <code>repoquery</code>
-                    to show repository info for
-                    <code>httpd</code>
-                    .
+                    : Use <code>repoquery</code> to show repository info for <code>httpd</code>.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -689,14 +629,12 @@ bash.x86_64     5.1.8-6.el9     baseos</code></pre>
                   </div>
 
                   <p>
-                    Repoquery is useful when you need more detail than
-                    <code>dnf list</code>
-                    provides, including confirming which repository a package is
-                    sourced from.
+                    Useful when you need more detail than <code>dnf list</code>,
+                    including confirming which repository a package is sourced from.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code id="verify-step-9">Name        : httpd
+                    <pre><code>Name        : httpd
 Version     : 2.4.57
 Release     : 8.el9
 Repo        : appstream</code></pre>
@@ -707,7 +645,7 @@ Repo        : appstream</code></pre>
                 <div class="lab-step">
                   <div class="lab-step-title">
                     <strong class="font-alt">Step 10</strong>
-                    : Clean dnf metadata cache.
+                    : Clean DNF metadata cache.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -726,18 +664,86 @@ Repo        : appstream</code></pre>
 
                   <p>
                     Use this when repo metadata is stale or you want to force a
-                    fresh metadata view on your next
-                    <code>dnf</code>
-                    operation.
+                    fresh metadata view on the next <code>dnf</code> operation.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code id="verify-step-10">0 files removed</code></pre>
+                    <pre><code>0 files removed</code></pre>
                   </div>
                 </div>
               </section>
 
-              <!-- 8) Reference -->
+              <!-- Breakpoints -->
+              <section class="lab-section" id="breakpoints">
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  Common breakpoints
+                </h3>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">rpm -q says “package bash is not installed”</div>
+                  <p class="m-b-0">
+                    You are not in a “modified files” situation yet. Confirm the
+                    correct host, confirm repos, then determine whether bash is
+                    intentionally absent or removed unexpectedly.
+                  </p>
+                </div>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">rpm -qf reports “file is not owned by any package”</div>
+                  <p class="m-b-0">
+                    The file may be locally created, dropped by a script, or part
+                    of a non-RPM install. Do not assume reinstall will fix it.
+                  </p>
+                </div>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">rpm -V shows many mismatches</div>
+                  <p class="m-b-0">
+                    That’s a bigger signal than a single config drift. Consider
+                    widening scope: check other core packages and preserve evidence
+                    before mass repairs.
+                  </p>
+                </div>
+              </section>
+
+              <!-- Cleanup -->
+              <section class="lab-section alt-background" id="cleanup">
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  Cleanup checklist
+                </h3>
+
+                <p>
+                  End with a clean repo view and a known integrity state for the
+                  package you touched.
+                </p>
+
+                <div class="lab-codeblock m-b-40 m-t-40">
+                  <div class="lab-codeblock-header">
+                    <span>Commands</span>
+                    <button
+                      class="lab-copy-btn"
+                      type="button"
+                      data-copy="#cmd-cleanup"
+                    >
+                      Copy
+                    </button>
+                  </div>
+                  <pre><code id="cmd-cleanup">rpm -V bash
+dnf list bash
+sudo dnf clean metadata</code></pre>
+                </div>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">Success signal</div>
+                  <p class="m-b-0">
+                    <code>rpm -V bash</code> is clean (or only shows expected config
+                    drift), <code>dnf list bash</code> looks sane, and metadata cleanup
+                    completes without errors.
+                  </p>
+                </div>
+              </section>
+
+              <!-- Reference -->
               <section class="lab-section" id="reference">
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">
                   Reference
@@ -746,60 +752,57 @@ Repo        : appstream</code></pre>
                 <ul class="lab-reference-list">
                   <li>
                     <code>rpm -q &lt;pkg&gt;</code>
-                    : Prints the installed package version (or reports not
-                    installed).
+                    : Print the installed package version (or report not installed).
                   </li>
 
                   <li>
                     <code>rpm -qi &lt;pkg&gt;</code>
-                    : Displays package metadata (version, release, summary,
-                    install info).
+                    : Display package metadata (version, release, summary, install info).
                   </li>
 
                   <li>
                     <code>rpm -ql &lt;pkg&gt;</code>
-                    : Lists files installed by a package.
+                    : List files installed by a package.
                   </li>
 
                   <li>
                     <code>rpm -qf &lt;path&gt;</code>
-                    : Finds the owning package for a file path.
+                    : Find the owning package for a file path.
                   </li>
 
                   <li>
                     <code>rpm -V &lt;pkg&gt;</code>
-                    : Verifies packaged files against RPM metadata.
+                    : Verify packaged files against RPM metadata.
                     <ul>
                       <li>
-                        Config files often appear with a
                         <code>c</code>
-                        marker and may legitimately differ from the packaged
-                        baseline.
+                        : Marks config files (may legitimately differ from packaged baseline).
                       </li>
                     </ul>
                   </li>
 
                   <li>
                     <code>dnf reinstall &lt;pkg&gt;</code>
-                    : Reinstalls a package from repos to restore packaged files.
+                    : Reinstall a package from repos to restore packaged files.
                   </li>
 
                   <li>
                     <code>dnf list &lt;pkg&gt;</code>
-                    : Shows installed and available versions of a package.
+                    : Show installed and available versions of a package.
                   </li>
 
                   <li>
                     <code>dnf repoquery --info &lt;pkg&gt;</code>
-                    : Prints detailed repository metadata for a package,
-                    including the source repo.
+                    : Show detailed repo metadata for a package, including source repo.
                   </li>
 
                   <li>
-                    <code>dnf clean metadata</code>
-                    /
-                    <code>dnf clean all</code>
-                    : Cleans metadata (and optionally packages) from the cache.
+                    <code>dnf clean</code>
+                    : Clean cached data to force fresh repo information.
+                    <ul>
+                      <li><code>metadata</code> : Remove repo metadata only.</li>
+                      <li><code>all</code> : Remove metadata and cached packages.</li>
+                    </ul>
                   </li>
                 </ul>
               </section>
@@ -807,17 +810,6 @@ Repo        : appstream</code></pre>
             <!-- /main -->
           </div>
           <!-- /row -->
-
-          <nav class="lab-pagination">
-            <a
-              id="prev-lab"
-              class="lab-nav-link"
-              href="#"
-              aria-label="Previous lab"
-            >
-              &uArr;
-            </a>
-          </nav>
         </div>
         <!-- /container -->
       </section>
@@ -829,11 +821,7 @@ Repo        : appstream</code></pre>
             <div class="col-sm-12">
               <ul class="social-text-links font-alt text-center m-b-20">
                 <li>
-                  <a
-                    href="https://github.com/vonds"
-                    target="_blank"
-                    rel="noopener"
-                  >
+                  <a href="https://github.com/vonds" target="_blank" rel="noopener">
                     Github
                   </a>
                 </li>
@@ -888,5 +876,9 @@ Repo        : appstream</code></pre>
 
     <!-- Lab page JS (new) -->
     <script src="../assets/js/lab.js"></script>
+
+    <script>
+      document.getElementById('year').textContent = new Date().getFullYear()
+    </script>
   </body>
 </html>

@@ -1,4 +1,4 @@
-<!-- lab114.html -->
+ <!-- lab114.html -->
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -37,7 +37,7 @@
     <link href="../assets/css/style.css" rel="stylesheet" />
     <link href="../assets/css/docs.css" rel="stylesheet" />
 
-    <!-- Lab page styles (new) -->
+    <!-- Lab page styles -->
     <link href="../assets/css/lab.css" rel="stylesheet" />
 
     <!-- Fonts -->
@@ -152,6 +152,7 @@
           <h2 class="font-alt module-title m-t-60">
             Lab 114: RHEL Bootloader Basics
           </h2>
+
           <nav class="lab-pagination">
             <a
               id="prev-lab"
@@ -170,6 +171,7 @@
               &raquo;
             </a>
           </nav>
+
           <div class="row">
             <!-- LEFT SIDEBAR -->
             <div class="col-sm-4 col-md-3 lab-sidebar">
@@ -180,7 +182,11 @@
                   </h5>
                   <ul class="docs-nav">
                     <li><a href="#scenario">Scenario</a></li>
+                    <li><a href="#objective">Objective</a></li>
+                    <li><a href="#concepts">Concepts</a></li>
                     <li><a href="#walkthrough">Walkthrough</a></li>
+                    <li><a href="#breakpoints">Breakpoints</a></li>
+                    <li><a href="#cleanup">Cleanup</a></li>
                     <li><a href="#reference">Reference</a></li>
                   </ul>
                 </div>
@@ -189,16 +195,15 @@
 
             <!-- MAIN CONTENT -->
             <div class="col-sm-8 col-md-9 lab-doc">
-              <!-- 1) Title + Summary (2 sentences max) -->
               <p class="m-b-20 lab-summary">
                 Inspect GRUB defaults and menu entries to confirm what the
                 system is configured to boot, then regenerate
-                <code>grub.cfg</code>
-                safely without risking system state. Validate installed kernels,
-                verify the updated configuration timestamp, and confirm the
-                system’s default boot target.
+                <code>grub.cfg</code> safely using supported tooling. Validate
+                installed kernels, verify the updated configuration timestamp,
+                and confirm the system’s default boot target.
               </p>
 
+              <!-- Video (kept on page; removed from left panel) -->
               <section class="lab-section" id="video" aria-label="Lab video">
                 <div class="lab-video">
                   <div class="lab-video-embed text-center">
@@ -214,7 +219,7 @@
                 </div>
               </section>
 
-              <!-- 2) Scenario -->
+              <!-- Scenario -->
               <section class="lab-section" id="scenario">
                 <div class="lab-chips" aria-label="Tags">
                   <span class="lab-chip">
@@ -231,14 +236,16 @@
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">
                   Scenario
                 </h3>
+
                 <p>
                   A RHEL host is not booting as expected. Before changing
                   anything, you need to inspect the current GRUB defaults,
                   review available boot menu entries, confirm which kernels are
                   installed, and safely regenerate
-                  <code>/boot/grub2/grub.cfg</code>
-                  to ensure the configuration matches what is on disk.
+                  <code>/boot/grub2/grub.cfg</code> so the configuration matches
+                  what is on disk.
                 </p>
+
                 <div class="lab-callout">
                   <div class="lab-callout-label">Operator context</div>
                   <p class="m-b-0">
@@ -250,91 +257,56 @@
                 </div>
               </section>
 
-              <!-- 3) Objective -->
+              <!-- Objective -->
               <section class="lab-section alt-background" id="objective">
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">
                   Objective
                 </h3>
                 <ul>
+                  <li>Inspect GRUB defaults in <code>/etc/default/grub</code>.</li>
+                  <li>Review GRUB menu entries from <code>/boot/grub2/grub.cfg</code>.</li>
+                  <li>Identify installed kernel and initramfs artifacts in <code>/boot</code>.</li>
                   <li>
-                    Inspect GRUB defaults in
-                    <code>/etc/default/grub</code>
-                    .
+                    Regenerate <code>grub.cfg</code> safely using
+                    <code>grub2-mkconfig</code>.
                   </li>
-                  <li>
-                    Review GRUB menu entries from
-                    <code>/boot/grub2/grub.cfg</code>
-                    .
-                  </li>
-                  <li>
-                    Identify installed kernel and initramfs artifacts in
-                    <code>/boot</code>
-                    .
-                  </li>
-                  <li>
-                    Regenerate
-                    <code>grub.cfg</code>
-                    safely using
-                    <code>grub2-mkconfig</code>
-                    .
-                  </li>
-                  <li>
-                    Verify the updated configuration via file metadata.
-                  </li>
-                  <li>
-                    Confirm the systemd default target to understand expected
-                    boot mode.
-                  </li>
-                  <li>
-                    Check GRUB installer version without performing writes.
-                  </li>
+                  <li>Verify the updated configuration via file metadata.</li>
+                  <li>Confirm the systemd default target to understand expected boot mode.</li>
+                  <li>Check GRUB installer version without performing writes.</li>
                 </ul>
               </section>
 
-              <!-- 4) What You'll Practice -->
-              <section class="lab-section" id="practice">
+              <!-- Concepts (no alt-background moving forward) -->
+              <section class="lab-section" id="concepts">
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">
-                  What You’ll Practice
+                  Concepts
                 </h3>
-
-                <ul class="m-t-10">
+                <ul>
                   <li>
-                    Reading GRUB defaults and understanding what they control
-                    (
-                    <code>GRUB_TIMEOUT</code>
-                    ,
-                    <code>GRUB_DEFAULT</code>
-                    ,
-                    <code>GRUB_CMDLINE_LINUX</code>
-                    ).
+                    <code>/etc/default/grub</code> holds GRUB defaults that feed into the
+                    generated <code>grub.cfg</code>.
                   </li>
                   <li>
-                    Finding and interpreting menu entries in
-                    <code>grub.cfg</code>
-                    .
+                    <code>/boot/grub2/grub.cfg</code> is generated output. Treat it as
+                    “product,” not a hand-edited source of truth.
                   </li>
                   <li>
-                    Verifying installed kernels and initramfs images from
-                    <code>/boot</code>
-                    .
+                    When boot issues are reported, confirm what is on disk first:
+                    kernels (<code>vmlinuz</code>) and initramfs images must exist in
+                    <code>/boot</code>.
                   </li>
                   <li>
-                    Regenerating GRUB configuration with minimal risk using
-                    supported tooling.
+                    Regenerating configuration is safer than manual edits because it uses
+                    supported scripts and kernel discovery.
                   </li>
                   <li>
-                    Validating changes using file timestamps and kernel discovery
-                    output.
-                  </li>
-                  <li>
-                    Confirming expected boot target with
-                    <code>systemctl get-default</code>
-                    .
+                    Boot outcome is not only GRUB. The systemd default target influences
+                    whether the system boots to multi-user or graphical mode.
                   </li>
                 </ul>
               </section>
 
-              <!-- 5) Commands Walkthrough -->
+              <!-- Walkthrough -->
               <section class="lab-section alt-background" id="walkthrough">
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">
                   Walkthrough
@@ -363,14 +335,13 @@
 
                   <p>
                     This file is the primary source for GRUB defaults used when
-                    generating
-                    <code>grub.cfg</code>
-                    . You are confirming timeout behavior, default boot selection
-                    logic, and the kernel command line appended at boot.
+                    generating <code>grub.cfg</code>. You are confirming timeout
+                    behavior, default boot selection logic, and the kernel command
+                    line appended at boot.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code id="verify-step-1">GRUB_TIMEOUT=5
+                    <pre><code>GRUB_TIMEOUT=5
 GRUB_DEFAULT=saved
 GRUB_CMDLINE_LINUX="crashkernel=auto resume=/dev/mapper/rhel-swap"</code></pre>
                   </div>
@@ -398,15 +369,14 @@ GRUB_CMDLINE_LINUX="crashkernel=auto resume=/dev/mapper/rhel-swap"</code></pre>
                   </div>
 
                   <p>
-                    Listing
-                    <code>menuentry</code>
-                    lines provides a fast view of what GRUB can boot. This is a
-                    practical starting point when “it boots the wrong kernel” or
-                    “rescue entry is missing” is part of the incident report.
+                    Listing <code>menuentry</code> lines provides a fast view of
+                    what GRUB can boot. This is a practical starting point when
+                    “it boots the wrong kernel” or “rescue entry is missing” is
+                    part of the incident report.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code id="verify-step-2">menuentry 'Red Hat Enterprise Linux (5.14.0-427.el9.x86_64)' {
+                    <pre><code>menuentry 'Red Hat Enterprise Linux (5.14.0-427.el9.x86_64)' {
 menuentry 'Red Hat Enterprise Linux (rescue)' {</code></pre>
                   </div>
                 </div>
@@ -439,7 +409,7 @@ menuentry 'Red Hat Enterprise Linux (rescue)' {</code></pre>
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code id="verify-step-3">vmlinuz-5.14.0-427.el9.x86_64
+                    <pre><code>vmlinuz-5.14.0-427.el9.x86_64
 initramfs-5.14.0-427.el9.x86_64.img</code></pre>
                   </div>
                 </div>
@@ -454,11 +424,10 @@ initramfs-5.14.0-427.el9.x86_64.img</code></pre>
                   <div class="lab-callout">
                     <div class="lab-callout-label">Safety note</div>
                     <p class="m-b-0">
-                      Regenerating
-                      <code>grub.cfg</code>
-                      should be done with the supported command for the platform.
-                      Avoid manual edits. Write the output to the correct path
-                      for BIOS-based systems (as shown here).
+                      Regenerating <code>grub.cfg</code> should be done with the
+                      supported command for the platform. Avoid manual edits.
+                      Write the output to the correct path for BIOS-based systems
+                      (as shown here).
                     </p>
                   </div>
 
@@ -478,14 +447,13 @@ initramfs-5.14.0-427.el9.x86_64.img</code></pre>
 
                   <p>
                     This rebuilds GRUB’s configuration based on defaults,
-                    discovered kernels, and scripts under
-                    <code>/etc/grub.d</code>
-                    . You are looking for explicit “Found linux image” lines as
-                    proof the expected kernel/initramfs were detected.
+                    discovered kernels, and scripts under <code>/etc/grub.d</code>.
+                    You are looking for “Found linux image” lines as proof the
+                    expected kernel and initramfs were detected.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code id="verify-step-4">Generating grub configuration file ...
+                    <pre><code>Generating grub configuration file ...
 Found linux image: /boot/vmlinuz-5.14.0-427.el9.x86_64
 Found initrd image: /boot/initramfs-5.14.0-427.el9.x86_64.img
 done</code></pre>
@@ -496,9 +464,7 @@ done</code></pre>
                 <div class="lab-step">
                   <div class="lab-step-title">
                     <strong class="font-alt">Step 5</strong>
-                    : Verify the
-                    <code>grub.cfg</code>
-                    timestamp.
+                    : Verify the <code>grub.cfg</code> timestamp.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -517,14 +483,13 @@ done</code></pre>
 
                   <p>
                     This is your quick verification that the file was regenerated
-                    and updated when you ran
-                    <code>grub2-mkconfig</code>
-                    . In production, you would also retain a copy or checksum
-                    when working in change-controlled environments.
+                    and updated when you ran <code>grub2-mkconfig</code>. In
+                    change-controlled environments, you would also retain a copy
+                    or checksum.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code id="verify-step-5">-rw-------. 1 root root 41287 Aug 20 14:32 /boot/grub2/grub.cfg</code></pre>
+                    <pre><code>-rw-------. 1 root root 41287 Aug 20 14:32 /boot/grub2/grub.cfg</code></pre>
                   </div>
                 </div>
 
@@ -551,13 +516,13 @@ done</code></pre>
 
                   <p>
                     If the symptom is “boots to the wrong mode,” confirm whether
-                    the system is expected to boot into a graphical or
-                    multi-user environment. This is not GRUB configuration, but
-                    it is part of the boot outcome you must validate.
+                    the system is expected to boot into a graphical or multi-user
+                    environment. This is not GRUB configuration, but it is part
+                    of the boot outcome you must validate.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code id="verify-step-6">graphical.target</code></pre>
+                    <pre><code>graphical.target</code></pre>
                   </div>
                 </div>
 
@@ -583,18 +548,104 @@ done</code></pre>
                   </div>
 
                   <p>
-                    This confirms which GRUB release is installed. In practice,
-                    version awareness matters when debugging behavior across
-                    major updates or validating parity across a fleet.
+                    This confirms which GRUB release is installed. Version
+                    awareness matters when debugging behavior across updates or
+                    validating parity across a fleet.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code id="verify-step-7">grub-install (GRUB) 2.06</code></pre>
+                    <pre><code>grub-install (GRUB) 2.06</code></pre>
                   </div>
                 </div>
               </section>
 
-              <!-- 8) Reference -->
+              <!-- Common breakpoints -->
+              <section class="lab-section" id="breakpoints">
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  Common breakpoints
+                </h3>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">
+                    /boot/grub2/grub.cfg does not exist
+                  </div>
+                  <p class="m-b-0">
+                    The GRUB output path differs on UEFI systems. If
+                    <code>/boot/grub2/grub.cfg</code> is missing, confirm the
+                    platform firmware mode and use the correct GRUB config
+                    location for that system.
+                  </p>
+                </div>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">
+                    grub2-mkconfig output does not show “Found linux image”
+                  </div>
+                  <p class="m-b-0">
+                    Confirm kernel and initramfs artifacts exist in
+                    <code>/boot</code>. If they do, verify that the GRUB scripts
+                    and defaults are present and not corrupted, then re-run the
+                    command.
+                  </p>
+                </div>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">
+                    The host still boots “wrong” after regenerating grub.cfg
+                  </div>
+                  <p class="m-b-0">
+                    Confirm whether “wrong” refers to kernel selection or boot
+                    mode. For boot mode, check
+                    <code>systemctl get-default</code>. For kernel selection,
+                    review GRUB defaults (for example, saved entry behavior) and
+                    re-check menu entries.
+                  </p>
+                </div>
+              </section>
+
+              <!-- Cleanup -->
+              <section class="lab-section alt-background" id="cleanup">
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  Cleanup checklist
+                </h3>
+
+                <p>
+                  This lab makes one change: regenerating <code>grub.cfg</code>.
+                  Your cleanup is confirming the file updated and that kernel
+                  discovery matched what is installed.
+                </p>
+
+                <div class="lab-codeblock m-b-40 m-t-40">
+                  <div class="lab-codeblock-header">
+                    <span>Commands</span>
+                    <button
+                      class="lab-copy-btn"
+                      type="button"
+                      data-copy="#cmd-cleanup"
+                    >
+                      Copy
+                    </button>
+                  </div>
+                  <pre><code id="cmd-cleanup">grep '^GRUB_' /etc/default/grub
+grep '^menuentry' /boot/grub2/grub.cfg | head
+ls -1 /boot | grep -E 'vmlinuz|initramfs'
+ls -l /boot/grub2/grub.cfg
+systemctl get-default
+grub2-install --version</code></pre>
+                </div>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">Success signal</div>
+                  <p class="m-b-0">
+                    You can show GRUB defaults, list menu entries, prove the
+                    kernel artifacts exist on disk, and demonstrate that
+                    <code>grub.cfg</code> was regenerated successfully by both
+                    tool output and file timestamp.
+                  </p>
+                </div>
+              </section>
+
+              <!-- Reference -->
               <section class="lab-section" id="reference">
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">
                   Reference
@@ -603,9 +654,7 @@ done</code></pre>
                 <ul class="lab-reference-list">
                   <li>
                     <code>/etc/default/grub</code>
-                    : GRUB defaults used when generating
-                    <code>grub.cfg</code>
-                    .
+                    : GRUB defaults used when generating <code>grub.cfg</code>.
                   </li>
 
                   <li>
@@ -633,14 +682,18 @@ done</code></pre>
 
                   <li>
                     <code>grub2-mkconfig -o /boot/grub2/grub.cfg</code>
-                    : Regenerates GRUB configuration safely using supported
-                    tooling.
+                    : Regenerates GRUB configuration using supported tooling.
+                    <ul>
+                      <li>
+                        <code>-o</code>
+                        : Writes output to the specified file path.
+                      </li>
+                    </ul>
                   </li>
 
                   <li>
                     <code>ls -l /boot/grub2/grub.cfg</code>
-                    : Verifies configuration file timestamp and permissions
-                    after regeneration.
+                    : Verifies configuration file timestamp and permissions.
                   </li>
 
                   <li>
@@ -659,17 +712,6 @@ done</code></pre>
             <!-- /main -->
           </div>
           <!-- /row -->
-
-          <nav class="lab-pagination">
-            <a
-              id="prev-lab"
-              class="lab-nav-link"
-              href="#"
-              aria-label="Previous lab"
-            >
-              &uArr;
-            </a>
-          </nav>
         </div>
         <!-- /container -->
       </section>
@@ -705,8 +747,7 @@ done</code></pre>
           <div class="row">
             <div class="col-sm-12">
               <p class="copyright text-center m-b-0">
-                VONDS &copy;
-                <span id="year"></span>
+                VONDS &copy; <span id="year"></span>
               </p>
 
               <div class="scroll-up">
@@ -740,5 +781,9 @@ done</code></pre>
 
     <!-- Lab page JS (new) -->
     <script src="../assets/js/lab.js"></script>
+
+    <script>
+      document.getElementById('year').textContent = new Date().getFullYear()
+    </script>
   </body>
 </html>

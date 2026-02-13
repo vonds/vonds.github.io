@@ -65,20 +65,26 @@
               <a href="#">Portfolio</a>
               <ul>
                 <li>
-                  <a href="https://github.com/vonds/exit_0" target="_blank" rel="noopener">
+                  <a
+                    href="https://github.com/vonds/exit_0"
+                    target="_blank"
+                    rel="noopener"
+                  >
                     exit_0
                   </a>
                 </li>
                 <li>
-                  <a href="docs.html" target="_blank" rel="noopener">
-                    exit_0
-                  </a>
+                  <a href="docs.html" target="_blank" rel="noopener"> exit_0 </a>
                 </li>
               </ul>
             </li>
 
             <li>
-              <a href="https://www.linkedin.com/in/vonds/" target="_blank" rel="noopener">
+              <a
+                href="https://www.linkedin.com/in/vonds/"
+                target="_blank"
+                rel="noopener"
+              >
                 LinkedIn
               </a>
             </li>
@@ -113,7 +119,9 @@
     <!-- WRAPPER -->
     <div class="wrapper">
       <!-- NAVIGATION -->
-      <nav class="navbar navbar-custom navbar-transparent navbar-light navbar-fixed-top">
+      <nav
+        class="navbar navbar-custom navbar-transparent navbar-light navbar-fixed-top"
+      >
         <div class="container">
           <div class="navbar-header">
             <a class="navbar-brand" href="../index.html">
@@ -141,10 +149,20 @@
           </h2>
 
           <nav class="lab-pagination">
-            <a id="prev-lab" class="lab-nav-link" href="#" aria-label="Previous lab">
+            <a
+              id="prev-lab"
+              class="lab-nav-link"
+              href="#"
+              aria-label="Previous lab"
+            >
               &laquo;
             </a>
-            <a id="next-lab" class="lab-nav-link" href="#" aria-label="Next lab">
+            <a
+              id="next-lab"
+              class="lab-nav-link"
+              href="#"
+              aria-label="Next lab"
+            >
               &raquo;
             </a>
           </nav>
@@ -159,7 +177,11 @@
                   </h5>
                   <ul class="docs-nav">
                     <li><a href="#scenario">Scenario</a></li>
+                    <li><a href="#objective">Objective</a></li>
+                    <li><a href="#concepts">Concepts</a></li>
                     <li><a href="#walkthrough">Walkthrough</a></li>
+                    <li><a href="#breakpoints">Breakpoints</a></li>
+                    <li><a href="#cleanup">Cleanup</a></li>
                     <li><a href="#reference">Reference</a></li>
                   </ul>
                 </div>
@@ -169,10 +191,10 @@
             <!-- MAIN CONTENT -->
             <div class="col-sm-8 col-md-9 lab-doc">
               <p class="m-b-20 lab-summary">
-                Initialize an unused disk (<code>/dev/sdb</code>) with a GPT label, create a small test
-                partition with <code>parted</code>, verify the kernel view with <code>lsblk</code> and
-                <code>/proc/partitions</code>, then remove the partition and confirm the disk returns to a
-                clean state.
+                Initialize an unused disk (<code>/dev/sdb</code>) with a GPT label,
+                create a small test partition with <code>parted</code>, verify the
+                kernel view with <code>lsblk</code> and <code>/proc/partitions</code>,
+                then remove the partition and confirm the disk returns to a clean state.
               </p>
 
               <section class="lab-section" id="video" aria-label="Lab video">
@@ -193,46 +215,90 @@
               <!-- Scenario -->
               <section class="lab-section" id="scenario">
                 <div class="lab-chips" aria-label="Tags">
-                  <span class="lab-chip"><span class="lab-chip-key">storage</span></span>
-                  <span class="lab-chip"><span class="lab-chip-key">parted</span></span>
-                  <span class="lab-chip"><span class="lab-chip-key">gpt</span></span>
-                  <span class="lab-chip"><span class="lab-chip-key">rhel</span></span>
+                  <span class="lab-chip"
+                    ><span class="lab-chip-key">storage</span></span
+                  >
+                  <span class="lab-chip"
+                    ><span class="lab-chip-key">parted</span></span
+                  >
+                  <span class="lab-chip"
+                    ><span class="lab-chip-key">gpt</span></span
+                  >
+                  <span class="lab-chip"
+                    ><span class="lab-chip-key">rhel</span></span
+                  >
                 </div>
 
-                <h3 class="font-alt lab-section-title m-b-40 m-t-40">Scenario</h3>
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  Scenario
+                </h3>
 
                 <p>
-                  A new 2G disk was attached to a RHEL VM for a temporary data staging task. Before handing the VM
-                  to an automation pipeline, you need to initialize the disk with GPT, create a small partition to
-                  validate the workflow, verify the kernel sees it, then remove the partition to return the disk to
-                  a clean state.
+                  A new 2G disk was attached to a RHEL VM for a temporary data staging task.
+                  Before handing the VM to an automation pipeline, you need to initialize the disk
+                  with GPT, create a small partition to validate the workflow, verify the kernel sees it,
+                  then remove the partition to return the disk to a clean state.
                 </p>
 
                 <div class="lab-callout">
                   <div class="lab-callout-label">Safety note</div>
                   <p class="m-b-0">
-                    Confirm the target disk before writing labels or deleting partitions. GPT operations will destroy
-                    any existing partition layout on the selected device.
+                    Confirm the target disk before writing labels or deleting partitions.
+                    GPT operations will destroy any existing partition layout on the selected device.
                   </p>
                 </div>
               </section>
 
               <!-- Objective -->
               <section class="lab-section alt-background" id="objective">
-                <h3 class="font-alt lab-section-title m-b-40 m-t-40">Objective</h3>
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  Objective
+                </h3>
                 <ul>
                   <li>Confirm <code>/dev/sdb</code> exists and is not mounted.</li>
-                  <li>Detect an unknown/uninitialized partition table.</li>
+                  <li>Detect an unknown or uninitialized partition table.</li>
                   <li>Write a GPT disk label with <code>parted mklabel gpt</code>.</li>
                   <li>Create a MiB-aligned partition with explicit boundaries.</li>
-                  <li>Verify the partition via <code>parted</code>, <code>lsblk</code>, and <code>/proc/partitions</code>.</li>
+                  <li>
+                    Verify the partition via <code>parted</code>, <code>lsblk</code>, and
+                    <code>/proc/partitions</code>.
+                  </li>
                   <li>Remove the partition and re-verify a clean kernel view.</li>
+                </ul>
+              </section>
+
+              <!-- Concepts -->
+              <section class="lab-section" id="concepts">
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  Concepts
+                </h3>
+                <ul>
+                  <li>
+                    GPT is the modern default partition table and supports larger disks and more partitions than MBR.
+                  </li>
+                  <li>
+                    Starting at <code>1MiB</code> is a common alignment practice and avoids reserved areas at the beginning
+                    of the disk.
+                  </li>
+                  <li>
+                    <code>parted</code> writes the partition table, but the kernel may need to re-read it before
+                    <code>/dev/sdb1</code> appears or disappears.
+                  </li>
+                  <li>
+                    <code>/proc/partitions</code> is a kernel-exported view that helps confirm whether the kernel sees
+                    the partition even if a userspace tool seems stale.
+                  </li>
+                  <li>
+                    Removing a partition deletes the entry from GPT but does not wipe disk blocks.
+                  </li>
                 </ul>
               </section>
 
               <!-- Walkthrough -->
               <section class="lab-section alt-background" id="walkthrough">
-                <h3 class="font-alt lab-section-title m-b-40 m-t-40">Walkthrough</h3>
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  Walkthrough
+                </h3>
 
                 <!-- Step 1 -->
                 <div class="lab-step">
@@ -357,8 +423,8 @@ Number  Start  End  Size  File system  Name  Flags</code></pre>
                   </div>
 
                   <p>
-                    Starting at <code>1MiB</code> keeps boundaries aligned. The goal here is repeatable, deterministic
-                    partition creation rather than “close enough” geometry.
+                    Starting at <code>1MiB</code> keeps boundaries aligned. The goal here is repeatable,
+                    deterministic partition creation.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -381,7 +447,7 @@ Number  Start  End  Size  File system  Name  Flags</code></pre>
                   </div>
 
                   <p>
-                    Confirm you see partition <code>1</code> with the expected start/end.
+                    Confirm you see partition <code>1</code> with the expected start and end.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -432,8 +498,8 @@ sdb      8:16   0   2G  0 disk
                   </div>
 
                   <p>
-                    <code>/proc/partitions</code> is the kernel-exported view. This is a useful check when
-                    userspace tools disagree or a device node seems stale.
+                    <code>/proc/partitions</code> is the kernel-exported view. This is useful when userspace tools
+                    disagree or a device node seems stale.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -460,8 +526,8 @@ sdb      8:16   0   2G  0 disk
                   </div>
 
                   <p>
-                    This removes the partition entry from the GPT. It does not wipe data blocks, but it returns
-                    the partition layout to “no partitions.”
+                    This removes the partition entry from the GPT. It does not wipe blocks, but it returns the
+                    partition layout to no partitions.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -546,7 +612,9 @@ sdb      8:16   0   2G  0 disk</code></pre>
 
               <!-- Common breakpoints -->
               <section class="lab-section" id="breakpoints">
-                <h3 class="font-alt lab-section-title m-b-40 m-t-40">Common breakpoints</h3>
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  Common breakpoints
+                </h3>
 
                 <div class="lab-callout">
                   <div class="lab-callout-label">sdb1 doesn’t appear after mkpart</div>
@@ -560,14 +628,15 @@ sdb      8:16   0   2G  0 disk</code></pre>
                   <div class="lab-callout-label">sdb1 still appears after rm</div>
                   <p class="m-b-0">
                     You removed the partition entry, but userspace still sees a stale device. Re-check with
-                    <code>parted print</code> first (source of truth), then refresh the kernel view if needed.
+                    <code>parted print</code> first, then refresh the kernel view if needed.
                   </p>
                 </div>
 
                 <div class="lab-callout">
                   <div class="lab-callout-label">Disk selection mistake</div>
                   <p class="m-b-0">
-                    Always verify identity and size before writing labels: <code>lsblk -o NAME,SIZE,MODEL,SERIAL</code>
+                    Always verify identity and size before writing labels:
+                    <code>lsblk -o NAME,SIZE,MODEL,SERIAL</code>
                     (fields depend on platform). The fastest way to lose a system is to partition the wrong disk.
                   </p>
                 </div>
@@ -581,24 +650,75 @@ sdb      8:16   0   2G  0 disk</code></pre>
                 </div>
               </section>
 
+              <!-- Cleanup -->
+              <section class="lab-section alt-background" id="cleanup">
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  Cleanup checklist
+                </h3>
+
+                <p>
+                  Confirm the partition entry is removed and only the base disk remains visible.
+                </p>
+
+                <div class="lab-codeblock m-b-40 m-t-40">
+                  <div class="lab-codeblock-header">
+                    <span>Commands</span>
+                    <button class="lab-copy-btn" type="button" data-copy="#cmd-cleanup">Copy</button>
+                  </div>
+                  <pre><code id="cmd-cleanup">sudo parted /dev/sdb print
+lsblk -o NAME,SIZE,TYPE,MOUNTPOINTS | grep -E '^sdb'
+grep -E 'sdb$|sdb1$' /proc/partitions || true</code></pre>
+                </div>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">Success signal</div>
+                  <p class="m-b-0">
+                    <code>parted</code> shows no partitions, and <code>lsblk</code> does not list <code>sdb1</code>.
+                  </p>
+                </div>
+              </section>
+
               <!-- Reference -->
               <section class="lab-section" id="reference">
-                <h3 class="font-alt lab-section-title m-b-40 m-t-40">Reference</h3>
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  Reference
+                </h3>
 
                 <ul class="lab-reference-list">
-                  <li><code>lsblk -o NAME,SIZE,TYPE,FSTYPE,MOUNTPOINTS</code>: Validate device presence and mounts.</li>
-                  <li><code>parted /dev/sdb print</code>: Inspect disk geometry and partition table type.</li>
-                  <li><code>parted /dev/sdb mklabel gpt</code>: Initialize disk with GPT.</li>
-                  <li><code>parted /dev/sdb mkpart primary 1MiB 101MiB</code>: Create a MiB-aligned partition.</li>
-                  <li><code>parted /dev/sdb rm 1</code>: Remove partition by number.</li>
-                  <li><code>/proc/partitions</code>: Kernel-exported view of block devices and partitions.</li>
+                  <li>
+                    <code>lsblk</code>: Validate device presence and mounts.
+                    <ul>
+                      <li>
+                        <code>-o NAME,SIZE,TYPE,FSTYPE,MOUNTPOINTS</code>: Show fields used for safety checks.
+                      </li>
+                    </ul>
+                  </li>
+
+                  <li>
+                    <code>parted</code>: Inspect and modify partition tables.
+                    <ul>
+                      <li><code>print</code>: Show disk geometry and current partition table.</li>
+                      <li><code>mklabel gpt</code>: Write GPT partition table to disk.</li>
+                      <li><code>mkpart primary 1MiB 101MiB</code>: Create a partition using MiB boundaries.</li>
+                      <li><code>rm 1</code>: Remove a partition by number.</li>
+                    </ul>
+                  </li>
+
+                  <li>
+                    <code>/proc/partitions</code>: Kernel-exported view of block devices and partitions.
+                    <ul>
+                      <li>
+                        Useful to confirm kernel state when userspace appears stale.
+                      </li>
+                    </ul>
+                  </li>
                 </ul>
 
                 <div class="lab-callout">
                   <div class="lab-callout-label">Ops habit</div>
                   <p class="m-b-0">
                     After every write operation (<code>mklabel</code>, <code>mkpart</code>, <code>rm</code>), verify with
-                    <code>parted print</code> immediately, then confirm the kernel view with <code>lsblk</code> or
+                    <code>parted print</code> immediately, then confirm kernel view with <code>lsblk</code> or
                     <code>/proc/partitions</code>.
                   </p>
                 </div>

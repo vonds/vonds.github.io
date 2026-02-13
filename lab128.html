@@ -41,7 +41,10 @@
     <link href="../assets/css/lab.css" rel="stylesheet" />
 
     <!-- Fonts -->
-    <link href="https://fonts.googleapis.com/css?family=Dosis" rel="stylesheet" />
+    <link
+      href="https://fonts.googleapis.com/css?family=Dosis"
+      rel="stylesheet"
+    />
   </head>
 
   <body>
@@ -65,20 +68,26 @@
               <a href="#">Portfolio</a>
               <ul>
                 <li>
-                  <a href="https://github.com/vonds/exit_0" target="_blank" rel="noopener">
+                  <a
+                    href="https://github.com/vonds/exit_0"
+                    target="_blank"
+                    rel="noopener"
+                  >
                     exit_0
                   </a>
                 </li>
                 <li>
-                  <a href="docs.html" target="_blank" rel="noopener">
-                    exit_0
-                  </a>
+                  <a href="docs.html" target="_blank" rel="noopener"> exit_0 </a>
                 </li>
               </ul>
             </li>
 
             <li>
-              <a href="https://www.linkedin.com/in/vonds/" target="_blank" rel="noopener">
+              <a
+                href="https://www.linkedin.com/in/vonds/"
+                target="_blank"
+                rel="noopener"
+              >
                 LinkedIn
               </a>
             </li>
@@ -113,7 +122,9 @@
     <!-- WRAPPER -->
     <div class="wrapper">
       <!-- NAVIGATION -->
-      <nav class="navbar navbar-custom navbar-transparent navbar-light navbar-fixed-top">
+      <nav
+        class="navbar navbar-custom navbar-transparent navbar-light navbar-fixed-top"
+      >
         <div class="container">
           <div class="navbar-header">
             <a class="navbar-brand" href="../index.html">
@@ -137,12 +148,26 @@
       <section class="module">
         <div class="container">
           <h2 class="font-alt module-title m-t-60">
-            Lab 128: Networking troubleshooting
+            Lab 128: Firewall Troubleshooting for SSH Access
           </h2>
 
           <nav class="lab-pagination">
-            <a id="prev-lab" class="lab-nav-link" href="#" aria-label="Previous lab">&laquo;</a>
-            <a id="next-lab" class="lab-nav-link" href="#" aria-label="Next lab">&raquo;</a>
+            <a
+              id="prev-lab"
+              class="lab-nav-link"
+              href="#"
+              aria-label="Previous lab"
+            >
+              &laquo;
+            </a>
+            <a
+              id="next-lab"
+              class="lab-nav-link"
+              href="#"
+              aria-label="Next lab"
+            >
+              &raquo;
+            </a>
           </nav>
 
           <div class="row">
@@ -155,7 +180,11 @@
                   </h5>
                   <ul class="docs-nav">
                     <li><a href="#scenario">Scenario</a></li>
+                    <li><a href="#objective">Objective</a></li>
+                    <li><a href="#concepts">Concepts</a></li>
                     <li><a href="#walkthrough">Walkthrough</a></li>
+                    <li><a href="#breakpoints">Breakpoints</a></li>
+                    <li><a href="#cleanup">Cleanup</a></li>
                     <li><a href="#reference">Reference</a></li>
                   </ul>
                 </div>
@@ -165,11 +194,18 @@
             <!-- MAIN CONTENT -->
             <div class="col-sm-8 col-md-9 lab-doc">
               <p class="m-b-20 lab-summary">
-                Restore inbound SSH when the service is listening on port 22 but clients still get “port closed.”
-                Verify <code>sshd</code> is listening, confirm <code>firewalld</code> is running, inspect the active zone’s
-                allowed services, and then allow <code>ssh</code> permanently and reload the firewall.
+                Restore inbound SSH when the service is listening on TCP/22 but
+                clients still get “port closed.” Prove
+                <code>sshd</code>
+                is listening, confirm
+                <code>firewalld</code>
+                is enforcing policy, inspect the active zone’s allowed services,
+                then allow
+                <code>ssh</code>
+                permanently and reload firewalld.
               </p>
 
+              <!-- Video (kept on page; removed from left panel) -->
               <section class="lab-section" id="video" aria-label="Lab video">
                 <div class="lab-video">
                   <div class="lab-video-embed text-center">
@@ -188,239 +224,491 @@
               <!-- Scenario -->
               <section class="lab-section" id="scenario">
                 <div class="lab-chips" aria-label="Tags">
-                  <span class="lab-chip"><span class="lab-chip-key">networking</span></span>
-                  <span class="lab-chip"><span class="lab-chip-key">firewalld</span></span>
-                  <span class="lab-chip"><span class="lab-chip-key">ssh</span></span>
-                  <span class="lab-chip"><span class="lab-chip-key">incident</span></span>
-                  <span class="lab-chip"><span class="lab-chip-key">troubleshooting</span></span>
+                  <span class="lab-chip"
+                    ><span class="lab-chip-key">firewalld</span></span
+                  >
+                  <span class="lab-chip"
+                    ><span class="lab-chip-key">ssh</span></span
+                  >
+                  <span class="lab-chip"
+                    ><span class="lab-chip-key">zones</span></span
+                  >
+                  <span class="lab-chip"
+                    ><span class="lab-chip-key">incident</span></span
+                  >
+                  <span class="lab-chip"
+                    ><span class="lab-chip-key">troubleshooting</span></span
+                  >
                 </div>
 
-                <h3 class="font-alt lab-section-title m-b-40 m-t-40">Scenario</h3>
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  Scenario
+                </h3>
 
                 <p>
-                  A teammate says, “The box is up, but nobody can SSH into it anymore.” You have console access. Your job is
-                  to restore inbound SSH quickly.
+                  A teammate says, “The box is up, but nobody can SSH into it
+                  anymore.” You have console access. Your job is to restore
+                  inbound SSH quickly.
                 </p>
 
                 <div class="lab-callout">
-                  <div class="lab-callout-label">Constraints</div>
+                  <div class="lab-callout-label">Operator context</div>
                   <p class="m-b-0">
-                    SSH should be running and listening on port <code>22</code>. The interface and cable are fine. The
-                    failure is caused by firewall policy.
+                    SSH should be running and listening on port
+                    <code>22</code>
+                    . Interface and link are good. The failure is caused by
+                    firewall policy and a missing
+                    <code>ssh</code>
+                    allowance in the active zone.
                   </p>
                 </div>
               </section>
 
               <!-- Objective -->
               <section class="lab-section alt-background" id="objective">
-                <h3 class="font-alt lab-section-title m-b-40 m-t-40">Objective</h3>
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  Objective
+                </h3>
                 <ul>
-                  <li>Prove <code>sshd</code> is listening on TCP/22.</li>
-                  <li>Confirm <code>firewalld</code> is active.</li>
-                  <li>Inspect which services are allowed in the active zone.</li>
-                  <li>Allow SSH permanently and reload firewall rules.</li>
-                  <li>Verify SSH is now permitted by policy.</li>
+                  <li>
+                    Prove
+                    <code>sshd</code>
+                    is listening on TCP/22.
+                  </li>
+                  <li>
+                    Confirm
+                    <code>firewalld</code>
+                    is active.
+                  </li>
+                  <li>
+                    Identify the active zone and inspect allowed services.
+                  </li>
+                  <li>
+                    Allow SSH permanently and reload firewall rules.
+                  </li>
+                  <li>
+                    Verify SSH is now permitted by policy.
+                  </li>
                 </ul>
               </section>
 
-              <!-- Mental model -->
-              <section class="lab-section" id="mentalmodel">
-                <h3 class="font-alt lab-section-title m-b-40 m-t-40">Mental model</h3>
-
-                <p>
-                  “Port closed” can mean two different things:
-                </p>
+              <!-- Concepts (no alt-background moving forward) -->
+              <section class="lab-section" id="concepts">
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  Concepts
+                </h3>
 
                 <ul>
                   <li>
-                    <strong>Service not listening</strong>: nothing is bound to the port. Fix the daemon first.
+                    “Port closed” can be a daemon problem or a firewall problem.
                   </li>
                   <li>
-                    <strong>Firewall blocking</strong>: the service is listening, but the firewall drops/rejects inbound
-                    traffic. Fix policy in the active zone.
+                    Prove the service is listening first (avoid chasing policy
+                    blindly).
+                  </li>
+                  <li>
+                    firewalld enforces policy by zone; rules must apply to the
+                    correct zone and interface.
+                  </li>
+                  <li>
+                    Use
+                    <code>--permanent</code>
+                    for persistence and
+                    <code>--reload</code>
+                    to apply changes to runtime.
                   </li>
                 </ul>
-
-                <div class="lab-callout">
-                  <div class="lab-callout-label">Fast isolation</div>
-                  <p class="m-b-0">
-                    First prove the daemon is listening (<code>ss</code>). Then prove the firewall is enforcing policy
-                    (<code>firewall-cmd --state</code>) and that SSH is not allowed in the active zone.
-                  </p>
-                </div>
               </section>
 
               <!-- Walkthrough -->
               <section class="lab-section alt-background" id="walkthrough">
-                <h3 class="font-alt lab-section-title m-b-40 m-t-40">Walkthrough</h3>
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  Walkthrough
+                </h3>
 
                 <!-- Step 1 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
-                    <strong class="font-alt">Step 1</strong>: Confirm <code>sshd</code> is listening on port 22.
+                    <strong class="font-alt">Step 1</strong>
+                    : Confirm
+                    <code>sshd</code>
+                    is listening on TCP/22.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
-                      <button class="lab-copy-btn" type="button" data-copy="#cmd-128-1">Copy</button>
+                      <button
+                        class="lab-copy-btn"
+                        type="button"
+                        data-copy="#cmd-step-1"
+                      >
+                        Copy
+                      </button>
                     </div>
-                    <pre><code id="cmd-128-1">ss -lntp | grep ':22'</code></pre>
+                    <pre><code id="cmd-step-1">ss -lntp | grep ':22'</code></pre>
                   </div>
 
                   <p>
-                    You want to see listeners on <code>0.0.0.0:22</code> and/or <code>[::]:22</code> owned by
-                    <code>sshd</code>. That proves the daemon is up and bound correctly.
+                    You want to see listeners on
+                    <code>0.0.0.0:22</code>
+                    and/or
+                    <code>[::]:22</code>
+                    owned by
+                    <code>sshd</code>
+                    . That proves the daemon is up and bound correctly.
                   </p>
                 </div>
 
                 <!-- Step 2 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
-                    <strong class="font-alt">Step 2</strong>: Confirm <code>firewalld</code> is running.
+                    <strong class="font-alt">Step 2</strong>
+                    : Confirm
+                    <code>firewalld</code>
+                    is enforcing policy.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
-                      <button class="lab-copy-btn" type="button" data-copy="#cmd-128-2">Copy</button>
+                      <button
+                        class="lab-copy-btn"
+                        type="button"
+                        data-copy="#cmd-step-2"
+                      >
+                        Copy
+                      </button>
                     </div>
-                    <pre><code id="cmd-128-2">sudo firewall-cmd --state</code></pre>
+                    <pre><code id="cmd-step-2">sudo firewall-cmd --state</code></pre>
                   </div>
 
                   <p>
-                    If it returns <code>running</code>, policy is being enforced by firewalld.
+                    If it returns
+                    <code>running</code>
+                    , inbound policy is being enforced by firewalld.
                   </p>
                 </div>
 
                 <!-- Step 3 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
-                    <strong class="font-alt">Step 3</strong>: Inspect allowed services in the active zone.
+                    <strong class="font-alt">Step 3</strong>
+                    : Identify the active zone and its interfaces.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
-                      <button class="lab-copy-btn" type="button" data-copy="#cmd-128-3">Copy</button>
+                      <button
+                        class="lab-copy-btn"
+                        type="button"
+                        data-copy="#cmd-step-3"
+                      >
+                        Copy
+                      </button>
                     </div>
-                    <pre><code id="cmd-128-3">sudo firewall-cmd --list-services</code></pre>
+                    <pre><code id="cmd-step-3">sudo firewall-cmd --get-active-zones</code></pre>
                   </div>
 
                   <p>
-                    In this outage, SSH is missing from the allowed services list, so inbound TCP/22 is being blocked.
+                    This tells you which zone is active and which interface is
+                    assigned to it. You should validate you are changing policy
+                    in the correct zone.
                   </p>
                 </div>
 
                 <!-- Step 4 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
-                    <strong class="font-alt">Step 4</strong>: Allow SSH permanently.
+                    <strong class="font-alt">Step 4</strong>
+                    : Inspect allowed services in the active zone.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
-                      <button class="lab-copy-btn" type="button" data-copy="#cmd-128-4">Copy</button>
+                      <button
+                        class="lab-copy-btn"
+                        type="button"
+                        data-copy="#cmd-step-4"
+                      >
+                        Copy
+                      </button>
                     </div>
-                    <pre><code id="cmd-128-4">sudo firewall-cmd --permanent --add-service=ssh</code></pre>
+                    <pre><code id="cmd-step-4">sudo firewall-cmd --list-services</code></pre>
                   </div>
 
-                  <div class="lab-callout">
-                    <div class="lab-callout-label">Why permanent</div>
-                    <p class="m-b-0">
-                      Using <code>--permanent</code> updates the saved configuration so the fix survives reloads and reboots.
-                      You still need a reload for it to take effect immediately.
-                    </p>
-                  </div>
+                  <p>
+                    In this outage,
+                    <code>ssh</code>
+                    is missing from the allowed services list, so inbound TCP/22
+                    is blocked.
+                  </p>
                 </div>
 
                 <!-- Step 5 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
-                    <strong class="font-alt">Step 5</strong>: Reload firewalld to apply changes.
+                    <strong class="font-alt">Step 5</strong>
+                    : Allow SSH permanently.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
-                      <button class="lab-copy-btn" type="button" data-copy="#cmd-128-5">Copy</button>
+                      <button
+                        class="lab-copy-btn"
+                        type="button"
+                        data-copy="#cmd-step-5"
+                      >
+                        Copy
+                      </button>
                     </div>
-                    <pre><code id="cmd-128-5">sudo firewall-cmd --reload</code></pre>
+                    <pre><code id="cmd-step-5">sudo firewall-cmd --permanent --add-service=ssh</code></pre>
                   </div>
 
-                  <p>
-                    This applies the permanent configuration to the running firewall.
-                  </p>
+                  <div class="lab-callout">
+                    <div class="lab-callout-label">Why permanent</div>
+                    <p class="m-b-0">
+                      <code>--permanent</code>
+                      updates the saved configuration so the fix survives reloads
+                      and reboots. You still need a reload for it to take effect
+                      immediately.
+                    </p>
+                  </div>
                 </div>
 
                 <!-- Step 6 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
-                    <strong class="font-alt">Step 6</strong>: Confirm SSH is now allowed.
+                    <strong class="font-alt">Step 6</strong>
+                    : Reload firewalld to apply changes.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
-                      <button class="lab-copy-btn" type="button" data-copy="#cmd-128-6">Copy</button>
+                      <button
+                        class="lab-copy-btn"
+                        type="button"
+                        data-copy="#cmd-step-6"
+                      >
+                        Copy
+                      </button>
                     </div>
-                    <pre><code id="cmd-128-6">sudo firewall-cmd --list-services</code></pre>
+                    <pre><code id="cmd-step-6">sudo firewall-cmd --reload</code></pre>
                   </div>
 
                   <p>
-                    You should now see <code>ssh</code> in the services list. At this point, remote SSH attempts should work.
+                    This applies the permanent configuration to the running
+                    firewall.
+                  </p>
+                </div>
+
+                <!-- Step 7 -->
+                <div class="lab-step">
+                  <div class="lab-step-title">
+                    <strong class="font-alt">Step 7</strong>
+                    : Confirm SSH is now allowed.
+                  </div>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <div class="lab-codeblock-header">
+                      <span>Command</span>
+                      <button
+                        class="lab-copy-btn"
+                        type="button"
+                        data-copy="#cmd-step-7"
+                      >
+                        Copy
+                      </button>
+                    </div>
+                    <pre><code id="cmd-step-7">sudo firewall-cmd --list-services</code></pre>
+                  </div>
+
+                  <p>
+                    You should now see
+                    <code>ssh</code>
+                    in the services list. At this point, remote SSH attempts
+                    should succeed.
                   </p>
                 </div>
               </section>
 
-              <!-- Common breakpoints -->
+              <!-- Breakpoints -->
               <section class="lab-section" id="breakpoints">
-                <h3 class="font-alt lab-section-title m-b-40 m-t-40">Common breakpoints</h3>
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  Breakpoints
+                </h3>
 
                 <div class="lab-callout">
                   <div class="lab-callout-label">sshd not listening</div>
                   <p class="m-b-0">
-                    If <code>ss</code> shows no listener on <code>:22</code>, fix the service first:
-                    <code>sudo systemctl status sshd</code> and <code>sudo systemctl start sshd</code>.
+                    If there is no listener on
+                    <code>:22</code>
+                    , fix the service first:
+                    <code>sudo systemctl status sshd</code>
+                    and
+                    <code>sudo systemctl start sshd</code>
+                    .
                   </p>
                 </div>
 
                 <div class="lab-callout">
-                  <div class="lab-callout-label">Wrong zone or interface not assigned</div>
+                  <div class="lab-callout-label">
+                    Wrong zone or interface not assigned
+                  </div>
                   <p class="m-b-0">
-                    <code>--list-services</code> shows the active zone. If SSH is allowed but still blocked, confirm the
-                    interface is in the expected zone with <code>sudo firewall-cmd --get-active-zones</code>.
+                    If
+                    <code>ssh</code>
+                    is allowed but still blocked, confirm the interface is in the
+                    expected zone with
+                    <code>sudo firewall-cmd --get-active-zones</code>
+                    and inspect the full zone config with
+                    <code>sudo firewall-cmd --list-all</code>
+                    .
                   </p>
                 </div>
 
                 <div class="lab-callout">
-                  <div class="lab-callout-label">Port is allowed but still unreachable</div>
+                  <div class="lab-callout-label">
+                    SSH allowed but still unreachable
+                  </div>
                   <p class="m-b-0">
-                    Check SELinux, TCP wrappers, cloud security groups, or upstream firewalls. Also confirm the client is
-                    actually targeting the correct IP and port.
+                    Check SELinux policy, upstream firewalls, or cloud security
+                    groups, and confirm the client targets the correct IP and
+                    port.
                   </p>
                 </div>
 
                 <div class="lab-callout">
-                  <div class="lab-callout-label">Need a temporary fix</div>
+                  <div class="lab-callout-label">
+                    Need a temporary fix only
+                  </div>
                   <p class="m-b-0">
-                    If you must restore access immediately and do not care about persistence, drop <code>--permanent</code>.
-                    In production, you usually do both: immediate fix plus persistent config.
+                    If you only need a short-term restore, omit
+                    <code>--permanent</code>
+                    . For real systems, do both: immediate fix plus persistent
+                    config.
+                  </p>
+                </div>
+              </section>
+
+              <!-- Cleanup -->
+              <section class="lab-section alt-background" id="cleanup">
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  Cleanup checklist
+                </h3>
+
+                <p>
+                  If you need to revert the change after the lab, remove the SSH
+                  service allowance and reload firewalld.
+                </p>
+
+                <div class="lab-codeblock m-b-40 m-t-40">
+                  <div class="lab-codeblock-header">
+                    <span>Commands</span>
+                    <button
+                      class="lab-copy-btn"
+                      type="button"
+                      data-copy="#cmd-cleanup"
+                    >
+                      Copy
+                    </button>
+                  </div>
+                  <pre><code id="cmd-cleanup">sudo firewall-cmd --permanent --remove-service=ssh
+sudo firewall-cmd --reload
+sudo firewall-cmd --list-services</code></pre>
+                </div>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">Success signal</div>
+                  <p class="m-b-0">
+                    The
+                    <code>ssh</code>
+                    service is present when you want access, and absent when you
+                    revert, and the zone policy reflects the intended state.
                   </p>
                 </div>
               </section>
 
               <!-- Reference -->
               <section class="lab-section" id="reference">
-                <h3 class="font-alt lab-section-title m-b-40 m-t-40">Reference</h3>
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  Reference
+                </h3>
 
                 <ul class="lab-reference-list">
-                  <li><code>ss -lntp | grep ':22'</code>: confirm a service is listening on TCP/22.</li>
-                  <li><code>firewall-cmd --state</code>: confirm firewalld is running.</li>
-                  <li><code>firewall-cmd --list-services</code>: show services allowed in the active zone.</li>
-                  <li><code>firewall-cmd --permanent --add-service=ssh</code>: allow SSH permanently.</li>
-                  <li><code>firewall-cmd --reload</code>: apply permanent config to runtime.</li>
+                  <li>
+                    <code>ss -lntp</code>
+                    : List listening TCP sockets with owning process.
+                    <ul>
+                      <li>
+                        <code>-l</code>
+                        : Show listening sockets only.
+                      </li>
+                      <li>
+                        <code>-n</code>
+                        : Show numeric addresses and ports.
+                      </li>
+                      <li>
+                        <code>-t</code>
+                        : TCP only.
+                      </li>
+                      <li>
+                        <code>-p</code>
+                        : Show process using the socket (requires privileges).
+                      </li>
+                    </ul>
+                  </li>
+
+                  <li>
+                    <code>firewall-cmd --state</code>
+                    : Show whether firewalld is running.
+                  </li>
+
+                  <li>
+                    <code>firewall-cmd --get-active-zones</code>
+                    : Show active zones and interface bindings.
+                  </li>
+
+                  <li>
+                    <code>firewall-cmd --list-services</code>
+                    : List allowed services in the active zone.
+                  </li>
+
+                  <li>
+                    <code>firewall-cmd --permanent --add-service=ssh</code>
+                    : Allow SSH in the permanent zone configuration.
+                    <ul>
+                      <li>
+                        <code>--permanent</code>
+                        : Writes to saved config, not runtime.
+                      </li>
+                      <li>
+                        <code>--add-service=ssh</code>
+                        : Enables the predefined SSH service definition.
+                      </li>
+                    </ul>
+                  </li>
+
+                  <li>
+                    <code>firewall-cmd --reload</code>
+                    : Reloads firewall rules and applies permanent config to
+                    runtime.
+                  </li>
+
+                  <li>
+                    <code>firewall-cmd --permanent --remove-service=ssh</code>
+                    : Removes SSH from the permanent allowed services list.
+                  </li>
+
+                  <li>
+                    <code>firewall-cmd --list-all</code>
+                    : Displays full zone configuration (services, ports, sources,
+                    interfaces, rich rules).
+                  </li>
                 </ul>
               </section>
             </div>
@@ -438,10 +726,20 @@
             <div class="col-sm-12">
               <ul class="social-text-links font-alt text-center m-b-20">
                 <li>
-                  <a href="https://github.com/vonds" target="_blank" rel="noopener">Github</a>
+                  <a
+                    href="https://github.com/vonds"
+                    target="_blank"
+                    rel="noopener"
+                    >Github</a
+                  >
                 </li>
                 <li>
-                  <a href="https://www.linkedin.com/in/vonds/" target="_blank" rel="noopener">Linkedin</a>
+                  <a
+                    href="https://www.linkedin.com/in/vonds/"
+                    target="_blank"
+                    rel="noopener"
+                    >Linkedin</a
+                  >
                 </li>
               </ul>
             </div>
@@ -473,6 +771,7 @@
     <script src="../assets/js/imagesloaded.pkgd.js"></script>
     <script src="../assets/js/isotope.pkgd.min.js"></script>
     <script src="../assets/js/packery-mode.pkgd.min.js"></script>
+    <script src="../assets/js/packery-mode.pkgd.min.js"></script>
     <script src="../assets/js/appear.js"></script>
     <script src="../assets/js/jquery.easing.1.3.js"></script>
     <script src="../assets/js/wow.min.js"></script>
@@ -486,7 +785,7 @@
     <script src="../assets/js/lab.js"></script>
 
     <script>
-      document.getElementById("year").textContent = new Date().getFullYear()
+      document.getElementById('year').textContent = new Date().getFullYear()
     </script>
   </body>
 </html>

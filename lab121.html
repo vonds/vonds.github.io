@@ -37,7 +37,7 @@
     <link href="../assets/css/style.css" rel="stylesheet" />
     <link href="../assets/css/docs.css" rel="stylesheet" />
 
-    <!-- Lab page styles (new) -->
+    <!-- Lab page styles -->
     <link href="../assets/css/lab.css" rel="stylesheet" />
 
     <!-- Fonts -->
@@ -65,7 +65,11 @@
               <a href="#">Portfolio</a>
               <ul>
                 <li>
-                  <a href="https://github.com/vonds/exit_0" target="_blank" rel="noopener">
+                  <a
+                    href="https://github.com/vonds/exit_0"
+                    target="_blank"
+                    rel="noopener"
+                  >
                     exit_0
                   </a>
                 </li>
@@ -78,7 +82,11 @@
             </li>
 
             <li>
-              <a href="https://www.linkedin.com/in/vonds/" target="_blank" rel="noopener">
+              <a
+                href="https://www.linkedin.com/in/vonds/"
+                target="_blank"
+                rel="noopener"
+              >
                 LinkedIn
               </a>
             </li>
@@ -113,7 +121,9 @@
     <!-- WRAPPER -->
     <div class="wrapper">
       <!-- NAVIGATION -->
-      <nav class="navbar navbar-custom navbar-transparent navbar-light navbar-fixed-top">
+      <nav
+        class="navbar navbar-custom navbar-transparent navbar-light navbar-fixed-top"
+      >
         <div class="container">
           <div class="navbar-header">
             <a class="navbar-brand" href="../index.html">
@@ -141,10 +151,20 @@
           </h2>
 
           <nav class="lab-pagination">
-            <a id="prev-lab" class="lab-nav-link" href="#" aria-label="Previous lab">
+            <a
+              id="prev-lab"
+              class="lab-nav-link"
+              href="#"
+              aria-label="Previous lab"
+            >
               &laquo;
             </a>
-            <a id="next-lab" class="lab-nav-link" href="#" aria-label="Next lab">
+            <a
+              id="next-lab"
+              class="lab-nav-link"
+              href="#"
+              aria-label="Next lab"
+            >
               &raquo;
             </a>
           </nav>
@@ -159,7 +179,11 @@
                   </h5>
                   <ul class="docs-nav">
                     <li><a href="#scenario">Scenario</a></li>
+                    <li><a href="#objective">Objective</a></li>
+                    <li><a href="#concepts">Concepts</a></li>
                     <li><a href="#walkthrough">Walkthrough</a></li>
+                    <li><a href="#breakpoints">Breakpoints</a></li>
+                    <li><a href="#cleanup">Cleanup</a></li>
                     <li><a href="#reference">Reference</a></li>
                   </ul>
                 </div>
@@ -169,15 +193,16 @@
             <!-- MAIN CONTENT -->
             <div class="col-sm-8 col-md-9 lab-doc">
               <p class="m-b-20 lab-summary">
-                Audit enabled repositories, inspect repo definitions under
+                Audit enabled DNF repositories, validate repo definitions under
                 <code>/etc/yum.repos.d</code>
-                , add a new
+                , and add a new
                 <code>.repo</code>
-                file safely, validate metadata with
+                file safely. Confirm metadata health with
                 <code>dnf makecache</code>
                 , then disable a broken repo cleanly without deleting evidence.
               </p>
 
+              <!-- Video (kept on page; removed from left panel) -->
               <section class="lab-section" id="video" aria-label="Lab video">
                 <div class="lab-video">
                   <div class="lab-video-embed text-center">
@@ -196,48 +221,112 @@
               <!-- Scenario -->
               <section class="lab-section" id="scenario">
                 <div class="lab-chips" aria-label="Tags">
-                  <span class="lab-chip"><span class="lab-chip-key">packages</span></span>
-                  <span class="lab-chip"><span class="lab-chip-key">repos</span></span>
-                  <span class="lab-chip"><span class="lab-chip-key">troubleshooting</span></span>
-                  <span class="lab-chip"><span class="lab-chip-key">rhel</span></span>
+                  <span class="lab-chip">
+                    <span class="lab-chip-key">packages</span>
+                  </span>
+                  <span class="lab-chip">
+                    <span class="lab-chip-key">repos</span>
+                  </span>
+                  <span class="lab-chip">
+                    <span class="lab-chip-key">troubleshooting</span>
+                  </span>
+                  <span class="lab-chip">
+                    <span class="lab-chip-key">rhel</span>
+                  </span>
                 </div>
 
-                <h3 class="font-alt lab-section-title m-b-40 m-t-40">Scenario</h3>
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  Scenario
+                </h3>
 
                 <p>
-                  A RHEL-like server was cloned into a lab network and package installs are failing.
-                  The repo configuration may be incomplete, or a custom repo was added incorrectly.
-                  Your job is to audit what is enabled, verify repo definitions on disk, add a repo
-                  file safely, validate metadata, then disable the broken repo cleanly.
+                  A RHEL-like server was cloned into a lab network and package
+                  installs are failing. The repo configuration may be incomplete,
+                  or a custom repo was added incorrectly. You need to audit what
+                  is enabled, confirm repo definitions on disk, add a repo file
+                  safely, validate metadata, then disable the broken repo cleanly.
                 </p>
 
                 <div class="lab-callout">
                   <div class="lab-callout-label">Operator context</div>
                   <p class="m-b-0">
-                    Repo failures can block patching and incident response. Treat repo files as
-                    configuration artifacts: back up before changes, validate repodata, and disable
-                    cleanly so you can restore service without losing context.
+                    Repo failures can block patching and incident response. Treat
+                    repo files as configuration artifacts: back up before
+                    changes, validate repodata, and disable cleanly so you can
+                    restore service without losing context.
                   </p>
                 </div>
               </section>
 
               <!-- Objective -->
               <section class="lab-section alt-background" id="objective">
-                <h3 class="font-alt lab-section-title m-b-40 m-t-40">Objective</h3>
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  Objective
+                </h3>
                 <ul>
                   <li>List enabled repositories and inspect a repo’s details.</li>
-                  <li>Audit repo definition files under <code>/etc/yum.repos.d</code>.</li>
-                  <li>Back up an existing repo file before editing.</li>
-                  <li>Create a new <code>.repo</code> file with a valid repo id.</li>
-                  <li>Validate repodata and caching behavior with <code>dnf makecache</code>.</li>
+                  <li>
+                    Audit repo definition files under
+                    <code>/etc/yum.repos.d</code>
+                    .
+                  </li>
+                  <li>Back up an existing repo file before changes.</li>
+                  <li>
+                    Create a new
+                    <code>.repo</code>
+                    file with a valid repo id.
+                  </li>
+                  <li>
+                    Validate repodata and caching behavior with
+                    <code>dnf makecache</code>
+                    .
+                  </li>
                   <li>Disable a broken repo without deleting the file.</li>
-                  <li>Clean metadata and verify the repo is no longer enabled.</li>
+                  <li>
+                    Clean metadata and confirm the repo is no longer enabled.
+                  </li>
+                </ul>
+              </section>
+
+              <!-- Concepts (no alt-background moving forward) -->
+              <section class="lab-section" id="concepts">
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  Concepts
+                </h3>
+                <ul>
+                  <li>
+                    DNF consumes repository definitions from
+                    <code>/etc/yum.repos.d/*.repo</code>
+                    and treats each bracketed section as a repo id.
+                  </li>
+                  <li>
+                    Repo health is primarily a metadata problem. If DNF cannot
+                    fetch
+                    <code>repodata/repomd.xml</code>
+                    , installs and updates will stall.
+                  </li>
+                  <li>
+                    Disable broken repos before deleting anything. Preserving
+                    repo files keeps evidence for root cause and rollback.
+                  </li>
+                  <li>
+                    Cache behavior matters. After repo changes, clean metadata
+                    so you are not validating against stale repodata.
+                  </li>
+                  <li>
+                    Use targeted repo inspection (
+                    <code>dnf repoinfo</code>
+                    ) to confirm baseurls and enablement state before you
+                    troubleshoot higher layers.
+                  </li>
                 </ul>
               </section>
 
               <!-- Walkthrough -->
               <section class="lab-section alt-background" id="walkthrough">
-                <h3 class="font-alt lab-section-title m-b-40 m-t-40">Walkthrough</h3>
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  Walkthrough
+                </h3>
 
                 <!-- Step 1 -->
                 <div class="lab-step">
@@ -249,14 +338,21 @@
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
-                      <button class="lab-copy-btn" type="button" data-copy="#cmd-step-1">Copy</button>
+                      <button
+                        class="lab-copy-btn"
+                        type="button"
+                        data-copy="#cmd-step-1"
+                      >
+                        Copy
+                      </button>
                     </div>
                     <pre><code id="cmd-step-1">dnf repolist enabled</code></pre>
                   </div>
 
                   <p>
-                    This is the fastest baseline check when installs fail. If the expected repos are
-                    missing or disabled, nothing downstream will work.
+                    This is the fastest baseline check when installs fail. If
+                    expected repos are missing or disabled, nothing downstream
+                    will work.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -271,13 +367,19 @@ extras                       Rocky Linux 9 - Extras</code></pre>
                 <div class="lab-step">
                   <div class="lab-step-title">
                     <strong class="font-alt">Step 2</strong>
-                    : Show repo definitions currently present on disk.
+                    : Confirm repo definition files on disk.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
-                      <button class="lab-copy-btn" type="button" data-copy="#cmd-step-2">Copy</button>
+                      <button
+                        class="lab-copy-btn"
+                        type="button"
+                        data-copy="#cmd-step-2"
+                      >
+                        Copy
+                      </button>
                     </div>
                     <pre><code id="cmd-step-2">ls -1 /etc/yum.repos.d</code></pre>
                   </div>
@@ -285,7 +387,8 @@ extras                       Rocky Linux 9 - Extras</code></pre>
                   <p>
                     Repos are defined by
                     <code>.repo</code>
-                    files in this directory. Missing files often explains missing repos.
+                    files in this directory. Missing files often explains
+                    missing repos.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -298,19 +401,27 @@ rocky-addons.repo</code></pre>
                 <div class="lab-step">
                   <div class="lab-step-title">
                     <strong class="font-alt">Step 3</strong>
-                    : Back up an existing repo file before changes.
+                    : Back up a repo file before changes.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
-                      <button class="lab-copy-btn" type="button" data-copy="#cmd-step-3">Copy</button>
+                      <button
+                        class="lab-copy-btn"
+                        type="button"
+                        data-copy="#cmd-step-3"
+                      >
+                        Copy
+                      </button>
                     </div>
                     <pre><code id="cmd-step-3">sudo cp /etc/yum.repos.d/rocky.repo /etc/yum.repos.d/rocky.repo.bak</code></pre>
                   </div>
 
                   <p>
-                    This is the safety net. If a repo change breaks installs, you can restore quickly.
+                    This is your safety net. If a repo change breaks installs,
+                    restore quickly and keep troubleshooting with known-good
+                    configuration.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -328,7 +439,13 @@ rocky-addons.repo</code></pre>
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
-                      <button class="lab-copy-btn" type="button" data-copy="#cmd-step-4">Copy</button>
+                      <button
+                        class="lab-copy-btn"
+                        type="button"
+                        data-copy="#cmd-step-4"
+                      >
+                        Copy
+                      </button>
                     </div>
                     <pre><code id="cmd-step-4">dnf repoinfo baseos</code></pre>
                   </div>
@@ -336,7 +453,8 @@ rocky-addons.repo</code></pre>
                   <p>
                     Confirm the
                     <code>baseurl</code>
-                    and whether the repo is enabled. A bad URL usually turns into metadata errors.
+                    and whether the repo is enabled. A bad URL usually turns
+                    into metadata errors.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -361,15 +479,22 @@ Repo-enabled       : yes</code></pre>
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
-                      <button class="lab-copy-btn" type="button" data-copy="#cmd-step-5">Copy</button>
+                      <button
+                        class="lab-copy-btn"
+                        type="button"
+                        data-copy="#cmd-step-5"
+                      >
+                        Copy
+                      </button>
                     </div>
                     <pre><code id="cmd-step-5">sudo vim /etc/yum.repos.d/custom.repo</code></pre>
                   </div>
 
                   <p>
-                    A repo file must contain at least a repo id in brackets and a
+                    A repo file must include a repo id in brackets and a
                     <code>baseurl</code>
-                    . This lab uses a deliberately broken URL so you can recognize the failure mode.
+                    . This lab uses a deliberately broken URL so you can
+                    recognize the failure mode.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -385,20 +510,26 @@ gpgcheck=0</code></pre>
                 <div class="lab-step">
                   <div class="lab-step-title">
                     <strong class="font-alt">Step 6</strong>
-                    : Verify the repo file is readable and contains a repo id.
+                    : Verify the repo file is readable and structured correctly.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
-                      <button class="lab-copy-btn" type="button" data-copy="#cmd-step-6">Copy</button>
+                      <button
+                        class="lab-copy-btn"
+                        type="button"
+                        data-copy="#cmd-step-6"
+                      >
+                        Copy
+                      </button>
                     </div>
                     <pre><code id="cmd-step-6">sudo cat /etc/yum.repos.d/custom.repo</code></pre>
                   </div>
 
                   <p>
-                    This is a quick integrity check. You want to see the bracketed repo id and the URL.
-                    Typos here show up later as metadata failures.
+                    You want to see the bracketed repo id and the URL. Typos
+                    here become metadata failures later.
                   </p>
                 </div>
 
@@ -406,21 +537,29 @@ gpgcheck=0</code></pre>
                 <div class="lab-step">
                   <div class="lab-step-title">
                     <strong class="font-alt">Step 7</strong>
-                    : Build metadata cache (validate DNF can read repo configuration).
+                    : Build metadata cache (validate repo access).
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
-                      <button class="lab-copy-btn" type="button" data-copy="#cmd-step-7">Copy</button>
+                      <button
+                        class="lab-copy-btn"
+                        type="button"
+                        data-copy="#cmd-step-7"
+                      >
+                        Copy
+                      </button>
                     </div>
                     <pre><code id="cmd-step-7">sudo dnf makecache</code></pre>
                   </div>
 
                   <p>
-                    This validates the repo file and attempts to fetch
+                    This forces DNF to read repo configuration and attempt to
+                    fetch
                     <code>repodata/repomd.xml</code>
-                    . A 404 usually means the baseurl is wrong or the repo is not structured correctly.
+                    . A 404 usually means the baseurl is wrong or the repo is not
+                    structured correctly.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -434,19 +573,26 @@ Errors during downloading metadata for repository 'custom-tools':
                 <div class="lab-step">
                   <div class="lab-step-title">
                     <strong class="font-alt">Step 8</strong>
-                    : Disable the custom repo safely (without deleting the file).
+                    : Disable the custom repo without deleting the file.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
-                      <button class="lab-copy-btn" type="button" data-copy="#cmd-step-8">Copy</button>
+                      <button
+                        class="lab-copy-btn"
+                        type="button"
+                        data-copy="#cmd-step-8"
+                      >
+                        Copy
+                      </button>
                     </div>
                     <pre><code id="cmd-step-8">sudo dnf config-manager --set-disabled custom-tools</code></pre>
                   </div>
 
                   <p>
-                    Disabling keeps the configuration on disk for review, while immediately unblocking package operations.
+                    Disabling keeps the configuration on disk for review, while
+                    immediately unblocking package operations.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -464,13 +610,20 @@ Errors during downloading metadata for repository 'custom-tools':
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
-                      <button class="lab-copy-btn" type="button" data-copy="#cmd-step-9">Copy</button>
+                      <button
+                        class="lab-copy-btn"
+                        type="button"
+                        data-copy="#cmd-step-9"
+                      >
+                        Copy
+                      </button>
                     </div>
                     <pre><code id="cmd-step-9">sudo dnf clean metadata</code></pre>
                   </div>
 
                   <p>
-                    This removes cached metadata so you can rebuild cleanly and confirm the error no longer appears.
+                    This removes cached metadata so you can rebuild cleanly and
+                    confirm the error no longer appears.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -482,19 +635,26 @@ Errors during downloading metadata for repository 'custom-tools':
                 <div class="lab-step">
                   <div class="lab-step-title">
                     <strong class="font-alt">Step 10</strong>
-                    : Confirm the custom repo no longer appears as enabled.
+                    : Confirm the custom repo is not enabled.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
-                      <button class="lab-copy-btn" type="button" data-copy="#cmd-step-10">Copy</button>
+                      <button
+                        class="lab-copy-btn"
+                        type="button"
+                        data-copy="#cmd-step-10"
+                      >
+                        Copy
+                      </button>
                     </div>
                     <pre><code id="cmd-step-10">dnf repolist enabled</code></pre>
                   </div>
 
                   <p>
-                    Verification is the final step. You should see only expected repos enabled.
+                    Verification is the final step. You should see only expected
+                    repos enabled.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -507,38 +667,161 @@ extras                       Rocky Linux 9 - Extras
                 </div>
               </section>
 
+              <!-- Common breakpoints -->
+              <section class="lab-section" id="breakpoints">
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  Common breakpoints
+                </h3>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">
+                    dnf repolist shows no enabled repos
+                  </div>
+                  <p class="m-b-0">
+                    If you have no enabled repos, package operations will fail
+                    across the board. Confirm repo files exist in
+                    <code>/etc/yum.repos.d</code>
+                    and that expected sections are set to
+                    <code>enabled=1</code>
+                    .
+                  </p>
+                </div>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">
+                    repomd.xml download errors (404 or timeout)
+                  </div>
+                  <p class="m-b-0">
+                    A 404 usually means the baseurl path is wrong or the repo is
+                    not laid out correctly. Timeouts usually indicate DNS,
+                    routing, proxy, or firewall issues between the host and the
+                    repo endpoint.
+                  </p>
+                </div>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">
+                    config-manager command not found
+                  </div>
+                  <p class="m-b-0">
+                    If
+                    <code>dnf config-manager</code>
+                    is unavailable, the plugin package may not be installed on
+                    your distro. Install the appropriate plugin package, or
+                    disable the repo by editing the repo file and setting
+                    <code>enabled=0</code>
+                    .
+                  </p>
+                </div>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">
+                    metadata errors persist after disabling the repo
+                  </div>
+                  <p class="m-b-0">
+                    Cached metadata may still reference the repo. Run
+                    <code>dnf clean metadata</code>
+                    and retry
+                    <code>dnf makecache</code>
+                    to confirm you are validating against a clean state.
+                  </p>
+                </div>
+              </section>
+
+              <!-- Cleanup -->
+              <section class="lab-section alt-background" id="cleanup">
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  Cleanup checklist
+                </h3>
+
+                <p>
+                  Your cleanup is confirming the system is back to a known-good
+                  repo state and the broken repo is disabled but preserved on
+                  disk for review.
+                </p>
+
+                <div class="lab-codeblock m-b-40 m-t-40">
+                  <div class="lab-codeblock-header">
+                    <span>Commands</span>
+                    <button
+                      class="lab-copy-btn"
+                      type="button"
+                      data-copy="#cmd-cleanup"
+                    >
+                      Copy
+                    </button>
+                  </div>
+                  <pre><code id="cmd-cleanup">dnf repolist enabled
+sudo dnf clean metadata
+sudo dnf makecache</code></pre>
+                </div>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">Success signal</div>
+                  <p class="m-b-0">
+                    Metadata builds without errors, and
+                    <code>dnf repolist enabled</code>
+                    shows only the expected repos.
+                  </p>
+                </div>
+              </section>
+
               <!-- Reference -->
               <section class="lab-section" id="reference">
-                <h3 class="font-alt lab-section-title m-b-40 m-t-40">Reference</h3>
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  Reference
+                </h3>
 
                 <ul class="lab-reference-list">
                   <li>
-                    <code>/etc/yum.repos.d/*.repo</code>
-                    : Repository definitions (repo id, baseurl, enabled, gpgcheck).
+                    <code>ls -1 /etc/yum.repos.d</code>
+                    : Lists repo definition files present on disk.
                   </li>
+
+                  <li>
+                    <code>cp /etc/yum.repos.d/&lt;file&gt; /etc/yum.repos.d/&lt;file&gt;.bak</code>
+                    : Creates a backup of a repo file before changes.
+                  </li>
+
+                  <li>
+                    <code>vim /etc/yum.repos.d/&lt;name&gt;.repo</code>
+                    : Creates or edits a repo definition file.
+                  </li>
+
+                  <li>
+                    <code>cat /etc/yum.repos.d/&lt;name&gt;.repo</code>
+                    : Validates a repo file is readable and contains expected keys.
+                  </li>
+
                   <li>
                     <code>dnf repolist enabled</code>
-                    : Baseline check for enabled repos.
+                    : Shows repositories currently enabled.
                   </li>
+
                   <li>
                     <code>dnf repoinfo &lt;repoid&gt;</code>
-                    : Inspect baseurl and enabled state.
+                    : Shows repository details (baseurl, enabled state, etc.).
                   </li>
+
                   <li>
                     <code>dnf makecache</code>
-                    : Validate repo config and fetch repodata.
+                    : Builds repository metadata cache to validate repo access.
                   </li>
+
                   <li>
                     <code>dnf config-manager --set-disabled &lt;repoid&gt;</code>
-                    : Disable without deleting repo files.
+                    : Disables a repo without deleting the repo file.
+                    <ul>
+                      <li>
+                        <code>--set-disabled</code>
+                        : Marks the repo as disabled.
+                      </li>
+                    </ul>
                   </li>
+
                   <li>
                     <code>dnf clean metadata</code>
-                    : Remove cached metadata after repo changes.
-                  </li>
-                  <li>
-                    <code>repodata/repomd.xml</code>
-                    : Core metadata file; missing usually means baseurl or repo layout is wrong.
+                    : Removes cached metadata after repo changes.
                   </li>
                 </ul>
               </section>
@@ -557,10 +840,22 @@ extras                       Rocky Linux 9 - Extras
             <div class="col-sm-12">
               <ul class="social-text-links font-alt text-center m-b-20">
                 <li>
-                  <a href="https://github.com/vonds" target="_blank" rel="noopener">Github</a>
+                  <a
+                    href="https://github.com/vonds"
+                    target="_blank"
+                    rel="noopener"
+                  >
+                    Github
+                  </a>
                 </li>
                 <li>
-                  <a href="https://www.linkedin.com/in/vonds/" target="_blank" rel="noopener">Linkedin</a>
+                  <a
+                    href="https://www.linkedin.com/in/vonds/"
+                    target="_blank"
+                    rel="noopener"
+                  >
+                    Linkedin
+                  </a>
                 </li>
               </ul>
             </div>
@@ -569,7 +864,8 @@ extras                       Rocky Linux 9 - Extras
           <div class="row">
             <div class="col-sm-12">
               <p class="copyright text-center m-b-0">
-                VONDS &copy; <span id="year"></span>
+                VONDS &copy;
+                <span id="year"></span>
               </p>
 
               <div class="scroll-up">
@@ -603,5 +899,9 @@ extras                       Rocky Linux 9 - Extras
 
     <!-- Lab page JS (new) -->
     <script src="../assets/js/lab.js"></script>
+
+    <script>
+      document.getElementById('year').textContent = new Date().getFullYear()
+    </script>
   </body>
 </html>
