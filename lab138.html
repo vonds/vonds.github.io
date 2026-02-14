@@ -75,7 +75,16 @@
                 </li>
                 <li>
                   <a href="docs.html" target="_blank" rel="noopener">
-                    exit_0
+                    exit_0 Documentation
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="https://github.com/vonds/sentinel"
+                    target="_blank"
+                    rel="noopener"
+                  >
+                    Sentinel
                   </a>
                 </li>
               </ul>
@@ -167,7 +176,11 @@
                   </h5>
                   <ul class="docs-nav">
                     <li><a href="#scenario">Scenario</a></li>
+                    <li><a href="#objective">Objective</a></li>
+                    <li><a href="#concepts">Concepts</a></li>
                     <li><a href="#walkthrough">Walkthrough</a></li>
+                    <li><a href="#breakpoints">Breakpoints</a></li>
+                    <li><a href="#cleanup">Cleanup</a></li>
                     <li><a href="#reference">Reference</a></li>
                   </ul>
                 </div>
@@ -178,15 +191,16 @@
             <div class="col-sm-8 col-md-9 lab-doc">
               <p class="m-b-20 lab-summary">
                 Validate printing and outbound mail on a RHEL host by verifying <code>CUPS</code>, submitting a test job,
-                confirming queue state, then triaging the <code>Postfix</code> mail queue, forcing delivery attempts,
-                deleting a stuck message, and confirming evidence in <code>journald</code> with unit logs.
+                and confirming queue state. Triage the <code>Postfix</code> mail queue by forcing delivery, removing a stuck
+                message by ID, and capturing the timeline in unit logs.
               </p>
 
+              <!-- Video (kept on page; removed from left panel) -->
               <section class="lab-section" id="video" aria-label="Lab video">
                 <div class="lab-video">
                   <div class="lab-video-embed text-center">
                     <iframe
-                      src="https://www.youtube.com/embed/REPLACE_WITH_LAB138_VIDEO"
+                      src="https://www.youtube.com/embed/yp7PbKnlpxI?si=QTM2H8yZO39Ctu9I"
                       title="YouTube video player"
                       frameborder="0"
                       allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
@@ -200,54 +214,78 @@
               <!-- Scenario -->
               <section class="lab-section" id="scenario">
                 <div class="lab-chips" aria-label="Tags">
-                  <span class="lab-chip"><span class="lab-chip-key">rhel</span></span>
-                  <span class="lab-chip"><span class="lab-chip-key">rhcsa</span></span>
-                  <span class="lab-chip"><span class="lab-chip-key">services</span></span>
-                  <span class="lab-chip"><span class="lab-chip-key">cups</span></span>
-                  <span class="lab-chip"><span class="lab-chip-key">printing</span></span>
-                  <span class="lab-chip"><span class="lab-chip-key">postfix</span></span>
+                  <span class="lab-chip"><span class="lab-chip-key">troubleshooting</span></span>
                   <span class="lab-chip"><span class="lab-chip-key">mail</span></span>
-                  <span class="lab-chip"><span class="lab-chip-key">journald</span></span>
-                  <span class="lab-chip"><span class="lab-chip-key">triage</span></span>
+                  <span class="lab-chip"><span class="lab-chip-key">core</span></span>
                 </div>
 
-                <h3 class="font-alt lab-section-title m-b-40 m-t-40">Scenario</h3>
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  Scenario
+                </h3>
 
                 <p>
                   A helpdesk ticket reports printing is “working sometimes,” and outbound mail is backing up. You need to
-                  validate the print service, submit a test job, confirm the job appears in the queue, then triage Postfix
-                  by inspecting the mail queue, forcing a delivery attempt, deleting a stuck message, and capturing evidence
-                  from the journal.
+                  validate the print service, submit a known-good test job, confirm it appears in the queue, then triage
+                  Postfix by inspecting the mail queue, forcing a delivery attempt, deleting a stuck message, and capturing
+                  evidence from the journal.
                 </p>
 
                 <div class="lab-callout">
                   <div class="lab-callout-label">Operator context</div>
                   <p class="m-b-0">
-                    Your goal is fast proof. Confirm services are healthy, create a known-good test event (print job, queue
-                    flush), then verify the system recorded your actions in unit logs.
+                    Your goal is fast proof. Confirm services are healthy, generate a controlled test event (print job, queue
+                    flush), then validate the system recorded the result in unit logs.
                   </p>
                 </div>
               </section>
 
               <!-- Objective -->
               <section class="lab-section alt-background" id="objective">
-                <h3 class="font-alt lab-section-title m-b-40 m-t-40">Objective</h3>
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  Objective
+                </h3>
                 <ul>
-                  <li>Verify <code>cups</code> is running and enabled.</li>
-                  <li>Confirm printers exist and identify the default destination.</li>
-                  <li>Submit a test print job and confirm the job appears in the print queue.</li>
-                  <li>Verify Postfix is active.</li>
-                  <li>Inspect the mail queue and identify deferred/stuck messages.</li>
-                  <li>Flush the mail queue to force a delivery attempt.</li>
-                  <li>Delete a specific stuck message by queue ID using <code>postsuper</code>.</li>
+                  <li>Confirm the CUPS scheduler is active.</li>
+                  <li>Identify printers and the default destination.</li>
+                  <li>Submit a test print job and validate it appears in the queue.</li>
+                  <li>Confirm Postfix is active.</li>
+                  <li>Inspect the mail queue and identify deferred/stuck entries.</li>
+                  <li>Flush the queue to force a delivery attempt.</li>
+                  <li>Delete a specific stuck message by queue ID.</li>
                   <li>Confirm the queue state after remediation.</li>
-                  <li>Capture evidence with <code>journalctl -u postfix</code>.</li>
+                  <li>Capture evidence with unit logs from <code>journald</code>.</li>
+                </ul>
+              </section>
+
+              <!-- Concepts (no alt-background moving forward) -->
+              <section class="lab-section" id="concepts">
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  Concepts
+                </h3>
+                <ul>
+                  <li>
+                    Service verification and quick health checks using <code>systemctl</code>.
+                  </li>
+                  <li>
+                    CUPS workflows: destinations, job submission, and queue inspection (<code>lpstat</code>, <code>lp</code>, <code>lpq</code>).
+                  </li>
+                  <li>
+                    Postfix queue triage: viewing queue state and deferral reasons (<code>mailq</code>, <code>postqueue -p</code>).
+                  </li>
+                  <li>
+                    Controlled remediation: forcing delivery attempts and deleting a specific entry (<code>postqueue -f</code>, <code>postsuper -d</code>).
+                  </li>
+                  <li>
+                    Evidence collection using unit logs (<code>journalctl -u</code>).
+                  </li>
                 </ul>
               </section>
 
               <!-- Walkthrough -->
               <section class="lab-section alt-background" id="walkthrough">
-                <h3 class="font-alt lab-section-title m-b-40 m-t-40">Walkthrough</h3>
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  Walkthrough
+                </h3>
 
                 <!-- Step 1 -->
                 <div class="lab-step">
@@ -258,7 +296,9 @@
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
-                      <button class="lab-copy-btn" type="button" data-copy="#cmd-step-1">Copy</button>
+                      <button class="lab-copy-btn" type="button" data-copy="#cmd-step-1">
+                        Copy
+                      </button>
                     </div>
                     <pre><code id="cmd-step-1">sudo systemctl status cups --no-pager</code></pre>
                   </div>
@@ -284,7 +324,9 @@ Main PID: 1126 (cupsd)</code></pre>
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
-                      <button class="lab-copy-btn" type="button" data-copy="#cmd-step-2">Copy</button>
+                      <button class="lab-copy-btn" type="button" data-copy="#cmd-step-2">
+                        Copy
+                      </button>
                     </div>
                     <pre><code id="cmd-step-2">lpstat -p -d</code></pre>
                   </div>
@@ -308,7 +350,9 @@ system default destination: Office_Printer</code></pre>
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
-                      <button class="lab-copy-btn" type="button" data-copy="#cmd-step-3">Copy</button>
+                      <button class="lab-copy-btn" type="button" data-copy="#cmd-step-3">
+                        Copy
+                      </button>
                     </div>
                     <pre><code id="cmd-step-3">lp /etc/hosts</code></pre>
                   </div>
@@ -331,14 +375,15 @@ system default destination: Office_Printer</code></pre>
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
-                      <button class="lab-copy-btn" type="button" data-copy="#cmd-step-4">Copy</button>
+                      <button class="lab-copy-btn" type="button" data-copy="#cmd-step-4">
+                        Copy
+                      </button>
                     </div>
                     <pre><code id="cmd-step-4">lpq</code></pre>
                   </div>
 
                   <p>
-                    You are looking for the job ID and state. If jobs pile up or remain active too long, investigate printer
-                    connectivity and backend filters next.
+                    You are looking for the job ID and state. If jobs pile up or remain active too long, validate printer connectivity and backend filters next.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -357,7 +402,9 @@ active lab     23   hosts                           1024 bytes</code></pre>
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
-                      <button class="lab-copy-btn" type="button" data-copy="#cmd-step-5">Copy</button>
+                      <button class="lab-copy-btn" type="button" data-copy="#cmd-step-5">
+                        Copy
+                      </button>
                     </div>
                     <pre><code id="cmd-step-5">systemctl is-active postfix</code></pre>
                   </div>
@@ -380,14 +427,15 @@ active lab     23   hosts                           1024 bytes</code></pre>
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
-                      <button class="lab-copy-btn" type="button" data-copy="#cmd-step-6">Copy</button>
+                      <button class="lab-copy-btn" type="button" data-copy="#cmd-step-6">
+                        Copy
+                      </button>
                     </div>
                     <pre><code id="cmd-step-6">mailq</code></pre>
                   </div>
 
                   <p>
-                    Identify deferred entries and read the reason string. In this scenario, one message is stuck due to a
-                    connection timeout to the upstream MX on port 25.
+                    Identify deferred entries and record the reason string. In this scenario, one message is stuck due to a connection timeout to the upstream MX on port 25.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -410,7 +458,9 @@ active lab     23   hosts                           1024 bytes</code></pre>
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
-                      <button class="lab-copy-btn" type="button" data-copy="#cmd-step-7">Copy</button>
+                      <button class="lab-copy-btn" type="button" data-copy="#cmd-step-7">
+                        Copy
+                      </button>
                     </div>
                     <pre><code id="cmd-step-7">postqueue -f</code></pre>
                   </div>
@@ -429,14 +479,15 @@ active lab     23   hosts                           1024 bytes</code></pre>
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
-                      <button class="lab-copy-btn" type="button" data-copy="#cmd-step-8">Copy</button>
+                      <button class="lab-copy-btn" type="button" data-copy="#cmd-step-8">
+                        Copy
+                      </button>
                     </div>
                     <pre><code id="cmd-step-8">sudo postsuper -d 3F2C61A012</code></pre>
                   </div>
 
                   <p>
-                    This removes a specific entry. In real incidents, document why you deleted it and capture the failure
-                    reason first.
+                    This removes a specific entry. In real incidents, document why you deleted it and capture the failure reason first.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -453,7 +504,9 @@ active lab     23   hosts                           1024 bytes</code></pre>
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
-                      <button class="lab-copy-btn" type="button" data-copy="#cmd-step-9">Copy</button>
+                      <button class="lab-copy-btn" type="button" data-copy="#cmd-step-9">
+                        Copy
+                      </button>
                     </div>
                     <pre><code id="cmd-step-9">postqueue -p</code></pre>
                   </div>
@@ -479,7 +532,9 @@ active lab     23   hosts                           1024 bytes</code></pre>
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
-                      <button class="lab-copy-btn" type="button" data-copy="#cmd-step-10">Copy</button>
+                      <button class="lab-copy-btn" type="button" data-copy="#cmd-step-10">
+                        Copy
+                      </button>
                     </div>
                     <pre><code id="cmd-step-10">journalctl -u postfix -n 8 --no-pager</code></pre>
                   </div>
@@ -498,20 +553,152 @@ Jan 25 07:12:31 lab138 postfix/qmgr[1288]: 3F2C61A012: removed</code></pre>
                 </div>
               </section>
 
+              <!-- Common breakpoints -->
+              <section class="lab-section" id="breakpoints">
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  Common breakpoints
+                </h3>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">No printers listed</div>
+                  <p class="m-b-0">
+                    If <code>lpstat -p -d</code> shows no destinations, confirm printer configuration exists and that CUPS is reachable. If this is a remote print server workflow, validate connectivity and name resolution.
+                  </p>
+                </div>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">Jobs remain active or stuck in the print queue</div>
+                  <p class="m-b-0">
+                    If <code>lpq</code> shows the same job for an extended time, check printer connectivity, backend filters, and CUPS logs. Confirm the destination is enabled and accepting jobs.
+                  </p>
+                </div>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">mailq shows repeated deferrals</div>
+                  <p class="m-b-0">
+                    Deferrals usually indicate a network path or policy problem. Confirm DNS for the relay target, firewall rules, and that outbound SMTP is permitted from this host.
+                  </p>
+                </div>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">postqueue -f does not change queue size</div>
+                  <p class="m-b-0">
+                    A flush only triggers retries. If the upstream is still unreachable, you will see the same deferral reason again. Use unit logs to capture the current failure evidence.
+                  </p>
+                </div>
+              </section>
+
+              <!-- Cleanup -->
+              <section class="lab-section alt-background" id="cleanup">
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  Cleanup checklist
+                </h3>
+
+                <p>
+                  This lab is read-only except for the test print job and mail queue actions. If you deleted a message, capture the queue ID and deferral reason in your incident notes before closing the ticket.
+                </p>
+
+                <div class="lab-codeblock m-b-40 m-t-40">
+                  <div class="lab-codeblock-header">
+                    <span>Commands</span>
+                    <button class="lab-copy-btn" type="button" data-copy="#cmd-cleanup">
+                      Copy
+                    </button>
+                  </div>
+                  <pre><code id="cmd-cleanup">lpstat -p -d
+lpq
+postqueue -p
+journalctl -u postfix -n 15 --no-pager</code></pre>
+                </div>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">Success signal</div>
+                  <p class="m-b-0">
+                    Print jobs enter the expected destination queue, and the mail queue reflects your remediation actions with a clear timeline in unit logs.
+                  </p>
+                </div>
+              </section>
+
               <!-- Reference -->
               <section class="lab-section" id="reference">
-                <h3 class="font-alt lab-section-title m-b-40 m-t-40">Reference</h3>
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  Reference
+                </h3>
 
                 <ul class="lab-reference-list">
-                  <li><code>systemctl status cups</code>: verify the print scheduler is active.</li>
-                  <li><code>lpstat -p -d</code>: list printers and show the default destination.</li>
-                  <li><code>lp /etc/hosts</code>, <code>lpr /etc/hosts</code>: submit a test print job.</li>
-                  <li><code>lpq</code>, <code>lpstat -o</code>: inspect print job queue state.</li>
-                  <li><code>systemctl is-active postfix</code>: confirm mail service is running.</li>
-                  <li><code>mailq</code>, <code>postqueue -p</code>: view the Postfix queue and deferral reasons.</li>
-                  <li><code>postqueue -f</code>: flush the queue (force delivery attempt).</li>
-                  <li><code>postsuper -d QUEUEID</code>: delete a specific message from the queue.</li>
-                  <li><code>journalctl -u postfix</code>: view Postfix unit logs for timeline/evidence.</li>
+                  <li>
+                    <code>systemctl status cups --no-pager</code>
+                    : Verify the print scheduler is active and inspect recent unit output.
+                    <ul>
+                      <li><code>--no-pager</code>: Prints output without paging.</li>
+                    </ul>
+                  </li>
+
+                  <li>
+                    <code>lpstat -p -d</code>
+                    : List printers and show the default destination.
+                    <ul>
+                      <li><code>-p</code>: Lists printers and their enabled/disabled state.</li>
+                      <li><code>-d</code>: Shows the default destination.</li>
+                    </ul>
+                  </li>
+
+                  <li>
+                    <code>lp &lt;file&gt;</code>
+                    : Submit a print job to the default destination.
+                    <ul>
+                      <li><code>/etc/hosts</code>: Small, safe test file for a controlled print job.</li>
+                    </ul>
+                  </li>
+
+                  <li>
+                    <code>lpq</code>
+                    : Show the current print queue for the default destination.
+                  </li>
+
+                  <li>
+                    <code>systemctl is-active postfix</code>
+                    : Confirm the mail service is running.
+                  </li>
+
+                  <li>
+                    <code>mailq</code>
+                    : View the Postfix queue and deferral reasons.
+                  </li>
+
+                  <li>
+                    <code>postqueue -p</code>
+                    : Display queued messages and their status.
+                    <ul>
+                      <li><code>-p</code>: Prints the mail queue.</li>
+                    </ul>
+                  </li>
+
+                  <li>
+                    <code>postqueue -f</code>
+                    : Flush the queue to force a delivery attempt.
+                    <ul>
+                      <li><code>-f</code>: Requests immediate retry of queued mail.</li>
+                    </ul>
+                  </li>
+
+                  <li>
+                    <code>postsuper -d &lt;QUEUEID&gt;</code>
+                    : Delete a specific message from the queue.
+                    <ul>
+                      <li><code>-d</code>: Deletes the message by queue ID.</li>
+                    </ul>
+                  </li>
+
+                  <li>
+                    <code>journalctl -u postfix -n &lt;N&gt; --no-pager</code>
+                    : View Postfix unit logs for timeline and evidence.
+                    <ul>
+                      <li><code>-u postfix</code>: Filters logs to the Postfix unit.</li>
+                      <li><code>-n &lt;N&gt;</code>: Limits to the last N entries.</li>
+                      <li><code>--no-pager</code>: Prints output without paging.</li>
+                    </ul>
+                  </li>
                 </ul>
               </section>
             </div>
@@ -561,7 +748,8 @@ Jan 25 07:12:31 lab138 postfix/qmgr[1288]: 3F2C61A012: removed</code></pre>
 
     <!-- Javascript files (your existing) -->
     <script src="../assets/js/jquery-2.2.4.min.js"></script>
-    <script src="../assets/bootstrap/js/bootstrap.min.css"></script>
+    <!-- FIX: this must be .js, not .css -->
+    <script src="../assets/bootstrap/js/bootstrap.min.js"></script>
     <script src="../assets/js/jquery.superslides.min.js"></script>
     <script src="../assets/js/jquery.mb.YTPlayer.min.js"></script>
     <script src="../assets/js/jquery.magnific-popup.min.js"></script>

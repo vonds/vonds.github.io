@@ -37,7 +37,7 @@
     <link href="../assets/css/style.css" rel="stylesheet" />
     <link href="../assets/css/docs.css" rel="stylesheet" />
 
-    <!-- Lab page styles (new) -->
+    <!-- Lab page styles -->
     <link href="../assets/css/lab.css" rel="stylesheet" />
 
     <!-- Fonts -->
@@ -67,9 +67,29 @@
             <li class="slidedown">
               <a href="#">Portfolio</a>
               <ul>
-                <li><a href="https://github.com/vonds/exit_0" target="_blank" rel="noopener">exit_0</a></li>
-                <li><a href="docs.html" target="_blank" rel="noopener">exit_0 Documentation</a></li>
-                <li><a href="https://github.com/vonds/sentinel" target="_blank" rel="noopener">Sentinel</a></li>
+                <li>
+                  <a
+                    href="https://github.com/vonds/exit_0"
+                    target="_blank"
+                    rel="noopener"
+                  >
+                    exit_0
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="https://github.com/vonds/sentinel"
+                    target="_blank"
+                    rel="noopener"
+                  >
+                    Sentinel
+                  </a>
+                </li>
+                <li>
+                  <a href="docs.html" target="_blank" rel="noopener">
+                    exit_0 Documentation
+                  </a>
+                </li>
               </ul>
             </li>
 
@@ -171,7 +191,11 @@
                   </h5>
                   <ul class="docs-nav">
                     <li><a href="#scenario">Scenario</a></li>
+                    <li><a href="#objective">Objective</a></li>
+                    <li><a href="#concepts">Concepts</a></li>
                     <li><a href="#walkthrough">Walkthrough</a></li>
+                    <li><a href="#breakpoints">Breakpoints</a></li>
+                    <li><a href="#cleanup">Cleanup</a></li>
                     <li><a href="#reference">Reference</a></li>
                   </ul>
                 </div>
@@ -180,32 +204,31 @@
 
             <!-- MAIN CONTENT -->
             <div class="col-sm-8 col-md-9 lab-doc">
-              <!-- 1) Title + Summary (2 sentences max) -->
               <p class="m-b-20 lab-summary">
-                Diagnose slow SSH and sudo caused by hostname resolution delays,
-                then restore fast lookups by adjusting the host resolution order.
-                Prove the fix with before-and-after timing evidence.
+                Diagnose slow SSH and sudo caused by hostname lookups that hit a
+                timing-out DNS path. Collect before-and-after timing evidence
+                with <code>time</code> and <code>getent</code>, then restore fast
+                lookups by fixing resolver settings and reducing reverse-DNS
+                impact.
               </p>
 
+              <!-- Video (kept on page; removed from left panel) -->
               <section class="lab-section" id="video" aria-label="Lab video">
                 <div class="lab-video">
                   <div class="lab-video-embed text-center">
                     <iframe
-                      width="560"
-                      height="315"
-                      src="https://www.youtube.com/embed/REPLACE_WITH_LAB132_VIDEO"
+                      src="https://www.youtube.com/embed/UJmmgVMICSM?si=NvKGuvdfLbrXtHjA"
                       title="YouTube video player"
                       frameborder="0"
                       allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                       referrerpolicy="strict-origin-when-cross-origin"
                       allowfullscreen
-                    >
-                    </iframe>
+                    ></iframe>
                   </div>
                 </div>
               </section>
 
-              <!-- 2) Scenario -->
+              <!-- Scenario -->
               <section class="lab-section" id="scenario">
                 <div class="lab-chips" aria-label="Tags">
                   <span class="lab-chip">
@@ -217,6 +240,15 @@
                   <span class="lab-chip">
                     <span class="lab-chip-key">dns</span>
                   </span>
+                  <span class="lab-chip">
+                    <span class="lab-chip-key">ssh</span>
+                  </span>
+                  <span class="lab-chip">
+                    <span class="lab-chip-key">sudo</span>
+                  </span>
+                  <span class="lab-chip">
+                    <span class="lab-chip-key">core</span>
+                  </span>
                 </div>
 
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">
@@ -224,56 +256,82 @@
                 </h3>
 
                 <p>
-                  Users complain that “SSH and sudo feel slow on this server.”
-                  You suspect hostname resolution delays due to reverse DNS or
-                  resolver timeouts. Your job is to confirm the delay, identify
-                  the root cause, and fix host resolution so admin workflows are
-                  responsive again.
+                  Users report that SSH logins and <code>sudo</code> prompts feel
+                  slow on a server that otherwise looks healthy. The symptom
+                  points to name resolution delays, usually caused by a resolver
+                  timeout or reverse DNS lookups on inbound connections.
                 </p>
 
                 <div class="lab-callout">
                   <div class="lab-callout-label">Operator context</div>
                   <p class="m-b-0">
-                    This is an ops reliability issue, not a performance mystery.
-                    The goal is to collect timing evidence, remove the timeout
-                    path from the hot loop, and prove the improvement with the
-                    same verification commands.
+                    Treat this like a reliability issue. Capture timing
+                    evidence, remove the timeout path from the hot loop, and
+                    prove improvement by re-running the same measurements after
+                    each change.
                   </p>
                 </div>
               </section>
 
-              <!-- 3) Objective -->
+              <!-- Objective -->
               <section class="lab-section alt-background" id="objective">
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">
                   Objective
                 </h3>
-
                 <ul>
-                  <li>Measure a slow hostname lookup using <code>time</code> and <code>getent</code>.</li>
-                  <li>Identify which DNS server the host is using.</li>
-                  <li>Prove DNS is timing out by querying the server directly.</li>
-                  <li>Inspect host lookup order in <code>/etc/nsswitch.conf</code>.</li>
-                  <li>Prefer <code>files</code> before <code>dns</code> for host lookups.</li>
-                  <li>Re-test lookup speed and verify the issue is resolved.</li>
+                  <li>
+                    Measure lookup latency using <code>time</code> and
+                    <code>getent</code>.
+                  </li>
+                  <li>
+                    Identify the active resolver configuration and confirm the
+                    timeout path.
+                  </li>
+                  <li>
+                    Update DNS settings to a working server and verify name
+                    service becomes fast.
+                  </li>
+                  <li>
+                    Reduce SSH reverse-DNS impact by setting
+                    <code>UseDNS no</code> (policy permitting).
+                  </li>
+                  <li>
+                    Re-test and capture before-and-after timings to document the
+                    fix.
+                  </li>
                 </ul>
               </section>
 
-              <!-- 4) What You'll Practice -->
-              <section class="lab-section" id="practice">
+              <!-- Concepts (no alt-background moving forward) -->
+              <section class="lab-section" id="concepts">
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">
-                  What You’ll Practice
+                  Concepts
                 </h3>
-
-                <ul class="m-t-10">
-                  <li>Measuring lookup latency with <code>time</code> and <code>getent</code>.</li>
-                  <li>Inspecting resolver configuration via <code>resolvectl</code> or <code>/etc/resolv.conf</code>.</li>
-                  <li>Testing DNS server reachability using <code>dig</code> with an explicit server.</li>
-                  <li>Auditing the <code>hosts:</code> lookup chain in <code>/etc/nsswitch.conf</code>.</li>
-                  <li>Making a safe, targeted config edit and verifying impact with repeatable checks.</li>
+                <ul>
+                  <li>
+                    NSS resolution is what applications experience; use
+                    <code>getent</code> to test it.
+                  </li>
+                  <li>
+                    Direct DNS queries isolate the server response using
+                    <code>dig</code>.
+                  </li>
+                  <li>
+                    Resolver timeouts compound via retries and multiple name
+                    servers.
+                  </li>
+                  <li>
+                    Reverse DNS is a common SSH delay when
+                    <code>UseDNS</code> is enabled.
+                  </li>
+                  <li>
+                    Fix the dependency first (DNS reachability), then reduce
+                    optional lookups in hot paths.
+                  </li>
                 </ul>
               </section>
 
-              <!-- 5) Commands Walkthrough -->
+              <!-- Walkthrough -->
               <section class="lab-section alt-background" id="walkthrough">
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">
                   Walkthrough
@@ -283,7 +341,7 @@
                 <div class="lab-step">
                   <div class="lab-step-title">
                     <strong class="font-alt">Step 1</strong>
-                    : Measure how long a hostname lookup takes.
+                    : Measure NSS lookup latency.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -301,13 +359,12 @@
                   </div>
 
                   <p>
-                    <code>getent</code> follows the system’s configured name service
-                    order. Timing this call gives you hard evidence that name
-                    resolution is the slow path.
+                    This is your baseline. If name service is slow, you will see
+                    seconds of delay in the <code>real</code> time output.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code id="verify-step-1">10.0.2.50   portal.lab.local
+                    <pre><code>10.0.2.50   portal.lab.local
 
 real    0m2.01s
 user    0m0.00s
@@ -319,7 +376,7 @@ sys     0m0.00s</code></pre>
                 <div class="lab-step">
                   <div class="lab-step-title">
                     <strong class="font-alt">Step 2</strong>
-                    : Check which DNS server(s) this host is using.
+                    : Identify the active DNS server.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -337,13 +394,13 @@ sys     0m0.00s</code></pre>
                   </div>
 
                   <p>
-                    This tells you where the system is sending DNS queries. A
-                    dead or unreachable resolver will cause retries and timeouts
-                    that look like “random slowness.”
+                    Find the DNS server in use for your active interface. In
+                    this lab, the configured resolver is incorrect and points to
+                    a server that does not respond.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code id="verify-step-2">Link 2 (eth0)
+                    <pre><code>Link 2 (eth0)
      DNS Servers: 10.0.2.99
 Current DNS Server: 10.0.2.99</code></pre>
                   </div>
@@ -353,7 +410,7 @@ Current DNS Server: 10.0.2.99</code></pre>
                 <div class="lab-step">
                   <div class="lab-step-title">
                     <strong class="font-alt">Step 3</strong>
-                    : Prove the configured DNS server is timing out.
+                    : Prove the resolver is timing out.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -371,13 +428,13 @@ Current DNS Server: 10.0.2.99</code></pre>
                   </div>
 
                   <p>
-                    Querying the server explicitly isolates the failure to the DNS
-                    server itself, not your application, not SSH, and not the
-                    interface.
+                    This isolates the dependency. If the configured DNS server
+                    cannot answer, the resolver stack will retry and your
+                    interactive workflows will pay the delay.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code id="verify-step-3">;; communications error to 10.0.2.99#53: timed out
+                    <pre><code>;; communications error to 10.0.2.99#53: timed out
 ;; communications error to 10.0.2.99#53: timed out
 ;; no servers could be reached</code></pre>
                   </div>
@@ -387,12 +444,12 @@ Current DNS Server: 10.0.2.99</code></pre>
                 <div class="lab-step">
                   <div class="lab-step-title">
                     <strong class="font-alt">Step 4</strong>
-                    : Inspect the host lookup order.
+                    : Set DNS to the correct server using NetworkManager.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
-                      <span>Command</span>
+                      <span>Commands</span>
                       <button
                         class="lab-copy-btn"
                         type="button"
@@ -401,25 +458,23 @@ Current DNS Server: 10.0.2.99</code></pre>
                         Copy
                       </button>
                     </div>
-                    <pre><code id="cmd-step-4">grep -n '^hosts:' /etc/nsswitch.conf</code></pre>
+                    <pre><code id="cmd-step-4">nmcli -t -f DEVICE,NAME con show --active | grep '^eth0:'
+sudo nmcli con mod "&lt;CONNECTION_NAME&gt;" ipv4.dns "10.0.2.3"
+sudo nmcli con up "&lt;CONNECTION_NAME&gt;"</code></pre>
                   </div>
 
                   <p>
-                    This line defines the order for host resolution. If DNS is
-                    first and your resolver is timing out, every lookup pays the
-                    timeout penalty before falling back.
+                    This removes the timeout path by pointing name resolution at
+                    a working resolver. Re-apply the connection so the new DNS
+                    setting takes effect.
                   </p>
-
-                  <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code id="verify-step-4">12:hosts: dns files myhostname</code></pre>
-                  </div>
                 </div>
 
                 <!-- Step 5 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
                     <strong class="font-alt">Step 5</strong>
-                    : Change the lookup order to prefer <code>files</code> before <code>dns</code>.
+                    : Confirm the active resolver is now <code>10.0.2.3</code>.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -433,19 +488,13 @@ Current DNS Server: 10.0.2.99</code></pre>
                         Copy
                       </button>
                     </div>
-                    <pre><code id="cmd-step-5">sudo vim /etc/nsswitch.conf</code></pre>
+                    <pre><code id="cmd-step-5">resolvectl status</code></pre>
                   </div>
 
-                  <p>
-                    Edit the <code>hosts:</code> line to:
-                    <code>hosts: files dns myhostname</code>. This avoids DNS
-                    timeouts for names that can be satisfied locally (or for
-                    cases where local entries are sufficient for admin workflows).
-                  </p>
-
                   <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code id="verify-step-5">(editor opened)
-(updated hosts: line and saved)</code></pre>
+                    <pre><code>Link 2 (eth0)
+     DNS Servers: 10.0.2.3
+Current DNS Server: 10.0.2.3</code></pre>
                   </div>
                 </div>
 
@@ -453,7 +502,7 @@ Current DNS Server: 10.0.2.99</code></pre>
                 <div class="lab-step">
                   <div class="lab-step-title">
                     <strong class="font-alt">Step 6</strong>
-                    : Re-measure lookup time and confirm the improvement.
+                    : Re-measure lookup time to prove improvement.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -471,13 +520,12 @@ Current DNS Server: 10.0.2.99</code></pre>
                   </div>
 
                   <p>
-                    You should see the lookup return quickly now. This is the
-                    before-and-after evidence that the slow path was DNS-first
-                    resolution combined with a timing-out resolver.
+                    The lookup should return quickly now. If it does not, you
+                    still have a resolver/search/timeout issue to eliminate.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code id="verify-step-6">10.0.2.50   portal.lab.local
+                    <pre><code>10.0.2.50   portal.lab.local
 
 real    0m0.01s
 user    0m0.00s
@@ -489,12 +537,21 @@ sys     0m0.00s</code></pre>
                 <div class="lab-step">
                   <div class="lab-step-title">
                     <strong class="font-alt">Step 7</strong>
-                    : Quick sanity check: resolve the host and validate service responsiveness.
+                    : Disable SSH reverse DNS lookups (policy permitting).
+                  </div>
+
+                  <div class="lab-callout">
+                    <div class="lab-callout-label">Safety note</div>
+                    <p class="m-b-0">
+                      Changing SSH server behavior is an operational decision.
+                      Validate the security and auditing impact for your
+                      environment before making this permanent.
+                    </p>
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
-                      <span>Command</span>
+                      <span>Commands</span>
                       <button
                         class="lab-copy-btn"
                         type="button"
@@ -503,24 +560,129 @@ sys     0m0.00s</code></pre>
                         Copy
                       </button>
                     </div>
-                    <pre><code id="cmd-step-7">curl -I http://portal.lab.local</code></pre>
+                    <pre><code id="cmd-step-7">sudo grep -n '^[#[:space:]]*UseDNS' /etc/ssh/sshd_config
+sudoedit /etc/ssh/sshd_config
+sudo systemctl reload sshd</code></pre>
                   </div>
 
                   <p>
-                    This confirms resolution and a basic application path in one
-                    quick check. In practice, it’s the kind of “am I done yet”
-                    sanity test you run before handing a system back to users.
+                    Ensure the configuration includes <code>UseDNS no</code>.
+                    This prevents sshd from doing reverse DNS lookups on
+                    connecting clients, which removes a common “SSH feels slow”
+                    failure mode when DNS is unreliable.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code id="verify-step-7">HTTP/1.1 200 OK
-Content-Type: text/html; charset=UTF-8
-Server: nginx</code></pre>
+                    <pre><code># In /etc/ssh/sshd_config
+UseDNS no</code></pre>
+                  </div>
+                </div>
+
+                <!-- Step 8 -->
+                <div class="lab-step">
+                  <div class="lab-step-title">
+                    <strong class="font-alt">Step 8</strong>
+                    : Validate the service path still works.
+                  </div>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <div class="lab-codeblock-header">
+                      <span>Command</span>
+                      <button
+                        class="lab-copy-btn"
+                        type="button"
+                        data-copy="#cmd-step-8"
+                      >
+                        Copy
+                      </button>
+                    </div>
+                    <pre><code id="cmd-step-8">curl -I http://portal.lab.local</code></pre>
+                  </div>
+
+                  <p>
+                    This confirms the hostname resolves and the application path
+                    is reachable after DNS changes.
+                  </p>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <pre><code>HTTP/1.1 200 OK</code></pre>
                   </div>
                 </div>
               </section>
 
-              <!-- 6) Reference -->
+              <!-- Common breakpoints -->
+              <section class="lab-section" id="breakpoints">
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  Common breakpoints
+                </h3>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">
+                    getent is fast, but SSH is still slow
+                  </div>
+                  <p class="m-b-0">
+                    The delay may be authentication (SSSD/LDAP), PAM modules,
+                    GSSAPI/Kerberos, or sshd settings unrelated to DNS. Check
+                    client/server logs and validate authentication paths
+                    independently of name resolution.
+                  </p>
+                </div>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">
+                    resolvectl is not available
+                  </div>
+                  <p class="m-b-0">
+                    The host may not be using systemd-resolved. Inspect
+                    <code>/etc/resolv.conf</code> and continue testing with
+                    <code>dig</code> against the configured name servers.
+                  </p>
+                </div>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">
+                    DNS looks correct but lookups are still slow
+                  </div>
+                  <p class="m-b-0">
+                    Check multiple unreachable name servers, search domain
+                    delays, or IPv6-related timeouts. Compare timings using
+                    direct queries (for example <code>dig @SERVER NAME</code>)
+                    and remove any server that cannot respond.
+                  </p>
+                </div>
+              </section>
+
+              <!-- Cleanup -->
+              <section class="lab-section alt-background" id="cleanup">
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  Cleanup checklist
+                </h3>
+
+                <p>
+                  This lab is non-destructive unless you changed resolver or SSH
+                  settings. If you need to restore the “broken” state for repeat
+                  testing, point DNS back to the bad server only in a lab
+                  environment.
+                </p>
+
+                <div class="lab-codeblock m-b-40 m-t-40">
+                  <div class="lab-codeblock-header">
+                    <span>Commands</span>
+                    <button
+                      class="lab-copy-btn"
+                      type="button"
+                      data-copy="#cmd-cleanup"
+                    >
+                      Copy
+                    </button>
+                  </div>
+                  <pre><code id="cmd-cleanup">nmcli -t -f DEVICE,NAME con show --active | grep '^eth0:'
+sudo nmcli con mod "&lt;CONNECTION_NAME&gt;" ipv4.dns "10.0.2.99"
+sudo nmcli con up "&lt;CONNECTION_NAME&gt;"</code></pre>
+                </div>
+              </section>
+
+              <!-- Reference -->
               <section class="lab-section" id="reference">
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">
                   Reference
@@ -528,28 +690,92 @@ Server: nginx</code></pre>
 
                 <ul class="lab-reference-list">
                   <li>
-                    <code>getent hosts NAME</code>
-                    : Resolves a name using the system’s NSS configuration.
+                    <code>time &lt;command&gt;</code>
+                    : Measures elapsed time for a command.
                   </li>
+
                   <li>
-                    <code>time COMMAND</code>
-                    : Measures elapsed time so you can prove latency and improvement.
+                    <code>getent hosts &lt;name&gt;</code>
+                    : Resolves a hostname using the system NSS configuration.
                   </li>
+
                   <li>
                     <code>resolvectl status</code>
-                    : Displays active resolver configuration under systemd-resolved.
+                    : Shows active resolver configuration (systemd-resolved).
                   </li>
+
                   <li>
-                    <code>dig @SERVER NAME</code>
-                    : Queries a specific DNS server to test reachability and response.
+                    <code>dig @&lt;server&gt; &lt;name&gt;</code>
+                    : Queries a specific DNS server to test reachability and
+                    response.
+                    <ul>
+                      <li>
+                        <code>@&lt;server&gt;</code>
+                        : Sends the query to the specified DNS server.
+                      </li>
+                    </ul>
                   </li>
+
                   <li>
-                    <code>/etc/nsswitch.conf</code>
-                    : Controls lookup order for services such as <code>hosts</code>.
+                    <code>nmcli con show --active</code>
+                    : Lists active NetworkManager connections.
+                    <ul>
+                      <li>
+                        <code>-t</code>
+                        : Produces terse output (useful for scripting).
+                      </li>
+                      <li>
+                        <code>-f</code>
+                        : Selects output fields (for example
+                        <code>DEVICE,NAME</code>
+                        ).
+                      </li>
+                    </ul>
                   </li>
+
                   <li>
-                    <code>curl -I URL</code>
-                    : Fetches HTTP headers to confirm connectivity and basic service response.
+                    <code>nmcli con mod "&lt;con&gt;" ipv4.dns "&lt;server&gt;"</code>
+                    : Sets DNS for a connection profile.
+                    <ul>
+                      <li>
+                        <code>ipv4.dns</code>
+                        : Overrides DNS servers for the profile.
+                      </li>
+                    </ul>
+                  </li>
+
+                  <li>
+                    <code>nmcli con up "&lt;con&gt;"</code>
+                    : Re-applies a NetworkManager connection profile.
+                  </li>
+
+                  <li>
+                    <code>sudoedit &lt;file&gt;</code>
+                    : Edits a file using your editor with elevated privileges.
+                    <ul>
+                      <li>
+                        <code>/etc/ssh/sshd_config</code>
+                        : OpenSSH server configuration file.
+                      </li>
+                    </ul>
+                  </li>
+
+                  <li>
+                    <code>systemctl reload sshd</code>
+                    : Reloads sshd configuration without dropping existing
+                    sessions.
+                  </li>
+
+                  <li>
+                    <code>curl -I &lt;url&gt;</code>
+                    : Fetches HTTP response headers for quick connectivity
+                    checks.
+                    <ul>
+                      <li>
+                        <code>-I</code>
+                        : Requests headers only.
+                      </li>
+                    </ul>
                   </li>
                 </ul>
               </section>
@@ -557,17 +783,6 @@ Server: nginx</code></pre>
             <!-- /main -->
           </div>
           <!-- /row -->
-
-          <nav class="lab-pagination">
-            <a
-              id="prev-lab"
-              class="lab-nav-link"
-              href="#"
-              aria-label="Previous lab"
-            >
-              &uArr;
-            </a>
-          </nav>
         </div>
         <!-- /container -->
       </section>
@@ -603,8 +818,7 @@ Server: nginx</code></pre>
           <div class="row">
             <div class="col-sm-12">
               <p class="copyright text-center m-b-0">
-                VONDS &copy;
-                <span id="year"></span>
+                VONDS &copy; <span id="year"></span>
               </p>
 
               <div class="scroll-up">
@@ -618,7 +832,7 @@ Server: nginx</code></pre>
 
     <!-- Javascript files (your existing) -->
     <script src="../assets/js/jquery-2.2.4.min.js"></script>
-    <script src="../assets/bootstrap/js/bootstrap.min.js"></script>
+    <script src="../assets/bootstrap/js/bootstrap.min.css"></script>
     <script src="../assets/js/jquery.superslides.min.js"></script>
     <script src="../assets/js/jquery.mb.YTPlayer.min.js"></script>
     <script src="../assets/js/jquery.magnific-popup.min.js"></script>
@@ -638,5 +852,9 @@ Server: nginx</code></pre>
 
     <!-- Lab page JS (new) -->
     <script src="../assets/js/lab.js"></script>
+
+    <script>
+      document.getElementById('year').textContent = new Date().getFullYear()
+    </script>
   </body>
 </html>

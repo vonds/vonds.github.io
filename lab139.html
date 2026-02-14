@@ -75,7 +75,16 @@
                 </li>
                 <li>
                   <a href="docs.html" target="_blank" rel="noopener">
-                    exit_0
+                    exit_0 Documentation
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="https://github.com/vonds/sentinel"
+                    target="_blank"
+                    rel="noopener"
+                  >
+                    Sentinel
                   </a>
                 </li>
               </ul>
@@ -167,7 +176,11 @@
                   </h5>
                   <ul class="docs-nav">
                     <li><a href="#scenario">Scenario</a></li>
+                    <li><a href="#objective">Objective</a></li>
+                    <li><a href="#concepts">Concepts</a></li>
                     <li><a href="#walkthrough">Walkthrough</a></li>
+                    <li><a href="#breakpoints">Breakpoints</a></li>
+                    <li><a href="#cleanup">Cleanup</a></li>
                     <li><a href="#reference">Reference</a></li>
                   </ul>
                 </div>
@@ -183,11 +196,12 @@
                 <code>logrotate</code> policy for <code>/var/log/acmeapp.log</code>.
               </p>
 
+              <!-- Video (kept on page; removed from left panel) -->
               <section class="lab-section" id="video" aria-label="Lab video">
                 <div class="lab-video">
                   <div class="lab-video-embed text-center">
                     <iframe
-                      src="https://www.youtube.com/embed/REPLACE_WITH_LAB139_VIDEO"
+                      src="https://www.youtube.com/embed/4iyQpRbMMoY?si=KbPozkUNRQ2V4Z0x"
                       title="YouTube video player"
                       frameborder="0"
                       allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
@@ -201,15 +215,9 @@
               <!-- Scenario -->
               <section class="lab-section" id="scenario">
                 <div class="lab-chips" aria-label="Tags">
-                  <span class="lab-chip"><span class="lab-chip-key">rhel</span></span>
-                  <span class="lab-chip"><span class="lab-chip-key">rhcsa</span></span>
-                  <span class="lab-chip"><span class="lab-chip-key">services</span></span>
-                  <span class="lab-chip"><span class="lab-chip-key">rsyslog</span></span>
-                  <span class="lab-chip"><span class="lab-chip-key">syslog</span></span>
-                  <span class="lab-chip"><span class="lab-chip-key">udp</span></span>
-                  <span class="lab-chip"><span class="lab-chip-key">firewalld</span></span>
-                  <span class="lab-chip"><span class="lab-chip-key">logrotate</span></span>
+                  <span class="lab-chip"><span class="lab-chip-key">troubleshooting</span></span>
                   <span class="lab-chip"><span class="lab-chip-key">logging</span></span>
+                  <span class="lab-chip"><span class="lab-chip-key">core</span></span>
                 </div>
 
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">Scenario</h3>
@@ -241,6 +249,28 @@
                   <li>Generate a syslog test event with <code>logger</code> and confirm it lands in <code>/var/log/messages</code>.</li>
                   <li>Create a dedicated logrotate policy for <code>/var/log/acmeapp.log</code>.</li>
                   <li>Test the policy in debug mode with <code>logrotate -d</code>.</li>
+                </ul>
+              </section>
+
+              <!-- Concepts (no alt-background moving forward) -->
+              <section class="lab-section" id="concepts">
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">Concepts</h3>
+                <ul>
+                  <li>
+                    Rsyslog drop-ins: isolated, reversible changes under <code>/etc/rsyslog.d</code>.
+                  </li>
+                  <li>
+                    Safe rollout: validate config before restart using <code>rsyslogd -N1</code>.
+                  </li>
+                  <li>
+                    Verifying listeners: confirm bound sockets and owning processes with <code>ss</code>.
+                  </li>
+                  <li>
+                    Firewall workflow: make permanent changes, then apply with a reload.
+                  </li>
+                  <li>
+                    Log rotation basics: per-app policies, retention, compression, and dry-run testing with <code>-d</code>.
+                  </li>
                 </ul>
               </section>
 
@@ -418,7 +448,7 @@ rsyslogd: End of config validation run. Bye.</code></pre>
                   </div>
 
                   <p>
-                    Look for the rsyslog UDP acquisition line and your test message.
+                    Look for the listener acquisition line and your test message.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -442,8 +472,7 @@ Jan 25 07:14:33 lab139 lab[pts/0]: test: UDP syslog receiving enabled</code></pr
                   </div>
 
                   <p>
-                    Use a dedicated policy file under <code>/etc/logrotate.d</code> so the application’s rotation rules are
-                    explicit and reviewable.
+                    Use a dedicated policy file under <code>/etc/logrotate.d</code> so the application’s rotation rules are explicit and reviewable.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -473,8 +502,7 @@ Jan 25 07:14:33 lab139 lab[pts/0]: test: UDP syslog receiving enabled</code></pr
                   </div>
 
                   <p>
-                    Debug mode shows what logrotate would do without making changes. This is the safe way to validate a new
-                    policy.
+                    Debug mode shows what logrotate would do without making changes. This is the safe way to validate a new policy.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -490,28 +518,123 @@ log does not exist -- skipping</code></pre>
                   <div class="lab-callout">
                     <div class="lab-callout-label">Signal to look for</div>
                     <p class="m-b-0">
-                      “<code>log does not exist -- skipping</code>” is fine here. It proves the policy parsed correctly and
-                      would rotate the file once it exists.
+                      “<code>log does not exist -- skipping</code>” is fine here. It proves the policy parsed correctly and would rotate the file once it exists.
                     </p>
                   </div>
                 </div>
               </section>
 
-              <!-- Reference -->
+              <!-- Common breakpoints -->
+              <section class="lab-section" id="breakpoints">
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">Common breakpoints</h3>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">rsyslog fails to restart</div>
+                  <p class="m-b-0">
+                    If <code>systemctl restart rsyslog</code> fails, re-run <code>rsyslogd -N1</code>, then check <code>journalctl -u rsyslog</code> for the exact parsing error and file/line location.
+                  </p>
+                </div>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">No UDP listener shown</div>
+                  <p class="m-b-0">
+                    If <code>ss -lunp</code> does not show <code>:514</code>, confirm your drop-in is readable and that your lines match exactly. Restart rsyslog after fixes, then re-check the socket.
+                  </p>
+                </div>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">Firewall open but logs do not arrive</div>
+                  <p class="m-b-0">
+                    Confirm the sender is targeting this host and that upstream network ACLs allow UDP/514. On the receiver, verify you are looking at the correct log file and confirm messages are being ingested with a fresh <code>logger</code> event.
+                  </p>
+                </div>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">logrotate policy parses but does nothing</div>
+                  <p class="m-b-0">
+                    A debug run will skip rotation if the file does not exist or is empty. Create the log file and add a few lines, then re-run <code>logrotate -d</code> to confirm the rotation logic.
+                  </p>
+                </div>
+              </section>
+
+              <!-- Cleanup -->
+              <section class="lab-section alt-background" id="cleanup">
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">Cleanup checklist</h3>
+
+                <p>
+                  If this was a temporary test, remove the UDP drop-in and close the firewall port after you are done. In a real request, leave the configuration in place and document your verification output.
+                </p>
+
+                <div class="lab-codeblock m-b-40 m-t-40">
+                  <div class="lab-codeblock-header">
+                    <span>Commands</span>
+                    <button class="lab-copy-btn" type="button" data-copy="#cmd-cleanup">Copy</button>
+                  </div>
+                  <pre><code id="cmd-cleanup">sudo rsyslogd -N1
+sudo systemctl status rsyslog --no-pager
+ss -lunp | grep ':514 '
+sudo firewall-cmd --list-ports
+sudo tail -n 15 /var/log/messages</code></pre>
+                </div>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">Success signal</div>
+                  <p class="m-b-0">
+                    <code>ss</code> shows rsyslog bound on <code>UDP/514</code>, your <code>logger</code> event appears in <code>/var/log/messages</code>, and logrotate parses your policy cleanly in debug mode.
+                  </p>
+                </div>
+              </section>
+
+              <!-- Reference (minimal format) -->
               <section class="lab-section" id="reference">
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">Reference</h3>
 
                 <ul class="lab-reference-list">
-                  <li><code>/etc/rsyslog.d/10-udp514.conf</code>: rsyslog drop-in for UDP reception.</li>
-                  <li><code>rsyslogd -N1</code>: validate rsyslog configuration syntax safely.</li>
+                  <li>
+                    <code>/etc/rsyslog.d/10-udp514.conf</code>: rsyslog drop-in for UDP reception.
+                    <ul>
+                      <li><code>module(load="imudp")</code>: loads the UDP input module.</li>
+                      <li><code>input(type="imudp" port="514")</code>: binds rsyslog to UDP/514.</li>
+                    </ul>
+                  </li>
+                  <li>
+                    <code>rsyslogd -N1</code>: validate rsyslog configuration syntax safely.
+                    <ul>
+                      <li><code>-N1</code>: runs a level-1 config validation (no daemon start).</li>
+                    </ul>
+                  </li>
                   <li><code>systemctl restart rsyslog</code>: apply config changes.</li>
-                  <li><code>firewall-cmd --permanent --add-port=514/udp</code>: open UDP/514 persistently.</li>
+                  <li>
+                    <code>firewall-cmd --permanent --add-port=514/udp</code>: open UDP/514 persistently.
+                    <ul>
+                      <li><code>--permanent</code>: writes change to the active zone configuration.</li>
+                      <li><code>--add-port=PORT/PROTO</code>: adds an explicit port/protocol allowance.</li>
+                    </ul>
+                  </li>
                   <li><code>firewall-cmd --reload</code>: apply permanent firewall rules.</li>
-                  <li><code>ss -lunp</code>: verify UDP listener and owning process.</li>
-                  <li><code>logger -p local0.notice</code>: generate a test syslog event.</li>
-                  <li><code>tail /var/log/messages</code>: confirm the logging pipeline.</li>
+                  <li>
+                    <code>ss -lunp</code>: verify UDP listener and owning process.
+                    <ul>
+                      <li><code>-l</code>: show listening sockets.</li>
+                      <li><code>-u</code>: show UDP sockets.</li>
+                      <li><code>-n</code>: do not resolve names.</li>
+                      <li><code>-p</code>: show process info.</li>
+                    </ul>
+                  </li>
+                  <li>
+                    <code>logger -p FACILITY.PRIORITY</code>: generate a test syslog event.
+                    <ul>
+                      <li><code>-p</code>: sets facility and priority (example: <code>local0.notice</code>).</li>
+                    </ul>
+                  </li>
+                  <li><code>tail -n N /var/log/messages</code>: confirm the logging pipeline.</li>
                   <li><code>/etc/logrotate.d/acmeapp</code>: per-app logrotate policy file.</li>
-                  <li><code>logrotate -d</code>: debug new policies without changing files.</li>
+                  <li>
+                    <code>logrotate -d FILE</code>: debug a policy without changing files.
+                    <ul>
+                      <li><code>-d</code>: debug (dry-run) mode.</li>
+                    </ul>
+                  </li>
                 </ul>
               </section>
             </div>
@@ -561,7 +684,8 @@ log does not exist -- skipping</code></pre>
 
     <!-- Javascript files (your existing) -->
     <script src="../assets/js/jquery-2.2.4.min.js"></script>
-    <script src="../assets/bootstrap/js/bootstrap.min.css"></script>
+    <!-- FIX: this must be .js, not .css -->
+    <script src="../assets/bootstrap/js/bootstrap.min.js"></script>
     <script src="../assets/js/jquery.superslides.min.js"></script>
     <script src="../assets/js/jquery.mb.YTPlayer.min.js"></script>
     <script src="../assets/js/jquery.magnific-popup.min.js"></script>

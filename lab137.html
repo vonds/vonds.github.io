@@ -1,3 +1,4 @@
+
 <!-- lab137.html -->
 <!DOCTYPE html>
 <html lang="en">
@@ -75,7 +76,16 @@
                 </li>
                 <li>
                   <a href="docs.html" target="_blank" rel="noopener">
-                    exit_0
+                    exit_0 Documentation
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="https://github.com/vonds/sentinel"
+                    target="_blank"
+                    rel="noopener"
+                  >
+                    Sentinel
                   </a>
                 </li>
               </ul>
@@ -121,7 +131,9 @@
     <!-- WRAPPER -->
     <div class="wrapper">
       <!-- NAVIGATION -->
-      <nav class="navbar navbar-custom navbar-transparent navbar-light navbar-fixed-top">
+      <nav
+        class="navbar navbar-custom navbar-transparent navbar-light navbar-fixed-top"
+      >
         <div class="container">
           <div class="navbar-header">
             <a class="navbar-brand" href="../index.html">
@@ -149,7 +161,12 @@
           </h2>
 
           <nav class="lab-pagination">
-            <a id="prev-lab" class="lab-nav-link" href="#" aria-label="Previous lab">
+            <a
+              id="prev-lab"
+              class="lab-nav-link"
+              href="#"
+              aria-label="Previous lab"
+            >
               &laquo;
             </a>
             <a id="next-lab" class="lab-nav-link" href="#" aria-label="Next lab">
@@ -167,7 +184,11 @@
                   </h5>
                   <ul class="docs-nav">
                     <li><a href="#scenario">Scenario</a></li>
+                    <li><a href="#objective">Objective</a></li>
+                    <li><a href="#concepts">Concepts</a></li>
                     <li><a href="#walkthrough">Walkthrough</a></li>
+                    <li><a href="#breakpoints">Breakpoints</a></li>
+                    <li><a href="#cleanup">Cleanup</a></li>
                     <li><a href="#reference">Reference</a></li>
                   </ul>
                 </div>
@@ -177,17 +198,20 @@
             <!-- MAIN CONTENT -->
             <div class="col-sm-8 col-md-9 lab-doc">
               <p class="m-b-20 lab-summary">
-                Validate time sync on a RHEL host using <code>timedatectl</code>, <code>systemctl</code>, and
-                <code>chronyc</code>, apply a safe <code>chrony.conf</code> change with a backup-first workflow,
-                then confirm end-to-end logging by inspecting <code>journald</code>, verifying <code>rsyslog</code>,
-                and proving delivery with <code>logger</code> into <code>/var/log/messages</code>.
+                Validate time synchronization on a RHEL host using
+                <code>timedatectl</code>, <code>systemctl</code>, and
+                <code>chronyc</code>. Prove end-to-end logging by inspecting
+                <code>journald</code>, validating <code>rsyslog</code>, and
+                generating a test event with <code>logger</code> that lands in
+                <code>/var/log/messages</code>.
               </p>
 
+              <!-- Video (kept on page; removed from left panel) -->
               <section class="lab-section" id="video" aria-label="Lab video">
                 <div class="lab-video">
                   <div class="lab-video-embed text-center">
                     <iframe
-                      src="https://www.youtube.com/embed/REPLACE_WITH_LAB137_VIDEO"
+                      src="https://www.youtube.com/embed/LCKNasYLJA0?si=DqEsPmeNo88mE4hu"
                       title="YouTube video player"
                       frameborder="0"
                       allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
@@ -201,52 +225,78 @@
               <!-- Scenario -->
               <section class="lab-section" id="scenario">
                 <div class="lab-chips" aria-label="Tags">
-                  <span class="lab-chip"><span class="lab-chip-key">rhel</span></span>
-                  <span class="lab-chip"><span class="lab-chip-key">rhcsa</span></span>
-                  <span class="lab-chip"><span class="lab-chip-key">services</span></span>
-                  <span class="lab-chip"><span class="lab-chip-key">chrony</span></span>
-                  <span class="lab-chip"><span class="lab-chip-key">journald</span></span>
-                  <span class="lab-chip"><span class="lab-chip-key">rsyslog</span></span>
-                  <span class="lab-chip"><span class="lab-chip-key">logging</span></span>
+                  <span class="lab-chip"><span class="lab-chip-key">troubleshooting</span></span>
                   <span class="lab-chip"><span class="lab-chip-key">time</span></span>
+                  <span class="lab-chip"><span class="lab-chip-key">core</span></span>
                 </div>
 
-                <h3 class="font-alt lab-section-title m-b-40 m-t-40">Scenario</h3>
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  Scenario
+                </h3>
 
                 <p>
-                  A RHEL server is firing time drift alerts, and you need logs for a quick incident review. Your job is to
-                  confirm time/NTP status, validate that <code>chronyd</code> is healthy and syncing, apply a safe configuration
-                  change with a backup-first workflow, and then verify the logging pipeline by using <code>journalctl</code>
-                  and confirming <code>rsyslog</code> is receiving messages and writing to disk.
+                  A server is triggering time drift alerts, and responders need reliable logs for a fast incident review.
+                  You need to confirm time sync is actually working, apply a safe chrony configuration change with a
+                  backup-first workflow, and then prove the logging path by generating a new event and verifying it is written to disk.
                 </p>
 
                 <div class="lab-callout">
                   <div class="lab-callout-label">Operator context</div>
                   <p class="m-b-0">
-                    In production, “service is running” is not the same as “service is working.” You need proof: time is
-                    synchronized to a source, logs exist where responders expect them, and a new message traverses the pipeline
-                    end-to-end.
+                    “Service is running” is not the same as “service is working.” Capture proof that the host has a selected
+                    time source, that unit logs exist in the journal, and that a fresh message traverses the syslog pipeline end-to-end.
                   </p>
                 </div>
               </section>
 
               <!-- Objective -->
               <section class="lab-section alt-background" id="objective">
-                <h3 class="font-alt lab-section-title m-b-40 m-t-40">Objective</h3>
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  Objective
+                </h3>
                 <ul>
-                  <li>Verify system time/NTP state with <code>timedatectl</code>.</li>
-                  <li>Confirm <code>chronyd</code> is running and syncing to at least one source.</li>
-                  <li>Back up <code>/etc/chrony.conf</code>, apply a safe <code>makestep</code> setting, and restart chrony.</li>
-                  <li>Confirm chrony returns to an active state after the change.</li>
-                  <li>Inspect journal storage usage and review recent chrony logs from <code>journald</code>.</li>
-                  <li>Confirm <code>rsyslog</code> is running and writing messages to <code>/var/log/messages</code>.</li>
-                  <li>Prove the pipeline by sending a test event with <code>logger</code> and verifying it lands on disk.</li>
+                  <li>Verify system time and NTP state with <code>timedatectl</code>.</li>
+                  <li>Confirm <code>chronyd</code> is active and has at least one reachable source.</li>
+                  <li>Back up <code>/etc/chrony.conf</code>, apply a <code>makestep</code> setting, and restart chrony.</li>
+                  <li>Validate the service returns to an active state and selects a source after the change.</li>
+                  <li>Confirm journal availability and review recent <code>chronyd</code> unit logs.</li>
+                  <li>Verify <code>rsyslog</code> is active and writing to <code>/var/log/messages</code>.</li>
+                  <li>Generate a test message with <code>logger</code> and confirm it is written to disk.</li>
+                </ul>
+              </section>
+
+              <!-- Concepts (no alt-background moving forward) -->
+              <section class="lab-section" id="concepts">
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  Concepts
+                </h3>
+                <ul>
+                  <li>
+                    High-level time state verification using <code>timedatectl</code>.
+                  </li>
+                  <li>
+                    Service health checks and unit state inspection with <code>systemctl</code>.
+                  </li>
+                  <li>
+                    Source selection and sync status validation using <code>chronyc sources -v</code>.
+                  </li>
+                  <li>
+                    Backup-first configuration workflows and controlled restarts.
+                  </li>
+                  <li>
+                    Journald as a source of truth for service timelines (<code>journalctl</code>).
+                  </li>
+                  <li>
+                    Syslog pipeline proof using <code>rsyslog</code>, <code>logger</code>, and on-disk verification in <code>/var/log/messages</code>.
+                  </li>
                 </ul>
               </section>
 
               <!-- Walkthrough -->
               <section class="lab-section alt-background" id="walkthrough">
-                <h3 class="font-alt lab-section-title m-b-40 m-t-40">Walkthrough</h3>
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  Walkthrough
+                </h3>
 
                 <!-- Step 1 -->
                 <div class="lab-step">
@@ -257,14 +307,15 @@
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
-                      <button class="lab-copy-btn" type="button" data-copy="#cmd-step-1">Copy</button>
+                      <button class="lab-copy-btn" type="button" data-copy="#cmd-step-1">
+                        Copy
+                      </button>
                     </div>
                     <pre><code id="cmd-step-1">timedatectl status</code></pre>
                   </div>
 
                   <p>
-                    This is the fastest high-level signal: current time, time zone, and whether the system believes it is
-                    synchronized and running NTP.
+                    This is the fastest high-level signal: current time, time zone, and whether the host believes it is synchronized and running NTP.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -287,13 +338,15 @@ RTC in local TZ: no</code></pre>
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
-                      <button class="lab-copy-btn" type="button" data-copy="#cmd-step-2">Copy</button>
+                      <button class="lab-copy-btn" type="button" data-copy="#cmd-step-2">
+                        Copy
+                      </button>
                     </div>
                     <pre><code id="cmd-step-2">sudo systemctl status chronyd --no-pager</code></pre>
                   </div>
 
                   <p>
-                    Confirm the unit is active and note the process command line. If chrony is down, time can drift fast.
+                    Confirm the unit is active. If chrony is down, the clock can drift quickly and timestamps become unreliable.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -313,13 +366,15 @@ Main PID: 1042 (chronyd)</code></pre>
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
-                      <button class="lab-copy-btn" type="button" data-copy="#cmd-step-3">Copy</button>
+                      <button class="lab-copy-btn" type="button" data-copy="#cmd-step-3">
+                        Copy
+                      </button>
                     </div>
                     <pre><code id="cmd-step-3">chronyc sources -v</code></pre>
                   </div>
 
                   <p>
-                    A selected source (<code>^*</code>) is a strong signal the host is actively syncing rather than drifting.
+                    A selected source (<code>^*</code>) is the signal that the host is actively syncing rather than free-running.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -328,6 +383,13 @@ MS Name/IP address         Stratum Poll Reach LastRx Last sample
 ===============================================================================
 ^* time1.example.net             2   6   377    32   -18us[ -41us] +/-  22ms
 ^+ time2.example.net             2   6   377    33   +12us[  -8us] +/-  24ms</code></pre>
+                  </div>
+
+                  <div class="lab-callout">
+                    <div class="lab-callout-label">Verify</div>
+                    <p class="m-b-0">
+                      If you do not see a <code>^*</code> source, check reach (<code>Reach</code> column), DNS, and firewall rules, then review <code>journalctl -u chronyd</code> for failures.
+                    </p>
                   </div>
                 </div>
 
@@ -340,33 +402,36 @@ MS Name/IP address         Stratum Poll Reach LastRx Last sample
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
-                      <button class="lab-copy-btn" type="button" data-copy="#cmd-step-4">Copy</button>
+                      <button class="lab-copy-btn" type="button" data-copy="#cmd-step-4">
+                        Copy
+                      </button>
                     </div>
                     <pre><code id="cmd-step-4">sudo cp -a /etc/chrony.conf /etc/chrony.conf.bak</code></pre>
                   </div>
 
                   <p>
-                    This gives you an immediate rollback path if the change introduces an error or breaks sync.
+                    This gives you an immediate rollback path if the change introduces an error or alters sync behavior unexpectedly.
                   </p>
                 </div>
 
                 <!-- Step 5 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
-                    <strong class="font-alt">Step 5</strong>: Append a safe <code>makestep</code> setting and verify it wrote.
+                    <strong class="font-alt">Step 5</strong>: Apply a <code>makestep</code> setting and confirm it was written.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
-                      <button class="lab-copy-btn" type="button" data-copy="#cmd-step-5">Copy</button>
+                      <button class="lab-copy-btn" type="button" data-copy="#cmd-step-5">
+                        Copy
+                      </button>
                     </div>
                     <pre><code id="cmd-step-5">echo 'makestep 1.0 3' | sudo tee -a /etc/chrony.conf</code></pre>
                   </div>
 
                   <p>
-                    <code>makestep</code> allows chrony to step the clock when the offset is large (useful after boot or outage).
-                    The <code>tee</code> pattern avoids editor drift and gives you immediate feedback.
+                    <code>makestep</code> allows chrony to step the clock when the offset is large (commonly after boot or outages). Using <code>tee</code> makes the write explicit and visible.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -377,19 +442,21 @@ MS Name/IP address         Stratum Poll Reach LastRx Last sample
                 <!-- Step 6 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
-                    <strong class="font-alt">Step 6</strong>: Restart chronyd to apply changes.
+                    <strong class="font-alt">Step 6</strong>: Restart chronyd to apply the change.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
-                      <button class="lab-copy-btn" type="button" data-copy="#cmd-step-6">Copy</button>
+                      <button class="lab-copy-btn" type="button" data-copy="#cmd-step-6">
+                        Copy
+                      </button>
                     </div>
                     <pre><code id="cmd-step-6">sudo systemctl restart chronyd</code></pre>
                   </div>
 
                   <p>
-                    A restart is the cleanest way to ensure the new configuration is loaded.
+                    A restart is a clean way to ensure the updated configuration is loaded.
                   </p>
                 </div>
 
@@ -402,7 +469,9 @@ MS Name/IP address         Stratum Poll Reach LastRx Last sample
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
-                      <button class="lab-copy-btn" type="button" data-copy="#cmd-step-7">Copy</button>
+                      <button class="lab-copy-btn" type="button" data-copy="#cmd-step-7">
+                        Copy
+                      </button>
                     </div>
                     <pre><code id="cmd-step-7">systemctl is-active chronyd</code></pre>
                   </div>
@@ -412,8 +481,7 @@ MS Name/IP address         Stratum Poll Reach LastRx Last sample
                   </div>
 
                   <p>
-                    If this returns anything other than <code>active</code>, check <code>systemctl status chronyd</code>
-                    and fix the configuration before moving on.
+                    If this is not <code>active</code>, fix the configuration and confirm you can restart cleanly before continuing.
                   </p>
                 </div>
 
@@ -426,13 +494,15 @@ MS Name/IP address         Stratum Poll Reach LastRx Last sample
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
-                      <button class="lab-copy-btn" type="button" data-copy="#cmd-step-8">Copy</button>
+                      <button class="lab-copy-btn" type="button" data-copy="#cmd-step-8">
+                        Copy
+                      </button>
                     </div>
                     <pre><code id="cmd-step-8">journalctl --disk-usage</code></pre>
                   </div>
 
                   <p>
-                    This is a quick health check for journal storage pressure and helps you spot log storms or retention issues.
+                    This is a quick health check for journal storage pressure and retention behavior.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -449,13 +519,15 @@ MS Name/IP address         Stratum Poll Reach LastRx Last sample
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
-                      <button class="lab-copy-btn" type="button" data-copy="#cmd-step-9">Copy</button>
+                      <button class="lab-copy-btn" type="button" data-copy="#cmd-step-9">
+                        Copy
+                      </button>
                     </div>
                     <pre><code id="cmd-step-9">journalctl -u chronyd -n 8 --no-pager</code></pre>
                   </div>
 
                   <p>
-                    This confirms the service restarted cleanly and selected a source after the configuration change.
+                    This confirms the restart is recorded and that chrony selected a source after the configuration change.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -476,14 +548,15 @@ Jan 25 07:11:59 lab137 chronyd[1189]: Selected source time1.example.net</code></
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
-                      <button class="lab-copy-btn" type="button" data-copy="#cmd-step-10">Copy</button>
+                      <button class="lab-copy-btn" type="button" data-copy="#cmd-step-10">
+                        Copy
+                      </button>
                     </div>
                     <pre><code id="cmd-step-10">sudo systemctl status rsyslog --no-pager</code></pre>
                   </div>
 
                   <p>
-                    On RHEL-style systems, rsyslog commonly writes to <code>/var/log/messages</code>. If rsyslog is down,
-                    responders may think “logs are missing” even though journald still has them.
+                    If rsyslog is down, responders may think logs are missing on disk even though the journal still contains unit output.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -497,19 +570,21 @@ Main PID: 1019 (rsyslogd)</code></pre>
                 <!-- Step 11 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
-                    <strong class="font-alt">Step 11</strong>: Send a test syslog message.
+                    <strong class="font-alt">Step 11</strong>: Generate a test syslog message.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
-                      <button class="lab-copy-btn" type="button" data-copy="#cmd-step-11">Copy</button>
+                      <button class="lab-copy-btn" type="button" data-copy="#cmd-step-11">
+                        Copy
+                      </button>
                     </div>
                     <pre><code id="cmd-step-11">logger -p user.notice 'test: logging pipeline OK'</code></pre>
                   </div>
 
                   <p>
-                    This produces a new log event on demand so you can verify delivery end-to-end.
+                    This creates a new event on demand so you can verify delivery rather than relying on historical entries.
                   </p>
                 </div>
 
@@ -522,13 +597,15 @@ Main PID: 1019 (rsyslogd)</code></pre>
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
-                      <button class="lab-copy-btn" type="button" data-copy="#cmd-step-12">Copy</button>
+                      <button class="lab-copy-btn" type="button" data-copy="#cmd-step-12">
+                        Copy
+                      </button>
                     </div>
                     <pre><code id="cmd-step-12">sudo tail -n 5 /var/log/messages</code></pre>
                   </div>
 
                   <p>
-                    You are looking for the test message. This proves rsyslog received the event and wrote it to disk.
+                    You are looking for the test line. This is the proof that rsyslog received the message and wrote it to disk.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -537,20 +614,158 @@ Main PID: 1019 (rsyslogd)</code></pre>
                 </div>
               </section>
 
+              <!-- Common breakpoints -->
+              <section class="lab-section" id="breakpoints">
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  Common breakpoints
+                </h3>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">timedatectl shows unsynchronized</div>
+                  <p class="m-b-0">
+                    If <code>System clock synchronized</code> is <code>no</code>, verify <code>chronyd</code> is active, confirm sources are reachable with
+                    <code>chronyc sources -v</code>, and review unit logs with <code>journalctl -u chronyd</code>.
+                  </p>
+                </div>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">No selected chrony source</div>
+                  <p class="m-b-0">
+                    If you do not see a <code>^*</code> source, focus on reach and connectivity. Check DNS resolution for the configured servers and confirm NTP traffic is permitted.
+                  </p>
+                </div>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">chronyd fails after config change</div>
+                  <p class="m-b-0">
+                    Roll back immediately using your backup, then restart. Confirm the unit is <code>active</code> before proceeding with logging validation.
+                  </p>
+                </div>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">logger message does not appear in /var/log/messages</div>
+                  <p class="m-b-0">
+                    Confirm <code>rsyslog</code> is active and check whether the host is configured to write facility/priority to <code>/var/log/messages</code>. Use <code>journalctl -n</code> to confirm the event exists in the journal even if it is not being forwarded.
+                  </p>
+                </div>
+              </section>
+
+              <!-- Cleanup -->
+              <section class="lab-section alt-background" id="cleanup">
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  Cleanup checklist
+                </h3>
+
+                <p>
+                  This lab is safe by default. If you edited <code>/etc/chrony.conf</code>, keep the backup and confirm chrony remains stable and synchronized after the restart.
+                </p>
+
+                <div class="lab-codeblock m-b-40 m-t-40">
+                  <div class="lab-codeblock-header">
+                    <span>Commands</span>
+                    <button class="lab-copy-btn" type="button" data-copy="#cmd-cleanup">
+                      Copy
+                    </button>
+                  </div>
+                  <pre><code id="cmd-cleanup">systemctl is-active chronyd
+chronyc sources -v
+journalctl -u chronyd -n 10 --no-pager
+systemctl is-active rsyslog</code></pre>
+                </div>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">Success signal</div>
+                  <p class="m-b-0">
+                    <code>chronyd</code> is active, a <code>^*</code> source is selected, and new syslog events can be verified in the expected destination.
+                  </p>
+                </div>
+              </section>
+
               <!-- Reference -->
               <section class="lab-section" id="reference">
-                <h3 class="font-alt lab-section-title m-b-40 m-t-40">Reference</h3>
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  Reference
+                </h3>
 
                 <ul class="lab-reference-list">
-                  <li><code>timedatectl status</code>: view time zone, sync state, and NTP service state.</li>
-                  <li><code>systemctl status chronyd</code>, <code>systemctl is-active chronyd</code>: verify chrony service health.</li>
-                  <li><code>chronyc sources -v</code>: confirm chrony has reachable sources and a selected upstream.</li>
-                  <li><code>/etc/chrony.conf</code>: chrony configuration file (back up before editing).</li>
-                  <li><code>journalctl --disk-usage</code>: check journal storage consumption.</li>
-                  <li><code>journalctl -u chronyd</code>: view unit-specific logs from journald.</li>
-                  <li><code>systemctl status rsyslog</code>: verify syslog daemon status.</li>
-                  <li><code>logger</code>: generate a syslog event for pipeline testing.</li>
-                  <li><code>/var/log/messages</code>: common rsyslog destination on RHEL-like systems.</li>
+                  <li>
+                    <code>timedatectl status</code>
+                    : View time zone, sync state, and NTP service state.
+                  </li>
+
+                  <li>
+                    <code>systemctl status &lt;unit&gt; --no-pager</code>
+                    : Inspect service status and recent unit output.
+                    <ul>
+                      <li><code>chronyd</code>: NTP client/server service.</li>
+                      <li><code>rsyslog</code>: Syslog daemon that writes logs to disk.</li>
+                      <li><code>--no-pager</code>: Prints output without paging.</li>
+                    </ul>
+                  </li>
+
+                  <li>
+                    <code>systemctl is-active &lt;unit&gt;</code>
+                    : Return a single-word unit state for scripting and fast checks.
+                  </li>
+
+                  <li>
+                    <code>chronyc sources -v</code>
+                    : Show chrony sources and selection state.
+                    <ul>
+                      <li><code>^*</code>: Selected source (active sync target).</li>
+                      <li><code>Reach</code>: Reachability register; low reach indicates connectivity issues.</li>
+                    </ul>
+                  </li>
+
+                  <li>
+                    <code>cp -a &lt;src&gt; &lt;dst&gt;</code>
+                    : Copy files while preserving attributes.
+                    <ul>
+                      <li><code>-a</code>: Archive mode (preserves permissions, timestamps, and context where applicable).</li>
+                      <li><code>/etc/chrony.conf</code>: Chrony configuration file.</li>
+                    </ul>
+                  </li>
+
+                  <li>
+                    <code>tee -a &lt;file&gt;</code>
+                    : Append stdin to a file and echo to stdout.
+                    <ul>
+                      <li><code>-a</code>: Append instead of overwrite.</li>
+                      <li><code>|</code>: Pipes output from the left command into the right command.</li>
+                    </ul>
+                  </li>
+
+                  <li>
+                    <code>journalctl --disk-usage</code>
+                    : Report journald disk usage.
+                  </li>
+
+                  <li>
+                    <code>journalctl -u &lt;unit&gt; -n &lt;N&gt; --no-pager</code>
+                    : View recent unit logs from the journal.
+                    <ul>
+                      <li><code>-u</code>: Filter by unit.</li>
+                      <li><code>-n &lt;N&gt;</code>: Limit to the last N entries.</li>
+                      <li><code>--no-pager</code>: Prints output without paging.</li>
+                    </ul>
+                  </li>
+
+                  <li>
+                    <code>logger -p &lt;facility&gt;.&lt;priority&gt; &lt;message&gt;</code>
+                    : Generate a syslog event for pipeline testing.
+                    <ul>
+                      <li><code>-p</code>: Set facility and priority (example: <code>user.notice</code>).</li>
+                    </ul>
+                  </li>
+
+                  <li>
+                    <code>tail -n &lt;N&gt; &lt;file&gt;</code>
+                    : View the last N lines of a file.
+                    <ul>
+                      <li><code>-n &lt;N&gt;</code>: Number of lines to show.</li>
+                      <li><code>/var/log/messages</code>: Common rsyslog destination on RHEL-like systems.</li>
+                    </ul>
+                  </li>
                 </ul>
               </section>
             </div>
@@ -568,7 +783,9 @@ Main PID: 1019 (rsyslogd)</code></pre>
             <div class="col-sm-12">
               <ul class="social-text-links font-alt text-center m-b-20">
                 <li>
-                  <a href="https://github.com/vonds" target="_blank" rel="noopener">Github</a>
+                  <a href="https://github.com/vonds" target="_blank" rel="noopener">
+                    Github
+                  </a>
                 </li>
                 <li>
                   <a
@@ -600,7 +817,8 @@ Main PID: 1019 (rsyslogd)</code></pre>
 
     <!-- Javascript files (your existing) -->
     <script src="../assets/js/jquery-2.2.4.min.js"></script>
-    <script src="../assets/bootstrap/js/bootstrap.min.css"></script>
+    <!-- FIX: this must be .js, not .css -->
+    <script src="../assets/bootstrap/js/bootstrap.min.js"></script>
     <script src="../assets/js/jquery.superslides.min.js"></script>
     <script src="../assets/js/jquery.mb.YTPlayer.min.js"></script>
     <script src="../assets/js/jquery.magnific-popup.min.js"></script>

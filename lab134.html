@@ -37,7 +37,7 @@
     <link href="../assets/css/style.css" rel="stylesheet" />
     <link href="../assets/css/docs.css" rel="stylesheet" />
 
-    <!-- Lab page styles (new) -->
+    <!-- Lab page styles -->
     <link href="../assets/css/lab.css" rel="stylesheet" />
 
     <!-- Fonts -->
@@ -72,21 +72,23 @@
                     href="https://github.com/vonds/exit_0"
                     target="_blank"
                     rel="noopener"
-                    >exit_0</a
                   >
-                </li>
-                <li>
-                  <a href="docs.html" target="_blank" rel="noopener"
-                    >exit_0 Documentation</a
-                  >
+                    exit_0
+                  </a>
                 </li>
                 <li>
                   <a
                     href="https://github.com/vonds/sentinel"
                     target="_blank"
                     rel="noopener"
-                    >Sentinel</a
                   >
+                    Sentinel
+                  </a>
+                </li>
+                <li>
+                  <a href="docs.html" target="_blank" rel="noopener">
+                    exit_0 Documentation
+                  </a>
                 </li>
               </ul>
             </li>
@@ -154,7 +156,7 @@
       </nav>
 
       <!-- DOCS PAGE -->
-      <section class="module">
+      <section class="module" id="totop">
         <div class="container">
           <h2 class="font-alt module-title m-t-60">
             Lab 134: Fix DNS Failure Caused by Bad resolv.conf
@@ -189,7 +191,11 @@
                   </h5>
                   <ul class="docs-nav">
                     <li><a href="#scenario">Scenario</a></li>
+                    <li><a href="#objective">Objective</a></li>
+                    <li><a href="#concepts">Concepts</a></li>
                     <li><a href="#walkthrough">Walkthrough</a></li>
+                    <li><a href="#breakpoints">Breakpoints</a></li>
+                    <li><a href="#cleanup">Cleanup</a></li>
                     <li><a href="#reference">Reference</a></li>
                   </ul>
                 </div>
@@ -198,32 +204,29 @@
 
             <!-- MAIN CONTENT -->
             <div class="col-sm-8 col-md-9 lab-doc">
-              <!-- 1) Title + Summary (2 sentences max) -->
               <p class="m-b-20 lab-summary">
                 Confirm the host can reach the internet by IP, then isolate the
-                outage to DNS. Fix the resolver configuration persistently via
+                outage to DNS. Fix resolver configuration persistently via
                 NetworkManager and verify name resolution is restored.
               </p>
 
+              <!-- Video (kept on page; removed from left panel) -->
               <section class="lab-section" id="video" aria-label="Lab video">
                 <div class="lab-video">
                   <div class="lab-video-embed text-center">
                     <iframe
-                      width="560"
-                      height="315"
-                      src="https://www.youtube.com/embed/REPLACE_WITH_LAB134_VIDEO"
+                      src="https://www.youtube.com/embed/7mjdCy2AoAw?si=G593cArh1x3rG1uY"
                       title="YouTube video player"
                       frameborder="0"
                       allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                       referrerpolicy="strict-origin-when-cross-origin"
                       allowfullscreen
-                    >
-                    </iframe>
+                    ></iframe>
                   </div>
                 </div>
               </section>
 
-              <!-- 2) Scenario -->
+              <!-- Scenario -->
               <section class="lab-section" id="scenario">
                 <div class="lab-chips" aria-label="Tags">
                   <span class="lab-chip">
@@ -234,6 +237,12 @@
                   </span>
                   <span class="lab-chip">
                     <span class="lab-chip-key">dns</span>
+                  </span>
+                  <span class="lab-chip">
+                    <span class="lab-chip-key">networkmanager</span>
+                  </span>
+                  <span class="lab-chip">
+                    <span class="lab-chip-key">core</span>
                   </span>
                 </div>
 
@@ -251,15 +260,15 @@
                 <div class="lab-callout">
                   <div class="lab-callout-label">Operator context</div>
                   <p class="m-b-0">
-                    Do not “fix” DNS by hand-editing <code>/etc/resolv.conf</code>
+                    Do not fix DNS by hand-editing <code>/etc/resolv.conf</code>
                     on a NetworkManager system. Treat it as generated output and
-                    correct the upstream config so the fix survives reboots and
-                    DHCP renewals.
+                    correct upstream configuration so the fix survives reboots
+                    and DHCP renewals.
                   </p>
                 </div>
               </section>
 
-              <!-- 3) Objective -->
+              <!-- Objective -->
               <section class="lab-section alt-background" id="objective">
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">
                   Objective
@@ -268,30 +277,56 @@
                 <ul>
                   <li>Confirm a default route exists.</li>
                   <li>Prove raw internet connectivity works by IP.</li>
-                  <li>Reproduce the DNS failure using <code>getent</code>.</li>
-                  <li>Inspect current resolver configuration in <code>/etc/resolv.conf</code>.</li>
-                  <li>Set working DNS servers persistently with <code>nmcli</code>.</li>
-                  <li>Apply the change and confirm <code>/etc/resolv.conf</code> updates.</li>
+                  <li>
+                    Reproduce the DNS failure using <code>getent</code>.
+                  </li>
+                  <li>
+                    Inspect current resolver output in
+                    <code>/etc/resolv.conf</code>.
+                  </li>
+                  <li>Identify the active NetworkManager connection name.</li>
+                  <li>
+                    Set working DNS servers persistently with <code>nmcli</code>.
+                  </li>
+                  <li>
+                    Apply the change and confirm <code>/etc/resolv.conf</code>
+                    updates.
+                  </li>
                   <li>Verify name resolution works again.</li>
                 </ul>
               </section>
 
-              <!-- 4) What You'll Practice -->
-              <section class="lab-section" id="practice">
+              <!-- Concepts (no alt-background moving forward) -->
+              <section class="lab-section" id="concepts">
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">
-                  What You’ll Practice
+                  Concepts
                 </h3>
 
-                <ul class="m-t-10">
-                  <li>Separating routing/path issues from DNS issues.</li>
-                  <li>Using <code>ip route</code> and <code>ping</code> as fast health checks.</li>
-                  <li>Validating name resolution through NSS with <code>getent</code>.</li>
-                  <li>Reading and interpreting <code>/etc/resolv.conf</code>.</li>
-                  <li>Applying persistent DNS config via NetworkManager using <code>nmcli</code>.</li>
+                <ul>
+                  <li>
+                    If you can reach the internet by IP but not by hostname, DNS
+                    is the likely failure domain.
+                  </li>
+                  <li>
+                    On NetworkManager systems, <code>/etc/resolv.conf</code> is
+                    typically generated state, not the source of truth.
+                  </li>
+                  <li>
+                    Fix DNS at the profile layer (NetworkManager connection),
+                    not by editing resolver output directly.
+                  </li>
+                  <li>
+                    Use <code>getent</code> to validate resolution using NSS,
+                    not just a single tool’s DNS behavior.
+                  </li>
+                  <li>
+                    After a config change, force a re-apply so resolver state is
+                    regenerated.
+                  </li>
                 </ul>
               </section>
 
-              <!-- 5) Commands Walkthrough -->
+              <!-- Walkthrough -->
               <section class="lab-section alt-background" id="walkthrough">
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">
                   Walkthrough
@@ -321,13 +356,13 @@ ip r</code></pre>
                   </div>
 
                   <p>
-                    DNS will never work reliably without a valid path off the
-                    subnet. Confirm the default route before you chase resolver
+                    DNS will not work reliably without a valid path off the
+                    subnet. Confirm the default route before changing resolver
                     settings.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code id="verify-step-1">default via 192.168.50.1 dev eth0 proto dhcp metric 100
+                    <pre><code>default via 192.168.50.1 dev eth0 proto dhcp metric 100
 192.168.50.0/24 dev eth0 proto kernel scope link src 192.168.50.20 metric 100</code></pre>
                   </div>
                 </div>
@@ -336,7 +371,7 @@ ip r</code></pre>
                 <div class="lab-step">
                   <div class="lab-step-title">
                     <strong class="font-alt">Step 2</strong>
-                    : Prove internet connectivity works by IP (bypass DNS).
+                    : Prove internet connectivity works by IP.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -356,12 +391,12 @@ ping -c 2 8.8.8.8</code></pre>
                   </div>
 
                   <p>
-                    This isolates the issue away from routing. If the ping works,
-                    your next suspect is name resolution.
+                    If ping works by IP, your next suspect is name resolution,
+                    not routing.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code id="verify-step-2">PING 1.1.1.1 (1.1.1.1) 56(84) bytes of data.
+                    <pre><code>PING 1.1.1.1 (1.1.1.1) 56(84) bytes of data.
 64 bytes from 1.1.1.1: icmp_seq=1 ttl=56 time=16.2 ms
 64 bytes from 1.1.1.1: icmp_seq=2 ttl=56 time=15.9 ms
 
@@ -394,13 +429,12 @@ getent ahostsv4 example.com</code></pre>
                   </div>
 
                   <p>
-                    <code>getent</code> follows the system’s configured name
-                    service switch order and gives you an operator-friendly
-                    signal: resolution either works or it does not.
+                    <code>getent</code> follows the system’s NSS order and gives
+                    you a clean signal: resolution either works or it does not.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code id="verify-step-3">(no output)
+                    <pre><code>(no output)
 getent: Name or service not known</code></pre>
                   </div>
                 </div>
@@ -409,7 +443,7 @@ getent: Name or service not known</code></pre>
                 <div class="lab-step">
                   <div class="lab-step-title">
                     <strong class="font-alt">Step 4</strong>
-                    : Inspect the current resolver configuration.
+                    : Inspect the current resolver output.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -430,12 +464,12 @@ sudo cat /etc/resolv.conf</code></pre>
 
                   <p>
                     This host is pointing at <code>127.0.0.1</code> as its DNS
-                    server, which only works if a local resolver is actually
-                    running and configured. In this incident, it is not.
+                    server. That only works if a local resolver is running and
+                    configured. In this incident, it is not.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code id="verify-step-4"># Generated by NetworkManager
+                    <pre><code># Generated by NetworkManager
 search lab.local
 nameserver 127.0.0.1</code></pre>
                   </div>
@@ -445,7 +479,7 @@ nameserver 127.0.0.1</code></pre>
                 <div class="lab-step">
                   <div class="lab-step-title">
                     <strong class="font-alt">Step 5</strong>
-                    : Set working DNS servers persistently using NetworkManager.
+                    : Identify the active NetworkManager connection name.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -459,26 +493,29 @@ nameserver 127.0.0.1</code></pre>
                         Copy
                       </button>
                     </div>
-                    <pre><code id="cmd-step-5">sudo nmcli con mod "System eth0" ipv4.dns "1.1.1.1 8.8.8.8"</code></pre>
+                    <pre><code id="cmd-step-5">nmcli -t -f NAME,DEVICE con show --active</code></pre>
                   </div>
 
                   <p>
-                    This changes the source of truth so the fix survives link
-                    resets, DHCP renewals, and reboots. You are not editing
-                    <code>/etc/resolv.conf</code> directly.
+                    You will use the connection profile name next. Hardcoding a
+                    name across systems is fragile.
                   </p>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <pre><code>System eth0:eth0</code></pre>
+                  </div>
                 </div>
 
                 <!-- Step 6 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
                     <strong class="font-alt">Step 6</strong>
-                    : Bounce the connection to apply the change.
+                    : Set working DNS servers persistently with NetworkManager.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
-                      <span>Command</span>
+                      <span>Commands</span>
                       <button
                         class="lab-copy-btn"
                         type="button"
@@ -487,17 +524,19 @@ nameserver 127.0.0.1</code></pre>
                         Copy
                       </button>
                     </div>
-                    <pre><code id="cmd-step-6">sudo nmcli con down "System eth0" && sudo nmcli con up "System eth0"</code></pre>
+                    <pre><code id="cmd-step-6">sudo nmcli con mod "System eth0" ipv4.dns "1.1.1.1 8.8.8.8"
+sudo nmcli con mod "System eth0" ipv4.ignore-auto-dns yes</code></pre>
                   </div>
 
                   <p>
-                    Bringing the connection down and back up causes NetworkManager
-                    to regenerate resolver state using the updated DNS servers.
+                    This changes the source of truth so the fix survives link
+                    resets, DHCP renewals, and reboots. Setting
+                    <code>ipv4.ignore-auto-dns yes</code>
+                    prevents DHCP from overwriting your DNS servers.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code id="verify-step-6">Connection 'System eth0' successfully deactivated (D-Bus active path: /org/freedesktop/NetworkManager/ActiveConnection/7)
-Connection 'System eth0' successfully activated (D-Bus active path: /org/freedesktop/NetworkManager/ActiveConnection/8)</code></pre>
+                    <pre><code>(no output)</code></pre>
                   </div>
                 </div>
 
@@ -505,7 +544,7 @@ Connection 'System eth0' successfully activated (D-Bus active path: /org/freedes
                 <div class="lab-step">
                   <div class="lab-step-title">
                     <strong class="font-alt">Step 7</strong>
-                    : Confirm <code>/etc/resolv.conf</code> contains real nameservers.
+                    : Re-apply the connection to regenerate resolver state.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -519,21 +558,17 @@ Connection 'System eth0' successfully activated (D-Bus active path: /org/freedes
                         Copy
                       </button>
                     </div>
-                    <pre><code id="cmd-step-7">cat /etc/resolv.conf
-# OR
-sudo cat /etc/resolv.conf</code></pre>
+                    <pre><code id="cmd-step-7">sudo nmcli con down "System eth0" && sudo nmcli con up "System eth0"</code></pre>
                   </div>
 
                   <p>
-                    This is your evidence that the persistent config is now
-                    generating correct resolver output.
+                    Bringing the connection down and up forces NetworkManager to
+                    re-apply the profile and regenerate resolver output.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code id="verify-step-7"># Generated by NetworkManager
-search lab.local
-nameserver 1.1.1.1
-nameserver 8.8.8.8</code></pre>
+                    <pre><code>Connection 'System eth0' successfully deactivated (D-Bus active path: /org/freedesktop/NetworkManager/ActiveConnection/7)
+Connection 'System eth0' successfully activated (D-Bus active path: /org/freedesktop/NetworkManager/ActiveConnection/8)</code></pre>
                   </div>
                 </div>
 
@@ -541,7 +576,8 @@ nameserver 8.8.8.8</code></pre>
                 <div class="lab-step">
                   <div class="lab-step-title">
                     <strong class="font-alt">Step 8</strong>
-                    : Verify name resolution works again.
+                    : Confirm <code>/etc/resolv.conf</code> contains real
+                    nameservers.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -555,24 +591,125 @@ nameserver 8.8.8.8</code></pre>
                         Copy
                       </button>
                     </div>
-                    <pre><code id="cmd-step-8">getent hosts example.com
+                    <pre><code id="cmd-step-8">cat /etc/resolv.conf
+# OR
+sudo cat /etc/resolv.conf</code></pre>
+                  </div>
+
+                  <p>
+                    This is your evidence that persistent configuration is now
+                    generating correct resolver output.
+                  </p>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <pre><code># Generated by NetworkManager
+search lab.local
+nameserver 1.1.1.1
+nameserver 8.8.8.8</code></pre>
+                  </div>
+                </div>
+
+                <!-- Step 9 -->
+                <div class="lab-step">
+                  <div class="lab-step-title">
+                    <strong class="font-alt">Step 9</strong>
+                    : Verify name resolution works again.
+                  </div>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <div class="lab-codeblock-header">
+                      <span>Command</span>
+                      <button
+                        class="lab-copy-btn"
+                        type="button"
+                        data-copy="#cmd-step-9"
+                      >
+                        Copy
+                      </button>
+                    </div>
+                    <pre><code id="cmd-step-9">getent hosts example.com
 # OR
 getent ahostsv4 example.com</code></pre>
                   </div>
 
                   <p>
-                    Resolution is the primary success signal. If this works,
-                    tools like <code>dnf</code>, <code>curl</code>, and package
-                    repositories should behave normally again.
+                    If this works, tools like <code>dnf</code>, <code>curl</code>,
+                    and package repositories should behave normally again.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code id="verify-step-8">93.184.216.34   example.com</code></pre>
+                    <pre><code>93.184.216.34   example.com</code></pre>
                   </div>
                 </div>
               </section>
 
-              <!-- 6) Reference -->
+              <!-- Breakpoints (renamed + sidebar matches) -->
+              <section class="lab-section" id="breakpoints">
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  Breakpoints
+                </h3>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">No default route</div>
+                  <p class="m-b-0">
+                    Fix routing first. If there is no default route, DNS is not
+                    your primary problem. Confirm the interface has an address
+                    and the connection is up, then resolve gateway and DHCP
+                    issues.
+                  </p>
+                </div>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">Ping by IP fails</div>
+                  <p class="m-b-0">
+                    DNS is not the root cause yet. Pivot to link state, gateway
+                    reachability, VLAN or port config, and upstream ACLs.
+                  </p>
+                </div>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">
+                    resolv.conf looks correct but getent still fails
+                  </div>
+                  <p class="m-b-0">
+                    Confirm outbound UDP and TCP 53 are permitted and test DNS
+                    directly against a known resolver with
+                    <code>dig @1.1.1.1 example.com</code>
+                    .
+                  </p>
+                </div>
+              </section>
+
+              <!-- Cleanup -->
+              <section class="lab-section alt-background" id="cleanup">
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  Cleanup checklist
+                </h3>
+
+                <p>
+                  If you need to revert to DHCP-provided DNS, re-enable automatic
+                  DNS and clear the custom DNS list for the same connection
+                  profile, then re-apply.
+                </p>
+
+                <div class="lab-codeblock m-b-40 m-t-40">
+                  <div class="lab-codeblock-header">
+                    <span>Commands</span>
+                    <button
+                      class="lab-copy-btn"
+                      type="button"
+                      data-copy="#cmd-cleanup"
+                    >
+                      Copy
+                    </button>
+                  </div>
+                  <pre><code id="cmd-cleanup">sudo nmcli con mod "System eth0" ipv4.ignore-auto-dns no
+sudo nmcli con mod "System eth0" ipv4.dns ""
+sudo nmcli con down "System eth0" && sudo nmcli con up "System eth0"</code></pre>
+                </div>
+              </section>
+
+              <!-- Reference (minimal command: description + option bullets only) -->
               <section class="lab-section" id="reference">
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">
                   Reference
@@ -581,27 +718,75 @@ getent ahostsv4 example.com</code></pre>
                 <ul class="lab-reference-list">
                   <li>
                     <code>ip route</code>
-                    : Shows the kernel routing table, including the default route.
+                    : Show the kernel routing table (look for a default route).
+                    <ul>
+                      <li>
+                        <code>ip r</code>
+                        : Short form.
+                      </li>
+                    </ul>
                   </li>
+
                   <li>
-                    <code>ping -c N IP</code>
-                    : Confirms path connectivity without involving DNS.
+                    <code>ping -c &lt;n&gt; &lt;ip&gt;</code>
+                    : Confirm path connectivity without involving DNS.
+                    <ul>
+                      <li>
+                        <code>-c &lt;n&gt;</code>
+                        : Send a fixed number of echo requests.
+                      </li>
+                    </ul>
                   </li>
+
                   <li>
-                    <code>getent hosts NAME</code>
-                    : Resolves names through NSS and reports system-level resolution.
+                    <code>getent hosts &lt;name&gt;</code>
+                    : Resolve names through NSS.
                   </li>
+
                   <li>
-                    <code>/etc/resolv.conf</code>
-                    : Resolver configuration used by libc; often generated by NetworkManager.
+                    <code>getent ahostsv4 &lt;name&gt;</code>
+                    : Resolve IPv4 addresses through NSS.
                   </li>
+
                   <li>
-                    <code>nmcli con mod NAME ipv4.dns "A B"</code>
-                    : Sets persistent DNS servers for a NetworkManager connection profile.
+                    <code>cat /etc/resolv.conf</code>
+                    : View current resolver configuration (often generated by
+                    NetworkManager).
                   </li>
+
                   <li>
-                    <code>nmcli con down NAME && nmcli con up NAME</code>
-                    : Re-applies connection settings and regenerates resolver state.
+                    <code>nmcli -t -f NAME,DEVICE con show --active</code>
+                    : Print the active connection profile name and device.
+                    <ul>
+                      <li>
+                        <code>-t</code>
+                        : Terse output.
+                      </li>
+                      <li>
+                        <code>-f</code>
+                        : Select fields to print.
+                      </li>
+                    </ul>
+                  </li>
+
+                  <li>
+                    <code>nmcli con mod &lt;name&gt; ipv4.dns "A B"</code>
+                    : Set persistent DNS servers for a connection.
+                  </li>
+
+                  <li>
+                    <code>nmcli con mod &lt;name&gt; ipv4.ignore-auto-dns yes|no</code>
+                    : Control whether DHCP-provided DNS is used.
+                  </li>
+
+                  <li>
+                    <code>nmcli con down &lt;name&gt; &amp;&amp; nmcli con up &lt;name&gt;</code>
+                    : Re-apply settings and regenerate resolver state.
+                  </li>
+
+                  <li>
+                    <code>dig @&lt;server&gt; &lt;name&gt;</code>
+                    : Query a specific DNS server directly.
                   </li>
                 </ul>
               </section>
@@ -611,12 +796,7 @@ getent ahostsv4 example.com</code></pre>
           <!-- /row -->
 
           <nav class="lab-pagination">
-            <a
-              id="prev-lab"
-              class="lab-nav-link"
-              href="#"
-              aria-label="Previous lab"
-            >
+            <a class="lab-nav-link" href="#totop" aria-label="Back to top">
               &uArr;
             </a>
           </nav>
@@ -655,8 +835,7 @@ getent ahostsv4 example.com</code></pre>
           <div class="row">
             <div class="col-sm-12">
               <p class="copyright text-center m-b-0">
-                VONDS &copy;
-                <span id="year"></span>
+                VONDS &copy; <span id="year"></span>
               </p>
 
               <div class="scroll-up">
@@ -670,7 +849,7 @@ getent ahostsv4 example.com</code></pre>
 
     <!-- Javascript files (your existing) -->
     <script src="../assets/js/jquery-2.2.4.min.js"></script>
-    <script src="../assets/bootstrap/js/bootstrap.min.css"></script>
+    <script src="../assets/bootstrap/js/bootstrap.min.js"></script>
     <script src="../assets/js/jquery.superslides.min.js"></script>
     <script src="../assets/js/jquery.mb.YTPlayer.min.js"></script>
     <script src="../assets/js/jquery.magnific-popup.min.js"></script>
@@ -688,7 +867,11 @@ getent ahostsv4 example.com</code></pre>
     <script src="../assets/js/smoothscroll.js"></script>
     <script src="../assets/js/custom.js"></script>
 
-    <!-- Lab page JS (new) -->
+    <!-- Lab page JS -->
     <script src="../assets/js/lab.js"></script>
+
+    <script>
+      document.getElementById("year").textContent = new Date().getFullYear()
+    </script>
   </body>
 </html>

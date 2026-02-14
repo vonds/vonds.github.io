@@ -37,7 +37,7 @@
     <link href="../assets/css/style.css" rel="stylesheet" />
     <link href="../assets/css/docs.css" rel="stylesheet" />
 
-    <!-- Lab page styles (new) -->
+    <!-- Lab page styles -->
     <link href="../assets/css/lab.css" rel="stylesheet" />
 
     <!-- Fonts -->
@@ -72,21 +72,23 @@
                     href="https://github.com/vonds/exit_0"
                     target="_blank"
                     rel="noopener"
-                    >exit_0</a
                   >
+                    exit_0
+                  </a>
                 </li>
                 <li>
-                  <a href="docs.html" target="_blank" rel="noopener"
-                    >exit_0 Documentation</a
-                  >
+                  <a href="docs.html" target="_blank" rel="noopener">
+                    exit_0 Documentation
+                  </a>
                 </li>
                 <li>
                   <a
                     href="https://github.com/vonds/sentinel"
                     target="_blank"
                     rel="noopener"
-                    >Sentinel</a
                   >
+                    Sentinel
+                  </a>
                 </li>
               </ul>
             </li>
@@ -154,7 +156,7 @@
       </nav>
 
       <!-- DOCS PAGE -->
-      <section class="module">
+      <section class="module" id="totop">
         <div class="container">
           <h2 class="font-alt module-title m-t-60">
             Lab 135: Fix Wrong Static IP on eth0
@@ -189,7 +191,11 @@
                   </h5>
                   <ul class="docs-nav">
                     <li><a href="#scenario">Scenario</a></li>
+                    <li><a href="#objective">Objective</a></li>
+                    <li><a href="#concepts">Concepts</a></li>
                     <li><a href="#walkthrough">Walkthrough</a></li>
+                    <li><a href="#breakpoints">Breakpoints</a></li>
+                    <li><a href="#cleanup">Cleanup</a></li>
                     <li><a href="#reference">Reference</a></li>
                   </ul>
                 </div>
@@ -198,7 +204,6 @@
 
             <!-- MAIN CONTENT -->
             <div class="col-sm-8 col-md-9 lab-doc">
-              <!-- 1) Title + Summary (2 sentences max) -->
               <p class="m-b-20 lab-summary">
                 Diagnose a cloned host that booted with the wrong static IPv4
                 address and cannot reach its gateway. Correct the NetworkManager
@@ -210,21 +215,18 @@
                 <div class="lab-video">
                   <div class="lab-video-embed text-center">
                     <iframe
-                      width="560"
-                      height="315"
-                      src="https://www.youtube.com/embed/REPLACE_WITH_LAB135_VIDEO"
+                      src="https://www.youtube.com/embed/CV8V9_8EgqM?si=G9OMW4phbPnuBMkH"
                       title="YouTube video player"
                       frameborder="0"
                       allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                       referrerpolicy="strict-origin-when-cross-origin"
                       allowfullscreen
-                    >
-                    </iframe>
+                    ></iframe>
                   </div>
                 </div>
               </section>
 
-              <!-- 2) Scenario -->
+              <!-- Scenario -->
               <section class="lab-section" id="scenario">
                 <div class="lab-chips" aria-label="Tags">
                   <span class="lab-chip">
@@ -236,6 +238,12 @@
                   <span class="lab-chip">
                     <span class="lab-chip-key">nmcli</span>
                   </span>
+                  <span class="lab-chip">
+                    <span class="lab-chip-key">networkmanager</span>
+                  </span>
+                  <span class="lab-chip">
+                    <span class="lab-chip-key">core</span>
+                  </span>
                 </div>
 
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">
@@ -245,53 +253,79 @@
                 <p>
                   This RHEL host was cloned from a template. The
                   <code>eth0</code> connection came up with the wrong static IP,
-                  so the machine cannot reach the gateway. You have local console
-                  access only and must fix the NetworkManager connection.
+                  so the machine cannot reach the gateway. You have local
+                  console access only and must fix the NetworkManager connection.
                 </p>
 
                 <div class="lab-callout">
                   <div class="lab-callout-label">Operator context</div>
                   <p class="m-b-0">
-                    Cloned images frequently reuse network profiles. Your goal is
-                    to correct the connection profile, apply it cleanly, then
-                    prove success with both routing and DNS checks.
+                    Cloned images frequently reuse network profiles. Your goal
+                    is to correct the connection profile, apply it cleanly, then
+                    prove success with routing and DNS checks.
                   </p>
                 </div>
               </section>
 
-              <!-- 3) Objective -->
+              <!-- Objective -->
               <section class="lab-section alt-background" id="objective">
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">
                   Objective
                 </h3>
 
                 <ul>
-                  <li>Identify the incorrect IPv4 address currently on <code>eth0</code>.</li>
-                  <li>Find the NetworkManager connection bound to <code>eth0</code>.</li>
+                  <li>
+                    Identify the incorrect IPv4 address currently on
+                    <code>eth0</code>.
+                  </li>
+                  <li>
+                    Identify the active NetworkManager connection profile name
+                    for <code>eth0</code>.
+                  </li>
                   <li>Set the exact target static IP and gateway.</li>
-                  <li>Set DNS servers to <code>1.1.1.1</code> and <code>8.8.8.8</code>.</li>
-                  <li>Bring the connection down and back up to apply changes.</li>
+                  <li>
+                    Set DNS servers to <code>1.1.1.1</code> and
+                    <code>8.8.8.8</code>.
+                  </li>
+                  <li>
+                    Bring the connection down and back up to apply changes.
+                  </li>
                   <li>Verify the correct address and default route exist.</li>
                   <li>Prove gateway reachability and hostname resolution.</li>
                 </ul>
               </section>
 
-              <!-- 4) What You'll Practice -->
-              <section class="lab-section" id="practice">
+              <!-- Concepts (no alt-background moving forward) -->
+              <section class="lab-section" id="concepts">
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">
-                  What You’ll Practice
+                  Concepts
                 </h3>
 
-                <ul class="m-t-10">
-                  <li>Inspecting live interface state with <code>ip</code>.</li>
-                  <li>Identifying NetworkManager connection profiles with <code>nmcli</code>.</li>
-                  <li>Setting static IPv4, gateway, and DNS with <code>nmcli con mod</code>.</li>
-                  <li>Applying changes safely by bouncing the connection.</li>
-                  <li>Validating success using routing + DNS evidence.</li>
+                <ul>
+                  <li>
+                    A link can be UP and still be unusable if the address is on
+                    the wrong subnet.
+                  </li>
+                  <li>
+                    On NetworkManager systems, change the connection profile,
+                    not the interface state by hand.
+                  </li>
+                  <li>
+                    After profile edits, bounce the connection so live state
+                    matches the new configuration.
+                  </li>
+                  <li>
+                    “Fixed routing” means you can reach the gateway and you have
+                    a correct default route.
+                  </li>
+                  <li>
+                    Closure is routing plus DNS: prove you can resolve a name,
+                    not just ping an IP.
+                  </li>
                 </ul>
               </section>
 
-              <!-- 5) Commands Walkthrough -->
+              <!-- Walkthrough -->
               <section class="lab-section alt-background" id="walkthrough">
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">
                   Walkthrough
@@ -317,19 +351,17 @@
                     </div>
                     <pre><code id="cmd-step-1">ip -4 addr show dev eth0
 # OR
-ip addr show dev eth0
-# OR
 ip a show dev eth0</code></pre>
                   </div>
 
                   <p>
-                    The first symptom is usually obvious: the interface is up but
-                    the IP is on the wrong subnet, which prevents reaching the
-                    expected gateway.
+                    Capture the current state before changing anything. If the
+                    address is on the wrong subnet, the host will not be able to
+                    reach the intended gateway.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code id="verify-step-1">2: eth0: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu 1500 qdisc fq_codel state UP group default qlen 1000
+                    <pre><code>2: eth0: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu 1500 qdisc fq_codel state UP group default qlen 1000
     inet 192.168.1.20/24 brd 192.168.1.255 scope global noprefixroute eth0
        valid_lft forever preferred_lft forever</code></pre>
                   </div>
@@ -339,7 +371,7 @@ ip a show dev eth0</code></pre>
                 <div class="lab-step">
                   <div class="lab-step-title">
                     <strong class="font-alt">Step 2</strong>
-                    : Identify the NetworkManager connection bound to <code>eth0</code>.
+                    : Verify the gateway is unreachable from the wrong subnet.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -353,20 +385,20 @@ ip a show dev eth0</code></pre>
                         Copy
                       </button>
                     </div>
-                    <pre><code id="cmd-step-2">nmcli -t -f NAME,DEVICE con show
-# OR
-nmcli con show</code></pre>
+                    <pre><code id="cmd-step-2">ping -c 2 192.168.50.1</code></pre>
                   </div>
 
                   <p>
-                    You need the connection profile name so you can modify the
-                    correct configuration source. The device name alone is not
-                    enough.
+                    This gives you a clean “before” signal. If the host is on the
+                    wrong network, it will not be able to reach the intended
+                    gateway.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code id="verify-step-2">System eth0:eth0
-lo:lo</code></pre>
+                    <pre><code>PING 192.168.50.1 (192.168.50.1) 56(84) bytes of data.
+
+--- ping statistics ---
+2 packets transmitted, 0 received, 100% packet loss</code></pre>
                   </div>
                 </div>
 
@@ -374,7 +406,8 @@ lo:lo</code></pre>
                 <div class="lab-step">
                   <div class="lab-step-title">
                     <strong class="font-alt">Step 3</strong>
-                    : Set the correct static IPv4 address and gateway.
+                    : Identify the active NetworkManager connection name for
+                    <code>eth0</code>.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -388,21 +421,24 @@ lo:lo</code></pre>
                         Copy
                       </button>
                     </div>
-                    <pre><code id="cmd-step-3">sudo nmcli con mod "System eth0" ipv4.method manual ipv4.addresses 192.168.50.20/24 ipv4.gateway 192.168.50.1</code></pre>
+                    <pre><code id="cmd-step-3">nmcli -t -f NAME,DEVICE con show --active</code></pre>
                   </div>
 
                   <p>
-                    This corrects the address and the default gateway in the
-                    connection profile. It is the minimum needed to restore L3
-                    reachability on the intended network.
+                    Modify the connection profile name, not the interface name.
+                    This avoids updating the wrong profile on cloned systems.
                   </p>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <pre><code>System eth0:eth0</code></pre>
+                  </div>
                 </div>
 
                 <!-- Step 4 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
                     <strong class="font-alt">Step 4</strong>
-                    : Set DNS servers for the connection.
+                    : Set the correct static IPv4 address and gateway.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -416,26 +452,30 @@ lo:lo</code></pre>
                         Copy
                       </button>
                     </div>
-                    <pre><code id="cmd-step-4">sudo nmcli con mod "System eth0" ipv4.dns "1.1.1.1 8.8.8.8"</code></pre>
+                    <pre><code id="cmd-step-4">sudo nmcli con mod "System eth0" ipv4.method manual ipv4.addresses 192.168.50.20/24 ipv4.gateway 192.168.50.1</code></pre>
                   </div>
 
                   <p>
-                    Even with the correct IP and gateway, many workflows still
-                    fail without DNS (package installs, repo access, API calls).
-                    Set DNS explicitly to match the incident target state.
+                    This corrects the source IP and the default gateway in the
+                    connection profile. Without both, the host will still fail to
+                    reach anything off-link.
                   </p>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <pre><code>(no output)</code></pre>
+                  </div>
                 </div>
 
                 <!-- Step 5 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
                     <strong class="font-alt">Step 5</strong>
-                    : Bring the connection down and back up to apply changes.
+                    : Set DNS servers for the connection.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
-                      <span>Command</span>
+                      <span>Commands</span>
                       <button
                         class="lab-copy-btn"
                         type="button"
@@ -444,18 +484,18 @@ lo:lo</code></pre>
                         Copy
                       </button>
                     </div>
-                    <pre><code id="cmd-step-5">sudo nmcli con down "System eth0" && sudo nmcli con up "System eth0"</code></pre>
+                    <pre><code id="cmd-step-5">sudo nmcli con mod "System eth0" ipv4.dns "1.1.1.1 8.8.8.8"
+sudo nmcli con mod "System eth0" ipv4.ignore-auto-dns yes</code></pre>
                   </div>
 
                   <p>
-                    Bouncing the connection forces the running network state to
-                    match the updated profile and ensures you are validating the
-                    actual applied configuration.
+                    Even after fixing routing, many workflows still fail without
+                    DNS. Ignoring auto DNS prevents DHCP from overwriting your
+                    resolver settings.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code id="verify-step-5">Connection 'System eth0' successfully deactivated (D-Bus active path: /org/freedesktop/NetworkManager/ActiveConnection/3)
-Connection 'System eth0' successfully activated (D-Bus active path: /org/freedesktop/NetworkManager/ActiveConnection/4)</code></pre>
+                    <pre><code>(no output)</code></pre>
                   </div>
                 </div>
 
@@ -463,7 +503,7 @@ Connection 'System eth0' successfully activated (D-Bus active path: /org/freedes
                 <div class="lab-step">
                   <div class="lab-step-title">
                     <strong class="font-alt">Step 6</strong>
-                    : Verify <code>eth0</code> has the correct IP and default route.
+                    : Bring the connection down and back up to apply changes.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -477,26 +517,17 @@ Connection 'System eth0' successfully activated (D-Bus active path: /org/freedes
                         Copy
                       </button>
                     </div>
-                    <pre><code id="cmd-step-6">ip -4 addr show dev eth0
-# OR
-ip route
-# OR
-ip r</code></pre>
+                    <pre><code id="cmd-step-6">sudo nmcli con down "System eth0" && sudo nmcli con up "System eth0"</code></pre>
                   </div>
 
                   <p>
-                    Your success criteria here is evidence: the correct source
-                    IP on the interface and a default route pointing at the
-                    intended gateway.
+                    This forces the running network state to match the updated
+                    profile.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code id="verify-step-6">2: eth0: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu 1500 qdisc fq_codel state UP group default qlen 1000
-    inet 192.168.50.20/24 brd 192.168.50.255 scope global noprefixroute eth0
-       valid_lft forever preferred_lft forever
-
-default via 192.168.50.1 dev eth0 proto static metric 100
-192.168.50.0/24 dev eth0 proto kernel scope link src 192.168.50.20 metric 100</code></pre>
+                    <pre><code>Connection 'System eth0' successfully deactivated (D-Bus active path: /org/freedesktop/NetworkManager/ActiveConnection/3)
+Connection 'System eth0' successfully activated (D-Bus active path: /org/freedesktop/NetworkManager/ActiveConnection/4)</code></pre>
                   </div>
                 </div>
 
@@ -504,12 +535,12 @@ default via 192.168.50.1 dev eth0 proto static metric 100
                 <div class="lab-step">
                   <div class="lab-step-title">
                     <strong class="font-alt">Step 7</strong>
-                    : Prove gateway reachability and DNS resolution.
+                    : Verify the correct IP and default route exist.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
-                      <span>Command</span>
+                      <span>Commands</span>
                       <button
                         class="lab-copy-btn"
                         type="button"
@@ -518,19 +549,55 @@ default via 192.168.50.1 dev eth0 proto static metric 100
                         Copy
                       </button>
                     </div>
-                    <pre><code id="cmd-step-7">ping -c 2 192.168.50.1 && getent hosts example.com
-# OR
-ping -c 2 192.168.50.1 && getent ahostsv4 example.com</code></pre>
+                    <pre><code id="cmd-step-7">ip -4 addr show dev eth0
+ip route</code></pre>
                   </div>
 
                   <p>
-                    This final check proves the full operator path: local gateway
-                    is reachable and name resolution is working. If both succeed,
-                    most “network is broken” symptoms disappear immediately.
+                    Success criteria is evidence: the intended address on the
+                    interface and a default route pointing at the intended
+                    gateway.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code id="verify-step-7">PING 192.168.50.1 (192.168.50.1) 56(84) bytes of data.
+                    <pre><code>2: eth0: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu 1500 qdisc fq_codel state UP group default qlen 1000
+    inet 192.168.50.20/24 brd 192.168.50.255 scope global noprefixroute eth0
+       valid_lft forever preferred_lft forever
+
+default via 192.168.50.1 dev eth0 proto static metric 100
+192.168.50.0/24 dev eth0 proto kernel scope link src 192.168.50.20 metric 100</code></pre>
+                  </div>
+                </div>
+
+                <!-- Step 8 -->
+                <div class="lab-step">
+                  <div class="lab-step-title">
+                    <strong class="font-alt">Step 8</strong>
+                    : Prove gateway reachability and hostname resolution.
+                  </div>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <div class="lab-codeblock-header">
+                      <span>Commands</span>
+                      <button
+                        class="lab-copy-btn"
+                        type="button"
+                        data-copy="#cmd-step-8"
+                      >
+                        Copy
+                      </button>
+                    </div>
+                    <pre><code id="cmd-step-8">ping -c 2 192.168.50.1
+getent hosts example.com</code></pre>
+                  </div>
+
+                  <p>
+                    This proves the operator path: the gateway is reachable and
+                    DNS works.
+                  </p>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <pre><code>PING 192.168.50.1 (192.168.50.1) 56(84) bytes of data.
 64 bytes from 192.168.50.1: icmp_seq=1 ttl=64 time=0.451 ms
 64 bytes from 192.168.50.1: icmp_seq=2 ttl=64 time=0.437 ms
 
@@ -542,7 +609,78 @@ ping -c 2 192.168.50.1 && getent ahostsv4 example.com</code></pre>
                 </div>
               </section>
 
-              <!-- 6) Reference -->
+              <!-- Breakpoints -->
+              <section class="lab-section" id="breakpoints">
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  Breakpoints
+                </h3>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">Connection name is different</div>
+                  <p class="m-b-0">
+                    Do not assume <code>"System eth0"</code>. Pull the active
+                    connection name with
+                    <code>nmcli -t -f NAME,DEVICE con show --active</code> and use
+                    that exact name in your commands.
+                  </p>
+                </div>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">
+                    Gateway still unreachable after changes
+                  </div>
+                  <p class="m-b-0">
+                    Confirm the prefix length is correct and verify you are on
+                    the intended VLAN or network. If the IP is correct but the
+                    gateway cannot be pinged, suspect upstream switching,
+                    routing, or ACLs.
+                  </p>
+                </div>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">
+                    DNS still fails but gateway ping works
+                  </div>
+                  <p class="m-b-0">
+                    Confirm <code>/etc/resolv.conf</code> was regenerated and
+                    contains your intended nameservers. If it did not change,
+                    you may be editing a different connection profile than the
+                    one that is active.
+                  </p>
+                </div>
+              </section>
+
+              <!-- Cleanup -->
+              <section class="lab-section alt-background" id="cleanup">
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  Cleanup checklist
+                </h3>
+
+                <p>
+                  If you need to revert to DHCP for IPv4 addressing and DNS,
+                  switch the connection back to auto, allow DHCP-provided DNS,
+                  and re-apply.
+                </p>
+
+                <div class="lab-codeblock m-b-40 m-t-40">
+                  <div class="lab-codeblock-header">
+                    <span>Commands</span>
+                    <button
+                      class="lab-copy-btn"
+                      type="button"
+                      data-copy="#cmd-cleanup"
+                    >
+                      Copy
+                    </button>
+                  </div>
+                  <pre><code id="cmd-cleanup">sudo nmcli con mod "System eth0" ipv4.method auto
+sudo nmcli con mod "System eth0" ipv4.ignore-auto-dns no
+sudo nmcli con mod "System eth0" ipv4.dns ""
+sudo nmcli con down "System eth0" && sudo nmcli con up "System eth0"</code></pre>
+                </div>
+              </section>
+
+              <!-- Reference -->
               <section class="lab-section" id="reference">
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">
                   Reference
@@ -550,28 +688,84 @@ ping -c 2 192.168.50.1 && getent ahostsv4 example.com</code></pre>
 
                 <ul class="lab-reference-list">
                   <li>
-                    <code>ip -4 addr show dev IFACE</code>
-                    : Displays the IPv4 address currently applied to an interface.
+                    <code>ip -4 addr show dev &lt;iface&gt;</code>
+                    : Display the IPv4 address currently applied to an interface.
+                    <ul>
+                      <li>
+                        <code>-4</code>
+                        : IPv4 only.
+                      </li>
+                      <li>
+                        <code>dev &lt;iface&gt;</code>
+                        : Limit output to a specific interface.
+                      </li>
+                    </ul>
                   </li>
+
                   <li>
-                    <code>nmcli con show</code>
-                    : Lists NetworkManager connection profiles and their attached devices.
+                    <code>ping -c &lt;n&gt; &lt;ip&gt;</code>
+                    : Test reachability to an IP (useful for gateway checks).
+                    <ul>
+                      <li>
+                        <code>-c &lt;n&gt;</code>
+                        : Send a fixed number of echo requests.
+                      </li>
+                    </ul>
                   </li>
+
                   <li>
-                    <code>nmcli con mod NAME ...</code>
-                    : Updates persistent connection profile settings (static IP, gateway, DNS).
+                    <code>nmcli -t -f NAME,DEVICE con show --active</code>
+                    : Show active NetworkManager connections and their devices.
+                    <ul>
+                      <li>
+                        <code>-t</code>
+                        : Terse output.
+                      </li>
+                      <li>
+                        <code>-f</code>
+                        : Select fields to print.
+                      </li>
+                    </ul>
                   </li>
+
                   <li>
-                    <code>nmcli con down NAME && nmcli con up NAME</code>
-                    : Applies profile changes to the live network state.
+                    <code>nmcli con mod &lt;name&gt; ipv4.method manual</code>
+                    : Set a connection to static IPv4.
                   </li>
+
+                  <li>
+                    <code>nmcli con mod &lt;name&gt; ipv4.addresses A/B</code>
+                    : Set a static IPv4 address and prefix length.
+                  </li>
+
+                  <li>
+                    <code>nmcli con mod &lt;name&gt; ipv4.gateway G</code>
+                    : Set the IPv4 default gateway.
+                  </li>
+
+                  <li>
+                    <code>nmcli con mod &lt;name&gt; ipv4.dns "A B"</code>
+                    : Set persistent DNS servers on a connection.
+                  </li>
+
+                  <li>
+                    <code>nmcli con mod &lt;name&gt; ipv4.ignore-auto-dns yes|no</code>
+                    : Control whether DHCP-provided DNS is used.
+                  </li>
+
+                  <li>
+                    <code>nmcli con down &lt;name&gt; &amp;&amp; nmcli con up &lt;name&gt;</code>
+                    : Re-apply the connection profile to live network state.
+                  </li>
+
                   <li>
                     <code>ip route</code>
-                    : Confirms default gateway and routing table entries.
+                    : Show the routing table (confirm default route and subnet).
                   </li>
+
                   <li>
-                    <code>getent hosts NAME</code>
-                    : Confirms system-level DNS resolution through NSS.
+                    <code>getent hosts &lt;name&gt;</code>
+                    : Confirm name resolution through NSS.
                   </li>
                 </ul>
               </section>
@@ -581,12 +775,7 @@ ping -c 2 192.168.50.1 && getent ahostsv4 example.com</code></pre>
           <!-- /row -->
 
           <nav class="lab-pagination">
-            <a
-              id="prev-lab"
-              class="lab-nav-link"
-              href="#"
-              aria-label="Previous lab"
-            >
+            <a class="lab-nav-link" href="#totop" aria-label="Back to top">
               &uArr;
             </a>
           </nav>
@@ -625,8 +814,7 @@ ping -c 2 192.168.50.1 && getent ahostsv4 example.com</code></pre>
           <div class="row">
             <div class="col-sm-12">
               <p class="copyright text-center m-b-0">
-                VONDS &copy;
-                <span id="year"></span>
+                VONDS &copy; <span id="year"></span>
               </p>
 
               <div class="scroll-up">
@@ -649,6 +837,7 @@ ping -c 2 192.168.50.1 && getent ahostsv4 example.com</code></pre>
     <script src="../assets/js/imagesloaded.pkgd.js"></script>
     <script src="../assets/js/isotope.pkgd.min.js"></script>
     <script src="../assets/js/packery-mode.pkgd.min.js"></script>
+    <script src="../assets/js/packery-mode.pkgd.min.js"></script>
     <script src="../assets/js/appear.js"></script>
     <script src="../assets/js/jquery.easing.1.3.js"></script>
     <script src="../assets/js/wow.min.js"></script>
@@ -660,5 +849,9 @@ ping -c 2 192.168.50.1 && getent ahostsv4 example.com</code></pre>
 
     <!-- Lab page JS (new) -->
     <script src="../assets/js/lab.js"></script>
+
+    <script>
+      document.getElementById("year").textContent = new Date().getFullYear()
+    </script>
   </body>
 </html>
