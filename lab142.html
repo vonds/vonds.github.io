@@ -41,7 +41,10 @@
     <link href="../assets/css/lab.css" rel="stylesheet" />
 
     <!-- Fonts -->
-    <link href="https://fonts.googleapis.com/css?family=Dosis" rel="stylesheet" />
+    <link
+      href="https://fonts.googleapis.com/css?family=Dosis"
+      rel="stylesheet"
+    />
   </head>
 
   <body>
@@ -65,20 +68,26 @@
               <a href="#">Portfolio</a>
               <ul>
                 <li>
-                  <a href="https://github.com/vonds/exit_0" target="_blank" rel="noopener">
+                  <a
+                    href="https://github.com/vonds/exit_0"
+                    target="_blank"
+                    rel="noopener"
+                  >
                     exit_0
                   </a>
                 </li>
                 <li>
-                  <a href="docs.html" target="_blank" rel="noopener">
-                    exit_0
-                  </a>
+                  <a href="docs.html" target="_blank" rel="noopener"> exit_0 </a>
                 </li>
               </ul>
             </li>
 
             <li>
-              <a href="https://www.linkedin.com/in/vonds/" target="_blank" rel="noopener">
+              <a
+                href="https://www.linkedin.com/in/vonds/"
+                target="_blank"
+                rel="noopener"
+              >
                 LinkedIn
               </a>
             </li>
@@ -113,7 +122,9 @@
     <!-- WRAPPER -->
     <div class="wrapper">
       <!-- NAVIGATION -->
-      <nav class="navbar navbar-custom navbar-transparent navbar-light navbar-fixed-top">
+      <nav
+        class="navbar navbar-custom navbar-transparent navbar-light navbar-fixed-top"
+      >
         <div class="container">
           <div class="navbar-header">
             <a class="navbar-brand" href="../index.html">
@@ -137,14 +148,24 @@
       <section class="module">
         <div class="container">
           <h2 class="font-alt module-title m-t-60">
-            Lab 142: Printing & Time Workflow
+            Lab 142: Printing, Journald, and Time Workflow
           </h2>
 
           <nav class="lab-pagination">
-            <a id="prev-lab" class="lab-nav-link" href="#" aria-label="Previous lab">
+            <a
+              id="prev-lab"
+              class="lab-nav-link"
+              href="#"
+              aria-label="Previous lab"
+            >
               &laquo;
             </a>
-            <a id="next-lab" class="lab-nav-link" href="#" aria-label="Next lab">
+            <a
+              id="next-lab"
+              class="lab-nav-link"
+              href="#"
+              aria-label="Next lab"
+            >
               &raquo;
             </a>
           </nav>
@@ -159,7 +180,11 @@
                   </h5>
                   <ul class="docs-nav">
                     <li><a href="#scenario">Scenario</a></li>
+                    <li><a href="#objective">Objective</a></li>
+                    <li><a href="#concepts">Concepts</a></li>
                     <li><a href="#walkthrough">Walkthrough</a></li>
+                    <li><a href="#breakpoints">Breakpoints</a></li>
+                    <li><a href="#cleanup">Cleanup</a></li>
                     <li><a href="#reference">Reference</a></li>
                   </ul>
                 </div>
@@ -169,12 +194,16 @@
             <!-- MAIN CONTENT -->
             <div class="col-sm-8 col-md-9 lab-doc">
               <p class="m-b-20 lab-summary">
-                Apply updated mail aliases with <code>newaliases</code>, write and verify an incident note in
-                journald using <code>systemd-cat</code>, clear a stuck CUPS job, submit a test print, and perform a
-                controlled time change for a maintenance window. Finish by confirming system time state with
-                <code>timedatectl</code> and pulling recent kernel messages from <code>journalctl -k</code>.
+                Apply updated mail aliases with <code>newaliases</code>, write
+                and verify an incident note in journald using
+                <code>systemd-cat</code>, clear a stuck CUPS job, submit a test
+                print, and perform a controlled time change for a maintenance
+                window. Finish by confirming system time state with
+                <code>timedatectl</code> and pulling recent kernel messages from
+                <code>journalctl -k</code>.
               </p>
 
+              <!-- Video (kept on page; removed from left panel) -->
               <section class="lab-section" id="video" aria-label="Lab video">
                 <div class="lab-video">
                   <div class="lab-video-embed text-center">
@@ -193,64 +222,133 @@
               <!-- Scenario -->
               <section class="lab-section" id="scenario">
                 <div class="lab-chips" aria-label="Tags">
-                  <span class="lab-chip"><span class="lab-chip-key">rhel</span></span>
-                  <span class="lab-chip"><span class="lab-chip-key">rhcsa</span></span>
-                  <span class="lab-chip"><span class="lab-chip-key">journald</span></span>
-                  <span class="lab-chip"><span class="lab-chip-key">systemd-cat</span></span>
-                  <span class="lab-chip"><span class="lab-chip-key">aliases</span></span>
-                  <span class="lab-chip"><span class="lab-chip-key">printing</span></span>
                   <span class="lab-chip"><span class="lab-chip-key">cups</span></span>
-                  <span class="lab-chip"><span class="lab-chip-key">time</span></span>
+                  <span class="lab-chip"><span class="lab-chip-key">printing</span></span>
+                  <span class="lab-chip"><span class="lab-chip-key">journald</span></span>
                 </div>
 
-                <h3 class="font-alt lab-section-title m-b-40 m-t-40">Scenario</h3>
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  Scenario
+                </h3>
 
                 <p>
-                  You updated <code>/etc/aliases</code> and must apply it. You also need to log evidence into journald,
-                  clear a stuck print job, submit a test print, and adjust system time for a maintenance window.
+                  You updated <code>/etc/aliases</code> and must apply it. You
+                  also need to log evidence into journald, clear a stuck print
+                  job, submit a test print, and adjust system time for a
+                  maintenance window.
                 </p>
 
                 <div class="lab-callout">
                   <div class="lab-callout-label">Ops habit</div>
                   <p class="m-b-0">
-                    Treat this like a short incident checklist: apply changes, record what you did in logs, validate
-                    services with real evidence, and confirm time signals before you leave the box.
+                    Treat this like a short incident checklist: apply changes,
+                    record what you did in logs, validate services with real
+                    evidence, and confirm time signals before you leave the box.
                   </p>
                 </div>
               </section>
 
               <!-- Objective -->
               <section class="lab-section alt-background" id="objective">
-                <h3 class="font-alt lab-section-title m-b-40 m-t-40">Objective</h3>
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  Objective
+                </h3>
                 <ul>
                   <li>Apply alias changes using <code>newaliases</code>.</li>
-                  <li>Write an incident note to journald with <code>systemd-cat</code> and verify it by tag.</li>
-                  <li>Inspect the print queue, cancel a stuck job, and submit a test print.</li>
-                  <li>Set system time to a specific timestamp using <code>date -s</code> and verify with <code>timedatectl</code>.</li>
-                  <li>Pull recent kernel messages using <code>journalctl -k</code>.</li>
+                  <li>
+                    Write an incident note to journald with
+                    <code>systemd-cat</code> and verify it by tag.
+                  </li>
+                  <li>
+                    Inspect the print queue, cancel a stuck job, and submit a
+                    test print.
+                  </li>
+                  <li>
+                    Set system time to a specific timestamp using
+                    <code>date -s</code> and verify with
+                    <code>timedatectl</code>.
+                  </li>
+                  <li>
+                    Pull recent kernel messages using <code>journalctl -k</code>.
+                  </li>
+                </ul>
+              </section>
+
+              <!-- Concepts (no alt-background moving forward) -->
+              <section class="lab-section" id="concepts">
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  Concepts
+                </h3>
+                <ul>
+                  <li>
+                    Alias changes require compilation via
+                    <code>newaliases</code>
+                    before mail services use them.
+                  </li>
+                  <li>
+                    Journald evidence logging with
+                    <code>systemd-cat</code>
+                    and retrieval with
+                    <code>journalctl -t</code>
+                    .
+                  </li>
+                  <li>
+                    CUPS queue triage using
+                    <code>lpstat</code>
+                    and job cancellation using
+                    <code>cancel</code>
+                    .
+                  </li>
+                  <li>
+                    “Real” service validation by submitting a test print via
+                    <code>lp</code>
+                    and confirming queue acceptance.
+                  </li>
+                  <li>
+                    Manual time setting using
+                    <code>date -s</code>
+                    and confirmation of system time state with
+                    <code>timedatectl</code>
+                    .
+                  </li>
+                  <li>
+                    Kernel context capture via
+                    <code>journalctl -k</code>
+                    during incident review.
+                  </li>
                 </ul>
               </section>
 
               <!-- Walkthrough -->
               <section class="lab-section alt-background" id="walkthrough">
-                <h3 class="font-alt lab-section-title m-b-40 m-t-40">Walkthrough</h3>
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  Walkthrough
+                </h3>
 
                 <!-- Step 1 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
-                    <strong class="font-alt">Step 1</strong>: Rebuild the aliases database.
+                    <strong class="font-alt">Step 1</strong>: Rebuild the aliases
+                    database.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
-                      <button class="lab-copy-btn" type="button" data-copy="#cmd-step-1">Copy</button>
+                      <button
+                        class="lab-copy-btn"
+                        type="button"
+                        data-copy="#cmd-step-1"
+                      >
+                        Copy
+                      </button>
                     </div>
                     <pre><code id="cmd-step-1">sudo newaliases</code></pre>
                   </div>
 
                   <p>
-                    Postfix reads a compiled alias database. After editing <code>/etc/aliases</code>, you must rebuild it.
+                    Postfix reads a compiled alias database. After editing
+                    <code>/etc/aliases</code>, you must rebuild it.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -261,38 +359,55 @@
                 <!-- Step 2 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
-                    <strong class="font-alt">Step 2</strong>: Write an incident note to journald.
+                    <strong class="font-alt">Step 2</strong>: Write an incident
+                    note to journald.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
-                      <button class="lab-copy-btn" type="button" data-copy="#cmd-step-2">Copy</button>
+                      <button
+                        class="lab-copy-btn"
+                        type="button"
+                        data-copy="#cmd-step-2"
+                      >
+                        Copy
+                      </button>
                     </div>
                     <pre><code id="cmd-step-2">echo 'aliases rebuilt and printing/time checks in progress' | systemd-cat -t lab142</code></pre>
                   </div>
 
                   <p>
-                    <code>systemd-cat</code> writes directly into the journal. Using a consistent tag makes the note easy to find.
+                    <code>systemd-cat</code>
+                    writes directly into the journal. Using a consistent tag
+                    makes the note easy to find.
                   </p>
                 </div>
 
                 <!-- Step 3 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
-                    <strong class="font-alt">Step 3</strong>: Verify the note by tag.
+                    <strong class="font-alt">Step 3</strong>: Verify the note by
+                    tag.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
-                      <button class="lab-copy-btn" type="button" data-copy="#cmd-step-3">Copy</button>
+                      <button
+                        class="lab-copy-btn"
+                        type="button"
+                        data-copy="#cmd-step-3"
+                      >
+                        Copy
+                      </button>
                     </div>
                     <pre><code id="cmd-step-3">journalctl -t lab142 -n 3</code></pre>
                   </div>
 
                   <p>
-                    Confirm the entry exists so your evidence trail is complete before moving on.
+                    Confirm the entry exists so your evidence trail is complete
+                    before moving on.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -303,19 +418,27 @@
                 <!-- Step 4 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
-                    <strong class="font-alt">Step 4</strong>: Show pending print jobs.
+                    <strong class="font-alt">Step 4</strong>: Show pending print
+                    jobs.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
-                      <button class="lab-copy-btn" type="button" data-copy="#cmd-step-4">Copy</button>
+                      <button
+                        class="lab-copy-btn"
+                        type="button"
+                        data-copy="#cmd-step-4"
+                      >
+                        Copy
+                      </button>
                     </div>
                     <pre><code id="cmd-step-4">lpstat -o</code></pre>
                   </div>
 
                   <p>
-                    Identify the job name you need to cancel. This is the fastest “what is stuck” view for CUPS queues.
+                    Identify the job name you need to cancel. This is the
+                    fastest “what is stuck” view for CUPS queues.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -326,20 +449,25 @@
                 <!-- Step 5 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
-                    <strong class="font-alt">Step 5</strong>: Cancel the stuck job.
+                    <strong class="font-alt">Step 5</strong>: Cancel the stuck
+                    job.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
-                      <button class="lab-copy-btn" type="button" data-copy="#cmd-step-5">Copy</button>
+                      <button
+                        class="lab-copy-btn"
+                        type="button"
+                        data-copy="#cmd-step-5"
+                      >
+                        Copy
+                      </button>
                     </div>
                     <pre><code id="cmd-step-5">cancel Office_Printer-31</code></pre>
                   </div>
 
-                  <p>
-                    This removes the pending job so the queue can proceed normally.
-                  </p>
+                  <p>This removes the pending job so the queue can proceed normally.</p>
                 </div>
 
                 <!-- Step 6 -->
@@ -351,13 +479,20 @@
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
-                      <button class="lab-copy-btn" type="button" data-copy="#cmd-step-6">Copy</button>
+                      <button
+                        class="lab-copy-btn"
+                        type="button"
+                        data-copy="#cmd-step-6"
+                      >
+                        Copy
+                      </button>
                     </div>
                     <pre><code id="cmd-step-6">lp /etc/hosts</code></pre>
                   </div>
 
                   <p>
-                    Use a real file so the test mirrors actual printing behavior and permissions.
+                    Use a real file so the test mirrors actual printing behavior
+                    and permissions.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -374,13 +509,20 @@
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
-                      <button class="lab-copy-btn" type="button" data-copy="#cmd-step-7">Copy</button>
+                      <button
+                        class="lab-copy-btn"
+                        type="button"
+                        data-copy="#cmd-step-7"
+                      >
+                        Copy
+                      </button>
                     </div>
                     <pre><code id="cmd-step-7">lpstat -o</code></pre>
                   </div>
 
                   <p>
-                    You want a clean signal that the queue is accepting jobs after cleanup.
+                    You want a clean signal that the queue is accepting jobs
+                    after cleanup.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -397,14 +539,21 @@
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
-                      <button class="lab-copy-btn" type="button" data-copy="#cmd-step-8">Copy</button>
+                      <button
+                        class="lab-copy-btn"
+                        type="button"
+                        data-copy="#cmd-step-8"
+                      >
+                        Copy
+                      </button>
                     </div>
                     <pre><code id="cmd-step-8">sudo date -s '2026-01-25 07:25:00'</code></pre>
                   </div>
 
                   <p>
-                    This is a controlled time change. In production you would usually avoid manual time edits while NTP is active,
-                    but the lab focuses on command accuracy and verification.
+                    This is a controlled time change. In production you usually
+                    avoid manual time edits while NTP is active, but the lab
+                    focuses on command accuracy and verification.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -421,13 +570,20 @@
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
-                      <button class="lab-copy-btn" type="button" data-copy="#cmd-step-9">Copy</button>
+                      <button
+                        class="lab-copy-btn"
+                        type="button"
+                        data-copy="#cmd-step-9"
+                      >
+                        Copy
+                      </button>
                     </div>
                     <pre><code id="cmd-step-9">timedatectl</code></pre>
                   </div>
 
                   <p>
-                    Confirm the local time, time zone, and sync state after the change.
+                    Confirm the local time, time zone, and synchronization state
+                    after the change.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -446,14 +602,20 @@ NTP service: active</code></pre>
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
-                      <button class="lab-copy-btn" type="button" data-copy="#cmd-step-10">Copy</button>
+                      <button
+                        class="lab-copy-btn"
+                        type="button"
+                        data-copy="#cmd-step-10"
+                      >
+                        Copy
+                      </button>
                     </div>
                     <pre><code id="cmd-step-10">journalctl -k -n 5</code></pre>
                   </div>
 
                   <p>
-                    Kernel logs provide context during service issues and audits. This step builds the habit of grabbing the last
-                    few kernel lines as part of your evidence set.
+                    Kernel logs provide context during service issues and audits.
+                    Grabbing the last few kernel lines is a strong incident habit.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -465,78 +627,146 @@ Jan 25 07:18:09 lab142 kernel: audit: type=1100 audit(...): ... unit=cups comm="
 
               <!-- Common breakpoints -->
               <section class="lab-section" id="breakpoints">
-                <h3 class="font-alt lab-section-title m-b-40 m-t-40">Common breakpoints</h3>
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  Common breakpoints
+                </h3>
 
                 <div class="lab-callout">
                   <div class="lab-callout-label">Alias forwarding still not working</div>
                   <p class="m-b-0">
-                    <code>/etc/aliases</code> changes are not active until you run <code>newaliases</code>. Rebuild the database and retry.
+                    <code>/etc/aliases</code>
+                    changes are not active until you run
+                    <code>newaliases</code>
+                    . Rebuild the database and retry.
                   </p>
                 </div>
 
                 <div class="lab-callout">
                   <div class="lab-callout-label">cancel fails: “job not found”</div>
                   <p class="m-b-0">
-                    The job may have completed or the job ID was mistyped. Re-run <code>lpstat -o</code> and copy the exact job name.
+                    The job may have completed or the job ID was mistyped. Re-run
+                    <code>lpstat -o</code>
+                    and copy the exact job name.
                   </p>
                 </div>
 
                 <div class="lab-callout">
                   <div class="lab-callout-label">lp submits but nothing prints</div>
                   <p class="m-b-0">
-                    Queue acceptance is only one signal. In real work you would also check printer state (<code>lpstat -p</code>)
-                    and CUPS logs if jobs stall.
+                    Queue acceptance is only one signal. In real work you would also check
+                    printer state and CUPS logs if jobs stall.
                   </p>
                 </div>
 
                 <div class="lab-callout">
                   <div class="lab-callout-label">Manual time edits behave unexpectedly</div>
                   <p class="m-b-0">
-                    If NTP is active, time may be corrected shortly after a manual change. Use <code>timedatectl</code> to verify
-                    sync state and confirm what the system believes.
+                    If NTP is active, time may be corrected shortly after a manual change. Use
+                    <code>timedatectl</code>
+                    to confirm sync state and current time signals.
                   </p>
                 </div>
               </section>
 
               <!-- Cleanup -->
               <section class="lab-section alt-background" id="cleanup">
-                <h3 class="font-alt lab-section-title m-b-40 m-t-40">Cleanup checklist</h3>
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  Cleanup checklist
+                </h3>
 
                 <p>
-                  If you changed system time only for the lab, return the host to normal time-sync behavior and leave the print
-                  queue clean.
+                  If you changed system time only for the lab, return the host to normal
+                  time-sync behavior and leave the print queue clean.
                 </p>
 
                 <div class="lab-codeblock m-b-40 m-t-40">
                   <div class="lab-codeblock-header">
                     <span>Commands</span>
-                    <button class="lab-copy-btn" type="button" data-copy="#cmd-cleanup">Copy</button>
+                    <button
+                      class="lab-copy-btn"
+                      type="button"
+                      data-copy="#cmd-cleanup"
+                    >
+                      Copy
+                    </button>
                   </div>
-                  <pre><code id="cmd-cleanup"># Verify NTP is on (most lab systems should keep it enabled)
-timedatectl status
-
-# Confirm the print queue is not holding jobs
+                  <pre><code id="cmd-cleanup">timedatectl status
 lpstat -o || true
-
-# Optional: re-check your lab tag entry exists
 journalctl -t lab142 -n 3</code></pre>
                 </div>
               </section>
 
               <!-- Reference -->
               <section class="lab-section" id="reference">
-                <h3 class="font-alt lab-section-title m-b-40 m-t-40">Reference</h3>
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  Reference
+                </h3>
 
                 <ul class="lab-reference-list">
-                  <li><code>newaliases</code>: rebuild alias database for Postfix.</li>
-                  <li><code>systemd-cat -t TAG</code>: write a tagged message into journald.</li>
-                  <li><code>journalctl -t TAG</code>: query journal entries by tag.</li>
-                  <li><code>lpstat -o</code>: show queued print jobs.</li>
-                  <li><code>cancel JOBID</code>: cancel a specific print job.</li>
-                  <li><code>lp /path/to/file</code>: submit a test print job.</li>
-                  <li><code>date -s 'YYYY-MM-DD HH:MM:SS'</code>: set system time (manual).</li>
-                  <li><code>timedatectl</code>: verify time zone and NTP sync state.</li>
-                  <li><code>journalctl -k</code>: kernel messages from the journal.</li>
+                  <li>
+                    <code>newaliases</code>
+                    : Rebuilds the aliases database used by mail services.
+                  </li>
+
+                  <li>
+                    <code>systemd-cat -t &lt;tag&gt;</code>
+                    : Writes a tagged message into journald.
+                    <ul>
+                      <li><code>-t &lt;tag&gt;</code>: Sets the SYSLOG_IDENTIFIER tag.</li>
+                    </ul>
+                  </li>
+
+                  <li>
+                    <code>journalctl -t &lt;tag&gt;</code>
+                    : Queries journal entries by tag.
+                    <ul>
+                      <li><code>-t &lt;tag&gt;</code>: Filters by SYSLOG_IDENTIFIER.</li>
+                      <li><code>-n &lt;n&gt;</code>: Shows the last <code>n</code> lines.</li>
+                    </ul>
+                  </li>
+
+                  <li>
+                    <code>lpstat -o</code>
+                    : Shows queued print jobs.
+                    <ul>
+                      <li><code>-o</code>: Output jobs in the print queue.</li>
+                    </ul>
+                  </li>
+
+                  <li>
+                    <code>cancel &lt;jobid&gt;</code>
+                    : Cancels a specific print job by ID.
+                  </li>
+
+                  <li>
+                    <code>lp &lt;file&gt;</code>
+                    : Submits a print job for a file.
+                  </li>
+
+                  <li>
+                    <code>date -s 'YYYY-MM-DD HH:MM:SS'</code>
+                    : Manually sets the system time.
+                    <ul>
+                      <li><code>-s</code>: Sets time described by the provided string.</li>
+                    </ul>
+                  </li>
+
+                  <li>
+                    <code>timedatectl</code>
+                    : Displays time, timezone, and NTP synchronization state.
+                    <ul>
+                      <li><code>status</code>: Shows detailed time status (optional subcommand).</li>
+                    </ul>
+                  </li>
+
+                  <li>
+                    <code>journalctl -k -n &lt;n&gt;</code>
+                    : Shows the last <code>n</code> kernel messages.
+                    <ul>
+                      <li><code>-k</code>: Limits output to kernel messages.</li>
+                      <li><code>-n &lt;n&gt;</code>: Limits output to the last <code>n</code> entries.</li>
+                    </ul>
+                  </li>
                 </ul>
               </section>
             </div>
@@ -554,10 +784,19 @@ journalctl -t lab142 -n 3</code></pre>
             <div class="col-sm-12">
               <ul class="social-text-links font-alt text-center m-b-20">
                 <li>
-                  <a href="https://github.com/vonds" target="_blank" rel="noopener">Github</a>
+                  <a
+                    href="https://github.com/vonds"
+                    target="_blank"
+                    rel="noopener"
+                    >Github</a
+                  >
                 </li>
                 <li>
-                  <a href="https://www.linkedin.com/in/vonds/" target="_blank" rel="noopener">
+                  <a
+                    href="https://www.linkedin.com/in/vonds/"
+                    target="_blank"
+                    rel="noopener"
+                  >
                     Linkedin
                   </a>
                 </li>
@@ -591,6 +830,7 @@ journalctl -t lab142 -n 3</code></pre>
     <script src="../assets/js/imagesloaded.pkgd.js"></script>
     <script src="../assets/js/isotope.pkgd.min.js"></script>
     <script src="../assets/js/packery-mode.pkgd.min.js"></script>
+    <script src="../assets/js/packery-mode.pkgd.min.js"></script>
     <script src="../assets/js/appear.js"></script>
     <script src="../assets/js/jquery.easing.1.3.js"></script>
     <script src="../assets/js/wow.min.js"></script>
@@ -604,7 +844,7 @@ journalctl -t lab142 -n 3</code></pre>
     <script src="../assets/js/lab.js"></script>
 
     <script>
-      document.getElementById("year").textContent = new Date().getFullYear()
+      document.getElementById('year').textContent = new Date().getFullYear()
     </script>
   </body>
 </html>

@@ -41,7 +41,10 @@
     <link href="../assets/css/lab.css" rel="stylesheet" />
 
     <!-- Fonts -->
-    <link href="https://fonts.googleapis.com/css?family=Dosis" rel="stylesheet" />
+    <link
+      href="https://fonts.googleapis.com/css?family=Dosis"
+      rel="stylesheet"
+    />
   </head>
 
   <body>
@@ -121,7 +124,9 @@
     <!-- WRAPPER -->
     <div class="wrapper">
       <!-- NAVIGATION -->
-      <nav class="navbar navbar-custom navbar-transparent navbar-light navbar-fixed-top">
+      <nav
+        class="navbar navbar-custom navbar-transparent navbar-light navbar-fixed-top"
+      >
         <div class="container">
           <div class="navbar-header">
             <a class="navbar-brand" href="../index.html">
@@ -149,10 +154,20 @@
           </h2>
 
           <nav class="lab-pagination">
-            <a id="prev-lab" class="lab-nav-link" href="#" aria-label="Previous lab">
+            <a
+              id="prev-lab"
+              class="lab-nav-link"
+              href="#"
+              aria-label="Previous lab"
+            >
               &laquo;
             </a>
-            <a id="next-lab" class="lab-nav-link" href="#" aria-label="Next lab">
+            <a
+              id="next-lab"
+              class="lab-nav-link"
+              href="#"
+              aria-label="Next lab"
+            >
               &raquo;
             </a>
           </nav>
@@ -167,7 +182,11 @@
                   </h5>
                   <ul class="docs-nav">
                     <li><a href="#scenario">Scenario</a></li>
+                    <li><a href="#objective">Objective</a></li>
+                    <li><a href="#concepts">Concepts</a></li>
                     <li><a href="#walkthrough">Walkthrough</a></li>
+                    <li><a href="#breakpoints">Breakpoints</a></li>
+                    <li><a href="#cleanup">Cleanup</a></li>
                     <li><a href="#reference">Reference</a></li>
                   </ul>
                 </div>
@@ -177,12 +196,14 @@
             <!-- MAIN CONTENT -->
             <div class="col-sm-8 col-md-9 lab-doc">
               <p class="m-b-20 lab-summary">
-                Validate <code>useradd</code> defaults, prepare required groups and a custom skeleton directory, then
-                provision a contractor account (<code>satoshi</code>) in a single ticket-style <code>useradd</code> command.
-                Verify the result with <code>getent</code>, <code>id</code>, <code>chage</code>, and filesystem checks,
-                then cleanly remove the account and home directory.
+                Validate <code>useradd</code> defaults, then provision a
+                contractor account in one ticket-style command with required
+                groups, aging controls, and a custom skeleton directory. Verify
+                NSS identity, group membership, aging fields, and home contents,
+                then remove the user cleanly.
               </p>
 
+              <!-- Video (kept on page; removed from left panel) -->
               <section class="lab-section" id="video" aria-label="Lab video">
                 <div class="lab-video">
                   <div class="lab-video-embed text-center">
@@ -201,78 +222,200 @@
               <!-- Scenario -->
               <section class="lab-section" id="scenario">
                 <div class="lab-chips" aria-label="Tags">
-                  <span class="lab-chip"><span class="lab-chip-key">rhel</span></span>
-                  <span class="lab-chip"><span class="lab-chip-key">rhcsa</span></span>
-                  <span class="lab-chip"><span class="lab-chip-key">users</span></span>
-                  <span class="lab-chip"><span class="lab-chip-key">useradd</span></span>
-                  <span class="lab-chip"><span class="lab-chip-key">groups</span></span>
-                  <span class="lab-chip"><span class="lab-chip-key">provisioning</span></span>
-                  <span class="lab-chip"><span class="lab-chip-key">policy</span></span>
+                  <span class="lab-chip">
+                    <span class="lab-chip-key">rhel</span>
+                  </span>
+                  <span class="lab-chip">
+                    <span class="lab-chip-key">rhcsa</span>
+                  </span>
+                  <span class="lab-chip">
+                    <span class="lab-chip-key">users</span>
+                  </span>
                 </div>
 
-                <h3 class="font-alt lab-section-title m-b-40 m-t-40">Scenario</h3>
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  Scenario
+                </h3>
 
                 <p>
-                  Ticket <strong>INC-140</strong>: Onboard a contractor account (<code>satoshi</code>) for a short change window.
-                  The account must be created once, match the requirements exactly, and be verified like a real admin task.
+                  Ticket <strong>INC-140</strong>: Onboard a contractor account (
+                  <code>satoshi</code>
+                  ) during a short change window. The account must be created
+                  once, match the requirements exactly, and be verified like a
+                  real admin task.
                 </p>
 
                 <div class="lab-callout">
-                  <div class="lab-callout-label">Requirements</div>
+                  <div class="lab-callout-label">Operator context</div>
                   <p class="m-b-0">
-                    UID <code>1055</code>, home <code>/home/satoshi</code>, shell <code>/bin/bash</code>, primary group
-                    <code>developers</code>, supplementary groups <code>wheel</code> and <code>docker</code>, comment
-                    <code>Satoshi Nakamoto</code>, account expires <code>2025-12-31</code>, inactive lockout
-                    <code>30</code> days after password expiry, custom skeleton <code>/etc/skel-custom</code> containing
-                    <code>README.WELCOME</code>.
+                    “Done” means you can prove the outcome quickly: NSS entry,
+                    group membership, aging fields, and home directory contents.
                   </p>
                 </div>
 
                 <div class="lab-callout">
-                  <div class="lab-callout-label">Ops note</div>
+                  <div class="lab-callout-label">Requirements</div>
                   <p class="m-b-0">
-                    In ticket work, “done” means you can prove the outcome quickly: NSS entry, group membership, aging
-                    fields, and home directory contents.
+                    UID
+                    <code>1055</code>
+                    , home
+                    <code>/home/satoshi</code>
+                    , shell
+                    <code>/bin/bash</code>
+                    , primary group
+                    <code>developers</code>
+                    , supplementary groups
+                    <code>wheel</code>
+                    and
+                    <code>docker</code>
+                    , comment
+                    <code>Satoshi Nakamoto</code>
+                    , account expires
+                    <code>2025-12-31</code>
+                    , inactive lockout
+                    <code>30</code>
+                    days after password expiry, custom skeleton
+                    <code>/etc/skel-custom</code>
+                    containing
+                    <code>README.WELCOME</code>
+                    .
                   </p>
                 </div>
               </section>
 
               <!-- Objective -->
               <section class="lab-section alt-background" id="objective">
-                <h3 class="font-alt lab-section-title m-b-40 m-t-40">Objective</h3>
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  Objective
+                </h3>
                 <ul>
-                  <li>Inspect system-wide <code>useradd</code> defaults.</li>
-                  <li>Ensure prerequisite groups exist: <code>developers</code>, <code>wheel</code>, <code>docker</code>.</li>
-                  <li>Create a custom skeleton directory at <code>/etc/skel-custom</code> with <code>README.WELCOME</code>.</li>
-                  <li>Create <code>satoshi</code> in one <code>useradd</code> command with all ticket requirements.</li>
-                  <li>Verify identity and NSS entry with <code>getent</code> and <code>id</code>.</li>
-                  <li>Verify expiration and aging fields with <code>chage -l</code>.</li>
-                  <li>Verify skeleton deployment in <code>/home/satoshi</code>.</li>
-                  <li>Clean up by removing the user and home directory.</li>
+                  <li>
+                    Inspect system-wide
+                    <code>useradd</code>
+                    defaults.
+                  </li>
+                  <li>
+                    Ensure prerequisite groups exist:
+                    <code>developers</code>
+                    ,
+                    <code>wheel</code>
+                    ,
+                    <code>docker</code>
+                    .
+                  </li>
+                  <li>
+                    Create a custom skeleton directory at
+                    <code>/etc/skel-custom</code>
+                    with
+                    <code>README.WELCOME</code>
+                    .
+                  </li>
+                  <li>
+                    Create
+                    <code>satoshi</code>
+                    in one
+                    <code>useradd</code>
+                    command with all ticket requirements.
+                  </li>
+                  <li>
+                    Verify identity and NSS entry with
+                    <code>getent</code>
+                    and
+                    <code>id</code>
+                    .
+                  </li>
+                  <li>
+                    Verify expiration and aging fields with
+                    <code>chage -l</code>
+                    .
+                  </li>
+                  <li>
+                    Verify skeleton deployment in
+                    <code>/home/satoshi</code>
+                    .
+                  </li>
+                  <li>
+                    Clean up by removing the user and home directory.
+                  </li>
+                </ul>
+              </section>
+
+              <!-- Concepts (no alt-background moving forward) -->
+              <section class="lab-section" id="concepts">
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  Concepts
+                </h3>
+                <ul>
+                  <li>
+                    Default provisioning behavior via
+                    <code>useradd -D</code>
+                    and
+                    <code>/etc/default/useradd</code>
+                    .
+                  </li>
+                  <li>
+                    Idempotent group creation with
+                    <code>groupadd -f</code>
+                    .
+                  </li>
+                  <li>
+                    Skeleton directory seeding using
+                    <code>-m</code>
+                    and
+                    <code>-k</code>
+                    .
+                  </li>
+                  <li>
+                    NSS verification with
+                    <code>getent</code>
+                    (what services actually query).
+                  </li>
+                  <li>
+                    Account aging and expiration fields with
+                    <code>chage -l</code>
+                    .
+                  </li>
+                  <li>
+                    Clean removal using
+                    <code>userdel -r</code>
+                    and filesystem validation.
+                  </li>
                 </ul>
               </section>
 
               <!-- Walkthrough -->
               <section class="lab-section alt-background" id="walkthrough">
-                <h3 class="font-alt lab-section-title m-b-40 m-t-40">Walkthrough</h3>
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  Walkthrough
+                </h3>
 
                 <!-- Step 1 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
-                    <strong class="font-alt">Step 1</strong>: Inspect system-wide defaults for <code>useradd</code>.
+                    <strong class="font-alt">Step 1</strong>
+                    : Inspect system-wide defaults for
+                    <code>useradd</code>
+                    .
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
-                      <button class="lab-copy-btn" type="button" data-copy="#cmd-step-1">Copy</button>
+                      <button
+                        class="lab-copy-btn"
+                        type="button"
+                        data-copy="#cmd-step-1"
+                      >
+                        Copy
+                      </button>
                     </div>
                     <pre><code id="cmd-step-1">useradd -D</code></pre>
                   </div>
 
                   <p>
-                    This shows default values that apply when you do not override them. In ticket work, it’s a fast way to
-                    confirm baseline behavior before you start changing state.
+                    This shows defaults applied when you do not override values.
+                    In ticket work, it is a fast baseline check before changing
+                    state.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -289,87 +432,124 @@ CREATE_MAIL_SPOOL=yes</code></pre>
                 <!-- Step 2 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
-                    <strong class="font-alt">Step 2</strong>: Ensure required groups exist.
+                    <strong class="font-alt">Step 2</strong>
+                    : Ensure required groups exist.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
-                      <button class="lab-copy-btn" type="button" data-copy="#cmd-step-2">Copy</button>
+                      <button
+                        class="lab-copy-btn"
+                        type="button"
+                        data-copy="#cmd-step-2"
+                      >
+                        Copy
+                      </button>
                     </div>
                     <pre><code id="cmd-step-2">sudo groupadd -f developers && sudo groupadd -f docker && sudo groupadd -f wheel</code></pre>
                   </div>
 
                   <p>
-                    <code>-f</code> makes this idempotent: it creates the group if missing and succeeds if it already exists.
+                    <code>-f</code>
+                    makes the operation idempotent: it creates the group if
+                    missing and succeeds if it already exists.
                   </p>
+
+                  <div class="lab-callout">
+                    <div class="lab-callout-label">Note</div>
+                    <p class="m-b-0">
+                      Group IDs vary between systems. Verify group names unless
+                      the ticket requires specific numeric GIDs.
+                    </p>
+                  </div>
                 </div>
 
                 <!-- Step 3 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
-                    <strong class="font-alt">Step 3</strong>: Build the custom skeleton directory and welcome file.
+                    <strong class="font-alt">Step 3</strong>
+                    : Build the custom skeleton directory and welcome file.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Commands</span>
-                      <button class="lab-copy-btn" type="button" data-copy="#cmd-step-3">Copy</button>
+                      <button
+                        class="lab-copy-btn"
+                        type="button"
+                        data-copy="#cmd-step-3"
+                      >
+                        Copy
+                      </button>
                     </div>
                     <pre><code id="cmd-step-3">sudo mkdir -p /etc/skel-custom
 printf 'Welcome. Read the change-window notes in this home directory.\n' | sudo tee /etc/skel-custom/README.WELCOME >/dev/null</code></pre>
                   </div>
 
                   <p>
-                    The skeleton directory is copied into the new home directory when you create the user with
-                    <code>-m</code> and <code>-k</code>.
+                    The skeleton directory is copied into the new home directory
+                    when you create the user with
+                    <code>-m</code>
+                    and point
+                    <code>-k</code>
+                    at the custom skeleton.
                   </p>
                 </div>
 
                 <!-- Step 4 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
-                    <strong class="font-alt">Step 4</strong>: Create the account once with all ticket requirements.
+                    <strong class="font-alt">Step 4</strong>
+                    : Create the account once with all ticket requirements.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
-                      <button class="lab-copy-btn" type="button" data-copy="#cmd-step-4">Copy</button>
+                      <button
+                        class="lab-copy-btn"
+                        type="button"
+                        data-copy="#cmd-step-4"
+                      >
+                        Copy
+                      </button>
                     </div>
                     <pre><code id="cmd-step-4">sudo useradd -m -u 1055 -g developers -G wheel,docker -c 'Satoshi Nakamoto' -s /bin/bash -d /home/satoshi -e 2025-12-31 -f 30 -k /etc/skel-custom satoshi</code></pre>
                   </div>
 
                   <p>
-                    This is a single, ticket-style provisioning command: identity fields, groups, home path, shell, expiry,
-                    inactive policy, and skeleton source are set explicitly.
+                    This is a single, ticket-style provisioning command:
+                    identity fields, groups, home path, shell, expiry, inactive
+                    policy, and skeleton source are set explicitly.
                   </p>
-
-                  <div class="lab-callout">
-                    <div class="lab-callout-label">Note</div>
-                    <p class="m-b-0">
-                      Group IDs vary between systems. Verify group names, not the numeric IDs, unless the ticket requires specific GIDs.
-                    </p>
-                  </div>
                 </div>
 
                 <!-- Step 5 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
-                    <strong class="font-alt">Step 5</strong>: Verify the NSS passwd entry for the new user.
+                    <strong class="font-alt">Step 5</strong>
+                    : Verify the NSS passwd entry for the new user.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
-                      <button class="lab-copy-btn" type="button" data-copy="#cmd-step-5">Copy</button>
+                      <button
+                        class="lab-copy-btn"
+                        type="button"
+                        data-copy="#cmd-step-5"
+                      >
+                        Copy
+                      </button>
                     </div>
                     <pre><code id="cmd-step-5">getent passwd satoshi</code></pre>
                   </div>
 
                   <p>
-                    <code>getent</code> queries NSS, which is what most services rely on. Confirm UID, home directory, shell,
-                    and gecos/comment field.
+                    <code>getent</code>
+                    queries NSS, which is what most services rely on. Confirm
+                    UID, home directory, shell, and the comment field.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -380,20 +560,32 @@ printf 'Welcome. Read the change-window notes in this home directory.\n' | sudo 
                 <!-- Step 6 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
-                    <strong class="font-alt">Step 6</strong>: Verify primary and supplementary groups.
+                    <strong class="font-alt">Step 6</strong>
+                    : Verify primary and supplementary groups.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
-                      <button class="lab-copy-btn" type="button" data-copy="#cmd-step-6">Copy</button>
+                      <button
+                        class="lab-copy-btn"
+                        type="button"
+                        data-copy="#cmd-step-6"
+                      >
+                        Copy
+                      </button>
                     </div>
                     <pre><code id="cmd-step-6">id satoshi</code></pre>
                   </div>
 
                   <p>
-                    Confirm the primary group is <code>developers</code> and the supplementary groups include
-                    <code>wheel</code> and <code>docker</code>.
+                    Confirm the primary group is
+                    <code>developers</code>
+                    and the supplementary groups include
+                    <code>wheel</code>
+                    and
+                    <code>docker</code>
+                    .
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -404,20 +596,28 @@ printf 'Welcome. Read the change-window notes in this home directory.\n' | sudo 
                 <!-- Step 7 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
-                    <strong class="font-alt">Step 7</strong>: Verify expiration and aging fields.
+                    <strong class="font-alt">Step 7</strong>
+                    : Verify expiration and aging fields.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
-                      <button class="lab-copy-btn" type="button" data-copy="#cmd-step-7">Copy</button>
+                      <button
+                        class="lab-copy-btn"
+                        type="button"
+                        data-copy="#cmd-step-7"
+                      >
+                        Copy
+                      </button>
                     </div>
                     <pre><code id="cmd-step-7">sudo chage -l satoshi</code></pre>
                   </div>
 
                   <p>
-                    Confirm the account expiration date is set and review the aging policy fields. The inactive field is tied
-                    to password expiry behavior, so validate what the system is actually reporting.
+                    Confirm the account expiration date is set and review the
+                    aging policy fields. The inactive field is evaluated after
+                    password expiry, so validate what the system is reporting.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -427,9 +627,11 @@ printf 'Welcome. Read the change-window notes in this home directory.\n' | sudo 
                   <div class="lab-callout">
                     <div class="lab-callout-label">Reality check</div>
                     <p class="m-b-0">
-                      If the output still shows <code>Password inactive : never</code>, that usually means the password does not expire
-                      under current policy, so the inactive lockout will never trigger. That is expected unless you also enforce
-                      password max age via <code>PASS_MAX_DAYS</code> or a per-user change.
+                      If the output still shows
+                      <code>Password inactive : never</code>
+                      , that usually means the password does not expire under
+                      current policy, so the inactive lockout will never
+                      trigger.
                     </p>
                   </div>
                 </div>
@@ -437,19 +639,29 @@ printf 'Welcome. Read the change-window notes in this home directory.\n' | sudo 
                 <!-- Step 8 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
-                    <strong class="font-alt">Step 8</strong>: Confirm the skeleton file landed in the user’s home directory.
+                    <strong class="font-alt">Step 8</strong>
+                    : Confirm the skeleton file landed in the user’s home
+                    directory.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
-                      <button class="lab-copy-btn" type="button" data-copy="#cmd-step-8">Copy</button>
+                      <button
+                        class="lab-copy-btn"
+                        type="button"
+                        data-copy="#cmd-step-8"
+                      >
+                        Copy
+                      </button>
                     </div>
                     <pre><code id="cmd-step-8">ls -la /home/satoshi</code></pre>
                   </div>
 
                   <p>
-                    Verify ownership, permissions, and that <code>README.WELCOME</code> exists in the provisioned home directory.
+                    Verify ownership, permissions, and that
+                    <code>README.WELCOME</code>
+                    exists in the provisioned home directory.
                   </p>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -462,121 +674,262 @@ drwxr-xr-x. 1 root    root        34 Feb  1 08:12 ..
 -rw-r--r--. 1 satoshi developers  66 Feb  1 08:12 README.WELCOME</code></pre>
                   </div>
                 </div>
-
-                <!-- Step 9 -->
-                <div class="lab-step">
-                  <div class="lab-step-title">
-                    <strong class="font-alt">Step 9</strong>: Clean up after verification.
-                  </div>
-
-                  <div class="lab-codeblock m-b-40 m-t-40">
-                    <div class="lab-codeblock-header">
-                      <span>Command</span>
-                      <button class="lab-copy-btn" type="button" data-copy="#cmd-step-9">Copy</button>
-                    </div>
-                    <pre><code id="cmd-step-9">sudo userdel -r satoshi</code></pre>
-                  </div>
-
-                  <p>
-                    <code>-r</code> removes the user’s home directory and mail spool (if present), leaving the system clean
-                    for the next lab run.
-                  </p>
-                </div>
               </section>
 
               <!-- Common breakpoints -->
               <section class="lab-section" id="breakpoints">
-                <h3 class="font-alt lab-section-title m-b-40 m-t-40">Common breakpoints</h3>
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  Common breakpoints
+                </h3>
 
                 <div class="lab-callout">
-                  <div class="lab-callout-label">useradd fails: “UID is not unique”</div>
+                  <div class="lab-callout-label">
+                    useradd fails: “UID is not unique”
+                  </div>
                   <p class="m-b-0">
-                    UID <code>1055</code> already exists. Confirm with <code>getent passwd 1055</code> and choose a different UID
-                    only if the ticket allows it.
+                    UID
+                    <code>1055</code>
+                    already exists. Confirm with
+                    <code>getent passwd 1055</code>
+                    and choose a different UID only if the ticket allows it.
                   </p>
                 </div>
 
                 <div class="lab-callout">
                   <div class="lab-callout-label">Primary group missing</div>
                   <p class="m-b-0">
-                    If <code>developers</code> does not exist, <code>useradd</code> fails. Create it first with
-                    <code>groupadd developers</code> (or <code>groupadd -f</code> for idempotence).
+                    If
+                    <code>developers</code>
+                    does not exist,
+                    <code>useradd</code>
+                    fails. Create it first with
+                    <code>groupadd developers</code>
+                    (or
+                    <code>groupadd -f</code>
+                    for idempotence).
                   </p>
                 </div>
 
                 <div class="lab-callout">
-                  <div class="lab-callout-label">Inactive lockout appears as “never”</div>
+                  <div class="lab-callout-label">
+                    Inactive lockout appears as “never”
+                  </div>
                   <p class="m-b-0">
-                    Inactive lockout is evaluated after password expiry. If the account has no password expiry policy, the inactive
-                    lockout never triggers. Validate password max age policy if the ticket expects the lockout to be meaningful.
+                    Inactive lockout is evaluated after password expiry. If the
+                    account has no password expiry policy, the inactive lockout
+                    never triggers.
                   </p>
                 </div>
 
                 <div class="lab-callout">
                   <div class="lab-callout-label">Skeleton file did not copy</div>
                   <p class="m-b-0">
-                    Skeleton contents only copy when the home directory is created. Confirm you used <code>-m</code> and
-                    <code>-k /etc/skel-custom</code>, and that <code>/etc/skel-custom/README.WELCOME</code> exists.
+                    Skeleton contents only copy when the home directory is
+                    created. Confirm you used
+                    <code>-m</code>
+                    and
+                    <code>-k /etc/skel-custom</code>
+                    , and that
+                    <code>/etc/skel-custom/README.WELCOME</code>
+                    exists.
                   </p>
                 </div>
 
                 <div class="lab-callout">
-                  <div class="lab-callout-label">Cleanup leaves files behind</div>
+                  <div class="lab-callout-label">
+                    Cleanup leaves files behind
+                  </div>
                   <p class="m-b-0">
-                    If the user has running processes, <code>userdel -r</code> may warn or fail to fully remove the home.
-                    On real systems you would stop processes (or use <code>pkill -u</code> if appropriate) before reattempting.
+                    If the user has running processes,
+                    <code>userdel -r</code>
+                    may warn or fail to fully remove the home. On real systems
+                    you would stop processes before retrying.
                   </p>
                 </div>
               </section>
 
               <!-- Cleanup -->
               <section class="lab-section alt-background" id="cleanup">
-                <h3 class="font-alt lab-section-title m-b-40 m-t-40">Cleanup checklist</h3>
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  Cleanup checklist
+                </h3>
 
                 <p>
-                  Your goal is to leave the system in a clean state with no leftover account, home directory, or stray group changes
-                  beyond what the lab requires.
+                  Your goal is to leave the system in a clean state with no
+                  leftover account, home directory, or lab-only artifacts.
                 </p>
 
                 <div class="lab-codeblock m-b-40 m-t-40">
                   <div class="lab-codeblock-header">
                     <span>Commands</span>
-                    <button class="lab-copy-btn" type="button" data-copy="#cmd-cleanup">Copy</button>
+                    <button
+                      class="lab-copy-btn"
+                      type="button"
+                      data-copy="#cmd-cleanup"
+                    >
+                      Copy
+                    </button>
                   </div>
-                  <pre><code id="cmd-cleanup"># Remove the user and home
-sudo userdel -r satoshi
-
-# Verify the account is gone
+                  <pre><code id="cmd-cleanup">sudo userdel -r satoshi
 getent passwd satoshi || echo "satoshi removed"
-getent group developers wheel docker | cat
-
-# Optional: remove the custom skeleton directory used for the lab
 sudo rm -rf /etc/skel-custom</code></pre>
                 </div>
 
                 <div class="lab-callout">
-                  <div class="lab-callout-label">Final verification signal</div>
+                  <div class="lab-callout-label">Success signal</div>
                   <p class="m-b-0">
-                    <code>getent passwd satoshi</code> returns nothing, and <code>/home/satoshi</code> does not exist.
+                    <code>getent passwd satoshi</code>
+                    returns nothing, and
+                    <code>/home/satoshi</code>
+                    does not exist.
                   </p>
                 </div>
               </section>
 
               <!-- Reference -->
               <section class="lab-section" id="reference">
-                <h3 class="font-alt lab-section-title m-b-40 m-t-40">Reference</h3>
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  Reference
+                </h3>
 
                 <ul class="lab-reference-list">
-                  <li><code>useradd -D</code>: inspect default useradd settings.</li>
-                  <li><code>groupadd -f</code>: create prerequisite groups idempotently.</li>
-                  <li><code>useradd -m ... -k /etc/skel-custom</code>: create user and seed home from a custom skeleton.</li>
-                  <li><code>-u</code>, <code>-g</code>, <code>-G</code>, <code>-c</code>, <code>-s</code>, <code>-d</code>: identity, group, shell, and home controls.</li>
-                  <li><code>-e YYYY-MM-DD</code>: set account expiration date.</li>
-                  <li><code>-f DAYS</code>: set inactive lockout days after password expiry.</li>
-                  <li><code>getent passwd</code>: validate NSS user entry.</li>
-                  <li><code>id</code>: verify primary and supplementary groups.</li>
-                  <li><code>chage -l</code>: review account aging and expiration fields.</li>
-                  <li><code>userdel -r</code>: remove the user and home directory.</li>
+                  <li>
+                    <code>useradd -D</code>
+                    : Displays current default values used by
+                    <code>useradd</code>
+                    .
+                  </li>
+
+                  <li>
+                    <code>groupadd -f &lt;group&gt;</code>
+                    : Creates a group if missing and succeeds if it already
+                    exists.
+                    <ul>
+                      <li>
+                        <code>-f</code>
+                        : Do not fail if the group already exists.
+                      </li>
+                    </ul>
+                  </li>
+
+                  <li>
+                    <code>mkdir -p &lt;dir&gt;</code>
+                    : Creates a directory path if it does not exist.
+                    <ul>
+                      <li>
+                        <code>-p</code>
+                        : Create parent directories as needed.
+                      </li>
+                    </ul>
+                  </li>
+
+                  <li>
+                    <code>tee &lt;file&gt;</code>
+                    : Writes stdin to a file (useful with
+                    <code>sudo</code>
+                    when redirecting output).
+                    <ul>
+                      <li>
+                        <code>/dev/null</code>
+                        : Discards output when you only want the file write.
+                      </li>
+                    </ul>
+                  </li>
+
+                  <li>
+                    <code>useradd -m -u &lt;uid&gt; -g &lt;group&gt; -G &lt;groups&gt; -c &lt;comment&gt; -s &lt;shell&gt; -d &lt;home&gt; -e &lt;date&gt; -f &lt;days&gt; -k &lt;skel&gt; &lt;user&gt;</code>
+                    : Creates a user with explicit identity fields, groups, home
+                    path, aging controls, and a custom skeleton directory.
+                    <ul>
+                      <li>
+                        <code>-m</code>
+                        : Create the home directory.
+                      </li>
+                      <li>
+                        <code>-u &lt;uid&gt;</code>
+                        : Set numeric UID.
+                      </li>
+                      <li>
+                        <code>-g &lt;group&gt;</code>
+                        : Set primary group by name.
+                      </li>
+                      <li>
+                        <code>-G &lt;groups&gt;</code>
+                        : Set supplementary groups (comma-separated).
+                      </li>
+                      <li>
+                        <code>-c &lt;comment&gt;</code>
+                        : Set the GECOS/comment field.
+                      </li>
+                      <li>
+                        <code>-s &lt;shell&gt;</code>
+                        : Set login shell.
+                      </li>
+                      <li>
+                        <code>-d &lt;home&gt;</code>
+                        : Set home directory path.
+                      </li>
+                      <li>
+                        <code>-e &lt;date&gt;</code>
+                        : Set account expiration date (YYYY-MM-DD).
+                      </li>
+                      <li>
+                        <code>-f &lt;days&gt;</code>
+                        : Set inactive days after password expiry.
+                      </li>
+                      <li>
+                        <code>-k &lt;skel&gt;</code>
+                        : Copy files from a custom skeleton directory.
+                      </li>
+                    </ul>
+                  </li>
+
+                  <li>
+                    <code>getent passwd &lt;user&gt;</code>
+                    : Returns the NSS passwd entry for a user.
+                  </li>
+
+                  <li>
+                    <code>id &lt;user&gt;</code>
+                    : Shows UID, primary group, and supplementary groups.
+                  </li>
+
+                  <li>
+                    <code>chage -l &lt;user&gt;</code>
+                    : Displays account aging and expiration information.
+                  </li>
+
+                  <li>
+                    <code>ls -la &lt;path&gt;</code>
+                    : Lists files with permissions and ownership.
+                  </li>
+
+                  <li>
+                    <code>userdel -r &lt;user&gt;</code>
+                    : Removes a user and the home directory.
+                    <ul>
+                      <li>
+                        <code>-r</code>
+                        : Remove the user’s home directory and mail spool (if
+                        present).
+                      </li>
+                    </ul>
+                  </li>
+
+                  <li>
+                    <code>rm -rf &lt;path&gt;</code>
+                    : Removes a directory tree recursively.
+                    <ul>
+                      <li>
+                        <code>-r</code>
+                        : Remove directories and their contents.
+                      </li>
+                      <li>
+                        <code>-f</code>
+                        : Do not prompt; ignore missing files.
+                      </li>
+                    </ul>
+                  </li>
                 </ul>
               </section>
             </div>
@@ -594,7 +947,13 @@ sudo rm -rf /etc/skel-custom</code></pre>
             <div class="col-sm-12">
               <ul class="social-text-links font-alt text-center m-b-20">
                 <li>
-                  <a href="https://github.com/vonds" target="_blank" rel="noopener">Github</a>
+                  <a
+                    href="https://github.com/vonds"
+                    target="_blank"
+                    rel="noopener"
+                  >
+                    Github
+                  </a>
                 </li>
                 <li>
                   <a
@@ -648,7 +1007,7 @@ sudo rm -rf /etc/skel-custom</code></pre>
     <script src="../assets/js/lab.js"></script>
 
     <script>
-      document.getElementById("year").textContent = new Date().getFullYear()
+      document.getElementById('year').textContent = new Date().getFullYear()
     </script>
   </body>
 </html>
