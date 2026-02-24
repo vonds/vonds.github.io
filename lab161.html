@@ -1,4 +1,3 @@
-<!-- lab160.html -->
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -7,7 +6,7 @@
     <meta name="description" content="exit_0 Documentation" />
     <meta name="name" content="Vonds" />
 
-    <title>Vonds | Lab 160</title>
+    <title>Vonds | Lab 161</title>
 
     <!-- Favicons -->
     <link rel="shortcut icon" href="../assets/images/favicon.png" />
@@ -41,10 +40,7 @@
     <link href="../assets/css/lab.css" rel="stylesheet" />
 
     <!-- Fonts -->
-    <link
-      href="https://fonts.googleapis.com/css?family=Dosis"
-      rel="stylesheet"
-    />
+    <link href="https://fonts.googleapis.com/css?family=Dosis" rel="stylesheet" />
   </head>
 
   <body>
@@ -123,9 +119,7 @@
     <!-- WRAPPER -->
     <div class="wrapper">
       <!-- NAVIGATION -->
-      <nav
-        class="navbar navbar-custom navbar-transparent navbar-light navbar-fixed-top"
-      >
+      <nav class="navbar navbar-custom navbar-transparent navbar-light navbar-fixed-top">
         <div class="container">
           <div class="navbar-header">
             <a class="navbar-brand" href="../index.html">
@@ -149,7 +143,7 @@
       <section class="module">
         <div class="container">
           <h2 class="font-alt module-title m-t-60">
-            Lab 160: Docker Compose
+            Lab 161: Healthchecks (HEALTHCHECK + docker ps)
           </h2>
 
           <nav class="lab-pagination">
@@ -195,10 +189,8 @@
             <!-- MAIN CONTENT -->
             <div class="col-sm-8 col-md-9 lab-doc">
               <p class="m-b-20 lab-summary">
-                Bring up a minimal multi-service stack with Docker Compose,
-                verify both services are running, validate nginx responds,
-                inspect logs, then tear everything down cleanly and remove the
-                working directory.
+                Add a Dockerfile <code>HEALTHCHECK</code> so operators can see container health
+                directly in <code>docker ps</code>. Build, run, verify the health status, and clean up safely.
               </p>
 
               <!-- Video (kept on page; removed from left panel) -->
@@ -206,8 +198,8 @@
                 <div class="lab-video">
                   <div class="lab-video-embed text-center">
                     <iframe
-                      src="https://www.youtube.com/embed/VPbsw1psxXk?si=pgFWMMirHdYlp7yF"
-                      title="YouTube video player"
+                      src="https://www.youtube.com/embed/0m4opgL2qEE?si=CQdIZdxMF0heDG8y"
+                      title="Lab 161 video player"
                       frameborder="0"
                       allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                       referrerpolicy="strict-origin-when-cross-origin"
@@ -221,13 +213,13 @@
               <section class="lab-section" id="scenario">
                 <div class="lab-chips" aria-label="Tags">
                   <span class="lab-chip">
-                    <span class="lab-chip-key">containers</span>
+                    <span class="lab-chip-key">docker</span>
                   </span>
                   <span class="lab-chip">
-                    <span class="lab-chip-key">services</span>
+                    <span class="lab-chip-key">ops</span>
                   </span>
                   <span class="lab-chip">
-                    <span class="lab-chip-key">troubleshooting</span>
+                    <span class="lab-chip-key">reliability</span>
                   </span>
                 </div>
 
@@ -236,17 +228,16 @@
                 </h3>
 
                 <p>
-                  Ops ticket: Spin up a small local stack for testing using Docker
-                  Compose. Bring up nginx and redis, verify both services are
-                  running, check logs, then tear it down.
+                  You are on-call for a small internal platform that runs in Docker. A recent incident
+                  showed containers can appear <strong>Up</strong> while the application inside is non-functional.
+                  You need containers to self-report health so responders can triage faster using standard tooling.
                 </p>
 
                 <div class="lab-callout">
                   <div class="lab-callout-label">Operator context</div>
                   <p class="m-b-0">
-                    Compose is often the fastest way to reproduce a multi-service
-                    environment locally. Evidence is the service status output,
-                    a successful HTTP check, and targeted log inspection.
+                    During incidents, you do not want to SSH into hosts to guess what is broken. Health status in
+                    <code>docker ps</code> gives an immediate signal you can act on before deeper debugging.
                   </p>
                 </div>
               </section>
@@ -257,14 +248,11 @@
                   Objective
                 </h3>
                 <ul>
-                  <li>Confirm Docker Compose is available.</li>
-                  <li>Create a working directory for the stack.</li>
-                  <li>Create a minimal docker-compose.yml (nginx + redis).</li>
-                  <li>Bring up the stack in detached mode.</li>
-                  <li>Verify service status with docker compose ps.</li>
-                  <li>Validate nginx responds on the published port.</li>
-                  <li>Inspect recent logs for the web service.</li>
-                  <li>Tear down the stack and remove the lab directory.</li>
+                  <li>Create an isolated working directory for the lab.</li>
+                  <li>Write a Dockerfile that includes a <code>HEALTHCHECK</code>.</li>
+                  <li>Build an image and run a container from it.</li>
+                  <li>Verify health status using <code>docker ps</code> output formatting.</li>
+                  <li>Clean up containers, images, and lab artifacts.</li>
                 </ul>
               </section>
 
@@ -275,24 +263,16 @@
                 </h3>
                 <ul>
                   <li>
-                    Docker Compose defines a multi-container application in a single
-                    YAML file and manages lifecycle as a unit.
+                    Container liveness versus application health: <strong>Up</strong> does not mean usable.
                   </li>
                   <li>
-                    docker compose up -d creates a project network and starts service
-                    containers in the background.
+                    Dockerfile <code>HEALTHCHECK</code> as an operator-facing signal.
                   </li>
                   <li>
-                    docker compose ps shows service state and published ports for the
-                    current project directory.
+                    Health status visibility through <code>docker ps</code> and structured output (<code>--format</code>).
                   </li>
                   <li>
-                    docker compose logs supports service-scoped log inspection for
-                    quick triage.
-                  </li>
-                  <li>
-                    docker compose down stops and removes containers and the project
-                    network created by Compose.
+                    Safe cleanup: stop/remove containers first, then remove images, then remove directories.
                   </li>
                 </ul>
               </section>
@@ -307,7 +287,7 @@
                 <div class="lab-step">
                   <div class="lab-step-title">
                     <strong class="font-alt">Step 1</strong>
-                    : Verify Docker Compose is installed.
+                    : Create a working directory and enter it.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -321,19 +301,20 @@
                         Copy
                       </button>
                     </div>
-                    <pre><code id="cmd-step-1">docker compose version</code></pre>
+                    <pre><code id="cmd-step-1">mkdir -p /root/healthcheck-lab && cd /root/healthcheck-lab</code></pre>
                   </div>
 
-                  <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code>Docker Compose version v2.24.6</code></pre>
-                  </div>
+                  <p>
+                    Use a dedicated directory so your Dockerfile and build context are isolated. This avoids
+                    unintentionally building with extra files or leaving artifacts behind.
+                  </p>
                 </div>
 
                 <!-- Step 2 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
                     <strong class="font-alt">Step 2</strong>
-                    : Create the working directory and enter it.
+                    : Create a Dockerfile with a <code>HEALTHCHECK</code> using a heredoc.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -347,11 +328,23 @@
                         Copy
                       </button>
                     </div>
-                    <pre><code id="cmd-step-2">mkdir -p /root/compose-lab && cd /root/compose-lab</code></pre>
+                    <pre><code id="cmd-step-2">cat &gt; Dockerfile &lt;&lt; 'EOF'</code></pre>
                   </div>
 
+                  <p>
+                    The heredoc writes the Dockerfile in one operation. The healthcheck below is intentionally simple
+                    and always returns success, so you can validate the signal path first.
+                  </p>
+
                   <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code>(directory ready)</code></pre>
+                    <pre><code>FROM busybox:latest
+# Simple container that stays running
+CMD ["sh", "-c", "while true; do sleep 2; done"]
+
+# Self-reporting health: always succeeds (simulates a passing check)
+HEALTHCHECK --interval=5s --timeout=2s --start-period=3s --retries=3 \
+  CMD sh -c 'exit 0'
+EOF</code></pre>
                   </div>
                 </div>
 
@@ -359,7 +352,7 @@
                 <div class="lab-step">
                   <div class="lab-step-title">
                     <strong class="font-alt">Step 3</strong>
-                    : Create docker-compose.yml (nginx + redis).
+                    : Build the image.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -373,29 +366,24 @@
                         Copy
                       </button>
                     </div>
-                    <pre><code id="cmd-step-3">cat &gt; docker-compose.yml &lt;&lt; 'EOF'
-services:
-  web:
-    image: nginx:latest
-    ports:
-      - "8081:80"
-  cache:
-    image: redis:latest
-    ports:
-      - "6379:6379"
-EOF</code></pre>
+                    <pre><code id="cmd-step-3">docker build -t hc-demo:1 .</code></pre>
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code>(docker-compose.yml created)</code></pre>
+                    <pre><code>  [+] Building 3.1s (6/6) FINISHED
+  =&gt; =&gt; naming to docker.io/library/hc-demo:1</code></pre>
                   </div>
+
+                  <p>
+                    Tag the image so it is easy to reference during verification and cleanup.
+                  </p>
                 </div>
 
                 <!-- Step 4 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
                     <strong class="font-alt">Step 4</strong>
-                    : Start the stack in detached mode.
+                    : Run the container in detached mode.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -409,21 +397,24 @@ EOF</code></pre>
                         Copy
                       </button>
                     </div>
-                    <pre><code id="cmd-step-4">docker compose up -d</code></pre>
+                    <pre><code id="cmd-step-4">docker run -d --name hc1 hc-demo:1</code></pre>
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code>[+] Running 2/2
- ✔ Container compose-lab-web-1    Started
- ✔ Container compose-lab-cache-1  Started</code></pre>
+                    <pre><code>  8c2d7b0e2a6f7c8a0b5a2b1c9f2a3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c</code></pre>
                   </div>
+
+                  <p>
+                    A detached container returns a container ID. The healthcheck will begin evaluating after the
+                    start period and transition the status once Docker records results.
+                  </p>
                 </div>
 
                 <!-- Step 5 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
                     <strong class="font-alt">Step 5</strong>
-                    : Show compose service status.
+                    : Verify health status via <code>docker ps</code> formatting.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -437,21 +428,24 @@ EOF</code></pre>
                         Copy
                       </button>
                     </div>
-                    <pre><code id="cmd-step-5">docker compose ps</code></pre>
+                    <pre><code id="cmd-step-5">docker ps --format '{{.Names}} {{.Status}}'</code></pre>
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code>NAME                 IMAGE          STATUS          PORTS
-compose-lab-web-1     nginx:latest   Up              0.0.0.0:8081-&gt;80/tcp
-compose-lab-cache-1   redis:latest   Up              0.0.0.0:6379-&gt;6379/tcp</code></pre>
+                    <pre><code>  hc1 Up 12 seconds (healthy)</code></pre>
                   </div>
+
+                  <p>
+                    This is the operator-facing outcome: a quick, scriptable view of container health without digging
+                    into logs or entering the container.
+                  </p>
                 </div>
 
                 <!-- Step 6 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
                     <strong class="font-alt">Step 6</strong>
-                    : Verify nginx responds on localhost:8081.
+                    : Stop and remove the container.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -465,20 +459,23 @@ compose-lab-cache-1   redis:latest   Up              0.0.0.0:6379-&gt;6379/tcp</
                         Copy
                       </button>
                     </div>
-                    <pre><code id="cmd-step-6">curl -I http://localhost:8081</code></pre>
+                    <pre><code id="cmd-step-6">docker rm -f hc1</code></pre>
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code>HTTP/1.1 200 OK
-Server: nginx/1.25.x</code></pre>
+                    <pre><code>  hc1</code></pre>
                   </div>
+
+                  <p>
+                    Remove the container first so the image can be deleted cleanly.
+                  </p>
                 </div>
 
                 <!-- Step 7 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
                     <strong class="font-alt">Step 7</strong>
-                    : Show the last 5 lines of logs for the web service.
+                    : Remove the image.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -492,19 +489,25 @@ Server: nginx/1.25.x</code></pre>
                         Copy
                       </button>
                     </div>
-                    <pre><code id="cmd-step-7">docker compose logs --tail 5 web</code></pre>
+                    <pre><code id="cmd-step-7">docker rmi hc-demo:1</code></pre>
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code>web-1  | 127.0.0.1 - - [10/Feb/2026:23:00:00 +0000] "HEAD / HTTP/1.1" 200 0 "-" "curl/7.88.1"</code></pre>
+                    <pre><code>  Untagged: hc-demo:1
+  Deleted: sha256:3d9c1c0b7a9e...</code></pre>
                   </div>
+
+                  <p>
+                    If the image is still referenced by a container, removal will fail. That is usually a signal that
+                    cleanup order is wrong.
+                  </p>
                 </div>
 
                 <!-- Step 8 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
                     <strong class="font-alt">Step 8</strong>
-                    : Stop and remove the stack.
+                    : Remove the lab directory.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -518,41 +521,12 @@ Server: nginx/1.25.x</code></pre>
                         Copy
                       </button>
                     </div>
-                    <pre><code id="cmd-step-8">docker compose down</code></pre>
+                    <pre><code id="cmd-step-8">rm -rf /root/healthcheck-lab</code></pre>
                   </div>
 
-                  <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code>[+] Running 2/2
- ✔ Container compose-lab-cache-1  Removed
- ✔ Container compose-lab-web-1    Removed
- ✔ Network compose-lab_default    Removed</code></pre>
-                  </div>
-                </div>
-
-                <!-- Step 9 -->
-                <div class="lab-step">
-                  <div class="lab-step-title">
-                    <strong class="font-alt">Step 9</strong>
-                    : Remove the lab directory.
-                  </div>
-
-                  <div class="lab-codeblock m-b-40 m-t-40">
-                    <div class="lab-codeblock-header">
-                      <span>Command</span>
-                      <button
-                        class="lab-copy-btn"
-                        type="button"
-                        data-copy="#cmd-step-9"
-                      >
-                        Copy
-                      </button>
-                    </div>
-                    <pre><code id="cmd-step-9">rm -rf /root/compose-lab</code></pre>
-                  </div>
-
-                  <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code>(removed)</code></pre>
-                  </div>
+                  <p>
+                    Clean build context artifacts so your environment stays predictable between lab runs.
+                  </p>
                 </div>
               </section>
 
@@ -564,33 +538,40 @@ Server: nginx/1.25.x</code></pre>
 
                 <div class="lab-callout">
                   <div class="lab-callout-label">
-                    docker compose version fails
+                    Health status stays “starting”
                   </div>
                   <p class="m-b-0">
-                    Confirm Docker is installed and the Compose v2 plugin is
-                    available. On some systems, Compose may be a separate package
-                    or not included by default.
+                    The check may not have executed yet. Wait past the start period, then re-run
+                    <code>docker ps</code> to confirm the status transitions.
                   </p>
                 </div>
 
                 <div class="lab-callout">
                   <div class="lab-callout-label">
-                    curl to localhost:8081 fails
+                    docker build fails: Dockerfile not found
                   </div>
                   <p class="m-b-0">
-                    Confirm the stack is Up in docker compose ps and the port
-                    mapping is present. If the port is already in use on the host,
-                    the web service may fail to start.
+                    Confirm you are in the correct directory and the file is named exactly
+                    <code>Dockerfile</code>. Build context is the current directory when you use <code>.</code>.
                   </p>
                 </div>
 
                 <div class="lab-callout">
                   <div class="lab-callout-label">
-                    docker compose logs is empty
+                    Container name conflict: “hc1 is already in use”
                   </div>
                   <p class="m-b-0">
-                    Generate traffic with curl, then re-check logs. Nginx may not
-                    emit access logs until a request is made.
+                    Remove the existing container (<code>docker rm -f hc1</code>) or run with a new name using
+                    <code>--name</code>.
+                  </p>
+                </div>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">
+                    docker rmi fails: image is being used by a container
+                  </div>
+                  <p class="m-b-0">
+                    A stopped container can still reference an image. Remove containers first, then remove the image.
                   </p>
                 </div>
               </section>
@@ -602,7 +583,8 @@ Server: nginx/1.25.x</code></pre>
                 </h3>
 
                 <p>
-                  Ensure the stack is down and the working directory is removed.
+                  This lab creates a container, an image, and a working directory. If anything failed mid-run, use the
+                  commands below to return the host to a clean baseline.
                 </p>
 
                 <div class="lab-codeblock m-b-40 m-t-40">
@@ -616,17 +598,9 @@ Server: nginx/1.25.x</code></pre>
                       Copy
                     </button>
                   </div>
-                  <pre><code id="cmd-cleanup">cd /root || true
-docker compose -f /root/compose-lab/docker-compose.yml down 2&gt;/dev/null || true
-rm -rf /root/compose-lab</code></pre>
-                </div>
-
-                <div class="lab-callout">
-                  <div class="lab-callout-label">Success signal</div>
-                  <p class="m-b-0">
-                    docker compose ps shows no running services for the project and
-                    /root/compose-lab no longer exists.
-                  </p>
+                  <pre><code id="cmd-cleanup">docker rm -f hc1
+docker rmi hc-demo:1
+rm -rf /root/healthcheck-lab</code></pre>
                 </div>
               </section>
 
@@ -638,76 +612,72 @@ rm -rf /root/compose-lab</code></pre>
 
                 <ul class="lab-reference-list">
                   <li>
-                    <code>docker compose version</code>
-                    : Shows Docker Compose version.
-                  </li>
-
-                  <li>
-                    <code>docker compose up -d</code>
-                    : Creates and starts services in the background.
+                    <code>mkdir -p &lt;dir&gt;</code>
+                    : Creates a directory path (including parents if needed).
                     <ul>
-                      <li>
-                        <code>-d</code>
-                        : Detached mode (runs in background).
-                      </li>
+                      <li><code>-p</code> : Creates parent directories and avoids errors if the directory exists.</li>
                     </ul>
                   </li>
 
                   <li>
-                    <code>docker compose ps</code>
-                    : Shows service status and ports for the current project.
+                    <code>cd &lt;dir&gt;</code>
+                    : Changes the current working directory.
                   </li>
 
                   <li>
-                    <code>docker compose logs --tail &lt;N&gt; &lt;service&gt;</code>
-                    : Shows the last N log lines for a service.
+                    <code>cat &gt; Dockerfile &lt;&lt; 'EOF'</code>
+                    : Writes a file using a heredoc.
                     <ul>
-                      <li>
-                        <code>--tail &lt;N&gt;</code>
-                        : Limits output to the last N lines.
-                      </li>
+                      <li><code>&gt;</code> : Redirects output into a file (overwrites existing content).</li>
+                      <li><code>&lt;&lt; 'EOF'</code> : Reads input until the EOF marker; quotes prevent variable expansion.</li>
                     </ul>
                   </li>
 
                   <li>
-                    <code>docker compose down</code>
-                    : Stops and removes containers and the project network.
-                  </li>
-
-                  <li>
-                    <code>curl -I &lt;url&gt;</code>
-                    : Fetches HTTP response headers for a quick health check.
+                    <code>docker build -t &lt;tag&gt; .</code>
+                    : Builds an image from a Dockerfile in the current directory.
                     <ul>
-                      <li>
-                        <code>-I</code>
-                        : Requests headers only (HEAD).
-                      </li>
+                      <li><code>-t</code> : Assigns a name and optional tag to the image (for example <code>hc-demo:1</code>).</li>
+                      <li><code>.</code> : Uses the current directory as the build context.</li>
                     </ul>
                   </li>
 
                   <li>
-                    <code>cat &gt; &lt;file&gt; &lt;&lt; 'EOF'</code>
-                    : Creates a file using a heredoc.
+                    <code>docker run -d --name &lt;name&gt; &lt;image&gt;</code>
+                    : Starts a container from an image.
                     <ul>
-                      <li>
-                        <code>'EOF'</code>
-                        : Prevents variable expansion while writing the file.
-                      </li>
+                      <li><code>-d</code> : Runs the container in detached mode.</li>
+                      <li><code>--name</code> : Assigns a predictable container name.</li>
                     </ul>
+                  </li>
+
+                  <li>
+                    <code>docker ps --format '&lbrace;&lbrace;.Names&rbrace;&rbrace; &lbrace;&lbrace;.Status&rbrace;&rbrace;'</code>
+                    : Lists running containers with custom output formatting.
+                    <ul>
+                      <li><code>--format</code> : Uses Go templates to select fields like <code>.Names</code> and <code>.Status</code>.</li>
+                    </ul>
+                  </li>
+
+                  <li>
+                    <code>docker rm -f &lt;name&gt;</code>
+                    : Removes a container (force stops it if running).
+                    <ul>
+                      <li><code>-f</code> : Forces removal by stopping the container first.</li>
+                    </ul>
+                  </li>
+
+                  <li>
+                    <code>docker rmi &lt;image&gt;</code>
+                    : Removes an image from the local image store.
                   </li>
 
                   <li>
                     <code>rm -rf &lt;path&gt;</code>
-                    : Removes a directory recursively without prompting.
+                    : Removes files/directories recursively and forcefully.
                     <ul>
-                      <li>
-                        <code>-r</code>
-                        : Recursive removal.
-                      </li>
-                      <li>
-                        <code>-f</code>
-                        : Force removal, no prompts.
-                      </li>
+                      <li><code>-r</code> : Removes directories and their contents recursively.</li>
+                      <li><code>-f</code> : Ignores non-existent files and suppresses prompts.</li>
                     </ul>
                   </li>
                 </ul>
@@ -727,11 +697,7 @@ rm -rf /root/compose-lab</code></pre>
             <div class="col-sm-12">
               <ul class="social-text-links font-alt text-center m-b-20">
                 <li>
-                  <a
-                    href="https://github.com/vonds"
-                    target="_blank"
-                    rel="noopener"
-                  >
+                  <a href="https://github.com/vonds" target="_blank" rel="noopener">
                     Github
                   </a>
                 </li>

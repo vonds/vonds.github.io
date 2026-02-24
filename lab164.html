@@ -1,4 +1,3 @@
-<!-- lab160.html -->
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -7,7 +6,7 @@
     <meta name="description" content="exit_0 Documentation" />
     <meta name="name" content="Vonds" />
 
-    <title>Vonds | Lab 160</title>
+    <title>Vonds | Lab 164</title>
 
     <!-- Favicons -->
     <link rel="shortcut icon" href="../assets/images/favicon.png" />
@@ -41,10 +40,7 @@
     <link href="../assets/css/lab.css" rel="stylesheet" />
 
     <!-- Fonts -->
-    <link
-      href="https://fonts.googleapis.com/css?family=Dosis"
-      rel="stylesheet"
-    />
+    <link href="https://fonts.googleapis.com/css?family=Dosis" rel="stylesheet" />
   </head>
 
   <body>
@@ -123,9 +119,7 @@
     <!-- WRAPPER -->
     <div class="wrapper">
       <!-- NAVIGATION -->
-      <nav
-        class="navbar navbar-custom navbar-transparent navbar-light navbar-fixed-top"
-      >
+      <nav class="navbar navbar-custom navbar-transparent navbar-light navbar-fixed-top">
         <div class="container">
           <div class="navbar-header">
             <a class="navbar-brand" href="../index.html">
@@ -149,7 +143,7 @@
       <section class="module">
         <div class="container">
           <h2 class="font-alt module-title m-t-60">
-            Lab 160: Docker Compose
+            Lab 164: SELinux Basics
           </h2>
 
           <nav class="lab-pagination">
@@ -195,10 +189,8 @@
             <!-- MAIN CONTENT -->
             <div class="col-sm-8 col-md-9 lab-doc">
               <p class="m-b-20 lab-summary">
-                Bring up a minimal multi-service stack with Docker Compose,
-                verify both services are running, validate nginx responds,
-                inspect logs, then tear everything down cleanly and remove the
-                working directory.
+                Verify SELinux mode, inspect file contexts, toggle a boolean, and restore default labels using CLI-only workflows.
+                Prove enforcement by applying a deliberate context change and then returning the system to a known-good baseline.
               </p>
 
               <!-- Video (kept on page; removed from left panel) -->
@@ -206,8 +198,8 @@
                 <div class="lab-video">
                   <div class="lab-video-embed text-center">
                     <iframe
-                      src="https://www.youtube.com/embed/VPbsw1psxXk?si=pgFWMMirHdYlp7yF"
-                      title="YouTube video player"
+                      src="https://www.youtube.com/embed/4FtO6xr79ig?si=rAhmXzoekcHRE7Xf"
+                      title="Lab 164 video player"
                       frameborder="0"
                       allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                       referrerpolicy="strict-origin-when-cross-origin"
@@ -221,13 +213,13 @@
               <section class="lab-section" id="scenario">
                 <div class="lab-chips" aria-label="Tags">
                   <span class="lab-chip">
-                    <span class="lab-chip-key">containers</span>
+                    <span class="lab-chip-key">selinux</span>
                   </span>
                   <span class="lab-chip">
-                    <span class="lab-chip-key">services</span>
+                    <span class="lab-chip-key">security</span>
                   </span>
                   <span class="lab-chip">
-                    <span class="lab-chip-key">troubleshooting</span>
+                    <span class="lab-chip-key">policy</span>
                   </span>
                 </div>
 
@@ -236,17 +228,17 @@
                 </h3>
 
                 <p>
-                  Ops ticket: Spin up a small local stack for testing using Docker
-                  Compose. Bring up nginx and redis, verify both services are
-                  running, check logs, then tear it down.
+                  You are operating a web server where SELinux enforcement is required. A support ticket claims that “SELinux is blocking
+                  normal behavior,” but there is no proof of the current state, no context baseline, and no controlled test to validate
+                  policy changes. You will verify SELinux status, inspect and manipulate a file label in the web root, restore the
+                  default context, and then toggle a targeted boolean used by httpd.
                 </p>
 
                 <div class="lab-callout">
                   <div class="lab-callout-label">Operator context</div>
                   <p class="m-b-0">
-                    Compose is often the fastest way to reproduce a multi-service
-                    environment locally. Evidence is the service status output,
-                    a successful HTTP check, and targeted log inspection.
+                    Do not disable SELinux to “make the problem go away.” Prove the state, collect context evidence, and apply changes
+                    that can be audited and reverted cleanly.
                   </p>
                 </div>
               </section>
@@ -257,14 +249,12 @@
                   Objective
                 </h3>
                 <ul>
-                  <li>Confirm Docker Compose is available.</li>
-                  <li>Create a working directory for the stack.</li>
-                  <li>Create a minimal docker-compose.yml (nginx + redis).</li>
-                  <li>Bring up the stack in detached mode.</li>
-                  <li>Verify service status with docker compose ps.</li>
-                  <li>Validate nginx responds on the published port.</li>
-                  <li>Inspect recent logs for the web service.</li>
-                  <li>Tear down the stack and remove the lab directory.</li>
+                  <li>Confirm SELinux is enabled and identify the active mode.</li>
+                  <li>Inspect the SELinux context on the web root directory.</li>
+                  <li>Create a test file and apply a non-default SELinux type.</li>
+                  <li>Verify the label change and restore the default context with <code>restorecon</code>.</li>
+                  <li>Inspect and toggle the <code>httpd_can_network_connect</code> boolean persistently.</li>
+                  <li>Return the system to baseline by resetting the boolean and removing the test file.</li>
                 </ul>
               </section>
 
@@ -275,24 +265,22 @@
                 </h3>
                 <ul>
                   <li>
-                    Docker Compose defines a multi-container application in a single
-                    YAML file and manages lifecycle as a unit.
+                    SELinux runtime state and mode verification with <code>sestatus</code> and <code>getenforce</code>.
                   </li>
                   <li>
-                    docker compose up -d creates a project network and starts service
-                    containers in the background.
+                    SELinux contexts: user, role, type, and level; why the <code>type</code> is often the operational control point.
                   </li>
                   <li>
-                    docker compose ps shows service state and published ports for the
-                    current project directory.
+                    Inspecting labels on files and directories with <code>ls -Z</code>.
                   </li>
                   <li>
-                    docker compose logs supports service-scoped log inspection for
-                    quick triage.
+                    Temporary context changes with <code>chcon</code> and why they are not policy.
                   </li>
                   <li>
-                    docker compose down stops and removes containers and the project
-                    network created by Compose.
+                    Restoring default labels using <code>restorecon</code> against the policy’s file context mapping.
+                  </li>
+                  <li>
+                    Booleans as tunable policy switches and persistent changes with <code>setsebool -P</code>.
                   </li>
                 </ul>
               </section>
@@ -307,7 +295,7 @@
                 <div class="lab-step">
                   <div class="lab-step-title">
                     <strong class="font-alt">Step 1</strong>
-                    : Verify Docker Compose is installed.
+                    : Check SELinux status.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -321,19 +309,27 @@
                         Copy
                       </button>
                     </div>
-                    <pre><code id="cmd-step-1">docker compose version</code></pre>
+                    <pre><code id="cmd-step-1">sestatus</code></pre>
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code>Docker Compose version v2.24.6</code></pre>
+                    <pre><code>  SELinux status:                 enabled
+  Loaded policy name:             targeted
+  Current mode:                   Enforcing
+  Mode from config file:          Enforcing</code></pre>
                   </div>
+
+                  <p>
+                    This is your authoritative baseline. Capture enabled/disabled and the current mode before you touch booleans,
+                    contexts, or service behavior.
+                  </p>
                 </div>
 
                 <!-- Step 2 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
                     <strong class="font-alt">Step 2</strong>
-                    : Create the working directory and enter it.
+                    : Display current enforcing mode.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -347,19 +343,24 @@
                         Copy
                       </button>
                     </div>
-                    <pre><code id="cmd-step-2">mkdir -p /root/compose-lab && cd /root/compose-lab</code></pre>
+                    <pre><code id="cmd-step-2">getenforce</code></pre>
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code>(directory ready)</code></pre>
+                    <pre><code>  Enforcing</code></pre>
                   </div>
+
+                  <p>
+                    <code>getenforce</code> provides the quick operational view. It is useful in scripts and in incident response when you
+                    need a single-value truth.
+                  </p>
                 </div>
 
                 <!-- Step 3 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
                     <strong class="font-alt">Step 3</strong>
-                    : Create docker-compose.yml (nginx + redis).
+                    : Show SELinux context for the web root directory.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -373,29 +374,24 @@
                         Copy
                       </button>
                     </div>
-                    <pre><code id="cmd-step-3">cat &gt; docker-compose.yml &lt;&lt; 'EOF'
-services:
-  web:
-    image: nginx:latest
-    ports:
-      - "8081:80"
-  cache:
-    image: redis:latest
-    ports:
-      - "6379:6379"
-EOF</code></pre>
+                    <pre><code id="cmd-step-3">ls -Z /var/www/html</code></pre>
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code>(docker-compose.yml created)</code></pre>
+                    <pre><code>  drwxr-xr-x. root root system_u:object_r:httpd_sys_content_t:s0 /var/www/html</code></pre>
                   </div>
+
+                  <p>
+                    This is the expected type for static web content. When a file under the document root has the wrong type,
+                    httpd can be blocked even if standard UNIX permissions look correct.
+                  </p>
                 </div>
 
                 <!-- Step 4 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
                     <strong class="font-alt">Step 4</strong>
-                    : Start the stack in detached mode.
+                    : Create a test file in the web root.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -409,21 +405,32 @@ EOF</code></pre>
                         Copy
                       </button>
                     </div>
-                    <pre><code id="cmd-step-4">docker compose up -d</code></pre>
+                    <pre><code id="cmd-step-4">touch /var/www/html/selinux_test.txt</code></pre>
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code>[+] Running 2/2
- ✔ Container compose-lab-web-1    Started
- ✔ Container compose-lab-cache-1  Started</code></pre>
+                    <pre><code>  File created.</code></pre>
                   </div>
+
+                  <p>
+                    This file is a controlled test artifact. You will deliberately apply a wrong label to prove how SELinux labeling
+                    impacts access decisions.
+                  </p>
                 </div>
 
                 <!-- Step 5 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
                     <strong class="font-alt">Step 5</strong>
-                    : Show compose service status.
+                    : Change its SELinux type to <code>user_home_t</code>.
+                  </div>
+
+                  <div class="lab-callout">
+                    <div class="lab-callout-label">Safety note</div>
+                    <p class="m-b-0">
+                      <code>chcon</code> is a local label change and is not persistent policy. Use it for controlled testing, then
+                      restore defaults with <code>restorecon</code>.
+                    </p>
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -437,21 +444,24 @@ EOF</code></pre>
                         Copy
                       </button>
                     </div>
-                    <pre><code id="cmd-step-5">docker compose ps</code></pre>
+                    <pre><code id="cmd-step-5">chcon -t user_home_t /var/www/html/selinux_test.txt</code></pre>
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code>NAME                 IMAGE          STATUS          PORTS
-compose-lab-web-1     nginx:latest   Up              0.0.0.0:8081-&gt;80/tcp
-compose-lab-cache-1   redis:latest   Up              0.0.0.0:6379-&gt;6379/tcp</code></pre>
+                    <pre><code>  Context modified.</code></pre>
                   </div>
+
+                  <p>
+                    You have now created a mismatch: a user-home type inside the web root. This is the kind of state that produces
+                    “it works on one box but not another” incidents if labels drift.
+                  </p>
                 </div>
 
                 <!-- Step 6 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
                     <strong class="font-alt">Step 6</strong>
-                    : Verify nginx responds on localhost:8081.
+                    : Verify the new label.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -465,20 +475,23 @@ compose-lab-cache-1   redis:latest   Up              0.0.0.0:6379-&gt;6379/tcp</
                         Copy
                       </button>
                     </div>
-                    <pre><code id="cmd-step-6">curl -I http://localhost:8081</code></pre>
+                    <pre><code id="cmd-step-6">ls -Z /var/www/html/selinux_test.txt</code></pre>
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code>HTTP/1.1 200 OK
-Server: nginx/1.25.x</code></pre>
+                    <pre><code>  -rw-r--r--. root root system_u:object_r:user_home_t:s0 selinux_test.txt</code></pre>
                   </div>
+
+                  <p>
+                    Confirm the type changed to <code>user_home_t</code>. This is your “before restorecon” evidence.
+                  </p>
                 </div>
 
                 <!-- Step 7 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
                     <strong class="font-alt">Step 7</strong>
-                    : Show the last 5 lines of logs for the web service.
+                    : Restore the default context.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -492,19 +505,24 @@ Server: nginx/1.25.x</code></pre>
                         Copy
                       </button>
                     </div>
-                    <pre><code id="cmd-step-7">docker compose logs --tail 5 web</code></pre>
+                    <pre><code id="cmd-step-7">restorecon -v /var/www/html/selinux_test.txt</code></pre>
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code>web-1  | 127.0.0.1 - - [10/Feb/2026:23:00:00 +0000] "HEAD / HTTP/1.1" 200 0 "-" "curl/7.88.1"</code></pre>
+                    <pre><code>  restorecon reset /var/www/html/selinux_test.txt context to httpd_sys_content_t</code></pre>
                   </div>
+
+                  <p>
+                    <code>restorecon</code> returns the file to the policy-defined label for that path. This is the standard operational
+                    recovery for label drift.
+                  </p>
                 </div>
 
                 <!-- Step 8 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
                     <strong class="font-alt">Step 8</strong>
-                    : Stop and remove the stack.
+                    : Check boolean <code>httpd_can_network_connect</code>.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -518,22 +536,32 @@ Server: nginx/1.25.x</code></pre>
                         Copy
                       </button>
                     </div>
-                    <pre><code id="cmd-step-8">docker compose down</code></pre>
+                    <pre><code id="cmd-step-8">getsebool httpd_can_network_connect</code></pre>
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code>[+] Running 2/2
- ✔ Container compose-lab-cache-1  Removed
- ✔ Container compose-lab-web-1    Removed
- ✔ Network compose-lab_default    Removed</code></pre>
+                    <pre><code>  httpd_can_network_connect --> off</code></pre>
                   </div>
+
+                  <p>
+                    Booleans are explicit policy switches. Before you change one, capture the current value and confirm you understand
+                    the intended behavior impact.
+                  </p>
                 </div>
 
                 <!-- Step 9 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
                     <strong class="font-alt">Step 9</strong>
-                    : Remove the lab directory.
+                    : Enable the boolean persistently.
+                  </div>
+
+                  <div class="lab-callout">
+                    <div class="lab-callout-label">Persistence note</div>
+                    <p class="m-b-0">
+                      <code>-P</code> writes the boolean setting so it survives reboot. Without persistence, a reboot can silently revert
+                      behavior and reintroduce the incident.
+                    </p>
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -547,12 +575,45 @@ Server: nginx/1.25.x</code></pre>
                         Copy
                       </button>
                     </div>
-                    <pre><code id="cmd-step-9">rm -rf /root/compose-lab</code></pre>
+                    <pre><code id="cmd-step-9">setsebool -P httpd_can_network_connect on</code></pre>
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code>(removed)</code></pre>
+                    <pre><code>  Boolean updated.</code></pre>
                   </div>
+
+                  <p>
+                    This change allows httpd to initiate outbound network connections where policy requires it. Treat boolean changes
+                    as configuration changes that must be tracked.
+                  </p>
+                </div>
+
+                <!-- Step 10 -->
+                <div class="lab-step">
+                  <div class="lab-step-title">
+                    <strong class="font-alt">Step 10</strong>
+                    : Cleanup: disable the boolean and remove the test file.
+                  </div>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <div class="lab-codeblock-header">
+                      <span>Commands</span>
+                      <button
+                        class="lab-copy-btn"
+                        type="button"
+                        data-copy="#cmd-step-10"
+                      >
+                        Copy
+                      </button>
+                    </div>
+                    <pre><code id="cmd-step-10">setsebool -P httpd_can_network_connect off
+rm -f /var/www/html/selinux_test.txt</code></pre>
+                  </div>
+
+                  <p>
+                    This returns the system to baseline. You should not leave a modified boolean or stray artifacts behind after a
+                    controlled policy test.
+                  </p>
                 </div>
               </section>
 
@@ -564,33 +625,41 @@ Server: nginx/1.25.x</code></pre>
 
                 <div class="lab-callout">
                   <div class="lab-callout-label">
-                    docker compose version fails
+                    SELinux is disabled or permissive
                   </div>
                   <p class="m-b-0">
-                    Confirm Docker is installed and the Compose v2 plugin is
-                    available. On some systems, Compose may be a separate package
-                    or not included by default.
+                    If <code>sestatus</code> shows disabled or permissive, you cannot treat SELinux as an enforcement layer. Confirm the
+                    operational requirement and reconcile runtime mode with the config file setting.
                   </p>
                 </div>
 
                 <div class="lab-callout">
                   <div class="lab-callout-label">
-                    curl to localhost:8081 fails
+                    Context output does not include httpd_sys_content_t
                   </div>
                   <p class="m-b-0">
-                    Confirm the stack is Up in docker compose ps and the port
-                    mapping is present. If the port is already in use on the host,
-                    the web service may fail to start.
+                    If <code>/var/www/html</code> is not labeled <code>httpd_sys_content_t</code>, investigate label drift across the path.
+                    Restore the default directory context before troubleshooting application behavior.
                   </p>
                 </div>
 
                 <div class="lab-callout">
                   <div class="lab-callout-label">
-                    docker compose logs is empty
+                    restorecon does not change the label
                   </div>
                   <p class="m-b-0">
-                    Generate traffic with curl, then re-check logs. Nginx may not
-                    emit access logs until a request is made.
+                    If the label does not reset, confirm the path matches the expected file context mapping. Verify you targeted the
+                    correct file and rerun with verbose output.
+                  </p>
+                </div>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">
+                    setsebool -P takes a long time
+                  </div>
+                  <p class="m-b-0">
+                    Persistent boolean updates may trigger policy rebuild operations. Do not interrupt the process. Treat it as a
+                    change that can impact production timing.
                   </p>
                 </div>
               </section>
@@ -602,7 +671,8 @@ Server: nginx/1.25.x</code></pre>
                 </h3>
 
                 <p>
-                  Ensure the stack is down and the working directory is removed.
+                  This lab modifies a boolean and creates a test file. Cleanup is restoring the boolean to its baseline state and
+                  removing the test artifact from the web root.
                 </p>
 
                 <div class="lab-codeblock m-b-40 m-t-40">
@@ -616,16 +686,16 @@ Server: nginx/1.25.x</code></pre>
                       Copy
                     </button>
                   </div>
-                  <pre><code id="cmd-cleanup">cd /root || true
-docker compose -f /root/compose-lab/docker-compose.yml down 2&gt;/dev/null || true
-rm -rf /root/compose-lab</code></pre>
+                  <pre><code id="cmd-cleanup">setsebool -P httpd_can_network_connect off
+rm -f /var/www/html/selinux_test.txt
+ls -Z /var/www/html</code></pre>
                 </div>
 
                 <div class="lab-callout">
                   <div class="lab-callout-label">Success signal</div>
                   <p class="m-b-0">
-                    docker compose ps shows no running services for the project and
-                    /root/compose-lab no longer exists.
+                    The test file is removed, <code>httpd_can_network_connect</code> is back to the expected value, and the web root
+                    shows the correct SELinux type.
                   </p>
                 </div>
               </section>
@@ -638,76 +708,64 @@ rm -rf /root/compose-lab</code></pre>
 
                 <ul class="lab-reference-list">
                   <li>
-                    <code>docker compose version</code>
-                    : Shows Docker Compose version.
+                    <code>sestatus</code>
+                    : Shows SELinux status, policy, and current mode.
                   </li>
 
                   <li>
-                    <code>docker compose up -d</code>
-                    : Creates and starts services in the background.
+                    <code>getenforce</code>
+                    : Prints the current SELinux mode.
+                  </li>
+
+                  <li>
+                    <code>ls -Z &lt;path&gt;</code>
+                    : Displays SELinux context labels for files and directories.
                     <ul>
-                      <li>
-                        <code>-d</code>
-                        : Detached mode (runs in background).
-                      </li>
+                      <li><code>-Z</code> : Prints SELinux security context information.</li>
                     </ul>
                   </li>
 
                   <li>
-                    <code>docker compose ps</code>
-                    : Shows service status and ports for the current project.
+                    <code>touch &lt;file&gt;</code>
+                    : Creates an empty file (or updates timestamps if it exists).
                   </li>
 
                   <li>
-                    <code>docker compose logs --tail &lt;N&gt; &lt;service&gt;</code>
-                    : Shows the last N log lines for a service.
+                    <code>chcon -t &lt;type&gt; &lt;path&gt;</code>
+                    : Changes the SELinux type on a file or directory.
                     <ul>
-                      <li>
-                        <code>--tail &lt;N&gt;</code>
-                        : Limits output to the last N lines.
-                      </li>
+                      <li><code>-t</code> : Sets the SELinux type field in the context.</li>
+                      <li><code>user_home_t</code> : Example type used to simulate an incorrect label.</li>
                     </ul>
                   </li>
 
                   <li>
-                    <code>docker compose down</code>
-                    : Stops and removes containers and the project network.
-                  </li>
-
-                  <li>
-                    <code>curl -I &lt;url&gt;</code>
-                    : Fetches HTTP response headers for a quick health check.
+                    <code>restorecon -v &lt;path&gt;</code>
+                    : Restores the default SELinux context based on policy mappings.
                     <ul>
-                      <li>
-                        <code>-I</code>
-                        : Requests headers only (HEAD).
-                      </li>
+                      <li><code>-v</code> : Prints changes as contexts are reset.</li>
                     </ul>
                   </li>
 
                   <li>
-                    <code>cat &gt; &lt;file&gt; &lt;&lt; 'EOF'</code>
-                    : Creates a file using a heredoc.
+                    <code>getsebool &lt;boolean&gt;</code>
+                    : Displays the current value of an SELinux boolean.
+                  </li>
+
+                  <li>
+                    <code>setsebool -P &lt;boolean&gt; on|off</code>
+                    : Sets an SELinux boolean value persistently.
                     <ul>
-                      <li>
-                        <code>'EOF'</code>
-                        : Prevents variable expansion while writing the file.
-                      </li>
+                      <li><code>-P</code> : Makes the change persistent across reboots.</li>
+                      <li><code>httpd_can_network_connect</code> : Boolean controlling outbound network connections for httpd.</li>
                     </ul>
                   </li>
 
                   <li>
-                    <code>rm -rf &lt;path&gt;</code>
-                    : Removes a directory recursively without prompting.
+                    <code>rm -f &lt;file&gt;</code>
+                    : Removes a file without prompting (even if it is missing).
                     <ul>
-                      <li>
-                        <code>-r</code>
-                        : Recursive removal.
-                      </li>
-                      <li>
-                        <code>-f</code>
-                        : Force removal, no prompts.
-                      </li>
+                      <li><code>-f</code> : Forces removal and suppresses most errors.</li>
                     </ul>
                   </li>
                 </ul>

@@ -1,4 +1,3 @@
-<!-- lab160.html -->
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -7,7 +6,7 @@
     <meta name="description" content="exit_0 Documentation" />
     <meta name="name" content="Vonds" />
 
-    <title>Vonds | Lab 160</title>
+    <title>Vonds | Lab 162</title>
 
     <!-- Favicons -->
     <link rel="shortcut icon" href="../assets/images/favicon.png" />
@@ -41,10 +40,7 @@
     <link href="../assets/css/lab.css" rel="stylesheet" />
 
     <!-- Fonts -->
-    <link
-      href="https://fonts.googleapis.com/css?family=Dosis"
-      rel="stylesheet"
-    />
+    <link href="https://fonts.googleapis.com/css?family=Dosis" rel="stylesheet" />
   </head>
 
   <body>
@@ -123,9 +119,7 @@
     <!-- WRAPPER -->
     <div class="wrapper">
       <!-- NAVIGATION -->
-      <nav
-        class="navbar navbar-custom navbar-transparent navbar-light navbar-fixed-top"
-      >
+      <nav class="navbar navbar-custom navbar-transparent navbar-light navbar-fixed-top">
         <div class="container">
           <div class="navbar-header">
             <a class="navbar-brand" href="../index.html">
@@ -149,7 +143,7 @@
       <section class="module">
         <div class="container">
           <h2 class="font-alt module-title m-t-60">
-            Lab 160: Docker Compose
+            Lab 162: Flatpak Real-World App Deployment (Obsidian)
           </h2>
 
           <nav class="lab-pagination">
@@ -195,10 +189,8 @@
             <!-- MAIN CONTENT -->
             <div class="col-sm-8 col-md-9 lab-doc">
               <p class="m-b-20 lab-summary">
-                Bring up a minimal multi-service stack with Docker Compose,
-                verify both services are running, validate nginx responds,
-                inspect logs, then tear everything down cleanly and remove the
-                working directory.
+                Deploy Obsidian on a managed workstation using Flatpak when RPM installs are not allowed.
+                Verify remotes, install, validate, update, and uninstall using standard Flatpak workflows.
               </p>
 
               <!-- Video (kept on page; removed from left panel) -->
@@ -206,8 +198,8 @@
                 <div class="lab-video">
                   <div class="lab-video-embed text-center">
                     <iframe
-                      src="https://www.youtube.com/embed/VPbsw1psxXk?si=pgFWMMirHdYlp7yF"
-                      title="YouTube video player"
+                      src="https://www.youtube.com/embed/gBf9x6ShOjM?si=nE25oZ3UL2MCGzNH"
+                      title="Lab 162 video player"
                       frameborder="0"
                       allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                       referrerpolicy="strict-origin-when-cross-origin"
@@ -221,13 +213,13 @@
               <section class="lab-section" id="scenario">
                 <div class="lab-chips" aria-label="Tags">
                   <span class="lab-chip">
-                    <span class="lab-chip-key">containers</span>
+                    <span class="lab-chip-key">flatpak</span>
                   </span>
                   <span class="lab-chip">
-                    <span class="lab-chip-key">services</span>
+                    <span class="lab-chip-key">desktop</span>
                   </span>
                   <span class="lab-chip">
-                    <span class="lab-chip-key">troubleshooting</span>
+                    <span class="lab-chip-key">support</span>
                   </span>
                 </div>
 
@@ -236,17 +228,17 @@
                 </h3>
 
                 <p>
-                  Ops ticket: Spin up a small local stack for testing using Docker
-                  Compose. Bring up nginx and redis, verify both services are
-                  running, check logs, then tear it down.
+                  A developer on a managed workstation requests <strong>Obsidian</strong> for documentation.
+                  They cannot install RPMs due to policy controls. You must deploy the app using Flatpak,
+                  verify that Flatpak is functional, add Flathub if missing, install the app, confirm it runs,
+                  apply updates, and remove it cleanly when requested.
                 </p>
 
                 <div class="lab-callout">
                   <div class="lab-callout-label">Operator context</div>
                   <p class="m-b-0">
-                    Compose is often the fastest way to reproduce a multi-service
-                    environment locally. Evidence is the service status output,
-                    a successful HTTP check, and targeted log inspection.
+                    In locked-down environments, app delivery often shifts from package managers to sandboxed
+                    runtimes. Flatpak is a standard path to ship desktop apps without breaking workstation policy.
                   </p>
                 </div>
               </section>
@@ -257,14 +249,11 @@
                   Objective
                 </h3>
                 <ul>
-                  <li>Confirm Docker Compose is available.</li>
-                  <li>Create a working directory for the stack.</li>
-                  <li>Create a minimal docker-compose.yml (nginx + redis).</li>
-                  <li>Bring up the stack in detached mode.</li>
-                  <li>Verify service status with docker compose ps.</li>
-                  <li>Validate nginx responds on the published port.</li>
-                  <li>Inspect recent logs for the web service.</li>
-                  <li>Tear down the stack and remove the lab directory.</li>
+                  <li>Confirm Flatpak is installed and functional.</li>
+                  <li>Review configured remotes and add Flathub if missing.</li>
+                  <li>Search for Obsidian and identify the correct application ID.</li>
+                  <li>Install Obsidian, verify installation details, and confirm it launches.</li>
+                  <li>Update Flatpak applications and uninstall Obsidian when requested.</li>
                 </ul>
               </section>
 
@@ -275,24 +264,19 @@
                 </h3>
                 <ul>
                   <li>
-                    Docker Compose defines a multi-container application in a single
-                    YAML file and manages lifecycle as a unit.
+                    Flatpak as a policy-friendly deployment path for managed workstations.
                   </li>
                   <li>
-                    docker compose up -d creates a project network and starts service
-                    containers in the background.
+                    Remotes (repositories) and system-wide versus user installations.
                   </li>
                   <li>
-                    docker compose ps shows service state and published ports for the
-                    current project directory.
+                    Application IDs as the stable install/run/uninstall identifier.
                   </li>
                   <li>
-                    docker compose logs supports service-scoped log inspection for
-                    quick triage.
+                    Verifying state with <code>flatpak list</code> and <code>flatpak info</code>.
                   </li>
                   <li>
-                    docker compose down stops and removes containers and the project
-                    network created by Compose.
+                    Operational hygiene: update regularly and remove apps cleanly when requested.
                   </li>
                 </ul>
               </section>
@@ -307,7 +291,7 @@
                 <div class="lab-step">
                   <div class="lab-step-title">
                     <strong class="font-alt">Step 1</strong>
-                    : Verify Docker Compose is installed.
+                    : Confirm Flatpak is installed.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -321,19 +305,24 @@
                         Copy
                       </button>
                     </div>
-                    <pre><code id="cmd-step-1">docker compose version</code></pre>
+                    <pre><code id="cmd-step-1">flatpak --version</code></pre>
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code>Docker Compose version v2.24.6</code></pre>
+                    <pre><code>  Flatpak 1.14.6</code></pre>
                   </div>
+
+                  <p>
+                    Confirming the version is a fast signal that the client is present and runnable. If Flatpak is
+                    missing, the request becomes a policy or base-image problem rather than an application problem.
+                  </p>
                 </div>
 
                 <!-- Step 2 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
                     <strong class="font-alt">Step 2</strong>
-                    : Create the working directory and enter it.
+                    : Check configured Flatpak remotes.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -347,19 +336,33 @@
                         Copy
                       </button>
                     </div>
-                    <pre><code id="cmd-step-2">mkdir -p /root/compose-lab && cd /root/compose-lab</code></pre>
+                    <pre><code id="cmd-step-2">flatpak remotes --show-details</code></pre>
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code>(directory ready)</code></pre>
+                    <pre><code>  Name    Title   URL                                      Collection ID  Subset  Filter  Priority  Options
+  fedora  Fedora  oci+https://registry.fedoraproject.org    -              -       -       1         system</code></pre>
                   </div>
+
+                  <p>
+                    Remotes determine where apps and runtimes come from. Many managed systems ship with a vendor
+                    remote but not Flathub.
+                  </p>
                 </div>
 
                 <!-- Step 3 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
                     <strong class="font-alt">Step 3</strong>
-                    : Create docker-compose.yml (nginx + redis).
+                    : Add Flathub system-wide if it is missing.
+                  </div>
+
+                  <div class="lab-callout">
+                    <div class="lab-callout-label">Change control</div>
+                    <p class="m-b-0">
+                      Adding a new remote changes where software can be sourced. In enterprise environments, this is
+                      often ticketed and approved explicitly.
+                    </p>
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -373,29 +376,24 @@
                         Copy
                       </button>
                     </div>
-                    <pre><code id="cmd-step-3">cat &gt; docker-compose.yml &lt;&lt; 'EOF'
-services:
-  web:
-    image: nginx:latest
-    ports:
-      - "8081:80"
-  cache:
-    image: redis:latest
-    ports:
-      - "6379:6379"
-EOF</code></pre>
+                    <pre><code id="cmd-step-3">sudo flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo</code></pre>
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code>(docker-compose.yml created)</code></pre>
+                    <pre><code>  [sudo] password for lab:
+  Remote 'flathub' successfully added.</code></pre>
                   </div>
+
+                  <p>
+                    <code>--if-not-exists</code> makes this safe to rerun in automation or repeatable lab workflows.
+                  </p>
                 </div>
 
                 <!-- Step 4 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
                     <strong class="font-alt">Step 4</strong>
-                    : Start the stack in detached mode.
+                    : Confirm Flathub appears in the remote list.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -409,21 +407,25 @@ EOF</code></pre>
                         Copy
                       </button>
                     </div>
-                    <pre><code id="cmd-step-4">docker compose up -d</code></pre>
+                    <pre><code id="cmd-step-4">flatpak remotes</code></pre>
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code>[+] Running 2/2
- ✔ Container compose-lab-web-1    Started
- ✔ Container compose-lab-cache-1  Started</code></pre>
+                    <pre><code>  Name
+  fedora
+  flathub</code></pre>
                   </div>
+
+                  <p>
+                    This confirms your software source is configured before you attempt to search or install.
+                  </p>
                 </div>
 
                 <!-- Step 5 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
                     <strong class="font-alt">Step 5</strong>
-                    : Show compose service status.
+                    : Search for Obsidian and capture the application ID.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -437,21 +439,25 @@ EOF</code></pre>
                         Copy
                       </button>
                     </div>
-                    <pre><code id="cmd-step-5">docker compose ps</code></pre>
+                    <pre><code id="cmd-step-5">flatpak search obsidian</code></pre>
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code>NAME                 IMAGE          STATUS          PORTS
-compose-lab-web-1     nginx:latest   Up              0.0.0.0:8081-&gt;80/tcp
-compose-lab-cache-1   redis:latest   Up              0.0.0.0:6379-&gt;6379/tcp</code></pre>
+                    <pre><code>  Name      Description                    Application ID         Version  Branch  Remotes
+  Obsidian  Markdown-based knowledge base  md.obsidian.Obsidian   1.5.8    stable  flathub</code></pre>
                   </div>
+
+                  <p>
+                    The application ID is what you will use for install, run, info, and uninstall. It is the reliable
+                    identifier to document in tickets and runbooks.
+                  </p>
                 </div>
 
                 <!-- Step 6 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
                     <strong class="font-alt">Step 6</strong>
-                    : Verify nginx responds on localhost:8081.
+                    : Install Obsidian from Flathub.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -465,20 +471,29 @@ compose-lab-cache-1   redis:latest   Up              0.0.0.0:6379-&gt;6379/tcp</
                         Copy
                       </button>
                     </div>
-                    <pre><code id="cmd-step-6">curl -I http://localhost:8081</code></pre>
+                    <pre><code id="cmd-step-6">flatpak install -y flathub md.obsidian.Obsidian</code></pre>
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code>HTTP/1.1 200 OK
-Server: nginx/1.25.x</code></pre>
+                    <pre><code>  Looking for matches…
+  Required runtime for md.obsidian.Obsidian/x86_64/stable (runtime/org.freedesktop.Platform/x86_64/23.08) found in remote flathub
+  Installing…
+  1. [####################] org.freedesktop.Platform 23.08
+  2. [####################] md.obsidian.Obsidian 1.5.8 stable
+  Installation complete.</code></pre>
                   </div>
+
+                  <p>
+                    Flatpak installs the application plus required runtimes. Expect the first install on a workstation
+                    to pull a platform runtime.
+                  </p>
                 </div>
 
                 <!-- Step 7 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
                     <strong class="font-alt">Step 7</strong>
-                    : Show the last 5 lines of logs for the web service.
+                    : Confirm Obsidian is installed.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -492,19 +507,24 @@ Server: nginx/1.25.x</code></pre>
                         Copy
                       </button>
                     </div>
-                    <pre><code id="cmd-step-7">docker compose logs --tail 5 web</code></pre>
+                    <pre><code id="cmd-step-7">flatpak list --app</code></pre>
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code>web-1  | 127.0.0.1 - - [10/Feb/2026:23:00:00 +0000] "HEAD / HTTP/1.1" 200 0 "-" "curl/7.88.1"</code></pre>
+                    <pre><code>  Name      Application ID         Version  Branch  Origin   Installation
+  Obsidian  md.obsidian.Obsidian   1.5.8    stable  flathub  system</code></pre>
                   </div>
+
+                  <p>
+                    Use this output for quick confirmation and to verify whether the install is system-wide or per-user.
+                  </p>
                 </div>
 
                 <!-- Step 8 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
                     <strong class="font-alt">Step 8</strong>
-                    : Stop and remove the stack.
+                    : Capture install details for documentation.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -518,22 +538,31 @@ Server: nginx/1.25.x</code></pre>
                         Copy
                       </button>
                     </div>
-                    <pre><code id="cmd-step-8">docker compose down</code></pre>
+                    <pre><code id="cmd-step-8">flatpak info md.obsidian.Obsidian</code></pre>
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code>[+] Running 2/2
- ✔ Container compose-lab-cache-1  Removed
- ✔ Container compose-lab-web-1    Removed
- ✔ Network compose-lab_default    Removed</code></pre>
+                    <pre><code>  ID: md.obsidian.Obsidian
+  Ref: app/md.obsidian.Obsidian/x86_64/stable
+  Arch: x86_64
+  Branch: stable
+  Version: 1.5.8
+  Origin: flathub
+  Installation: system
+  Runtime: org.freedesktop.Platform/x86_64/23.08</code></pre>
                   </div>
+
+                  <p>
+                    <code>flatpak info</code> provides enough detail to close the ticket cleanly: app ID, origin, branch,
+                    version, and runtime.
+                  </p>
                 </div>
 
                 <!-- Step 9 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
                     <strong class="font-alt">Step 9</strong>
-                    : Remove the lab directory.
+                    : Launch Obsidian to confirm it starts.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -547,12 +576,84 @@ Server: nginx/1.25.x</code></pre>
                         Copy
                       </button>
                     </div>
-                    <pre><code id="cmd-step-9">rm -rf /root/compose-lab</code></pre>
+                    <pre><code id="cmd-step-9">flatpak run md.obsidian.Obsidian</code></pre>
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code>(removed)</code></pre>
+                    <pre><code>  [flatpak] Launching md.obsidian.Obsidian...
+  (GUI application started)
+  (User confirms app opens)
+  (Application exited)</code></pre>
                   </div>
+
+                  <p>
+                    The operational success signal is that the user can open the application and use it normally.
+                    When you cannot verify via CLI alone, confirm directly with the requester.
+                  </p>
+                </div>
+
+                <!-- Step 10 -->
+                <div class="lab-step">
+                  <div class="lab-step-title">
+                    <strong class="font-alt">Step 10</strong>
+                    : Apply Flatpak updates.
+                  </div>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <div class="lab-codeblock-header">
+                      <span>Command</span>
+                      <button
+                        class="lab-copy-btn"
+                        type="button"
+                        data-copy="#cmd-step-10"
+                      >
+                        Copy
+                      </button>
+                    </div>
+                    <pre><code id="cmd-step-10">flatpak update -y</code></pre>
+                  </div>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <pre><code>  Looking for updates…
+  Nothing to do.</code></pre>
+                  </div>
+
+                  <p>
+                    Keep runtimes and apps current. Updates are part of workstation hygiene, even if the requested app
+                    itself has no new version available.
+                  </p>
+                </div>
+
+                <!-- Step 11 -->
+                <div class="lab-step">
+                  <div class="lab-step-title">
+                    <strong class="font-alt">Step 11</strong>
+                    : Uninstall Obsidian.
+                  </div>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <div class="lab-codeblock-header">
+                      <span>Command</span>
+                      <button
+                        class="lab-copy-btn"
+                        type="button"
+                        data-copy="#cmd-step-11"
+                      >
+                        Copy
+                      </button>
+                    </div>
+                    <pre><code id="cmd-step-11">flatpak uninstall -y md.obsidian.Obsidian</code></pre>
+                  </div>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <pre><code>  Uninstalling md.obsidian.Obsidian…
+  Uninstallation complete.</code></pre>
+                  </div>
+
+                  <p>
+                    Removal requests are part of normal workstation support. Document that the app was removed and
+                    confirm whether runtimes should remain for other Flatpak apps.
+                  </p>
                 </div>
               </section>
 
@@ -564,33 +665,41 @@ Server: nginx/1.25.x</code></pre>
 
                 <div class="lab-callout">
                   <div class="lab-callout-label">
-                    docker compose version fails
+                    flatpak command not found
                   </div>
                   <p class="m-b-0">
-                    Confirm Docker is installed and the Compose v2 plugin is
-                    available. On some systems, Compose may be a separate package
-                    or not included by default.
+                    Flatpak is not installed on the workstation. This becomes a baseline image or policy issue, not an
+                    app deployment issue.
                   </p>
                 </div>
 
                 <div class="lab-callout">
                   <div class="lab-callout-label">
-                    curl to localhost:8081 fails
+                    flathub remote add fails
                   </div>
                   <p class="m-b-0">
-                    Confirm the stack is Up in docker compose ps and the port
-                    mapping is present. If the port is already in use on the host,
-                    the web service may fail to start.
+                    You may be blocked by policy, missing sudo access, or outbound network restrictions. Confirm approval
+                    and verify connectivity to the remote URL.
                   </p>
                 </div>
 
                 <div class="lab-callout">
                   <div class="lab-callout-label">
-                    docker compose logs is empty
+                    search shows multiple matches
                   </div>
                   <p class="m-b-0">
-                    Generate traffic with curl, then re-check logs. Nginx may not
-                    emit access logs until a request is made.
+                    Prefer the official application ID and stable branch. Document the chosen ID and origin explicitly
+                    to avoid installing lookalikes.
+                  </p>
+                </div>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">
+                    app launches but user reports failure
+                  </div>
+                  <p class="m-b-0">
+                    GUI apps can fail due to missing portals, permissions, or graphics stack issues. Capture user-visible
+                    errors, then inspect Flatpak permissions and runtime compatibility.
                   </p>
                 </div>
               </section>
@@ -602,7 +711,8 @@ Server: nginx/1.25.x</code></pre>
                 </h3>
 
                 <p>
-                  Ensure the stack is down and the working directory is removed.
+                  This lab modifies Flatpak remotes and installs an application. If you are resetting a lab host, remove
+                  Obsidian and confirm the remote state matches your baseline.
                 </p>
 
                 <div class="lab-codeblock m-b-40 m-t-40">
@@ -616,17 +726,8 @@ Server: nginx/1.25.x</code></pre>
                       Copy
                     </button>
                   </div>
-                  <pre><code id="cmd-cleanup">cd /root || true
-docker compose -f /root/compose-lab/docker-compose.yml down 2&gt;/dev/null || true
-rm -rf /root/compose-lab</code></pre>
-                </div>
-
-                <div class="lab-callout">
-                  <div class="lab-callout-label">Success signal</div>
-                  <p class="m-b-0">
-                    docker compose ps shows no running services for the project and
-                    /root/compose-lab no longer exists.
-                  </p>
+                  <pre><code id="cmd-cleanup">flatpak uninstall -y md.obsidian.Obsidian
+flatpak remotes</code></pre>
                 </div>
               </section>
 
@@ -638,76 +739,77 @@ rm -rf /root/compose-lab</code></pre>
 
                 <ul class="lab-reference-list">
                   <li>
-                    <code>docker compose version</code>
-                    : Shows Docker Compose version.
+                    <code>flatpak --version</code>
+                    : Prints the installed Flatpak version.
                   </li>
 
                   <li>
-                    <code>docker compose up -d</code>
-                    : Creates and starts services in the background.
+                    <code>flatpak remotes --show-details</code>
+                    : Lists configured remotes with detailed metadata.
                     <ul>
-                      <li>
-                        <code>-d</code>
-                        : Detached mode (runs in background).
-                      </li>
+                      <li><code>--show-details</code> : Includes URL, priority, and installation scope.</li>
                     </ul>
                   </li>
 
                   <li>
-                    <code>docker compose ps</code>
-                    : Shows service status and ports for the current project.
-                  </li>
-
-                  <li>
-                    <code>docker compose logs --tail &lt;N&gt; &lt;service&gt;</code>
-                    : Shows the last N log lines for a service.
+                    <code>sudo flatpak remote-add --if-not-exists flathub &lt;url&gt;</code>
+                    : Adds the Flathub remote system-wide if it is not already present.
                     <ul>
-                      <li>
-                        <code>--tail &lt;N&gt;</code>
-                        : Limits output to the last N lines.
-                      </li>
+                      <li><code>--if-not-exists</code> : Avoids errors if the remote is already configured.</li>
+                      <li><code>&lt;url&gt;</code> : Flatpak repo definition (for example Flathub).</li>
                     </ul>
                   </li>
 
                   <li>
-                    <code>docker compose down</code>
-                    : Stops and removes containers and the project network.
+                    <code>flatpak remotes</code>
+                    : Lists configured remote names.
                   </li>
 
                   <li>
-                    <code>curl -I &lt;url&gt;</code>
-                    : Fetches HTTP response headers for a quick health check.
+                    <code>flatpak search &lt;term&gt;</code>
+                    : Searches remotes for matching applications.
+                  </li>
+
+                  <li>
+                    <code>flatpak install -y flathub md.obsidian.Obsidian</code>
+                    : Installs an application from a remote.
                     <ul>
-                      <li>
-                        <code>-I</code>
-                        : Requests headers only (HEAD).
-                      </li>
+                      <li><code>-y</code> : Automatically answers “yes” to prompts.</li>
+                      <li><code>flathub</code> : Remote name used as the install source.</li>
                     </ul>
                   </li>
 
                   <li>
-                    <code>cat &gt; &lt;file&gt; &lt;&lt; 'EOF'</code>
-                    : Creates a file using a heredoc.
+                    <code>flatpak list --app</code>
+                    : Lists installed Flatpak applications.
                     <ul>
-                      <li>
-                        <code>'EOF'</code>
-                        : Prevents variable expansion while writing the file.
-                      </li>
+                      <li><code>--app</code> : Shows only applications (not runtimes).</li>
                     </ul>
                   </li>
 
                   <li>
-                    <code>rm -rf &lt;path&gt;</code>
-                    : Removes a directory recursively without prompting.
+                    <code>flatpak info md.obsidian.Obsidian</code>
+                    : Displays detailed metadata for an installed application.
+                  </li>
+
+                  <li>
+                    <code>flatpak run md.obsidian.Obsidian</code>
+                    : Launches an installed Flatpak application by ID.
+                  </li>
+
+                  <li>
+                    <code>flatpak update -y</code>
+                    : Updates installed Flatpak apps and runtimes.
                     <ul>
-                      <li>
-                        <code>-r</code>
-                        : Recursive removal.
-                      </li>
-                      <li>
-                        <code>-f</code>
-                        : Force removal, no prompts.
-                      </li>
+                      <li><code>-y</code> : Automatically answers “yes” to prompts.</li>
+                    </ul>
+                  </li>
+
+                  <li>
+                    <code>flatpak uninstall -y md.obsidian.Obsidian</code>
+                    : Uninstalls an application by ID.
+                    <ul>
+                      <li><code>-y</code> : Automatically answers “yes” to prompts.</li>
                     </ul>
                   </li>
                 </ul>
@@ -727,11 +829,7 @@ rm -rf /root/compose-lab</code></pre>
             <div class="col-sm-12">
               <ul class="social-text-links font-alt text-center m-b-20">
                 <li>
-                  <a
-                    href="https://github.com/vonds"
-                    target="_blank"
-                    rel="noopener"
-                  >
+                  <a href="https://github.com/vonds" target="_blank" rel="noopener">
                     Github
                   </a>
                 </li>

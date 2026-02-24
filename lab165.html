@@ -1,4 +1,3 @@
-<!-- lab160.html -->
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -7,7 +6,7 @@
     <meta name="description" content="exit_0 Documentation" />
     <meta name="name" content="Vonds" />
 
-    <title>Vonds | Lab 160</title>
+    <title>Vonds | Lab 165</title>
 
     <!-- Favicons -->
     <link rel="shortcut icon" href="../assets/images/favicon.png" />
@@ -41,10 +40,7 @@
     <link href="../assets/css/lab.css" rel="stylesheet" />
 
     <!-- Fonts -->
-    <link
-      href="https://fonts.googleapis.com/css?family=Dosis"
-      rel="stylesheet"
-    />
+    <link href="https://fonts.googleapis.com/css?family=Dosis" rel="stylesheet" />
   </head>
 
   <body>
@@ -123,9 +119,7 @@
     <!-- WRAPPER -->
     <div class="wrapper">
       <!-- NAVIGATION -->
-      <nav
-        class="navbar navbar-custom navbar-transparent navbar-light navbar-fixed-top"
-      >
+      <nav class="navbar navbar-custom navbar-transparent navbar-light navbar-fixed-top">
         <div class="container">
           <div class="navbar-header">
             <a class="navbar-brand" href="../index.html">
@@ -149,7 +143,7 @@
       <section class="module">
         <div class="container">
           <h2 class="font-alt module-title m-t-60">
-            Lab 160: Docker Compose
+            Lab 165: SELinux &amp; httpd
           </h2>
 
           <nav class="lab-pagination">
@@ -195,10 +189,8 @@
             <!-- MAIN CONTENT -->
             <div class="col-sm-8 col-md-9 lab-doc">
               <p class="m-b-20 lab-summary">
-                Bring up a minimal multi-service stack with Docker Compose,
-                verify both services are running, validate nginx responds,
-                inspect logs, then tear everything down cleanly and remove the
-                working directory.
+                Deploy httpd and serve content, then reproduce a 403 caused by incorrect SELinux labeling after moving the DocumentRoot.
+                Diagnose the AVC denial and fix it with persistent file context rules, restore labels, and validate access end-to-end.
               </p>
 
               <!-- Video (kept on page; removed from left panel) -->
@@ -206,8 +198,8 @@
                 <div class="lab-video">
                   <div class="lab-video-embed text-center">
                     <iframe
-                      src="https://www.youtube.com/embed/VPbsw1psxXk?si=pgFWMMirHdYlp7yF"
-                      title="YouTube video player"
+                      src="https://www.youtube.com/embed/U7OptjRvohI?si=b-kDZ-BB9T3uYFHN"
+                      title="Lab 165 video player"
                       frameborder="0"
                       allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                       referrerpolicy="strict-origin-when-cross-origin"
@@ -221,10 +213,10 @@
               <section class="lab-section" id="scenario">
                 <div class="lab-chips" aria-label="Tags">
                   <span class="lab-chip">
-                    <span class="lab-chip-key">containers</span>
+                    <span class="lab-chip-key">selinux</span>
                   </span>
                   <span class="lab-chip">
-                    <span class="lab-chip-key">services</span>
+                    <span class="lab-chip-key">httpd</span>
                   </span>
                   <span class="lab-chip">
                     <span class="lab-chip-key">troubleshooting</span>
@@ -236,17 +228,17 @@
                 </h3>
 
                 <p>
-                  Ops ticket: Spin up a small local stack for testing using Docker
-                  Compose. Bring up nginx and redis, verify both services are
-                  running, check logs, then tear it down.
+                  You are deploying Apache (<code>httpd</code>) on a RHEL system. The service starts and the firewall is configured, but
+                  SELinux policy can still block reads when content is moved to a non-standard path. You will serve a known test page, move
+                  the DocumentRoot to <code>/webdata</code>, reproduce the 403, confirm the AVC denial in the audit log, and then apply a
+                  persistent SELinux fix using file context rules.
                 </p>
 
                 <div class="lab-callout">
                   <div class="lab-callout-label">Operator context</div>
                   <p class="m-b-0">
-                    Compose is often the fastest way to reproduce a multi-service
-                    environment locally. Evidence is the service status output,
-                    a successful HTTP check, and targeted log inspection.
+                    Do not “solve” this by disabling SELinux. Use the audit trail to identify the policy reason, apply the correct label,
+                    and verify the service behaves correctly with enforcement intact.
                   </p>
                 </div>
               </section>
@@ -257,14 +249,13 @@
                   Objective
                 </h3>
                 <ul>
-                  <li>Confirm Docker Compose is available.</li>
-                  <li>Create a working directory for the stack.</li>
-                  <li>Create a minimal docker-compose.yml (nginx + redis).</li>
-                  <li>Bring up the stack in detached mode.</li>
-                  <li>Verify service status with docker compose ps.</li>
-                  <li>Validate nginx responds on the published port.</li>
-                  <li>Inspect recent logs for the web service.</li>
-                  <li>Tear down the stack and remove the lab directory.</li>
+                  <li>Install <code>httpd</code> and enable the service at boot.</li>
+                  <li>Open HTTP in the firewall and validate local content delivery with <code>curl</code>.</li>
+                  <li>Move the DocumentRoot to <code>/webdata</code> and reproduce an SELinux-driven access failure.</li>
+                  <li>Confirm the denial using <code>/var/log/audit/audit.log</code>.</li>
+                  <li>Fix the issue with <code>semanage fcontext</code> and <code>restorecon</code>.</li>
+                  <li>Enable the <code>httpd_enable_homedirs</code> boolean and label UserDir content correctly.</li>
+                  <li>Validate labels and boolean state with CLI evidence.</li>
                 </ul>
               </section>
 
@@ -275,24 +266,22 @@
                 </h3>
                 <ul>
                   <li>
-                    Docker Compose defines a multi-container application in a single
-                    YAML file and manages lifecycle as a unit.
+                    Service readiness: package installation, systemd enable/start, and local HTTP validation.
                   </li>
                   <li>
-                    docker compose up -d creates a project network and starts service
-                    containers in the background.
+                    Firewall gatekeeping: allowing the <code>http</code> service and reloading permanent rules.
                   </li>
                   <li>
-                    docker compose ps shows service state and published ports for the
-                    current project directory.
+                    SELinux labeling as an access control layer independent of UNIX permissions.
                   </li>
                   <li>
-                    docker compose logs supports service-scoped log inspection for
-                    quick triage.
+                    AVC denials as the primary evidence source for why access is blocked.
                   </li>
                   <li>
-                    docker compose down stops and removes containers and the project
-                    network created by Compose.
+                    Persistent labeling with <code>semanage fcontext</code> and enforcement repair with <code>restorecon</code>.
+                  </li>
+                  <li>
+                    Booleans as controlled policy switches (UserDir support with <code>httpd_enable_homedirs</code>).
                   </li>
                 </ul>
               </section>
@@ -307,252 +296,282 @@
                 <div class="lab-step">
                   <div class="lab-step-title">
                     <strong class="font-alt">Step 1</strong>
-                    : Verify Docker Compose is installed.
+                    : Install Apache (<code>httpd</code>).
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
-                      <button
-                        class="lab-copy-btn"
-                        type="button"
-                        data-copy="#cmd-step-1"
-                      >
+                      <button class="lab-copy-btn" type="button" data-copy="#cmd-step-1">
                         Copy
                       </button>
                     </div>
-                    <pre><code id="cmd-step-1">docker compose version</code></pre>
+                    <pre><code id="cmd-step-1">sudo dnf install -y httpd</code></pre>
                   </div>
 
-                  <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code>Docker Compose version v2.24.6</code></pre>
-                  </div>
+                  <p>
+                    Package installation is the baseline. Use a non-interactive install so the operation is repeatable in automation and
+                    in lab workflows.
+                  </p>
                 </div>
 
                 <!-- Step 2 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
                     <strong class="font-alt">Step 2</strong>
-                    : Create the working directory and enter it.
+                    : Enable and start <code>httpd</code>.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
-                      <button
-                        class="lab-copy-btn"
-                        type="button"
-                        data-copy="#cmd-step-2"
-                      >
+                      <button class="lab-copy-btn" type="button" data-copy="#cmd-step-2">
                         Copy
                       </button>
                     </div>
-                    <pre><code id="cmd-step-2">mkdir -p /root/compose-lab && cd /root/compose-lab</code></pre>
+                    <pre><code id="cmd-step-2">sudo systemctl enable --now httpd</code></pre>
                   </div>
 
-                  <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code>(directory ready)</code></pre>
-                  </div>
+                  <p>
+                    This brings the service online and ensures it will start after reboot. A service that is installed but not enabled
+                    is not production-ready.
+                  </p>
                 </div>
 
                 <!-- Step 3 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
                     <strong class="font-alt">Step 3</strong>
-                    : Create docker-compose.yml (nginx + redis).
+                    : Allow HTTP through the firewall.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
-                      <span>Command</span>
-                      <button
-                        class="lab-copy-btn"
-                        type="button"
-                        data-copy="#cmd-step-3"
-                      >
+                      <span>Commands</span>
+                      <button class="lab-copy-btn" type="button" data-copy="#cmd-step-3">
                         Copy
                       </button>
                     </div>
-                    <pre><code id="cmd-step-3">cat &gt; docker-compose.yml &lt;&lt; 'EOF'
-services:
-  web:
-    image: nginx:latest
-    ports:
-      - "8081:80"
-  cache:
-    image: redis:latest
-    ports:
-      - "6379:6379"
-EOF</code></pre>
+                    <pre><code id="cmd-step-3">sudo firewall-cmd --permanent --add-service=http
+sudo firewall-cmd --reload</code></pre>
                   </div>
 
-                  <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code>(docker-compose.yml created)</code></pre>
-                  </div>
+                  <p>
+                    Permanent firewall rules do not take effect until reload. Treat firewall changes as configuration changes that must be
+                    applied and validated explicitly.
+                  </p>
                 </div>
 
                 <!-- Step 4 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
                     <strong class="font-alt">Step 4</strong>
-                    : Start the stack in detached mode.
+                    : Create a test page in the default document root.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
-                      <button
-                        class="lab-copy-btn"
-                        type="button"
-                        data-copy="#cmd-step-4"
-                      >
+                      <button class="lab-copy-btn" type="button" data-copy="#cmd-step-4">
                         Copy
                       </button>
                     </div>
-                    <pre><code id="cmd-step-4">docker compose up -d</code></pre>
+                    <pre><code id="cmd-step-4">echo 'SELinux + httpd lab (165)' | sudo tee /var/www/html/index.html</code></pre>
                   </div>
 
-                  <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code>[+] Running 2/2
- ✔ Container compose-lab-web-1    Started
- ✔ Container compose-lab-cache-1  Started</code></pre>
-                  </div>
+                  <p>
+                    This gives you a known-good content artifact. If the default path works, you have a baseline before introducing a
+                    non-standard document root.
+                  </p>
                 </div>
 
                 <!-- Step 5 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
                     <strong class="font-alt">Step 5</strong>
-                    : Show compose service status.
+                    : Verify local access with <code>curl</code>.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
-                      <button
-                        class="lab-copy-btn"
-                        type="button"
-                        data-copy="#cmd-step-5"
-                      >
+                      <button class="lab-copy-btn" type="button" data-copy="#cmd-step-5">
                         Copy
                       </button>
                     </div>
-                    <pre><code id="cmd-step-5">docker compose ps</code></pre>
+                    <pre><code id="cmd-step-5">curl http://localhost/</code></pre>
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code>NAME                 IMAGE          STATUS          PORTS
-compose-lab-web-1     nginx:latest   Up              0.0.0.0:8081-&gt;80/tcp
-compose-lab-cache-1   redis:latest   Up              0.0.0.0:6379-&gt;6379/tcp</code></pre>
+                    <pre><code>SELinux + httpd lab (165)</code></pre>
                   </div>
+
+                  <p>
+                    Validate locally first. This isolates service configuration and SELinux from external routing issues.
+                  </p>
                 </div>
 
                 <!-- Step 6 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
                     <strong class="font-alt">Step 6</strong>
-                    : Verify nginx responds on localhost:8081.
+                    : Move the DocumentRoot to <code>/webdata</code> and restart <code>httpd</code>.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
-                      <span>Command</span>
-                      <button
-                        class="lab-copy-btn"
-                        type="button"
-                        data-copy="#cmd-step-6"
-                      >
+                      <span>Commands</span>
+                      <button class="lab-copy-btn" type="button" data-copy="#cmd-step-6">
                         Copy
                       </button>
                     </div>
-                    <pre><code id="cmd-step-6">curl -I http://localhost:8081</code></pre>
+                    <pre><code id="cmd-step-6">sudo mkdir -p /webdata
+sudo mv /var/www/html/index.html /webdata/index.html</code></pre>
+                  </div>
+
+                  <div class="lab-callout">
+                    <div class="lab-callout-label">Config note</div>
+                    <p class="m-b-0">
+                      Update <code>/etc/httpd/conf/httpd.conf</code> to set <code>DocumentRoot "/webdata"</code> and a matching
+                      <code>&lt;Directory "/webdata"&gt;</code> block with <code>Require all granted</code>, then restart the service.
+                    </p>
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code>HTTP/1.1 200 OK
-Server: nginx/1.25.x</code></pre>
+                    <div class="lab-codeblock-header">
+                      <span>Commands</span>
+                      <button class="lab-copy-btn" type="button" data-copy="#cmd-step-6b">
+                        Copy
+                      </button>
+                    </div>
+                    <pre><code id="cmd-step-6b">sudo vim /etc/httpd/conf/httpd.conf
+sudo systemctl restart httpd</code></pre>
                   </div>
+
+                  <p>
+                    This is the controlled change that will trigger the denial if <code>/webdata</code> is not labeled for httpd content.
+                    In production, a path change without SELinux planning is a common cause of “service started but 403” incidents.
+                  </p>
                 </div>
 
                 <!-- Step 7 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
                     <strong class="font-alt">Step 7</strong>
-                    : Show the last 5 lines of logs for the web service.
+                    : Confirm the failure and check for SELinux denials.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
-                      <span>Command</span>
-                      <button
-                        class="lab-copy-btn"
-                        type="button"
-                        data-copy="#cmd-step-7"
-                      >
+                      <span>Commands</span>
+                      <button class="lab-copy-btn" type="button" data-copy="#cmd-step-7">
                         Copy
                       </button>
                     </div>
-                    <pre><code id="cmd-step-7">docker compose logs --tail 5 web</code></pre>
+                    <pre><code id="cmd-step-7">curl -I http://localhost/
+sudo tail -n 5 /var/log/audit/audit.log</code></pre>
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code>web-1  | 127.0.0.1 - - [10/Feb/2026:23:00:00 +0000] "HEAD / HTTP/1.1" 200 0 "-" "curl/7.88.1"</code></pre>
+                    <pre><code>HTTP/1.1 403 Forbidden</code></pre>
                   </div>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <pre><code>type=AVC msg=audit(...): avc:  denied  { read } for  pid=... comm="httpd" name="index.html" ... scontext=system_u:system_r:httpd_t:s0 tcontext=unconfined_u:object_r:default_t:s0 tclass=file</code></pre>
+                  </div>
+
+                  <p>
+                    The 403 confirms the symptom. The AVC line explains the cause: httpd is running in <code>httpd_t</code> and the target
+                    file is labeled <code>default_t</code>, which is not allowed for web content reads under standard targeted policy.
+                  </p>
                 </div>
 
                 <!-- Step 8 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
                     <strong class="font-alt">Step 8</strong>
-                    : Stop and remove the stack.
+                    : Fix labeling with <code>semanage</code> and <code>restorecon</code>.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
-                      <span>Command</span>
-                      <button
-                        class="lab-copy-btn"
-                        type="button"
-                        data-copy="#cmd-step-8"
-                      >
+                      <span>Commands</span>
+                      <button class="lab-copy-btn" type="button" data-copy="#cmd-step-8">
                         Copy
                       </button>
                     </div>
-                    <pre><code id="cmd-step-8">docker compose down</code></pre>
+                    <pre><code id="cmd-step-8">sudo semanage fcontext -a -t httpd_sys_content_t '/webdata(/.*)?'
+sudo restorecon -Rv /webdata</code></pre>
                   </div>
 
-                  <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code>[+] Running 2/2
- ✔ Container compose-lab-cache-1  Removed
- ✔ Container compose-lab-web-1    Removed
- ✔ Network compose-lab_default    Removed</code></pre>
-                  </div>
+                  <p>
+                    <code>semanage fcontext</code> creates a persistent mapping so the correct type is applied to the path.
+                    <code>restorecon</code> enforces that mapping on the filesystem immediately.
+                  </p>
                 </div>
 
                 <!-- Step 9 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
                     <strong class="font-alt">Step 9</strong>
-                    : Remove the lab directory.
+                    : Verify access is restored and enable UserDir support.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
-                      <span>Command</span>
-                      <button
-                        class="lab-copy-btn"
-                        type="button"
-                        data-copy="#cmd-step-9"
-                      >
+                      <span>Commands</span>
+                      <button class="lab-copy-btn" type="button" data-copy="#cmd-step-9">
                         Copy
                       </button>
                     </div>
-                    <pre><code id="cmd-step-9">rm -rf /root/compose-lab</code></pre>
+                    <pre><code id="cmd-step-9">curl http://localhost/
+sudo setsebool -P httpd_enable_homedirs on</code></pre>
+                  </div>
+
+                  <p>
+                    First verify the original incident is resolved. Then enable the boolean needed to serve UserDir content when the
+                    environment requires <code>~/public_html</code>.
+                  </p>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <div class="lab-codeblock-header">
+                      <span>Commands</span>
+                      <button class="lab-copy-btn" type="button" data-copy="#cmd-step-9b">
+                        Copy
+                      </button>
+                    </div>
+                    <pre><code id="cmd-step-9b">mkdir -p ~/public_html
+echo 'UserDir works (SELinux boolean enabled)' &gt; ~/public_html/index.html
+sudo restorecon -Rv /home/examuser/public_html</code></pre>
+                  </div>
+
+                  <p>
+                    Creating content is not enough. The directory and files must be labeled correctly for httpd to serve them under
+                    enforcement.
+                  </p>
+                </div>
+
+                <!-- Step 10 -->
+                <div class="lab-step">
+                  <div class="lab-step-title">
+                    <strong class="font-alt">Step 10</strong>
+                    : Validate contexts and boolean state.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code>(removed)</code></pre>
+                    <div class="lab-codeblock-header">
+                      <span>Commands</span>
+                      <button class="lab-copy-btn" type="button" data-copy="#cmd-step-10">
+                        Copy
+                      </button>
+                    </div>
+                    <pre><code id="cmd-step-10">ls -Z /webdata /webdata/index.html
+getsebool httpd_enable_homedirs</code></pre>
                   </div>
+
+                  <p>
+                    End the change with evidence. Correct labels and correct boolean state are the operational success criteria.
+                  </p>
                 </div>
               </section>
 
@@ -564,33 +583,43 @@ Server: nginx/1.25.x</code></pre>
 
                 <div class="lab-callout">
                   <div class="lab-callout-label">
-                    docker compose version fails
+                    curl works on /var/www/html but fails after moving DocumentRoot
                   </div>
                   <p class="m-b-0">
-                    Confirm Docker is installed and the Compose v2 plugin is
-                    available. On some systems, Compose may be a separate package
-                    or not included by default.
+                    This is a classic label drift scenario. Verify the target content under <code>/webdata</code> is not labeled
+                    <code>httpd_sys_content_t</code>, then apply a persistent mapping with <code>semanage fcontext</code> and run
+                    <code>restorecon</code>.
                   </p>
                 </div>
 
                 <div class="lab-callout">
                   <div class="lab-callout-label">
-                    curl to localhost:8081 fails
+                    403 Forbidden with no obvious file permission issue
                   </div>
                   <p class="m-b-0">
-                    Confirm the stack is Up in docker compose ps and the port
-                    mapping is present. If the port is already in use on the host,
-                    the web service may fail to start.
+                    UNIX permissions are necessary but not sufficient under SELinux. Confirm the denial in
+                    <code>/var/log/audit/audit.log</code> and validate the <code>tcontext</code> type matches the expected httpd content
+                    types.
                   </p>
                 </div>
 
                 <div class="lab-callout">
                   <div class="lab-callout-label">
-                    docker compose logs is empty
+                    semanage: command not found
                   </div>
                   <p class="m-b-0">
-                    Generate traffic with curl, then re-check logs. Nginx may not
-                    emit access logs until a request is made.
+                    The tool is not available in the current environment. You cannot create persistent file context mappings without it.
+                    Escalate as a missing tooling/package issue rather than attempting to “fix” with temporary labels.
+                  </p>
+                </div>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">
+                    UserDir content still fails after creating ~/public_html
+                  </div>
+                  <p class="m-b-0">
+                    Ensure <code>httpd_enable_homedirs</code> is enabled and that the directory is labeled correctly after
+                    <code>restorecon</code>. Treat boolean state and label state as separate checks.
                   </p>
                 </div>
               </section>
@@ -602,30 +631,27 @@ Server: nginx/1.25.x</code></pre>
                 </h3>
 
                 <p>
-                  Ensure the stack is down and the working directory is removed.
+                  This lab leaves the service installed and content paths in place. Cleanup is documenting what you changed and capturing
+                  final evidence (labels and boolean state) so the system can be supported after handoff.
                 </p>
 
                 <div class="lab-codeblock m-b-40 m-t-40">
                   <div class="lab-codeblock-header">
                     <span>Commands</span>
-                    <button
-                      class="lab-copy-btn"
-                      type="button"
-                      data-copy="#cmd-cleanup"
-                    >
+                    <button class="lab-copy-btn" type="button" data-copy="#cmd-cleanup">
                       Copy
                     </button>
                   </div>
-                  <pre><code id="cmd-cleanup">cd /root || true
-docker compose -f /root/compose-lab/docker-compose.yml down 2&gt;/dev/null || true
-rm -rf /root/compose-lab</code></pre>
+                  <pre><code id="cmd-cleanup">ls -Z /webdata /webdata/index.html
+getsebool httpd_enable_homedirs
+curl -I http://localhost/</code></pre>
                 </div>
 
                 <div class="lab-callout">
                   <div class="lab-callout-label">Success signal</div>
                   <p class="m-b-0">
-                    docker compose ps shows no running services for the project and
-                    /root/compose-lab no longer exists.
+                    <code>curl</code> returns a successful response, <code>/webdata</code> is labeled <code>httpd_sys_content_t</code>, and
+                    <code>httpd_enable_homedirs</code> is set to the expected value for the environment.
                   </p>
                 </div>
               </section>
@@ -638,76 +664,126 @@ rm -rf /root/compose-lab</code></pre>
 
                 <ul class="lab-reference-list">
                   <li>
-                    <code>docker compose version</code>
-                    : Shows Docker Compose version.
-                  </li>
-
-                  <li>
-                    <code>docker compose up -d</code>
-                    : Creates and starts services in the background.
+                    <code>dnf install -y &lt;package&gt;</code>
+                    : Installs a package non-interactively.
                     <ul>
-                      <li>
-                        <code>-d</code>
-                        : Detached mode (runs in background).
-                      </li>
+                      <li><code>-y</code> : Automatically answers “yes” to prompts.</li>
                     </ul>
                   </li>
 
                   <li>
-                    <code>docker compose ps</code>
-                    : Shows service status and ports for the current project.
-                  </li>
-
-                  <li>
-                    <code>docker compose logs --tail &lt;N&gt; &lt;service&gt;</code>
-                    : Shows the last N log lines for a service.
+                    <code>systemctl enable --now &lt;unit&gt;</code>
+                    : Enables a service at boot and starts it immediately.
                     <ul>
-                      <li>
-                        <code>--tail &lt;N&gt;</code>
-                        : Limits output to the last N lines.
-                      </li>
+                      <li><code>--now</code> : Starts the unit right away.</li>
                     </ul>
                   </li>
 
                   <li>
-                    <code>docker compose down</code>
-                    : Stops and removes containers and the project network.
-                  </li>
-
-                  <li>
-                    <code>curl -I &lt;url&gt;</code>
-                    : Fetches HTTP response headers for a quick health check.
+                    <code>firewall-cmd --permanent --add-service=http</code>
+                    : Adds the HTTP service to the permanent firewall rules.
                     <ul>
-                      <li>
-                        <code>-I</code>
-                        : Requests headers only (HEAD).
-                      </li>
+                      <li><code>--permanent</code> : Writes the rule to the permanent configuration.</li>
                     </ul>
                   </li>
 
                   <li>
-                    <code>cat &gt; &lt;file&gt; &lt;&lt; 'EOF'</code>
-                    : Creates a file using a heredoc.
+                    <code>firewall-cmd --reload</code>
+                    : Reloads firewall rules to apply permanent changes.
+                  </li>
+
+                  <li>
+                    <code>tee &lt;file&gt;</code>
+                    : Writes stdin to a file while also printing to stdout.
                     <ul>
-                      <li>
-                        <code>'EOF'</code>
-                        : Prevents variable expansion while writing the file.
-                      </li>
+                      <li><code>/var/www/html/index.html</code> : Default httpd document root content path.</li>
                     </ul>
                   </li>
 
                   <li>
-                    <code>rm -rf &lt;path&gt;</code>
-                    : Removes a directory recursively without prompting.
+                    <code>curl &lt;url&gt;</code>
+                    : Sends an HTTP request and prints the response body.
                     <ul>
-                      <li>
-                        <code>-r</code>
-                        : Recursive removal.
-                      </li>
-                      <li>
-                        <code>-f</code>
-                        : Force removal, no prompts.
-                      </li>
+                      <li><code>-I</code> : Fetches HTTP headers only.</li>
+                      <li><code>http://localhost/</code> : Local validation endpoint for service readiness.</li>
+                    </ul>
+                  </li>
+
+                  <li>
+                    <code>mkdir -p &lt;dir&gt;</code>
+                    : Creates a directory and parent directories as needed.
+                    <ul>
+                      <li><code>-p</code> : Creates parents and avoids errors if the directory already exists.</li>
+                      <li><code>/webdata</code> : Non-standard DocumentRoot path used to reproduce SELinux denials.</li>
+                      <li><code>~/public_html</code> : UserDir content path used with <code>httpd_enable_homedirs</code>.</li>
+                    </ul>
+                  </li>
+
+                  <li>
+                    <code>mv &lt;src&gt; &lt;dst&gt;</code>
+                    : Moves or renames a file.
+                    <ul>
+                      <li><code>/var/www/html/index.html</code> : Original content location.</li>
+                      <li><code>/webdata/index.html</code> : New content location under the updated DocumentRoot.</li>
+                    </ul>
+                  </li>
+
+                  <li>
+                    <code>vim &lt;file&gt;</code>
+                    : Edits a file in a terminal editor.
+                    <ul>
+                      <li><code>/etc/httpd/conf/httpd.conf</code> : Primary Apache configuration file for DocumentRoot and Directory rules.</li>
+                    </ul>
+                  </li>
+
+                  <li>
+                    <code>tail -n 5 &lt;file&gt;</code>
+                    : Prints the last N lines of a file.
+                    <ul>
+                      <li><code>-n 5</code> : Limits output to the last 5 lines.</li>
+                      <li><code>/var/log/audit/audit.log</code> : Audit log source for SELinux AVC denials.</li>
+                    </ul>
+                  </li>
+
+                  <li>
+                    <code>semanage fcontext -a -t &lt;type&gt; '&lt;regex&gt;'</code>
+                    : Adds a persistent SELinux file context mapping.
+                    <ul>
+                      <li><code>-a</code> : Adds a new mapping entry.</li>
+                      <li><code>-t</code> : Sets the target SELinux type for matched paths.</li>
+                      <li><code>'/webdata(/.*)?'</code> : Matches <code>/webdata</code> and all files beneath it.</li>
+                    </ul>
+                  </li>
+
+                  <li>
+                    <code>restorecon -Rv &lt;path&gt;</code>
+                    : Restores SELinux contexts based on policy mappings.
+                    <ul>
+                      <li><code>-R</code> : Recursively processes directories.</li>
+                      <li><code>-v</code> : Prints changes as they are applied.</li>
+                    </ul>
+                  </li>
+
+                  <li>
+                    <code>setsebool -P &lt;boolean&gt; on|off</code>
+                    : Sets an SELinux boolean persistently.
+                    <ul>
+                      <li><code>-P</code> : Makes the change persistent across reboots.</li>
+                      <li><code>httpd_enable_homedirs</code> : Allows httpd to serve UserDir content under user home directories.</li>
+                    </ul>
+                  </li>
+
+                  <li>
+                    <code>getsebool &lt;boolean&gt;</code>
+                    : Displays the current value of an SELinux boolean.
+                  </li>
+
+                  <li>
+                    <code>ls -Z &lt;path&gt;</code>
+                    : Displays SELinux contexts for files and directories.
+                    <ul>
+                      <li><code>-Z</code> : Prints SELinux security context information.</li>
+                      <li><code>httpd_sys_content_t</code> : Expected type for httpd-readable static web content.</li>
                     </ul>
                   </li>
                 </ul>
@@ -727,11 +803,7 @@ rm -rf /root/compose-lab</code></pre>
             <div class="col-sm-12">
               <ul class="social-text-links font-alt text-center m-b-20">
                 <li>
-                  <a
-                    href="https://github.com/vonds"
-                    target="_blank"
-                    rel="noopener"
-                  >
+                  <a href="https://github.com/vonds" target="_blank" rel="noopener">
                     Github
                   </a>
                 </li>

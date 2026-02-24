@@ -1,4 +1,3 @@
-<!-- lab160.html -->
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -7,7 +6,7 @@
     <meta name="description" content="exit_0 Documentation" />
     <meta name="name" content="Vonds" />
 
-    <title>Vonds | Lab 160</title>
+    <title>Vonds | Lab 163</title>
 
     <!-- Favicons -->
     <link rel="shortcut icon" href="../assets/images/favicon.png" />
@@ -41,10 +40,7 @@
     <link href="../assets/css/lab.css" rel="stylesheet" />
 
     <!-- Fonts -->
-    <link
-      href="https://fonts.googleapis.com/css?family=Dosis"
-      rel="stylesheet"
-    />
+    <link href="https://fonts.googleapis.com/css?family=Dosis" rel="stylesheet" />
   </head>
 
   <body>
@@ -123,9 +119,7 @@
     <!-- WRAPPER -->
     <div class="wrapper">
       <!-- NAVIGATION -->
-      <nav
-        class="navbar navbar-custom navbar-transparent navbar-light navbar-fixed-top"
-      >
+      <nav class="navbar navbar-custom navbar-transparent navbar-light navbar-fixed-top">
         <div class="container">
           <div class="navbar-header">
             <a class="navbar-brand" href="../index.html">
@@ -149,7 +143,7 @@
       <section class="module">
         <div class="container">
           <h2 class="font-alt module-title m-t-60">
-            Lab 160: Docker Compose
+            Lab 163: Flatpak Trust, Remotes &amp; Permissions
           </h2>
 
           <nav class="lab-pagination">
@@ -195,10 +189,8 @@
             <!-- MAIN CONTENT -->
             <div class="col-sm-8 col-md-9 lab-doc">
               <p class="m-b-20 lab-summary">
-                Bring up a minimal multi-service stack with Docker Compose,
-                verify both services are running, validate nginx responds,
-                inspect logs, then tear everything down cleanly and remove the
-                working directory.
+                Audit Flatpak trust sources and application permissions, then apply tighter access controls using overrides.
+                Verify the changes are enforceable and the application still launches as expected.
               </p>
 
               <!-- Video (kept on page; removed from left panel) -->
@@ -206,8 +198,8 @@
                 <div class="lab-video">
                   <div class="lab-video-embed text-center">
                     <iframe
-                      src="https://www.youtube.com/embed/VPbsw1psxXk?si=pgFWMMirHdYlp7yF"
-                      title="YouTube video player"
+                      src="https://www.youtube.com/embed/9GnMDk_VWWs?si=NFRwtzPBrEZ9o3KJ"
+                      title="Lab 163 video player"
                       frameborder="0"
                       allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                       referrerpolicy="strict-origin-when-cross-origin"
@@ -221,13 +213,13 @@
               <section class="lab-section" id="scenario">
                 <div class="lab-chips" aria-label="Tags">
                   <span class="lab-chip">
-                    <span class="lab-chip-key">containers</span>
+                    <span class="lab-chip-key">security</span>
                   </span>
                   <span class="lab-chip">
-                    <span class="lab-chip-key">services</span>
+                    <span class="lab-chip-key">flatpak</span>
                   </span>
                   <span class="lab-chip">
-                    <span class="lab-chip-key">troubleshooting</span>
+                    <span class="lab-chip-key">policy</span>
                   </span>
                 </div>
 
@@ -236,17 +228,16 @@
                 </h3>
 
                 <p>
-                  Ops ticket: Spin up a small local stack for testing using Docker
-                  Compose. Bring up nginx and redis, verify both services are
-                  running, check logs, then tear it down.
+                  A developer reports: “My Flatpak app can read my home directory and access the network.”
+                  You need to validate the trust source (remotes), inspect current permissions on a target Flatpak app,
+                  then apply a tighter policy that is verifiable. The app must still launch so the user can continue working.
                 </p>
 
                 <div class="lab-callout">
                   <div class="lab-callout-label">Operator context</div>
                   <p class="m-b-0">
-                    Compose is often the fastest way to reproduce a multi-service
-                    environment locally. Evidence is the service status output,
-                    a successful HTTP check, and targeted log inspection.
+                    Flatpak isolation is not a guarantee of least privilege. You still need to review remotes, understand the
+                    permission model, and enforce policy using overrides when the default sandbox grants more access than required.
                   </p>
                 </div>
               </section>
@@ -257,14 +248,12 @@
                   Objective
                 </h3>
                 <ul>
-                  <li>Confirm Docker Compose is available.</li>
-                  <li>Create a working directory for the stack.</li>
-                  <li>Create a minimal docker-compose.yml (nginx + redis).</li>
-                  <li>Bring up the stack in detached mode.</li>
-                  <li>Verify service status with docker compose ps.</li>
-                  <li>Validate nginx responds on the published port.</li>
-                  <li>Inspect recent logs for the web service.</li>
-                  <li>Tear down the stack and remove the lab directory.</li>
+                  <li>Confirm Flatpak is installed and operational.</li>
+                  <li>Audit configured remotes and validate the system trust source.</li>
+                  <li>Install Flatseal to support permission review workflows.</li>
+                  <li>Inspect current application permissions using Flatpak tooling.</li>
+                  <li>Apply and verify overrides to restrict filesystem and network access.</li>
+                  <li>Validate behavior by launching the app, then reset overrides to restore defaults.</li>
                 </ul>
               </section>
 
@@ -275,24 +264,19 @@
                 </h3>
                 <ul>
                   <li>
-                    Docker Compose defines a multi-container application in a single
-                    YAML file and manages lifecycle as a unit.
+                    Trust source verification through remotes and installation scope (system versus user).
                   </li>
                   <li>
-                    docker compose up -d creates a project network and starts service
-                    containers in the background.
+                    Flatpak permissions as an explicit policy surface: network, sockets, devices, and filesystems.
                   </li>
                   <li>
-                    docker compose ps shows service state and published ports for the
-                    current project directory.
+                    Permission inspection via <code>flatpak info --show-permissions</code>.
                   </li>
                   <li>
-                    docker compose logs supports service-scoped log inspection for
-                    quick triage.
+                    Enforcing least privilege with overrides and validating enforcement with <code>flatpak override --show</code>.
                   </li>
                   <li>
-                    docker compose down stops and removes containers and the project
-                    network created by Compose.
+                    Operational validation: the app should launch and behavior should match the enforced policy.
                   </li>
                 </ul>
               </section>
@@ -307,7 +291,7 @@
                 <div class="lab-step">
                   <div class="lab-step-title">
                     <strong class="font-alt">Step 1</strong>
-                    : Verify Docker Compose is installed.
+                    : Confirm Flatpak is installed.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -321,19 +305,24 @@
                         Copy
                       </button>
                     </div>
-                    <pre><code id="cmd-step-1">docker compose version</code></pre>
+                    <pre><code id="cmd-step-1">flatpak --version</code></pre>
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code>Docker Compose version v2.24.6</code></pre>
+                    <pre><code>  Flatpak 1.14.6</code></pre>
                   </div>
+
+                  <p>
+                    This is a baseline check that the client exists and the workstation can run Flatpak workflows. If Flatpak is
+                    missing, you cannot proceed with permission auditing or policy enforcement.
+                  </p>
                 </div>
 
                 <!-- Step 2 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
                     <strong class="font-alt">Step 2</strong>
-                    : Create the working directory and enter it.
+                    : List configured remotes with details.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -347,19 +336,25 @@
                         Copy
                       </button>
                     </div>
-                    <pre><code id="cmd-step-2">mkdir -p /root/compose-lab && cd /root/compose-lab</code></pre>
+                    <pre><code id="cmd-step-2">flatpak remotes --show-details</code></pre>
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code>(directory ready)</code></pre>
+                    <pre><code>  Name     Title    URL                                         Collection ID  Subset  Filter  Priority  Options
+  flathub  Flathub  https://dl.flathub.org/repo/                 org.flathub    -       -       1         system</code></pre>
                   </div>
+
+                  <p>
+                    Remotes define the trust source for applications and runtimes. You need to know exactly where content is coming
+                    from before you evaluate permissions.
+                  </p>
                 </div>
 
                 <!-- Step 3 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
                     <strong class="font-alt">Step 3</strong>
-                    : Create docker-compose.yml (nginx + redis).
+                    : Confirm Flathub is installed as a system remote.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -373,29 +368,25 @@
                         Copy
                       </button>
                     </div>
-                    <pre><code id="cmd-step-3">cat &gt; docker-compose.yml &lt;&lt; 'EOF'
-services:
-  web:
-    image: nginx:latest
-    ports:
-      - "8081:80"
-  cache:
-    image: redis:latest
-    ports:
-      - "6379:6379"
-EOF</code></pre>
+                    <pre><code id="cmd-step-3">flatpak remote-list --system</code></pre>
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code>(docker-compose.yml created)</code></pre>
+                    <pre><code>  Name     Options
+  flathub  system</code></pre>
                   </div>
+
+                  <p>
+                    System remotes apply consistently across users on the workstation. This matters when you need policy and install
+                    behavior to be repeatable.
+                  </p>
                 </div>
 
                 <!-- Step 4 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
                     <strong class="font-alt">Step 4</strong>
-                    : Start the stack in detached mode.
+                    : Search Flathub for Flatseal (permissions manager).
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -409,21 +400,25 @@ EOF</code></pre>
                         Copy
                       </button>
                     </div>
-                    <pre><code id="cmd-step-4">docker compose up -d</code></pre>
+                    <pre><code id="cmd-step-4">flatpak search flatseal</code></pre>
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code>[+] Running 2/2
- ✔ Container compose-lab-web-1    Started
- ✔ Container compose-lab-cache-1  Started</code></pre>
+                    <pre><code>  Name      Description                         Application ID                 Version  Branch  Remotes
+  Flatseal  Manage Flatpak application permissions  com.github.tchx84.Flatseal  2.2.0    stable  flathub</code></pre>
                   </div>
+
+                  <p>
+                    Capture the application ID. Even if your enforcement is CLI-based, Flatseal is useful in support workflows when
+                    you need quick review and stakeholder visibility.
+                  </p>
                 </div>
 
                 <!-- Step 5 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
                     <strong class="font-alt">Step 5</strong>
-                    : Show compose service status.
+                    : Install Flatseal from Flathub.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -437,21 +432,28 @@ EOF</code></pre>
                         Copy
                       </button>
                     </div>
-                    <pre><code id="cmd-step-5">docker compose ps</code></pre>
+                    <pre><code id="cmd-step-5">sudo flatpak install -y flathub com.github.tchx84.Flatseal</code></pre>
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code>NAME                 IMAGE          STATUS          PORTS
-compose-lab-web-1     nginx:latest   Up              0.0.0.0:8081-&gt;80/tcp
-compose-lab-cache-1   redis:latest   Up              0.0.0.0:6379-&gt;6379/tcp</code></pre>
+                    <pre><code>  Looking for matches…
+  Installing…
+  1. [####################] org.gnome.Platform 45
+  2. [####################] com.github.tchx84.Flatseal 2.2.0 stable
+  Installation complete.</code></pre>
                   </div>
+
+                  <p>
+                    Flatseal requires the GNOME platform runtime. On first install, expect runtime pulls that are larger than the
+                    application itself.
+                  </p>
                 </div>
 
                 <!-- Step 6 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
                     <strong class="font-alt">Step 6</strong>
-                    : Verify nginx responds on localhost:8081.
+                    : Confirm an example app is installed (Firefox Flatpak).
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -465,20 +467,24 @@ compose-lab-cache-1   redis:latest   Up              0.0.0.0:6379-&gt;6379/tcp</
                         Copy
                       </button>
                     </div>
-                    <pre><code id="cmd-step-6">curl -I http://localhost:8081</code></pre>
+                    <pre><code id="cmd-step-6">flatpak list --app | grep -i firefox</code></pre>
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code>HTTP/1.1 200 OK
-Server: nginx/1.25.x</code></pre>
+                    <pre><code>  Firefox  org.mozilla.firefox  123.0.1  stable  flathub  system</code></pre>
                   </div>
+
+                  <p>
+                    This lab uses Firefox as the target application for permission inspection and overrides. If Firefox is not
+                    present, you cannot validate the policy changes against a known app ID.
+                  </p>
                 </div>
 
                 <!-- Step 7 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
                     <strong class="font-alt">Step 7</strong>
-                    : Show the last 5 lines of logs for the web service.
+                    : Inspect current permissions for Firefox.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -492,19 +498,38 @@ Server: nginx/1.25.x</code></pre>
                         Copy
                       </button>
                     </div>
-                    <pre><code id="cmd-step-7">docker compose logs --tail 5 web</code></pre>
+                    <pre><code id="cmd-step-7">flatpak info --show-permissions org.mozilla.firefox</code></pre>
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code>web-1  | 127.0.0.1 - - [10/Feb/2026:23:00:00 +0000] "HEAD / HTTP/1.1" 200 0 "-" "curl/7.88.1"</code></pre>
+                    <pre><code>  [Context]
+  shared=network;ipc;
+  sockets=x11;pulseaudio;
+  devices=dri;
+  filesystems=home;xdg-download;
+  [Session Bus Policy]
+  org.freedesktop.Notifications=talk</code></pre>
                   </div>
+
+                  <p>
+                    This output is your permission baseline. You need a before/after view so you can prove what changed and confirm
+                    that enforcement is active.
+                  </p>
                 </div>
 
                 <!-- Step 8 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
                     <strong class="font-alt">Step 8</strong>
-                    : Stop and remove the stack.
+                    : Restrict filesystem access with an override.
+                  </div>
+
+                  <div class="lab-callout">
+                    <div class="lab-callout-label">Policy note</div>
+                    <p class="m-b-0">
+                      Filesystem and network access are high-impact permissions. Validate the business requirement before removing
+                      access and document expected behavior changes for the user.
+                    </p>
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -518,22 +543,20 @@ Server: nginx/1.25.x</code></pre>
                         Copy
                       </button>
                     </div>
-                    <pre><code id="cmd-step-8">docker compose down</code></pre>
+                    <pre><code id="cmd-step-8">sudo flatpak override --nosocket=ssh-auth --nofilesystem=home --nofilesystem=xdg-download org.mozilla.firefox</code></pre>
                   </div>
 
-                  <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code>[+] Running 2/2
- ✔ Container compose-lab-cache-1  Removed
- ✔ Container compose-lab-web-1    Removed
- ✔ Network compose-lab_default    Removed</code></pre>
-                  </div>
+                  <p>
+                    This applies explicit restrictions: remove the SSH agent socket and block access to the home directory and the
+                    downloads portal. You will verify enforcement in a later step.
+                  </p>
                 </div>
 
                 <!-- Step 9 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
                     <strong class="font-alt">Step 9</strong>
-                    : Remove the lab directory.
+                    : Restrict network access with an override.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
@@ -547,12 +570,107 @@ Server: nginx/1.25.x</code></pre>
                         Copy
                       </button>
                     </div>
-                    <pre><code id="cmd-step-9">rm -rf /root/compose-lab</code></pre>
+                    <pre><code id="cmd-step-9">sudo flatpak override --unshare=network org.mozilla.firefox</code></pre>
+                  </div>
+
+                  <p>
+                    Disabling network access is a strong control. The app should still launch, but browsing and external calls should
+                    fail. Treat this as a targeted policy test.
+                  </p>
+                </div>
+
+                <!-- Step 10 -->
+                <div class="lab-step">
+                  <div class="lab-step-title">
+                    <strong class="font-alt">Step 10</strong>
+                    : Verify applied overrides for Firefox.
                   </div>
 
                   <div class="lab-codeblock m-b-40 m-t-40">
-                    <pre><code>(removed)</code></pre>
+                    <div class="lab-codeblock-header">
+                      <span>Command</span>
+                      <button
+                        class="lab-copy-btn"
+                        type="button"
+                        data-copy="#cmd-step-10"
+                      >
+                        Copy
+                      </button>
+                    </div>
+                    <pre><code id="cmd-step-10">flatpak override --show org.mozilla.firefox</code></pre>
                   </div>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <pre><code>  [Context]
+  unshare=network;
+  filesystems=!home;!xdg-download;
+  sockets=!ssh-auth;</code></pre>
+                  </div>
+
+                  <p>
+                    This is the enforcement proof. You should see the explicit restrictions reflected in the override output.
+                  </p>
+                </div>
+
+                <!-- Step 11 -->
+                <div class="lab-step">
+                  <div class="lab-step-title">
+                    <strong class="font-alt">Step 11</strong>
+                    : Launch Firefox to validate policy behavior.
+                  </div>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <div class="lab-codeblock-header">
+                      <span>Command</span>
+                      <button
+                        class="lab-copy-btn"
+                        type="button"
+                        data-copy="#cmd-step-11"
+                      >
+                        Copy
+                      </button>
+                    </div>
+                    <pre><code id="cmd-step-11">flatpak run org.mozilla.firefox</code></pre>
+                  </div>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <pre><code>  [flatpak] Launching org.mozilla.firefox...
+  (GUI application started)
+  (Browsing fails as expected: network is disabled by override)
+  (Application exited)</code></pre>
+                  </div>
+
+                  <p>
+                    A successful security change is not just “settings applied.” You need runtime validation. The app should start,
+                    and the expected restriction (no network) should be observable.
+                  </p>
+                </div>
+
+                <!-- Step 12 -->
+                <div class="lab-step">
+                  <div class="lab-step-title">
+                    <strong class="font-alt">Step 12</strong>
+                    : Reset overrides to restore defaults.
+                  </div>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <div class="lab-codeblock-header">
+                      <span>Command</span>
+                      <button
+                        class="lab-copy-btn"
+                        type="button"
+                        data-copy="#cmd-step-12"
+                      >
+                        Copy
+                      </button>
+                    </div>
+                    <pre><code id="cmd-step-12">sudo flatpak override --reset org.mozilla.firefox</code></pre>
+                  </div>
+
+                  <p>
+                    Reset is part of safe operations. You return the workstation to a known baseline after validating the policy
+                    behavior.
+                  </p>
                 </div>
               </section>
 
@@ -564,33 +682,41 @@ Server: nginx/1.25.x</code></pre>
 
                 <div class="lab-callout">
                   <div class="lab-callout-label">
-                    docker compose version fails
+                    Flathub remote not present or not system-scoped
                   </div>
                   <p class="m-b-0">
-                    Confirm Docker is installed and the Compose v2 plugin is
-                    available. On some systems, Compose may be a separate package
-                    or not included by default.
+                    If Flathub is missing or configured only for a user install, you may get inconsistent behavior across accounts.
+                    Confirm remote scope and document what is approved for the environment.
                   </p>
                 </div>
 
                 <div class="lab-callout">
                   <div class="lab-callout-label">
-                    curl to localhost:8081 fails
+                    flatpak install fails due to policy or connectivity
                   </div>
                   <p class="m-b-0">
-                    Confirm the stack is Up in docker compose ps and the port
-                    mapping is present. If the port is already in use on the host,
-                    the web service may fail to start.
+                    Managed workstations may restrict outbound access or require proxy configuration. Confirm network reachability to
+                    the remote URL and validate that software sourcing is permitted.
                   </p>
                 </div>
 
                 <div class="lab-callout">
                   <div class="lab-callout-label">
-                    docker compose logs is empty
+                    Firefox app ID not found
                   </div>
                   <p class="m-b-0">
-                    Generate traffic with curl, then re-check logs. Nginx may not
-                    emit access logs until a request is made.
+                    If <code>org.mozilla.firefox</code> is not installed, you cannot run permission inspection and overrides against
+                    it. Confirm the app list and select a known installed Flatpak app ID for testing.
+                  </p>
+                </div>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">
+                    App launches with degraded behavior
+                  </div>
+                  <p class="m-b-0">
+                    Restricting filesystem or network access can break workflows. Validate the business requirement, communicate the
+                    expected change, and verify that restrictions are scoped to the minimum needed.
                   </p>
                 </div>
               </section>
@@ -602,7 +728,8 @@ Server: nginx/1.25.x</code></pre>
                 </h3>
 
                 <p>
-                  Ensure the stack is down and the working directory is removed.
+                  This lab installs Flatseal and applies overrides to a Flatpak application. Clean up by removing Flatseal if it is
+                  not needed on the workstation and confirming overrides have been reset.
                 </p>
 
                 <div class="lab-codeblock m-b-40 m-t-40">
@@ -616,16 +743,16 @@ Server: nginx/1.25.x</code></pre>
                       Copy
                     </button>
                   </div>
-                  <pre><code id="cmd-cleanup">cd /root || true
-docker compose -f /root/compose-lab/docker-compose.yml down 2&gt;/dev/null || true
-rm -rf /root/compose-lab</code></pre>
+                  <pre><code id="cmd-cleanup">sudo flatpak override --reset org.mozilla.firefox
+sudo flatpak uninstall -y com.github.tchx84.Flatseal
+flatpak override --show org.mozilla.firefox</code></pre>
                 </div>
 
                 <div class="lab-callout">
                   <div class="lab-callout-label">Success signal</div>
                   <p class="m-b-0">
-                    docker compose ps shows no running services for the project and
-                    /root/compose-lab no longer exists.
+                    <code>flatpak override --show</code> returns no active restrictions for Firefox, and Flatseal is removed if it is
+                    not part of your standard workstation baseline.
                   </p>
                 </div>
               </section>
@@ -638,76 +765,102 @@ rm -rf /root/compose-lab</code></pre>
 
                 <ul class="lab-reference-list">
                   <li>
-                    <code>docker compose version</code>
-                    : Shows Docker Compose version.
+                    <code>flatpak --version</code>
+                    : Prints the installed Flatpak version.
                   </li>
 
                   <li>
-                    <code>docker compose up -d</code>
-                    : Creates and starts services in the background.
+                    <code>flatpak remotes --show-details</code>
+                    : Lists configured remotes with detailed metadata.
                     <ul>
-                      <li>
-                        <code>-d</code>
-                        : Detached mode (runs in background).
-                      </li>
+                      <li><code>--show-details</code> : Includes URL, collection ID, and installation scope.</li>
                     </ul>
                   </li>
 
                   <li>
-                    <code>docker compose ps</code>
-                    : Shows service status and ports for the current project.
-                  </li>
-
-                  <li>
-                    <code>docker compose logs --tail &lt;N&gt; &lt;service&gt;</code>
-                    : Shows the last N log lines for a service.
+                    <code>flatpak remote-list --system</code>
+                    : Lists remotes configured system-wide.
                     <ul>
-                      <li>
-                        <code>--tail &lt;N&gt;</code>
-                        : Limits output to the last N lines.
-                      </li>
+                      <li><code>--system</code> : Restricts output to system installation scope.</li>
                     </ul>
                   </li>
 
                   <li>
-                    <code>docker compose down</code>
-                    : Stops and removes containers and the project network.
+                    <code>flatpak search &lt;term&gt;</code>
+                    : Searches remotes for matching applications.
                   </li>
 
                   <li>
-                    <code>curl -I &lt;url&gt;</code>
-                    : Fetches HTTP response headers for a quick health check.
+                    <code>sudo flatpak install -y flathub com.github.tchx84.Flatseal</code>
+                    : Installs Flatseal from Flathub non-interactively.
                     <ul>
-                      <li>
-                        <code>-I</code>
-                        : Requests headers only (HEAD).
-                      </li>
+                      <li><code>-y</code> : Automatically answers “yes” to prompts.</li>
+                      <li><code>flathub</code> : Remote name used as the install source.</li>
                     </ul>
                   </li>
 
                   <li>
-                    <code>cat &gt; &lt;file&gt; &lt;&lt; 'EOF'</code>
-                    : Creates a file using a heredoc.
+                    <code>flatpak list --app | grep -i firefox</code>
+                    : Confirms the Firefox Flatpak is installed.
                     <ul>
-                      <li>
-                        <code>'EOF'</code>
-                        : Prevents variable expansion while writing the file.
-                      </li>
+                      <li><code>--app</code> : Shows only applications (not runtimes).</li>
+                      <li><code>|</code> : Pipes output from the left command into the right command.</li>
+                      <li><code>grep -i firefox</code> : Filters lines matching “firefox” case-insensitively.</li>
                     </ul>
                   </li>
 
                   <li>
-                    <code>rm -rf &lt;path&gt;</code>
-                    : Removes a directory recursively without prompting.
+                    <code>flatpak info --show-permissions org.mozilla.firefox</code>
+                    : Shows the current permission set for a Flatpak application.
                     <ul>
-                      <li>
-                        <code>-r</code>
-                        : Recursive removal.
-                      </li>
-                      <li>
-                        <code>-f</code>
-                        : Force removal, no prompts.
-                      </li>
+                      <li><code>--show-permissions</code> : Prints sandbox permissions and bus policies.</li>
+                    </ul>
+                  </li>
+
+                  <li>
+                    <code>sudo flatpak override --nosocket=ssh-auth --nofilesystem=home --nofilesystem=xdg-download org.mozilla.firefox</code>
+                    : Applies a restrictive override for sockets and filesystem access.
+                    <ul>
+                      <li><code>--nosocket=ssh-auth</code> : Removes access to the SSH agent socket.</li>
+                      <li><code>--nofilesystem=home</code> : Removes access to the user’s home directory.</li>
+                      <li><code>--nofilesystem=xdg-download</code> : Removes access to the downloads directory.</li>
+                    </ul>
+                  </li>
+
+                  <li>
+                    <code>sudo flatpak override --unshare=network org.mozilla.firefox</code>
+                    : Disables network access for the application.
+                    <ul>
+                      <li><code>--unshare=network</code> : Removes network namespace sharing.</li>
+                    </ul>
+                  </li>
+
+                  <li>
+                    <code>flatpak override --show org.mozilla.firefox</code>
+                    : Displays effective overrides applied to the application.
+                    <ul>
+                      <li><code>--show</code> : Prints overrides currently in effect.</li>
+                    </ul>
+                  </li>
+
+                  <li>
+                    <code>flatpak run org.mozilla.firefox</code>
+                    : Launches the application by ID.
+                  </li>
+
+                  <li>
+                    <code>sudo flatpak override --reset org.mozilla.firefox</code>
+                    : Resets overrides to application defaults.
+                    <ul>
+                      <li><code>--reset</code> : Removes override rules for the application.</li>
+                    </ul>
+                  </li>
+
+                  <li>
+                    <code>sudo flatpak uninstall -y com.github.tchx84.Flatseal</code>
+                    : Uninstalls Flatseal non-interactively.
+                    <ul>
+                      <li><code>-y</code> : Automatically answers “yes” to prompts.</li>
                     </ul>
                   </li>
                 </ul>
@@ -727,11 +880,7 @@ rm -rf /root/compose-lab</code></pre>
             <div class="col-sm-12">
               <ul class="social-text-links font-alt text-center m-b-20">
                 <li>
-                  <a
-                    href="https://github.com/vonds"
-                    target="_blank"
-                    rel="noopener"
-                  >
+                  <a href="https://github.com/vonds" target="_blank" rel="noopener">
                     Github
                   </a>
                 </li>
