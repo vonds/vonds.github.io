@@ -1,0 +1,399 @@
+<!-- doc.html (HTML) -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<meta name="description" content="Vonds Lab Write-ups" />
+	<meta name="name" content="Vonds" />
+
+	<title>Vonds | exit_0 Documentation</title>
+
+	<!-- Favicons -->
+	<link rel="icon" type="image/svg+xml" href="../assets/images/favicon.svg" />
+	<link rel="icon" type="image/png" href="../assets/images/favicon.png" />
+	<link rel="apple-touch-icon" href="../assets/images/apple-touch-icon.png" />
+	<link rel="apple-touch-icon" sizes="72x72" href="../assets/images/apple-touch-icon-72x72.png" />
+	<link rel="apple-touch-icon" sizes="114x114" href="../assets/images/apple-touch-icon-114x114.png" />
+
+	<!-- Bootstrap shell CSS -->
+	<link href="../assets/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
+
+	<!-- Plugins -->
+	<link href="../assets/css/font-awesome.min.css" rel="stylesheet" />
+	<link href="../assets/css/linea-icons.css" rel="stylesheet" />
+	<link href="../assets/css/ionicons.min.css" rel="stylesheet" />
+	<link href="../assets/css/simpletextrotator.css" rel="stylesheet" />
+	<link href="../assets/css/magnific-popup.css" rel="stylesheet" />
+	<link href="../assets/css/owl.carousel.css" rel="stylesheet" />
+	<link href="../assets/css/superslides.css" rel="stylesheet" />
+	<link href="../assets/css/vertical.css" rel="stylesheet" />
+	<link href="../assets/css/animate.css" rel="stylesheet" />
+
+	<!-- Template shell CSS -->
+	<link href="../assets/css/style.css" rel="stylesheet" />
+
+	<!-- Docs overrides -->
+	<link href="../assets/css/docs.css" rel="stylesheet" />
+
+	<!-- Fonts -->
+	<link href="https://fonts.googleapis.com/css?family=Dosis" rel="stylesheet" />
+</head>
+
+<body>
+	<!-- PRELOADER -->
+	<div class="page-loader">
+		<div class="loader">Loading...</div>
+	</div>
+
+	<!-- OVERLAY MENU -->
+	<div id="overlay-menu" class="overlay-menu">
+		<a href="#" id="overlay-menu-hide" class="navigation-hide">
+			<i class="ion-close-round"></i>
+		</a>
+
+		<div class="overlay-menu-inner">
+			<nav class="overlay-menu-nav">
+				<ul id="nav">
+					<li><a href="../index.html">Home</a></li>
+
+					<li class="slidedown">
+						<a href="#">Portfolio</a>
+						<ul>
+							<li><a href="https://github.com/vonds/exit_0" target="_blank">exit_0</a></li>
+							<li><a href="docs.html" target="_blank">exit_0 Documentation</a></li>
+							<li><a href="https://github.com/vonds/sentinel" target="_blank" rel="noopener">Sentinel</a></li>
+						</ul>
+					</li>
+					<li><a href="https://www.linkedin.com/in/vonds/" target="_blank">LinkedIn</a></li>
+					<li><a href="https://github.com/vonds" target="_blank">Github</a></li>
+					<li><a href="mailto:vonds13@gmail.com?subject=Hello Vonds">Contact</a></li>
+				</ul>
+			</nav>
+		</div>
+
+		<div class="overlay-navigation-footer">
+			<div class="container">
+				<div class="row">
+					<div class="col-sm-12 text-center">
+						<p class="copyright font-alt m-b-0">
+							VONDS &copy;
+							<script>document.write(new Date().getFullYear());</script>
+						</p>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- WRAPPER -->
+	<div class="wrapper">
+
+		<!-- NAVIGATION -->
+		<nav class="navbar navbar-custom navbar-transparent navbar-light navbar-fixed-top">
+			<div class="container">
+				<div class="navbar-header">
+					<a class="navbar-brand" href="../index.html">
+						<img class="logo-dark" src="../assets/images/logo-dark.svg" alt="Vonds" /><img class="logo-light" src="../assets/images/logo-light.svg" alt="" aria-hidden="true" />
+					</a>
+				</div>
+
+				<ul id="icons-navbar" class="nav navbar-nav navbar-right">
+					<li>
+						<a href="#" id="toggle-menu" class="show-overlay" title="Menu">
+							<span class="icon-bar"></span>
+							<span class="icon-bar"></span>
+							<span class="icon-bar"></span>
+						</a>
+					</li>
+				</ul>
+			</div>
+		</nav>
+
+		<!-- DOCS INDEX -->
+		<section class="module">
+			<div class="container">
+				<h2 id="overview" class="font-alt module-title m-t-0 m-b-40 m-t-60">exit_0 Documentation</h2>
+				<div class="row">
+
+					<!-- LEFT SIDEBAR -->
+					<div class="col-sm-4 col-md-3 lab-sidebar">
+						<div class="docs-sidebar">
+							<div class="docs-widget">
+								<h5 class="widget-title m-b-20">Lab Index</h5>
+								<ul class="docs-nav" id="docsNavPrimary"></ul>
+							</div>
+						</div>
+					</div>
+
+					<!-- MAIN CONTENT -->
+					<div class="col-sm-8 col-md-9">
+						<p class="m-b-20">
+							exit_0 is a terminal-based Linux lab environment built around real system administration tasks. The labs are designed to develop operational habits: inspecting system state, applying safe changes, verifying results, and diagnosing failures.
+						</p>
+
+						<p class="m-b-20">
+							These write-ups form the operational backbone of the labs. Each one documents the objective, the commands involved, the expected system state, and the common breakpoints that surface in production environments. The emphasis is on repeatable workflows, clear verification, and stable outcomes rather than one-off command success.
+						</p>
+
+						<p class="m-b-20">
+							exit_0 is intended for Linux system administrators, and IT professionals transitioning into Linux-focused roles.
+						</p>
+
+						<p class="m-b-20 text-center">
+							Support ongoing maintenance and expansion of exit_0 below:
+						</p>
+						<div class="row">
+							<div class="col-sm-12">
+								<ul class="social-text-links font-alt text-center m-b-20">
+									<li><a href="http://venmo.com/u/vonds" target="_blank">Venmo</a></li>
+									<li><a href="https://cash.app/$VondsDubuisson" target="_blank">Cashapp</a></li>
+								</ul>
+							</div>
+						</div>
+
+						<!-- Search bar (NEW) -->
+						<div class="docs-search-wrap">
+							<label for="labSearch" class="font-alt" style="display:block; margin-bottom:8px;">
+								Search labs
+							</label>
+							<input
+								id="labSearch"
+								class="form-control navbar-light"
+								type="text"
+								placeholder='Examples: shell, LVM, boot, troubleshooting, services, security'
+								aria-label="Search labs by category tag"
+							/>
+							<div class="docs-search-actions">
+								<button id="clearLabSearch" type="button" class="btn btn-sm btn-default">Clear search</button>
+								<button id="showAllLabs" type="button" class="btn btn-sm btn-default">Show all</button>
+							</div>
+						</div>
+
+						<div class="labs-directory">
+							<ul class="labs-grid" id="labsGrid">
+								<li data-filter="processes storage kernel modules pci raid megaraid hardware diagnostics"><a href="lab1.html">Lab 001</a></li>
+								<li data-filter="logging shell monitoring realtime tail grep syslog messages auth kernel security alerts triage"><a href="lab2.html">Lab 002</a></li>
+								<li data-filter="shell text sed substitution config editing"><a href="lab3.html">Lab 003</a></li>
+								<li data-filter="services security ssh sed hardening config"><a href="lab4.html">Lab 004</a></li>
+								<li data-filter="services processes systemd boot"><a href="lab5.html">Lab 005</a></li>
+								<li data-filter="services boot security blacklisting"><a href="lab6.html">Lab 006</a></li>
+								<li data-filter="services boot shell modules"><a href="lab7.html">Lab 007</a></li>
+								<li data-filter="services boot scheduling runlevel"><a href="lab8.html">Lab 008</a></li>
+								<li data-filter="services processes systemd troubleshooting"><a href="lab9.html">Lab 009</a></li>
+								<li data-filter="permissions ownership chmod chgrp umask security audit logs file access users groups" ><a href="lab10.html">Lab 010</a></li>
+								<li data-filter="networking dns routing ip ping dig nslookup gateway interface resolvconf connectivity linux"><a href="lab11.html">Lab 011</a></li>
+								<li data-filter="scheduling services cron backups"><a href="lab12.html">Lab 012</a></li>
+								<li data-filter="logging services journalctl rotation"><a href="lab13.html">Lab 013</a></li>
+								<li data-filter="shell packages tar compression"><a href="lab14.html">Lab 014</a></li>
+								<li data-filter="users permissions passwords aging"><a href="lab15.html">Lab 015</a></li>
+								<li data-filter="processes process ps top kill"><a href="lab16.html">Lab 016</a></li>
+								<li data-filter="storage filesystems fstab"><a href="lab17.html">Lab 017</a></li>
+								<li data-filter="storage partitioning fdisk""><a href="lab18.html">Lab 018</a></li>
+								<li data-filter="shell search find locate xargs"><a href="lab19.html">Lab 019</a></li>
+								<li data-filter="shell variables environment startup bash"><a href="lab20.html">Lab 020</a></li>
+								<li data-filter="permissions stickybit chmod directory shared"><a href="lab21.html">Lab 021</a></li>
+								<li data-filter="services cups printing systemctl lpstat"><a href="lab22.html">Lab 022</a></li>
+								<li data-filter="packages security gpg integrity rpm dpkg"><a href="lab23.html">Lab 023</a></li>
+								<li data-filter="permissions security users sticky setuid setgid"><a href="lab24.html">Lab 024</a></li>
+								<li data-filter="logging services troubleshooting journalctl logrotate rotation"><a href="lab25.html">Lab 025</a></li>
+								<li data-filter="users user-management onboarding accounts groups groupadd useradd usermod passwd userdel groupdel permissions ownership chgrp shared-directory workspace /opt/devwork devteam devstudent devstudent2 /etc/passwd /etc/group getent id grep primary-group supplementary-groups home-directory shell /bin/bash cleanup userdel -r"><a href="lab26.html">Lab 026</a></li>
+								<li data-filter="users security shell password-policy password-aging expiration chage passwd"><a href="lab27.html">Lab 027</a></li>
+								<li data-filter="users shell security privilege-escalation sudo su switching-users root-shell login-shell least-privilege access-control authorization sudoers wheel group-membership usermod useradd passwd userdel whoami audit sudo -i sudo <command> su - tempsudo tempsudo /etc/sudoers /etc/sudoers.d visudo policy verification identity boundary escalation patterns"><a href="lab28.html">Lab 028</a></li>
+								<li data-filter="security shell users monitoring user-activity session-monitoring access-review incident-triage login-triage suspicious-login after-hours login-history current-sessions remote-sessions tty pts ssh sshd authentication authorization privilege audit trail forensics evidence-preservation account-lockout account-mitigation who w last id getent grep auth.log /var/log/auth.log /var/log/secure failed-password brute-force password-guessing credential-abuse ip-address source-ip sessions wtmp sudo wheel sudo-group group-membership risk-assessment passwd -l lock-account"><a href="lab29.html">Lab 029</a></li>
+								<li data-filter="users shell"><a href="lab30.html">Lab 030</a></li>
+								<li data-filter="permissions setuid suid setgid sgid sticky-bit sticky chmod octal-permissions chgrp groupadd group-management user-management security"><a href="lab31.html">Lab 031</a></li>
+								<li data-filter="users security services ldap authentication directory"><a href="lab32.html">Lab 032</a></li>
+								<li data-filter="shell users permissions env bashrc profile"><a href="lab33.html">Lab 033</a></li>
+								<li data-filter="shell processes troubleshooting utilities systeminfo"><a href="lab34.html">Lab 034</a></li>
+								<li data-filter="processes scheduling shell jobs monitoring automation"><a href="lab35.html">Lab 035</a></li>
+								<li data-filter="services systemd systemctl daemon units boot"><a href="lab36.html">Lab 036</a></li>
+								<li data-filter="processes ps monitoring inspection resources troubleshooting"><a href="lab37.html">Lab 037</a></li>
+								<li data-filter="processes top monitoring performance resources troubleshooting"><a href="lab38.html">Lab 038</a></li>
+								<li data-filter="processes kill signals termination pgrep troubleshooting"><a href="lab39.html">Lab 039</a></li>
+								<li data-filter="processes signals kill sigterm sigkill trap"><a href="lab40.html">Lab 040</a></li>
+								<li data-filter="processes scheduling jobcontrol jobs foreground background"><a href="lab41.html">Lab 041</a></li>
+								<li data-filter="scheduling processes at atd backup queueing atrm"><a href="lab42.html">Lab 042</a></li>
+								<li data-filter="scheduling processes cron intervals hourly daily weekly monthly"><a href="lab43.html">Lab 043</a></li>
+								<li data-filter="processes scheduling jobcontrol priority nice bg fg"><a href="lab44.html">Lab 044</a></li>
+								<li data-filter="shell troubleshooting storage"><a href="lab45.html">Lab 045</a></li>
+								<li data-filter="shell security secvices"><a href="lab46.html">Lab 046</a></li>
+								<li data-filter="boot troubleshooting secvices"><a href="lab47.html">Lab 047</a></li>
+								<li data-filter="shell network secvices"><a href="lab48.html">Lab 048</a></li>
+								<li data-filter="shell system hardware kernel uname dmidecode info"><a href="lab49.html">Lab 049</a></li>
+								<li data-filter="shell architecture cpu uname arch lscpu hardware"><a href="lab50.html">Lab 050</a></li>
+								<li data-filter="shell troubleshooting sosreport diagnostics support sos tar archive"><a href="lab51.html">Lab 051</a></li>
+								<li data-filter="shell awk text parsing filtering formatting"><a href="lab52.html">Lab 052</a></li>
+								<li data-filter="shell terminal session recording"><a href="lab53.html">Lab 053</a></li>
+								<li data-filter="security SELinux grub recovery"><a href="lab54.html">Lab 054</a></li>
+								<li data-filter="shell environment"><a href="lab55.html">Lab 055</a></li>
+								<li data-filter="shell multiplexing"><a href="lab56.html">Lab 056</a></li>
+								<li data-filter="shell multiplexing"><a href="lab57.html">Lab 057</a></li>
+								<li data-filter="networking diagnostics"><a href="lab58.html">Lab 058</a></li>
+								<li data-filter="networking ethtool"><a href="lab59.html">Lab 059</a></li>
+								<li data-filter="networking ipv4"><a href="lab60.html">Lab 060</a></li>
+								<li data-filter="networking networkmanager"><a href="lab61.html">Lab 061</a></li>
+								<li data-filter="networking ssh"><a href="lab62.html">Lab 062</a></li>
+								<li data-filter="security ssh"><a href="lab63.html">Lab 063</a></li>
+								<li data-filter="security keys"><a href="lab64.html">Lab 064</a></li>
+								<li data-filter="networking sockets"><a href="lab65.html">Lab 065</a></li>
+								<li data-filter="networking http"><a href="lab66.html">Lab 066</a></li>
+								<li data-filter="networking ftp"><a href="lab67.html">Lab 067</a></li>
+								<li data-filter="networking scp"><a href="lab68.html">Lab 068</a></li>
+								<li data-filter="networking rsync"><a href="lab69.html">Lab 069</a></li>
+								<li data-filter="networking wget"><a href="lab70.html">Lab 070</a></li>
+								<li data-filter="packages repos"><a href="lab71.html">Lab 071</a></li>
+								<li data-filter="packages repository"><a href="lab72.html">Lab 072</a></li>
+								<li data-filter="packages advanced"><a href="lab73.html">Lab 073</a></li>
+								<li data-filter="packages rpm yum apt pacman"><a href="lab74.html">Lab 074</a></li>
+								<li data-filter="networking dns bind named bind9 systemctl dig"><a href="lab75.html">Lab 075</a></li>
+								<li data-filter="networking dns nslookup dig ptr in-addr"><a href="lab76.html">Lab 076</a></li>
+								<li data-filter="networking ntp chrony chronyc chronyd dnf systemctl makestep"><a href="lab77.html">Lab 077</a></li>
+								<li data-filter="services timedatectl timezone ntp set-time set-ntp"><a href="lab78.html">Lab 078</a></li>
+								<li data-filter="shell date utc timestamp format"><a href="lab79.html">Lab 079</a></li>
+								<li data-filter="services postfix systemctl mail tee apt yum pacman"><a href="lab80.html">Lab 080</a></li>
+								<li data-filter="services apache httpd apache2 systemctl curl tee apt yum pacman"><a href="lab81.html">Lab 081</a></li>
+								<li data-filter="services nginx systemctl ss grep apt yum pacman proxy reload"><a href="lab82.html">Lab 082</a></li>
+								<li data-filter="services cockpit systemctl ss grep apt yum dnf pacman xdg-open firefox chromium"><a href="lab83.html">Lab 083</a></li>
+								<li data-filter="services squid proxy systemctl ss grep apt dnf pacman"><a href="lab84.html">Lab 084</a></li>
+								<li data-filter="logging rsyslog systemctl ss grep vim nano apt dnf pacman udp"><a href="lab85.html">Lab 085</a></li>
+								<li data-filter="logging rsyslog systemctl journalctl logger tail vim nano apt dnf pacman udp"><a href="lab86.html">Lab 086</a></li>
+								<li data-filter="networking troubleshooting netcat nc tcp udp listen scan echo sudo"><a href="lab87.html">Lab 087</a></li>
+								<li data-filter="logging logrotate rotate compress touch ls cat vim nano apt dnf pacman"><a href="lab88.html">Lab 088</a></li>
+								<li data-filter="users passwords useradd passwd chage aging policy"><a href="lab89.html">Lab 089</a></li>
+								<li data-filter="security authentication faillock lockout pam vim nano"><a href="lab90.html">Lab 090</a></li>
+								<li data-filter="services ldap slapd ldapadd ldapsearch slappasswd systemctl dpkg-reconfigure apt dnf pacman"><a href="lab91.html">Lab 091</a></li>
+								<li data-filter="networking traceroute icmp tcp udp hops less redirect apt dnf pacman"><a href="lab92.html">Lab 092</a></li>
+								<li data-filter="shell images ls feh viu xdg-open cargo apt dnf pacman"><a href="lab93.html">Lab 093</a></li>
+								<li data-filter="security networking services ufw firewalld firewall-cmd systemctl ssh http openssh rich-rule zones drop reload status apt dnf pacman"><a href="lab94.html">Lab 094</a></li>
+								<li data-filter="processes services packages tuned nice renice tuned-adm systemctl pgrep ps grep yes killall pkill dnf apt pacman"><a href="lab95.html">Lab 095</a></li>
+								<li data-filter="containers podman images pull run ps start logs volume mount inspect rm rmi alpine rootless dnf apt pacman"><a href="lab96.html">Lab 096</a></li>
+								<li data-filter="services time ntp chrony chronyd chronyc timedatectl systemctl enable start status sources tracking makestep sync drift logs rhel dnf yum conf"><a href="lab97.html">Lab 097</a></li>
+								<li data-filter="services ansible ansible-playbook ansible.cfg ping setup package service nano vim apt dnf pacman"><a href="lab98.html">Lab 098</a></li>
+								<li data-filter="services ansible ansible-galaxy ansible-playbook ansible-lint inventory nano vim"><a href="lab99.html">Lab 099</a></li>
+								<li data-filter="services ansible ansible-pull ansible-core git git-clone cat less sudo crontab mkdir touch"><a href="lab100.html">Lab 100</a></li>
+								<li data-filter="services ansible ansible-vault ansible-playbook cat nano vim vi rekey view edit create debug vars_files vault-password"><a href="lab101.html">Lab 101</a></li>
+								<li data-filter="services ansible ansible-inventory ansible-playbook python3 json nano vim chmod ping inventory dynamic-inventory script"><a href="lab102.html">Lab 102</a></li>
+								<li data-filter="services ansible-galaxy ansible-playbook mkdir cd nano vim inventory.ini roles role-install role-search role-init geerlingguy.nginx nginx"><a href="lab103.html">Lab 103</a></li>
+								<li data-filter="networking openvpn easy-rsa make-cadir easyrsa openssl pki cp gunzip tee systemctl openvpn@server server.conf server.conf.gz ca.crt server.crt server.key dh.pem gen-dh gen-req sign-req"><a href="lab104.html">Lab 104</a></li>
+								<li data-filter="networking dhcp dhcpd dhcpd.conf isc-dhcp-server dhcp-server systemctl dhcpd.service isc-dhcp-server.service leases dhcpd.leases apt dnf pacman tee nano vim cat eth0 sysconfig /etc/dhcp /etc/default/isc-dhcp-server /etc/sysconfig/dhcpd /var/lib/dhcp /var/lib/dhcpd"><a href="lab105.html">Lab 105</a></li>
+								<li data-filter="users useradd passwd groupadd usermod permissions grep chmod chgrp mkdir ls setgid sudo"><a href="lab106.html">Lab 106</a></li>
+								<li data-filter="processes lspci lsusb lsblk lsmod grep sudo"><a href="lab107.html">Lab 107</a></li>
+								<li data-filter="processes lsmod head modinfo modprobe grep rmmod sudo"><a href="lab108.html">Lab 108</a></li>
+								<li data-filter="processes echo printf tee grep modprobe modinfo lsmod dracut update-initramfs mkinitcpio sudo sh"><a href="lab109.html">Lab 109</a></li>
+								<li data-filter="logging dmesg udevadm tail grep cat sudo"><a href="lab110.html">Lab 110</a></li>
+								<li data-filter="processes proc grep cat awk lscpu free egrep head tail"><a href="lab111.html">Lab 111</a></li>
+								<li data-filter="processes cat head watch grep lspci lsmod"><a href="lab112.html">Lab 112</a></li>
+								<li data-filter="storage networking processes shell ls cat readlink grep lsblk"><a href="lab113.html">Lab 113</a></li>
+								<li data-filter="services shell grub processes systemctl grep ls head grub2-mkconfig grub2-install"><a href="lab114.html">Lab 114</a></li>
+								<li data-filter="services processes shell systemctl head grep ls who runlevel isolate set-default list-units"><a href="lab115.html">Lab 115</a></li>
+								<li data-filter="storage shell lsblk grep cat udevadm egrep readlink xargs basename"><a href="lab116.html">Lab 116</a></li>
+								<li data-filter="packages debian shell"><a href="lab117.html">Lab 117</a></li>
+								<li data-filter="packages dnf rpm timedatectl localectl systemctl ssh-keygen restorecon"><a href="lab118.html">Lab 118</a></li>
+								<li data-filter="packages troubleshooting rhel"><a href="lab119.html">Lab 119</a></li>
+								<li data-filter="packages troubleshooting rhel"><a href="lab120.html">Lab 120</a></li>
+								<li data-filter="packages repos troubleshooting rhel"><a href="lab121.html">Lab 121</a></li>
+								<li data-filter="packages rpm verification rhel"><a href="lab122.html">Lab 122</a></li>
+								<li data-filter="storage parted mbr rhel"><a href="lab123.html">Lab 123</a></li>
+								<li data-filter="storage parted gpt rhel"><a href="lab124.html">Lab 124</a></li>
+								<li data-filter="storage lvm xfs rhel fstab"><a href="lab125.html">Lab 125</a></li>
+								<li data-filter="packages alien ldd ldconfig grep head ls tee export"><a href="lab126.html">Lab 126</a></li>
+								<li data-filter="networking routing dns troubleshooting systemd-resolved"><a href="lab127.html">Lab 127</a></li>
+								<li data-filter="networking firewalld ssh incident troubleshooting"><a href="lab128.html">Lab 128</a></li>
+								<li data-filter="networking troubleshooting shell"><a href="lab129.html">Lab 129</a></li>
+								<li data-filter="networking troubleshooting shell "><a href="lab130.html">Lab 130</a></li>
+								<li data-filter="networking troubleshooting shell dns routing"><a href="lab131.html">Lab 131</a></li>
+								<li data-filter="networking troubleshooting dns shell nss "><a href="lab132.html">Lab 132</a></li>
+								<li data-filter="networking troubleshooting dns"><a href="lab133.html">Lab 133</a></li>
+								<li data-filter="networking troubleshooting firewall"><a href="lab134.html">Lab 134</a></li>
+								<li data-filter="networking troubleshooting dns"><a href="lab135.html">Lab 135</a></li>
+								<li data-filter="scheduling systemctl chrony chronyd journalctl timedatectl"><a href="lab136.html">Lab 136</a></li>
+								<li data-filter="services logging time chrony journald rsyslog" ><a href="lab137.html">Lab 137</a></li>
+								<li data-filter="services logging mail printing cups postfix journald queue" ><a href="lab138.html">Lab 138</a></li>
+								<li data-filter="services logging networking security rsyslog logrotate firewall udp"><a href="lab139.html">Lab 139</a></li>
+								<li data-filter="services logging networking security rsyslog logrotate firewall udp"><a href="lab140.html">Lab 140</a></li>
+								<li data-filter="services logging time mail postfix aliases journald chrony"><a href="lab141.html">Lab 141</a></li>
+								<li data-filter="services logging time mail printing journald aliases cups"><a href="lab142.html">Lab 142</a></li>
+								<li data-filter="services logging mail printing journald postfix vacuum logrotate"><a href="lab143.html">Lab 143</a></li>
+								<li data-filter="services logging networking time journald rsyslog postfix chrony"><a href="lab144.html">Lab 144</a></li>
+								<li data-filter="permissions scheduling time users cron at chage setgid"><a href="lab145.html">Lab 145</a></li>
+								<li data-filter="users permissions groups useradd usermod chage cleanup"><a href="lab146.html">Lab 146</a></li>
+								<li data-filter="users permissions groups useradd usermod getent shadow"><a href="lab147.html">Lab 147</a></li>
+								<li data-filter="scheduling cron crontab mailto redirection setuid"><a href="lab148.html">Lab 148</a></li>
+								<li data-filter="users permissions aging chage expiry inactive warning remediation"><a href="lab149.html">Lab 149</a></li>
+								<li data-filter="users useradd groups provisioning uid shell expiry chage"><a href="lab150.html">Lab 150</a></li>
+								<li data-filter="users permissions usermod modify groups shell home rename uid expiry"><a href="lab151.html">Lab 151</a></li>
+								<li data-filter="users permissions userdel delete offboarding sessions home verify"><a href="lab152.html">Lab 152</a></li>
+								<li data-filter="users networking shell nss getent lookup identity resolution services protocols"><a href="lab153.html">Lab 153</a></li>
+								<li data-filter="users permissions security passwd password aging policy expiry"><a href="lab154.html">Lab 154</a></li>
+								<li data-filter="users permissions groupadd groups gid nss getent provisioning"><a href="lab155.html">Lab 155</a></li>
+								<li data-filter="containers services networking docker nginx images containers logs exec cleanup"><a href="lab156.html">Lab 156</a></li>
+								<li data-filter="containers networking services docker bridge dns appnet inspect ping cleanup"><a href="lab157.html">Lab 157</a></li>
+								<li data-filter="containers storage docker volumes persistence backup restore tar mount appdata cleanup"><a href="lab158.html">Lab 158</a></li>
+								<li data-filter="containers packages docker images tagging transfer offline save load archive tar alpine cleanup"><a href="lab159.html">Lab 159</a></li>
+								<li data-filter="containers packages docker compose stack multicontainer nginx redis orchestration yaml services logs teardown cleanup"><a href="lab160.html">Lab 160</a></li>
+							</ul>
+						</div>
+
+					</div>
+
+				</div>
+			</div>
+		</section>
+
+		<!-- FOOTER -->
+		<footer class="module bg-light">
+			<div class="container">
+				<div class="row">
+					<div class="col-sm-12">
+						<ul class="social-text-links font-alt text-center m-b-20">
+							<li><a href="https://github.com/vonds" target="_blank">Github</a></li>
+							<li><a href="https://www.linkedin.com/in/vonds/" target="_blank">Linkedin</a></li>
+						</ul>
+					</div>
+				</div>
+
+				<div class="row">
+					<div class="col-sm-12">
+						<p class="copyright text-center m-b-0">
+							VONDS &copy;
+							<script>document.write(new Date().getFullYear());</script>
+						</p>
+
+						<div class="scroll-up">
+							<a href="#totop"><i class="fa fa-angle-double-up"></i></a>
+						</div>
+					</div>
+				</div>
+			</div>
+		</footer>
+
+	</div>
+
+	<!-- Javascript files -->
+
+	<script src="../assets/js/jquery-2.2.4.min.js"></script>
+	<script src="../assets/bootstrap/js/bootstrap.min.js"></script>
+	<script src="../assets/js/jquery.superslides.min.js"></script>
+	<script src="../assets/js/jquery.mb.YTPlayer.min.js"></script>
+	<script src="../assets/js/jquery.magnific-popup.min.js"></script>
+	<script src="../assets/js/jquery.simple-text-rotator.min.js"></script>
+	<script src="../assets/js/imagesloaded.pkgd.js"></script>
+	<script src="../assets/js/isotope.pkgd.min.js"></script>
+	<script src="../assets/js/packery-mode.pkgd.min.js"></script>
+	<script src="../assets/js/appear.js"></script>
+	<script src="../assets/js/jquery.easing.1.3.js"></script>
+	<script src="../assets/js/wow.min.js"></script>
+	<script src="../assets/js/jqBootstrapValidation.js"></script>
+	<script src="../assets/js/jquery.fitvids.js"></script>
+	<script src="../assets/js/jquery.parallax-1.1.3.js"></script>
+	<script src="../assets/js/smoothscroll.js"></script>
+	<script src="../assets/js/custom.js"></script>
+
+
+	<!-- Docs page tiny JS (existing) -->
+	<script src="../assets/js/docs.js"></script>
+
+
+</body>
+</html>

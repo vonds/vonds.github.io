@@ -1,0 +1,793 @@
+<!-- lab061.html -->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="exit_0 Documentation" />
+    <meta name="name" content="Vonds" />
+
+    <title>Vonds | Lab 061</title>
+
+    <!-- Favicons -->
+    <link rel="icon" type="image/svg+xml" href="../assets/images/favicon.svg" />
+    <link rel="icon" type="image/png" href="../assets/images/favicon.png" />
+    <link rel="apple-touch-icon" href="../assets/images/apple-touch-icon.png" />
+    <link
+      rel="apple-touch-icon"
+      sizes="72x72"
+      href="../assets/images/apple-touch-icon-72x72.png"
+    />
+    <link
+      rel="apple-touch-icon"
+      sizes="114x114"
+      href="../assets/images/apple-touch-icon-114x114.png"
+    />
+
+    <!-- Site styles (your existing) -->
+    <link href="../assets/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="../assets/css/font-awesome.min.css" rel="stylesheet" />
+    <link href="../assets/css/linea-icons.css" rel="stylesheet" />
+    <link href="../assets/css/ionicons.min.css" rel="stylesheet" />
+    <link href="../assets/css/simpletextrotator.css" rel="stylesheet" />
+    <link href="../assets/css/magnific-popup.css" rel="stylesheet" />
+    <link href="../assets/css/owl.carousel.css" rel="stylesheet" />
+    <link href="../assets/css/superslides.css" rel="stylesheet" />
+    <link href="../assets/css/vertical.css" rel="stylesheet" />
+    <link href="../assets/css/animate.css" rel="stylesheet" />
+    <link href="../assets/css/style.css" rel="stylesheet" />
+    <link href="../assets/css/docs.css" rel="stylesheet" />
+
+    <!-- Lab page styles -->
+    <link href="../assets/css/lab.css" rel="stylesheet" />
+
+    <!-- Fonts -->
+    <link
+      href="https://fonts.googleapis.com/css?family=Dosis"
+      rel="stylesheet"
+    />
+  </head>
+
+  <body>
+    <!-- PRELOADER -->
+    <div class="page-loader">
+      <div class="loader">Loading...</div>
+    </div>
+
+    <!-- OVERLAY MENU -->
+    <div id="overlay-menu" class="overlay-menu">
+      <a href="#" id="overlay-menu-hide" class="navigation-hide">
+        <i class="ion-close-round"></i>
+      </a>
+
+      <div class="overlay-menu-inner">
+        <nav class="overlay-menu-nav">
+          <ul id="nav">
+            <li><a href="../index.html">Home</a></li>
+
+            <li class="slidedown">
+              <a href="#">Portfolio</a>
+              <ul>
+                <li>
+                  <a
+                    href="https://github.com/vonds/exit_0"
+                    target="_blank"
+                    rel="noopener"
+                  >
+                    exit_0
+                  </a>
+                </li>
+                <li>
+                  <a href="docs.html" target="_blank" rel="noopener">
+                    exit_0 Documentation
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="https://github.com/vonds/sentinel"
+                    target="_blank"
+                    rel="noopener"
+                  >
+                    Sentinel
+                  </a>
+                </li>
+              </ul>
+            </li>
+
+            <li>
+              <a
+                href="https://www.linkedin.com/in/vonds/"
+                target="_blank"
+                rel="noopener"
+              >
+                LinkedIn
+              </a>
+            </li>
+            <li>
+              <a href="https://github.com/vonds" target="_blank" rel="noopener">
+                Github
+              </a>
+            </li>
+            <li>
+              <a href="mailto:vonds13@gmail.com?subject=Hello Vonds">Contact</a>
+            </li>
+          </ul>
+        </nav>
+      </div>
+
+      <div class="overlay-navigation-footer">
+        <div class="container">
+          <div class="row">
+            <div class="col-sm-12 text-center">
+              <p class="copyright font-alt m-b-0">
+                VONDS &copy;
+                <script>
+                  document.write(new Date().getFullYear())
+                </script>
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- WRAPPER -->
+    <div class="wrapper">
+      <!-- NAVIGATION -->
+      <nav
+        class="navbar navbar-custom navbar-transparent navbar-light navbar-fixed-top"
+      >
+        <div class="container">
+          <div class="navbar-header">
+            <a class="navbar-brand" href="../index.html">
+              <img class="logo-dark" src="../assets/images/logo-dark.svg" alt="Vonds" /><img class="logo-light" src="../assets/images/logo-light.svg" alt="" aria-hidden="true" />
+            </a>
+          </div>
+
+          <ul id="icons-navbar" class="nav navbar-nav navbar-right">
+            <li>
+              <a href="#" id="toggle-menu" class="show-overlay" title="Menu">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </nav>
+
+      <!-- DOCS PAGE -->
+      <section class="module">
+        <div class="container">
+          <h2 class="font-alt module-title m-t-60">
+            Lab 61: Modern Network Management Tools
+          </h2>
+
+          <nav class="lab-pagination">
+            <a
+              id="prev-lab"
+              class="lab-nav-link"
+              href="#"
+              aria-label="Previous lab"
+            >
+              &laquo;
+            </a>
+            <a
+              id="next-lab"
+              class="lab-nav-link"
+              href="#"
+              aria-label="Next lab"
+            >
+              &raquo;
+            </a>
+          </nav>
+
+          <div class="row">
+            <!-- LEFT SIDEBAR -->
+            <div class="col-sm-4 col-md-3 lab-sidebar">
+              <div class="docs-sidebar">
+                <div class="docs-widget">
+                  <h5 class="widget-title">
+                    <a href="./docs.html">Back to Lab Index</a>
+                  </h5>
+                  <ul class="docs-nav">
+                    <li><a href="#scenario">Scenario</a></li>
+                    <li><a href="#objective">Objective</a></li>
+                    <li><a href="#concepts">Concepts</a></li>
+                    <li><a href="#walkthrough">Walkthrough</a></li>
+                    <li><a href="#breakpoints">Breakpoints</a></li>
+                    <li><a href="#cleanup">Cleanup</a></li>
+                    <li><a href="#reference">Reference</a></li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            <!-- MAIN CONTENT -->
+            <div class="col-sm-8 col-md-9 lab-doc">
+              <p class="m-b-20 lab-summary">
+                Use NetworkManager tools to inspect and modify connection
+                profiles from the terminal and apply changes safely. Convert an
+                existing Wi-Fi profile to static IPv4 addressing, cycle the
+                connection, and verify activation state.
+              </p>
+
+              <!-- Video (kept on page; removed from left panel) -->
+              <section class="lab-section" id="video" aria-label="Lab video">
+                <div class="lab-video">
+                  <div class="lab-video-embed text-center">
+                    <iframe
+                      src="https://www.youtube.com/embed/epDRWs2-M3w?si=hJfcUcBQRU-Qg39L"
+                      title="YouTube video player"
+                      frameborder="0"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                      referrerpolicy="strict-origin-when-cross-origin"
+                      allowfullscreen
+                    ></iframe>
+                  </div>
+                </div>
+              </section>
+
+              <!-- Scenario -->
+              <section class="lab-section" id="scenario">
+                <div class="lab-chips" aria-label="Tags">
+                  <span class="lab-chip">
+                    <span class="lab-chip-key">network</span>
+                  </span>
+                  <span class="lab-chip">
+                    <span class="lab-chip-key">core</span>
+                  </span>
+                  <span class="lab-chip">
+                    <span class="lab-chip-key">troubleshooting</span>
+                  </span>
+                </div>
+
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  Scenario
+                </h3>
+
+                <p>
+                  You are configuring a new laptop running NetworkManager. You
+                  need to review existing connection profiles and convert a
+                  Wi-Fi profile to a static IPv4 configuration for a managed
+                  network segment. Your tools are the text UI
+                  (<code>nmtui</code>) and the CLI (<code>nmcli</code>).
+                </p>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">Operator context</div>
+                  <p class="m-b-0">
+                    In production, NetworkManager is often the source of truth
+                    for persistent networking. You need CLI-only control for
+                    remote support, break/fix work, and controlled
+                    reconfiguration.
+                  </p>
+                </div>
+              </section>
+
+              <!-- Objective -->
+              <section class="lab-section alt-background" id="objective">
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  Objective
+                </h3>
+                <ul>
+                  <li>
+                    Launch the text-based NetworkManager UI
+                    (<code>nmtui</code>).
+                  </li>
+                  <li>
+                    List saved connections and confirm the target profile name
+                    (<code>nmcli</code>).
+                  </li>
+                  <li>Switch a profile to manual IPv4 addressing.</li>
+                  <li>Assign a static IPv4 address and default gateway.</li>
+                  <li>Cycle the connection and confirm activation state.</li>
+                </ul>
+              </section>
+
+              <!-- Concepts (no alt-background moving forward) -->
+              <section class="lab-section" id="concepts">
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  Concepts
+                </h3>
+                <ul>
+                  <li>
+                    NetworkManager connections as persistent “profiles”
+                    independent of devices.
+                  </li>
+                  <li>
+                    Terminal-based configuration using <code>nmtui</code> for
+                    interactive edits.
+                  </li>
+                  <li>
+                    CLI-driven configuration using <code>nmcli</code> for
+                    repeatable changes.
+                  </li>
+                  <li>
+                    DHCP versus static IPv4 (<code>ipv4.method</code>:
+                    <code>auto</code> vs <code>manual</code>).
+                  </li>
+                  <li>
+                    Cycling connections to apply configuration changes
+                    predictably (<code>down</code>/<code>up</code>).
+                  </li>
+                </ul>
+              </section>
+
+              <!-- Walkthrough -->
+              <section class="lab-section alt-background" id="walkthrough">
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  Walkthrough
+                </h3>
+
+                <!-- Step 1 -->
+                <div class="lab-step">
+                  <div class="lab-step-title">
+                    <strong class="font-alt">Step 1</strong>
+                    : Launch the text UI and confirm connection visibility.
+                  </div>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <div class="lab-codeblock-header">
+                      <span>Command</span>
+                      <button
+                        class="lab-copy-btn"
+                        type="button"
+                        data-copy="#cmd-step-1"
+                      >
+                        Copy
+                      </button>
+                    </div>
+                    <pre><code id="cmd-step-1">nmtui</code></pre>
+                  </div>
+
+                  <p>
+                    <code>nmtui</code> is SSH-friendly and reliable when a full
+                    desktop is unavailable. Use it to inspect and edit profiles
+                    without depending on a graphical stack.
+                  </p>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <pre><code>[ ] Edit a connection
+[ ] Activate a connection
+[ ] Set system hostname</code></pre>
+                  </div>
+                </div>
+
+                <!-- Step 2 -->
+                <div class="lab-step">
+                  <div class="lab-step-title">
+                    <strong class="font-alt">Step 2</strong>
+                    : List all saved NetworkManager profiles.
+                  </div>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <div class="lab-codeblock-header">
+                      <span>Command</span>
+                      <button
+                        class="lab-copy-btn"
+                        type="button"
+                        data-copy="#cmd-step-2"
+                      >
+                        Copy
+                      </button>
+                    </div>
+                    <pre><code id="cmd-step-2">nmcli connection show</code></pre>
+                  </div>
+
+                  <p>
+                    This is your source of truth for profile names. Use the
+                    exact <code>NAME</code> value when running
+                    <code>nmcli connection modify</code>.
+                  </p>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <pre><code>NAME                UUID                                  TYPE      DEVICE
+Wired connection 1  e9b2f442-9c6f-11ee-a0e4-bb3b1a480001  ethernet  eth0
+Wi-Fi Home          a3c4e210-9c6f-11ee-a0e4-bb3b1a480002  wifi      wlan0</code></pre>
+                  </div>
+                </div>
+
+                <!-- Step 3 -->
+                <div class="lab-step">
+                  <div class="lab-step-title">
+                    <strong class="font-alt">Step 3</strong>
+                    : Set the profile to manual IPv4 addressing.
+                  </div>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <div class="lab-codeblock-header">
+                      <span>Command</span>
+                      <button
+                        class="lab-copy-btn"
+                        type="button"
+                        data-copy="#cmd-step-3"
+                      >
+                        Copy
+                      </button>
+                    </div>
+                    <pre><code id="cmd-step-3">nmcli connection modify "Wi-Fi Home" ipv4.method manual</code></pre>
+                  </div>
+
+                  <p>
+                    <code>manual</code> disables DHCP for IPv4 on the profile.
+                    From here, you must supply addressing details or the
+                    connection may activate without a usable IPv4 configuration.
+                  </p>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <pre><code>Connection 'Wi-Fi Home' successfully updated.</code></pre>
+                  </div>
+                </div>
+
+                <!-- Step 4 -->
+                <div class="lab-step">
+                  <div class="lab-step-title">
+                    <strong class="font-alt">Step 4</strong>
+                    : Assign a static IPv4 address and default gateway.
+                  </div>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <div class="lab-codeblock-header">
+                      <span>Command</span>
+                      <button
+                        class="lab-copy-btn"
+                        type="button"
+                        data-copy="#cmd-step-4"
+                      >
+                        Copy
+                      </button>
+                    </div>
+                    <pre><code id="cmd-step-4">nmcli connection modify "Wi-Fi Home" ipv4.addresses 192.168.10.100/24 ipv4.gateway 192.168.10.1</code></pre>
+                  </div>
+
+                  <p>
+                    This sets the IP and gateway on the profile. If the network
+                    requires explicit DNS, configure
+                    <code>ipv4.dns</code> and decide whether to keep or ignore
+                    automatic DNS with <code>ipv4.ignore-auto-dns</code>.
+                  </p>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <pre><code>Connection 'Wi-Fi Home' successfully updated.</code></pre>
+                  </div>
+                </div>
+
+                <!-- Step 5 -->
+                <div class="lab-step">
+                  <div class="lab-step-title">
+                    <strong class="font-alt">Step 5</strong>
+                    : Cycle the connection to apply changes.
+                  </div>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <div class="lab-codeblock-header">
+                      <span>Command</span>
+                      <button
+                        class="lab-copy-btn"
+                        type="button"
+                        data-copy="#cmd-step-5"
+                      >
+                        Copy
+                      </button>
+                    </div>
+                    <pre><code id="cmd-step-5">nmcli connection down "Wi-Fi Home" && nmcli connection up "Wi-Fi Home"</code></pre>
+                  </div>
+
+                  <p>
+                    Bringing the profile down and back up forces a clean reapply
+                    of settings. This is the fastest way to confirm the profile
+                    activates cleanly after modification.
+                  </p>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <pre><code>Connection 'Wi-Fi Home' successfully deactivated (D-Bus active path: /org/freedesktop/NetworkManager/ActiveConnection/2)
+Connection 'Wi-Fi Home' successfully activated (D-Bus active path: /org/freedesktop/NetworkManager/ActiveConnection/3)</code></pre>
+                  </div>
+                </div>
+
+                <!-- Step 6 -->
+                <div class="lab-step">
+                  <div class="lab-step-title">
+                    <strong class="font-alt">Step 6</strong>
+                    : Verify the profile and device state after activation.
+                  </div>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <div class="lab-codeblock-header">
+                      <span>Commands</span>
+                      <button
+                        class="lab-copy-btn"
+                        type="button"
+                        data-copy="#cmd-step-6"
+                      >
+                        Copy
+                      </button>
+                    </div>
+                    <pre><code id="cmd-step-6">nmcli connection show "Wi-Fi Home"
+nmcli device status</code></pre>
+                  </div>
+
+                  <p>
+                    Use <code>nmcli connection show</code> to confirm the
+                    intended values are stored on the profile and
+                    <code>nmcli device status</code> to confirm the device is
+                    connected and bound to the correct connection.
+                  </p>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <pre><code># connection show (snippets):
+ipv4.method:                            manual
+ipv4.addresses:                         192.168.10.100/24
+ipv4.gateway:                           192.168.10.1
+
+# device status:
+DEVICE  TYPE      STATE      CONNECTION
+wlan0   wifi      connected  Wi-Fi Home</code></pre>
+                  </div>
+                </div>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">Tooling note</div>
+                  <p class="m-b-0">
+                    Desktop environments may expose graphical editors for the
+                    same profiles, but the underlying objects are still
+                    NetworkManager connections. For remote work,
+                    <code>nmcli</code> remains the most consistent interface.
+                  </p>
+                </div>
+              </section>
+
+              <!-- Common breakpoints -->
+              <section class="lab-section" id="breakpoints">
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  Common breakpoints
+                </h3>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">
+                    Profile name mismatch or quoting problems
+                  </div>
+                  <p class="m-b-0">
+                    If the profile name contains spaces, you must quote it.
+                    Always copy the <code>NAME</code> value from
+                    <code>nmcli connection show</code> and reuse it verbatim.
+                  </p>
+                </div>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">
+                    Connection activates but has no usable IPv4
+                  </div>
+                  <p class="m-b-0">
+                    A manual profile without valid addressing can still appear
+                    “up.” Confirm <code>ipv4.addresses</code> and
+                    <code>ipv4.gateway</code> are set, then re-cycle the
+                    connection.
+                  </p>
+                </div>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">
+                    Wrong gateway or prefix breaks routing
+                  </div>
+                  <p class="m-b-0">
+                    A bad gateway or subnet mask can isolate the host. Validate
+                    the gateway is reachable on the same L2 segment and the
+                    prefix matches the network design.
+                  </p>
+                </div>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">
+                    Device shows disconnected after cycling
+                  </div>
+                  <p class="m-b-0">
+                    The profile may not match the device state (wrong SSID,
+                    authentication, radio disabled). Confirm device state with
+                    <code>nmcli device status</code> and re-check activation in
+                    <code>nmtui</code>.
+                  </p>
+                </div>
+              </section>
+
+              <!-- Cleanup -->
+              <section class="lab-section alt-background" id="cleanup">
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  Cleanup checklist
+                </h3>
+
+                <p>
+                  If you changed addressing on a real network, revert the
+                  profile to its prior configuration or return it to DHCP to
+                  avoid leaving a stale static assignment behind.
+                </p>
+
+                <div class="lab-codeblock m-b-40 m-t-40">
+                  <div class="lab-codeblock-header">
+                    <span>Commands</span>
+                    <button
+                      class="lab-copy-btn"
+                      type="button"
+                      data-copy="#cmd-cleanup"
+                    >
+                      Copy
+                    </button>
+                  </div>
+                  <pre><code id="cmd-cleanup">nmcli connection modify "Wi-Fi Home" ipv4.method auto
+nmcli connection down "Wi-Fi Home" && nmcli connection up "Wi-Fi Home"</code></pre>
+                </div>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">Success signal</div>
+                  <p class="m-b-0">
+                    The profile activates cleanly and shows
+                    <code>ipv4.method</code> as <code>auto</code> with expected
+                    device state in <code>nmcli device status</code>.
+                  </p>
+                </div>
+              </section>
+
+              <!-- Reference -->
+              <section class="lab-section" id="reference">
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  Reference
+                </h3>
+
+                <ul class="lab-reference-list">
+                  <li>
+                    <code>nmtui</code>
+                    : Text user interface for configuring and activating
+                    NetworkManager connections.
+                  </li>
+
+                  <li>
+                    <code>nmcli connection show</code>
+                    : Lists saved connection profiles and their associated
+                    devices.
+                  </li>
+
+                  <li>
+                    <code>nmcli connection modify "&lt;name&gt;" ipv4.method manual</code>
+                    : Sets a connection profile to use static IPv4 addressing.
+                    <ul>
+                      <li>
+                        <code>ipv4.method</code>
+                        : Controls how IPv4 settings are assigned
+                        (<code>auto</code> for DHCP, <code>manual</code> for
+                        static).
+                      </li>
+                    </ul>
+                  </li>
+
+                  <li>
+                    <code>nmcli connection modify "&lt;name&gt;" ipv4.addresses &lt;ip/prefix&gt; ipv4.gateway &lt;gw&gt;</code>
+                    : Assigns a static IPv4 address and default gateway to a
+                    profile.
+                    <ul>
+                      <li>
+                        <code>ipv4.addresses</code>
+                        : One or more IPv4 addresses in CIDR form.
+                      </li>
+                      <li>
+                        <code>ipv4.gateway</code>
+                        : Default IPv4 gateway for the profile.
+                      </li>
+                    </ul>
+                  </li>
+
+                  <li>
+                    <code>nmcli connection down "&lt;name&gt;" &amp;&amp; nmcli connection up "&lt;name&gt;"</code>
+                    : Deactivates and reactivates a connection profile to apply
+                    changes.
+                    <ul>
+                      <li>
+                        <code>&amp;&amp;</code>
+                        : Runs the second command only if the first succeeds.
+                      </li>
+                    </ul>
+                  </li>
+
+                  <li>
+                    <code>nmcli connection show "&lt;name&gt;"</code>
+                    : Displays stored settings for a specific connection
+                    profile.
+                  </li>
+
+                  <li>
+                    <code>nmcli device status</code>
+                    : Shows device state and the active connection bound to each
+                    device.
+                  </li>
+                </ul>
+              </section>
+
+              <!-- /main -->
+            </div>
+          </div>
+
+          <nav class="lab-pagination">
+            <a
+              id="back-to-top"
+              class="lab-nav-link"
+              href="#"
+              aria-label="Back to top"
+            >
+              &uArr;
+            </a>
+          </nav>
+        </div>
+      </section>
+
+      <!-- FOOTER -->
+      <footer class="module bg-light">
+        <div class="container">
+          <div class="row">
+            <div class="col-sm-12">
+              <ul class="social-text-links font-alt text-center m-b-20">
+                <li>
+                  <a
+                    href="https://github.com/vonds"
+                    target="_blank"
+                    rel="noopener"
+                  >
+                    Github
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="https://www.linkedin.com/in/vonds/"
+                    target="_blank"
+                    rel="noopener"
+                  >
+                    Linkedin
+                  </a>
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-sm-12">
+              <p class="copyright text-center m-b-0">
+                VONDS &copy;
+                <span id="year"></span>
+              </p>
+
+              <div class="scroll-up">
+                <a href="#totop"><i class="fa fa-angle-double-up"></i></a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <!-- Javascript files (your existing) -->
+    <script src="../assets/js/jquery-2.2.4.min.js"></script>
+    <script src="../assets/bootstrap/js/bootstrap.min.js"></script>
+    <script src="../assets/js/jquery.superslides.min.js"></script>
+    <script src="../assets/js/jquery.mb.YTPlayer.min.js"></script>
+    <script src="../assets/js/jquery.magnific-popup.min.js"></script>
+    <script src="../assets/js/owl.carousel.min.js"></script>
+    <script src="../assets/js/jquery.simple-text-rotator.min.js"></script>
+    <script src="../assets/js/imagesloaded.pkgd.js"></script>
+    <script src="../assets/js/isotope.pkgd.min.js"></script>
+    <script src="../assets/js/packery-mode.pkgd.min.js"></script>
+    <script src="../assets/js/appear.js"></script>
+    <script src="../assets/js/jquery.easing.1.3.js"></script>
+    <script src="../assets/js/wow.min.js"></script>
+    <script src="../assets/js/jqBootstrapValidation.js"></script>
+    <script src="../assets/js/jquery.fitvids.js"></script>
+    <script src="../assets/js/jquery.parallax-1.1.3.js"></script>
+    <script src="../assets/js/smoothscroll.js"></script>
+    <script src="../assets/js/custom.js"></script>
+
+    <!-- Lab page JS (new) -->
+    <script src="../assets/js/lab.js"></script>
+
+    <script>
+      document.getElementById('year').textContent = new Date().getFullYear()
+    </script>
+  </body>
+</html>

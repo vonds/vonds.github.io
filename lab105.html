@@ -1,0 +1,767 @@
+<!-- lab105.html -->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="exit_0 Documentation" />
+    <meta name="name" content="Vonds" />
+
+    <title>Vonds | Lab 105</title>
+
+    <!-- Favicons -->
+    <link rel="icon" type="image/svg+xml" href="../assets/images/favicon.svg" />
+    <link rel="icon" type="image/png" href="../assets/images/favicon.png" />
+    <link rel="apple-touch-icon" href="../assets/images/apple-touch-icon.png" />
+    <link
+      rel="apple-touch-icon"
+      sizes="72x72"
+      href="../assets/images/apple-touch-icon-72x72.png"
+    />
+    <link
+      rel="apple-touch-icon"
+      sizes="114x114"
+      href="../assets/images/apple-touch-icon-114x114.png"
+    />
+
+    <!-- Site styles (your existing) -->
+    <link href="../assets/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="../assets/css/font-awesome.min.css" rel="stylesheet" />
+    <link href="../assets/css/linea-icons.css" rel="stylesheet" />
+    <link href="../assets/css/ionicons.min.css" rel="stylesheet" />
+    <link href="../assets/css/simpletextrotator.css" rel="stylesheet" />
+    <link href="../assets/css/magnific-popup.css" rel="stylesheet" />
+    <link href="../assets/css/owl.carousel.css" rel="stylesheet" />
+    <link href="../assets/css/superslides.css" rel="stylesheet" />
+    <link href="../assets/css/vertical.css" rel="stylesheet" />
+    <link href="../assets/css/animate.css" rel="stylesheet" />
+    <link href="../assets/css/style.css" rel="stylesheet" />
+    <link href="../assets/css/docs.css" rel="stylesheet" />
+
+    <!-- Lab page styles -->
+    <link href="../assets/css/lab.css" rel="stylesheet" />
+
+    <!-- Fonts -->
+    <link
+      href="https://fonts.googleapis.com/css?family=Dosis"
+      rel="stylesheet"
+    />
+  </head>
+
+  <body>
+    <!-- PRELOADER -->
+    <div class="page-loader">
+      <div class="loader">Loading...</div>
+    </div>
+
+    <!-- OVERLAY MENU -->
+    <div id="overlay-menu" class="overlay-menu">
+      <a href="#" id="overlay-menu-hide" class="navigation-hide">
+        <i class="ion-close-round"></i>
+      </a>
+
+      <div class="overlay-menu-inner">
+        <nav class="overlay-menu-nav">
+          <ul id="nav">
+            <li><a href="../index.html">Home</a></li>
+
+            <li class="slidedown">
+              <a href="#">Portfolio</a>
+              <ul>
+                <li>
+                  <a
+                    href="https://github.com/vonds/exit_0"
+                    target="_blank"
+                    rel="noopener"
+                  >
+                    exit_0
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="https://github.com/vonds/sentinel"
+                    target="_blank"
+                    rel="noopener"
+                  >
+                    Sentinel
+                  </a>
+                </li>
+                <li>
+                  <a href="docs.html" target="_blank" rel="noopener">
+                    exit_0 Documentation
+                  </a>
+                </li>
+              </ul>
+            </li>
+
+            <li>
+              <a
+                href="https://www.linkedin.com/in/vonds/"
+                target="_blank"
+                rel="noopener"
+              >
+                LinkedIn
+              </a>
+            </li>
+            <li>
+              <a href="https://github.com/vonds" target="_blank" rel="noopener">
+                Github
+              </a>
+            </li>
+            <li>
+              <a href="mailto:vonds13@gmail.com?subject=Hello Vonds">Contact</a>
+            </li>
+          </ul>
+        </nav>
+      </div>
+
+      <div class="overlay-navigation-footer">
+        <div class="container">
+          <div class="row">
+            <div class="col-sm-12 text-center">
+              <p class="copyright font-alt m-b-0">
+                VONDS &copy;
+                <script>
+                  document.write(new Date().getFullYear())
+                </script>
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- WRAPPER -->
+    <div class="wrapper">
+      <!-- NAVIGATION -->
+      <nav
+        class="navbar navbar-custom navbar-transparent navbar-light navbar-fixed-top"
+      >
+        <div class="container">
+          <div class="navbar-header">
+            <a class="navbar-brand" href="../index.html">
+              <img class="logo-dark" src="../assets/images/logo-dark.svg" alt="Vonds" /><img class="logo-light" src="../assets/images/logo-light.svg" alt="" aria-hidden="true" />
+            </a>
+          </div>
+
+          <ul id="icons-navbar" class="nav navbar-nav navbar-right">
+            <li>
+              <a href="#" id="toggle-menu" class="show-overlay" title="Menu">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </nav>
+
+      <!-- DOCS PAGE -->
+      <section class="module">
+        <div class="container">
+          <h2 class="font-alt module-title m-t-60">
+            Lab 105: Installing, Configuring, and Managing a DHCP Server
+          </h2>
+
+          <nav class="lab-pagination">
+            <a
+              class="lab-nav-link"
+              href="./lab104.html"
+              aria-label="Previous lab"
+            >
+              &laquo;
+            </a>
+            <a class="lab-nav-link" href="./lab106.html" aria-label="Next lab">
+              &raquo;
+            </a>
+          </nav>
+
+          <div class="row">
+            <!-- LEFT SIDEBAR -->
+            <div class="col-sm-4 col-md-3 lab-sidebar">
+              <div class="docs-sidebar">
+                <div class="docs-widget">
+                  <h5 class="widget-title">
+                    <a href="./docs.html">Back to Lab Index</a>
+                  </h5>
+                  <ul class="docs-nav">
+                    <li><a href="#scenario">Scenario</a></li>
+                    <li><a href="#objective">Objective</a></li>
+                    <li><a href="#concepts">Concepts</a></li>
+                    <li><a href="#walkthrough">Walkthrough</a></li>
+                    <li><a href="#breakpoints">Breakpoints</a></li>
+                    <li><a href="#cleanup">Cleanup</a></li>
+                    <li><a href="#reference">Reference</a></li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            <!-- MAIN CONTENT -->
+            <div class="col-sm-8 col-md-9 lab-doc">
+              <p class="m-b-20 lab-summary">
+                Install and configure a DHCP server to provide automatic IPv4
+                address assignment for a subnet, including lease ranges, DNS,
+                and default gateway options. Validate service health, confirm
+                interface binding, and inspect active lease records to verify
+                end-to-end operation.
+              </p>
+
+              <!-- Video -->
+              <section class="lab-section" id="video" aria-label="Lab video">
+                <div class="lab-video">
+                  <div class="lab-video-embed text-center">
+                    <iframe
+                      src="https://www.youtube.com/embed/qvGQ2WduOjA?si=VWMJUjkdcPENJlZL"
+                      title="YouTube video player"
+                      frameborder="0"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                      referrerpolicy="strict-origin-when-cross-origin"
+                      allowfullscreen
+                    ></iframe>
+                  </div>
+                </div>
+              </section>
+
+              <!-- Scenario -->
+              <section class="lab-section" id="scenario">
+                <div class="lab-chips" aria-label="Tags">
+                  <span class="lab-chip">
+                    <span class="lab-chip-key">networking</span>
+                  </span>
+                  <span class="lab-chip">
+                    <span class="lab-chip-key">services</span>
+                  </span>
+                  <span class="lab-chip">
+                    <span class="lab-chip-key">core</span>
+                  </span>
+                </div>
+
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  Scenario
+                </h3>
+
+                <p>
+                  Your network requires automatic IP assignment for client
+                  devices. You are tasked with deploying a DHCP server, defining
+                  an IPv4 scope, setting DNS servers and a default gateway, and
+                  verifying that leases are being issued correctly.
+                </p>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">Operator context</div>
+                  <p class="m-b-0">
+                    Treat DHCP changes as infrastructure changes. Validate syntax
+                    and service state before allowing clients to rely on the new
+                    scope, and always confirm the server is listening on the
+                    correct interface and subnet.
+                  </p>
+                </div>
+              </section>
+
+              <!-- Objective -->
+              <section class="lab-section alt-background" id="objective">
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  Objective
+                </h3>
+                <ul>
+                  <li>Install a DHCP server package on the system.</li>
+                  <li>
+                    Configure an IPv4 subnet scope with a lease range, DNS
+                    servers, and default gateway.
+                  </li>
+                  <li>Bind the DHCP service to the correct network interface.</li>
+                  <li>Enable and start the service and confirm it is running.</li>
+                  <li>
+                    Validate lease issuance by inspecting the leases database.
+                  </li>
+                </ul>
+              </section>
+
+              <!-- Concepts -->
+              <section class="lab-section" id="concepts">
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  Concepts
+                </h3>
+                <ul>
+                  <li>
+                    DHCP roles: server offers leases and options; clients request
+                    configuration during boot or network changes.
+                  </li>
+                  <li>
+                    Scope design: subnet definition, address range, and excluded
+                    addresses.
+                  </li>
+                  <li>
+                    Core options: DNS servers, default gateway (router), and
+                    lease timers.
+                  </li>
+                  <li>
+                    Interface binding: limiting where the daemon listens to avoid
+                    unintended lease offers.
+                  </li>
+                  <li>
+                    Validation: confirming UDP/67 listening state and verifying
+                    leases on disk.
+                  </li>
+                </ul>
+              </section>
+
+              <!-- Walkthrough -->
+              <section class="lab-section alt-background" id="walkthrough">
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  Walkthrough
+                </h3>
+
+                <!-- Step 1 -->
+                <div class="lab-step">
+                  <div class="lab-step-title">
+                    <strong class="font-alt">Step 1</strong>
+                    : Install the DHCP server package.
+                  </div>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <div class="lab-codeblock-header">
+                      <span>Commands</span>
+                      <button
+                        class="lab-copy-btn"
+                        type="button"
+                        data-copy="#cmd-105-1"
+                      >
+                        Copy
+                      </button>
+                    </div>
+                    <pre><code id="cmd-105-1"># Debian/Ubuntu
+sudo apt install isc-dhcp-server -y
+
+# RHEL/Rocky/Alma
+sudo dnf install dhcp-server -y
+
+# Arch
+sudo pacman -S dhcp</code></pre>
+                  </div>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <pre><code># Confirm the server binary exists (one example):
+command -v dhcpd</code></pre>
+                  </div>
+
+                  <p>
+                    DHCP is typically provided by the ISC DHCP daemon
+                    (<code>dhcpd</code>) or a distro-packaged equivalent.
+                    Installing the package places the configuration file on disk
+                    and registers the systemd service unit.
+                  </p>
+                </div>
+
+                <!-- Step 2 -->
+                <div class="lab-step">
+                  <div class="lab-step-title">
+                    <strong class="font-alt">Step 2</strong>
+                    : Configure an IPv4 scope in the main config file.
+                  </div>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <div class="lab-codeblock-header">
+                      <span>Command</span>
+                      <button
+                        class="lab-copy-btn"
+                        type="button"
+                        data-copy="#cmd-105-2"
+                      >
+                        Copy
+                      </button>
+                    </div>
+                    <pre><code id="cmd-105-2">sudo vim /etc/dhcp/dhcpd.conf
+# or
+sudo nano /etc/dhcp/dhcpd.conf</code></pre>
+                  </div>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <pre><code>subnet 192.168.50.0 netmask 255.255.255.0 {
+  range 192.168.50.10 192.168.50.100;
+  option domain-name-servers 8.8.8.8, 1.1.1.1;
+  option routers 192.168.50.1;
+  default-lease-time 600;
+  max-lease-time 7200;
+}</code></pre>
+                  </div>
+
+                  <p>
+                    At minimum you need a subnet declaration and a lease range.
+                    Most environments also include DNS and a default gateway
+                    (<code>routers</code>).
+                  </p>
+                </div>
+
+                <!-- Step 3 -->
+                <div class="lab-step">
+                  <div class="lab-step-title">
+                    <strong class="font-alt">Step 3</strong>
+                    : Bind the DHCP service to the correct interface.
+                  </div>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <div class="lab-codeblock-header">
+                      <span>Commands</span>
+                      <button
+                        class="lab-copy-btn"
+                        type="button"
+                        data-copy="#cmd-105-3"
+                      >
+                        Copy
+                      </button>
+                    </div>
+                    <pre><code id="cmd-105-3"># Debian/Ubuntu (isc-dhcp-server)
+echo 'INTERFACESv4="eth0"' | sudo tee /etc/default/isc-dhcp-server &gt; /dev/null
+
+# RHEL-style (dhcpd)
+echo 'DHCPDARGS=eth0' | sudo tee /etc/sysconfig/dhcpd &gt; /dev/null</code></pre>
+                  </div>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <pre><code># Confirm the interface exists and has the expected subnet:
+ip -br addr show eth0</code></pre>
+                  </div>
+
+                  <p>
+                    Binding prevents accidental lease offers on unintended
+                    networks and avoids confusing multi-interface hosts. The
+                    exact binding file varies by distribution.
+                  </p>
+                </div>
+
+                <!-- Step 4 -->
+                <div class="lab-step">
+                  <div class="lab-step-title">
+                    <strong class="font-alt">Step 4</strong>
+                    : Enable and start the DHCP service.
+                  </div>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <div class="lab-codeblock-header">
+                      <span>Commands</span>
+                      <button
+                        class="lab-copy-btn"
+                        type="button"
+                        data-copy="#cmd-105-4"
+                      >
+                        Copy
+                      </button>
+                    </div>
+                    <pre><code id="cmd-105-4"># Debian/Ubuntu
+sudo systemctl enable --now isc-dhcp-server
+
+# RHEL-style
+sudo systemctl enable --now dhcpd</code></pre>
+                  </div>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <pre><code># Confirm it is listening on UDP/67:
+sudo ss -lunp | grep -E ':67\b'</code></pre>
+                  </div>
+
+                  <p>
+                    Enabling ensures DHCP starts after boot. Starting it
+                    immediately lets you validate configuration correctness and
+                    listening behavior before clients depend on it.
+                  </p>
+                </div>
+
+                <!-- Step 5 -->
+                <div class="lab-step">
+                  <div class="lab-step-title">
+                    <strong class="font-alt">Step 5</strong>
+                    : Confirm healthy startup and correct subnet binding.
+                  </div>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <div class="lab-codeblock-header">
+                      <span>Commands</span>
+                      <button
+                        class="lab-copy-btn"
+                        type="button"
+                        data-copy="#cmd-105-5"
+                      >
+                        Copy
+                      </button>
+                    </div>
+                    <pre><code id="cmd-105-5"># Debian/Ubuntu
+sudo systemctl status isc-dhcp-server
+
+# RHEL-style
+sudo systemctl status dhcpd</code></pre>
+                  </div>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <pre><code># Typical success indicators:
+# Listening on LPF/eth0/.../192.168.50.0/24
+# Sending on   LPF/eth0/.../192.168.50.0/24</code></pre>
+                  </div>
+
+                  <p>
+                    If the daemon fails to start, common causes are config syntax
+                    errors, incorrect interface binding, or a subnet mismatch
+                    between <code>dhcpd.conf</code> and the server’s own IP.
+                  </p>
+                </div>
+
+                <!-- Step 6 -->
+                <div class="lab-step">
+                  <div class="lab-step-title">
+                    <strong class="font-alt">Step 6</strong>
+                    : Inspect the leases database to verify lease issuance.
+                  </div>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <div class="lab-codeblock-header">
+                      <span>Commands</span>
+                      <button
+                        class="lab-copy-btn"
+                        type="button"
+                        data-copy="#cmd-105-6"
+                      >
+                        Copy
+                      </button>
+                    </div>
+                    <pre><code id="cmd-105-6"># Path varies by distro
+sudo cat /var/lib/dhcp/dhcpd.leases
+# or
+sudo cat /var/lib/dhcpd/dhcpd.leases</code></pre>
+                  </div>
+
+                  <div class="lab-codeblock m-b-40 m-t-40">
+                    <pre><code>lease 192.168.50.10 {
+  starts 5 2025/12/19 22:05:01;
+  ends 5 2025/12/19 22:15:01;
+  binding state active;
+  hardware ethernet 3c:52:82:19:aa:0f;
+  client-hostname "laptop-qa";
+}</code></pre>
+                  </div>
+
+                  <p>
+                    The leases file is the authoritative record of issued
+                    addresses, including timestamps and client identifiers. This
+                    is your fastest “proof” that DHCP is working end-to-end.
+                  </p>
+                </div>
+              </section>
+
+              <!-- Breakpoints -->
+              <section class="lab-section" id="breakpoints">
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  Common breakpoints
+                </h3>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">Service will not start</div>
+                  <p class="m-b-0">
+                    Most failures come from a syntax error in
+                    <code>/etc/dhcp/dhcpd.conf</code>
+                    or a subnet mismatch. Confirm the server interface IP is in
+                    the same subnet you declared, then inspect logs with
+                    <code>journalctl -u dhcpd</code>
+                    (or <code>journalctl -u isc-dhcp-server</code>).
+                  </p>
+                </div>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">No leases are being issued</div>
+                  <p class="m-b-0">
+                    Confirm UDP/67 is listening and bound to the correct
+                    interface. Then verify the interface binding file is set
+                    correctly for your distro and the client is on the expected
+                    L2 network.
+                  </p>
+                </div>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">Wrong network gets offers</div>
+                  <p class="m-b-0">
+                    Restrict the daemon to a single interface and re-check the
+                    system has only the intended interface connected to client
+                    networks.
+                  </p>
+                </div>
+              </section>
+
+              <!-- Cleanup -->
+              <section class="lab-section alt-background" id="cleanup">
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  Cleanup checklist
+                </h3>
+
+                <p>
+                  If this is a disposable lab host, stop the service and remove
+                  configuration and lease data created during the exercise.
+                </p>
+
+                <div class="lab-codeblock m-b-40 m-t-40">
+                  <div class="lab-codeblock-header">
+                    <span>Commands</span>
+                    <button
+                      class="lab-copy-btn"
+                      type="button"
+                      data-copy="#cmd-105-cleanup"
+                    >
+                      Copy
+                    </button>
+                  </div>
+                  <pre><code id="cmd-105-cleanup"># Stop/disable (choose the service name that applies)
+sudo systemctl disable --now dhcpd
+sudo systemctl disable --now isc-dhcp-server
+
+# Remove config (and leases if desired)
+sudo rm -f /etc/dhcp/dhcpd.conf
+sudo rm -f /var/lib/dhcp/dhcpd.leases /var/lib/dhcpd/dhcpd.leases</code></pre>
+                </div>
+
+                <div class="lab-callout">
+                  <div class="lab-callout-label">Success signal</div>
+                  <p class="m-b-0">
+                    The DHCP service is stopped and disabled, and the host no
+                    longer has an active scope configuration or lease records
+                    from this lab.
+                  </p>
+                </div>
+              </section>
+
+              <!-- Reference -->
+              <section class="lab-section" id="reference">
+                <h3 class="font-alt lab-section-title m-b-40 m-t-40">
+                  Reference
+                </h3>
+
+                <ul class="lab-reference-list">
+                  <li>
+                    <code>dhcpd</code>: DHCP server daemon that issues IPv4
+                    leases and options.
+                  </li>
+                  <li>
+                    <code>/etc/dhcp/dhcpd.conf</code>: Main DHCP server config
+                    file (subnets, ranges, options).
+                  </li>
+                  <li>
+                    <code>systemctl enable --now &lt;service&gt;</code>: Enable a
+                    service at boot and start it immediately.
+                    <ul>
+                      <li><code>--now</code>: Start the unit immediately.</li>
+                    </ul>
+                  </li>
+                  <li>
+                    <code>ss -lunp</code>: Show UDP listening sockets and the
+                    owning process.
+                    <ul>
+                      <li><code>-l</code>: Listening sockets only.</li>
+                      <li><code>-u</code>: UDP sockets.</li>
+                      <li><code>-n</code>: No name resolution.</li>
+                      <li><code>-p</code>: Show process info.</li>
+                    </ul>
+                  </li>
+                  <li>
+                    <code>ip -br addr</code>: Quick view of interface addresses
+                    to confirm the server is on the expected subnet.
+                    <ul>
+                      <li><code>-br</code>: Brief output format.</li>
+                    </ul>
+                  </li>
+                  <li>
+                    <code>journalctl -u &lt;service&gt;</code>: View service logs
+                    for startup, binding, and lease activity.
+                    <ul>
+                      <li><code>-u</code>: Filter by unit name.</li>
+                    </ul>
+                  </li>
+                  <li>
+                    <code>/var/lib/dhcp*/dhcpd.leases</code>: Lease database used
+                    to confirm active and historical leases.
+                  </li>
+                </ul>
+              </section>
+
+              <nav class="lab-pagination">
+                <a class="lab-nav-link" href="#totop" aria-label="Back to top">
+                  &uArr;
+                </a>
+              </nav>
+            </div>
+            <!-- /main -->
+          </div>
+          <!-- /row -->
+        </div>
+        <!-- /container -->
+      </section>
+
+      <!-- FOOTER -->
+      <footer class="module bg-light">
+        <div class="container">
+          <div class="row">
+            <div class="col-sm-12">
+              <ul class="social-text-links font-alt text-center m-b-20">
+                <li>
+                  <a
+                    href="https://github.com/vonds"
+                    target="_blank"
+                    rel="noopener"
+                  >
+                    Github
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="https://www.linkedin.com/in/vonds/"
+                    target="_blank"
+                    rel="noopener"
+                  >
+                    Linkedin
+                  </a>
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-sm-12">
+              <p class="copyright text-center m-b-0">
+                VONDS &copy;
+                <span id="year"></span>
+              </p>
+
+              <div class="scroll-up">
+                <a href="#totop"><i class="fa fa-angle-double-up"></i></a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <!-- Javascript files (your existing) -->
+    <script src="../assets/js/jquery-2.2.4.min.js"></script>
+    <script src="../assets/bootstrap/js/bootstrap.min.js"></script>
+    <script src="../assets/js/jquery.superslides.min.js"></script>
+    <script src="../assets/js/jquery.mb.YTPlayer.min.js"></script>
+    <script src="../assets/js/jquery.magnific-popup.min.js"></script>
+    <script src="../assets/js/owl.carousel.min.js"></script>
+    <script src="../assets/js/jquery.simple-text-rotator.min.js"></script>
+    <script src="../assets/js/imagesloaded.pkgd.js"></script>
+    <script src="../assets/js/isotope.pkgd.min.js"></script>
+    <script src="../assets/js/packery-mode.pkgd.min.js"></script>
+    <script src="../assets/js/appear.js"></script>
+    <script src="../assets/js/jquery.easing.1.3.js"></script>
+    <script src="../assets/js/wow.min.js"></script>
+    <script src="../assets/js/jqBootstrapValidation.js"></script>
+    <script src="../assets/js/jquery.fitvids.js"></script>
+    <script src="../assets/js/jquery.parallax-1.1.3.js"></script>
+    <script src="../assets/js/smoothscroll.js"></script>
+    <script src="../assets/js/custom.js"></script>
+
+    <!-- Lab page JS (new) -->
+    <script src="../assets/js/lab.js"></script>
+
+    <script>
+      document.getElementById("year").textContent = new Date().getFullYear()
+    </script>
+  </body>
+</html>

@@ -13,7 +13,7 @@ General Styles
 
 body {
 	background: #fff;
-	font: 400 14px/1.8 "Open Sans", sans-serif;
+	font: 400 16px/1.8 "Open Sans", sans-serif;
 	color: #333;
 	overflow-x: hidden;
 	-ms-overflow-style: scrollbar;
@@ -643,6 +643,7 @@ Social links
 	margin: 0;
 }
 
+
 .socicon-round > li > a {
 	-webkit-border-radius: 2px;
 	   -moz-border-radius: 2px;
@@ -678,8 +679,8 @@ Social links
 	color: #111;
 }
 
-.social-icon-links > li > a:hover {
-	background: #f0f0f0;
+.social-text-links > li > a:hover {
+	color: #7c5cff;
 }
 
 /* ------------------------------------------------------------------
@@ -1412,7 +1413,7 @@ Modules
 }
 
 .navbar-custom + .module {
-	padding: 200px 0;
+	padding: 50px 0;
 }
 
 .navbar-custom + .module-small {
@@ -1430,7 +1431,6 @@ Modules
 	letter-spacing: 10px;
 	text-align: center;
 	font-size: 25px;
-	margin-bottom: 70px;
 }
 
 .module-subtitle {
@@ -1527,14 +1527,14 @@ Works item
 }
 
 .work-title {
-	font-size: 14px;
+	font-size: 20px;
 	color: #fff;
 	margin: 6px 0 6px;
 }
 
 .work-descr {
 	font-size: 11px;
-	color: rgba(255, 255, 255, 0.75);
+	color: rgba(255, 255, 255, 0.85);
 }
 
 /* White hover */
@@ -1557,7 +1557,7 @@ Works item hover
 }
 
 .works-hover-w .work-item:hover a:after {
-	background: rgba(255, 255, 255, 0.8);
+	background: rgba(255, 255, 255, 0.95);
 }
 
 .work-item:hover .work-caption {
@@ -2073,6 +2073,33 @@ Reset bootstrap navigation styles for small screens
 	padding-bottom: 15px;
 }
 
+.docs-search-wrap {
+	margin: 0 0 20px 0;
+}
+
+.docs-search-wrap .help-block {
+	margin: 8px 0 0 0;
+	opacity: 0.9;
+}
+
+.docs-search-actions {
+	margin-top: 10px;
+	display: flex;
+	gap: 10px;
+	flex-wrap: wrap;
+	align-items: center;
+}
+
+.docs-pill {
+	display: inline-block;
+	padding: 4px 10px;
+	border: 1px solid rgba(0, 0, 0, 0.15);
+	border-radius: 999px;
+	font-size: 12px;
+	opacity: 0.9;
+}
+
+
 /* -------------------------------------------------------------------
 Responsive Media Querries
 ------------------------------------------------------------------- */
@@ -2377,12 +2404,6 @@ span {
    Less zoom + 70% overlay
    ========================== */
 
-/* Less zoom than cover (tweak 85% as needed) */
-#hero.module-hero {
-  background-size: 100% auto !important;
-  background-position: center center !important;
-  background-repeat: no-repeat !important;
-}
 
 /* Your template uses .bg-light-30:before for overlay.
    Override it ONLY for the hero and make it 70% DARK. */
@@ -2402,4 +2423,104 @@ span {
 #hero .hero-text {
   position: relative;
   z-index: 1;
+}
+
+
+.labs-directory {
+  margin-top: 30px;
+}
+
+.labs-grid {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+
+  display: grid;
+  grid-template-columns: repeat(8, minmax(0, 1fr));
+  gap: 12px 24px;
+}
+
+.labs-grid li {
+  font-size: 12px;
+  letter-spacing: 1px;
+}
+
+.labs-grid a {
+  display: block;
+  color: #111;
+  padding: 4px 0;
+}
+
+.labs-grid a:hover {
+  color: #7c5cff; /* your accent purple */
+}
+
+.lab-video-embed {
+  width: 100%;
+  max-width: 960px;      /* optional: controls max size */
+  margin: 0 auto;        /* centers the video */
+  aspect-ratio: 16 / 9;  /* keeps it proportional */
+}
+
+.lab-video-embed iframe {
+  width: 100%;
+  height: 100%;
+  border: 0;
+  display: block;
+}
+
+@media (max-width: 600px) {
+  .lab-video-embed {
+    max-width: 100%;
+    margin: 0;
+    aspect-ratio: 16 / 9;
+  }
+}
+
+@media (max-width: 1200px) {
+  .labs-grid {
+    grid-template-columns: repeat(6, 1fr);
+  }
+}
+
+@media (max-width: 992px) {
+  .labs-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .labs-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* ------------------------------------------------------------------
+Logo: black over the light hero (transparent header), white once the
+header turns dark on scroll
+------------------------------------------------------------------- */
+
+.navbar-custom .navbar-brand {
+	display: flex;
+	align-items: center;
+	height: auto;
+	padding-left: 0;
+}
+
+.navbar-custom .navbar-brand img {
+	height: 30px;
+	width: auto;
+	display: block;
+}
+
+.navbar-custom .navbar-brand .logo-light {
+	display: none;
+}
+
+.navbar-custom:not(.navbar-transparent) .navbar-brand .logo-dark {
+	display: none;
+}
+
+.navbar-custom:not(.navbar-transparent) .navbar-brand .logo-light {
+	display: block;
 }
