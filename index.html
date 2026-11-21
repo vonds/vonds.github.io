@@ -11,9 +11,9 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Dosis:wght@300;400;500;600&family=Open+Sans:wght@400;600&display=swap">
 <style>
   :root{
-    --ink:#111; --text:#222; --muted:#3d3d3d; --soft:#4a4a4a;
-    --white:#fff; --band:#ebebeb; --tile:#f2f2f2; --line:#b8b8b8;
-    --accent:#111;
+    --ink:#2e2e30; --text:#222; --muted:#4a4a4c; --soft:#58585a;
+    --white:#fff; --band:#ebebeb; --tile:#f2f2f2; --line:#cdcdcd;
+    --accent:#2e2e30;
     --wrap:1170px;
     --ease:cubic-bezier(.2,.7,.2,1);
   }
@@ -22,14 +22,14 @@
   body{margin:0;background:var(--white);color:var(--text);font:400 16px/1.8 "Open Sans",sans-serif;-webkit-font-smoothing:antialiased}
   a{color:var(--ink);text-decoration:none}
   img{max-width:100%;display:block}
-  :focus-visible{outline:3px solid #000;outline-offset:3px;box-shadow:0 0 0 6px #fff}
+  :focus-visible{outline:3px solid #2e2e30;outline-offset:3px;box-shadow:0 0 0 6px #fff}
   .alt{font-family:Dosis,sans-serif;text-transform:uppercase}
   .wrap{max-width:var(--wrap);margin:0 auto;padding:0 24px}
 
   /* ---------- Header ---------- */
   .header{position:fixed;inset:0 0 auto 0;z-index:50;padding:22px 0;transition:background .35s var(--ease),padding .35s var(--ease),box-shadow .35s}
   .header .wrap{display:flex;align-items:center;justify-content:space-between}
-  .header.scrolled{background:rgba(10,10,10,.92);padding:12px 0;box-shadow:0 1px 0 rgba(255,255,255,.06)}
+  .header.scrolled{background:rgba(38,38,40,.94);padding:12px 0;box-shadow:0 1px 0 rgba(255,255,255,.06)}
   .brand img{height:30px;width:auto}
   .brand .logo-light{display:none}
   .header.scrolled .logo-dark{display:none}
@@ -40,7 +40,7 @@
   .header.scrolled .menu-btn span{background:#fff}
 
   /* ---------- Overlay menu ---------- */
-  .overlay{position:fixed;inset:0;z-index:60;background:rgba(10,10,10,.98);display:flex;align-items:center;justify-content:center;opacity:0;visibility:hidden;transition:opacity .4s var(--ease),visibility .4s}
+  .overlay{position:fixed;inset:0;z-index:60;background:rgba(38,38,40,.97);display:flex;align-items:center;justify-content:center;opacity:0;visibility:hidden;transition:opacity .4s var(--ease),visibility .4s}
   .overlay.open{opacity:1;visibility:visible}
   .overlay nav{display:flex;flex-direction:column;align-items:center;gap:14px}
   .overlay nav>a{color:#fff;font-size:22px;letter-spacing:8px;padding:6px 0;transform:translateY(10px);opacity:0;transition:color .2s,transform .5s var(--ease),opacity .5s}
@@ -57,20 +57,20 @@
   /* ---------- Hero ---------- */
   .hero{position:relative;min-height:100vh;min-height:100svh;display:flex;align-items:center;justify-content:center;text-align:center;padding:130px 24px 110px;
         background:linear-gradient(rgba(255,255,255,.46),rgba(255,255,255,.46)),url("assets/images/hero.jpg") center/cover no-repeat}
-  .hero h1{margin:0 0 0 .9em;font:400 clamp(34px,5vw,54px)/1.1 Dosis,sans-serif;letter-spacing:.9em;color:#000}
+  .hero h1{margin:0 0 0 .9em;font:400 clamp(34px,5vw,54px)/1.1 Dosis,sans-serif;letter-spacing:.9em;color:#2e2e30}
   .hero .rule{width:56px;height:1px;background:var(--ink);margin:34px auto 28px}
   .hero .role{margin:0;font-size:15px;letter-spacing:6px;color:var(--ink)}
-  .hero .pitch{margin:18px auto 0;max-width:560px;font-size:18px;line-height:1.7;color:#000}
+  .hero .pitch{margin:18px auto 0;max-width:560px;font-size:18px;line-height:1.7;color:#222}
   .buttons{display:flex;flex-wrap:wrap;gap:14px;justify-content:center;margin-top:42px}
   .btn{display:inline-flex;align-items:center;gap:10px;font-family:Dosis,sans-serif;font-size:13px;letter-spacing:3px;text-transform:uppercase;padding:15px 32px;border:1px solid var(--ink);transition:background .25s,color .25s,border-color .25s}
   .btn .arrow{transition:transform .25s var(--ease)}
   .btn:hover .arrow{transform:translateX(4px)}
   .btn.solid{background:var(--ink);color:#fff}
-  .btn.solid:hover{background:#3a3a3a;border-color:#3a3a3a;color:#fff}
+  .btn.solid:hover{background:#4a4a4c;border-color:#4a4a4c;color:#fff}
   .btn.line{color:var(--ink);background:rgba(255,255,255,.75)}
   .btn.line:hover{background:var(--ink);color:#fff}
-  .scroll-cue{position:absolute;left:0;right:0;bottom:24px;display:flex;flex-direction:column;align-items:center;gap:12px;font-size:14px;font-weight:600;letter-spacing:5px;color:#000;text-decoration:none}
-  .scroll-cue i{display:block;width:2px;height:58px;background:#000;transform-origin:top;animation:cue 2.4s var(--ease) infinite}
+  .scroll-cue{position:absolute;left:0;right:0;bottom:24px;display:flex;flex-direction:column;align-items:center;gap:12px;font-size:14px;font-weight:600;letter-spacing:5px;color:#222;text-decoration:none}
+  .scroll-cue i{display:block;width:2px;height:58px;background:#222;transform-origin:top;animation:cue 2.4s var(--ease) infinite}
   .scroll-cue:hover{color:#333}
   @keyframes cue{0%{transform:scaleY(0)}50%{transform:scaleY(1)}100%{transform:scaleY(1);opacity:0}}
 
@@ -139,7 +139,7 @@
   .contact-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:72px;align-items:start}
   .contact h2{margin:0 0 20px;font:400 36px/1.35 Dosis,sans-serif;letter-spacing:10px;text-transform:uppercase;color:var(--ink)}
   .contact .status{display:inline-flex;align-items:center;gap:10px;font-size:13px;letter-spacing:4px;color:#2b2b2b;margin-bottom:22px}
-  .contact .status i{width:8px;height:8px;border-radius:50%;background:#111;box-shadow:0 0 0 4px rgba(17,17,17,.12)}
+  .contact .status i{width:8px;height:8px;border-radius:50%;background:#2e2e30;box-shadow:0 0 0 4px rgba(46,46,48,.12)}
   .contact p{color:#2b2b2b;margin:0 0 28px;max-width:440px}
   .direct{display:flex;flex-direction:column;gap:12px;font-size:15px}
   .direct .row{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
@@ -150,7 +150,7 @@
   form{background:var(--white);padding:36px;border:1px solid var(--line)}
   .field{margin-bottom:18px}
   label{display:block;font-family:Dosis,sans-serif;text-transform:uppercase;letter-spacing:3px;font-size:12.5px;color:#333;margin-bottom:6px}
-  input,select,textarea{width:100%;font:15px "Open Sans",sans-serif;color:var(--ink);background:#fafafa;border:1px solid #8c8c8c;padding:12px 14px;border-radius:0;transition:border-color .2s,background .2s}
+  input,select,textarea{width:100%;font:15px "Open Sans",sans-serif;color:var(--ink);background:#fafafa;border:1px solid #949494;padding:12px 14px;border-radius:0;transition:border-color .2s,background .2s}
   input:focus,select:focus,textarea:focus{outline:none;border-color:var(--ink);background:#fff}
   textarea{min-height:120px;resize:vertical}
   .two{display:grid;grid-template-columns:1fr 1fr;gap:16px}
@@ -165,7 +165,7 @@
   @supports ((-webkit-backdrop-filter:blur(1px)) or (backdrop-filter:blur(1px))){dialog.cs{background:rgba(248,248,248,.86);-webkit-backdrop-filter:blur(22px) saturate(1.1);backdrop-filter:blur(22px) saturate(1.1)}}
   dialog.cs[open].show{opacity:1;transform:none}
   .cs-close:focus-visible{outline-offset:-6px}
-  dialog.cs::backdrop{background:rgba(17,17,17,.45);-webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px)}
+  dialog.cs::backdrop{background:rgba(38,38,40,.42);-webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px)}
   .cs-inner{display:grid;grid-template-columns:220px minmax(0,1fr);gap:36px;padding:44px}
   .cs-inner img{width:100%;aspect-ratio:1;object-fit:cover;background:rgba(242,242,242,.7)}
   .cs .kicker{font-size:13px;letter-spacing:4px;color:#3d3d3d}
