@@ -1,273 +1,568 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<meta charset="UTF-8" />
-	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-	<meta name="description" content="Vonds Freelancer Website" />
-	<meta name="name" content="Vonds" />
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Vonds</title>
+<meta name="description" content="Vonds builds software, secures systems and trains the people who use them.">
+<link rel="icon" type="image/svg+xml" href="assets/images/favicon.svg">
+<link rel="icon" type="image/png" href="assets/images/favicon.png">
+<link rel="apple-touch-icon" href="assets/images/apple-touch-icon.png">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Dosis:wght@300;400;500;600&family=Open+Sans:wght@400;600&display=swap">
+<style>
+  :root{
+    --ink:#111; --text:#222; --muted:#3d3d3d; --soft:#4a4a4a;
+    --white:#fff; --band:#ebebeb; --tile:#f2f2f2; --line:#b8b8b8;
+    --accent:#111;
+    --wrap:1170px;
+    --ease:cubic-bezier(.2,.7,.2,1);
+  }
+  *,*::before,*::after{box-sizing:border-box}
+  html{scroll-behavior:smooth;scroll-padding-top:72px}
+  body{margin:0;background:var(--white);color:var(--text);font:400 16px/1.8 "Open Sans",sans-serif;-webkit-font-smoothing:antialiased}
+  a{color:var(--ink);text-decoration:none}
+  img{max-width:100%;display:block}
+  :focus-visible{outline:3px solid #000;outline-offset:3px;box-shadow:0 0 0 6px #fff}
+  .alt{font-family:Dosis,sans-serif;text-transform:uppercase}
+  .wrap{max-width:var(--wrap);margin:0 auto;padding:0 24px}
 
-	<title>Vonds</title>
+  /* ---------- Header ---------- */
+  .header{position:fixed;inset:0 0 auto 0;z-index:50;padding:22px 0;transition:background .35s var(--ease),padding .35s var(--ease),box-shadow .35s}
+  .header .wrap{display:flex;align-items:center;justify-content:space-between}
+  .header.scrolled{background:rgba(10,10,10,.92);padding:12px 0;box-shadow:0 1px 0 rgba(255,255,255,.06)}
+  .brand img{height:30px;width:auto}
+  .brand .logo-light{display:none}
+  .header.scrolled .logo-dark{display:none}
+  .header.scrolled .logo-light{display:block}
+  .menu-btn{width:48px;height:48px;margin-right:-12px;background:none;border:0;cursor:pointer;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:5px}
+  .menu-btn span{display:block;width:24px;height:2px;background:var(--ink);transition:background .3s,transform .3s var(--ease)}
+  .menu-btn:hover span:nth-child(2){transform:translateX(4px)}
+  .header.scrolled .menu-btn span{background:#fff}
 
-	<!-- Favicons -->
-	<link rel="shortcut icon" href="assets/images/favicon.png" />
-	<link rel="apple-touch-icon" href="assets/images/apple-touch-icon.png" />
-	<link rel="apple-touch-icon" sizes="72x72" href="assets/images/apple-touch-icon-72x72.png" />
-	<link rel="apple-touch-icon" sizes="114x114" href="assets/images/apple-touch-icon-114x114.png" />
+  /* ---------- Overlay menu ---------- */
+  .overlay{position:fixed;inset:0;z-index:60;background:rgba(10,10,10,.98);display:flex;align-items:center;justify-content:center;opacity:0;visibility:hidden;transition:opacity .4s var(--ease),visibility .4s}
+  .overlay.open{opacity:1;visibility:visible}
+  .overlay nav{display:flex;flex-direction:column;align-items:center;gap:14px}
+  .overlay nav>a{color:#fff;font-size:22px;letter-spacing:8px;padding:6px 0;transform:translateY(10px);opacity:0;transition:color .2s,transform .5s var(--ease),opacity .5s}
+  .overlay.open nav>a{transform:none;opacity:1}
+  .overlay.open nav>a:nth-child(2){transition-delay:.04s}.overlay.open nav>a:nth-child(3){transition-delay:.08s}
+  .overlay.open nav>a:nth-child(5){transition-delay:.12s}.overlay.open nav>a:nth-child(6){transition-delay:.16s}.overlay.open nav>a:nth-child(7){transition-delay:.2s}
+  .overlay nav>a:hover{color:#fff;text-decoration:underline;text-underline-offset:8px}
+  .overlay .sub{display:flex;flex-wrap:wrap;justify-content:center;gap:2px 22px;max-width:560px;margin:-6px 0 8px}
+  .overlay .sub a{font-size:13px;letter-spacing:3px;color:rgba(255,255,255,.8);padding:6px 0}
+  .overlay .sub a:hover{color:#fff}
+  .overlay .close{position:absolute;top:16px;right:20px;width:48px;height:48px;background:none;border:0;color:#fff;font-size:34px;line-height:1;cursor:pointer}
+  .overlay .foot{position:absolute;bottom:28px;color:rgba(255,255,255,.7);font-size:13px;letter-spacing:3px}
 
-	<!-- Bootstrap core CSS -->
-	<link href="assets/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
+  /* ---------- Hero ---------- */
+  .hero{position:relative;min-height:100vh;min-height:100svh;display:flex;align-items:center;justify-content:center;text-align:center;padding:130px 24px 110px;
+        background:linear-gradient(rgba(255,255,255,.46),rgba(255,255,255,.46)),url("assets/images/hero.jpg") center/cover no-repeat}
+  .hero h1{margin:0 0 0 .9em;font:400 clamp(34px,5vw,54px)/1.1 Dosis,sans-serif;letter-spacing:.9em;color:#000}
+  .hero .rule{width:56px;height:1px;background:var(--ink);margin:34px auto 28px}
+  .hero .role{margin:0;font-size:15px;letter-spacing:6px;color:var(--ink)}
+  .hero .pitch{margin:18px auto 0;max-width:560px;font-size:18px;line-height:1.7;color:#000}
+  .buttons{display:flex;flex-wrap:wrap;gap:14px;justify-content:center;margin-top:42px}
+  .btn{display:inline-flex;align-items:center;gap:10px;font-family:Dosis,sans-serif;font-size:13px;letter-spacing:3px;text-transform:uppercase;padding:15px 32px;border:1px solid var(--ink);transition:background .25s,color .25s,border-color .25s}
+  .btn .arrow{transition:transform .25s var(--ease)}
+  .btn:hover .arrow{transform:translateX(4px)}
+  .btn.solid{background:var(--ink);color:#fff}
+  .btn.solid:hover{background:#3a3a3a;border-color:#3a3a3a;color:#fff}
+  .btn.line{color:var(--ink);background:rgba(255,255,255,.75)}
+  .btn.line:hover{background:var(--ink);color:#fff}
+  .scroll-cue{position:absolute;left:0;right:0;bottom:24px;display:flex;flex-direction:column;align-items:center;gap:12px;font-size:14px;font-weight:600;letter-spacing:5px;color:#000;text-decoration:none}
+  .scroll-cue i{display:block;width:2px;height:58px;background:#000;transform-origin:top;animation:cue 2.4s var(--ease) infinite}
+  .scroll-cue:hover{color:#333}
+  @keyframes cue{0%{transform:scaleY(0)}50%{transform:scaleY(1)}100%{transform:scaleY(1);opacity:0}}
 
-	<!-- Plugins -->
-	<link href="assets/css/font-awesome.min.css" rel="stylesheet" />
-	<link href="assets/css/linea-icons.css" rel="stylesheet" />
-	<link href="assets/css/ionicons.min.css" rel="stylesheet" />
-	<link href="assets/css/simpletextrotator.css" rel="stylesheet" />
-	<link href="assets/css/magnific-popup.css" rel="stylesheet" />
-	<link href="assets/css/owl.carousel.css" rel="stylesheet" />
-	<link href="assets/css/superslides.css" rel="stylesheet" />
-	<link href="assets/css/vertical.css" rel="stylesheet" />
-	<link href="assets/css/animate.css" rel="stylesheet" />
+  /* ---------- Section scaffolding ---------- */
+  .module{padding:120px 0}
+  .band{background:var(--band)}
+  .eyebrow{display:flex;align-items:center;gap:14px;margin:0 0 18px;font-size:13px;letter-spacing:4px;color:var(--soft)}
+  .eyebrow b{color:var(--ink);font-weight:500}
+  .eyebrow.center{justify-content:center}
+  .title{margin:0 0 40px;font:400 26px/1.3 Dosis,sans-serif;letter-spacing:10px;text-transform:uppercase;color:var(--ink)}
+  .title.center{text-align:center;margin-bottom:16px}
+  .lede{color:var(--muted);max-width:600px;margin:0 0 64px}
+  .lede.center{text-align:center;margin:0 auto 64px}
 
-	<!-- Template core CSS -->
-	<link href="assets/css/style.css" rel="stylesheet" />
+  /* ---------- About ---------- */
+  .about-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,2fr);gap:64px;align-items:start}
+  .about-lead{font:400 26px/1.45 Dosis,sans-serif;color:var(--ink);letter-spacing:.5px;margin:0}
+  .about-lead em{font-style:normal;border-bottom:1px solid var(--ink)}
+  .about p.body{margin:0 0 20px}
+  .about strong{color:var(--ink);font-weight:600}
 
-	<!-- Fonts -->
-	<link href="https://fonts.googleapis.com/css?family=Dosis" rel="stylesheet" />
+  /* ---------- Pillars ---------- */
+  .pillars{padding:96px 0}
+  .pillars .grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:48px;text-align:center}
+  .pillars .num{font:300 46px/1 Dosis,sans-serif;color:var(--ink)}
+  .pillars .bar{width:30px;height:1px;background:var(--ink);margin:22px auto}
+  .pillars h3{margin:0 0 12px;font:400 18px Dosis,sans-serif;letter-spacing:5px;text-transform:uppercase;color:var(--ink)}
+  .pillars p{margin:0;color:#333}
+
+  /* ---------- Portfolio ---------- */
+  .works{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:48px 30px}
+  .work{display:flex;flex-direction:column}
+  .work .frame{position:relative;display:block;overflow:hidden;background:var(--tile)}
+  .work img{width:100%;aspect-ratio:1;object-fit:cover;transition:transform .7s var(--ease)}
+  .work .frame:hover img{transform:scale(1.04)}
+  .work .visit{position:absolute;left:16px;bottom:16px;padding:8px 14px;background:var(--ink);color:#fff;font-size:12.5px;letter-spacing:3px;opacity:0;transform:translateY(6px);transition:opacity .3s,transform .3s var(--ease)}
+  .work .frame:hover .visit,.work .frame:focus-visible .visit{opacity:1;transform:none}
+  .work .cap{padding:22px 2px 0}
+  .work .kicker{font-size:13px;letter-spacing:4px;color:#4a4a4a}
+  .work h3{margin:6px 0 8px;font:400 22px Dosis,sans-serif;letter-spacing:6px;text-transform:uppercase;color:var(--ink)}
+  .work h3 a:hover{color:#333}
+  .work p{margin:0;color:var(--muted);font-size:15px}
+  .cs-open{margin-top:14px;width:100%;display:flex;justify-content:space-between;align-items:center;padding:12px 0;background:none;border:0;border-top:1px solid var(--line);font-size:13px;letter-spacing:3px;color:var(--ink);cursor:pointer;text-align:left}
+  .cs-open span{font-size:18px;line-height:1;transition:transform .3s var(--ease)}
+  .cs-open:hover{color:#333}.cs-open:hover span{transform:rotate(90deg)}
+
+  /* ---------- Services ---------- */
+  .services{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1px;background:var(--line);border:1px solid var(--line)}
+  .service{background:var(--white);padding:36px 28px 34px;display:flex;flex-direction:column;transition:background .3s}
+  .service:hover{background:#fafafa}
+  .service .ico{width:36px;height:36px;margin-bottom:22px;color:var(--ink)}
+  .service h3{margin:0 0 12px;font:400 18px/1.4 Dosis,sans-serif;letter-spacing:4px;text-transform:uppercase;color:var(--ink)}
+  .service p{margin:0 0 18px;color:var(--muted);font-size:15px;min-height:4.8em}
+  .service ul{margin:auto 0 0;padding:0;list-style:none;font-size:14px;color:#2b2b2b}
+  .service li{padding:7px 0;border-top:1px solid #d0d0d0}
+  .service li::before{content:"";display:inline-block;width:5px;height:5px;background:#333;transform:rotate(45deg);margin:0 10px 2px 0}
+
+  /* ---------- Process ---------- */
+  .process{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:40px;margin-top:80px;counter-reset:step}
+  .step{position:relative;padding-top:26px;border-top:2px solid var(--ink)}
+  .step .n{position:absolute;top:-14px;left:0;background:var(--band);padding-right:12px;font:500 14px Dosis,sans-serif;letter-spacing:3px;color:var(--ink)}
+  .step h3{margin:0 0 10px;font:400 18px Dosis,sans-serif;letter-spacing:4px;text-transform:uppercase;color:var(--ink)}
+  .step p{margin:0;color:var(--muted);font-size:15px}
+
+  /* ---------- Contact ---------- */
+  .contact-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:72px;align-items:start}
+  .contact h2{margin:0 0 20px;font:400 36px/1.35 Dosis,sans-serif;letter-spacing:10px;text-transform:uppercase;color:var(--ink)}
+  .contact .status{display:inline-flex;align-items:center;gap:10px;font-size:13px;letter-spacing:4px;color:#2b2b2b;margin-bottom:22px}
+  .contact .status i{width:8px;height:8px;border-radius:50%;background:#111;box-shadow:0 0 0 4px rgba(17,17,17,.12)}
+  .contact p{color:#2b2b2b;margin:0 0 28px;max-width:440px}
+  .direct{display:flex;flex-direction:column;gap:12px;font-size:15px}
+  .direct .row{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+  .direct .label{font-family:Dosis,sans-serif;text-transform:uppercase;letter-spacing:3px;font-size:12.5px;color:var(--soft);width:76px}
+  .direct a{border-bottom:1px solid var(--ink)}.direct a:hover{border-bottom-width:2px}
+  .copy{font-family:Dosis,sans-serif;font-size:12.5px;letter-spacing:2px;text-transform:uppercase;background:none;border:1px solid #6e6e6e;padding:4px 10px;cursor:pointer;color:#2b2b2b}
+  .copy:hover{border-color:var(--ink);color:var(--ink)}
+  form{background:var(--white);padding:36px;border:1px solid var(--line)}
+  .field{margin-bottom:18px}
+  label{display:block;font-family:Dosis,sans-serif;text-transform:uppercase;letter-spacing:3px;font-size:12.5px;color:#333;margin-bottom:6px}
+  input,select,textarea{width:100%;font:15px "Open Sans",sans-serif;color:var(--ink);background:#fafafa;border:1px solid #8c8c8c;padding:12px 14px;border-radius:0;transition:border-color .2s,background .2s}
+  input:focus,select:focus,textarea:focus{outline:none;border-color:var(--ink);background:#fff}
+  textarea{min-height:120px;resize:vertical}
+  .two{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  form .btn{width:100%;justify-content:center;cursor:pointer}
+  .form-note{margin:14px 0 0;font-size:13px;color:var(--muted);min-height:1.5em}
+
+
+  /* ---------- Case study pop-up ---------- */
+  dialog.cs{width:min(760px,calc(100% - 32px));max-height:calc(100vh - 48px);padding:0;border:1px solid rgba(255,255,255,.6);color:var(--text);
+            background:rgba(248,248,248,.96);
+            box-shadow:0 30px 80px rgba(0,0,0,.25);opacity:0;transform:translateY(16px) scale(.98);transition:opacity .35s var(--ease),transform .35s var(--ease)}
+  @supports ((-webkit-backdrop-filter:blur(1px)) or (backdrop-filter:blur(1px))){dialog.cs{background:rgba(248,248,248,.86);-webkit-backdrop-filter:blur(22px) saturate(1.1);backdrop-filter:blur(22px) saturate(1.1)}}
+  dialog.cs[open].show{opacity:1;transform:none}
+  .cs-close:focus-visible{outline-offset:-6px}
+  dialog.cs::backdrop{background:rgba(17,17,17,.45);-webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px)}
+  .cs-inner{display:grid;grid-template-columns:220px minmax(0,1fr);gap:36px;padding:44px}
+  .cs-inner img{width:100%;aspect-ratio:1;object-fit:cover;background:rgba(242,242,242,.7)}
+  .cs .kicker{font-size:13px;letter-spacing:4px;color:#3d3d3d}
+  .cs h3{margin:6px 0 18px;font:400 26px/1.3 Dosis,sans-serif;letter-spacing:6px;text-transform:uppercase;color:var(--ink)}
+  .cs dl{margin:0 0 28px}
+  .cs dt{font-family:Dosis,sans-serif;text-transform:uppercase;letter-spacing:3px;font-size:12.5px;color:#4a4a4a;margin-top:16px;padding-top:14px;border-top:1px solid rgba(0,0,0,.08)}
+  .cs dt:first-child{margin-top:0;padding-top:0;border-top:0}
+  .cs dd{margin:4px 0 0;color:#333;font-size:15px}
+  .cs-close{position:absolute;top:12px;right:12px;width:44px;height:44px;background:none;border:0;font-size:28px;line-height:1;color:var(--ink);cursor:pointer}
+  .cs-close:hover{color:#333}
+  @media (max-width:640px){.cs-inner{grid-template-columns:1fr;gap:22px;padding:56px 24px 28px}.cs-inner img{max-width:160px}}
+
+  /* ---------- Footer ---------- */
+  footer{background:var(--tile);padding:64px 24px 52px;text-align:center}
+  footer .mark{height:30px;width:auto;margin:0 auto}
+  footer nav{display:flex;justify-content:center;flex-wrap:wrap;gap:8px 36px;margin:26px 0;font-size:13px;letter-spacing:3px}
+  footer nav a{padding:8px 0}
+  footer nav a:hover{color:#333}
+  footer .line{width:56px;height:1px;background:#ccc;margin:0 auto 22px}
+  footer .copyright{margin:0;font-size:13px;letter-spacing:3px;color:#3d3d3d}
+  .to-top{position:fixed;right:22px;bottom:22px;z-index:40;width:44px;height:44px;border:1px solid var(--ink);background:#fff;color:var(--ink);font-size:18px;cursor:pointer;opacity:0;visibility:hidden;transition:opacity .3s,background .2s,color .2s}
+  .to-top.show{opacity:1;visibility:visible}
+  .to-top:hover{background:var(--ink);color:#fff}
+
+  /* ---------- Motion ---------- */
+  .reveal{opacity:0;transform:translateY(24px);transition:opacity .9s var(--ease),transform .9s var(--ease)}
+  .reveal.in{opacity:1;transform:none}
+  .stagger>*{transition-delay:calc(var(--i,0)*80ms)}
+
+  /* ---------- Responsive ---------- */
+  @media (max-width:1000px){
+    .services{grid-template-columns:repeat(2,minmax(0,1fr))}
+    .about-grid,.contact-grid{grid-template-columns:1fr;gap:36px}
+  }
+  @media (max-width:900px){
+    .works{grid-template-columns:repeat(2,minmax(0,1fr))}
+    .pillars .grid,.process{grid-template-columns:1fr;gap:48px}
+  }
+  @media (max-width:600px){
+    .hero h1{letter-spacing:.6em;margin-left:.6em}
+    .hero .pitch{font-size:16px}
+    .hero .role{font-size:13px;letter-spacing:3px}
+    .buttons .btn{min-width:240px;justify-content:center}
+    .service p{min-height:0}
+    .works,.services{grid-template-columns:1fr}
+    .module{padding:84px 0}
+    .contact h2{font-size:26px;letter-spacing:6px}
+    .two{grid-template-columns:1fr}
+    form{padding:24px}
+    .about-lead{font-size:22px}
+  }
+  @media (prefers-reduced-motion:reduce){
+    html{scroll-behavior:auto}
+    .reveal{opacity:1;transform:none;transition:none}
+    .scroll-cue i{animation:none}
+  }
+</style>
 </head>
-
 <body>
-	<!-- PRELOADER -->
-	<div class="page-loader">
-		<div class="loader">Loading...</div>
-	</div>
 
-	<!-- OVERLAY MENU -->
-	<div id="overlay-menu" class="overlay-menu">
-		<a href="#" id="overlay-menu-hide" class="navigation-hide">
-			<i class="ion-close-round"></i>
-		</a>
+<header class="header" id="header">
+  <div class="wrap">
+    <a class="brand" href="#top" aria-label="Vonds home">
+      <img class="logo-dark" src="assets/images/logo-dark.svg" alt="Vonds">
+      <img class="logo-light" src="assets/images/logo-light.svg" alt="" aria-hidden="true">
+    </a>
+    <button class="menu-btn" id="menuOpen" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="overlay">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</header>
 
-		<div class="overlay-menu-inner">
-			<nav class="overlay-menu-nav">
-				<ul id="nav">
-					<li><a href="index.html">Home</a></li>
+<div class="overlay" id="overlay" aria-hidden="true">
+  <button class="close" id="menuClose" type="button" aria-label="Close menu">&times;</button>
+  <nav aria-label="Main">
+    <a class="alt" href="#top">Home</a>
+    <a class="alt" href="#about">About</a>
+    <a class="alt" href="#portfolio">Portfolio</a>
+    <div class="sub">
+      <a class="alt" href="https://black-signal-demo.netlify.app/">Black Signal</a>
+      <a class="alt" href="https://deeds-demo.netlify.app/">DEEDS</a>
+      <a class="alt" href="https://digital-resource-map-demo.netlify.app/">Digital Resources Map</a>
+      <a class="alt" href="https://thetravelingarchive.com/">The Traveling Archive</a>
+      <a class="alt" href="https://github.com/vonds/sentinel">Sentinel</a>
+      <a class="alt" href="https://github.com/vonds/exit_0">exit_0</a>
+    </div>
+    <a class="alt" href="#services">Services</a>
+    <a class="alt" href="#contact">Contact</a>
+    <a class="alt" href="https://www.linkedin.com/in/vonds/">LinkedIn</a>
+  </nav>
+  <div class="foot alt">Vonds &copy; 2026</div>
+</div>
 
-					<li class="slidedown">
-						<a href="#">Portfolio</a>
-						<ul>
-							<li><a href="https://github.com/vonds/exit_0" target="_blank">exit_0</a></li>
-							<li><a href="https://github.com/vonds/sentinel" target="_blank">Sentinel</a></li>
-							<li><a href="docs.html" target="_blank">exit_0 Documentation</a></li>
-						</ul>
-					</li>
-					<li><a href="https://www.linkedin.com/in/vonds/" target="_blank">LinkedIn</a></li>
-					<li><a href="https://github.com/vonds" target="_blank">Github</a></li>
-					<li><a href="mailto:vonds13@gmail.com?subject=Hello Vonds">Contact</a></li>
-				</ul>
-			</nav>
-		</div>
+<main id="top">
 
-		<div class="overlay-navigation-footer">
-			<div class="container">
-				<div class="row">
-					<div class="col-sm-12 text-center">
-						<p class="copyright font-alt m-b-0">
-							VONDS &copy;
-							<script>
-								document.write(new Date().getFullYear());
-							</script>
-						</p>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
+  <!-- Hero -->
+  <section class="hero">
+    <div>
+      <h1 class="alt">Vonds</h1>
+      <div class="rule"></div>
+      <p class="role alt">Software · Systems · Security</p>
+      <p class="pitch">I build software, secure the systems it runs on, and train the people who use it.</p>
+      <div class="buttons">
+        <a class="btn solid" href="#portfolio">View work <span class="arrow" aria-hidden="true">&rarr;</span></a>
+        <a class="btn line" href="#contact">Start a project</a>
+      </div>
+    </div>
+    <a class="scroll-cue alt" href="#about" aria-label="Scroll to About"><span>Scroll</span><i aria-hidden="true"></i></a>
+  </section>
 
-	<!-- WRAPPER -->
-	<div class="wrapper">
-		<!-- NAVIGATION -->
-		<nav class="navbar navbar-custom navbar-transparent navbar-light navbar-fixed-top">
-			<div class="container">
-				<div class="navbar-header">
-					<a class="navbar-brand" href="index.html">
-						<img src="assets/images/logo-dark.png" width="95" alt="" />
-					</a>
-				</div>
+  <!-- About -->
+  <section class="module about" id="about">
+    <div class="wrap">
+      <p class="eyebrow alt"><b>01</b> About</p>
+      <div class="about-grid reveal">
+        <p class="about-lead">Developer, systems administrator and trainer, <em>in one person</em>.</p>
+        <div>
+          <p class="body">Most teams need a developer, a systems administrator and a trainer. I’m all three, so projects move faster with fewer handoffs. Give me a problem, whether it’s an app that doesn’t exist yet, a server that keeps failing or a team that needs to learn Linux, and I’ll own it until it’s solved.</p>
+          <p class="body">That’s how I’ve built a cybersecurity training platform, a Linux hardening toolkit and web apps for three community organizations, mostly on my own and from start to finish. <strong>BLACK SIGNAL</strong>, which I founded, trains people for cybersecurity and systems certifications with hands-on Linux labs, in-browser C compilation and offline access for learners with unreliable internet. <strong>Sentinel</strong> is an open-source toolkit that hardens and audits Linux servers. And for DEEDS, Pass It On and Beyond the Cover, I designed and built a verified-impact app, a map of free digital resources across four Maryland counties, including Baltimore City, and a roving literary archive.</p>
+          <p class="body">As a Linux Systems Engineer and technical consultant, I build systems that are reliable, secure and easy for the people using them to understand. That approach comes from years in software engineering, production support and teaching technology as a lead instructor. I’m looking to collaborate with security teams, education partners and organizations that care about fundamentals, access, and shipping work that lasts.</p>
+        </div>
+      </div>
+    </div>
+  </section>
 
-				<ul id="icons-navbar" class="nav navbar-nav navbar-right">
-					<li>
-						<a href="#" id="toggle-menu" class="show-overlay" title="Menu">
-							<span class="icon-bar"></span>
-							<span class="icon-bar"></span>
-							<span class="icon-bar"></span>
-						</a>
-					</li>
-				</ul>
-			</div>
-		</nav>
+  <!-- Pillars -->
+  <section class="pillars band">
+    <div class="wrap grid reveal stagger">
+      <div style="--i:0">
+        <div class="num">01</div><div class="bar"></div>
+        <h3>Systems</h3>
+        <p>Linux administration, troubleshooting and recovery, built for reliability.</p>
+      </div>
+      <div style="--i:1">
+        <div class="num">02</div><div class="bar"></div>
+        <h3>Security Training</h3>
+        <p>Hands-on labs and adaptive courses in Linux, networking, forensics and C.</p>
+      </div>
+      <div style="--i:2">
+        <div class="num">03</div><div class="bar"></div>
+        <h3>Mission-driven builds</h3>
+        <p>Web platforms for nonprofits and community projects, from first sketch to launch.</p>
+      </div>
+    </div>
+  </section>
 
-		<!-- HERO -->
-		<section
-			id="hero"
-			class="module-hero module-parallax module-full-height bg-light-30"
-			data-background="assets/images/section-3.jpg"
-		>
-			<div class="hero-caption">
-				<div class="hero-text">
-					<h1 class="mh-line-size-1 font-alt m-b-50 wow fadeInDown">V o n d s</h1>
-				</div>
-			</div>
-		</section>
+  <!-- Portfolio -->
+  <section class="module" id="portfolio">
+    <div class="wrap">
+      <p class="eyebrow alt"><b>02</b> Selected work</p>
+      <h2 class="title">Portfolio</h2>
+      <p class="lede">Platforms, tools and community projects I’ve designed and built. Open any project for the details.</p>
+      <div class="works">
 
-		<!-- ABOUT + SKILLS -->
-		<section class="module">
-			<div class="container">
-				<div class="row">
-					<div class="col-sm-8">
-						<h2 class="font-alt module-title m-t-40 m-b-40">About</h2>
+        <article class="work reveal">
+          <a class="frame" href="https://black-signal-demo.netlify.app/" aria-label="Open Black Signal">
+            <img src="assets/images/portfolio/black-signal.png" alt="BLACK SIGNAL kunda logo"><span class="visit alt">Visit site &rarr;</span>
+          </a>
+          <div class="cap">
+            <div class="kicker alt">Platform · Founder</div>
+            <h3><a href="https://black-signal-demo.netlify.app/">Black Signal</a></h3>
+            <p>Adaptive certification training for Linux, Security+, Python and C, with labs that run in the browser and offline.</p>
+            <button class="cs-open alt" type="button">Case study <span aria-hidden="true">+</span></button>
+            <template class="cs-data"><dl><dt>Problem</dt><dd>Cert prep is expensive, passive and assumes a fast internet connection.</dd>
+                  <dt>What I built</dt><dd>An adaptive platform with simulated terminal labs, spaced repetition, in-browser C compilation and full offline support.</dd></dl></template>
+          </div>
+        </article>
 
-						<p>
-							I’m a Linux Systems Administrator focused on building reliability through hands-on infrastructure work. I spend most of my time in the terminal running real operational scenarios, breaking systems intentionally, diagnosing failures, and restoring them to a stable, working state.
-						</p>
+        <article class="work reveal">
+          <a class="frame" href="https://deeds-demo.netlify.app/" aria-label="Open DEEDS">
+            <img src="assets/images/portfolio/deeds.png" alt="DEEDS hibiscus logo"><span class="visit alt">Visit site &rarr;</span>
+          </a>
+          <div class="cap">
+            <div class="kicker alt">Web app · MVP</div>
+            <h3><a href="https://deeds-demo.netlify.app/">DEEDS</a></h3>
+            <p>Community challenges across seven sectors, confirmed by verifiers and kept on a personal Impact Passport.</p>
+            <button class="cs-open alt" type="button">Case study <span aria-hidden="true">+</span></button>
+            <template class="cs-data"><dl><dt>Problem</dt><dd>Community service is hard to verify and easy to forget.</dd>
+                  <dt>What I built</dt><dd>The MVP: challenges, a verifier workflow, an Impact Passport and passwordless admin sign-in by emailed code.</dd>
+                  <dt>Role</dt><dd>Lead developer, from product design to launch.</dd></dl></template>
+          </div>
+        </article>
 
-						<p>
-							I build and maintain <strong>exit_0</strong>, an open-source, terminal-based lab environment with 500+ Linux and infrastructure labs designed to simulate real workflows. These labs cover system recovery, storage and filesystem management, service failures, boot troubleshooting, and configuration drift.
-						</p>
+        <article class="work reveal">
+          <a class="frame" href="https://digital-resource-map-demo.netlify.app/" aria-label="Open Digital Resources Map">
+            <img src="assets/images/portfolio/resource-map.png" alt="Pass It On logo"><span class="visit alt">Visit site &rarr;</span>
+          </a>
+          <div class="cap">
+            <div class="kicker alt">Geomap · Pass It On</div>
+            <h3><a href="https://digital-resource-map-demo.netlify.app/">Digital Resources Map</a></h3>
+            <p>A searchable map of free and low-cost digital resources, currently covering four Maryland counties, including Baltimore City.</p>
+            <button class="cs-open alt" type="button">Case study <span aria-hidden="true">+</span></button>
+            <template class="cs-data"><dl><dt>Problem</dt><dd>Residents couldn’t easily find free devices, internet and training near them.</dd>
+                  <dt>What I built</dt><dd>An in-house map directory, so the nonprofit didn’t have to pay for a third-party platform.</dd>
+                  <dt>Client</dt><dd>Pass It On, a Maryland technology nonprofit.</dd></dl></template>
+          </div>
+        </article>
 
-						<p>
-							My background spans software engineering, production support, and technical education. I care deeply about fundamentals, clarity, and doing the work.
-						</p>
-					</div>
+        <article class="work reveal">
+          <a class="frame" href="https://thetravelingarchive.com/" aria-label="Open The Traveling Archive">
+            <img src="assets/images/portfolio/traveling-archive.png" alt="The Traveling Archive shell logo"><span class="visit alt">Visit site &rarr;</span>
+          </a>
+          <div class="cap">
+            <div class="kicker alt">Website · Beyond the Cover</div>
+            <h3><a href="https://thetravelingarchive.com/">The Traveling Archive</a></h3>
+            <p>A roving literary archive: scan the QR at each stop, read the prompt, leave something behind.</p>
+            <button class="cs-open alt" type="button">Case study <span aria-hidden="true">+</span></button>
+            <template class="cs-data"><dl><dt>Problem</dt><dd>A pop-up literary project needed a way for visitors at each stop to respond and stay connected.</dd>
+                  <dt>What I built</dt><dd>The site and a QR prompt flow: one page per stop, a featured book, a unique prompt and response tracking.</dd>
+                  <dt>Client</dt><dd>Beyond the Cover, built as an in-kind donation.</dd></dl></template>
+          </div>
+        </article>
 
-					<div class="col-sm-4">
-						<h2 class="font-alt module-title m-t-40 m-b-20">Skills</h2>
+        <article class="work reveal">
+          <a class="frame" href="https://github.com/vonds/sentinel" aria-label="Open Sentinel on GitHub">
+            <img src="assets/images/portfolio/sentinel.png" alt="Sentinel hexagon eye logo"><span class="visit alt">View code &rarr;</span>
+          </a>
+          <div class="cap">
+            <div class="kicker alt">Security · Bash</div>
+            <h3><a href="https://github.com/vonds/sentinel">Sentinel</a></h3>
+            <p>Automated Linux hardening and audit toolkit. Locks down SSH, firewall, sudo and password policy, backs up every change, and writes audit reports.</p>
+            <button class="cs-open alt" type="button">Case study <span aria-hidden="true">+</span></button>
+            <template class="cs-data"><dl><dt>Problem</dt><dd>Server hardening is often manual, inconsistent and hard to audit.</dd>
+                  <dt>What I built</dt><dd>A reproducible baseline with dry-run mode, backups before every change, config validation and timestamped audit reports.</dd></dl></template>
+          </div>
+        </article>
 
-						<div class="row skills-grid font-alt text-center">
-							<div class="col-xs-6 col-sm-6 m-b-10">Linux</div>
-							<div class="col-xs-6 col-sm-6 m-b-10">Bash</div>
-							<div class="col-xs-6 col-sm-6 m-b-10">Docker</div>
-							<div class="col-xs-6 col-sm-6 m-b-10">Python</div>
-							<div class="col-xs-6 col-sm-6 m-b-10">PostgreSQL</div>
-							<div class="col-xs-6 col-sm-6 m-b-10">Rust</div>
-							<div class="col-xs-6 col-sm-6 m-b-10">C++</div>
-							<div class="col-xs-6 col-sm-6 m-b-10">Node.js</div>
-						</div>
-					</div>
-				</div>
-			</div>
-		</section>
+        <article class="work reveal">
+          <a class="frame" href="https://github.com/vonds/exit_0" aria-label="Open exit_0 on GitHub">
+            <img src="assets/images/portfolio/exit0.png" alt="exit_0 wordmark"><span class="visit alt">View code &rarr;</span>
+          </a>
+          <div class="cap">
+            <div class="kicker alt">Terminal · 2025</div>
+            <h3><a href="https://github.com/vonds/exit_0">exit_0</a></h3>
+            <p>An open-source, terminal-based Linux lab environment.</p>
+            <button class="cs-open alt" type="button">Case study <span aria-hidden="true">+</span></button>
+            <template class="cs-data"><dl><dt>Problem</dt><dd>Linux learners rarely get to practice real failures safely.</dd>
+                  <dt>What I built</dt><dd>Hundreds of scenario labs covering recovery, storage, services, boot and configuration drift.</dd></dl></template>
+          </div>
+        </article>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- Services -->
+  <section class="module band" id="services">
+    <div class="wrap">
+      <p class="eyebrow alt"><b>03</b> Work with me</p>
+      <h2 class="title">Services</h2>
+      <p class="lede">Four ways I can help. Most projects use two or three of them together.</p>
+      <div class="services reveal stagger">
+        <div class="service" style="--i:0">
+          <svg class="ico" viewBox="0 0 36 36" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="6" width="30" height="22"/><path d="M3 12h30M12 33h12M18 28v5"/></svg>
+          <h3>Web &amp; app development</h3>
+          <p>Custom websites and web apps, designed, built and launched.</p>
+          <ul><li>Nonprofit and small-business sites</li><li>Web apps and MVPs</li><li>Maps, dashboards and internal tools</li></ul>
+        </div>
+        <div class="service" style="--i:1">
+          <svg class="ico" viewBox="0 0 36 36" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="5" y="4" width="26" height="9"/><rect x="5" y="17" width="26" height="9"/><path d="M10 8.5h2M10 21.5h2M18 26v6M10 32h16"/></svg>
+          <h3>Linux &amp; infrastructure</h3>
+          <p>Servers that stay up, and fixes for the ones that don’t.</p>
+          <ul><li>Linux setup and administration</li><li>Troubleshooting and recovery</li><li>Hosting, deployment and backups</li></ul>
+        </div>
+        <div class="service" style="--i:2">
+          <svg class="ico" viewBox="0 0 36 36" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M18 3l12 6v8c0 8-5.5 13-12 16C11.5 30 6 25 6 17V9z"/><path d="M13 18l4 4 7-8"/></svg>
+          <h3>Security hardening</h3>
+          <p>A secure baseline and a clear report of where you stand.</p>
+          <ul><li>Server hardening (SSH, firewall, sudo)</li><li>Security audits and reports</li><li>Practical fixes, explained plainly</li></ul>
+        </div>
+        <div class="service" style="--i:3">
+          <svg class="ico" viewBox="0 0 36 36" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M3 12l15-7 15 7-15 7z"/><path d="M9 15v8c0 3 4 5 9 5s9-2 9-5v-8M33 12v9"/></svg>
+          <h3>Training &amp; curriculum</h3>
+          <p>Teams and learners who can run what they’re given.</p>
+          <ul><li>Linux and IT training for teams</li><li>Certification prep and labs</li><li>Curriculum and course design</li></ul>
+        </div>
+      </div>
+
+      <div class="process reveal stagger">
+        <div class="step" style="--i:0"><span class="n">STEP 01</span><h3>Discover</h3><p>A short call to understand the problem, the people involved and what success looks like.</p></div>
+        <div class="step" style="--i:1"><span class="n">STEP 02</span><h3>Build</h3><p>Focused work with regular check-ins, so you see progress and steer early.</p></div>
+        <div class="step" style="--i:2"><span class="n">STEP 03</span><h3>Hand off</h3><p>Documentation and training, so your team can run it without me.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Contact -->
+  <section class="module contact" id="contact">
+    <div class="wrap contact-grid">
+      <div class="reveal">
+        <p class="eyebrow alt"><b>04</b> Contact</p>
+        <div class="status alt"><i></i>Available for consulting &amp; contract work</div>
+        <h2>Let’s build something reliable</h2>
+        <p>App development, infrastructure, Linux training, or a system that needs to stop breaking. Tell me what you’re working on.</p>
+        <div class="direct">
+          <div class="row"><span class="label">Email</span><a href="mailto:vonds13@gmail.com">vonds13@gmail.com</a><button class="copy" type="button" id="copyEmail">Copy</button></div>
+          <div class="row"><span class="label">LinkedIn</span><a href="https://www.linkedin.com/in/vonds/">linkedin.com/in/vonds</a></div>
+        </div>
+      </div>
+      <form class="reveal" id="contactForm" novalidate>
+        <div class="two">
+          <div class="field"><label for="f-name">Name</label><input id="f-name" name="name" autocomplete="name" required></div>
+          <div class="field"><label for="f-email">Email</label><input id="f-email" name="email" type="email" autocomplete="email" required></div>
+        </div>
+        <div class="field"><label for="f-type">Project type</label>
+          <select id="f-type" name="type">
+            <option>Web or app development</option><option>Linux &amp; infrastructure</option><option>Security hardening</option><option>Training &amp; curriculum</option><option>Something else</option>
+          </select></div>
+        <div class="field"><label for="f-msg">What are you working on?</label><textarea id="f-msg" name="message" required></textarea></div>
+        <button class="btn solid" type="submit">Send message <span class="arrow" aria-hidden="true">&rarr;</span></button>
+        <p class="form-note" id="formNote" role="status"></p>
+      </form>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <img class="mark" src="assets/images/logo-dark.svg" alt="Vonds">
+  <nav aria-label="Footer" class="alt">
+    <a href="#about">About</a><a href="#portfolio">Portfolio</a><a href="#services">Services</a><a href="#contact">Contact</a><a href="https://www.linkedin.com/in/vonds/">LinkedIn</a>
+  </nav>
+  <div class="line"></div>
+  <p class="copyright alt">Vonds &copy; 2026</p>
+</footer>
 
 
+<dialog class="cs" id="cs" aria-labelledby="csTitle">
+  <button class="cs-close" type="button" id="csClose" aria-label="Close case study">&times;</button>
+  <div class="cs-inner">
+    <img id="csImg" src="" alt="">
+    <div>
+      <div class="kicker alt" id="csKicker"></div>
+      <h3 id="csTitle"></h3>
+      <div id="csBody"></div>
+      <a class="btn solid" id="csLink" href="#">Visit site <span class="arrow" aria-hidden="true">&rarr;</span></a>
+    </div>
+  </div>
+</dialog>
 
-		<!-- PORTFOLIO -->
-		<section id="portfolio" class="module">
-			<div class="container">
-				<!-- FILTER -->
-				<div class="row">
-					<div class="col-sm-12">
-						<h2 class="font-alt module-title m-t-40 m-b-40">Projects</h2>
-					</div>
-				</div>
-				<!-- /FILTER -->
+<button class="to-top" id="toTop" type="button" aria-label="Back to top">&uarr;</button>
 
-				<!-- WORKS GRID -->
-				<div class="row">
-					<div id="works-grid" class="works-grid works-hover-w">
-						<!-- DO NOT DELETE THIS DIV -->
-						<div class="grid-sizer"></div>
+<script>
+(function(){
+  var header=document.getElementById('header'), toTop=document.getElementById('toTop');
+  function onScroll(){var y=window.scrollY||document.documentElement.scrollTop;header.classList.toggle('scrolled',y>5);toTop.classList.toggle('show',y>700);}
+  window.addEventListener('scroll',onScroll,{passive:true});onScroll();
+  toTop.addEventListener('click',function(){window.scrollTo({top:0,behavior:'smooth'});});
 
-						<!-- PORTFOLIO ITEM -->
-						<div class="work-item web">
-							<a href="https://github.com/vonds/exit_0" target="_blank">
-								<img src="assets/images/section-88.jpg" alt="" />
-								<div class="work-caption font-alt">
-									<h3 class="work-title">exit_0</h3>
-									<div class="work-descr">Terminal 2025</div>
-								</div>
-							</a>
-						</div>
-						<!-- /PORTFOLIO ITEM -->
+  var overlay=document.getElementById('overlay'), openBtn=document.getElementById('menuOpen'), closeBtn=document.getElementById('menuClose');
+  function setMenu(open){overlay.classList.toggle('open',open);overlay.setAttribute('aria-hidden',open?'false':'true');openBtn.setAttribute('aria-expanded',open?'true':'false');document.body.style.overflow=open?'hidden':'';if(open){closeBtn.focus();}else{openBtn.focus({preventScroll:true});}}
+  openBtn.addEventListener('click',function(){setMenu(true);});
+  closeBtn.addEventListener('click',function(){setMenu(false);});
+  overlay.querySelectorAll('a').forEach(function(a){a.addEventListener('click',function(){setMenu(false);});});
+  document.addEventListener('keydown',function(e){if(e.key==='Escape'&&overlay.classList.contains('open'))setMenu(false);});
 
-						<!-- PORTFOLIO ITEM -->
-						<div class="work-item web">
-							<a href="https://github.com/vonds/sentinel" target="_blank">
-								<img src="assets/images/section-9.jpg" alt="" />
-								<div class="work-caption font-alt">
-									<h3 class="work-title">Sentinel</h3>
-									<div class="work-descr">Terminal 2026</div>
-								</div>
-							</a>
-						</div>
-						<!-- /PORTFOLIO ITEM -->
+  var items=document.querySelectorAll('.reveal');
+  if('IntersectionObserver' in window){
+    var io=new IntersectionObserver(function(es){es.forEach(function(en){if(en.isIntersecting){en.target.classList.add('in');io.unobserve(en.target);}});},{threshold:.12});
+    items.forEach(function(el){io.observe(el);});
+  } else { items.forEach(function(el){el.classList.add('in');}); }
 
-						<!-- PORTFOLIO ITEM -->
-						<div class="work-item web">
-							<a href="docs.html" target="_blank">
-								<img src="assets/images/section-97.jpg" alt="" />
-								<div class="work-caption font-alt">
-									<h3 class="work-title">exit_0 Documentation</h3>
-									<div class="work-descr">Documentation 2026</div>
-								</div>
-							</a>
-						</div>
-						<!-- /PORTFOLIO ITEM -->
 
-						<!-- DO NOT DELETE THIS DIV -->
-						<div class="grid-sizer"></div>
-					</div>
-				</div>
-				<!-- /WORKS GRID -->
-			</div>
-		</section>
+  var dlg=document.getElementById('cs');
+  function openCase(card){
+    var img=card.querySelector('.frame img'), link=card.querySelector('h3 a'), visit=card.querySelector('.visit');
+    document.getElementById('csImg').src=img.src; document.getElementById('csImg').alt=img.alt;
+    document.getElementById('csKicker').textContent=card.querySelector('.kicker').textContent;
+    document.getElementById('csTitle').textContent=link.textContent;
+    var body=document.getElementById('csBody'); body.innerHTML=''; body.appendChild(card.querySelector('.cs-data').content.cloneNode(true));
+    var a=document.getElementById('csLink'); a.href=link.href; a.firstChild.nodeValue=(visit&&/code/i.test(visit.textContent)?'View code ':'Visit site ');
+    if(typeof dlg.showModal==='function'){dlg.showModal();void dlg.offsetWidth;dlg.classList.add('show');}
+    else{dlg.setAttribute('open','');dlg.classList.add('show');}
+    document.body.style.overflow='hidden';
+  }
+  function closeCase(){dlg.classList.remove('show');setTimeout(function(){if(dlg.open)dlg.close();document.body.style.overflow='';},250);}
+  document.querySelectorAll('.cs-open').forEach(function(b){b.addEventListener('click',function(){openCase(b.closest('.work'));});});
+  document.getElementById('csClose').addEventListener('click',closeCase);
+  dlg.addEventListener('click',function(e){if(e.target===dlg)closeCase();});
+  dlg.addEventListener('cancel',function(e){e.preventDefault();closeCase();});
 
-		<!-- FOOTER -->
-		<footer class="module bg-light">
-			<div class="container">
-				<div class="row">
-					<div class="col-sm-12">
-						<ul class="social-text-links font-alt text-center m-b-20">
-							<li><a href="https://github.com/vonds" target="_blank">Github</a></li>
-							<li><a href="https://www.linkedin.com/in/vonds/" target="_blank">Linkedin</a></li>
-						</ul>
-					</div>
-				</div>
+  var email='vonds13@gmail.com', copyBtn=document.getElementById('copyEmail');
+  copyBtn.addEventListener('click',function(){
+    var done=function(t){copyBtn.textContent=t;setTimeout(function(){copyBtn.textContent='Copy';},1800);};
+    try{navigator.clipboard.writeText(email).then(function(){done('Copied');},function(){done('Select & copy');});}catch(e){done('Select & copy');}
+  });
 
-				<div class="row">
-					<div class="col-sm-12">
-						<p class="copyright text-center m-b-0">
-							VONDS &copy;
-							<script>
-								document.write(new Date().getFullYear());
-							</script>
-						</p>
-
-						<div class="scroll-up">
-							<a href="#totop"><i class="fa fa-angle-double-up"></i></a>
-						</div>
-
-						<!-- Javascript files -->
-						<script src="assets/js/jquery-2.2.4.min.js"></script>
-						<script src="assets/bootstrap/js/bootstrap.min.js"></script>
-						<script src="assets/js/jquery.superslides.min.js"></script>
-						<script src="assets/js/jquery.mb.YTPlayer.min.js"></script>
-						<script src="assets/js/jquery.magnific-popup.min.js"></script>
-						<script src="assets/js/owl.carousel.min.js"></script>
-						<script src="assets/js/jquery.simple-text-rotator.min.js"></script>
-						<script src="assets/js/imagesloaded.pkgd.js"></script>
-						<script src="assets/js/isotope.pkgd.min.js"></script>
-						<script src="assets/js/packery-mode.pkgd.min.js"></script>
-						<script src="assets/js/appear.js"></script>
-						<script src="assets/js/jquery.easing.1.3.js"></script>
-						<script src="assets/js/wow.min.js"></script>
-						<script src="assets/js/jqBootstrapValidation.js"></script>
-						<script src="assets/js/jquery.fitvids.js"></script>
-						<script src="assets/js/jquery.parallax-1.1.3.js"></script>
-						<script src="assets/js/smoothscroll.js"></script>
-						<script src="assets/js/custom.js"></script>
-					</div>
-				</div>
-			</div>
-		</footer>
-	</div>
+  var form=document.getElementById('contactForm'), note=document.getElementById('formNote');
+  form.addEventListener('submit',function(e){
+    e.preventDefault();
+    var name=form.name.value.trim(), from=form.email.value.trim(), msg=form.message.value.trim(), type=form.type.value;
+    if(!name||!from||!msg){note.textContent='Please fill in your name, email and a short message.';return;}
+    var subject='Project inquiry: '+type, body=msg+'\n\n'+name+'\n'+from;
+    var href='mailto:'+email+'?subject='+encodeURIComponent(subject)+'&body='+encodeURIComponent(body);
+    note.textContent='Opening your email app with this message ready to send. If nothing opens, email '+email+' directly.';
+    window.location.href=href;
+  });
+})();
+</script>
 </body>
 </html>

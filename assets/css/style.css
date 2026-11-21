@@ -2494,3 +2494,33 @@ span {
     grid-template-columns: repeat(2, 1fr);
   }
 }
+
+/* ------------------------------------------------------------------
+Logo: black over the light hero (transparent header), white once the
+header turns dark on scroll
+------------------------------------------------------------------- */
+
+.navbar-custom .navbar-brand {
+	display: flex;
+	align-items: center;
+	height: auto;
+	padding-left: 0;
+}
+
+.navbar-custom .navbar-brand img {
+	height: 30px;
+	width: auto;
+	display: block;
+}
+
+.navbar-custom .navbar-brand .logo-light {
+	display: none;
+}
+
+.navbar-custom:not(.navbar-transparent) .navbar-brand .logo-dark {
+	display: none;
+}
+
+.navbar-custom:not(.navbar-transparent) .navbar-brand .logo-light {
+	display: block;
+}
