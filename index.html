@@ -222,6 +222,257 @@
     .reveal{opacity:1;transform:none;transition:none}
     .scroll-cue i{animation:none}
   }
+.ff{background:#0b0b0c;color:#ececec}
+.ff .deep{position:relative;height:210vh;z-index:1}
+.ff .descent{position:relative}
+.ff .shaft{position:sticky;top:0;height:100vh;margin-bottom:-100vh;overflow:hidden;perspective:520px;perspective-origin:50% 50%;z-index:0;background:radial-gradient(ellipse at 50% 50%,#050506 0,#0b0b0c 40%,#151517 100%)}
+.ff .wall.l,.ff .wall.r{width:1400px}
+.ff .wall.l{left:0;transform-origin:0 50%;transform:rotateY(90deg);-webkit-mask-image:linear-gradient(90deg,#000,rgba(0,0,0,.35) 70%,rgba(0,0,0,.2));mask-image:linear-gradient(90deg,#000,rgba(0,0,0,.35) 70%,rgba(0,0,0,.2))}
+.ff .wall.r{right:0;transform-origin:100% 50%;transform:rotateY(-90deg);-webkit-mask-image:linear-gradient(270deg,#000,rgba(0,0,0,.35) 70%,rgba(0,0,0,.2));mask-image:linear-gradient(270deg,#000,rgba(0,0,0,.35) 70%,rgba(0,0,0,.2))}
+.ff .wall.back{left:0;width:100%;transform:translateZ(-1400px);opacity:.55;background-size:auto,auto,auto}
+.ff .wall.fl{display:none}
+.ff .shaft::after{content:"";position:absolute;inset:0;background:linear-gradient(#0b0b0c,transparent 22%,transparent 78%,#0b0b0c);pointer-events:none}
+.ff .gauge{position:sticky;top:calc(100vh - 150px);float:right;margin:0 28px 0 0;z-index:3;display:grid;justify-items:end;gap:2px;font:400 11px/1 Dosis,sans-serif;letter-spacing:.24em;text-transform:uppercase;color:#9a9a9e;pointer-events:none;height:0;overflow:visible}
+.ff .gauge .gv{font:200 34px/1 Dosis,sans-serif;letter-spacing:.06em;color:#ececec;font-variant-numeric:tabular-nums}
+.ff .gauge i{display:block;width:1px;height:46px;margin-top:6px;background:linear-gradient(#ececec,transparent)}
+.ff .stick{position:sticky;top:0;height:100vh;overflow:hidden;perspective:900px;display:grid;place-items:center;background:transparent}
+.ff .obj{transform:translateZ(calc(-1400px + var(--p,0) * 1600px));opacity:clamp(0,calc(min(var(--p,0) * 3, (1 - var(--p,0)) * 4)),1);will-change:transform}
+.ff .obj img{width:min(300px,60vw);aspect-ratio:1;object-fit:cover;filter:invert(.93);box-shadow:0 60px 120px rgba(0,0,0,.6)}
+.ff .obj .big{font:200 clamp(160px,26vw,340px)/1 Dosis,sans-serif;color:#ececec}
+.ff .dtxt{position:absolute;left:6vw;bottom:12vh;max-width:520px;padding:26px 28px;background:rgba(20,20,21,.72);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);border:1px solid rgba(255,255,255,.12)}
+.ff .dtxt h2{margin:8px 0 10px;font:300 clamp(30px,3.4vw,46px)/1.08 Dosis,sans-serif;text-transform:uppercase;letter-spacing:.05em}
+.ff .dtxt p{margin:0;color:#c4c4c8}
+.ff .wall{position:absolute;top:-200%;height:500%;
+  background-image:
+    repeating-linear-gradient(90deg,rgba(255,255,255,.26) 0 1px,transparent 1px 120px),
+    repeating-linear-gradient(0deg,rgba(255,255,255,.34) 0 1px,transparent 1px 600px),
+    repeating-linear-gradient(0deg,rgba(255,255,255,.09) 0 1px,transparent 1px 120px);
+  will-change:background-position}
+.ff .slab{display:none}
+.ff .gauge .gu:empty{display:none}
+.ff .shaft{perspective:420px;background:radial-gradient(circle at 50% 50%,#000 0,#050506 22%,#101012 70%,#18181a 100%)}
+.ff .wall{top:auto;height:auto;opacity:1;
+  background-image:repeating-linear-gradient(90deg,rgba(255,255,255,.2) 0 1px,transparent 1px 140px),repeating-linear-gradient(0deg,rgba(255,255,255,.14) 0 1px,transparent 1px 120px)}
+.ff .wall.l,.ff .wall.r{top:0;height:100%;width:1800px;background-image:repeating-linear-gradient(0deg,rgba(255,255,255,.14) 0 1px,transparent 1px 120px),repeating-linear-gradient(90deg,rgba(255,255,255,.2) 0 1px,transparent 1px 140px);background-position:0 0,calc(var(--d,0) * 1.4px) 0}
+.ff .wall.r{background-position:0 0,calc(var(--d,0) * -1.4px) 0}
+.ff .wall.l{-webkit-mask-image:linear-gradient(90deg,#000,transparent 85%);mask-image:linear-gradient(90deg,#000,transparent 85%)}
+.ff .wall.r{-webkit-mask-image:linear-gradient(270deg,#000,transparent 85%);mask-image:linear-gradient(270deg,#000,transparent 85%)}
+.ff .wall.t,.ff .wall.b{left:0;width:100%;height:1800px;background-position:0 0,0 calc(var(--d,0) * 1.4px)}
+.ff .wall.t{top:0;transform-origin:50% 0;transform:rotateX(-90deg);-webkit-mask-image:linear-gradient(180deg,#000,transparent 85%);mask-image:linear-gradient(180deg,#000,transparent 85%)}
+.ff .wall.b{bottom:0;transform-origin:50% 100%;transform:rotateX(90deg);background-position:0 0,0 calc(var(--d,0) * -1.4px);-webkit-mask-image:linear-gradient(0deg,#000,transparent 85%);mask-image:linear-gradient(0deg,#000,transparent 85%)}
+.ff .ring{position:absolute;left:50%;top:50%;width:100vw;height:100vh;border:1px solid rgba(255,255,255,.55);box-sizing:border-box;will-change:transform,opacity}
+.ff .pit{position:absolute;left:50%;top:50%;width:14vmin;height:14vmin;transform:translate(-50%,-50%);background:radial-gradient(circle,#000 30%,transparent 72%)}
+.ff .shaft::after{display:none}
+/* ===== Freefall: entered from "View work" ===== */
+.ff{position:fixed;inset:0;z-index:2000;overflow-y:auto;overflow-x:hidden;overscroll-behavior:contain;opacity:0;visibility:hidden;transition:opacity .7s ease,visibility 0s linear .7s;font-family:Inter,"Open Sans",sans-serif}
+.ff.open{opacity:1;visibility:visible;transition:opacity .7s ease}
+.ff .kick{display:block;font:500 12px Inter,sans-serif;letter-spacing:3px;text-transform:uppercase;opacity:.75}
+.ff [data-at]{opacity:0;transform:translateY(22px) scale(.96);transition:opacity .6s cubic-bezier(.2,.7,.2,1),transform .7s cubic-bezier(.2,.7,.2,1)}
+.ff [data-at].on{opacity:1;transform:none}
+.ff .pcard{max-width:560px}
+.ff .ptop{display:flex;justify-content:space-between;align-items:baseline;gap:16px}
+.ff .pidx{font:400 12px/1 Dosis,sans-serif;letter-spacing:.24em;color:#9a9a9e;font-variant-numeric:tabular-nums}
+.ff .pcard dl{margin:14px 0 18px;display:grid;gap:4px}
+.ff .pcard dt{font:500 11px/1.4 Dosis,sans-serif;letter-spacing:.22em;text-transform:uppercase;color:#9a9a9e;margin-top:8px}
+.ff .pcard dd{margin:0;color:#d6d6da;font-size:15px;line-height:1.6}
+.ff .pvisit{display:inline-block;font:500 12px/1 Dosis,sans-serif;letter-spacing:.22em;text-transform:uppercase;color:#ececec;background:transparent;text-decoration:none;padding:13px 20px;border:1px solid rgba(255,255,255,.4);cursor:pointer;transition:background .3s,color .3s}
+.ff .pvisit:hover,.ff .pvisit:focus-visible{background:#ececec;color:#1a1a1c}
+.ff .pvisit.ghost{border-color:rgba(255,255,255,.18);color:#c4c4c8}
+.ffclose{position:fixed;top:22px;right:26px;z-index:5;width:46px;height:46px;display:grid;place-items:center;background:rgba(20,20,21,.55);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,.18);border-radius:50%;color:#ececec;padding:0;cursor:pointer;transition:background .3s,color .3s,transform .4s cubic-bezier(.2,.7,.2,1)}
+.ffclose i{width:16px;height:16px;position:relative}.ffclose i:before,.ffclose i:after{content:"";position:absolute;left:50%;top:0;width:1px;height:100%;background:currentColor;transform:rotate(45deg)}.ffclose i:after{transform:rotate(-45deg)}
+.ffclose:hover,.ffclose:focus-visible{background:#ececec;color:#1a1a1c;transform:rotate(90deg)}
+.ffend{position:relative;z-index:4;min-height:100vh;min-height:100dvh;box-sizing:border-box;display:grid;place-content:center;justify-items:center;gap:14px;text-align:center;background:linear-gradient(#0b0b0c,#18181a);padding:12vh 24px}
+.ffend h2{margin:0 0 10px;font:300 clamp(34px,4.4vw,60px)/1.05 Dosis,sans-serif;text-transform:uppercase;letter-spacing:.06em;color:#ececec}
+.ffbtns{display:flex;gap:12px;flex-wrap:wrap;justify-content:center}
+
+/* the jump */
+.warp{position:fixed;inset:0;z-index:2100;pointer-events:none;opacity:0;perspective:400px;background:radial-gradient(circle at 50% 50%,#000 0,#08080a 45%,rgba(10,10,11,.15) 100%)}
+.warp i{position:absolute;left:50%;top:50%;width:100vw;height:100vh;border:1px solid rgba(255,255,255,.7);transform:translate(-50%,-50%) translateZ(-2000px);opacity:0}
+body.diving .warp{animation:warpIn 1.25s cubic-bezier(.6,0,.3,1) forwards}
+body.diving .warp i{animation:ringRush 1.1s cubic-bezier(.55,0,.9,.6) forwards;animation-delay:calc(var(--k) * 70ms)}
+body.diving .hero > div{transition:transform 1s cubic-bezier(.6,0,.3,1),opacity .8s ease,filter .8s ease;transform:scale(.7);opacity:0;filter:blur(6px)}
+body.landing .warp{opacity:1;animation:warpOut .9s ease forwards}
+@keyframes warpIn{0%{opacity:0}25%,100%{opacity:1}}
+@keyframes warpOut{0%{opacity:1}100%{opacity:0}}
+@keyframes ringRush{0%{transform:translate(-50%,-50%) translateZ(-2000px);opacity:0}30%{opacity:.9}100%{transform:translate(-50%,-50%) translateZ(380px);opacity:0}}
+@media (prefers-reduced-motion:reduce){.ff [data-at]{opacity:1;transform:none;transition:none}body.diving .warp,body.diving .warp i{animation:none}body.diving .hero > div{transition:none}}
+@media (max-width:700px){.ff .pcard{left:4vw;right:4vw;max-width:none;bottom:9vh}.ff .pcard dd{font-size:14px}.ffclose{top:14px;right:14px}}
+.ff .shaft{pointer-events:none}
+
+/* holographic arrival */
+.ff .obj{transform:translateZ(calc(-1300px + var(--p,0) * 1500px)) translateY(calc((0.5 - var(--p,0)) * 6vh));
+  opacity:clamp(0,calc(min(var(--p,0) * 3.2, (1 - var(--p,0)) * 4)),1);
+  filter:blur(calc(max(0, .34 - var(--p,0)) * 40px + max(0, var(--p,0) - .84) * 70px));
+  display:grid;justify-items:center;gap:16px;will-change:transform,filter,opacity}
+.ff .holo{position:relative;padding:22px;border:1px solid rgba(255,255,255,.12);
+  background:linear-gradient(180deg,rgba(255,255,255,.05),rgba(255,255,255,.012));
+  box-shadow:0 0 0 1px rgba(0,0,0,.4),0 40px 120px rgba(0,0,0,.55),0 0 80px rgba(220,225,235,calc(min(var(--p,0) * 2, 1) * .06));
+  clip-path:inset(calc(max(0, .3 - var(--p,0)) * 166%) calc(max(0, .22 - var(--p,0)) * 60%));overflow:hidden}
+.ff .holo img{display:block;width:min(260px,52vw);aspect-ratio:1;object-fit:cover;filter:invert(.93) contrast(1.05);box-shadow:none;
+  -webkit-mask-image:radial-gradient(circle at 50% 50%,#000 52%,transparent 71%);mask-image:radial-gradient(circle at 50% 50%,#000 52%,transparent 71%)}
+.ff .br{position:absolute;width:14px;height:14px;border-color:rgba(255,255,255,.75);border-style:solid;border-width:0}
+.ff .br.tl{left:8px;top:8px;border-left-width:1px;border-top-width:1px}
+.ff .br.tr{right:8px;top:8px;border-right-width:1px;border-top-width:1px}
+.ff .br.bl{left:8px;bottom:8px;border-left-width:1px;border-bottom-width:1px}
+.ff .br.bott{right:8px;bottom:8px;border-right-width:1px;border-bottom-width:1px}
+.ff .scan{position:absolute;left:0;right:0;height:38%;top:calc(var(--p,0) * 420% - 140%);pointer-events:none;
+  background:linear-gradient(180deg,transparent,rgba(255,255,255,.07) 45%,rgba(255,255,255,.16) 50%,rgba(255,255,255,.07) 55%,transparent);mix-blend-mode:screen}
+.ff .holo::after{content:"";position:absolute;inset:0;pointer-events:none;background:repeating-linear-gradient(180deg,rgba(255,255,255,.025) 0 1px,transparent 1px 3px)}
+.ff .hlabel{font:400 11px/1 Dosis,sans-serif;letter-spacing:.32em;text-transform:uppercase;color:#9a9a9e;
+  opacity:clamp(0,calc((var(--p,0) - .26) * 8),1);transform:translateY(calc(max(0, .38 - var(--p,0)) * 60px))}
+.ff .obj .big{text-shadow:0 0 40px rgba(255,255,255,.12)}
+@media (prefers-reduced-motion:reduce){.ff .obj{filter:none}.ff .holo{clip-path:none}.ff .scan{display:none}}
+
+/* ---- v3: rail, layout, ending recap, mobile ---- */
+.ff .deep{height:190vh}
+.ff .obj{translate:var(--ox,0) var(--oy,-6vh)}
+.ff .dtxt{max-width:500px}
+@media (max-width:1280px){.ff{--ox:15vw;--oy:-4vh}.ff .dtxt{max-width:440px;left:5vw}}
+.rail{position:fixed;left:26px;top:50%;transform:translateY(-50%);z-index:5;opacity:0;transition:opacity .5s ease}
+.ff.open .rail.show{opacity:1}
+.rail ol{list-style:none;margin:0;padding:0;display:grid;gap:4px}
+.rail button{display:flex;align-items:center;gap:12px;background:none;border:0;padding:7px 0;cursor:pointer;color:#8e8e92;font:400 10px/1 Dosis,sans-serif;letter-spacing:.26em;text-transform:uppercase}
+.rail i{width:14px;height:1px;background:currentColor;transition:width .45s cubic-bezier(.2,.7,.2,1),background .3s}
+.rail span{opacity:0;transform:translateX(-6px);transition:opacity .35s,transform .35s;white-space:nowrap}
+.rail button:hover span,.rail button:focus-visible span,.rail button.on span{opacity:1;transform:none}
+.rail button:hover,.rail button:focus-visible{color:#ececec}
+.rail button.on{color:#ececec}.rail button.on i{width:34px;background:#ececec}
+.rail button.seen i{background:#c4c4c8}
+.ff button:focus-visible,.ff a:focus-visible{outline:1px solid #ececec;outline-offset:4px}
+.recap{list-style:none;margin:26px 0 30px;padding:0;display:flex;flex-wrap:wrap;justify-content:center;gap:10px;max-width:760px}
+.recap button{display:grid;justify-items:center;gap:10px;width:112px;padding:14px 8px 12px;background:rgba(255,255,255,.025);border:1px solid rgba(255,255,255,.1);color:#9a9a9e;cursor:pointer;font:400 10px/1.3 Dosis,sans-serif;letter-spacing:.16em;text-transform:uppercase;transition:border-color .3s,color .3s,transform .4s cubic-bezier(.2,.7,.2,1),background .3s}
+.recap img{width:56px;height:56px;object-fit:cover;filter:invert(.93) grayscale(1);-webkit-mask-image:radial-gradient(circle,#000 50%,transparent 70%);mask-image:radial-gradient(circle,#000 50%,transparent 70%);opacity:.75;transition:opacity .3s}
+.recap button:hover,.recap button:focus-visible{border-color:rgba(255,255,255,.45);color:#ececec;transform:translateY(-3px);background:rgba(255,255,255,.05)}
+.recap button:hover img,.recap button:focus-visible img{opacity:1}
+.ffend .kick{color:#9a9a9e}
+@media (max-width:700px){
+  .ff{--ox:0;--oy:-17vh}
+  .ff .deep{height:165vh}
+  .ff .holo{padding:14px}.ff .holo img{width:min(170px,44vw)}
+  .ff .obj{filter:none}.ff .scan{display:none}
+  .ff .dtxt{left:16px;right:16px;bottom:calc(16px + env(safe-area-inset-bottom));padding:20px;max-width:none;-webkit-backdrop-filter:none;backdrop-filter:none;background:rgba(16,16,17,.94)}
+  .ff .dtxt h2{font-size:28px}
+  .ff .obj .big{font-size:120px}
+  .ff .gauge{display:none}
+  .rail{left:auto;right:auto;top:22px;left:18px;transform:none}
+  .rail ol{grid-auto-flow:column;gap:6px}.rail button{padding:10px 0}.rail i{width:12px}.rail button.on i{width:24px}.rail span{display:none}
+  .ffclose{top:12px;right:12px}
+  .recap button{width:96px}
+}
+
+/* GPU-composited wall textures (no per-frame repaint) */
+.ff .wall{background:none!important;overflow:hidden}
+.ff .wall .tex{position:absolute;inset:-160px;will-change:transform;backface-visibility:hidden}
+.ff .wall.l .tex,.ff .wall.r .tex{background-image:repeating-linear-gradient(0deg,rgba(255,255,255,.14) 0 1px,transparent 1px 120px),repeating-linear-gradient(90deg,rgba(255,255,255,.2) 0 1px,transparent 1px 140px)}
+.ff .wall.t .tex,.ff .wall.b .tex{background-image:repeating-linear-gradient(90deg,rgba(255,255,255,.2) 0 1px,transparent 1px 140px),repeating-linear-gradient(0deg,rgba(255,255,255,.14) 0 1px,transparent 1px 120px)}
+.ff .wall.l .tex{transform:translate3d(calc(var(--wx,0) * 1px),0,0)}
+.ff .wall.r .tex{transform:translate3d(calc(var(--wx,0) * -1px),0,0)}
+.ff .wall.t .tex{transform:translate3d(0,calc(var(--wy,0) * 1px),0)}
+.ff .wall.b .tex{transform:translate3d(0,calc(var(--wy,0) * -1px),0)}
+/* hold each logo at full size while its card is read */
+.ff .obj{transform:translateZ(calc(-1300px + min(var(--p,0) / .58, 1) * 1300px + max(0, var(--p,0) - .8) * 2600px));
+  opacity:clamp(0,calc(min(var(--p,0) * 3.2, (1 - var(--p,0)) * 5)),1);
+  filter:blur(calc(max(0, .3 - var(--p,0)) * 40px + max(0, var(--p,0) - .86) * 70px))}
+.ff .scan{top:calc(min(var(--p,0) / .58, 1) * 280% - 140%)}
+/* rail: ticks + number; full name on hover only */
+.ff .dtxt{left:max(6vw,104px)}
+.rail span{display:none}
+.rail button:hover span,.rail button:focus-visible span{display:inline;position:absolute;left:52px;background:rgba(20,20,21,.9);border:1px solid rgba(255,255,255,.14);padding:8px 10px;opacity:1;transform:none}
+.rail li{position:relative}
+.rail button b{font-weight:400;font-size:10px;letter-spacing:.2em;opacity:0;transition:opacity .3s}
+.rail button.on b,.rail button:hover b{opacity:1}
+@media (max-width:700px){.ff .dtxt{left:16px}.rail button b{display:none}}
+
+.ff .wellc{position:absolute;inset:0;width:100%;height:100%;display:block}
+.ff .pit{width:22vmin;height:22vmin;background:radial-gradient(circle,#000 35%,transparent 72%)}
+/* v5: keep logo clear of the card at every width */
+@media (min-width:701px){.ff .deep[data-i]:not([data-i="0"]){--ox:min(24vw,calc(50vw - 330px + 280px));--oy:-4vh}}
+@media (min-width:701px) and (max-width:1280px){.ff .deep[data-i]:not([data-i="0"]){--ox:19vw}}
+.ff .hlabel{padding:6px 10px;background:rgba(11,11,12,.72);border:1px solid rgba(255,255,255,.08)}
+
+/* v6: cinematic exit to the final screen */
+.ff .fadeout{height:110vh}
+.ff .blackout{position:fixed;inset:0;z-index:6;background:#050506;opacity:var(--bo,0);pointer-events:none}
+.ffclose{z-index:10}
+.ffend{z-index:8;background:#050506}
+.ffend > *{opacity:0;transform:translateY(26px);transition:opacity 1s cubic-bezier(.2,.7,.2,1),transform 1.2s cubic-bezier(.2,.7,.2,1)}
+.ffend.in > *{opacity:1;transform:none}
+.ffend.in > :nth-child(2){transition-delay:.25s}
+.ffend.in > :nth-child(3){transition-delay:.35s}
+.ffend.in > :nth-child(3){transition-delay:.4s}.ffend.in > :nth-child(4){transition-delay:.7s}.ffend.in > :nth-child(5){transition-delay:1s}
+.ffend .recap li{opacity:0;transform:translateY(14px);transition:opacity .8s ease,transform .9s cubic-bezier(.2,.7,.2,1)}
+.ffend.in .recap li{opacity:1;transform:none}
+.ffend.in .recap li:nth-child(1){transition-delay:.45s}.ffend.in .recap li:nth-child(2){transition-delay:.52s}.ffend.in .recap li:nth-child(3){transition-delay:.59s}
+.ffend.in .recap li:nth-child(4){transition-delay:.66s}.ffend.in .recap li:nth-child(5){transition-delay:.73s}.ffend.in .recap li:nth-child(6){transition-delay:.8s}
+
+/* v6: fade to black first, then the dive */
+.warp{background:#050506!important;transition:opacity 1s cubic-bezier(.4,0,.2,1)}
+body.diving .warp{animation:none!important}
+body.fading .warp,body.diving .warp{opacity:1}
+body.fading .hero > div,body.diving .hero > div{transition:transform 1s cubic-bezier(.4,0,.2,1),opacity 1s ease,filter 1s ease;transform:scale(.94);opacity:0;filter:blur(4px)}
+body.landing .warp{opacity:0;animation:none!important;transition:opacity 1s ease}
+@media (prefers-reduced-motion:reduce){.ffend > *,.ffend .recap li{opacity:1;transform:none;transition:none}}
+.ff .deep[data-i="6"]{height:280vh}
+.ff.instant{transition:none!important}
+.ffend:not(.in) > .kick{opacity:0}
+
+/* v7: the well builds itself on screen */
+.ff .shaft::before{content:"";position:absolute;inset:0;background:#050506;opacity:0;transition:opacity 2.2s cubic-bezier(.4,0,.2,1)}
+.ff.dark .shaft::before{opacity:1;transition:none}
+.ff.building{background:#050506}
+.ff .stick,.ff .gauge,.ff .rail,.ffclose,.ff .pit{transition:opacity .9s ease}
+.ff.building .stick,.ff.building .gauge,.ff.building .rail,.ff.building .ffclose,.ff.building .pit{opacity:0!important}
+body.swap .warp{transition:none!important;opacity:0}
+.warp i{display:none}
+.ffclose{transition:opacity .9s ease,background .3s,color .3s,transform .4s cubic-bezier(.2,.7,.2,1)}
+.ff.dark .stick,.ff.dark .gauge,.ff.dark .rail,.ff.dark .ffclose,.ff.dark .pit{transition:none!important}
+
+/* v8: copy */
+.ff .pcard .lede{margin:2px 0 4px;color:#ececec;font:300 18px/1.4 Dosis,sans-serif;letter-spacing:.02em}
+.ff .pcard dl{margin:10px 0 16px}
+.ff .pcard dd{font-size:14px;line-height:1.55}
+.ffend .endp{margin:0;max-width:560px;color:#c4c4c8;font-size:16px;line-height:1.7}
+@media (max-width:700px){.ff .pcard .lede{font-size:16px}.ff .pcard dd{font-size:13px}.ff .pcard dt{margin-top:5px}}
+@media (max-width:700px){
+  .ff{--oy:-32vh}
+  .ff .deep[data-i="0"]{--oy:-17vh}
+  .ff .holo{padding:12px}.ff .holo img{width:min(112px,30vw)}
+  .ff .obj{gap:10px}
+  .ff .pcard{padding:18px}
+  .ff .pcard .ptop .kick{font-size:10px}
+  .ff .pcard h2{font-size:24px;margin:6px 0 4px}
+  .ff .pcard dl{margin:6px 0 12px}
+}
+/* focus: outline only, no fill (fill stays a hover effect) */
+.ff .pvisit:focus-visible:not(:hover),.ffclose:focus-visible:not(:hover){background:transparent;color:#ececec}
+.ffclose:focus-visible:not(:hover){background:rgba(20,20,21,.55);transform:none}
+.ffend{place-content:safe center}
+@media (max-width:700px) and (max-height:740px){
+  .ff .hlabel{display:none}
+  .ff .deep:has(.pcard.on) .holo{opacity:.18;transition:opacity .6s ease}
+}
+@media (max-width:700px){.ffend{padding:7vh 18px;gap:10px}.ffend h2{font-size:30px}.recap{margin:14px 0 18px}.recap button{width:92px;padding:10px 6px}}
+
+/* v9: featured pair on the closing screen */
+.feat{display:grid;grid-template-columns:repeat(2,minmax(0,340px));gap:16px;margin:30px 0 6px;justify-content:center}
+.ftile{display:grid;justify-items:center;gap:8px;padding:26px 24px 24px;background:linear-gradient(180deg,rgba(255,255,255,.055),rgba(255,255,255,.015));border:1px solid rgba(255,255,255,.16);text-align:center;position:relative}
+.ftile::before,.ftile::after{content:"";position:absolute;width:14px;height:14px;border:solid rgba(255,255,255,.7);border-width:0}
+.ftile::before{left:8px;top:8px;border-left-width:1px;border-top-width:1px}
+.ftile::after{right:8px;bottom:8px;border-right-width:1px;border-bottom-width:1px}
+.fjump{background:none;border:0;padding:0;cursor:pointer;margin-bottom:6px}
+.fjump img{width:120px;height:120px;object-fit:cover;filter:invert(.93) grayscale(1);-webkit-mask-image:radial-gradient(circle,#000 52%,transparent 71%);mask-image:radial-gradient(circle,#000 52%,transparent 71%);transition:transform .5s cubic-bezier(.2,.7,.2,1)}
+.fjump:hover img,.fjump:focus-visible img{transform:scale(1.06)}
+.ftile .kick{color:#9a9a9e;font-size:10px}
+.ftile h3{margin:0;font:400 22px/1.15 Dosis,sans-serif;letter-spacing:.08em;text-transform:uppercase;color:#ececec}
+.ftile p{margin:0 0 10px;color:#c4c4c8;font-size:14px;line-height:1.55;max-width:260px}
+.ffend .recap{margin:14px 0 26px}
+.ffend .recap button{width:100px;padding:10px 8px}
+.ffend .recap img{width:40px;height:40px}
+@media (max-width:700px){.feat{grid-template-columns:1fr;gap:10px;margin:16px 0 4px;width:100%}.ftile{padding:18px 16px;grid-template-columns:72px 1fr;justify-items:start;text-align:left;column-gap:14px}
+  .fjump{grid-row:1 / span 4;margin:0}.fjump img{width:72px;height:72px}.ftile h3{font-size:18px}.ftile p{font-size:13px;margin-bottom:6px}.ftile .pvisit{padding:10px 14px}
+  .ffend .recap button{width:76px}}
+.recap li{display:flex}.recap button{height:100%;box-sizing:border-box;align-content:start}
+
 </style>
 </head>
 <body>
@@ -247,7 +498,7 @@
     <div class="sub">
       <a class="alt" href="https://black-signal-demo.netlify.app/">Black Signal</a>
       <a class="alt" href="https://deeds-demo.netlify.app/">DEEDS</a>
-      <a class="alt" href="https://digital-resource-map-demo.netlify.app/">Digital Resources Map</a>
+      <a class="alt" href="https://digital-resource-map-demo.netlify.app/">Digital Resource Map</a>
       <a class="alt" href="https://thetravelingarchive.com/">The Traveling Archive</a>
       <a class="alt" href="https://github.com/vonds/sentinel">Sentinel</a>
       <a class="alt" href="https://github.com/vonds/exit_0">exit_0</a>
@@ -269,7 +520,7 @@
       <p class="role alt">Software · Systems · Security</p>
       <p class="pitch">I build software, secure the systems it runs on, and train the people who use it.</p>
       <div class="buttons">
-        <a class="btn solid" href="#portfolio">View work <span class="arrow" aria-hidden="true">&rarr;</span></a>
+        <a class="btn solid" href="#portfolio" data-dive>View work</a>
         <a class="btn line" href="#contact">Start a project</a>
       </div>
     </div>
@@ -284,8 +535,8 @@
         <p class="about-lead">Developer, systems administrator and trainer, <em>in one person</em>.</p>
         <div>
           <p class="body">Most teams need a developer, a systems administrator and a trainer. I’m all three, so projects move faster with fewer handoffs. Give me a problem, whether it’s an app that doesn’t exist yet, a server that keeps failing or a team that needs to learn Linux, and I’ll own it until it’s solved.</p>
-          <p class="body">That’s how I’ve built a cybersecurity training platform, a Linux hardening toolkit and web apps for three community organizations, mostly on my own and from start to finish. <strong>BLACK SIGNAL</strong>, which I founded, trains people for cybersecurity and systems certifications with hands-on Linux labs, in-browser C compilation and offline access for learners with unreliable internet. <strong>Sentinel</strong> is an open-source toolkit that hardens and audits Linux servers. And for DEEDS, Pass It On and Beyond the Cover, I designed and built a verified-impact app, a map of free digital resources across four Maryland counties, including Baltimore City, and a roving literary archive.</p>
-          <p class="body">As a Linux Systems Engineer and technical consultant, I build systems that are reliable, secure and easy for the people using them to understand. That approach comes from years in software engineering, production support and teaching technology as a lead instructor. I’m looking to collaborate with security teams, education partners and organizations that care about fundamentals, access, and shipping work that lasts.</p>
+          <p class="body">I’ve been building apps for more than ten years, at several tech companies and independently, and for three of those years I also taught adults transitioning into tech how to program. Recent highlights include <strong>BLACK SIGNAL</strong>, which I founded: an adaptive training platform for cybersecurity and systems certifications, with hands-on Linux labs, in-browser C compilation and offline access for learners with unreliable internet. <strong>Sentinel</strong>, an open-source toolkit that hardens and audits Linux servers. And platforms for community organizations: a verified-impact app for DEEDS, a map of free digital resources across four Maryland counties, including Baltimore City, for Pass It On, and a roving literary archive for Beyond the Cover.</p>
+          <p class="body">As a Linux Systems Engineer and technical consultant, I build systems that are reliable, secure and easy for the people using them to understand. That comes from a decade of software engineering and production support, and from teaching: helping career changers write their first programs teaches you to make complex things clear. I’m looking to collaborate with security teams, education partners and organizations that care about fundamentals, access, and shipping work that lasts.</p>
         </div>
       </div>
     </div>
@@ -350,12 +601,12 @@
         </article>
 
         <article class="work reveal">
-          <a class="frame" href="https://digital-resource-map-demo.netlify.app/" aria-label="Open Digital Resources Map">
+          <a class="frame" href="https://digital-resource-map-demo.netlify.app/" aria-label="Open Digital Resource Map">
             <img src="assets/images/portfolio/resource-map.png" alt="Pass It On logo"><span class="visit alt">Visit site &rarr;</span>
           </a>
           <div class="cap">
-            <div class="kicker alt">Geomap · Pass It On</div>
-            <h3><a href="https://digital-resource-map-demo.netlify.app/">Digital Resources Map</a></h3>
+            <div class="kicker alt">Web app · Pass It On</div>
+            <h3><a href="https://digital-resource-map-demo.netlify.app/">Digital Resource Map</a></h3>
             <p>A searchable map of free and low-cost digital resources, currently covering four Maryland counties, including Baltimore City.</p>
             <button class="cs-open alt" type="button">Case study <span aria-hidden="true">+</span></button>
             <template class="cs-data"><dl><dt>Problem</dt><dd>Residents couldn’t easily find free devices, internet and training near them.</dd>
@@ -507,6 +758,37 @@
 
 <button class="to-top" id="toTop" type="button" aria-label="Back to top">&uarr;</button>
 
+<div class="ff" id="ff" role="dialog" aria-modal="true" aria-label="Selected work" aria-hidden="true">
+<button class="ffclose" type="button" data-ffclose aria-label="Close and return to the site"><i aria-hidden="true"></i></button>
+<div class="blackout" aria-hidden="true"></div><nav class="rail" aria-label="Projects"><ol><li><button type="button" data-jump="1" aria-label="Black Signal"><i></i><b>01</b><span>01 &middot; Black Signal</span></button></li><li><button type="button" data-jump="2" aria-label="DEEDS"><i></i><b>02</b><span>02 &middot; DEEDS</span></button></li><li><button type="button" data-jump="3" aria-label="Digital Resource Map"><i></i><b>03</b><span>03 &middot; Digital Resource Map</span></button></li><li><button type="button" data-jump="4" aria-label="The Traveling Archive"><i></i><b>04</b><span>04 &middot; The Traveling Archive</span></button></li><li><button type="button" data-jump="5" aria-label="Sentinel"><i></i><b>05</b><span>05 &middot; Sentinel</span></button></li><li><button type="button" data-jump="6" aria-label="exit_0"><i></i><b>06</b><span>06 &middot; exit_0</span></button></li></ol></nav><div class="descent" data-descent><div class="shaft" aria-hidden="true"><canvas class="wellc"></canvas><div class="pit"></div></div><div class="gauge" aria-hidden="true"><span class="gl">Depth</span><span class="gv">0000</span><span class="gu">m</span><i></i></div><section class="deep" data-scene data-i="0" aria-label="Introduction"><div class="stick"><div class="obj"><div class="big">06</div></div>
+<div class="dtxt" data-at=".25"><span class="kick">Selected work</span><h2>Six problems worth solving.</h2><p>Software for learners, nonprofits and the communities they serve, from certification training to a map of free internet.</p></div></div></section><section class="deep" data-scene data-i="1" aria-label="Black Signal"><div class="stick"><div class="obj"><div class="holo"><img src="assets/images/portfolio/black-signal.png" alt="Black Signal logo"><span class="br tl"></span><span class="br tr"></span><span class="br bl"></span><span class="br bott"></span><span class="scan"></span></div><span class="hlabel">01 &middot; Black Signal</span></div>
+<article class="dtxt pcard" data-at=".28"><div class="ptop"><span class="kick">Platform · Founder</span><span class="pidx">01 / 06</span></div><h2>Black Signal</h2>
+<p class="lede">Certification training that still works when the internet doesn’t.</p>
+<dl><dt>The problem</dt><dd>Cert prep is expensive, passive and assumes a fast connection, which shuts out many of the people who would benefit most.</dd><dt>What I built</dt><dd>An adaptive platform for Linux, Security+, Python and C, with terminal labs that feel real, C that compiles right in the browser, spaced repetition and full offline support.</dd><dt>Where it stands</dt><dd>Live demo. Paid plans and a console for schools and training programs are in development.</dd></dl>
+<a class="pvisit" href="https://black-signal-demo.netlify.app/" target="_blank" rel="noopener">Try the demo &rarr;</a></article></div></section><section class="deep" data-scene data-i="2" aria-label="DEEDS"><div class="stick"><div class="obj"><div class="holo"><img src="assets/images/portfolio/deeds.png" alt="DEEDS logo"><span class="br tl"></span><span class="br tr"></span><span class="br bl"></span><span class="br bott"></span><span class="scan"></span></div><span class="hlabel">02 &middot; DEEDS</span></div>
+<article class="dtxt pcard" data-at=".28"><div class="ptop"><span class="kick">Web app · CTO</span><span class="pidx">02 / 06</span></div><h2>DEEDS</h2>
+<p class="lede">Community service, verified and remembered.</p>
+<dl><dt>The problem</dt><dd>Community service is hard to verify and easy to forget, so the people doing the work rarely get credit for it.</dd><dt>What I built</dt><dd>Challenges to join, a verifier workflow that confirms the work and a personal Impact Passport that keeps the record.</dd><dt>Where it stands</dt><dd>Preparing a pilot with Roxbury Community College.</dd></dl>
+<a class="pvisit" href="https://deeds-demo.netlify.app/" target="_blank" rel="noopener">Open the demo &rarr;</a></article></div></section><section class="deep" data-scene data-i="3" aria-label="Digital Resource Map"><div class="stick"><div class="obj"><div class="holo"><img src="assets/images/portfolio/resource-map.png" alt="Digital Resource Map logo"><span class="br tl"></span><span class="br tr"></span><span class="br bl"></span><span class="br bott"></span><span class="scan"></span></div><span class="hlabel">03 &middot; Digital Resource Map</span></div>
+<article class="dtxt pcard" data-at=".28"><div class="ptop"><span class="kick">Web app · Pass It On</span><span class="pidx">03 / 06</span></div><h2>Digital Resource Map</h2>
+<p class="lede">Free devices, internet and training, found in seconds.</p>
+<dl><dt>The problem</dt><dd>Free devices, internet and digital skills training existed, but residents couldn’t find what was near them.</dd><dt>What I built</dt><dd>A searchable map for Pass It On, built in-house so the nonprofit doesn’t have to pay for an outside platform.</dd><dt>Where it stands</dt><dd>Covers four Maryland counties, including Baltimore City.</dd></dl>
+<a class="pvisit" href="https://digital-resource-map-demo.netlify.app/" target="_blank" rel="noopener">Open the demo &rarr;</a></article></div></section><section class="deep" data-scene data-i="4" aria-label="The Traveling Archive"><div class="stick"><div class="obj"><div class="holo"><img src="assets/images/portfolio/traveling-archive.png" alt="The Traveling Archive logo"><span class="br tl"></span><span class="br tr"></span><span class="br bl"></span><span class="br bott"></span><span class="scan"></span></div><span class="hlabel">04 &middot; The Traveling Archive</span></div>
+<article class="dtxt pcard" data-at=".28"><div class="ptop"><span class="kick">Website · Beyond the Cover</span><span class="pidx">04 / 06</span></div><h2>The Traveling Archive</h2>
+<p class="lede">A roving literary pop-up that remembers every reader.</p>
+<dl><dt>The problem</dt><dd>A pop-up literary project needed visitors to respond at every stop, and a way to follow readers from one stop to the next.</dd><dt>What I built</dt><dd>A QR code at each host location opens that stop’s page, with a featured book and its own prompt. Responses carry across stops, so returning readers are recognized and winners can be reached.</dd><dt>Where it stands</dt><dd>Live for Beyond the Cover, which brings Black literature, art and archives to communities across the DMV.</dd></dl>
+<a class="pvisit" href="https://thetravelingarchive.com/" target="_blank" rel="noopener">Visit the site &rarr;</a></article></div></section><section class="deep" data-scene data-i="5" aria-label="Sentinel"><div class="stick"><div class="obj"><div class="holo"><img src="assets/images/portfolio/sentinel.png" alt="Sentinel logo"><span class="br tl"></span><span class="br tr"></span><span class="br bl"></span><span class="br bott"></span><span class="scan"></span></div><span class="hlabel">05 &middot; Sentinel</span></div>
+<article class="dtxt pcard" data-at=".28"><div class="ptop"><span class="kick">Security · Open source</span><span class="pidx">05 / 06</span></div><h2>Sentinel</h2>
+<p class="lede">A secure server baseline you can prove.</p>
+<dl><dt>The problem</dt><dd>Server hardening is often manual, inconsistent and hard to audit.</dd><dt>What I built</dt><dd>A Bash toolkit that hardens SSH, the firewall, sudo and password policy, with a dry run, automatic backups and timestamped audit reports.</dd><dt>Where it stands</dt><dd>Open source on GitHub.</dd></dl>
+<a class="pvisit" href="https://github.com/vonds/sentinel" target="_blank" rel="noopener">View on GitHub &rarr;</a></article></div></section><section class="deep" data-scene data-i="6" aria-label="exit_0"><div class="stick"><div class="obj"><div class="holo"><img src="assets/images/portfolio/exit0.png" alt="exit_0 logo"><span class="br tl"></span><span class="br tr"></span><span class="br bl"></span><span class="br bott"></span><span class="scan"></span></div><span class="hlabel">06 &middot; exit_0</span></div>
+<article class="dtxt pcard" data-at=".28"><div class="ptop"><span class="kick">Training · Open source</span><span class="pidx">06 / 06</span></div><h2>exit_0</h2>
+<p class="lede">Real Linux failures, practiced safely.</p>
+<dl><dt>The problem</dt><dd>Linux learners rarely face real failures until it happens at work.</dd><dt>What I built</dt><dd>Hundreds of scenario labs covering recovery, storage, services, boot problems and configuration drift.</dd><dt>Where it stands</dt><dd>Open source on GitHub.</dd></dl>
+<a class="pvisit" href="https://github.com/vonds/exit_0" target="_blank" rel="noopener">View on GitHub &rarr;</a></article></div></section><div class="fadeout" aria-hidden="true"></div></div>
+<section class="ffend"><h2>Have a problem worth solving?</h2><p class="endp">I take on client projects and partner with organizations doing work like this, as a builder, a consultant or a trainer.</p><div class="feat"><article class="ftile"><button type="button" class="fjump" data-jump="3" aria-label="Back to Digital Resource Map"><img src="assets/images/portfolio/resource-map.png" alt=""></button><span class="kick">Web app · Pass It On</span><h3>Digital Resource Map</h3><p>Free devices, internet and training, found in seconds.</p><a class="pvisit" href="https://digital-resource-map-demo.netlify.app/" target="_blank" rel="noopener">Open the demo &rarr;</a></article><article class="ftile"><button type="button" class="fjump" data-jump="1" aria-label="Back to Black Signal"><img src="assets/images/portfolio/black-signal.png" alt=""></button><span class="kick">Platform · Founder</span><h3>Black Signal</h3><p>Certification training that still works when the internet doesn’t.</p><a class="pvisit" href="https://black-signal-demo.netlify.app/" target="_blank" rel="noopener">Try the demo &rarr;</a></article></div><ul class="recap"><li><button type="button" data-jump="2" aria-label="Back to DEEDS"><img src="assets/images/portfolio/deeds.png" alt=""><span>DEEDS</span></button></li><li><button type="button" data-jump="4" aria-label="Back to The Traveling Archive"><img src="assets/images/portfolio/traveling-archive.png" alt=""><span>The Traveling Archive</span></button></li><li><button type="button" data-jump="5" aria-label="Back to Sentinel"><img src="assets/images/portfolio/sentinel.png" alt=""><span>Sentinel</span></button></li><li><button type="button" data-jump="6" aria-label="Back to exit_0"><img src="assets/images/portfolio/exit0.png" alt=""><span>exit_0</span></button></li></ul><div class="ffbtns"><button class="pvisit" type="button" data-ffclose data-goto="contact">Start a project</button></div></section>
+</div>
+<div class="warp" aria-hidden="true"><i style="--k:0"></i><i style="--k:1"></i><i style="--k:2"></i><i style="--k:3"></i><i style="--k:4"></i><i style="--k:5"></i><i style="--k:6"></i><i style="--k:7"></i><i style="--k:8"></i><i style="--k:9"></i></div>
 <script>
 (function(){
   var header=document.getElementById('header'), toTop=document.getElementById('toTop');
@@ -562,6 +844,166 @@
     note.textContent='Opening your email app with this message ready to send. If nothing opens, email '+email+' directly.';
     window.location.href=href;
   });
+})();
+</script>
+<script>(function () {
+  var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var ff = document.getElementById('ff'), ds = ff.querySelector('[data-descent]');
+  var rings = ff.querySelectorAll('.ring'), gv = ff.querySelector('.gv'), opener = null;
+  function clamp(v) { return v < 0 ? 0 : v > 1 ? 1 : v; }
+  var cd = 0, scenes = Array.prototype.slice.call(ff.querySelectorAll('[data-scene]')), running = false;
+  scenes.forEach(function (s) { s._c = 0; s._t = 0; });
+  function measure() {
+    var vh = window.innerHeight, td = Math.max(0, -ds.getBoundingClientRect().top);
+    scenes.forEach(function (sc) {
+      var r = sc.getBoundingClientRect();
+      sc._t = clamp(-r.top / Math.max(1, r.height - vh));
+      sc.querySelectorAll('[data-at]').forEach(function (el) { el.classList.toggle('on', reduce || sc._t >= parseFloat(el.dataset.at)); });
+    });
+    return td;
+  }
+  var cv = ff.querySelector('.wellc'), cx2 = cv.getContext('2d'), cw = 0, ch = 0, dpr = 1;
+  function sizeWell() {
+    dpr = Math.min(window.devicePixelRatio || 1, 2); cw = window.innerWidth; ch = window.innerHeight;
+    cv.width = Math.round(cw * dpr); cv.height = Math.round(ch * dpr); cx2.setTransform(dpr, 0, 0, dpr, 0, 0);
+  }
+  var build = 1;
+  function ez(t) { t = t < 0 ? 0 : t > 1 ? 1 : t; return 1 - Math.pow(1 - t, 3); }
+  function drawWell(d) {
+    if (!cw) sizeWell();
+    var c = cx2, W = cw, H = ch, cx = W / 2, cy = H / 2, f = 420, zmax = 1900, sf = f / (f + zmax), hw = W / 2, hh = H / 2, x, y, z, s, a, k, i = 0, n;
+    var b = build;
+    // phase A (0 -> .55): wall lines draw from the screen edge toward the vanishing point, centre lines first
+    // phase B (.18 -> 1): frames stream up from the depths and decelerate into their resting places
+    var rush = (1 - ez((b - 0.18) / 0.82)) * 2600, fa = ez((b - 0.12) / 0.45);
+    d = d + rush;
+    c.clearRect(0, 0, W, H); c.lineWidth = 1;
+    function lng(x0, y0, x1, y1, rel) {
+      var lp = b >= 1 ? 1 : ez((b - rel * 0.28) / 0.32); if (lp <= 0) return;
+      var xe = x0 + (x1 - x0) * lp, ye = y0 + (y1 - y0) * lp;
+      var gr = c.createLinearGradient(x0, y0, x1, y1);
+      gr.addColorStop(0, 'rgba(255,255,255,.2)'); gr.addColorStop(1, 'rgba(255,255,255,0)');
+      c.strokeStyle = gr; c.beginPath(); c.moveTo(x0, y0); c.lineTo(xe, ye); c.stroke();
+      if (lp < 1) { c.fillStyle = 'rgba(255,255,255,' + (0.85 * (1 - lp)).toFixed(3) + ')'; c.fillRect(xe - 1, ye - 1, 2, 2); }
+    }
+    for (x = -hw + ((hw) % 140); x <= hw; x += 140) { var rx = Math.abs(x) / hw; lng(cx + x, cy - hh, cx + x * sf, cy - hh * sf, rx); lng(cx + x, cy + hh, cx + x * sf, cy + hh * sf, rx); }
+    for (y = -hh + ((hh) % 120); y <= hh; y += 120) { var ry = Math.abs(y) / hh; lng(cx - hw, cy + y, cx - hw * sf, cy + y * sf, ry); lng(cx + hw, cy + y, cx + hw * sf, cy + y * sf, ry); }
+    if (fa <= 0) return;
+    var o1 = (d * 1.4) % 140;
+    for (k = 1; k * 140 - o1 < zmax; k++) {
+      z = k * 140 - o1; s = f / (f + z); a = fa * 0.13 * (1 - z / zmax) * Math.min(1, z / 60);
+      c.strokeStyle = 'rgba(255,255,255,' + a.toFixed(3) + ')'; c.strokeRect(cx - hw * s + .5, cy - hh * s + .5, W * s, H * s);
+    }
+    var o2 = (d * 1.4) % 211;
+    for (k = 0; k * 211 - o2 < zmax; k++) {
+      z = k * 211 - o2 + 211 * 0.5; if (z < 0) continue; s = f / (f + z);
+      a = fa * 0.6 * Math.min(1, z / 140) * Math.min(1, (zmax - z) / 700);
+      c.strokeStyle = 'rgba(255,255,255,' + a.toFixed(3) + ')'; c.strokeRect(cx - hw * s + .5, cy - hh * s + .5, W * s, H * s);
+    }
+  }
+  var BUILD_MS = 2400;
+  function startBuild() {
+    if (reduce) { build = 1; ff.classList.remove('building', 'dark'); return; }
+    build = 0; ff.classList.add('building', 'dark');
+    var t0 = performance.now(), lit = false, shown = false;
+    requestAnimationFrame(function () { ff.classList.remove('dark'); });   // the shaft's own shading lifts slowly (CSS transition)
+    (function step(now) {
+      build = Math.min(1, (now - t0) / BUILD_MS);
+      if (!shown && build > 0.78) { shown = true; ff.classList.remove('building'); }
+      drawWell(cd);
+      if (build < 1) requestAnimationFrame(step);
+    })(t0);
+  }
+  window.addEventListener('resize', function () { sizeWell(); drawWell(cd); });
+  var td = 0, rail = ff.querySelector('.rail'), railBtns = ff.querySelectorAll('.rail [data-jump]'), lastOn = -1;
+  function current() {
+    var vh = window.innerHeight, best = -1;
+    scenes.forEach(function (sc, i) { var r = sc.getBoundingClientRect(); if (r.top < vh * 0.5 && r.bottom > vh * 0.5) best = i; });
+    return best;
+  }
+  var lastScene = scenes[scenes.length - 1], fend = ff.querySelector('.ffend'), bo = -1;
+  function endState() {
+    var vh = window.innerHeight, r = lastScene.getBoundingClientRect();
+    var span = (r.height - vh), start = r.top + span * 0.7;   // fade while exit_0 is still pinned
+    var v = clamp(-start / (span * 0.3));
+    if (Math.abs(v - bo) > 0.002) { bo = v; ff.style.setProperty('--bo', v.toFixed(3)); }
+    var er = fend.getBoundingClientRect();
+    fend.classList.toggle('in', reduce || er.top < vh * 0.45);
+  }
+  function railState() {
+    var cur = current();
+    if (rail) rail.classList.toggle('show', cur >= 1);
+    if (cur === lastOn) return; lastOn = cur;
+    railBtns.forEach(function (b) {
+      var n = +b.dataset.jump; b.classList.toggle('on', n === cur); b.classList.toggle('seen', n < cur);
+      if (n === cur) b.setAttribute('aria-current', 'step'); else b.removeAttribute('aria-current');
+    });
+  }
+  function jump(n, kb) {
+    var sc = scenes[n]; if (!sc) return;
+    var r = sc.getBoundingClientRect(), vh = window.innerHeight;
+    ff.scrollTo({ top: ff.scrollTop + r.top + (r.height - vh) * 0.6, behavior: reduce ? 'auto' : 'smooth' });
+    var card = sc.querySelector('.pcard'); if (card && kb) setTimeout(function () { var a = card.querySelector('a'); if (a) a.focus({ preventScroll: true }); }, reduce ? 0 : 900);
+  }
+  ff.querySelectorAll('[data-jump]').forEach(function (b) { b.addEventListener('click', function (ev) { jump(+b.dataset.jump, ev.detail === 0); }); });
+  function frame() {
+    var k = reduce ? 1 : 0.12, moving = false;
+    cd += (td - cd) * k; if (Math.abs(td - cd) > 0.3) moving = true; else cd = td;
+    ds.style.setProperty('--d', cd.toFixed(1));
+    ds.style.setProperty('--wx', ((cd * 1.4) % 140).toFixed(1));
+    ds.style.setProperty('--wy', ((cd * 1.4) % 120).toFixed(1));
+    drawWell(cd);
+    if (gv) gv.textContent = String(Math.round(cd / 4)).padStart(4, '0');
+    scenes.forEach(function (sc) {
+      var c = sc._c + (sc._t - sc._c) * k;
+      if (Math.abs(sc._t - c) > 0.0005) moving = true; else c = sc._t;
+      if (c !== sc._c || !sc._init) { sc._c = c; sc._init = 1; sc.style.setProperty('--p', c.toFixed(4)); }
+    });
+    railState();
+    endState();
+    if (moving) requestAnimationFrame(frame); else running = false;
+  }
+  function update(snap) {
+    td = measure();
+    if (snap) { cd = td; scenes.forEach(function (s) { s._c = s._t; s._init = 0; }); }
+    if (!running) { running = true; requestAnimationFrame(frame); }
+  }
+  var ticking = false;
+  ff.addEventListener('scroll', function () { update(); }, { passive: true });
+  window.addEventListener('resize', function () { update(true); });
+
+  function open(withBuild) {
+    if (withBuild) startBuild();
+    ff.classList.add('open'); ff.setAttribute('aria-hidden', 'false');
+    document.documentElement.style.overflow = 'hidden';
+    Array.prototype.forEach.call(document.body.children, function (el) { if (el !== ff && el.tagName !== 'SCRIPT') { el.inert = true; } });
+    ff.scrollTop = window.innerHeight * 0.55; update(true);
+    ff.querySelector('.ffclose').focus({ preventScroll: true });
+  }
+  function close(goto) {
+    ff.classList.remove('open'); ff.setAttribute('aria-hidden', 'true');
+    document.documentElement.style.overflow = '';
+    Array.prototype.forEach.call(document.body.children, function (el) { el.inert = false; });
+    if (goto) { var t = document.getElementById(goto); if (t) t.scrollIntoView(); }
+    if (opener) opener.focus({ preventScroll: true });
+  }
+  var busy = false;
+  document.querySelectorAll('[data-dive]').forEach(function (a) {
+    a.addEventListener('click', function (ev) {
+      ev.preventDefault(); if (busy) return; opener = a;
+      if (reduce) { open(); return; }
+      busy = true;
+      var b = document.body;
+      b.classList.add('fading');                        // 1s: the whole page fades to darkness
+      setTimeout(function () {
+        ff.classList.add('instant'); open(true); void ff.offsetWidth; ff.classList.remove('instant');
+        b.classList.add('swap'); b.classList.remove('fading');   // veil off instantly: the well underneath is equally black
+        requestAnimationFrame(function () { requestAnimationFrame(function () { b.classList.remove('swap'); busy = false; }); });
+      }, 1000);
+    });
+  });
+  ff.querySelectorAll('[data-ffclose]').forEach(function (b) { b.addEventListener('click', function () { close(b.dataset.goto); }); });
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && ff.classList.contains('open')) close(); });
 })();
 </script>
 </body>
