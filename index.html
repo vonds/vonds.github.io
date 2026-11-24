@@ -909,7 +909,7 @@ body.swap .warp{transition:none!important;opacity:0}
   /* Contact form: sends through Web3Forms (https://web3forms.com).
      Paste the access key Web3Forms emailed you between the quotes. The key is safe to be public.
      With no key, the form falls back to opening the visitor's email app. */
-  var WEB3FORMS_KEY='';
+  var WEB3FORMS_KEY='2e9cf619-57b7-4c94-a281-bc68ebf28da8';
   var form=document.getElementById('contactForm'), note=document.getElementById('formNote'), sendBtn=form.querySelector('button[type="submit"]'), sendLabel=sendBtn.textContent;
   function setNote(msg,state){note.textContent=msg;note.className='form-note'+(state?' '+state:'');}
   function mailtoFallback(subject,body){window.location.href='mailto:'+email+'?subject='+encodeURIComponent(subject)+'&body='+encodeURIComponent(body);}
