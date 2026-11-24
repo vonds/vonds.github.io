@@ -1,79 +1,42 @@
-// lab.js
-// Copy buttons + footer year helper (no dependencies)
-
+// lab.js: copy buttons for lab code blocks (no dependencies)
 ;(function () {
-  function setYear() {
-    var el = document.getElementById('year')
-    if (el) el.textContent = String(new Date().getFullYear())
+  function fallbackCopy(text) {
+    var ta = document.createElement('textarea')
+    ta.value = text
+    ta.setAttribute('readonly', '')
+    ta.style.position = 'fixed'
+    ta.style.opacity = '0'
+    document.body.appendChild(ta)
+    ta.select()
+    var ok = false
+    try { ok = document.execCommand('copy') } catch (e) { ok = false }
+    document.body.removeChild(ta)
+    return Promise.resolve(ok)
   }
 
-  function copyFromSelector(selector) {
-    var el = document.querySelector(selector)
-    if (!el) return Promise.resolve(false)
-
-    // Prefer innerText for <code> blocks because it preserves line breaks as rendered
-    var text = el.innerText || el.textContent || ''
-    return navigator.clipboard.writeText(text).then(
-      function () {
-        return true
-      },
-      function () {
-        return false
-      },
-    )
+  function copyText(text) {
+    if (navigator.clipboard && window.isSecureContext) {
+      return navigator.clipboard.writeText(text).then(function () { return true }, function () { return fallbackCopy(text) })
+    }
+    return fallbackCopy(text)
   }
 
-  function wireCopyButtons() {
-    var buttons = document.querySelectorAll('[data-copy]')
-    if (!buttons || !buttons.length) return
-
-    buttons.forEach(function (btn) {
+  function wire() {
+    document.querySelectorAll('[data-copy]').forEach(function (btn) {
+      var original = btn.textContent
       btn.addEventListener('click', function () {
-        var target = btn.getAttribute('data-copy')
-        if (!target) return
-
-        var original = btn.textContent
-
-        copyFromSelector(target).then(function (ok) {
-          btn.textContent = ok ? 'Copied' : 'Failed'
-          window.setTimeout(function () {
-            btn.textContent = original
-          }, 900)
+        var el = document.querySelector(btn.getAttribute('data-copy'))
+        if (!el) return
+        // innerText keeps line breaks as rendered
+        copyText(el.innerText || el.textContent || '').then(function (ok) {
+          btn.textContent = ok ? 'Copied' : 'Press Ctrl+C'
+          btn.setAttribute('aria-live', 'polite')
+          window.setTimeout(function () { btn.textContent = original }, 1200)
         })
       })
     })
   }
 
-  function nextLab() {
-    const prevLink = document.getElementById('prev-lab')
-    const nextLink = document.getElementById('next-lab')
-
-    if (!prevLink || !nextLink) return
-
-    // Extract lab number from filename (lab001.html)
-    const match = window.location.pathname.match(/lab(\d+)\.html$/)
-    if (!match) return
-
-    const currentLab = parseInt(match[1], 10)
-
-
-    const prevLab = currentLab - 1
-    const nextLab = currentLab + 1
-
-    // Previous
-    if (prevLab < 1) {
-      prevLink.classList.add('hidden')
-    } else {
-      prevLink.href = `lab${prevLab}.html`
-    }
-
-    // Next
-    nextLink.href = `lab${nextLab}.html`
-  }
-
-  document.addEventListener('DOMContentLoaded', function () {
-    setYear()
-    nextLab()
-    wireCopyButtons()
-  })
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', wire)
+  else wire()
 })()

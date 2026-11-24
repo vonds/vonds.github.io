@@ -1,205 +1,94 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="exit_0 Documentation" />
-    <meta name="name" content="Vonds" />
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lab 165: SELinux &amp; httpd | exit_0 Labs</title>
+<meta name="description" content="Deploy httpd and serve content, then reproduce a 403 caused by incorrect SELinux labeling after moving the DocumentRoot. Diagnose the AVC denial and fix it…">
+<link rel="canonical" href="https://vonds.github.io/lab165.html">
+<meta name="theme-color" content="#2e2e30">
+<meta name="author" content="Vonds">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="Vonds">
+<meta property="og:url" content="https://vonds.github.io/lab165.html">
+<meta property="og:title" content="Lab 165: SELinux &amp; httpd | exit_0 Labs">
+<meta property="og:description" content="Deploy httpd and serve content, then reproduce a 403 caused by incorrect SELinux labeling after moving the DocumentRoot. Diagnose the AVC denial and fix it…">
+<meta property="og:image" content="https://vonds.github.io/assets/images/og/og-exit0.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="exit_0: 165 hands-on Linux labs for real system administration.">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Lab 165: SELinux &amp; httpd | exit_0 Labs">
+<meta name="twitter:description" content="Deploy httpd and serve content, then reproduce a 403 caused by incorrect SELinux labeling after moving the DocumentRoot. Diagnose the AVC denial and fix it…">
+<meta name="twitter:image" content="https://vonds.github.io/assets/images/og/og-exit0.jpg">
+<link rel="icon" type="image/svg+xml" href="assets/images/favicon.svg">
+<link rel="icon" type="image/png" href="assets/images/favicon.png">
+<link rel="apple-touch-icon" href="assets/images/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Dosis:wght@300;400;500;600&family=Open+Sans:wght@400;600&display=swap">
+<link rel="stylesheet" href="assets/css/site.css">
+<link rel="stylesheet" href="assets/css/exit0.css">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Vonds","item":"https://vonds.github.io/"},{"@type":"ListItem","position":2,"name":"exit_0 Labs","item":"https://vonds.github.io/docs.html"},{"@type":"ListItem","position":3,"name":"Lab 165","item":"https://vonds.github.io/lab165.html"}]}</script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="header solid" id="header">
+  <div class="wrap">
+    <a class="brand" href="index.html" aria-label="Vonds home">
+      <img class="logo-dark" src="assets/images/logo-dark.svg" alt="Vonds">
+      <img class="logo-light" src="assets/images/logo-light.svg" alt="" aria-hidden="true">
+    </a>
+    <button class="menu-btn" id="menuOpen" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="overlay">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</header>
 
-    <title>Vonds | Lab 165</title>
-
-    <!-- Favicons -->
-    <link rel="icon" type="image/svg+xml" href="../assets/images/favicon.svg" />
-    <link rel="icon" type="image/png" href="../assets/images/favicon.png" />
-    <link rel="apple-touch-icon" href="../assets/images/apple-touch-icon.png" />
-    <link
-      rel="apple-touch-icon"
-      sizes="72x72"
-      href="../assets/images/apple-touch-icon-72x72.png"
-    />
-    <link
-      rel="apple-touch-icon"
-      sizes="114x114"
-      href="../assets/images/apple-touch-icon-114x114.png"
-    />
-
-    <!-- Site styles (your existing) -->
-    <link href="../assets/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
-    <link href="../assets/css/font-awesome.min.css" rel="stylesheet" />
-    <link href="../assets/css/linea-icons.css" rel="stylesheet" />
-    <link href="../assets/css/ionicons.min.css" rel="stylesheet" />
-    <link href="../assets/css/simpletextrotator.css" rel="stylesheet" />
-    <link href="../assets/css/magnific-popup.css" rel="stylesheet" />
-    <link href="../assets/css/owl.carousel.css" rel="stylesheet" />
-    <link href="../assets/css/superslides.css" rel="stylesheet" />
-    <link href="../assets/css/vertical.css" rel="stylesheet" />
-    <link href="../assets/css/animate.css" rel="stylesheet" />
-    <link href="../assets/css/style.css" rel="stylesheet" />
-    <link href="../assets/css/docs.css" rel="stylesheet" />
-
-    <!-- Lab page styles -->
-    <link href="../assets/css/lab.css" rel="stylesheet" />
-
-    <!-- Fonts -->
-    <link href="https://fonts.googleapis.com/css?family=Dosis" rel="stylesheet" />
-  </head>
-
-  <body>
-    <!-- PRELOADER -->
-    <div class="page-loader">
-      <div class="loader">Loading...</div>
+<div class="overlay" id="overlay" aria-hidden="true">
+  <button class="close" id="menuClose" type="button" aria-label="Close menu">&times;</button>
+  <nav aria-label="Main">
+    <a class="alt" href="index.html">Home</a>
+    <a class="alt" href="index.html#about">About</a>
+    <a class="alt" href="index.html#portfolio">Portfolio</a>
+    <div class="sub">
+      <a class="alt" href="https://black-signal-demo.netlify.app/">Black Signal</a>
+      <a class="alt" href="https://deeds-demo.netlify.app/">DEEDS</a>
+      <a class="alt" href="https://digital-resource-map-demo.netlify.app/">Digital Resource Map</a>
+      <a class="alt" href="https://thetravelingarchive.com/">The Traveling Archive</a>
+      <a class="alt" href="https://github.com/vonds/sentinel">Sentinel</a>
+      <a class="alt" href="docs.html">exit_0 Labs</a>
     </div>
+    <a class="alt" href="index.html#services">Services</a>
+    <a class="alt" href="index.html#contact">Contact</a>
+    <a class="alt" href="https://www.linkedin.com/in/vonds/">LinkedIn</a>
+  </nav>
+  <div class="foot alt">Vonds &copy; <span id="year">2026</span></div>
+</div>
 
-    <!-- OVERLAY MENU -->
-    <div id="overlay-menu" class="overlay-menu">
-      <a href="#" id="overlay-menu-hide" class="navigation-hide">
-        <i class="ion-close-round"></i>
-      </a>
-
-      <div class="overlay-menu-inner">
-        <nav class="overlay-menu-nav">
-          <ul id="nav">
-            <li><a href="../index.html">Home</a></li>
-
-            <li class="slidedown">
-              <a href="#">Portfolio</a>
-              <ul>
-                <li>
-                  <a href="https://github.com/vonds/exit_0" target="_blank">
-                    exit_0
-                  </a>
-                </li>
-                <li>
-                  <a href="https://github.com/vonds/sentinel" target="_blank">
-                    Sentinel
-                  </a>
-                </li>
-                <li>
-                  <a href="docs.html" target="_blank">exit_0 Documentation</a>
-                </li>
-              </ul>
-            </li>
-
-            <li>
-              <a
-                href="https://www.linkedin.com/in/vonds/"
-                target="_blank"
-                rel="noopener"
-              >
-                LinkedIn
-              </a>
-            </li>
-            <li>
-              <a href="https://github.com/vonds" target="_blank" rel="noopener">
-                Github
-              </a>
-            </li>
-            <li>
-              <a href="mailto:vonds13@gmail.com?subject=Hello Vonds">Contact</a>
-            </li>
-          </ul>
+<main class="x0" id="main">
+  <div class="x0-wrap">
+    <nav class="crumbs alt" aria-label="Breadcrumb"><a href="index.html">Vonds</a><span class="sep" aria-hidden="true">/</span><a href="docs.html">exit_0 Labs</a><span class="sep" aria-hidden="true">/</span><span aria-current="page">Lab 165</span></nav>
+    <header class="x0-head">
+      <p class="eyebrow alt"><b>Lab 165</b> &middot; security</p>
+      <h1>SELinux &amp; httpd</h1>
+      <p class="lede">Deploy httpd and serve content, then reproduce a 403 caused by incorrect SELinux labeling after moving the DocumentRoot. Diagnose the AVC denial and fix it with persistent file context rules, restore labels, and validate access end-to-end.</p>
+      <nav class="pager-mini" aria-label="Lab navigation"><a class="alt" href="lab164.html" rel="prev">&larr; Lab 164</a></nav>
+    </header>
+    <div class="x0-grid">
+      <aside class="x0-side" aria-label="On this page">
+        <nav class="toc">
+          <a class="back alt" href="docs.html">&larr; All labs</a>
+          <p class="toc-h alt">On this page</p>
+          <ul><li><a href="#video">Video</a></li><li><a href="#scenario">Scenario</a></li><li><a href="#objective">Objective</a></li><li><a href="#concepts">Concepts</a></li><li><a href="#walkthrough">Walkthrough</a></li><li><a href="#breakpoints">Common breakpoints</a></li><li><a href="#cleanup">Cleanup checklist</a></li><li><a href="#reference">Reference</a></li></ul>
         </nav>
-      </div>
-
-      <div class="overlay-navigation-footer">
-        <div class="container">
-          <div class="row">
-            <div class="col-sm-12 text-center">
-              <p class="copyright font-alt m-b-0">
-                VONDS &copy;
-                <script>
-                  document.write(new Date().getFullYear())
-                </script>
-              </p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- WRAPPER -->
-    <div class="wrapper">
-      <!-- NAVIGATION -->
-      <nav class="navbar navbar-custom navbar-transparent navbar-light navbar-fixed-top">
-        <div class="container">
-          <div class="navbar-header">
-            <a class="navbar-brand" href="../index.html">
-              <img class="logo-dark" src="../assets/images/logo-dark.svg" alt="Vonds" /><img class="logo-light" src="../assets/images/logo-light.svg" alt="" aria-hidden="true" />
-            </a>
-          </div>
-
-          <ul id="icons-navbar" class="nav navbar-nav navbar-right">
-            <li>
-              <a href="#" id="toggle-menu" class="show-overlay" title="Menu">
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-              </a>
-            </li>
-          </ul>
-        </div>
-      </nav>
-
-      <!-- DOCS PAGE -->
-      <section class="module">
-        <div class="container">
-          <h2 class="font-alt module-title m-t-60">
-            Lab 165: SELinux &amp; httpd
-          </h2>
-
-          <nav class="lab-pagination">
-            <a
-              id="prev-lab"
-              class="lab-nav-link"
-              href="#"
-              aria-label="Previous lab"
-            >
-              &laquo;
-            </a>
-            <a
-              id="next-lab"
-              class="lab-nav-link"
-              href="#"
-              aria-label="Next lab"
-            >
-              &raquo;
-            </a>
-          </nav>
-
-          <div class="row">
-            <!-- LEFT SIDEBAR -->
-            <div class="col-sm-4 col-md-3 lab-sidebar">
-              <div class="docs-sidebar">
-                <div class="docs-widget">
-                  <h5 class="widget-title">
-                    <a href="./docs.html">Back to Lab Index</a>
-                  </h5>
-                  <ul class="docs-nav">
-                    <li><a href="#scenario">Scenario</a></li>
-                    <li><a href="#objective">Objective</a></li>
-                    <li><a href="#concepts">Concepts</a></li>
-                    <li><a href="#walkthrough">Walkthrough</a></li>
-                    <li><a href="#breakpoints">Breakpoints</a></li>
-                    <li><a href="#cleanup">Cleanup</a></li>
-                    <li><a href="#reference">Reference</a></li>
-                  </ul>
-                </div>
-              </div>
-            </div>
-
-            <!-- MAIN CONTENT -->
-            <div class="col-sm-8 col-md-9 lab-doc">
-              <p class="m-b-20 lab-summary">
-                Deploy httpd and serve content, then reproduce a 403 caused by incorrect SELinux labeling after moving the DocumentRoot.
-                Diagnose the AVC denial and fix it with persistent file context rules, restore labels, and validate access end-to-end.
-              </p>
-
-              <!-- Video (kept on page; removed from left panel) -->
-              <section class="lab-section" id="video" aria-label="Lab video">
+      </aside>
+      <article class="x0-doc">
+<section class="lab-section" id="video" aria-label="Lab video">
                 <div class="lab-video">
                   <div class="lab-video-embed text-center">
-                    <iframe
-                      src="https://www.youtube.com/embed/U7OptjRvohI?si=b-kDZ-BB9T3uYFHN"
+                    <iframe loading="lazy"
+                      src="https://www.youtube-nocookie.com/embed/U7OptjRvohI?si=b-kDZ-BB9T3uYFHN"
                       title="Lab 165 video player"
                       frameborder="0"
                       allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
@@ -209,7 +98,6 @@
                   </div>
                 </div>
               </section>
-
               <!-- Scenario -->
               <section class="lab-section" id="scenario">
                 <div class="lab-chips" aria-label="Tags">
@@ -223,18 +111,15 @@
                     <span class="lab-chip-key">troubleshooting</span>
                   </span>
                 </div>
-
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">
                   Scenario
                 </h3>
-
                 <p>
                   You are deploying Apache (<code>httpd</code>) on a RHEL system. The service starts and the firewall is configured, but
                   SELinux policy can still block reads when content is moved to a non-standard path. You will serve a known test page, move
                   the DocumentRoot to <code>/webdata</code>, reproduce the 403, confirm the AVC denial in the audit log, and then apply a
                   persistent SELinux fix using file context rules.
                 </p>
-
                 <div class="lab-callout">
                   <div class="lab-callout-label">Operator context</div>
                   <p class="m-b-0">
@@ -243,7 +128,6 @@
                   </p>
                 </div>
               </section>
-
               <!-- Objective -->
               <section class="lab-section alt-background" id="objective">
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">
@@ -259,7 +143,6 @@
                   <li>Validate labels and boolean state with CLI evidence.</li>
                 </ul>
               </section>
-
               <!-- Concepts (no alt-background moving forward) -->
               <section class="lab-section" id="concepts">
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">
@@ -286,20 +169,16 @@
                   </li>
                 </ul>
               </section>
-
               <!-- Walkthrough -->
               <section class="lab-section alt-background" id="walkthrough">
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">
                   Walkthrough
                 </h3>
-
                 <!-- Step 1 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
-                    <strong class="font-alt">Step 1</strong>
-                    : Install Apache (<code>httpd</code>).
+                    <strong class="font-alt">Step 1</strong>: Install Apache (<code>httpd</code>).
                   </div>
-
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
@@ -309,20 +188,16 @@
                     </div>
                     <pre><code id="cmd-step-1">sudo dnf install -y httpd</code></pre>
                   </div>
-
                   <p>
                     Package installation is the baseline. Use a non-interactive install so the operation is repeatable in automation and
                     in lab workflows.
                   </p>
                 </div>
-
                 <!-- Step 2 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
-                    <strong class="font-alt">Step 2</strong>
-                    : Enable and start <code>httpd</code>.
+                    <strong class="font-alt">Step 2</strong>: Enable and start <code>httpd</code>.
                   </div>
-
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
@@ -332,20 +207,16 @@
                     </div>
                     <pre><code id="cmd-step-2">sudo systemctl enable --now httpd</code></pre>
                   </div>
-
                   <p>
                     This brings the service online and ensures it will start after reboot. A service that is installed but not enabled
                     is not production-ready.
                   </p>
                 </div>
-
                 <!-- Step 3 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
-                    <strong class="font-alt">Step 3</strong>
-                    : Allow HTTP through the firewall.
+                    <strong class="font-alt">Step 3</strong>: Allow HTTP through the firewall.
                   </div>
-
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Commands</span>
@@ -356,20 +227,16 @@
                     <pre><code id="cmd-step-3">sudo firewall-cmd --permanent --add-service=http
 sudo firewall-cmd --reload</code></pre>
                   </div>
-
                   <p>
                     Permanent firewall rules do not take effect until reload. Treat firewall changes as configuration changes that must be
                     applied and validated explicitly.
                   </p>
                 </div>
-
                 <!-- Step 4 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
-                    <strong class="font-alt">Step 4</strong>
-                    : Create a test page in the default document root.
+                    <strong class="font-alt">Step 4</strong>: Create a test page in the default document root.
                   </div>
-
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
@@ -379,20 +246,16 @@ sudo firewall-cmd --reload</code></pre>
                     </div>
                     <pre><code id="cmd-step-4">echo 'SELinux + httpd lab (165)' | sudo tee /var/www/html/index.html</code></pre>
                   </div>
-
                   <p>
                     This gives you a known-good content artifact. If the default path works, you have a baseline before introducing a
                     non-standard document root.
                   </p>
                 </div>
-
                 <!-- Step 5 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
-                    <strong class="font-alt">Step 5</strong>
-                    : Verify local access with <code>curl</code>.
+                    <strong class="font-alt">Step 5</strong>: Verify local access with <code>curl</code>.
                   </div>
-
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
@@ -402,23 +265,18 @@ sudo firewall-cmd --reload</code></pre>
                     </div>
                     <pre><code id="cmd-step-5">curl http://localhost/</code></pre>
                   </div>
-
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <pre><code>SELinux + httpd lab (165)</code></pre>
                   </div>
-
                   <p>
                     Validate locally first. This isolates service configuration and SELinux from external routing issues.
                   </p>
                 </div>
-
                 <!-- Step 6 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
-                    <strong class="font-alt">Step 6</strong>
-                    : Move the DocumentRoot to <code>/webdata</code> and restart <code>httpd</code>.
+                    <strong class="font-alt">Step 6</strong>: Move the DocumentRoot to <code>/webdata</code> and restart <code>httpd</code>.
                   </div>
-
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Commands</span>
@@ -429,7 +287,6 @@ sudo firewall-cmd --reload</code></pre>
                     <pre><code id="cmd-step-6">sudo mkdir -p /webdata
 sudo mv /var/www/html/index.html /webdata/index.html</code></pre>
                   </div>
-
                   <div class="lab-callout">
                     <div class="lab-callout-label">Config note</div>
                     <p class="m-b-0">
@@ -437,7 +294,6 @@ sudo mv /var/www/html/index.html /webdata/index.html</code></pre>
                       <code>&lt;Directory "/webdata"&gt;</code> block with <code>Require all granted</code>, then restart the service.
                     </p>
                   </div>
-
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Commands</span>
@@ -448,20 +304,16 @@ sudo mv /var/www/html/index.html /webdata/index.html</code></pre>
                     <pre><code id="cmd-step-6b">sudo vim /etc/httpd/conf/httpd.conf
 sudo systemctl restart httpd</code></pre>
                   </div>
-
                   <p>
                     This is the controlled change that will trigger the denial if <code>/webdata</code> is not labeled for httpd content.
                     In production, a path change without SELinux planning is a common cause of “service started but 403” incidents.
                   </p>
                 </div>
-
                 <!-- Step 7 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
-                    <strong class="font-alt">Step 7</strong>
-                    : Confirm the failure and check for SELinux denials.
+                    <strong class="font-alt">Step 7</strong>: Confirm the failure and check for SELinux denials.
                   </div>
-
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Commands</span>
@@ -472,28 +324,22 @@ sudo systemctl restart httpd</code></pre>
                     <pre><code id="cmd-step-7">curl -I http://localhost/
 sudo tail -n 5 /var/log/audit/audit.log</code></pre>
                   </div>
-
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <pre><code>HTTP/1.1 403 Forbidden</code></pre>
                   </div>
-
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <pre><code>type=AVC msg=audit(...): avc:  denied  { read } for  pid=... comm="httpd" name="index.html" ... scontext=system_u:system_r:httpd_t:s0 tcontext=unconfined_u:object_r:default_t:s0 tclass=file</code></pre>
                   </div>
-
                   <p>
                     The 403 confirms the symptom. The AVC line explains the cause: httpd is running in <code>httpd_t</code> and the target
                     file is labeled <code>default_t</code>, which is not allowed for web content reads under standard targeted policy.
                   </p>
                 </div>
-
                 <!-- Step 8 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
-                    <strong class="font-alt">Step 8</strong>
-                    : Fix labeling with <code>semanage</code> and <code>restorecon</code>.
+                    <strong class="font-alt">Step 8</strong>: Fix labeling with <code>semanage</code> and <code>restorecon</code>.
                   </div>
-
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Commands</span>
@@ -504,20 +350,16 @@ sudo tail -n 5 /var/log/audit/audit.log</code></pre>
                     <pre><code id="cmd-step-8">sudo semanage fcontext -a -t httpd_sys_content_t '/webdata(/.*)?'
 sudo restorecon -Rv /webdata</code></pre>
                   </div>
-
                   <p>
                     <code>semanage fcontext</code> creates a persistent mapping so the correct type is applied to the path.
                     <code>restorecon</code> enforces that mapping on the filesystem immediately.
                   </p>
                 </div>
-
                 <!-- Step 9 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
-                    <strong class="font-alt">Step 9</strong>
-                    : Verify access is restored and enable UserDir support.
+                    <strong class="font-alt">Step 9</strong>: Verify access is restored and enable UserDir support.
                   </div>
-
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Commands</span>
@@ -528,12 +370,10 @@ sudo restorecon -Rv /webdata</code></pre>
                     <pre><code id="cmd-step-9">curl http://localhost/
 sudo setsebool -P httpd_enable_homedirs on</code></pre>
                   </div>
-
                   <p>
                     First verify the original incident is resolved. Then enable the boolean needed to serve UserDir content when the
                     environment requires <code>~/public_html</code>.
                   </p>
-
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Commands</span>
@@ -545,20 +385,16 @@ sudo setsebool -P httpd_enable_homedirs on</code></pre>
 echo 'UserDir works (SELinux boolean enabled)' &gt; ~/public_html/index.html
 sudo restorecon -Rv /home/examuser/public_html</code></pre>
                   </div>
-
                   <p>
                     Creating content is not enough. The directory and files must be labeled correctly for httpd to serve them under
                     enforcement.
                   </p>
                 </div>
-
                 <!-- Step 10 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
-                    <strong class="font-alt">Step 10</strong>
-                    : Validate contexts and boolean state.
+                    <strong class="font-alt">Step 10</strong>: Validate contexts and boolean state.
                   </div>
-
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Commands</span>
@@ -569,19 +405,16 @@ sudo restorecon -Rv /home/examuser/public_html</code></pre>
                     <pre><code id="cmd-step-10">ls -Z /webdata /webdata/index.html
 getsebool httpd_enable_homedirs</code></pre>
                   </div>
-
                   <p>
                     End the change with evidence. Correct labels and correct boolean state are the operational success criteria.
                   </p>
                 </div>
               </section>
-
               <!-- Common breakpoints -->
               <section class="lab-section" id="breakpoints">
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">
                   Common breakpoints
                 </h3>
-
                 <div class="lab-callout">
                   <div class="lab-callout-label">
                     curl works on /var/www/html but fails after moving DocumentRoot
@@ -592,7 +425,6 @@ getsebool httpd_enable_homedirs</code></pre>
                     <code>restorecon</code>.
                   </p>
                 </div>
-
                 <div class="lab-callout">
                   <div class="lab-callout-label">
                     403 Forbidden with no obvious file permission issue
@@ -603,7 +435,6 @@ getsebool httpd_enable_homedirs</code></pre>
                     types.
                   </p>
                 </div>
-
                 <div class="lab-callout">
                   <div class="lab-callout-label">
                     semanage: command not found
@@ -613,7 +444,6 @@ getsebool httpd_enable_homedirs</code></pre>
                     Escalate as a missing tooling/package issue rather than attempting to “fix” with temporary labels.
                   </p>
                 </div>
-
                 <div class="lab-callout">
                   <div class="lab-callout-label">
                     UserDir content still fails after creating ~/public_html
@@ -624,18 +454,15 @@ getsebool httpd_enable_homedirs</code></pre>
                   </p>
                 </div>
               </section>
-
               <!-- Cleanup -->
               <section class="lab-section alt-background" id="cleanup">
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">
                   Cleanup checklist
                 </h3>
-
                 <p>
                   This lab leaves the service installed and content paths in place. Cleanup is documenting what you changed and capturing
                   final evidence (labels and boolean state) so the system can be supported after handoff.
                 </p>
-
                 <div class="lab-codeblock m-b-40 m-t-40">
                   <div class="lab-codeblock-header">
                     <span>Commands</span>
@@ -647,7 +474,6 @@ getsebool httpd_enable_homedirs</code></pre>
 getsebool httpd_enable_homedirs
 curl -I http://localhost/</code></pre>
                 </div>
-
                 <div class="lab-callout">
                   <div class="lab-callout-label">Success signal</div>
                   <p class="m-b-0">
@@ -656,212 +482,124 @@ curl -I http://localhost/</code></pre>
                   </p>
                 </div>
               </section>
-
               <!-- Reference -->
               <section class="lab-section" id="reference">
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">
                   Reference
                 </h3>
-
                 <ul class="lab-reference-list">
                   <li>
-                    <code>dnf install -y &lt;package&gt;</code>
-                    : Installs a package non-interactively.
+                    <code>dnf install -y &lt;package&gt;</code>: Installs a package non-interactively.
                     <ul>
-                      <li><code>-y</code> : Automatically answers “yes” to prompts.</li>
+                      <li><code>-y</code>: Automatically answers “yes” to prompts.</li>
                     </ul>
                   </li>
-
                   <li>
-                    <code>systemctl enable --now &lt;unit&gt;</code>
-                    : Enables a service at boot and starts it immediately.
+                    <code>systemctl enable --now &lt;unit&gt;</code>: Enables a service at boot and starts it immediately.
                     <ul>
-                      <li><code>--now</code> : Starts the unit right away.</li>
+                      <li><code>--now</code>: Starts the unit right away.</li>
                     </ul>
                   </li>
-
                   <li>
-                    <code>firewall-cmd --permanent --add-service=http</code>
-                    : Adds the HTTP service to the permanent firewall rules.
+                    <code>firewall-cmd --permanent --add-service=http</code>: Adds the HTTP service to the permanent firewall rules.
                     <ul>
-                      <li><code>--permanent</code> : Writes the rule to the permanent configuration.</li>
+                      <li><code>--permanent</code>: Writes the rule to the permanent configuration.</li>
                     </ul>
                   </li>
-
                   <li>
-                    <code>firewall-cmd --reload</code>
-                    : Reloads firewall rules to apply permanent changes.
+                    <code>firewall-cmd --reload</code>: Reloads firewall rules to apply permanent changes.
                   </li>
-
                   <li>
-                    <code>tee &lt;file&gt;</code>
-                    : Writes stdin to a file while also printing to stdout.
+                    <code>tee &lt;file&gt;</code>: Writes stdin to a file while also printing to stdout.
                     <ul>
-                      <li><code>/var/www/html/index.html</code> : Default httpd document root content path.</li>
+                      <li><code>/var/www/html/index.html</code>: Default httpd document root content path.</li>
                     </ul>
                   </li>
-
                   <li>
-                    <code>curl &lt;url&gt;</code>
-                    : Sends an HTTP request and prints the response body.
+                    <code>curl &lt;url&gt;</code>: Sends an HTTP request and prints the response body.
                     <ul>
-                      <li><code>-I</code> : Fetches HTTP headers only.</li>
-                      <li><code>http://localhost/</code> : Local validation endpoint for service readiness.</li>
+                      <li><code>-I</code>: Fetches HTTP headers only.</li>
+                      <li><code>http://localhost/</code>: Local validation endpoint for service readiness.</li>
                     </ul>
                   </li>
-
                   <li>
-                    <code>mkdir -p &lt;dir&gt;</code>
-                    : Creates a directory and parent directories as needed.
+                    <code>mkdir -p &lt;dir&gt;</code>: Creates a directory and parent directories as needed.
                     <ul>
-                      <li><code>-p</code> : Creates parents and avoids errors if the directory already exists.</li>
-                      <li><code>/webdata</code> : Non-standard DocumentRoot path used to reproduce SELinux denials.</li>
-                      <li><code>~/public_html</code> : UserDir content path used with <code>httpd_enable_homedirs</code>.</li>
+                      <li><code>-p</code>: Creates parents and avoids errors if the directory already exists.</li>
+                      <li><code>/webdata</code>: Non-standard DocumentRoot path used to reproduce SELinux denials.</li>
+                      <li><code>~/public_html</code>: UserDir content path used with <code>httpd_enable_homedirs</code>.</li>
                     </ul>
                   </li>
-
                   <li>
-                    <code>mv &lt;src&gt; &lt;dst&gt;</code>
-                    : Moves or renames a file.
+                    <code>mv &lt;src&gt; &lt;dst&gt;</code>: Moves or renames a file.
                     <ul>
-                      <li><code>/var/www/html/index.html</code> : Original content location.</li>
-                      <li><code>/webdata/index.html</code> : New content location under the updated DocumentRoot.</li>
+                      <li><code>/var/www/html/index.html</code>: Original content location.</li>
+                      <li><code>/webdata/index.html</code>: New content location under the updated DocumentRoot.</li>
                     </ul>
                   </li>
-
                   <li>
-                    <code>vim &lt;file&gt;</code>
-                    : Edits a file in a terminal editor.
+                    <code>vim &lt;file&gt;</code>: Edits a file in a terminal editor.
                     <ul>
-                      <li><code>/etc/httpd/conf/httpd.conf</code> : Primary Apache configuration file for DocumentRoot and Directory rules.</li>
+                      <li><code>/etc/httpd/conf/httpd.conf</code>: Primary Apache configuration file for DocumentRoot and Directory rules.</li>
                     </ul>
                   </li>
-
                   <li>
-                    <code>tail -n 5 &lt;file&gt;</code>
-                    : Prints the last N lines of a file.
+                    <code>tail -n 5 &lt;file&gt;</code>: Prints the last N lines of a file.
                     <ul>
-                      <li><code>-n 5</code> : Limits output to the last 5 lines.</li>
-                      <li><code>/var/log/audit/audit.log</code> : Audit log source for SELinux AVC denials.</li>
+                      <li><code>-n 5</code>: Limits output to the last 5 lines.</li>
+                      <li><code>/var/log/audit/audit.log</code>: Audit log source for SELinux AVC denials.</li>
                     </ul>
                   </li>
-
                   <li>
-                    <code>semanage fcontext -a -t &lt;type&gt; '&lt;regex&gt;'</code>
-                    : Adds a persistent SELinux file context mapping.
+                    <code>semanage fcontext -a -t &lt;type&gt; '&lt;regex&gt;'</code>: Adds a persistent SELinux file context mapping.
                     <ul>
-                      <li><code>-a</code> : Adds a new mapping entry.</li>
-                      <li><code>-t</code> : Sets the target SELinux type for matched paths.</li>
-                      <li><code>'/webdata(/.*)?'</code> : Matches <code>/webdata</code> and all files beneath it.</li>
+                      <li><code>-a</code>: Adds a new mapping entry.</li>
+                      <li><code>-t</code>: Sets the target SELinux type for matched paths.</li>
+                      <li><code>'/webdata(/.*)?'</code>: Matches <code>/webdata</code> and all files beneath it.</li>
                     </ul>
                   </li>
-
                   <li>
-                    <code>restorecon -Rv &lt;path&gt;</code>
-                    : Restores SELinux contexts based on policy mappings.
+                    <code>restorecon -Rv &lt;path&gt;</code>: Restores SELinux contexts based on policy mappings.
                     <ul>
-                      <li><code>-R</code> : Recursively processes directories.</li>
-                      <li><code>-v</code> : Prints changes as they are applied.</li>
+                      <li><code>-R</code>: Recursively processes directories.</li>
+                      <li><code>-v</code>: Prints changes as they are applied.</li>
                     </ul>
                   </li>
-
                   <li>
-                    <code>setsebool -P &lt;boolean&gt; on|off</code>
-                    : Sets an SELinux boolean persistently.
+                    <code>setsebool -P &lt;boolean&gt; on|off</code>: Sets an SELinux boolean persistently.
                     <ul>
-                      <li><code>-P</code> : Makes the change persistent across reboots.</li>
-                      <li><code>httpd_enable_homedirs</code> : Allows httpd to serve UserDir content under user home directories.</li>
+                      <li><code>-P</code>: Makes the change persistent across reboots.</li>
+                      <li><code>httpd_enable_homedirs</code>: Allows httpd to serve UserDir content under user home directories.</li>
                     </ul>
                   </li>
-
                   <li>
-                    <code>getsebool &lt;boolean&gt;</code>
-                    : Displays the current value of an SELinux boolean.
+                    <code>getsebool &lt;boolean&gt;</code>: Displays the current value of an SELinux boolean.
                   </li>
-
                   <li>
-                    <code>ls -Z &lt;path&gt;</code>
-                    : Displays SELinux contexts for files and directories.
+                    <code>ls -Z &lt;path&gt;</code>: Displays SELinux contexts for files and directories.
                     <ul>
-                      <li><code>-Z</code> : Prints SELinux security context information.</li>
-                      <li><code>httpd_sys_content_t</code> : Expected type for httpd-readable static web content.</li>
+                      <li><code>-Z</code>: Prints SELinux security context information.</li>
+                      <li><code>httpd_sys_content_t</code>: Expected type for httpd-readable static web content.</li>
                     </ul>
                   </li>
                 </ul>
               </section>
-            </div>
-            <!-- /main -->
-          </div>
-          <!-- /row -->
-        </div>
-        <!-- /container -->
-      </section>
-
-      <!-- FOOTER -->
-      <footer class="module bg-light">
-        <div class="container">
-          <div class="row">
-            <div class="col-sm-12">
-              <ul class="social-text-links font-alt text-center m-b-20">
-                <li>
-                  <a href="https://github.com/vonds" target="_blank" rel="noopener">
-                    Github
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="https://www.linkedin.com/in/vonds/"
-                    target="_blank"
-                    rel="noopener"
-                  >
-                    Linkedin
-                  </a>
-                </li>
-              </ul>
-            </div>
-          </div>
-
-          <div class="row">
-            <div class="col-sm-12">
-              <p class="copyright text-center m-b-0">
-                VONDS &copy;
-                <span id="year"></span>
-              </p>
-
-              <div class="scroll-up">
-                <a href="#totop"><i class="fa fa-angle-double-up"></i></a>
-              </div>
-            </div>
-          </div>
-        </div>
-      </footer>
+        <nav class="pager" aria-label="Previous and next lab"><a class="prev" href="lab164.html" rel="prev"><span class="dir alt">&larr; Previous &middot; Lab 164</span><span class="t">SELinux Basics</span></a><a class="next" href="docs.html"><span class="dir alt">That&rsquo;s every lab &rarr;</span><span class="t">Back to the lab index</span></a></nav>
+      </article>
     </div>
+  </div>
+</main>
 
-    <!-- Javascript files (your existing) -->
-    <script src="../assets/js/jquery-2.2.4.min.js"></script>
-    <script src="../assets/bootstrap/js/bootstrap.min.css"></script>
-    <script src="../assets/js/jquery.superslides.min.js"></script>
-    <script src="../assets/js/jquery.mb.YTPlayer.min.js"></script>
-    <script src="../assets/js/jquery.magnific-popup.min.js"></script>
-    <script src="../assets/js/owl.carousel.min.js"></script>
-    <script src="../assets/js/jquery.simple-text-rotator.min.js"></script>
-    <script src="../assets/js/imagesloaded.pkgd.js"></script>
-    <script src="../assets/js/isotope.pkgd.min.js"></script>
-    <script src="../assets/js/packery-mode.pkgd.min.js"></script>
-    <script src="../assets/js/appear.js"></script>
-    <script src="../assets/js/jquery.easing.1.3.js"></script>
-    <script src="../assets/js/wow.min.js"></script>
-    <script src="../assets/js/jqBootstrapValidation.js"></script>
-    <script src="../assets/js/jquery.fitvids.js"></script>
-    <script src="../assets/js/jquery.parallax-1.1.3.js"></script>
-    <script src="../assets/js/smoothscroll.js"></script>
-    <script src="../assets/js/custom.js"></script>
-
-    <!-- Lab page JS (new) -->
-    <script src="../assets/js/lab.js"></script>
-
-    <script>
-      document.getElementById('year').textContent = new Date().getFullYear()
-    </script>
-  </body>
+<footer>
+  <img class="mark" src="assets/images/logo-dark.svg" alt="Vonds">
+  <nav aria-label="Footer" class="alt">
+    <a href="index.html#about">About</a><a href="index.html#portfolio">Portfolio</a><a href="docs.html">exit_0 Labs</a><a href="index.html#contact">Contact</a><a href="https://www.linkedin.com/in/vonds/">LinkedIn</a>
+  </nav>
+  <div class="line"></div>
+  <p class="copyright alt">Vonds &copy; 2026</p>
+</footer>
+<button class="to-top" id="toTop" type="button" aria-label="Back to top">&uarr;</button>
+<script src="assets/js/site.js" defer></script>
+<script src="assets/js/lab.js" defer></script>
+</body>
 </html>

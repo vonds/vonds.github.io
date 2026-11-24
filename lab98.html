@@ -1,219 +1,94 @@
-<!-- lab098.html -->
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="exit_0 Documentation" />
-    <meta name="name" content="Vonds" />
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lab 098: Installing, Configuring, and Managing Ansible | exit_0 Labs</title>
+<meta name="description" content="Install Ansible, build a small inventory, validate connectivity with an ad-hoc ping, and run a playbook to configure web hosts. Prove idempotency by…">
+<link rel="canonical" href="https://vonds.github.io/lab98.html">
+<meta name="theme-color" content="#2e2e30">
+<meta name="author" content="Vonds">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="Vonds">
+<meta property="og:url" content="https://vonds.github.io/lab98.html">
+<meta property="og:title" content="Lab 098: Installing, Configuring, and Managing Ansible | exit_0 Labs">
+<meta property="og:description" content="Install Ansible, build a small inventory, validate connectivity with an ad-hoc ping, and run a playbook to configure web hosts. Prove idempotency by…">
+<meta property="og:image" content="https://vonds.github.io/assets/images/og/og-exit0.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="exit_0: 165 hands-on Linux labs for real system administration.">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Lab 098: Installing, Configuring, and Managing Ansible | exit_0 Labs">
+<meta name="twitter:description" content="Install Ansible, build a small inventory, validate connectivity with an ad-hoc ping, and run a playbook to configure web hosts. Prove idempotency by…">
+<meta name="twitter:image" content="https://vonds.github.io/assets/images/og/og-exit0.jpg">
+<link rel="icon" type="image/svg+xml" href="assets/images/favicon.svg">
+<link rel="icon" type="image/png" href="assets/images/favicon.png">
+<link rel="apple-touch-icon" href="assets/images/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Dosis:wght@300;400;500;600&family=Open+Sans:wght@400;600&display=swap">
+<link rel="stylesheet" href="assets/css/site.css">
+<link rel="stylesheet" href="assets/css/exit0.css">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Vonds","item":"https://vonds.github.io/"},{"@type":"ListItem","position":2,"name":"exit_0 Labs","item":"https://vonds.github.io/docs.html"},{"@type":"ListItem","position":3,"name":"Lab 098","item":"https://vonds.github.io/lab98.html"}]}</script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="header solid" id="header">
+  <div class="wrap">
+    <a class="brand" href="index.html" aria-label="Vonds home">
+      <img class="logo-dark" src="assets/images/logo-dark.svg" alt="Vonds">
+      <img class="logo-light" src="assets/images/logo-light.svg" alt="" aria-hidden="true">
+    </a>
+    <button class="menu-btn" id="menuOpen" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="overlay">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</header>
 
-    <title>Vonds | Lab 098</title>
-
-    <!-- Favicons -->
-    <link rel="icon" type="image/svg+xml" href="../assets/images/favicon.svg" />
-    <link rel="icon" type="image/png" href="../assets/images/favicon.png" />
-    <link rel="apple-touch-icon" href="../assets/images/apple-touch-icon.png" />
-    <link
-      rel="apple-touch-icon"
-      sizes="72x72"
-      href="../assets/images/apple-touch-icon-72x72.png"
-    />
-    <link
-      rel="apple-touch-icon"
-      sizes="114x114"
-      href="../assets/images/apple-touch-icon-114x114.png"
-    />
-
-    <!-- Site styles (your existing) -->
-    <link href="../assets/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
-    <link href="../assets/css/font-awesome.min.css" rel="stylesheet" />
-    <link href="../assets/css/linea-icons.css" rel="stylesheet" />
-    <link href="../assets/css/ionicons.min.css" rel="stylesheet" />
-    <link href="../assets/css/simpletextrotator.css" rel="stylesheet" />
-    <link href="../assets/css/magnific-popup.css" rel="stylesheet" />
-    <link href="../assets/css/magnific-popup.css" rel="stylesheet" />
-    <link href="../assets/css/owl.carousel.css" rel="stylesheet" />
-    <link href="../assets/css/superslides.css" rel="stylesheet" />
-    <link href="../assets/css/vertical.css" rel="stylesheet" />
-    <link href="../assets/css/animate.css" rel="stylesheet" />
-    <link href="../assets/css/style.css" rel="stylesheet" />
-    <link href="../assets/css/docs.css" rel="stylesheet" />
-
-    <!-- Lab page styles -->
-    <link href="../assets/css/lab.css" rel="stylesheet" />
-
-    <!-- Fonts -->
-    <link
-      href="https://fonts.googleapis.com/css?family=Dosis"
-      rel="stylesheet"
-    />
-  </head>
-
-  <body>
-    <!-- PRELOADER -->
-    <div class="page-loader">
-      <div class="loader">Loading...</div>
+<div class="overlay" id="overlay" aria-hidden="true">
+  <button class="close" id="menuClose" type="button" aria-label="Close menu">&times;</button>
+  <nav aria-label="Main">
+    <a class="alt" href="index.html">Home</a>
+    <a class="alt" href="index.html#about">About</a>
+    <a class="alt" href="index.html#portfolio">Portfolio</a>
+    <div class="sub">
+      <a class="alt" href="https://black-signal-demo.netlify.app/">Black Signal</a>
+      <a class="alt" href="https://deeds-demo.netlify.app/">DEEDS</a>
+      <a class="alt" href="https://digital-resource-map-demo.netlify.app/">Digital Resource Map</a>
+      <a class="alt" href="https://thetravelingarchive.com/">The Traveling Archive</a>
+      <a class="alt" href="https://github.com/vonds/sentinel">Sentinel</a>
+      <a class="alt" href="docs.html">exit_0 Labs</a>
     </div>
+    <a class="alt" href="index.html#services">Services</a>
+    <a class="alt" href="index.html#contact">Contact</a>
+    <a class="alt" href="https://www.linkedin.com/in/vonds/">LinkedIn</a>
+  </nav>
+  <div class="foot alt">Vonds &copy; <span id="year">2026</span></div>
+</div>
 
-    <!-- OVERLAY MENU -->
-    <div id="overlay-menu" class="overlay-menu">
-      <a href="#" id="overlay-menu-hide" class="navigation-hide">
-        <i class="ion-close-round"></i>
-      </a>
-
-      <div class="overlay-menu-inner">
-        <nav class="overlay-menu-nav">
-          <ul id="nav">
-            <li><a href="../index.html">Home</a></li>
-
-            <li class="slidedown">
-              <a href="#">Portfolio</a>
-              <ul>
-                <li>
-                  <a
-                    href="https://github.com/vonds/exit_0"
-                    target="_blank"
-                    rel="noopener"
-                  >
-                    exit_0
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="https://github.com/vonds/sentinel"
-                    target="_blank"
-                    rel="noopener"
-                  >
-                    Sentinel
-                  </a>
-                </li>
-              </ul>
-            </li>
-
-            <li>
-              <a
-                href="https://www.linkedin.com/in/vonds/"
-                target="_blank"
-                rel="noopener"
-              >
-                LinkedIn
-              </a>
-            </li>
-            <li>
-              <a href="https://github.com/vonds" target="_blank" rel="noopener">
-                Github
-              </a>
-            </li>
-            <li>
-              <a href="mailto:vonds13@gmail.com?subject=Hello Vonds">Contact</a>
-            </li>
-          </ul>
+<main class="x0" id="main">
+  <div class="x0-wrap">
+    <nav class="crumbs alt" aria-label="Breadcrumb"><a href="index.html">Vonds</a><span class="sep" aria-hidden="true">/</span><a href="docs.html">exit_0 Labs</a><span class="sep" aria-hidden="true">/</span><span aria-current="page">Lab 098</span></nav>
+    <header class="x0-head">
+      <p class="eyebrow alt"><b>Lab 098</b> &middot; services</p>
+      <h1>Installing, Configuring, and Managing Ansible</h1>
+      <p class="lede">Install Ansible, build a small inventory, validate connectivity with an ad-hoc ping, and run a playbook to configure web hosts. Prove idempotency by re-running the playbook and confirming no unnecessary changes occur.</p>
+      <nav class="pager-mini" aria-label="Lab navigation"><a class="alt" href="lab97.html" rel="prev">&larr; Lab 097</a><a class="alt" href="lab99.html" rel="next">Lab 099 &rarr;</a></nav>
+    </header>
+    <div class="x0-grid">
+      <aside class="x0-side" aria-label="On this page">
+        <nav class="toc">
+          <a class="back alt" href="docs.html">&larr; All labs</a>
+          <p class="toc-h alt">On this page</p>
+          <ul><li><a href="#video">Video</a></li><li><a href="#scenario">Scenario</a></li><li><a href="#objective">Objective</a></li><li><a href="#concepts">Concepts</a></li><li><a href="#walkthrough">Walkthrough</a></li><li><a href="#breakpoints">Common breakpoints</a></li><li><a href="#cleanup">Cleanup checklist</a></li><li><a href="#reference">Reference</a></li></ul>
         </nav>
-      </div>
-
-      <div class="overlay-navigation-footer">
-        <div class="container">
-          <div class="row">
-            <div class="col-sm-12 text-center">
-              <p class="copyright font-alt m-b-0">
-                VONDS &copy;
-                <script>
-                  document.write(new Date().getFullYear())
-                </script>
-              </p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- WRAPPER -->
-    <div class="wrapper">
-      <!-- NAVIGATION -->
-      <nav
-        class="navbar navbar-custom navbar-transparent navbar-light navbar-fixed-top"
-      >
-        <div class="container">
-          <div class="navbar-header">
-            <a class="navbar-brand" href="../index.html">
-              <img class="logo-dark" src="../assets/images/logo-dark.svg" alt="Vonds" /><img class="logo-light" src="../assets/images/logo-light.svg" alt="" aria-hidden="true" />
-            </a>
-          </div>
-
-          <ul id="icons-navbar" class="nav navbar-nav navbar-right">
-            <li>
-              <a href="#" id="toggle-menu" class="show-overlay" title="Menu">
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-              </a>
-            </li>
-          </ul>
-        </div>
-      </nav>
-
-      <!-- DOCS PAGE -->
-      <section class="module">
-        <div class="container">
-          <h2 class="font-alt module-title m-t-60">
-            Lab 98: Installing, Configuring, and Managing Ansible
-          </h2>
-
-          <nav class="lab-pagination">
-            <a
-              id="prev-lab"
-              class="lab-nav-link"
-              href="#"
-              aria-label="Previous lab"
-            >
-              &laquo;
-            </a>
-            <a
-              id="next-lab"
-              class="lab-nav-link"
-              href="#"
-              aria-label="Next lab"
-            >
-              &raquo;
-            </a>
-          </nav>
-
-          <div class="row">
-            <!-- LEFT SIDEBAR -->
-            <div class="col-sm-4 col-md-3 lab-sidebar">
-              <div class="docs-sidebar">
-                <div class="docs-widget">
-                  <h5 class="widget-title">
-                    <a href="./docs.html">Back to Lab Index</a>
-                  </h5>
-                  <ul class="docs-nav">
-                    <li><a href="#scenario">Scenario</a></li>
-                    <li><a href="#objective">Objective</a></li>
-                    <li><a href="#concepts">Concepts</a></li>
-                    <li><a href="#walkthrough">Walkthrough</a></li>
-                    <li><a href="#breakpoints">Breakpoints</a></li>
-                    <li><a href="#cleanup">Cleanup</a></li>
-                    <li><a href="#reference">Reference</a></li>
-                  </ul>
-                </div>
-              </div>
-            </div>
-
-            <!-- MAIN CONTENT -->
-            <div class="col-sm-8 col-md-9 lab-doc">
-              <p class="m-b-20 lab-summary">
-                Install Ansible, build a small inventory, validate connectivity with an
-                ad-hoc ping, and run a playbook to configure web hosts. Prove
-                idempotency by re-running the playbook and confirming no unnecessary
-                changes occur.
-              </p>
-
-              <!-- Video (kept on page; removed from left panel) -->
-              <section class="lab-section" id="video" aria-label="Lab video">
+      </aside>
+      <article class="x0-doc">
+<section class="lab-section" id="video" aria-label="Lab video">
                 <div class="lab-video">
                   <div class="lab-video-embed text-center">
-                    <iframe
-                      src="https://www.youtube.com/embed/24FG1sZ8Nu4?si=SMpjFTxGIQM2h3X-"
+                    <iframe loading="lazy"
+                      src="https://www.youtube-nocookie.com/embed/24FG1sZ8Nu4?si=SMpjFTxGIQM2h3X-"
                       title="YouTube video player"
                       frameborder="0"
                       allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
@@ -223,7 +98,6 @@
                   </div>
                 </div>
               </section>
-
               <!-- Scenario -->
               <section class="lab-section" id="scenario">
                 <div class="lab-chips" aria-label="Tags">
@@ -240,17 +114,14 @@
                     <span class="lab-chip-key">playbooks</span>
                   </span>
                 </div>
-
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">
                   Scenario
                 </h3>
-
                 <p>
                   You need to deploy Ansible to automate routine server tasks.
                   Your starting point is a small fleet: one web host and one
                   database host, both reachable on a private network.
                 </p>
-
                 <div class="lab-callout">
                   <div class="lab-callout-label">Operator context</div>
                   <p class="m-b-0">
@@ -260,7 +131,6 @@
                   </p>
                 </div>
               </section>
-
               <!-- Objective -->
               <section class="lab-section alt-background" id="objective">
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">
@@ -275,7 +145,6 @@
                   <li>Clean up by removing <code>nginx</code> from the web group.</li>
                 </ul>
               </section>
-
               <!-- Concepts (no alt-background moving forward) -->
               <section class="lab-section" id="concepts">
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">
@@ -302,20 +171,16 @@
                   </li>
                 </ul>
               </section>
-
               <!-- Walkthrough -->
               <section class="lab-section alt-background" id="walkthrough">
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">
                   Walkthrough
                 </h3>
-
                 <!-- Step 1 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
-                    <strong class="font-alt">Step 1</strong>
-                    : Install Ansible.
+                    <strong class="font-alt">Step 1</strong>: Install Ansible.
                   </div>
-
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
@@ -329,21 +194,17 @@
                     </div>
                     <pre><code id="cmd-step-1">sudo dnf install ansible -y</code></pre>
                   </div>
-
                   <p>
                     Install from the distro repositories so you get predictable
                     paths and a supported runtime. This reduces “works on my
                     laptop” drift when you move between environments.
                   </p>
                 </div>
-
                 <!-- Step 2 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
-                    <strong class="font-alt">Step 2</strong>
-                    : Verify the runtime and config path.
+                    <strong class="font-alt">Step 2</strong>: Verify the runtime and config path.
                   </div>
-
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
@@ -357,27 +218,22 @@
                     </div>
                     <pre><code id="cmd-step-2">ansible --version</code></pre>
                   </div>
-
                   <p>
                     Confirm the reported <code>config file</code> location and
                     Python runtime. If behavior differs between systems, this is
                     your first sanity check.
                   </p>
-
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <pre><code># Expected patterns:
 # ansible [core ...]
 # config file = /etc/ansible/ansible.cfg (or similar)</code></pre>
                   </div>
                 </div>
-
                 <!-- Step 3 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
-                    <strong class="font-alt">Step 3</strong>
-                    : Create a basic inventory.
+                    <strong class="font-alt">Step 3</strong>: Create a basic inventory.
                   </div>
-
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
@@ -393,7 +249,6 @@
 # OR
 vim ~/inventory</code></pre>
                   </div>
-
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>~/inventory (example)</span>
@@ -407,25 +262,20 @@ vim ~/inventory</code></pre>
                     </div>
                     <pre><code id="file-inventory">[web]
 192.168.122.10
-
 [db]
 192.168.122.11</code></pre>
                   </div>
-
                   <p>
                     Keep this minimal for day-one ops. In a real environment you
                     would add connection variables (user, key, port) or define
                     defaults in <code>ansible.cfg</code>.
                   </p>
                 </div>
-
                 <!-- Step 4 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
-                    <strong class="font-alt">Step 4</strong>
-                    : Validate connectivity with an ad-hoc ping.
+                    <strong class="font-alt">Step 4</strong>: Validate connectivity with an ad-hoc ping.
                   </div>
-
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
@@ -439,26 +289,21 @@ vim ~/inventory</code></pre>
                     </div>
                     <pre><code id="cmd-step-4">ansible all -i ~/inventory -m ping</code></pre>
                   </div>
-
                   <p>
                     This checks whether Ansible can reach the hosts and execute
                     a module. Do not move to playbooks until this returns clean
                     success on your targets.
                   </p>
-
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <pre><code># Expected patterns:
 # 192.168.122.10 | SUCCESS =&gt; {"changed": false, "ping": "pong"}</code></pre>
                   </div>
                 </div>
-
                 <!-- Step 5 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
-                    <strong class="font-alt">Step 5</strong>
-                    : Create a playbook to install nginx on web hosts.
+                    <strong class="font-alt">Step 5</strong>: Create a playbook to install nginx on web hosts.
                   </div>
-
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
@@ -474,7 +319,6 @@ vim ~/inventory</code></pre>
 # OR
 vim install_nginx.yml</code></pre>
                   </div>
-
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>install_nginx.yml (initial)</span>
@@ -495,21 +339,17 @@ vim install_nginx.yml</code></pre>
         name: nginx
         state: present</code></pre>
                   </div>
-
                   <p>
                     This is a clean starter because <code>package</code> abstracts
                     the underlying package manager. You declare the desired
                     state and let the module handle the mechanics.
                   </p>
                 </div>
-
                 <!-- Step 6 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
-                    <strong class="font-alt">Step 6</strong>
-                    : Run the playbook.
+                    <strong class="font-alt">Step 6</strong>: Run the playbook.
                   </div>
-
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
@@ -523,21 +363,17 @@ vim install_nginx.yml</code></pre>
                     </div>
                     <pre><code id="cmd-step-6">ansible-playbook -i ~/inventory install_nginx.yml</code></pre>
                   </div>
-
                   <p>
                     The first run should report <code>changed</code> for tasks
                     that apply new state. That is expected when the package is
                     not present yet.
                   </p>
                 </div>
-
                 <!-- Step 7 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
-                    <strong class="font-alt">Step 7</strong>
-                    : Ensure nginx is enabled and running.
+                    <strong class="font-alt">Step 7</strong>: Ensure nginx is enabled and running.
                   </div>
-
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
@@ -553,7 +389,6 @@ vim install_nginx.yml</code></pre>
 # OR
 vim install_nginx.yml</code></pre>
                   </div>
-
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>install_nginx.yml (updated)</span>
@@ -573,27 +408,22 @@ vim install_nginx.yml</code></pre>
       package:
         name: nginx
         state: present
-
     - name: Ensure nginx is running
       service:
         name: nginx
         state: started
         enabled: yes</code></pre>
                   </div>
-
                   <p>
                     This is the operational baseline: install the package, ensure
                     the service is started, and ensure it persists across reboot.
                   </p>
                 </div>
-
                 <!-- Step 8 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
-                    <strong class="font-alt">Step 8</strong>
-                    : Re-run to confirm idempotency.
+                    <strong class="font-alt">Step 8</strong>: Re-run to confirm idempotency.
                   </div>
-
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
@@ -607,21 +437,17 @@ vim install_nginx.yml</code></pre>
                     </div>
                     <pre><code id="cmd-step-8">ansible-playbook -i ~/inventory install_nginx.yml</code></pre>
                   </div>
-
                   <p>
                     A clean re-run should show mostly <code>ok</code>. You only
                     want <code>changed</code> when something actually needed
                     correction.
                   </p>
                 </div>
-
                 <!-- Step 9 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
-                    <strong class="font-alt">Step 9</strong>
-                    : Gather facts from hosts.
+                    <strong class="font-alt">Step 9</strong>: Gather facts from hosts.
                   </div>
-
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
@@ -635,21 +461,17 @@ vim install_nginx.yml</code></pre>
                     </div>
                     <pre><code id="cmd-step-9">ansible all -i ~/inventory -m setup</code></pre>
                   </div>
-
                   <p>
                     Facts output is large. In real playbooks, you use facts to
                     branch logic (OS family, interfaces, storage, and system
                     metadata) without hardcoding assumptions.
                   </p>
                 </div>
-
                 <!-- Step 10 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
-                    <strong class="font-alt">Step 10</strong>
-                    : Remove nginx from web hosts.
+                    <strong class="font-alt">Step 10</strong>: Remove nginx from web hosts.
                   </div>
-
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
@@ -663,20 +485,17 @@ vim install_nginx.yml</code></pre>
                     </div>
                     <pre><code id="cmd-step-10">ansible web -i ~/inventory -m package -a "name=nginx state=absent" -b</code></pre>
                   </div>
-
                   <p>
                     This resets the environment for repetition. Treat cleanup as
                     part of the workflow, not an afterthought.
                   </p>
                 </div>
               </section>
-
               <!-- Common breakpoints -->
               <section class="lab-section" id="breakpoints">
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">
                   Common breakpoints
                 </h3>
-
                 <div class="lab-callout">
                   <div class="lab-callout-label">
                     ping module fails for one or more hosts
@@ -687,7 +506,6 @@ vim install_nginx.yml</code></pre>
                     before running playbooks.
                   </p>
                 </div>
-
                 <div class="lab-callout">
                   <div class="lab-callout-label">
                     inventory targets are not being selected
@@ -700,7 +518,6 @@ vim install_nginx.yml</code></pre>
                     will silently target nothing.
                   </p>
                 </div>
-
                 <div class="lab-callout">
                   <div class="lab-callout-label">
                     playbook prompts for credentials or fails with permission denied
@@ -712,7 +529,6 @@ vim install_nginx.yml</code></pre>
                     authentication method.
                   </p>
                 </div>
-
                 <div class="lab-callout">
                   <div class="lab-callout-label">
                     nginx installs but service will not start
@@ -724,19 +540,16 @@ vim install_nginx.yml</code></pre>
                   </p>
                 </div>
               </section>
-
               <!-- Cleanup -->
               <section class="lab-section alt-background" id="cleanup">
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">
                   Cleanup checklist
                 </h3>
-
                 <p>
                   This lab leaves only package and service state changes on the
                   web hosts. Cleanup is removing <code>nginx</code> and confirming
                   the playbook converges cleanly afterward.
                 </p>
-
                 <div class="lab-codeblock m-b-40 m-t-40">
                   <div class="lab-codeblock-header">
                     <span>Commands</span>
@@ -751,7 +564,6 @@ vim install_nginx.yml</code></pre>
                   <pre><code id="cmd-cleanup">ansible web -i ~/inventory -m package -a "name=nginx state=absent" -b
 ansible web -i ~/inventory -m service -a "name=nginx state=stopped" -b</code></pre>
                 </div>
-
                 <div class="lab-callout">
                   <div class="lab-callout-label">Success signal</div>
                   <p class="m-b-0">
@@ -760,180 +572,96 @@ ansible web -i ~/inventory -m service -a "name=nginx state=stopped" -b</code></p
                   </p>
                 </div>
               </section>
-
               <!-- Reference -->
               <section class="lab-section" id="reference">
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">
                   Reference
                 </h3>
-
                 <ul class="lab-reference-list">
                   <li>
-                    <code>dnf install ansible -y</code>
-                    : Installs Ansible from distro repositories.
+                    <code>dnf install ansible -y</code>: Installs Ansible from distro repositories.
                     <ul>
                       <li>
-                        <code>-y</code>
-                        : Automatically answers yes to prompts.
+                        <code>-y</code>: Automatically answers yes to prompts.
                       </li>
                     </ul>
                   </li>
-
                   <li>
-                    <code>ansible --version</code>
-                    : Shows Ansible version, config file path, and runtime details.
+                    <code>ansible --version</code>: Shows Ansible version, config file path, and runtime details.
                   </li>
-
                   <li>
-                    <code>nano &lt;file&gt;</code>
-                    : Opens a file for editing.
+                    <code>nano &lt;file&gt;</code>: Opens a file for editing.
                   </li>
-
                   <li>
-                    <code>vim &lt;file&gt;</code>
-                    : Opens a file for editing.
+                    <code>vim &lt;file&gt;</code>: Opens a file for editing.
                   </li>
-
                   <li>
-                    <code>ansible all -i &lt;inventory&gt; -m ping</code>
-                    : Validates Ansible connectivity to target hosts.
+                    <code>ansible all -i &lt;inventory&gt; -m ping</code>: Validates Ansible connectivity to target hosts.
                     <ul>
                       <li>
-                        <code>-i &lt;inventory&gt;</code>
-                        : Specifies the inventory file to use.
+                        <code>-i &lt;inventory&gt;</code>: Specifies the inventory file to use.
                       </li>
                       <li>
-                        <code>-m ping</code>
-                        : Runs the ping module (connectivity check).
+                        <code>-m ping</code>: Runs the ping module (connectivity check).
                       </li>
                     </ul>
                   </li>
-
                   <li>
-                    <code>ansible-playbook -i &lt;inventory&gt; &lt;playbook&gt;</code>
-                    : Runs a playbook against targets defined in the inventory.
+                    <code>ansible-playbook -i &lt;inventory&gt; &lt;playbook&gt;</code>: Runs a playbook against targets defined in the inventory.
                     <ul>
                       <li>
-                        <code>-i &lt;inventory&gt;</code>
-                        : Specifies the inventory file to use.
+                        <code>-i &lt;inventory&gt;</code>: Specifies the inventory file to use.
                       </li>
                     </ul>
                   </li>
-
                   <li>
-                    <code>ansible all -i &lt;inventory&gt; -m setup</code>
-                    : Gathers system facts from target hosts.
+                    <code>ansible all -i &lt;inventory&gt; -m setup</code>: Gathers system facts from target hosts.
                     <ul>
                       <li>
-                        <code>-m setup</code>
-                        : Runs the setup module (facts gathering).
+                        <code>-m setup</code>: Runs the setup module (facts gathering).
                       </li>
                     </ul>
                   </li>
-
                   <li>
-                    <code>ansible &lt;group&gt; -i &lt;inventory&gt; -m package -a "&lt;args&gt;" -b</code>
-                    : Manages packages on a target group using the package module.
+                    <code>ansible &lt;group&gt; -i &lt;inventory&gt; -m package -a "&lt;args&gt;" -b</code>: Manages packages on a target group using the package module.
                     <ul>
                       <li>
-                        <code>-a "&lt;args&gt;"</code>
-                        : Supplies module arguments (for example <code>name=nginx state=present</code>).
+                        <code>-a "&lt;args&gt;"</code>: Supplies module arguments (for example <code>name=nginx state=present</code>).
                       </li>
                       <li>
-                        <code>-b</code>
-                        : Enables privilege escalation (become).
+                        <code>-b</code>: Enables privilege escalation (become).
                       </li>
                     </ul>
                   </li>
-
                   <li>
-                    <code>ansible &lt;group&gt; -i &lt;inventory&gt; -m service -a "&lt;args&gt;" -b</code>
-                    : Manages service state on a target group using the service module.
+                    <code>ansible &lt;group&gt; -i &lt;inventory&gt; -m service -a "&lt;args&gt;" -b</code>: Manages service state on a target group using the service module.
                     <ul>
                       <li>
-                        <code>-a "&lt;args&gt;"</code>
-                        : Supplies module arguments (for example <code>name=nginx state=started enabled=yes</code>).
+                        <code>-a "&lt;args&gt;"</code>: Supplies module arguments (for example <code>name=nginx state=started enabled=yes</code>).
                       </li>
                       <li>
-                        <code>-b</code>
-                        : Enables privilege escalation (become).
+                        <code>-b</code>: Enables privilege escalation (become).
                       </li>
                     </ul>
                   </li>
                 </ul>
               </section>
-            </div>
-            <!-- /main -->
-          </div>
-          <!-- /row -->
-        </div>
-        <!-- /container -->
-      </section>
-
-      <!-- FOOTER -->
-      <footer class="module bg-light">
-        <div class="container">
-          <div class="row">
-            <div class="col-sm-12">
-              <ul class="social-text-links font-alt text-center m-b-20">
-                <li>
-                  <a href="https://github.com/vonds" target="_blank" rel="noopener">
-                    Github
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="https://www.linkedin.com/in/vonds/"
-                    target="_blank"
-                    rel="noopener"
-                  >
-                    Linkedin
-                  </a>
-                </li>
-              </ul>
-            </div>
-          </div>
-
-          <div class="row">
-            <div class="col-sm-12">
-              <p class="copyright text-center m-b-0">
-                VONDS &copy; <span id="year"></span>
-              </p>
-
-              <div class="scroll-up">
-                <a href="#totop"><i class="fa fa-angle-double-up"></i></a>
-              </div>
-            </div>
-          </div>
-        </div>
-      </footer>
+        <nav class="pager" aria-label="Previous and next lab"><a class="prev" href="lab97.html" rel="prev"><span class="dir alt">&larr; Previous &middot; Lab 097</span><span class="t">Set up a basic NTP client with chronyd</span></a><a class="next" href="lab99.html" rel="next"><span class="dir alt">Next &middot; Lab 099 &rarr;</span><span class="t">Creating and Using Ansible Roles</span></a></nav>
+      </article>
     </div>
+  </div>
+</main>
 
-    <!-- Javascript files (your existing) -->
-    <script src="../assets/js/jquery-2.2.4.min.js"></script>
-    <script src="../assets/bootstrap/js/bootstrap.min.js"></script>
-    <script src="../assets/js/jquery.superslides.min.js"></script>
-    <script src="../assets/js/jquery.mb.YTPlayer.min.js"></script>
-    <script src="../assets/js/jquery.magnific-popup.min.js"></script>
-    <script src="../assets/js/owl.carousel.min.js"></script>
-    <script src="../assets/js/jquery.simple-text-rotator.min.js"></script>
-    <script src="../assets/js/imagesloaded.pkgd.js"></script>
-    <script src="../assets/js/isotope.pkgd.min.js"></script>
-    <script src="../assets/js/packery-mode.pkgd.min.js"></script>
-    <script src="../assets/js/appear.js"></script>
-    <script src="../assets/js/jquery.easing.1.3.js"></script>
-    <script src="../assets/js/wow.min.js"></script>
-    <script src="../assets/js/jqBootstrapValidation.js"></script>
-    <script src="../assets/js/jquery.fitvids.js"></script>
-    <script src="../assets/js/jquery.parallax-1.1.3.js"></script>
-    <script src="../assets/js/smoothscroll.js"></script>
-    <script src="../assets/js/custom.js"></script>
-
-    <!-- Lab page JS (new) -->
-    <script src="../assets/js/lab.js"></script>
-
-    <script>
-      document.getElementById('year').textContent = new Date().getFullYear()
-    </script>
-  </body>
+<footer>
+  <img class="mark" src="assets/images/logo-dark.svg" alt="Vonds">
+  <nav aria-label="Footer" class="alt">
+    <a href="index.html#about">About</a><a href="index.html#portfolio">Portfolio</a><a href="docs.html">exit_0 Labs</a><a href="index.html#contact">Contact</a><a href="https://www.linkedin.com/in/vonds/">LinkedIn</a>
+  </nav>
+  <div class="line"></div>
+  <p class="copyright alt">Vonds &copy; 2026</p>
+</footer>
+<button class="to-top" id="toTop" type="button" aria-label="Back to top">&uarr;</button>
+<script src="assets/js/site.js" defer></script>
+<script src="assets/js/lab.js" defer></script>
+</body>
 </html>

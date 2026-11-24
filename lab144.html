@@ -1,210 +1,94 @@
-<!-- lab144.html -->
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="exit_0 Documentation" />
-    <meta name="name" content="Vonds" />
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lab 144: Journald Persistence &amp; Rsyslog Remote Forward | exit_0 Labs</title>
+<meta name="description" content="Enable persistent journald storage using a drop-in config and confirm /var/log/journal exists. Configure rsyslog to forward all messages to a central…">
+<link rel="canonical" href="https://vonds.github.io/lab144.html">
+<meta name="theme-color" content="#2e2e30">
+<meta name="author" content="Vonds">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="Vonds">
+<meta property="og:url" content="https://vonds.github.io/lab144.html">
+<meta property="og:title" content="Lab 144: Journald Persistence &amp; Rsyslog Remote Forward | exit_0 Labs">
+<meta property="og:description" content="Enable persistent journald storage using a drop-in config and confirm /var/log/journal exists. Configure rsyslog to forward all messages to a central…">
+<meta property="og:image" content="https://vonds.github.io/assets/images/og/og-exit0.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="exit_0: 165 hands-on Linux labs for real system administration.">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Lab 144: Journald Persistence &amp; Rsyslog Remote Forward | exit_0 Labs">
+<meta name="twitter:description" content="Enable persistent journald storage using a drop-in config and confirm /var/log/journal exists. Configure rsyslog to forward all messages to a central…">
+<meta name="twitter:image" content="https://vonds.github.io/assets/images/og/og-exit0.jpg">
+<link rel="icon" type="image/svg+xml" href="assets/images/favicon.svg">
+<link rel="icon" type="image/png" href="assets/images/favicon.png">
+<link rel="apple-touch-icon" href="assets/images/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Dosis:wght@300;400;500;600&family=Open+Sans:wght@400;600&display=swap">
+<link rel="stylesheet" href="assets/css/site.css">
+<link rel="stylesheet" href="assets/css/exit0.css">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Vonds","item":"https://vonds.github.io/"},{"@type":"ListItem","position":2,"name":"exit_0 Labs","item":"https://vonds.github.io/docs.html"},{"@type":"ListItem","position":3,"name":"Lab 144","item":"https://vonds.github.io/lab144.html"}]}</script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="header solid" id="header">
+  <div class="wrap">
+    <a class="brand" href="index.html" aria-label="Vonds home">
+      <img class="logo-dark" src="assets/images/logo-dark.svg" alt="Vonds">
+      <img class="logo-light" src="assets/images/logo-light.svg" alt="" aria-hidden="true">
+    </a>
+    <button class="menu-btn" id="menuOpen" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="overlay">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</header>
 
-    <title>Vonds | Lab 144</title>
-
-    <!-- Favicons -->
-    <link rel="icon" type="image/svg+xml" href="../assets/images/favicon.svg" />
-    <link rel="icon" type="image/png" href="../assets/images/favicon.png" />
-    <link rel="apple-touch-icon" href="../assets/images/apple-touch-icon.png" />
-    <link
-      rel="apple-touch-icon"
-      sizes="72x72"
-      href="../assets/images/apple-touch-icon-72x72.png"
-    />
-    <link
-      rel="apple-touch-icon"
-      sizes="114x114"
-      href="../assets/images/apple-touch-icon-114x114.png"
-    />
-
-    <!-- Site styles (your existing) -->
-    <link href="../assets/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
-    <link href="../assets/css/font-awesome.min.css" rel="stylesheet" />
-    <link href="../assets/css/linea-icons.css" rel="stylesheet" />
-    <link href="../assets/css/ionicons.min.css" rel="stylesheet" />
-    <link href="../assets/css/simpletextrotator.css" rel="stylesheet" />
-    <link href="../assets/css/magnific-popup.css" rel="stylesheet" />
-    <link href="../assets/css/owl.carousel.css" rel="stylesheet" />
-    <link href="../assets/css/superslides.css" rel="stylesheet" />
-    <link href="../assets/css/vertical.css" rel="stylesheet" />
-    <link href="../assets/css/animate.css" rel="stylesheet" />
-    <link href="../assets/css/style.css" rel="stylesheet" />
-    <link href="../assets/css/docs.css" rel="stylesheet" />
-
-    <!-- Lab page styles -->
-    <link href="../assets/css/lab.css" rel="stylesheet" />
-
-    <!-- Fonts -->
-    <link
-      href="https://fonts.googleapis.com/css?family=Dosis"
-      rel="stylesheet"
-    />
-  </head>
-
-  <body>
-    <!-- PRELOADER -->
-    <div class="page-loader">
-      <div class="loader">Loading...</div>
+<div class="overlay" id="overlay" aria-hidden="true">
+  <button class="close" id="menuClose" type="button" aria-label="Close menu">&times;</button>
+  <nav aria-label="Main">
+    <a class="alt" href="index.html">Home</a>
+    <a class="alt" href="index.html#about">About</a>
+    <a class="alt" href="index.html#portfolio">Portfolio</a>
+    <div class="sub">
+      <a class="alt" href="https://black-signal-demo.netlify.app/">Black Signal</a>
+      <a class="alt" href="https://deeds-demo.netlify.app/">DEEDS</a>
+      <a class="alt" href="https://digital-resource-map-demo.netlify.app/">Digital Resource Map</a>
+      <a class="alt" href="https://thetravelingarchive.com/">The Traveling Archive</a>
+      <a class="alt" href="https://github.com/vonds/sentinel">Sentinel</a>
+      <a class="alt" href="docs.html">exit_0 Labs</a>
     </div>
+    <a class="alt" href="index.html#services">Services</a>
+    <a class="alt" href="index.html#contact">Contact</a>
+    <a class="alt" href="https://www.linkedin.com/in/vonds/">LinkedIn</a>
+  </nav>
+  <div class="foot alt">Vonds &copy; <span id="year">2026</span></div>
+</div>
 
-    <!-- OVERLAY MENU -->
-    <div id="overlay-menu" class="overlay-menu">
-      <a href="#" id="overlay-menu-hide" class="navigation-hide">
-        <i class="ion-close-round"></i>
-      </a>
-
-      <div class="overlay-menu-inner">
-        <nav class="overlay-menu-nav">
-          <ul id="nav">
-            <li><a href="../index.html">Home</a></li>
-
-            <li class="slidedown">
-              <a href="#">Portfolio</a>
-              <ul>
-                <li>
-                  <a
-                    href="https://github.com/vonds/exit_0"
-                    target="_blank"
-                    rel="noopener"
-                  >
-                    exit_0
-                  </a>
-                </li>
-                <li>
-                  <a href="docs.html" target="_blank" rel="noopener"> exit_0 </a>
-                </li>
-              </ul>
-            </li>
-
-            <li>
-              <a
-                href="https://www.linkedin.com/in/vonds/"
-                target="_blank"
-                rel="noopener"
-              >
-                LinkedIn
-              </a>
-            </li>
-            <li>
-              <a href="https://github.com/vonds" target="_blank" rel="noopener">
-                Github
-              </a>
-            </li>
-            <li>
-              <a href="mailto:vonds13@gmail.com?subject=Hello Vonds">Contact</a>
-            </li>
-          </ul>
+<main class="x0" id="main">
+  <div class="x0-wrap">
+    <nav class="crumbs alt" aria-label="Breadcrumb"><a href="index.html">Vonds</a><span class="sep" aria-hidden="true">/</span><a href="docs.html">exit_0 Labs</a><span class="sep" aria-hidden="true">/</span><span aria-current="page">Lab 144</span></nav>
+    <header class="x0-head">
+      <p class="eyebrow alt"><b>Lab 144</b> &middot; services</p>
+      <h1>Journald Persistence &amp; Rsyslog Remote Forward</h1>
+      <p class="lede">Enable persistent journald storage using a drop-in config and confirm <code>/var/log/journal</code> exists. Configure rsyslog to forward all messages to a central collector over TCP/514 using a safe drop-in, validate config syntax, restart cleanly, then generate a test message and confirm it lands locally. Finish by confirming NTP synchronization state using <code>chronyc tracking</code>.</p>
+      <nav class="pager-mini" aria-label="Lab navigation"><a class="alt" href="lab143.html" rel="prev">&larr; Lab 143</a><a class="alt" href="lab145.html" rel="next">Lab 145 &rarr;</a></nav>
+    </header>
+    <div class="x0-grid">
+      <aside class="x0-side" aria-label="On this page">
+        <nav class="toc">
+          <a class="back alt" href="docs.html">&larr; All labs</a>
+          <p class="toc-h alt">On this page</p>
+          <ul><li><a href="#video">Video</a></li><li><a href="#scenario">Scenario</a></li><li><a href="#objective">Objective</a></li><li><a href="#concepts">Concepts</a></li><li><a href="#walkthrough">Walkthrough</a></li><li><a href="#breakpoints">Breakpoints</a></li><li><a href="#cleanup">Cleanup checklist</a></li><li><a href="#reference">Reference</a></li></ul>
         </nav>
-      </div>
-
-      <div class="overlay-navigation-footer">
-        <div class="container">
-          <div class="row">
-            <div class="col-sm-12 text-center">
-              <p class="copyright font-alt m-b-0">
-                VONDS &copy;
-                <script>
-                  document.write(new Date().getFullYear())
-                </script>
-              </p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- WRAPPER -->
-    <div class="wrapper">
-      <!-- NAVIGATION -->
-      <nav
-        class="navbar navbar-custom navbar-transparent navbar-light navbar-fixed-top"
-      >
-        <div class="container">
-          <div class="navbar-header">
-            <a class="navbar-brand" href="../index.html">
-              <img class="logo-dark" src="../assets/images/logo-dark.svg" alt="Vonds" /><img class="logo-light" src="../assets/images/logo-light.svg" alt="" aria-hidden="true" />
-            </a>
-          </div>
-
-          <ul id="icons-navbar" class="nav navbar-nav navbar-right">
-            <li>
-              <a href="#" id="toggle-menu" class="show-overlay" title="Menu">
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-              </a>
-            </li>
-          </ul>
-        </div>
-      </nav>
-
-      <!-- DOCS PAGE -->
-      <section class="module">
-        <div class="container">
-          <h2 class="font-alt module-title m-t-60">
-            Lab 144: Journald Persistence & Rsyslog Remote Forward
-          </h2>
-
-          <nav class="lab-pagination">
-            <a
-              id="prev-lab"
-              class="lab-nav-link"
-              href="#"
-              aria-label="Previous lab"
-            >
-              &laquo;
-            </a>
-            <a id="next-lab" class="lab-nav-link" href="#" aria-label="Next lab">
-              &raquo;
-            </a>
-          </nav>
-
-          <div class="row">
-            <!-- LEFT SIDEBAR -->
-            <div class="col-sm-4 col-md-3 lab-sidebar">
-              <div class="docs-sidebar">
-                <div class="docs-widget">
-                  <h5 class="widget-title">
-                    <a href="./docs.html">Back to Lab Index</a>
-                  </h5>
-                  <ul class="docs-nav">
-                    <li><a href="#scenario">Scenario</a></li>
-                    <li><a href="#objective">Objective</a></li>
-                    <li><a href="#concepts">Concepts</a></li>
-                    <li><a href="#walkthrough">Walkthrough</a></li>
-                    <li><a href="#breakpoints">Breakpoints</a></li>
-                    <li><a href="#cleanup">Cleanup</a></li>
-                    <li><a href="#reference">Reference</a></li>
-                  </ul>
-                </div>
-              </div>
-            </div>
-
-            <!-- MAIN CONTENT -->
-            <div class="col-sm-8 col-md-9 lab-doc">
-              <p class="m-b-20 lab-summary">
-                Enable persistent journald storage using a drop-in config and
-                confirm <code>/var/log/journal</code> exists. Configure rsyslog
-                to forward all messages to a central collector over TCP/514
-                using a safe drop-in, validate config syntax, restart cleanly,
-                then generate a test message and confirm it lands locally.
-                Finish by confirming NTP synchronization state using
-                <code>chronyc tracking</code>.
-              </p>
-
-              <!-- Video (kept on page; removed from left panel) -->
-              <section class="lab-section" id="video" aria-label="Lab video">
+      </aside>
+      <article class="x0-doc">
+<section class="lab-section" id="video" aria-label="Lab video">
                 <div class="lab-video">
                   <div class="lab-video-embed text-center">
-                    <iframe
-                      src="https://www.youtube.com/embed/ElrkRwpzHLk?si=UVnqN-jLSs7sDTOC"
+                    <iframe loading="lazy"
+                      src="https://www.youtube-nocookie.com/embed/ElrkRwpzHLk?si=UVnqN-jLSs7sDTOC"
                       title="YouTube video player"
                       frameborder="0"
                       allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
@@ -214,7 +98,6 @@
                   </div>
                 </div>
               </section>
-
               <!-- Scenario -->
               <section class="lab-section" id="scenario">
                 <div class="lab-chips" aria-label="Tags">
@@ -222,15 +105,12 @@
                   <span class="lab-chip"><span class="lab-chip-key">rsyslog</span></span>
                   <span class="lab-chip"><span class="lab-chip-key">chrony</span></span>
                 </div>
-
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">Scenario</h3>
-
                 <p>
                   Ops needs persistent journald logs for auditing, and rsyslog
                   must forward logs to a central collector over TCP. You will
                   implement and verify both changes, then confirm NTP sync state.
                 </p>
-
                 <div class="lab-callout">
                   <div class="lab-callout-label">Operational note</div>
                   <p class="m-b-0">
@@ -241,7 +121,6 @@
                   </p>
                 </div>
               </section>
-
               <!-- Objective -->
               <section class="lab-section alt-background" id="objective">
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">Objective</h3>
@@ -255,7 +134,6 @@
                   <li>Verify NTP synchronization state using <code>chronyc tracking</code>.</li>
                 </ul>
               </section>
-
               <!-- Concepts (no alt-background moving forward) -->
               <section class="lab-section" id="concepts">
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">Concepts</h3>
@@ -279,17 +157,14 @@
                   </li>
                 </ul>
               </section>
-
               <!-- Walkthrough -->
               <section class="lab-section alt-background" id="walkthrough">
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">Walkthrough</h3>
-
                 <!-- Step 1 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
                     <strong class="font-alt">Step 1</strong>: Check journald disk usage.
                   </div>
-
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
@@ -297,20 +172,16 @@
                     </div>
                     <pre><code id="cmd-step-1">journalctl --disk-usage</code></pre>
                   </div>
-
                   <p>This provides a fast baseline for how much space the journal is consuming on disk.</p>
-
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <pre><code>Archived and active journals take up 144.0M in the file system.</code></pre>
                   </div>
                 </div>
-
                 <!-- Step 2 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
                     <strong class="font-alt">Step 2</strong>: Create a journald drop-in to enable persistent storage.
                   </div>
-
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
@@ -318,9 +189,7 @@
                     </div>
                     <pre><code id="cmd-step-2">sudo vim /etc/systemd/journald.conf.d/10-persistent.conf</code></pre>
                   </div>
-
                   <p class="m-b-10">Add the following content:</p>
-
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>File content</span>
@@ -329,7 +198,6 @@
                     <pre><code id="file-step-2">[Journal]
 Storage=persistent</code></pre>
                   </div>
-
                   <div class="lab-callout">
                     <div class="lab-callout-label">Why a drop-in</div>
                     <p class="m-b-0">
@@ -338,13 +206,11 @@ Storage=persistent</code></pre>
                     </p>
                   </div>
                 </div>
-
                 <!-- Step 3 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
                     <strong class="font-alt">Step 3</strong>: Restart journald to apply the change.
                   </div>
-
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
@@ -352,16 +218,13 @@ Storage=persistent</code></pre>
                     </div>
                     <pre><code id="cmd-step-3">sudo systemctl restart systemd-journald</code></pre>
                   </div>
-
                   <p>Restarting applies the new storage mode and triggers directory creation when appropriate.</p>
                 </div>
-
                 <!-- Step 4 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
                     <strong class="font-alt">Step 4</strong>: Verify <code>/var/log/journal</code> exists.
                   </div>
-
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
@@ -369,23 +232,19 @@ Storage=persistent</code></pre>
                     </div>
                     <pre><code id="cmd-step-4">ls -ld /var/log/journal</code></pre>
                   </div>
-
                   <p>
                     Persistent journals live under <code>/var/log/journal</code>. Directory ownership and permissions matter
                     for correct writes.
                   </p>
-
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <pre><code>drwxr-sr-x. 3 root systemd-journal 4096 Jan 25 07:34 /var/log/journal</code></pre>
                   </div>
                 </div>
-
                 <!-- Step 5 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
                     <strong class="font-alt">Step 5</strong>: Configure rsyslog to forward all logs to a collector over TCP.
                   </div>
-
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
@@ -393,9 +252,7 @@ Storage=persistent</code></pre>
                     </div>
                     <pre><code id="cmd-step-5">sudo vim /etc/rsyslog.d/90-forward.conf</code></pre>
                   </div>
-
                   <p class="m-b-10">Add the following line:</p>
-
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>File content</span>
@@ -403,7 +260,6 @@ Storage=persistent</code></pre>
                     </div>
                     <pre><code id="file-step-5">*.* @@192.0.2.10:514</code></pre>
                   </div>
-
                   <div class="lab-callout">
                     <div class="lab-callout-label">TCP vs UDP in rsyslog forwarding</div>
                     <p class="m-b-0">
@@ -411,13 +267,11 @@ Storage=persistent</code></pre>
                     </p>
                   </div>
                 </div>
-
                 <!-- Step 6 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
                     <strong class="font-alt">Step 6</strong>: Validate rsyslog configuration syntax.
                   </div>
-
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
@@ -425,21 +279,17 @@ Storage=persistent</code></pre>
                     </div>
                     <pre><code id="cmd-step-6">rsyslogd -N1</code></pre>
                   </div>
-
                   <p>Always validate syntax before restarting. It prevents self-inflicted outages.</p>
-
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <pre><code>rsyslogd: version 8.2310.0, config validation run (level 1), master config /etc/rsyslog.conf
 rsyslogd: End of config validation run. Bye.</code></pre>
                   </div>
                 </div>
-
                 <!-- Step 7 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
                     <strong class="font-alt">Step 7</strong>: Restart rsyslog to apply forwarding.
                   </div>
-
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
@@ -447,16 +297,13 @@ rsyslogd: End of config validation run. Bye.</code></pre>
                     </div>
                     <pre><code id="cmd-step-7">sudo systemctl restart rsyslog</code></pre>
                   </div>
-
                   <p>A clean restart after validation ensures the forward rule is active.</p>
                 </div>
-
                 <!-- Step 8 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
                     <strong class="font-alt">Step 8</strong>: Generate a test log message.
                   </div>
-
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
@@ -464,16 +311,13 @@ rsyslogd: End of config validation run. Bye.</code></pre>
                     </div>
                     <pre><code id="cmd-step-8">logger -p local0.notice 'test: forwarding enabled'</code></pre>
                   </div>
-
                   <p>This produces a deterministic event you can trace through the local pipeline.</p>
                 </div>
-
                 <!-- Step 9 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
                     <strong class="font-alt">Step 9</strong>: Confirm the message appears locally.
                   </div>
-
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
@@ -481,21 +325,17 @@ rsyslogd: End of config validation run. Bye.</code></pre>
                     </div>
                     <pre><code id="cmd-step-9">tail -n 5 /var/log/messages</code></pre>
                   </div>
-
                   <p>Local confirmation validates ingestion. Forwarding confirmation requires checking the collector side.</p>
-
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <pre><code>Jan 25 07:36:18 lab144 rsyslogd[1043]: [origin software="rsyslogd" swVersion="8.2310.0" x-pid="1043" x-info="https://www.rsyslog.com"] start
 Jan 25 07:36:25 lab144 lab[pts/0]: test: forwarding enabled</code></pre>
                   </div>
                 </div>
-
                 <!-- Step 10 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
                     <strong class="font-alt">Step 10</strong>: Verify NTP sync status with chrony.
                   </div>
-
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
@@ -503,9 +343,7 @@ Jan 25 07:36:25 lab144 lab[pts/0]: test: forwarding enabled</code></pre>
                     </div>
                     <pre><code id="cmd-step-10">chronyc tracking</code></pre>
                   </div>
-
                   <p><code>chronyc tracking</code> summarizes whether the system clock is synchronized and how stable it is.</p>
-
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <pre><code>Reference ID    : C0A80101 (ntp1.example.com)
 Stratum         : 3
@@ -523,18 +361,15 @@ Leap status     : Normal</code></pre>
                   </div>
                 </div>
               </section>
-
               <!-- Common breakpoints -->
               <section class="lab-section" id="breakpoints">
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">Breakpoints</h3>
-
                 <div class="lab-callout">
                   <div class="lab-callout-label">/etc/systemd/journald.conf.d does not exist</div>
                   <p class="m-b-0">
                     Create it first: <code>sudo mkdir -p /etc/systemd/journald.conf.d</code>. Then add the drop-in file.
                   </p>
                 </div>
-
                 <div class="lab-callout">
                   <div class="lab-callout-label">/var/log/journal is missing after restart</div>
                   <p class="m-b-0">
@@ -542,7 +377,6 @@ Leap status     : Normal</code></pre>
                     <code>[Journal]</code> section with <code>Storage=persistent</code>. Then restart journald again.
                   </p>
                 </div>
-
                 <div class="lab-callout">
                   <div class="lab-callout-label">rsyslog restart fails</div>
                   <p class="m-b-0">
@@ -550,7 +384,6 @@ Leap status     : Normal</code></pre>
                     check the journal for denial messages.
                   </p>
                 </div>
-
                 <div class="lab-callout">
                   <div class="lab-callout-label">No message in /var/log/messages</div>
                   <p class="m-b-0">
@@ -558,7 +391,6 @@ Leap status     : Normal</code></pre>
                     and confirm log destination config. Use <code>journalctl -t lab</code> or search for the message in the journal.
                   </p>
                 </div>
-
                 <div class="lab-callout">
                   <div class="lab-callout-label">chronyc tracking shows unsynchronized</div>
                   <p class="m-b-0">
@@ -567,16 +399,13 @@ Leap status     : Normal</code></pre>
                   </p>
                 </div>
               </section>
-
               <!-- Cleanup -->
               <section class="lab-section alt-background" id="cleanup">
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">Cleanup checklist</h3>
-
                 <p>
                   This lab makes durable changes (journald persistence and rsyslog forwarding). In a real environment, you would
                   leave them in place. For a disposable lab host, you may want a quick rollback plan.
                 </p>
-
                 <div class="lab-codeblock m-b-40 m-t-40">
                   <div class="lab-codeblock-header">
                     <span>Optional rollback</span>
@@ -587,7 +416,6 @@ sudo rm -f /etc/rsyslog.d/90-forward.conf
 sudo systemctl restart systemd-journald
 sudo systemctl restart rsyslog</code></pre>
                 </div>
-
                 <div class="lab-callout">
                   <div class="lab-callout-label">Final verification signal</div>
                   <p class="m-b-0">
@@ -597,28 +425,22 @@ sudo systemctl restart rsyslog</code></pre>
                   </p>
                 </div>
               </section>
-
               <!-- Reference (minimal format: command: description) -->
               <section class="lab-section" id="reference">
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">Reference</h3>
-
                 <ul class="lab-reference-list">
                   <li>
                     <code>journalctl --disk-usage</code>: show current journal space usage.
                   </li>
-
                   <li>
                     <code>vim /etc/systemd/journald.conf.d/10-persistent.conf</code>: create a journald drop-in for persistence.
                   </li>
-
                   <li>
                     <code>Storage=persistent</code>: store journals on disk under <code>/var/log/journal</code>.
                   </li>
-
                   <li>
                     <code>systemctl restart systemd-journald</code>: apply journald configuration changes.
                   </li>
-
                   <li>
                     <code>ls -ld /var/log/journal</code>: verify persistent journal directory exists and check permissions.
                     <ul>
@@ -626,11 +448,9 @@ sudo systemctl restart rsyslog</code></pre>
                       <li><code>-d</code>: list the directory itself.</li>
                     </ul>
                   </li>
-
                   <li>
                     <code>vim /etc/rsyslog.d/90-forward.conf</code>: create an rsyslog forwarding drop-in.
                   </li>
-
                   <li>
                     <code>*.* @@host:514</code>: forward all syslog messages to a remote collector over TCP.
                     <ul>
@@ -638,107 +458,45 @@ sudo systemctl restart rsyslog</code></pre>
                       <li><code>@@</code>: TCP forwarding.</li>
                     </ul>
                   </li>
-
                   <li>
                     <code>rsyslogd -N1</code>: validate rsyslog configuration syntax.
                   </li>
-
                   <li>
                     <code>systemctl restart rsyslog</code>: apply rsyslog configuration changes.
                   </li>
-
                   <li>
                     <code>logger -p local0.notice 'message'</code>: generate a controlled syslog event.
                     <ul>
                       <li><code>-p facility.level</code>: set syslog priority (facility + severity).</li>
                     </ul>
                   </li>
-
                   <li>
                     <code>tail -n 5 /var/log/messages</code>: confirm recent rsyslog-ingested messages locally.
                     <ul>
                       <li><code>-n 5</code>: show the last 5 lines.</li>
                     </ul>
                   </li>
-
                   <li>
                     <code>chronyc tracking</code>: show chrony synchronization and clock stability summary.
                   </li>
                 </ul>
               </section>
-            </div>
-            <!-- /main -->
-          </div>
-          <!-- /row -->
-        </div>
-        <!-- /container -->
-      </section>
-
-      <!-- FOOTER -->
-      <footer class="module bg-light">
-        <div class="container">
-          <div class="row">
-            <div class="col-sm-12">
-              <ul class="social-text-links font-alt text-center m-b-20">
-                <li>
-                  <a href="https://github.com/vonds" target="_blank" rel="noopener">
-                    Github
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="https://www.linkedin.com/in/vonds/"
-                    target="_blank"
-                    rel="noopener"
-                  >
-                    Linkedin
-                  </a>
-                </li>
-              </ul>
-            </div>
-          </div>
-
-          <div class="row">
-            <div class="col-sm-12">
-              <p class="copyright text-center m-b-0">
-                VONDS &copy; <span id="year"></span>
-              </p>
-
-              <div class="scroll-up">
-                <a href="#totop"><i class="fa fa-angle-double-up"></i></a>
-              </div>
-            </div>
-          </div>
-        </div>
-      </footer>
+        <nav class="pager" aria-label="Previous and next lab"><a class="prev" href="lab143.html" rel="prev"><span class="dir alt">&larr; Previous &middot; Lab 143</span><span class="t">Journal Cleanup &amp; Printing Workflow</span></a><a class="next" href="lab145.html" rel="next"><span class="dir alt">Next &middot; Lab 145 &rarr;</span><span class="t">RHCSA Admin Tasks — Permissions + Cron + at + Time + Accounts</span></a></nav>
+      </article>
     </div>
+  </div>
+</main>
 
-    <!-- Javascript files (your existing) -->
-    <script src="../assets/js/jquery-2.2.4.min.js"></script>
-    <script src="../assets/bootstrap/js/bootstrap.min.css"></script>
-    <script src="../assets/js/jquery.superslides.min.js"></script>
-    <script src="../assets/js/jquery.mb.YTPlayer.min.js"></script>
-    <script src="../assets/js/jquery.magnific-popup.min.js"></script>
-    <script src="../assets/js/owl.carousel.min.js"></script>
-    <script src="../assets/js/jquery.simple-text-rotator.min.js"></script>
-    <script src="../assets/js/imagesloaded.pkgd.js"></script>
-    <script src="../assets/js/isotope.pkgd.min.js"></script>
-    <script src="../assets/js/packery-mode.pkgd.min.js"></script>
-    <script src="../assets/js/packery-mode.pkgd.min.js"></script>
-    <script src="../assets/js/appear.js"></script>
-    <script src="../assets/js/jquery.easing.1.3.js"></script>
-    <script src="../assets/js/wow.min.js"></script>
-    <script src="../assets/js/jqBootstrapValidation.js"></script>
-    <script src="../assets/js/jquery.fitvids.js"></script>
-    <script src="../assets/js/jquery.parallax-1.1.3.js"></script>
-    <script src="../assets/js/smoothscroll.js"></script>
-    <script src="../assets/js/custom.js"></script>
-
-    <!-- Lab page JS (new) -->
-    <script src="../assets/js/lab.js"></script>
-
-    <script>
-      document.getElementById("year").textContent = new Date().getFullYear()
-    </script>
-  </body>
+<footer>
+  <img class="mark" src="assets/images/logo-dark.svg" alt="Vonds">
+  <nav aria-label="Footer" class="alt">
+    <a href="index.html#about">About</a><a href="index.html#portfolio">Portfolio</a><a href="docs.html">exit_0 Labs</a><a href="index.html#contact">Contact</a><a href="https://www.linkedin.com/in/vonds/">LinkedIn</a>
+  </nav>
+  <div class="line"></div>
+  <p class="copyright alt">Vonds &copy; 2026</p>
+</footer>
+<button class="to-top" id="toTop" type="button" aria-label="Back to top">&uarr;</button>
+<script src="assets/js/site.js" defer></script>
+<script src="assets/js/lab.js" defer></script>
+</body>
 </html>

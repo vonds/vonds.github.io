@@ -1,181 +1,94 @@
-<!-- lab130.html -->
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="exit_0 Documentation" />
-    <meta name="name" content="Vonds" />
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lab 130: Networking Fundamentals — Restore Connectivity | exit_0 Labs</title>
+<meta name="description" content="Restore outbound connectivity and name resolution when the host can reach the gateway but cannot reach public IPs and DNS names fail. Confirm interface…">
+<link rel="canonical" href="https://vonds.github.io/lab130.html">
+<meta name="theme-color" content="#2e2e30">
+<meta name="author" content="Vonds">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="Vonds">
+<meta property="og:url" content="https://vonds.github.io/lab130.html">
+<meta property="og:title" content="Lab 130: Networking Fundamentals — Restore Connectivity | exit_0 Labs">
+<meta property="og:description" content="Restore outbound connectivity and name resolution when the host can reach the gateway but cannot reach public IPs and DNS names fail. Confirm interface…">
+<meta property="og:image" content="https://vonds.github.io/assets/images/og/og-exit0.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="exit_0: 165 hands-on Linux labs for real system administration.">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Lab 130: Networking Fundamentals — Restore Connectivity | exit_0 Labs">
+<meta name="twitter:description" content="Restore outbound connectivity and name resolution when the host can reach the gateway but cannot reach public IPs and DNS names fail. Confirm interface…">
+<meta name="twitter:image" content="https://vonds.github.io/assets/images/og/og-exit0.jpg">
+<link rel="icon" type="image/svg+xml" href="assets/images/favicon.svg">
+<link rel="icon" type="image/png" href="assets/images/favicon.png">
+<link rel="apple-touch-icon" href="assets/images/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Dosis:wght@300;400;500;600&family=Open+Sans:wght@400;600&display=swap">
+<link rel="stylesheet" href="assets/css/site.css">
+<link rel="stylesheet" href="assets/css/exit0.css">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Vonds","item":"https://vonds.github.io/"},{"@type":"ListItem","position":2,"name":"exit_0 Labs","item":"https://vonds.github.io/docs.html"},{"@type":"ListItem","position":3,"name":"Lab 130","item":"https://vonds.github.io/lab130.html"}]}</script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="header solid" id="header">
+  <div class="wrap">
+    <a class="brand" href="index.html" aria-label="Vonds home">
+      <img class="logo-dark" src="assets/images/logo-dark.svg" alt="Vonds">
+      <img class="logo-light" src="assets/images/logo-light.svg" alt="" aria-hidden="true">
+    </a>
+    <button class="menu-btn" id="menuOpen" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="overlay">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</header>
 
-    <title>Vonds | Lab 130</title>
-
-    <!-- Favicons -->
-    <link rel="icon" type="image/svg+xml" href="../assets/images/favicon.svg" />
-    <link rel="icon" type="image/png" href="../assets/images/favicon.png" />
-    <link rel="apple-touch-icon" href="../assets/images/apple-touch-icon.png" />
-    <link rel="apple-touch-icon" sizes="72x72" href="../assets/images/apple-touch-icon-72x72.png" />
-    <link rel="apple-touch-icon" sizes="114x114" href="../assets/images/apple-touch-icon-114x114.png" />
-
-    <!-- Site styles (your existing) -->
-    <link href="../assets/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
-    <link href="../assets/css/font-awesome.min.css" rel="stylesheet" />
-    <link href="../assets/css/linea-icons.css" rel="stylesheet" />
-    <link href="../assets/css/ionicons.min.css" rel="stylesheet" />
-    <link href="../assets/css/simpletextrotator.css" rel="stylesheet" />
-    <link href="../assets/css/magnific-popup.css" rel="stylesheet" />
-    <link href="../assets/css/owl.carousel.css" rel="stylesheet" />
-    <link href="../assets/css/superslides.css" rel="stylesheet" />
-    <link href="../assets/css/vertical.css" rel="stylesheet" />
-    <link href="../assets/css/animate.css" rel="stylesheet" />
-    <link href="../assets/css/style.css" rel="stylesheet" />
-    <link href="../assets/css/docs.css" rel="stylesheet" />
-
-    <!-- Lab page styles -->
-    <link href="../assets/css/lab.css" rel="stylesheet" />
-
-    <!-- Fonts -->
-    <link href="https://fonts.googleapis.com/css?family=Dosis" rel="stylesheet" />
-  </head>
-
-  <body>
-    <!-- PRELOADER -->
-    <div class="page-loader">
-      <div class="loader">Loading...</div>
+<div class="overlay" id="overlay" aria-hidden="true">
+  <button class="close" id="menuClose" type="button" aria-label="Close menu">&times;</button>
+  <nav aria-label="Main">
+    <a class="alt" href="index.html">Home</a>
+    <a class="alt" href="index.html#about">About</a>
+    <a class="alt" href="index.html#portfolio">Portfolio</a>
+    <div class="sub">
+      <a class="alt" href="https://black-signal-demo.netlify.app/">Black Signal</a>
+      <a class="alt" href="https://deeds-demo.netlify.app/">DEEDS</a>
+      <a class="alt" href="https://digital-resource-map-demo.netlify.app/">Digital Resource Map</a>
+      <a class="alt" href="https://thetravelingarchive.com/">The Traveling Archive</a>
+      <a class="alt" href="https://github.com/vonds/sentinel">Sentinel</a>
+      <a class="alt" href="docs.html">exit_0 Labs</a>
     </div>
+    <a class="alt" href="index.html#services">Services</a>
+    <a class="alt" href="index.html#contact">Contact</a>
+    <a class="alt" href="https://www.linkedin.com/in/vonds/">LinkedIn</a>
+  </nav>
+  <div class="foot alt">Vonds &copy; <span id="year">2026</span></div>
+</div>
 
-    <!-- OVERLAY MENU -->
-    <div id="overlay-menu" class="overlay-menu">
-      <a href="#" id="overlay-menu-hide" class="navigation-hide">
-        <i class="ion-close-round"></i>
-      </a>
-
-      <div class="overlay-menu-inner">
-        <nav class="overlay-menu-nav">
-          <ul id="nav">
-            <li><a href="../index.html">Home</a></li>
-
-            <li class="slidedown">
-              <a href="#">Portfolio</a>
-              <ul>
-                <li>
-                  <a href="https://github.com/vonds/exit_0" target="_blank" rel="noopener">
-                    exit_0
-                  </a>
-                </li>
-                <li>
-                  <a href="docs.html" target="_blank" rel="noopener">
-                    exit_0 Documentation
-                  </a>
-                </li>
-                <li>
-                  <a href="https://github.com/vonds/sentinel" target="_blank" rel="noopener">
-                    Sentinel
-                  </a>
-                </li>
-              </ul>
-            </li>
-
-            <li>
-              <a href="https://www.linkedin.com/in/vonds/" target="_blank" rel="noopener">
-                LinkedIn
-              </a>
-            </li>
-            <li>
-              <a href="https://github.com/vonds" target="_blank" rel="noopener">
-                Github
-              </a>
-            </li>
-            <li>
-              <a href="mailto:vonds13@gmail.com?subject=Hello Vonds">Contact</a>
-            </li>
-          </ul>
+<main class="x0" id="main">
+  <div class="x0-wrap">
+    <nav class="crumbs alt" aria-label="Breadcrumb"><a href="index.html">Vonds</a><span class="sep" aria-hidden="true">/</span><a href="docs.html">exit_0 Labs</a><span class="sep" aria-hidden="true">/</span><span aria-current="page">Lab 130</span></nav>
+    <header class="x0-head">
+      <p class="eyebrow alt"><b>Lab 130</b> &middot; networking</p>
+      <h1>Networking Fundamentals — Restore Connectivity</h1>
+      <p class="lede">Restore outbound connectivity and name resolution when the host can reach the gateway but cannot reach public IPs and DNS names fail. Confirm interface state, restore a missing default route, then correct DNS via NetworkManager and verify HTTP access.</p>
+      <nav class="pager-mini" aria-label="Lab navigation"><a class="alt" href="lab129.html" rel="prev">&larr; Lab 129</a><a class="alt" href="lab131.html" rel="next">Lab 131 &rarr;</a></nav>
+    </header>
+    <div class="x0-grid">
+      <aside class="x0-side" aria-label="On this page">
+        <nav class="toc">
+          <a class="back alt" href="docs.html">&larr; All labs</a>
+          <p class="toc-h alt">On this page</p>
+          <ul><li><a href="#video">Video</a></li><li><a href="#scenario">Scenario</a></li><li><a href="#objective">Objective</a></li><li><a href="#concepts">Concepts</a></li><li><a href="#walkthrough">Walkthrough</a></li><li><a href="#breakpoints">Breakpoints</a></li><li><a href="#cleanup">Cleanup checklist</a></li><li><a href="#reference">Reference</a></li></ul>
         </nav>
-      </div>
-
-      <div class="overlay-navigation-footer">
-        <div class="container">
-          <div class="row">
-            <div class="col-sm-12 text-center">
-              <p class="copyright font-alt m-b-0">
-                VONDS &copy;
-                <script>
-                  document.write(new Date().getFullYear())
-                </script>
-              </p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- WRAPPER -->
-    <div class="wrapper">
-      <!-- NAVIGATION -->
-      <nav class="navbar navbar-custom navbar-transparent navbar-light navbar-fixed-top">
-        <div class="container">
-          <div class="navbar-header">
-            <a class="navbar-brand" href="../index.html">
-              <img class="logo-dark" src="../assets/images/logo-dark.svg" alt="Vonds" /><img class="logo-light" src="../assets/images/logo-light.svg" alt="" aria-hidden="true" />
-            </a>
-          </div>
-
-          <ul id="icons-navbar" class="nav navbar-nav navbar-right">
-            <li>
-              <a href="#" id="toggle-menu" class="show-overlay" title="Menu">
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-              </a>
-            </li>
-          </ul>
-        </div>
-      </nav>
-
-      <!-- DOCS PAGE -->
-      <section class="module">
-        <div class="container">
-          <h2 class="font-alt module-title m-t-60">
-            Lab 130: Networking Fundamentals — Restore Connectivity
-          </h2>
-
-          <nav class="lab-pagination">
-            <a id="prev-lab" class="lab-nav-link" href="#" aria-label="Previous lab">&laquo;</a>
-            <a id="next-lab" class="lab-nav-link" href="#" aria-label="Next lab">&raquo;</a>
-          </nav>
-
-          <div class="row">
-            <!-- LEFT SIDEBAR -->
-            <div class="col-sm-4 col-md-3 lab-sidebar">
-              <div class="docs-sidebar">
-                <div class="docs-widget">
-                  <h5 class="widget-title">
-                    <a href="./docs.html">Back to Lab Index</a>
-                  </h5>
-                  <ul class="docs-nav">
-                    <li><a href="#scenario">Scenario</a></li>
-                    <li><a href="#objective">Objective</a></li>
-                    <li><a href="#concepts">Concepts</a></li>
-                    <li><a href="#walkthrough">Walkthrough</a></li>
-                    <li><a href="#breakpoints">Breakpoints</a></li>
-                    <li><a href="#cleanup">Cleanup</a></li>
-                    <li><a href="#reference">Reference</a></li>
-                  </ul>
-                </div>
-              </div>
-            </div>
-
-            <!-- MAIN CONTENT -->
-            <div class="col-sm-8 col-md-9 lab-doc">
-              <p class="m-b-20 lab-summary">
-                Restore outbound connectivity and name resolution when the host can reach the gateway but cannot reach public IPs and DNS names fail.
-                Confirm interface state, restore a missing default route, then correct DNS via NetworkManager and verify HTTP access.
-              </p>
-
-              <section class="lab-section" id="video" aria-label="Lab video">
+      </aside>
+      <article class="x0-doc">
+<section class="lab-section" id="video" aria-label="Lab video">
                 <div class="lab-video">
                   <div class="lab-video-embed text-center">
-                    <iframe
-                      src="https://www.youtube.com/embed/Mk6mNjlHpJo?si=QU6qmGaXI3tEXJ3W"
+                    <iframe loading="lazy"
+                      src="https://www.youtube-nocookie.com/embed/Mk6mNjlHpJo?si=QU6qmGaXI3tEXJ3W"
                       title="YouTube video player"
                       frameborder="0"
                       allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
@@ -185,7 +98,6 @@
                   </div>
                 </div>
               </section>
-
               <!-- Scenario -->
               <section class="lab-section" id="scenario">
                 <div class="lab-chips" aria-label="Tags">
@@ -195,15 +107,12 @@
                   <span class="lab-chip"><span class="lab-chip-key">troubleshooting</span></span>
                   <span class="lab-chip"><span class="lab-chip-key">core</span></span>
                 </div>
-
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">Scenario</h3>
-
                 <p>
                   A VM on a training network reports: “I can ping the gateway, but the internet is down and DNS names fail.”
                   You have console access and must confirm IP configuration, confirm routing, confirm DNS, fix the issue, and verify access to
                   <code>http://example.com</code>.
                 </p>
-
                 <div class="lab-callout">
                   <div class="lab-callout-label">Network facts</div>
                   <p class="m-b-0">
@@ -212,7 +121,6 @@
                   </p>
                 </div>
               </section>
-
               <!-- Objective -->
               <section class="lab-section alt-background" id="objective">
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">Objective</h3>
@@ -225,22 +133,18 @@
                   <li>Set DNS to <code>10.0.2.3</code> via NetworkManager and verify name resolution and HTTP access.</li>
                 </ul>
               </section>
-
               <!-- Concepts -->
               <section class="lab-section" id="concepts">
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">Concepts</h3>
-
                 <p>
                   “Internet is down” is not a single failure. You isolate it in layers:
                 </p>
-
                 <ul>
                   <li><strong>Interface and IP</strong>: the NIC is up and has a correct address/prefix.</li>
                   <li><strong>Local path</strong>: you can reach the gateway (same subnet).</li>
                   <li><strong>Routing</strong>: you can reach the gateway but cannot reach public IPs because there is no default route.</li>
                   <li><strong>DNS</strong>: you can reach public IPs but hostnames fail because the resolver is wrong.</li>
                 </ul>
-
                 <div class="lab-callout">
                   <div class="lab-callout-label">Order matters</div>
                   <p class="m-b-0">
@@ -248,17 +152,14 @@
                   </p>
                 </div>
               </section>
-
               <!-- Walkthrough -->
               <section class="lab-section alt-background" id="walkthrough">
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">Walkthrough</h3>
-
                 <!-- Step 1 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
                     <strong class="font-alt">Step 1</strong>: Confirm <code>eth0</code> has an IPv4 address.
                   </div>
-
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
@@ -266,18 +167,15 @@
                     </div>
                     <pre><code id="cmd-130-1">ip -4 addr show eth0</code></pre>
                   </div>
-
                   <p>
                     If the interface has no IPv4 address, do not troubleshoot DNS yet. You need working addressing first.
                   </p>
                 </div>
-
                 <!-- Step 2 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
                     <strong class="font-alt">Step 2</strong>: Prove the gateway is reachable.
                   </div>
-
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
@@ -285,18 +183,15 @@
                     </div>
                     <pre><code id="cmd-130-2">ping -c 2 10.0.2.2</code></pre>
                   </div>
-
                   <p>
                     This confirms local L2/L3 connectivity. If this fails, fix the local network before anything else.
                   </p>
                 </div>
-
                 <!-- Step 3 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
                     <strong class="font-alt">Step 3</strong>: Test public IP reachability (bypass DNS).
                   </div>
-
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
@@ -304,18 +199,15 @@
                     </div>
                     <pre><code id="cmd-130-3">ping -c 2 1.1.1.1</code></pre>
                   </div>
-
                   <p>
                     If the gateway ping works but this fails, routing is usually broken (often a missing default route).
                   </p>
                 </div>
-
                 <!-- Step 4 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
                     <strong class="font-alt">Step 4</strong>: Inspect the routing table.
                   </div>
-
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
@@ -323,18 +215,15 @@
                     </div>
                     <pre><code id="cmd-130-4">ip route</code></pre>
                   </div>
-
                   <p>
                     You should see a line starting with <code>default via ...</code>. If it is missing, the host has no path to networks outside its subnet.
                   </p>
                 </div>
-
                 <!-- Step 5 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
                     <strong class="font-alt">Step 5</strong>: Add the missing default route.
                   </div>
-
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
@@ -342,7 +231,6 @@
                     </div>
                     <pre><code id="cmd-130-5">sudo ip route add default via 10.0.2.2 dev eth0</code></pre>
                   </div>
-
                   <div class="lab-callout">
                     <div class="lab-callout-label">Note</div>
                     <p class="m-b-0">
@@ -351,13 +239,11 @@
                     </p>
                   </div>
                 </div>
-
                 <!-- Step 6 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
                     <strong class="font-alt">Step 6</strong>: Re-test public IP reachability.
                   </div>
-
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
@@ -365,18 +251,15 @@
                     </div>
                     <pre><code id="cmd-130-6">ping -c 2 1.1.1.1</code></pre>
                   </div>
-
                   <p>
                     If this now works, routing is fixed. Move on to DNS.
                   </p>
                 </div>
-
                 <!-- Step 7 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
                     <strong class="font-alt">Step 7</strong>: Inspect DNS configuration (systemd-resolved stack).
                   </div>
-
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
@@ -384,18 +267,15 @@
                     </div>
                     <pre><code id="cmd-130-7">resolvectl status</code></pre>
                   </div>
-
                   <p>
                     Check which DNS servers are assigned to <code>eth0</code>. In this lab, the DNS server is incorrect and must be set to <code>10.0.2.3</code>.
                   </p>
                 </div>
-
                 <!-- Step 8 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
                     <strong class="font-alt">Step 8</strong>: Find the active NetworkManager connection name for <code>eth0</code>.
                   </div>
-
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
@@ -403,18 +283,15 @@
                     </div>
                     <pre><code id="cmd-130-8">nmcli -t -f DEVICE,NAME con show --active | grep '^eth0:'</code></pre>
                   </div>
-
                   <p>
                     You will use the connection name from this output in the next steps.
                   </p>
                 </div>
-
                 <!-- Step 9 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
                     <strong class="font-alt">Step 9</strong>: Set IPv4 DNS to <code>10.0.2.3</code> on the active connection.
                   </div>
-
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
@@ -422,18 +299,15 @@
                     </div>
                     <pre><code id="cmd-130-9">sudo nmcli con mod "&lt;CONNECTION_NAME&gt;" ipv4.dns "10.0.2.3"</code></pre>
                   </div>
-
                   <p>
                     This updates the NetworkManager profile instead of editing <code>/etc/resolv.conf</code> by hand.
                   </p>
                 </div>
-
                 <!-- Step 10 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
                     <strong class="font-alt">Step 10</strong>: Apply the change (without reboot).
                   </div>
-
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
@@ -441,18 +315,15 @@
                     </div>
                     <pre><code id="cmd-130-10">sudo nmcli con up "&lt;CONNECTION_NAME&gt;"</code></pre>
                   </div>
-
                   <p>
                     Bringing the connection up re-applies the profile and pushes the DNS change into the resolver stack.
                   </p>
                 </div>
-
                 <!-- Step 11 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
                     <strong class="font-alt">Step 11</strong>: Verify name resolution and HTTP access.
                   </div>
-
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
@@ -461,17 +332,14 @@
                     <pre><code id="cmd-130-11">getent hosts example.com
 curl -I http://example.com</code></pre>
                   </div>
-
                   <p>
                     First prove DNS resolves the name, then prove end-to-end application connectivity with an HTTP request.
                   </p>
                 </div>
               </section>
-
               <!-- Breakpoints -->
               <section class="lab-section" id="breakpoints">
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">Breakpoints</h3>
-
                 <div class="lab-callout">
                   <div class="lab-callout-label">Gateway ping works, but 1.1.1.1 still fails after adding default route</div>
                   <p class="m-b-0">
@@ -479,7 +347,6 @@ curl -I http://example.com</code></pre>
                     <code>traceroute</code> or <code>tracepath</code> and firewall/policy checks.
                   </p>
                 </div>
-
                 <div class="lab-callout">
                   <div class="lab-callout-label">DNS still fails after nmcli change</div>
                   <p class="m-b-0">
@@ -487,14 +354,12 @@ curl -I http://example.com</code></pre>
                     and re-check whether the environment expects additional DNS servers or search domains.
                   </p>
                 </div>
-
                 <div class="lab-callout">
                   <div class="lab-callout-label">Route change disappears later</div>
                   <p class="m-b-0">
                     <code>ip route add</code> is runtime state. Persist it in the network manager used by the system so it survives reboot.
                   </p>
                 </div>
-
                 <div class="lab-callout">
                   <div class="lab-callout-label">Name resolution works, but HTTP fails</div>
                   <p class="m-b-0">
@@ -502,29 +367,23 @@ curl -I http://example.com</code></pre>
                   </p>
                 </div>
               </section>
-
               <!-- Cleanup -->
               <section class="lab-section alt-background" id="cleanup">
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">Cleanup checklist</h3>
-
                 <p>
                   If you need to revert changes after the lab, remove the runtime default route you added and clear the connection DNS override.
                 </p>
-
                 <div class="lab-codeblock m-b-40 m-t-40">
                   <div class="lab-codeblock-header">
                     <span>Commands</span>
                     <button class="lab-copy-btn" type="button" data-copy="#cmd-130-cleanup">Copy</button>
                   </div>
                   <pre><code id="cmd-130-cleanup">sudo ip route del default via 10.0.2.2 dev eth0
-
 sudo nmcli con mod "&lt;CONNECTION_NAME&gt;" ipv4.dns ""
 sudo nmcli con up "&lt;CONNECTION_NAME&gt;"
-
 ip route
 resolvectl status</code></pre>
                 </div>
-
                 <div class="lab-callout">
                   <div class="lab-callout-label">Success signal</div>
                   <p class="m-b-0">
@@ -533,11 +392,9 @@ resolvectl status</code></pre>
                   </p>
                 </div>
               </section>
-
               <!-- Reference -->
               <section class="lab-section" id="reference">
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">Reference</h3>
-
                 <ul class="lab-reference-list">
                   <li><code>ip -4 addr show &lt;iface&gt;</code>: show IPv4 addressing and interface state.</li>
                   <li><code>ip route</code>: inspect the routing table and default route.</li>
@@ -553,70 +410,22 @@ resolvectl status</code></pre>
                   <li><code>tracepath &lt;host&gt;</code>: inspect path behavior and discover MTU/routing issues.</li>
                 </ul>
               </section>
-            </div>
-            <!-- /main -->
-          </div>
-          <!-- /row -->
-        </div>
-        <!-- /container -->
-      </section>
-
-      <!-- FOOTER -->
-      <footer class="module bg-light">
-        <div class="container">
-          <div class="row">
-            <div class="col-sm-12">
-              <ul class="social-text-links font-alt text-center m-b-20">
-                <li>
-                  <a href="https://github.com/vonds" target="_blank" rel="noopener">Github</a>
-                </li>
-                <li>
-                  <a href="https://www.linkedin.com/in/vonds/" target="_blank" rel="noopener">Linkedin</a>
-                </li>
-              </ul>
-            </div>
-          </div>
-
-          <div class="row">
-            <div class="col-sm-12">
-              <p class="copyright text-center m-b-0">
-                VONDS &copy; <span id="year"></span>
-              </p>
-
-              <div class="scroll-up">
-                <a href="#totop"><i class="fa fa-angle-double-up"></i></a>
-              </div>
-            </div>
-          </div>
-        </div>
-      </footer>
+        <nav class="pager" aria-label="Previous and next lab"><a class="prev" href="lab129.html" rel="prev"><span class="dir alt">&larr; Previous &middot; Lab 129</span><span class="t">Fix Intermittent Connectivity (MTU)</span></a><a class="next" href="lab131.html" rel="next"><span class="dir alt">Next &middot; Lab 131 &rarr;</span><span class="t">Fix Wrong Hostname Resolution (hosts override)</span></a></nav>
+      </article>
     </div>
+  </div>
+</main>
 
-    <!-- Javascript files (your existing) -->
-    <script src="../assets/js/jquery-2.2.4.min.js"></script>
-    <script src="../assets/bootstrap/js/bootstrap.min.js"></script>
-    <script src="../assets/js/jquery.superslides.min.js"></script>
-    <script src="../assets/js/jquery.mb.YTPlayer.min.js"></script>
-    <script src="../assets/js/jquery.magnific-popup.min.js"></script>
-    <script src="../assets/js/owl.carousel.min.js"></script>
-    <script src="../assets/js/jquery.simple-text-rotator.min.js"></script>
-    <script src="../assets/js/imagesloaded.pkgd.js"></script>
-    <script src="../assets/js/isotope.pkgd.min.js"></script>
-    <script src="../assets/js/packery-mode.pkgd.min.js"></script>
-    <script src="../assets/js/appear.js"></script>
-    <script src="../assets/js/jquery.easing.1.3.js"></script>
-    <script src="../assets/js/wow.min.js"></script>
-    <script src="../assets/js/jqBootstrapValidation.js"></script>
-    <script src="../assets/js/jquery.fitvids.js"></script>
-    <script src="../assets/js/jquery.parallax-1.1.3.js"></script>
-    <script src="../assets/js/smoothscroll.js"></script>
-    <script src="../assets/js/custom.js"></script>
-
-    <!-- Lab page JS (new) -->
-    <script src="../assets/js/lab.js"></script>
-
-    <script>
-      document.getElementById("year").textContent = new Date().getFullYear()
-    </script>
-  </body>
+<footer>
+  <img class="mark" src="assets/images/logo-dark.svg" alt="Vonds">
+  <nav aria-label="Footer" class="alt">
+    <a href="index.html#about">About</a><a href="index.html#portfolio">Portfolio</a><a href="docs.html">exit_0 Labs</a><a href="index.html#contact">Contact</a><a href="https://www.linkedin.com/in/vonds/">LinkedIn</a>
+  </nav>
+  <div class="line"></div>
+  <p class="copyright alt">Vonds &copy; 2026</p>
+</footer>
+<button class="to-top" id="toTop" type="button" aria-label="Back to top">&uarr;</button>
+<script src="assets/js/site.js" defer></script>
+<script src="assets/js/lab.js" defer></script>
+</body>
 </html>

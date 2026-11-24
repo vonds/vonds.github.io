@@ -1,217 +1,95 @@
-<!-- lab101.html -->
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="exit_0 Documentation" />
-    <meta name="name" content="Vonds" />
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lab 101: Secure Secrets with Ansible Vault | exit_0 Labs</title>
+<meta name="description" content="Encrypt secrets at rest using Ansible Vault so credentials can be version-controlled safely. Practice the full operator workflow: create, view, edit, use in…">
+<link rel="canonical" href="https://vonds.github.io/lab101.html">
+<meta name="theme-color" content="#2e2e30">
+<meta name="author" content="Vonds">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="Vonds">
+<meta property="og:url" content="https://vonds.github.io/lab101.html">
+<meta property="og:title" content="Lab 101: Secure Secrets with Ansible Vault | exit_0 Labs">
+<meta property="og:description" content="Encrypt secrets at rest using Ansible Vault so credentials can be version-controlled safely. Practice the full operator workflow: create, view, edit, use in…">
+<meta property="og:image" content="https://vonds.github.io/assets/images/og/og-exit0.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="exit_0: 165 hands-on Linux labs for real system administration.">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Lab 101: Secure Secrets with Ansible Vault | exit_0 Labs">
+<meta name="twitter:description" content="Encrypt secrets at rest using Ansible Vault so credentials can be version-controlled safely. Practice the full operator workflow: create, view, edit, use in…">
+<meta name="twitter:image" content="https://vonds.github.io/assets/images/og/og-exit0.jpg">
+<link rel="icon" type="image/svg+xml" href="assets/images/favicon.svg">
+<link rel="icon" type="image/png" href="assets/images/favicon.png">
+<link rel="apple-touch-icon" href="assets/images/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Dosis:wght@300;400;500;600&family=Open+Sans:wght@400;600&display=swap">
+<link rel="stylesheet" href="assets/css/site.css">
+<link rel="stylesheet" href="assets/css/exit0.css">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Vonds","item":"https://vonds.github.io/"},{"@type":"ListItem","position":2,"name":"exit_0 Labs","item":"https://vonds.github.io/docs.html"},{"@type":"ListItem","position":3,"name":"Lab 101","item":"https://vonds.github.io/lab101.html"}]}</script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="header solid" id="header">
+  <div class="wrap">
+    <a class="brand" href="index.html" aria-label="Vonds home">
+      <img class="logo-dark" src="assets/images/logo-dark.svg" alt="Vonds">
+      <img class="logo-light" src="assets/images/logo-light.svg" alt="" aria-hidden="true">
+    </a>
+    <button class="menu-btn" id="menuOpen" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="overlay">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</header>
 
-    <title>Vonds | Lab 101</title>
-
-    <!-- Favicons -->
-    <link rel="icon" type="image/svg+xml" href="../assets/images/favicon.svg" />
-    <link rel="icon" type="image/png" href="../assets/images/favicon.png" />
-    <link rel="apple-touch-icon" href="../assets/images/apple-touch-icon.png" />
-    <link
-      rel="apple-touch-icon"
-      sizes="72x72"
-      href="../assets/images/apple-touch-icon-72x72.png"
-    />
-    <link
-      rel="apple-touch-icon"
-      sizes="114x114"
-      href="../assets/images/apple-touch-icon-114x114.png"
-    />
-
-    <!-- Site styles (your existing) -->
-    <link href="../assets/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
-    <link href="../assets/css/font-awesome.min.css" rel="stylesheet" />
-    <link href="../assets/css/linea-icons.css" rel="stylesheet" />
-    <link href="../assets/css/ionicons.min.css" rel="stylesheet" />
-    <link href="../assets/css/simpletextrotator.css" rel="stylesheet" />
-    <link href="../assets/css/magnific-popup.css" rel="stylesheet" />
-    <link href="../assets/css/owl.carousel.css" rel="stylesheet" />
-    <link href="../assets/css/superslides.css" rel="stylesheet" />
-    <link href="../assets/css/vertical.css" rel="stylesheet" />
-    <link href="../assets/css/animate.css" rel="stylesheet" />
-    <link href="../assets/css/style.css" rel="stylesheet" />
-    <link href="../assets/css/docs.css" rel="stylesheet" />
-
-    <!-- Lab page styles -->
-    <link href="../assets/css/lab.css" rel="stylesheet" />
-
-    <!-- Fonts -->
-    <link
-      href="https://fonts.googleapis.com/css?family=Dosis"
-      rel="stylesheet"
-    />
-  </head>
-
-  <body>
-    <!-- PRELOADER -->
-    <div class="page-loader">
-      <div class="loader">Loading...</div>
+<div class="overlay" id="overlay" aria-hidden="true">
+  <button class="close" id="menuClose" type="button" aria-label="Close menu">&times;</button>
+  <nav aria-label="Main">
+    <a class="alt" href="index.html">Home</a>
+    <a class="alt" href="index.html#about">About</a>
+    <a class="alt" href="index.html#portfolio">Portfolio</a>
+    <div class="sub">
+      <a class="alt" href="https://black-signal-demo.netlify.app/">Black Signal</a>
+      <a class="alt" href="https://deeds-demo.netlify.app/">DEEDS</a>
+      <a class="alt" href="https://digital-resource-map-demo.netlify.app/">Digital Resource Map</a>
+      <a class="alt" href="https://thetravelingarchive.com/">The Traveling Archive</a>
+      <a class="alt" href="https://github.com/vonds/sentinel">Sentinel</a>
+      <a class="alt" href="docs.html">exit_0 Labs</a>
     </div>
+    <a class="alt" href="index.html#services">Services</a>
+    <a class="alt" href="index.html#contact">Contact</a>
+    <a class="alt" href="https://www.linkedin.com/in/vonds/">LinkedIn</a>
+  </nav>
+  <div class="foot alt">Vonds &copy; <span id="year">2026</span></div>
+</div>
 
-    <!-- OVERLAY MENU -->
-    <div id="overlay-menu" class="overlay-menu">
-      <a href="#" id="overlay-menu-hide" class="navigation-hide">
-        <i class="ion-close-round"></i>
-      </a>
-
-      <div class="overlay-menu-inner">
-        <nav class="overlay-menu-nav">
-          <ul id="nav">
-            <li><a href="../index.html">Home</a></li>
-
-            <li class="slidedown">
-              <a href="#">Portfolio</a>
-              <ul>
-                <li>
-                  <a
-                    href="https://github.com/vonds/exit_0"
-                    target="_blank"
-                    rel="noopener"
-                  >
-                    exit_0
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="https://github.com/vonds/sentinel"
-                    target="_blank"
-                    rel="noopener"
-                  >
-                    Sentinel
-                  </a>
-                </li>
-              </ul>
-            </li>
-
-            <li>
-              <a
-                href="https://www.linkedin.com/in/vonds/"
-                target="_blank"
-                rel="noopener"
-              >
-                LinkedIn
-              </a>
-            </li>
-            <li>
-              <a href="https://github.com/vonds" target="_blank" rel="noopener">
-                Github
-              </a>
-            </li>
-            <li>
-              <a href="mailto:vonds13@gmail.com?subject=Hello Vonds">Contact</a>
-            </li>
-          </ul>
+<main class="x0" id="main">
+  <div class="x0-wrap">
+    <nav class="crumbs alt" aria-label="Breadcrumb"><a href="index.html">Vonds</a><span class="sep" aria-hidden="true">/</span><a href="docs.html">exit_0 Labs</a><span class="sep" aria-hidden="true">/</span><span aria-current="page">Lab 101</span></nav>
+    <header class="x0-head">
+      <p class="eyebrow alt"><b>Lab 101</b> &middot; services</p>
+      <h1>Secure Secrets with Ansible Vault</h1>
+      <p class="lede">Encrypt secrets at rest using Ansible Vault so credentials can be version-controlled safely. Practice the full operator workflow: create, view, edit, use in a playbook run, and rotate vault passwords.</p>
+      <nav class="pager-mini" aria-label="Lab navigation"><a class="alt" href="lab100.html" rel="prev">&larr; Lab 100</a><a class="alt" href="lab102.html" rel="next">Lab 102 &rarr;</a></nav>
+    </header>
+    <div class="x0-grid">
+      <aside class="x0-side" aria-label="On this page">
+        <nav class="toc">
+          <a class="back alt" href="docs.html">&larr; All labs</a>
+          <p class="toc-h alt">On this page</p>
+          <ul><li><a href="#video">Video</a></li><li><a href="#scenario">Scenario</a></li><li><a href="#objective">Objective</a></li><li><a href="#concepts">Concepts</a></li><li><a href="#walkthrough">Walkthrough</a></li><li><a href="#breakpoints">Common breakpoints</a></li><li><a href="#cleanup">Cleanup checklist</a></li><li><a href="#reference">Reference</a></li></ul>
         </nav>
-      </div>
-
-      <div class="overlay-navigation-footer">
-        <div class="container">
-          <div class="row">
-            <div class="col-sm-12 text-center">
-              <p class="copyright font-alt m-b-0">
-                VONDS &copy;
-                <script>
-                  document.write(new Date().getFullYear())
-                </script>
-              </p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- WRAPPER -->
-    <div class="wrapper">
-      <!-- NAVIGATION -->
-      <nav
-        class="navbar navbar-custom navbar-transparent navbar-light navbar-fixed-top"
-      >
-        <div class="container">
-          <div class="navbar-header">
-            <a class="navbar-brand" href="../index.html">
-              <img class="logo-dark" src="../assets/images/logo-dark.svg" alt="Vonds" /><img class="logo-light" src="../assets/images/logo-light.svg" alt="" aria-hidden="true" />
-            </a>
-          </div>
-
-          <ul id="icons-navbar" class="nav navbar-nav navbar-right">
-            <li>
-              <a href="#" id="toggle-menu" class="show-overlay" title="Menu">
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-              </a>
-            </li>
-          </ul>
-        </div>
-      </nav>
-
-      <!-- DOCS PAGE -->
-      <section class="module">
-        <div class="container" id="totop">
-          <h2 class="font-alt module-title m-t-60">
-            Lab 101: Secure Secrets with Ansible Vault
-          </h2>
-
-          <nav class="lab-pagination">
-            <a
-              id="prev-lab"
-              class="lab-nav-link"
-              href="./lab100.html"
-              aria-label="Previous lab"
-            >
-              &laquo;
-            </a>
-            <a
-              id="next-lab"
-              class="lab-nav-link"
-              href="./lab102.html"
-              aria-label="Next lab"
-            >
-              &raquo;
-            </a>
-          </nav>
-
-          <div class="row">
-            <!-- LEFT SIDEBAR -->
-            <div class="col-sm-4 col-md-3 lab-sidebar">
-              <div class="docs-sidebar">
-                <div class="docs-widget">
-                  <h5 class="widget-title">
-                    <a href="./docs.html">Back to Lab Index</a>
-                  </h5>
-                  <ul class="docs-nav">
-                    <li><a href="#scenario">Scenario</a></li>
-                    <li><a href="#objective">Objective</a></li>
-                    <li><a href="#concepts">Concepts</a></li>
-                    <li><a href="#walkthrough">Walkthrough</a></li>
-                    <li><a href="#breakpoints">Common breakpoints</a></li>
-                    <li><a href="#cleanup">Cleanup checklist</a></li>
-                    <li><a href="#reference">Reference</a></li>
-                  </ul>
-                </div>
-              </div>
-            </div>
-
-            <!-- MAIN CONTENT -->
-            <div class="col-sm-8 col-md-9 lab-doc">
-              <p class="m-b-20 lab-summary">
-                Encrypt secrets at rest using Ansible Vault so credentials can be
-                version-controlled safely. Practice the full operator workflow:
-                create, view, edit, use in a playbook run, and rotate vault passwords.
-              </p>
-
-              <!-- Optional video section -->
+      </aside>
+      <article class="x0-doc">
+<!-- Optional video section -->
               <section class="lab-section" id="video" aria-label="Lab video">
                 <div class="lab-video">
                   <div class="lab-video-embed text-center">
-                    <iframe
-                      src="https://www.youtube.com/embed/RLzaz5rT8dM?si=fkAVxCNVWC3o9lKR"
+                    <iframe loading="lazy"
+                      src="https://www.youtube-nocookie.com/embed/RLzaz5rT8dM?si=fkAVxCNVWC3o9lKR"
                       title="YouTube video player"
                       frameborder="0"
                       allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
@@ -221,7 +99,6 @@
                   </div>
                 </div>
               </section>
-
               <!-- Scenario -->
               <section class="lab-section" id="scenario">
                 <div class="lab-chips" aria-label="Tags">
@@ -230,18 +107,15 @@
                   <span class="lab-chip"><span class="lab-chip-key">ansible</span></span>
                   <span class="lab-chip"><span class="lab-chip-key">vault</span></span>
                 </div>
-
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">
                   Scenario
                 </h3>
-
                 <p>
                   Your Ansible repo needs to store database credentials and API
                   tokens, but storing secrets in plaintext is not acceptable. You
                   will use <code>ansible-vault</code> to encrypt secrets at rest,
                   load them during a playbook run, and rotate the vault password.
                 </p>
-
                 <div class="lab-callout">
                   <div class="lab-callout-label">Operator context</div>
                   <p class="m-b-0">
@@ -251,7 +125,6 @@
                   </p>
                 </div>
               </section>
-
               <!-- Objective -->
               <section class="lab-section alt-background" id="objective">
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">
@@ -272,7 +145,6 @@
                   </li>
                 </ul>
               </section>
-
               <!-- Concepts -->
               <section class="lab-section" id="concepts">
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">
@@ -297,20 +169,16 @@
                   </li>
                 </ul>
               </section>
-
               <!-- Walkthrough -->
               <section class="lab-section alt-background" id="walkthrough">
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">
                   Walkthrough
                 </h3>
-
                 <!-- Step 1 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
-                    <strong class="font-alt">Step 1</strong>
-                    : Create a new Vault-encrypted file.
+                    <strong class="font-alt">Step 1</strong>: Create a new Vault-encrypted file.
                   </div>
-
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
@@ -320,12 +188,10 @@
                     </div>
                     <pre><code id="cmd-101-1">ansible-vault create secrets.yml</code></pre>
                   </div>
-
                   <p>
                     You will be prompted for a vault password and dropped into an editor.
                     Save and exit to write the encrypted file to disk.
                   </p>
-
                   <div class="lab-codeblock m-b-40 m-t-10">
                     <div class="lab-codeblock-header">
                       <span>secrets.yml (example content while editing)</span>
@@ -339,14 +205,11 @@ db_host: 10.10.20.15
 api_token: "REPLACE_ME"</code></pre>
                   </div>
                 </div>
-
                 <!-- Step 2 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
-                    <strong class="font-alt">Step 2</strong>
-                    : Confirm the file is encrypted on disk.
+                    <strong class="font-alt">Step 2</strong>: Confirm the file is encrypted on disk.
                   </div>
-
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
@@ -356,12 +219,10 @@ api_token: "REPLACE_ME"</code></pre>
                     </div>
                     <pre><code id="cmd-101-2">head -n 5 secrets.yml</code></pre>
                   </div>
-
                   <p>
                     You should see the vault header and ciphertext. If you see plaintext,
                     stop and fix your workflow before committing anything.
                   </p>
-
                   <div class="lab-codeblock m-b-40 m-t-10">
                     <pre><code id="out-101-2">$ANSIBLE_VAULT;1.1;AES256
 63343036626337373633623130316337306431393933623365323762313662613330656162666162
@@ -369,14 +230,11 @@ api_token: "REPLACE_ME"</code></pre>
 64666130356161613161343364313834313565333235366535633333313433656365323131353631</code></pre>
                   </div>
                 </div>
-
                 <!-- Step 3 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
-                    <strong class="font-alt">Step 3</strong>
-                    : Edit the vault file securely.
+                    <strong class="font-alt">Step 3</strong>: Edit the vault file securely.
                   </div>
-
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
@@ -386,19 +244,15 @@ api_token: "REPLACE_ME"</code></pre>
                     </div>
                     <pre><code id="cmd-101-3">ansible-vault edit secrets.yml</code></pre>
                   </div>
-
                   <p>
                     Vault decrypts in memory, opens your editor, and re-encrypts on save.
                   </p>
                 </div>
-
                 <!-- Step 4 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
-                    <strong class="font-alt">Step 4</strong>
-                    : View decrypted contents to stdout (use carefully).
+                    <strong class="font-alt">Step 4</strong>: View decrypted contents to stdout (use carefully).
                   </div>
-
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
@@ -408,20 +262,16 @@ api_token: "REPLACE_ME"</code></pre>
                     </div>
                     <pre><code id="cmd-101-4">ansible-vault view secrets.yml</code></pre>
                   </div>
-
                   <p>
                     This prints plaintext. Treat it like you would treat
                     <code>cat</code> on a private key.
                   </p>
                 </div>
-
                 <!-- Step 5 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
-                    <strong class="font-alt">Step 5</strong>
-                    : Create a playbook that loads the vault file via <code>vars_files</code>.
+                    <strong class="font-alt">Step 5</strong>: Create a playbook that loads the vault file via <code>vars_files</code>.
                   </div>
-
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>File</span>
@@ -440,19 +290,15 @@ api_token: "REPLACE_ME"</code></pre>
       debug:
         msg: "DB={{ db_user }}@{{ db_host }}"</code></pre>
                   </div>
-
                   <p>
                     The vault file is decrypted at run time when you provide the vault password.
                   </p>
                 </div>
-
                 <!-- Step 6 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
-                    <strong class="font-alt">Step 6</strong>
-                    : Run the playbook and provide the vault password.
+                    <strong class="font-alt">Step 6</strong>: Run the playbook and provide the vault password.
                   </div>
-
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
@@ -462,29 +308,22 @@ api_token: "REPLACE_ME"</code></pre>
                     </div>
                     <pre><code id="cmd-101-6">ansible-playbook vault-playbook.yml --ask-vault-pass</code></pre>
                   </div>
-
                   <div class="lab-codeblock m-b-40 m-t-10">
                     <pre><code id="out-101-6">Vault password:
-
 PLAY [Test vault secrets] ******************************************************
-
 TASK [Show DB connection target] ***********************************************
 ok: [localhost] => {
     "msg": "DB=appuser@10.10.20.15"
 }
-
 PLAY RECAP *********************************************************************
 localhost                  : ok=1    changed=0    unreachable=0    failed=0</code></pre>
                   </div>
                 </div>
-
                 <!-- Step 7 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
-                    <strong class="font-alt">Step 7</strong>
-                    : Rotate the vault password (rekey).
+                    <strong class="font-alt">Step 7</strong>: Rotate the vault password (rekey).
                   </div>
-
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
@@ -494,20 +333,17 @@ localhost                  : ok=1    changed=0    unreachable=0    failed=0</cod
                     </div>
                     <pre><code id="cmd-101-7">ansible-vault rekey secrets.yml</code></pre>
                   </div>
-
                   <p>
                     Rekey changes the password used to decrypt this file. This is a normal control
                     for rotation workflows.
                   </p>
                 </div>
               </section>
-
               <!-- Common breakpoints -->
               <section class="lab-section" id="breakpoints">
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">
                   Common breakpoints
                 </h3>
-
                 <div class="lab-callout">
                   <div class="lab-callout-label">Playbook says it cannot decrypt the file</div>
                   <p class="m-b-0">
@@ -515,7 +351,6 @@ localhost                  : ok=1    changed=0    unreachable=0    failed=0</cod
                     different vault secret. Rekey requires the current password to rotate.
                   </p>
                 </div>
-
                 <div class="lab-callout">
                   <div class="lab-callout-label">You accidentally committed secrets in plaintext</div>
                   <p class="m-b-0">
@@ -523,7 +358,6 @@ localhost                  : ok=1    changed=0    unreachable=0    failed=0</cod
                     Vault prevents this scenario, but it does not fix it after the fact.
                   </p>
                 </div>
-
                 <div class="lab-callout">
                   <div class="lab-callout-label">You ran view in a recorded or shared terminal</div>
                   <p class="m-b-0">
@@ -532,18 +366,15 @@ localhost                  : ok=1    changed=0    unreachable=0    failed=0</cod
                   </p>
                 </div>
               </section>
-
               <!-- Cleanup -->
               <section class="lab-section alt-background" id="cleanup">
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">
                   Cleanup checklist
                 </h3>
-
                 <ul>
                   <li>Delete the vault file if this was a throwaway exercise.</li>
                   <li>Delete the test playbook if you are keeping the repo clean.</li>
                 </ul>
-
                 <div class="lab-codeblock m-b-40 m-t-40">
                   <div class="lab-codeblock-header">
                     <span>Commands</span>
@@ -554,117 +385,48 @@ localhost                  : ok=1    changed=0    unreachable=0    failed=0</cod
                   <pre><code id="cmd-101-cleanup">rm -f secrets.yml vault-playbook.yml</code></pre>
                 </div>
               </section>
-
               <!-- Reference (minimal command: description format) -->
               <section class="lab-section" id="reference">
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">
                   Reference
                 </h3>
-
                 <ul class="lab-reference-list">
                   <li>
-                    <code>ansible-vault create &lt;file&gt;</code>
-                    : Create a new encrypted file (prompts for password, opens editor).
+                    <code>ansible-vault create &lt;file&gt;</code>: Create a new encrypted file (prompts for password, opens editor).
                   </li>
                   <li>
-                    <code>ansible-vault edit &lt;file&gt;</code>
-                    : Edit an encrypted file (decrypts in memory, re-encrypts on save).
+                    <code>ansible-vault edit &lt;file&gt;</code>: Edit an encrypted file (decrypts in memory, re-encrypts on save).
                   </li>
                   <li>
-                    <code>ansible-vault view &lt;file&gt;</code>
-                    : View decrypted content to stdout.
+                    <code>ansible-vault view &lt;file&gt;</code>: View decrypted content to stdout.
                   </li>
                   <li>
-                    <code>ansible-vault rekey &lt;file&gt;</code>
-                    : Rotate the vault password for a file.
+                    <code>ansible-vault rekey &lt;file&gt;</code>: Rotate the vault password for a file.
                   </li>
                   <li>
-                    <code>ansible-playbook &lt;playbook&gt; --ask-vault-pass</code>
-                    : Prompt for vault password during a run.
+                    <code>ansible-playbook &lt;playbook&gt; --ask-vault-pass</code>: Prompt for vault password during a run.
                   </li>
                   <li>
-                    <code>vars_files:</code>
-                    : Load variables from external YAML files (including vault files).
+                    <code>vars_files:</code>: Load variables from external YAML files (including vault files).
                   </li>
                 </ul>
               </section>
-            </div>
-            <!-- /main -->
-          </div>
-          <!-- /row -->
-
-          <nav class="lab-pagination">
-            <a class="lab-nav-link" href="#totop" aria-label="Back to top">&uArr;</a>
-          </nav>
-        </div>
-        <!-- /container -->
-      </section>
-
-      <!-- FOOTER -->
-      <footer class="module bg-light">
-        <div class="container">
-          <div class="row">
-            <div class="col-sm-12">
-              <ul class="social-text-links font-alt text-center m-b-20">
-                <li>
-                  <a href="https://github.com/vonds" target="_blank" rel="noopener">
-                    Github
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="https://www.linkedin.com/in/vonds/"
-                    target="_blank"
-                    rel="noopener"
-                  >
-                    Linkedin
-                  </a>
-                </li>
-              </ul>
-            </div>
-          </div>
-
-          <div class="row">
-            <div class="col-sm-12">
-              <p class="copyright text-center m-b-0">
-                VONDS &copy; <span id="year"></span>
-              </p>
-
-              <div class="scroll-up">
-                <a href="#totop"><i class="fa fa-angle-double-up"></i></a>
-              </div>
-            </div>
-          </div>
-        </div>
-      </footer>
+        <nav class="pager" aria-label="Previous and next lab"><a class="prev" href="lab100.html" rel="prev"><span class="dir alt">&larr; Previous &middot; Lab 100</span><span class="t">Agent-Based Configuration with ansible-pull</span></a><a class="next" href="lab102.html" rel="next"><span class="dir alt">Next &middot; Lab 102 &rarr;</span><span class="t">Managing Dynamic Inventories in Ansible</span></a></nav>
+      </article>
     </div>
+  </div>
+</main>
 
-    <!-- Javascript files (your existing) -->
-    <script src="../assets/js/jquery-2.2.4.min.js"></script>
-    <script src="../assets/bootstrap/js/bootstrap.min.js"></script>
-    <script src="../assets/js/jquery.superslides.min.js"></script>
-    <script src="../assets/js/jquery.mb.YTPlayer.min.js"></script>
-    <script src="../assets/js/jquery.magnific-popup.min.js"></script>
-    <script src="../assets/js/owl.carousel.min.js"></script>
-    <script src="../assets/js/jquery.simple-text-rotator.min.js"></script>
-    <script src="../assets/js/imagesloaded.pkgd.js"></script>
-    <script src="../assets/js/isotope.pkgd.min.js"></script>
-    <script src="../assets/js/packery-mode.pkgd.min.js"></script>
-    <script src="../assets/js/packery-mode.pkgd.min.js"></script>
-    <script src="../assets/js/appear.js"></script>
-    <script src="../assets/js/jquery.easing.1.3.js"></script>
-    <script src="../assets/js/wow.min.js"></script>
-    <script src="../assets/js/jqBootstrapValidation.js"></script>
-    <script src="../assets/js/jquery.fitvids.js"></script>
-    <script src="../assets/js/jquery.parallax-1.1.3.js"></script>
-    <script src="../assets/js/smoothscroll.js"></script>
-    <script src="../assets/js/custom.js"></script>
-
-    <!-- Lab page JS -->
-    <script src="../assets/js/lab.js"></script>
-
-    <script>
-      document.getElementById("year").textContent = new Date().getFullYear()
-    </script>
-  </body>
+<footer>
+  <img class="mark" src="assets/images/logo-dark.svg" alt="Vonds">
+  <nav aria-label="Footer" class="alt">
+    <a href="index.html#about">About</a><a href="index.html#portfolio">Portfolio</a><a href="docs.html">exit_0 Labs</a><a href="index.html#contact">Contact</a><a href="https://www.linkedin.com/in/vonds/">LinkedIn</a>
+  </nav>
+  <div class="line"></div>
+  <p class="copyright alt">Vonds &copy; 2026</p>
+</footer>
+<button class="to-top" id="toTop" type="button" aria-label="Back to top">&uarr;</button>
+<script src="assets/js/site.js" defer></script>
+<script src="assets/js/lab.js" defer></script>
+</body>
 </html>

@@ -1,224 +1,95 @@
-<!-- lab016.html -->
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="exit_0 Documentation" />
-    <meta name="name" content="Vonds" />
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lab 016: Process Management and Job Control | exit_0 Labs</title>
+<meta name="description" content="Identify resource-hungry processes, validate what is actually running, and take controlled action to stabilize the system. Use standard tools to inspect…">
+<link rel="canonical" href="https://vonds.github.io/lab16.html">
+<meta name="theme-color" content="#2e2e30">
+<meta name="author" content="Vonds">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="Vonds">
+<meta property="og:url" content="https://vonds.github.io/lab16.html">
+<meta property="og:title" content="Lab 016: Process Management and Job Control | exit_0 Labs">
+<meta property="og:description" content="Identify resource-hungry processes, validate what is actually running, and take controlled action to stabilize the system. Use standard tools to inspect…">
+<meta property="og:image" content="https://vonds.github.io/assets/images/og/og-exit0.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="exit_0: 165 hands-on Linux labs for real system administration.">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Lab 016: Process Management and Job Control | exit_0 Labs">
+<meta name="twitter:description" content="Identify resource-hungry processes, validate what is actually running, and take controlled action to stabilize the system. Use standard tools to inspect…">
+<meta name="twitter:image" content="https://vonds.github.io/assets/images/og/og-exit0.jpg">
+<link rel="icon" type="image/svg+xml" href="assets/images/favicon.svg">
+<link rel="icon" type="image/png" href="assets/images/favicon.png">
+<link rel="apple-touch-icon" href="assets/images/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Dosis:wght@300;400;500;600&family=Open+Sans:wght@400;600&display=swap">
+<link rel="stylesheet" href="assets/css/site.css">
+<link rel="stylesheet" href="assets/css/exit0.css">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Vonds","item":"https://vonds.github.io/"},{"@type":"ListItem","position":2,"name":"exit_0 Labs","item":"https://vonds.github.io/docs.html"},{"@type":"ListItem","position":3,"name":"Lab 016","item":"https://vonds.github.io/lab16.html"}]}</script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="header solid" id="header">
+  <div class="wrap">
+    <a class="brand" href="index.html" aria-label="Vonds home">
+      <img class="logo-dark" src="assets/images/logo-dark.svg" alt="Vonds">
+      <img class="logo-light" src="assets/images/logo-light.svg" alt="" aria-hidden="true">
+    </a>
+    <button class="menu-btn" id="menuOpen" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="overlay">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</header>
 
-    <title>Vonds | Lab 016</title>
-
-    <!-- Favicons -->
-    <link rel="icon" type="image/svg+xml" href="../assets/images/favicon.svg" />
-    <link rel="icon" type="image/png" href="../assets/images/favicon.png" />
-    <link rel="apple-touch-icon" href="../assets/images/apple-touch-icon.png" />
-    <link
-      rel="apple-touch-icon"
-      sizes="72x72"
-      href="../assets/images/apple-touch-icon-72x72.png"
-    />
-    <link
-      rel="apple-touch-icon"
-      sizes="114x114"
-      href="../assets/images/apple-touch-icon-114x114.png"
-    />
-
-    <!-- Site styles (your existing) -->
-    <link href="../assets/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
-    <link href="../assets/css/font-awesome.min.css" rel="stylesheet" />
-    <link href="../assets/css/linea-icons.css" rel="stylesheet" />
-    <link href="../assets/css/ionicons.min.css" rel="stylesheet" />
-    <link href="../assets/css/simpletextrotator.css" rel="stylesheet" />
-    <link href="../assets/css/magnific-popup.css" rel="stylesheet" />
-    <link href="../assets/css/magnific-popup.css" rel="stylesheet" />
-    <link href="../assets/css/owl.carousel.css" rel="stylesheet" />
-    <link href="../assets/css/superslides.css" rel="stylesheet" />
-    <link href="../assets/css/vertical.css" rel="stylesheet" />
-    <link href="../assets/css/animate.css" rel="stylesheet" />
-    <link href="../assets/css/style.css" rel="stylesheet" />
-    <link href="../assets/css/docs.css" rel="stylesheet" />
-
-    <!-- Lab page styles -->
-    <link href="../assets/css/lab.css" rel="stylesheet" />
-
-    <!-- Fonts -->
-    <link
-      href="https://fonts.googleapis.com/css?family=Dosis"
-      rel="stylesheet"
-    />
-  </head>
-
-  <body>
-    <!-- PRELOADER -->
-    <div class="page-loader">
-      <div class="loader">Loading...</div>
+<div class="overlay" id="overlay" aria-hidden="true">
+  <button class="close" id="menuClose" type="button" aria-label="Close menu">&times;</button>
+  <nav aria-label="Main">
+    <a class="alt" href="index.html">Home</a>
+    <a class="alt" href="index.html#about">About</a>
+    <a class="alt" href="index.html#portfolio">Portfolio</a>
+    <div class="sub">
+      <a class="alt" href="https://black-signal-demo.netlify.app/">Black Signal</a>
+      <a class="alt" href="https://deeds-demo.netlify.app/">DEEDS</a>
+      <a class="alt" href="https://digital-resource-map-demo.netlify.app/">Digital Resource Map</a>
+      <a class="alt" href="https://thetravelingarchive.com/">The Traveling Archive</a>
+      <a class="alt" href="https://github.com/vonds/sentinel">Sentinel</a>
+      <a class="alt" href="docs.html">exit_0 Labs</a>
     </div>
+    <a class="alt" href="index.html#services">Services</a>
+    <a class="alt" href="index.html#contact">Contact</a>
+    <a class="alt" href="https://www.linkedin.com/in/vonds/">LinkedIn</a>
+  </nav>
+  <div class="foot alt">Vonds &copy; <span id="year">2026</span></div>
+</div>
 
-    <!-- OVERLAY MENU -->
-    <div id="overlay-menu" class="overlay-menu">
-      <a href="#" id="overlay-menu-hide" class="navigation-hide">
-        <i class="ion-close-round"></i>
-      </a>
-
-      <div class="overlay-menu-inner">
-        <nav class="overlay-menu-nav">
-          <ul id="nav">
-            <li><a href="../index.html">Home</a></li>
-
-            <li class="slidedown">
-              <a href="#">Portfolio</a>
-              <ul>
-                <li>
-                  <a
-                    href="https://github.com/vonds/exit_0"
-                    target="_blank"
-                    rel="noopener"
-                  >
-                    exit_0
-                  </a>
-                </li>
-                <li>
-                  <a href="docs.html" target="_blank" rel="noopener">
-                    exit_0 Documentation
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="https://github.com/vonds/sentinel"
-                    target="_blank"
-                    rel="noopener"
-                  >
-                    Sentinel
-                  </a>
-                </li>
-              </ul>
-            </li>
-
-            <li>
-              <a
-                href="https://www.linkedin.com/in/vonds/"
-                target="_blank"
-                rel="noopener"
-              >
-                LinkedIn
-              </a>
-            </li>
-            <li>
-              <a href="https://github.com/vonds" target="_blank" rel="noopener">
-                Github
-              </a>
-            </li>
-            <li>
-              <a href="mailto:vonds13@gmail.com?subject=Hello Vonds">Contact</a>
-            </li>
-          </ul>
+<main class="x0" id="main">
+  <div class="x0-wrap">
+    <nav class="crumbs alt" aria-label="Breadcrumb"><a href="index.html">Vonds</a><span class="sep" aria-hidden="true">/</span><a href="docs.html">exit_0 Labs</a><span class="sep" aria-hidden="true">/</span><span aria-current="page">Lab 016</span></nav>
+    <header class="x0-head">
+      <p class="eyebrow alt"><b>Lab 016</b> &middot; processes</p>
+      <h1>Process Management and Job Control</h1>
+      <p class="lede">Identify resource-hungry processes, validate what is actually running, and take controlled action to stabilize the system. Use standard tools to inspect, terminate, and reprioritize workloads, and manage background jobs safely.</p>
+      <nav class="pager-mini" aria-label="Lab navigation"><a class="alt" href="lab15.html" rel="prev">&larr; Lab 015</a><a class="alt" href="lab17.html" rel="next">Lab 017 &rarr;</a></nav>
+    </header>
+    <div class="x0-grid">
+      <aside class="x0-side" aria-label="On this page">
+        <nav class="toc">
+          <a class="back alt" href="docs.html">&larr; All labs</a>
+          <p class="toc-h alt">On this page</p>
+          <ul><li><a href="#video">Video</a></li><li><a href="#scenario">Scenario</a></li><li><a href="#objective">Objective</a></li><li><a href="#concepts">Concepts</a></li><li><a href="#walkthrough">Walkthrough</a></li><li><a href="#breakpoints">Common breakpoints</a></li><li><a href="#cleanup">Cleanup checklist</a></li><li><a href="#reference">Reference</a></li></ul>
         </nav>
-      </div>
-
-      <div class="overlay-navigation-footer">
-        <div class="container">
-          <div class="row">
-            <div class="col-sm-12 text-center">
-              <p class="copyright font-alt m-b-0">
-                VONDS &copy;
-                <script>
-                  document.write(new Date().getFullYear())
-                </script>
-              </p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- WRAPPER -->
-    <div class="wrapper">
-      <!-- NAVIGATION -->
-      <nav
-        class="navbar navbar-custom navbar-transparent navbar-light navbar-fixed-top"
-      >
-        <div class="container">
-          <div class="navbar-header">
-            <a class="navbar-brand" href="../index.html">
-              <img class="logo-dark" src="../assets/images/logo-dark.svg" alt="Vonds" /><img class="logo-light" src="../assets/images/logo-light.svg" alt="" aria-hidden="true" />
-            </a>
-          </div>
-
-          <ul id="icons-navbar" class="nav navbar-nav navbar-right">
-            <li>
-              <a href="#" id="toggle-menu" class="show-overlay" title="Menu">
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-              </a>
-            </li>
-          </ul>
-        </div>
-      </nav>
-
-      <!-- DOCS PAGE -->
-      <section class="module">
-        <div class="container">
-          <h2 class="font-alt module-title m-t-60">
-            Lab 16: Process Management and Job Control
-          </h2>
-
-          <nav class="lab-pagination">
-            <a
-              id="prev-lab"
-              class="lab-nav-link"
-              href="#"
-              aria-label="Previous lab"
-            >
-              &laquo;
-            </a>
-            <a
-              id="next-lab"
-              class="lab-nav-link"
-              href="#"
-              aria-label="Next lab"
-            >
-              &raquo;
-            </a>
-          </nav>
-
-          <div class="row">
-            <!-- LEFT SIDEBAR -->
-            <div class="col-sm-4 col-md-3 lab-sidebar">
-              <div class="docs-sidebar">
-                <div class="docs-widget">
-                  <h5 class="widget-title">
-                    <a href="./docs.html">Back to Lab Index</a>
-                  </h5>
-                  <ul class="docs-nav">
-                    <li><a href="#scenario">Scenario</a></li>
-                    <li><a href="#objective">Objective</a></li>
-                    <li><a href="#concepts">Concepts</a></li>
-                    <li><a href="#walkthrough">Walkthrough</a></li>
-                    <li><a href="#breakpoints">Breakpoints</a></li>
-                    <li><a href="#cleanup">Cleanup</a></li>
-                    <li><a href="#reference">Reference</a></li>
-                  </ul>
-                </div>
-              </div>
-            </div>
-
-            <!-- MAIN CONTENT -->
-            <div class="col-sm-8 col-md-9 lab-doc">
-              <p class="m-b-20 lab-summary">
-                Identify resource-hungry processes, validate what is actually
-                running, and take controlled action to stabilize the system. Use
-                standard tools to inspect, terminate, and reprioritize
-                workloads, and manage background jobs safely.
-              </p>
-
-              <!-- Video (remove fixed sizing so your responsive CSS can control it) -->
+      </aside>
+      <article class="x0-doc">
+<!-- Video (remove fixed sizing so your responsive CSS can control it) -->
               <section class="lab-section" id="video" aria-label="Lab video">
                 <div class="lab-video">
                   <div class="lab-video-embed text-center">
-                    <iframe
-                      src="https://www.youtube.com/embed/sS6HDuE10JE?si=0O-eBcTqL1iboLtY"
+                    <iframe loading="lazy"
+                      src="https://www.youtube-nocookie.com/embed/sS6HDuE10JE?si=0O-eBcTqL1iboLtY"
                       title="YouTube video player"
                       frameborder="0"
                       allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
@@ -228,7 +99,6 @@
                   </div>
                 </div>
               </section>
-
               <!-- Scenario -->
               <section class="lab-section" id="scenario">
                 <div class="lab-chips" aria-label="Tags">
@@ -242,7 +112,6 @@
                     <span class="lab-chip-key">services</span>
                   </span>
                 </div>
-
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">
                   Scenario
                 </h3>
@@ -254,7 +123,6 @@
                   manage shell jobs and scheduling priority without making the
                   system worse.
                 </p>
-
                 <div class="lab-callout">
                   <div class="lab-callout-label">Operator context</div>
                   <p class="m-b-0">
@@ -265,7 +133,6 @@
                   </p>
                 </div>
               </section>
-
               <!-- Objective -->
               <section class="lab-section alt-background" id="objective">
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">
@@ -285,12 +152,10 @@
                   <li>List, stop, resume, and foreground shell jobs safely.</li>
                   <li>
                     Start a workload at a lower scheduling priority using
-                    <code>nice</code>
-                    .
+                    <code>nice</code>.
                   </li>
                 </ul>
               </section>
-
               <!-- Concepts -->
               <section class="lab-section" id="concepts">
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">
@@ -305,8 +170,7 @@
                   <li>
                     <code>top</code>
                     (or
-                    <code>htop</code>
-                    ) is your live view. It confirms whether a PID is
+                    <code>htop</code>) is your live view. It confirms whether a PID is
                     consistently misbehaving.
                   </li>
                   <li>
@@ -315,38 +179,28 @@
                     needed.
                   </li>
                   <li>
-                    Job control (
-                    <code>Ctrl+Z</code>
-                    ,
-                    <code>bg</code>
-                    ,
-                    <code>fg</code>
-                    ,
-                    <code>jobs</code>
-                    ) is per-shell session, not system-wide.
+                    Job control (<code>Ctrl+Z</code>,
+                    <code>bg</code>,
+                    <code>fg</code>,
+                    <code>jobs</code>) is per-shell session, not system-wide.
                   </li>
                   <li>
                     <code>nice</code>
                     sets priority at start. (Adjusting an existing process is
-                    <code>renice</code>
-                    .)
+                    <code>renice</code>.)
                   </li>
                 </ul>
               </section>
-
               <!-- Walkthrough -->
               <section class="lab-section alt-background" id="walkthrough">
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">
                   Walkthrough
                 </h3>
-
                 <!-- Step 1 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
-                    <strong class="font-alt">Step 1</strong>
-                    : Take a quick snapshot of top CPU consumers.
+                    <strong class="font-alt">Step 1</strong>: Take a quick snapshot of top CPU consumers.
                   </div>
-
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
@@ -360,13 +214,11 @@
                     </div>
                     <pre><code id="cmd-step-1">ps aux --sort=-%cpu | head -n 10</code></pre>
                   </div>
-
                   <p>
                     Sorting by CPU gives you a fast shortlist. This is better
                     than staring at an unsorted wall of processes. Treat this as
                     evidence gathering before you take action.
                   </p>
-
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <pre><code id="verify-step-1">USER       PID %CPU %MEM    VSZ   RSS TTY      STAT START   TIME COMMAND
 lab       1357 98.3  0.5 248112 42280 ?        Rl   12:45   1:37 /usr/bin/python3 script.py
@@ -374,14 +226,11 @@ root       711  0.2  0.2  72960  2140 ?        Ss   08:01   0:00 /usr/sbin/cron 
 root       402  0.1  0.3  98720  3128 ?        Ss   08:01   0:00 /lib/systemd/systemd-journald</code></pre>
                   </div>
                 </div>
-
                 <!-- Step 2 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
-                    <strong class="font-alt">Step 2</strong>
-                    : Confirm the offender in a live view.
+                    <strong class="font-alt">Step 2</strong>: Confirm the offender in a live view.
                   </div>
-
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
@@ -395,28 +244,22 @@ root       402  0.1  0.3  98720  3128 ?        Ss   08:01   0:00 /lib/systemd/sy
                     </div>
                     <pre><code id="cmd-step-2">top</code></pre>
                   </div>
-
                   <p>
                     The point is not “open top.” The point is confirming the
                     same PID is consistently responsible, not a transient spike.
                     Exit with
-                    <code>q</code>
-                    .
+                    <code>q</code>.
                   </p>
-
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <pre><code id="verify-step-2">  PID USER      PR  NI    VIRT    RES    SHR S  %CPU %MEM     TIME+ COMMAND
  1357 lab       20   0  248.1m  41.3m   5.1m R  98.3  0.5   1:39.21 python3</code></pre>
                   </div>
                 </div>
-
                 <!-- Step 3 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
-                    <strong class="font-alt">Step 3</strong>
-                    : Send a controlled termination request (SIGTERM).
+                    <strong class="font-alt">Step 3</strong>: Send a controlled termination request (SIGTERM).
                   </div>
-
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
@@ -432,26 +275,21 @@ root       402  0.1  0.3  98720  3128 ?        Ss   08:01   0:00 /lib/systemd/sy
 # Verify:
 ps -p 1357 || echo "PID 1357 is gone"</code></pre>
                   </div>
-
                   <p>
                     Default
                     <code>kill</code>
                     is SIGTERM, which is the safe first move. If the process is
                     still present after a moment, you investigate or escalate.
                   </p>
-
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <pre><code id="verify-step-3">PID 1357 is gone</code></pre>
                   </div>
                 </div>
-
                 <!-- Step 4 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
-                    <strong class="font-alt">Step 4</strong>
-                    : Practice job control in your current shell session.
+                    <strong class="font-alt">Step 4</strong>: Practice job control in your current shell session.
                   </div>
-
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Commands</span>
@@ -469,7 +307,6 @@ jobs
 bg %1
 jobs</code></pre>
                   </div>
-
                   <p>
                     <code>Ctrl+Z</code>
                     stops (suspends) the foreground job.
@@ -478,20 +315,16 @@ jobs</code></pre>
                     <code>jobs</code>
                     to verify state before you bring anything to the foreground.
                   </p>
-
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <pre><code id="verify-step-4">[1]+  Stopped                 sleep 300
 [1]+  Running                 sleep 300 &</code></pre>
                   </div>
                 </div>
-
                 <!-- Step 5 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
-                    <strong class="font-alt">Step 5</strong>
-                    : Bring a job back to the foreground.
+                    <strong class="font-alt">Step 5</strong>: Bring a job back to the foreground.
                   </div>
-
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
@@ -505,26 +338,21 @@ jobs</code></pre>
                     </div>
                     <pre><code id="cmd-step-5">fg %1</code></pre>
                   </div>
-
                   <p>
                     Foregrounding restores interactive control. This is how you
                     recover a “lost” long-running command. End it with
                     <code>Ctrl+C</code>
                     if needed.
                   </p>
-
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <pre><code id="verify-step-5">sleep 300</code></pre>
                   </div>
                 </div>
-
                 <!-- Step 6 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
-                    <strong class="font-alt">Step 6</strong>
-                    : Start a workload with lower scheduling priority.
+                    <strong class="font-alt">Step 6</strong>: Start a workload with lower scheduling priority.
                   </div>
-
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
@@ -538,25 +366,21 @@ jobs</code></pre>
                     </div>
                     <pre><code id="cmd-step-6">nice -n 10 ./backup.sh</code></pre>
                   </div>
-
                   <p>
                     Raising niceness reduces scheduling priority. This is an
                     operator-friendly way to run heavy work without clobbering
                     interactive users.
                   </p>
-
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <pre><code id="verify-step-6">started './backup.sh' with nice value +10</code></pre>
                   </div>
                 </div>
               </section>
-
               <!-- Breakpoints -->
               <section class="lab-section" id="breakpoints">
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">
                   Common breakpoints
                 </h3>
-
                 <div class="lab-callout">
                   <div class="lab-callout-label">
                     I killed the wrong process
@@ -564,47 +388,37 @@ jobs</code></pre>
                   <p class="m-b-0">
                     Use a repeatable identification step first: confirm the
                     command line with
-                    <code>ps -p &lt;PID&gt; -o pid,user,cmd</code>
-                    . Do not rely on PID alone if processes respawn.
+                    <code>ps -p &lt;PID&gt; -o pid,user,cmd</code>. Do not rely on PID alone if processes respawn.
                   </p>
                 </div>
-
                 <div class="lab-callout">
                   <div class="lab-callout-label">SIGTERM did nothing</div>
                   <p class="m-b-0">
                     Some processes trap SIGTERM or are stuck in uninterruptible
                     I/O. Verify state with
-                    <code>ps -o pid,stat,cmd -p &lt;PID&gt;</code>
-                    . If you must escalate, use SIGKILL as a last resort and
+                    <code>ps -o pid,stat,cmd -p &lt;PID&gt;</code>. If you must escalate, use SIGKILL as a last resort and
                     document it.
                   </p>
                 </div>
-
                 <div class="lab-callout">
                   <div class="lab-callout-label">jobs shows nothing</div>
                   <p class="m-b-0">
                     Job control is per-shell session. If the process was started
                     in a different terminal or via a service,
                     <code>jobs</code>
-                    will not show it. Use system-wide tools (
-                    <code>ps</code>
-                    ,
-                    <code>top</code>
-                    ) for those.
+                    will not show it. Use system-wide tools (<code>ps</code>,
+                    <code>top</code>) for those.
                   </p>
                 </div>
               </section>
-
               <!-- Cleanup -->
               <section class="lab-section alt-background" id="cleanup">
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">
                   Cleanup checklist
                 </h3>
-
                 <p>
                   End any test jobs you started during the lab.
                 </p>
-
                 <div class="lab-codeblock m-b-40 m-t-40">
                   <div class="lab-codeblock-header">
                     <span>Commands</span>
@@ -622,103 +436,78 @@ kill %1
 jobs</code></pre>
                 </div>
               </section>
-
               <!-- Reference -->
               <section class="lab-section" id="reference">
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">
                   Reference
                 </h3>
-
                 <ul class="lab-reference-list">
                   <li>
-                    <code>ps aux --sort=-%cpu</code>
-                    : Snapshot of all processes, sorted by CPU usage (highest
+                    <code>ps aux --sort=-%cpu</code>: Snapshot of all processes, sorted by CPU usage (highest
                     first).
                     <ul>
                       <li>
-                        <code>a</code>
-                        : Show processes for all users with a controlling TTY.
+                        <code>a</code>: Show processes for all users with a controlling TTY.
                       </li>
                       <li>
-                        <code>u</code>
-                        : User-oriented format (includes
-                        <code>%CPU</code>
-                        ,
-                        <code>%MEM</code>
-                        , USER, etc.).
+                        <code>u</code>: User-oriented format (includes
+                        <code>%CPU</code>,
+                        <code>%MEM</code>, USER, etc.).
                       </li>
                       <li>
-                        <code>x</code>
-                        : Include processes without a controlling TTY (common
+                        <code>x</code>: Include processes without a controlling TTY (common
                         for daemons/services).
                       </li>
                       <li>
-                        <code>--sort=-%cpu</code>
-                        : Sort descending by CPU percentage.
+                        <code>--sort=-%cpu</code>: Sort descending by CPU percentage.
                       </li>
                     </ul>
                   </li>
-
                   <li>
-                    <code>top</code>
-                    : Interactive, live view of system load and per-process
+                    <code>top</code>: Interactive, live view of system load and per-process
                     CPU/memory usage.
                     <ul>
                       <li>
-                        <code>q</code>
-                        : Quit
-                        <code>top</code>
-                        .
+                        <code>q</code>: Quit
+                        <code>top</code>.
                       </li>
                       <li>
-                        <code>P</code>
-                        : Sort by CPU usage.
+                        <code>P</code>: Sort by CPU usage.
                       </li>
                       <li>
-                        <code>M</code>
-                        : Sort by memory usage.
+                        <code>M</code>: Sort by memory usage.
                       </li>
                       <li>
-                        <code>k</code>
-                        : Kill a process from within
+                        <code>k</code>: Kill a process from within
                         <code>top</code>
                         (prompts for PID and signal).
                       </li>
                     </ul>
                   </li>
-
                   <li>
-                    <code>kill &lt;PID&gt;</code>
-                    : Sends a signal to a process (defaults to SIGTERM).
+                    <code>kill &lt;PID&gt;</code>: Sends a signal to a process (defaults to SIGTERM).
                     <ul>
                       <li>
-                        <code>&lt;PID&gt;</code>
-                        : Process ID to signal.
+                        <code>&lt;PID&gt;</code>: Process ID to signal.
                       </li>
                       <li>
-                        <code>kill -TERM &lt;PID&gt;</code>
-                        : Explicit SIGTERM (graceful request).
+                        <code>kill -TERM &lt;PID&gt;</code>: Explicit SIGTERM (graceful request).
                       </li>
                       <li>
-                        <code>kill -KILL &lt;PID&gt;</code>
-                        : SIGKILL (force stop, last resort).
+                        <code>kill -KILL &lt;PID&gt;</code>: SIGKILL (force stop, last resort).
                       </li>
                       <li>
-                        <code>kill -0 &lt;PID&gt;</code>
-                        : Existence/permission check (does not terminate the
+                        <code>kill -0 &lt;PID&gt;</code>: Existence/permission check (does not terminate the
                         process).
                       </li>
                     </ul>
                   </li>
-
                   <li>
-                    <code>jobs</code>
-                    : Lists jobs in the current shell session.
+                    <code>jobs</code>: Lists jobs in the current shell session.
                     <ul>
                       <li>
                         Shows job IDs like
-                        <code>[1]</code>
-                        , state (Running/Stopped), and the command line.
+                        <code>[1]</code>, state (Running/Stopped), and the command line.
                       </li>
                       <li>
                         Only includes jobs started from the current shell (not
@@ -726,25 +515,18 @@ jobs</code></pre>
                       </li>
                     </ul>
                   </li>
-
                   <li>
-                    <code>bg %&lt;job&gt;</code>
-                    : Resumes a stopped job in the background.
+                    <code>bg %&lt;job&gt;</code>: Resumes a stopped job in the background.
                   </li>
-
                   <li>
-                    <code>fg %&lt;job&gt;</code>
-                    : Brings a job to the foreground.
+                    <code>fg %&lt;job&gt;</code>: Brings a job to the foreground.
                   </li>
-
                   <li>
-                    <code>nice -n &lt;value&gt; &lt;command&gt;</code>
-                    : Starts a command with adjusted niceness (higher usually
+                    <code>nice -n &lt;value&gt; &lt;command&gt;</code>: Starts a command with adjusted niceness (higher usually
                     means lower priority).
                     <ul>
                       <li>
-                        <code>-n &lt;value&gt;</code>
-                        : Niceness adjustment (common range:
+                        <code>-n &lt;value&gt;</code>: Niceness adjustment (common range:
                         <code>-20</code>
                         highest priority to
                         <code>19</code>
@@ -754,94 +536,22 @@ jobs</code></pre>
                   </li>
                 </ul>
               </section>
-            </div>
-            <!-- /main -->
-          </div>
-          <!-- /row -->
-
-          <nav class="lab-pagination">
-            <a
-              id="prev-lab"
-              class="lab-nav-link"
-              href="#"
-              aria-label="Previous lab"
-            >
-              &uArr;
-            </a>
-          </nav>
-        </div>
-        <!-- /container -->
-      </section>
-
-      <!-- FOOTER -->
-      <footer class="module bg-light">
-        <div class="container">
-          <div class="row">
-            <div class="col-sm-12">
-              <ul class="social-text-links font-alt text-center m-b-20">
-                <li>
-                  <a
-                    href="https://github.com/vonds"
-                    target="_blank"
-                    rel="noopener"
-                  >
-                    Github
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="https://www.linkedin.com/in/vonds/"
-                    target="_blank"
-                    rel="noopener"
-                  >
-                    Linkedin
-                  </a>
-                </li>
-              </ul>
-            </div>
-          </div>
-
-          <div class="row">
-            <div class="col-sm-12">
-              <p class="copyright text-center m-b-0">
-                VONDS &copy;
-                <span id="year"></span>
-              </p>
-
-              <div class="scroll-up">
-                <a href="#totop"><i class="fa fa-angle-double-up"></i></a>
-              </div>
-            </div>
-          </div>
-        </div>
-      </footer>
+        <nav class="pager" aria-label="Previous and next lab"><a class="prev" href="lab15.html" rel="prev"><span class="dir alt">&larr; Previous &middot; Lab 015</span><span class="t">Manage User Accounts and Password Policies</span></a><a class="next" href="lab17.html" rel="next"><span class="dir alt">Next &middot; Lab 017 &rarr;</span><span class="t">Mounting Filesystems and Editing /etc/fstab</span></a></nav>
+      </article>
     </div>
+  </div>
+</main>
 
-    <!-- Javascript files (your existing) -->
-    <script src="../assets/js/jquery-2.2.4.min.js"></script>
-    <script src="../assets/bootstrap/js/bootstrap.min.js"></script>
-    <script src="../assets/js/jquery.superslides.min.js"></script>
-    <script src="../assets/js/jquery.mb.YTPlayer.min.js"></script>
-    <script src="../assets/js/jquery.magnific-popup.min.js"></script>
-    <script src="../assets/js/owl.carousel.min.js"></script>
-    <script src="../assets/js/jquery.simple-text-rotator.min.js"></script>
-    <script src="../assets/js/imagesloaded.pkgd.js"></script>
-    <script src="../assets/js/isotope.pkgd.min.js"></script>
-    <script src="../assets/js/packery-mode.pkgd.min.js"></script>
-    <script src="../assets/js/appear.js"></script>
-    <script src="../assets/js/jquery.easing.1.3.js"></script>
-    <script src="../assets/js/wow.min.js"></script>
-    <script src="../assets/js/jqBootstrapValidation.js"></script>
-    <script src="../assets/js/jquery.fitvids.js"></script>
-    <script src="../assets/js/jquery.parallax-1.1.3.js"></script>
-    <script src="../assets/js/smoothscroll.js"></script>
-    <script src="../assets/js/custom.js"></script>
-
-    <!-- Lab page JS (new) -->
-    <script src="../assets/js/lab.js"></script>
-
-    <script>
-      document.getElementById('year').textContent = new Date().getFullYear()
-    </script>
-  </body>
+<footer>
+  <img class="mark" src="assets/images/logo-dark.svg" alt="Vonds">
+  <nav aria-label="Footer" class="alt">
+    <a href="index.html#about">About</a><a href="index.html#portfolio">Portfolio</a><a href="docs.html">exit_0 Labs</a><a href="index.html#contact">Contact</a><a href="https://www.linkedin.com/in/vonds/">LinkedIn</a>
+  </nav>
+  <div class="line"></div>
+  <p class="copyright alt">Vonds &copy; 2026</p>
+</footer>
+<button class="to-top" id="toTop" type="button" aria-label="Back to top">&uarr;</button>
+<script src="assets/js/site.js" defer></script>
+<script src="assets/js/lab.js" defer></script>
+</body>
 </html>

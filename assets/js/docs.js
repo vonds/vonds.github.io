@@ -1,293 +1,102 @@
-document.addEventListener("DOMContentLoaded", function () {
-  const filterLinks = document.querySelectorAll(".docs-nav a[data-filter]");
-  const labItems = document.querySelectorAll(".labs-grid li");
+// docs.js: exit_0 lab index. Category filter + search (titles, lab numbers and tags), combined.
+// No dependencies. Each lab is an <li data-filter="primary tag tag ..." data-title="..." data-num="001">.
+(function () {
+  'use strict';
 
-  if (!filterLinks.length || !labItems.length) {
-    return;
-  }
+  var ORDER = ['shell', 'users', 'services', 'storage', 'networking', 'security', 'containers',
+    'packages', 'processes', 'scheduling', 'permissions', 'logging'];
 
-  function clearActiveStates() {
-    filterLinks.forEach(link => link.classList.remove("active"));
-  }
+  var grid = document.getElementById('labsGrid');
+  var cats = document.getElementById('labCats');
+  var input = document.getElementById('labSearch');
+  var clearBtn = document.getElementById('clearLabSearch');
+  var countEl = document.getElementById('labCount');
+  var empty = document.getElementById('labEmpty');
+  if (!grid) return;
 
-  function getTagsFromAttribute(value) {
-    // Handles: null, extra spaces, or accidental commas
-    if (!value) return [];
-    return value
-      .replace(/,/g, " ")
-      .trim()
-      .split(/\s+/)
-      .filter(Boolean);
-  }
+  var items = Array.prototype.slice.call(grid.querySelectorAll('li[data-filter]'));
+  function norm(s) { return String(s || '').toLowerCase().trim(); }
+  function terms(s) { return norm(s).split(/\s+/).filter(Boolean); }
 
-  function filterLabs(filter) {
-    labItems.forEach(item => {
-      const itemFilterRaw = item.getAttribute("data-filter");
-      const tags = getTagsFromAttribute(itemFilterRaw);
-
-      // If the lab has no tags, hide it (safe default)
-      if (!tags.length) {
-        item.style.display = "none";
-        return;
-      }
-
-      if (filter === "all" || tags.includes(filter)) {
-        item.style.display = "";
-      } else {
-        item.style.display = "none";
-      }
-    });
-  }
-
-  filterLinks.forEach(link => {
-    link.addEventListener("click", function (e) {
-      e.preventDefault();
-
-      const filter = this.getAttribute("data-filter");
-
-      clearActiveStates();
-      this.classList.add("active");
-
-      filterLabs(filter);
-    });
+  var labs = items.map(function (li) {
+    var tags = terms(li.getAttribute('data-filter'));
+    return {
+      li: li,
+      primary: tags[0] || 'other',
+      tags: tags,
+      hay: norm(li.getAttribute('data-title')) + ' ' + norm(li.getAttribute('data-num')) + ' ' +
+           String(parseInt(li.getAttribute('data-num'), 10)) + ' ' + tags.join(' ')
+    };
   });
-});
 
-// ../assets/js/docs-search.js (JS)
-// Search that matches against each lab's data-filter attribute.
-// - Type one or more tags separated by spaces (example: "core boot").
-// - Also supports clicking the left sidebar category filters.
-// - Search + sidebar selection combine (AND logic).
+  // Category list with counts
+  var counts = {};
+  labs.forEach(function (l) { counts[l.primary] = (counts[l.primary] || 0) + 1; });
+  var primaries = ORDER.filter(function (p) { return counts[p]; })
+    .concat(Object.keys(counts).filter(function (p) { return ORDER.indexOf(p) === -1; }).sort());
+  var active = 'all';
 
-(function () {
-	"use strict";
+  if (cats) {
+    var html = '<li><button type="button" data-cat="all" aria-pressed="true">All labs <span class="n">' + labs.length + '</span></button></li>';
+    primaries.forEach(function (p) {
+      html += '<li><button type="button" data-cat="' + p + '" aria-pressed="false">' + p + ' <span class="n">' + counts[p] + '</span></button></li>';
+    });
+    cats.innerHTML = html;
+    cats.addEventListener('click', function (e) {
+      var b = e.target.closest('button[data-cat]');
+      if (!b) return;
+      active = b.getAttribute('data-cat');
+      cats.querySelectorAll('button').forEach(function (x) { x.setAttribute('aria-pressed', String(x === b)); });
+      apply(true);
+    });
+  }
 
-	function normalize(str) {
-		return (str || "").toLowerCase().trim();
-	}
-
-	function splitTerms(str) {
-		return normalize(str)
-			.split(/\s+/)
-			.filter(Boolean);
-	}
-
-	var searchInput = document.getElementById("labSearch");
-	var clearBtn = document.getElementById("clearLabSearch");
-	var showAllBtn = document.getElementById("showAllLabs");
-	var pill = document.getElementById("activeFilterPill");
-
-	var labItems = Array.prototype.slice.call(
-		document.querySelectorAll("#labsGrid li[data-filter]")
-	);
-
-	// Tracks the active sidebar filter (single tag or "all")
-	var activeSidebarFilter = "all";
-
-	function setPill(text) {
-		if (!pill) return;
-		pill.textContent = text;
-	}
-
-	// True if any filter tag contains the term (partial match)
-	function termMatchesAnyTag(term, tags) {
-		for (var i = 0; i < tags.length; i++) {
-			if (tags[i].indexOf(term) !== -1) return true;
-		}
-		return false;
-	}
-
-	function labMatches(li, searchTerms, sidebarFilter) {
-		var tags = splitTerms(li.getAttribute("data-filter"));
-
-		// Sidebar filter: exact tag match (keeps behavior consistent)
-		if (sidebarFilter && sidebarFilter !== "all") {
-			var sf = normalize(sidebarFilter);
-			if (tags.indexOf(sf) === -1) return false;
-		}
-
-		// Search terms: partial match inside ANY tag, AND across terms
-		// Example: "boo tr" matches tags containing "boo" (boot) AND "tr" (troubleshooting)
-		for (var i = 0; i < searchTerms.length; i++) {
-			if (!termMatchesAnyTag(searchTerms[i], tags)) return false;
-		}
-
-		return true;
-	}
-
-	function applyFilters() {
-		var terms = searchInput ? splitTerms(searchInput.value) : [];
-		var visibleCount = 0;
-
-		for (var i = 0; i < labItems.length; i++) {
-			var li = labItems[i];
-			var show = labMatches(li, terms, activeSidebarFilter);
-			li.style.display = show ? "" : "none";
-			if (show) visibleCount++;
-		}
-
-		var sidebarText = activeSidebarFilter === "all" ? "all" : activeSidebarFilter;
-		var searchText = terms.length ? terms.join(" ") : "none";
-		setPill("Active filter: " + sidebarText + " | search: " + searchText + " | results: " + visibleCount);
-	}
-
-	// Hook up search input
-	if (searchInput) {
-		searchInput.addEventListener("input", applyFilters);
-	}
-
-	// Clear search
-	if (clearBtn) {
-		clearBtn.addEventListener("click", function () {
-			if (searchInput) searchInput.value = "";
-			applyFilters();
-		});
-	}
-
-	// Show all (reset everything)
-	if (showAllBtn) {
-		showAllBtn.addEventListener("click", function () {
-			activeSidebarFilter = "all";
-			if (searchInput) searchInput.value = "";
-
-			// Remove active class from sidebar links (optional)
-			var links = document.querySelectorAll(".docs-nav a[data-filter]");
-			for (var i = 0; i < links.length; i++) {
-				links[i].classList.remove("active");
-			}
-
-			applyFilters();
-		});
-	}
-
-	// Sidebar click behavior
-	var sidebarLinks = document.querySelectorAll(".docs-nav a[data-filter]");
-	for (var j = 0; j < sidebarLinks.length; j++) {
-		sidebarLinks[j].addEventListener("click", function (e) {
-			e.preventDefault();
-
-			for (var k = 0; k < sidebarLinks.length; k++) {
-				sidebarLinks[k].classList.remove("active");
-			}
-			this.classList.add("active");
-
-			activeSidebarFilter = this.getAttribute("data-filter") || "all";
-			applyFilters();
-		});
-	}
-
-	// Initial render
-	applyFilters();
-})();
-
-/* Put this in ../assets/js/docs.js (or below your existing docs.js code).
-   Builds a dropdown nav from the FIRST token in each lab card's data-filter.
-*/
-(function () {
-  const PRIMARY_ORDER = [
-    "shell",
-    "users",
-    "services",
-    "storage",
-    "networking",
-    "security",
-    "containers",
-    "packages",
-    "processes",
-    "SELinux",
-    "scheduling",
-    "permissions",
-    "logging",
-  ];
-
-  function getPrimaryToken(filterValue) {
-    if (!filterValue) return null;
-    const tokens = filterValue.trim().split(/\s+/);
-    return tokens[0] || null;
+  function apply(fromUser) {
+    var q = input ? terms(input.value) : [];
+    var shown = 0;
+    labs.forEach(function (l) {
+      var ok = active === 'all' || l.primary === active || l.tags.indexOf(active) !== -1;
+      for (var i = 0; ok && i < q.length; i++) { if (l.hay.indexOf(q[i]) === -1) ok = false; }
+      l.li.hidden = !ok;
+      if (ok) shown++;
+    });
+    if (countEl) {
+      var where = active === 'all' ? '' : ' in <b>' + active + '</b>';
+      var what = q.length ? ' matching <b>' + escapeHtml(q.join(' ')) + '</b>' : '';
+      countEl.innerHTML = 'Showing <b>' + shown + '</b> of ' + labs.length + ' labs' + where + what;
+    }
+    if (empty) empty.hidden = shown !== 0;
+    if (clearBtn) clearBtn.hidden = !(q.length || active !== 'all');
+    if (fromUser && window.history && history.replaceState) {
+      var params = new URLSearchParams();
+      if (q.length) params.set('q', q.join(' '));
+      if (active !== 'all') params.set('cat', active);
+      var qs = params.toString();
+      history.replaceState(null, '', location.pathname + (qs ? '?' + qs : '') + location.hash);
+    }
   }
 
   function escapeHtml(s) {
-    return String(s)
-      .replace(/&/g, "&amp;")
-      .replace(/</g, "&lt;")
-      .replace(/>/g, "&gt;")
-      .replace(/"/g, "&quot;")
-      .replace(/'/g, "&#039;");
-  }
-
-  function buildPrimaryDropdownNav() {
-    const nav = document.getElementById("docsNavPrimary");
-    const grid = document.getElementById("labsGrid");
-    if (!nav || !grid) return;
-
-    const labItems = Array.from(grid.querySelectorAll("li[data-filter]"));
-    const groups = new Map(); // primary -> [{title, href}...]
-
-    labItems.forEach((li) => {
-      const primary = getPrimaryToken(li.getAttribute("data-filter"));
-      const a = li.querySelector("a");
-      if (!primary || !a) return;
-
-      if (!groups.has(primary)) groups.set(primary, []);
-      groups.get(primary).push({
-        title: a.textContent.trim(),
-        href: a.getAttribute("href"),
-      });
-    });
-
-    // Render: only primaries that actually exist in the labs list
-    const primariesToRender = PRIMARY_ORDER.filter((p) => groups.has(p));
-
-    nav.innerHTML = primariesToRender
-      .map((primary, idx) => {
-        const labs = groups.get(primary) || [];
-        const submenuId = `docsNavGroup_${idx}`;
-
-        const labsHtml = labs
-          .map(
-            (lab) =>
-              `<li><a href="${escapeHtml(lab.href)}">${escapeHtml(
-                lab.title
-              )}</a></li>`
-          )
-          .join("");
-
-        return `
-          <li class="docs-nav-group">
-            <a href="#" class="docs-nav-toggle" data-filter="${escapeHtml(
-              primary
-            )}" data-target="#${submenuId}" aria-expanded="false">
-              ${escapeHtml(primary)}
-              <span class="docs-nav-caret">▾</span>
-            </a>
-            <ul class="docs-nav-submenu" id="${submenuId}" hidden>
-              ${labsHtml}
-            </ul>
-          </li>
-        `;
-      })
-      .join("");
-
-    // Toggle behavior + keep your existing filter behavior
-    nav.addEventListener("click", function (e) {
-      const toggle = e.target.closest(".docs-nav-toggle");
-      if (!toggle) return;
-
-      e.preventDefault();
-
-      const targetSel = toggle.getAttribute("data-target");
-      const submenu = targetSel ? document.querySelector(targetSel) : null;
-      if (!submenu) return;
-
-      const isOpen = submenu.hidden === false;
-      submenu.hidden = isOpen; // toggle
-      toggle.setAttribute("aria-expanded", String(!isOpen));
+    return String(s).replace(/[&<>"']/g, function (c) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' }[c];
     });
   }
 
-  if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", buildPrimaryDropdownNav);
-  } else {
-    buildPrimaryDropdownNav();
+  if (input) input.addEventListener('input', function () { apply(true); });
+  if (clearBtn) clearBtn.addEventListener('click', function () {
+    if (input) input.value = '';
+    active = 'all';
+    if (cats) cats.querySelectorAll('button').forEach(function (x) { x.setAttribute('aria-pressed', String(x.getAttribute('data-cat') === 'all')); });
+    apply(true);
+    if (input) input.focus();
+  });
+
+  // Restore state from the URL (?q=lvm&cat=storage), so searches can be shared
+  var params = new URLSearchParams(location.search);
+  if (input && params.get('q')) input.value = params.get('q');
+  if (params.get('cat') && counts[params.get('cat')] && cats) {
+    active = params.get('cat');
+    cats.querySelectorAll('button').forEach(function (x) { x.setAttribute('aria-pressed', String(x.getAttribute('data-cat') === active)); });
   }
+  apply(false);
 })();

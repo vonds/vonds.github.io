@@ -1,399 +1,286 @@
-<!-- doc.html (HTML) -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<meta charset="UTF-8" />
-	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-	<meta name="description" content="Vonds Lab Write-ups" />
-	<meta name="name" content="Vonds" />
-
-	<title>Vonds | exit_0 Documentation</title>
-
-	<!-- Favicons -->
-	<link rel="icon" type="image/svg+xml" href="../assets/images/favicon.svg" />
-	<link rel="icon" type="image/png" href="../assets/images/favicon.png" />
-	<link rel="apple-touch-icon" href="../assets/images/apple-touch-icon.png" />
-	<link rel="apple-touch-icon" sizes="72x72" href="../assets/images/apple-touch-icon-72x72.png" />
-	<link rel="apple-touch-icon" sizes="114x114" href="../assets/images/apple-touch-icon-114x114.png" />
-
-	<!-- Bootstrap shell CSS -->
-	<link href="../assets/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
-
-	<!-- Plugins -->
-	<link href="../assets/css/font-awesome.min.css" rel="stylesheet" />
-	<link href="../assets/css/linea-icons.css" rel="stylesheet" />
-	<link href="../assets/css/ionicons.min.css" rel="stylesheet" />
-	<link href="../assets/css/simpletextrotator.css" rel="stylesheet" />
-	<link href="../assets/css/magnific-popup.css" rel="stylesheet" />
-	<link href="../assets/css/owl.carousel.css" rel="stylesheet" />
-	<link href="../assets/css/superslides.css" rel="stylesheet" />
-	<link href="../assets/css/vertical.css" rel="stylesheet" />
-	<link href="../assets/css/animate.css" rel="stylesheet" />
-
-	<!-- Template shell CSS -->
-	<link href="../assets/css/style.css" rel="stylesheet" />
-
-	<!-- Docs overrides -->
-	<link href="../assets/css/docs.css" rel="stylesheet" />
-
-	<!-- Fonts -->
-	<link href="https://fonts.googleapis.com/css?family=Dosis" rel="stylesheet" />
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>exit_0 Labs | 165 Hands-on Linux Labs</title>
+<meta name="description" content="165 hands-on Linux labs for real system administration: shell, users, services, storage, networking, security, containers and more. Free and open source.">
+<link rel="canonical" href="https://vonds.github.io/docs.html">
+<meta name="theme-color" content="#2e2e30">
+<meta name="author" content="Vonds">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Vonds">
+<meta property="og:url" content="https://vonds.github.io/docs.html">
+<meta property="og:title" content="exit_0 Labs | 165 Hands-on Linux Labs">
+<meta property="og:description" content="165 hands-on Linux labs for real system administration: shell, users, services, storage, networking, security, containers and more. Free and open source.">
+<meta property="og:image" content="https://vonds.github.io/assets/images/og/og-exit0.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="exit_0: 165 hands-on Linux labs for real system administration.">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="exit_0 Labs | 165 Hands-on Linux Labs">
+<meta name="twitter:description" content="165 hands-on Linux labs for real system administration: shell, users, services, storage, networking, security, containers and more. Free and open source.">
+<meta name="twitter:image" content="https://vonds.github.io/assets/images/og/og-exit0.jpg">
+<link rel="icon" type="image/svg+xml" href="assets/images/favicon.svg">
+<link rel="icon" type="image/png" href="assets/images/favicon.png">
+<link rel="apple-touch-icon" href="assets/images/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Dosis:wght@300;400;500;600&family=Open+Sans:wght@400;600&display=swap">
+<link rel="stylesheet" href="assets/css/site.css">
+<link rel="stylesheet" href="assets/css/exit0.css">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"CollectionPage","name":"exit_0 Labs","url":"https://vonds.github.io/docs.html","description":"165 hands-on Linux labs for real system administration: shell, users, services, storage, networking, security, containers and more. Free and open source.","mainEntity":{"@type":"ItemList","numberOfItems":165,"itemListElement":[{"@type":"ListItem","position":1,"url":"https://vonds.github.io/lab1.html","name":"RAID Controller Module Identification"},{"@type":"ListItem","position":2,"url":"https://vonds.github.io/lab2.html","name":"Real-Time Log Filter Setup"},{"@type":"ListItem","position":3,"url":"https://vonds.github.io/lab3.html","name":"Basic sed Substitution"},{"@type":"ListItem","position":4,"url":"https://vonds.github.io/lab4.html","name":"Using sed To Do SSH Config Hardening"},{"@type":"ListItem","position":5,"url":"https://vonds.github.io/lab5.html","name":"Investigate the System Boot Process"},{"@type":"ListItem","position":6,"url":"https://vonds.github.io/lab6.html","name":"Blacklisting a Problematic Kernel Module"},{"@type":"ListItem","position":7,"url":"https://vonds.github.io/lab7.html","name":"Inspect and Load Kernel Modules"},{"@type":"ListItem","position":8,"url":"https://vonds.github.io/lab8.html","name":"Identify and Change Default Runlevel"},{"@type":"ListItem","position":9,"url":"https://vonds.github.io/lab9.html","name":"Diagnose and Manage a Faulty Service"},{"@type":"ListItem","position":10,"url":"https://vonds.github.io/lab10.html","name":"Manage File Permissions and Ownership"},{"@type":"ListItem","position":11,"url":"https://vonds.github.io/lab11.html","name":"Basic Network Troubleshooting and Configuration"},{"@type":"ListItem","position":12,"url":"https://vonds.github.io/lab12.html","name":"Schedule and Inspect Cron Jobs"},{"@type":"ListItem","position":13,"url":"https://vonds.github.io/lab13.html","name":"Log Management and Troubleshooting with journalctl"},{"@type":"ListItem","position":14,"url":"https://vonds.github.io/lab14.html","name":"Archiving and Compressing Files"},{"@type":"ListItem","position":15,"url":"https://vonds.github.io/lab15.html","name":"Manage User Accounts and Password Policies"},{"@type":"ListItem","position":16,"url":"https://vonds.github.io/lab16.html","name":"Process Management and Job Control"},{"@type":"ListItem","position":17,"url":"https://vonds.github.io/lab17.html","name":"Mounting Filesystems and Editing /etc/fstab"},{"@type":"ListItem","position":18,"url":"https://vonds.github.io/lab18.html","name":"Partitioning a Disk Using fdisk"},{"@type":"ListItem","position":19,"url":"https://vonds.github.io/lab19.html","name":"File Search and Manipulation"},{"@type":"ListItem","position":20,"url":"https://vonds.github.io/lab20.html","name":"Manage Environment Variables"},{"@type":"ListItem","position":21,"url":"https://vonds.github.io/lab21.html","name":"Understand and Use Sticky Bit"},{"@type":"ListItem","position":22,"url":"https://vonds.github.io/lab22.html","name":"Linux Printing with CUPS"},{"@type":"ListItem","position":23,"url":"https://vonds.github.io/lab23.html","name":"Package Integrity"},{"@type":"ListItem","position":24,"url":"https://vonds.github.io/lab24.html","name":"File Permissions and Special Bits"},{"@type":"ListItem","position":25,"url":"https://vonds.github.io/lab25.html","name":"Diagnose Log Issues and Manage Rotation"},{"@type":"ListItem","position":26,"url":"https://vonds.github.io/lab26.html","name":"User Setup and Permissions"},{"@type":"ListItem","position":27,"url":"https://vonds.github.io/lab27.html","name":"Password Aging and Expiration"},{"@type":"ListItem","position":28,"url":"https://vonds.github.io/lab28.html","name":"Switching Users and Sudo Access"},{"@type":"ListItem","position":29,"url":"https://vonds.github.io/lab29.html","name":"Monitor User Activity"},{"@type":"ListItem","position":30,"url":"https://vonds.github.io/lab30.html","name":"Communicating with Users"},{"@type":"ListItem","position":31,"url":"https://vonds.github.io/lab31.html","name":"Special File Permissions"},{"@type":"ListItem","position":32,"url":"https://vonds.github.io/lab32.html","name":"Account Authentication"},{"@type":"ListItem","position":33,"url":"https://vonds.github.io/lab33.html","name":"Environment Variables and Shell Configuration"},{"@type":"ListItem","position":34,"url":"https://vonds.github.io/lab34.html","name":"System Utility Commands Practice"},{"@type":"ListItem","position":35,"url":"https://vonds.github.io/lab35.html","name":"Processes, Jobs, and Scheduling"},{"@type":"ListItem","position":36,"url":"https://vonds.github.io/lab36.html","name":"Managing Services with systemctl"},{"@type":"ListItem","position":37,"url":"https://vonds.github.io/lab37.html","name":"Investigating Processes with ps"},{"@type":"ListItem","position":38,"url":"https://vonds.github.io/lab38.html","name":"Monitoring System with top"},{"@type":"ListItem","position":39,"url":"https://vonds.github.io/lab39.html","name":"Managing Processes with kill"},{"@type":"ListItem","position":40,"url":"https://vonds.github.io/lab40.html","name":"Mastering Process Signals in Linux"},{"@type":"ListItem","position":41,"url":"https://vonds.github.io/lab41.html","name":"Jobs, fg, bg, kill"},{"@type":"ListItem","position":42,"url":"https://vonds.github.io/lab42.html","name":"One-Time Job Scheduling with at"},{"@type":"ListItem","position":43,"url":"https://vonds.github.io/lab43.html","name":"Scheduled Task Intervals"},{"@type":"ListItem","position":44,"url":"https://vonds.github.io/lab44.html","name":"Process Management"},{"@type":"ListItem","position":45,"url":"https://vonds.github.io/lab45.html","name":"System Monitoring Commands"},{"@type":"ListItem","position":46,"url":"https://vonds.github.io/lab46.html","name":"System Logs Monitor (/var/log)"},{"@type":"ListItem","position":47,"url":"https://vonds.github.io/lab47.html","name":"System Maintenance Commands"},{"@type":"ListItem","position":48,"url":"https://vonds.github.io/lab48.html","name":"Changing System Hostname"},{"@type":"ListItem","position":49,"url":"https://vonds.github.io/lab49.html","name":"Finding System Information"},{"@type":"ListItem","position":50,"url":"https://vonds.github.io/lab50.html","name":"Finding System Architecture (arch)"},{"@type":"ListItem","position":51,"url":"https://vonds.github.io/lab51.html","name":"Generating a System SOS Report"},{"@type":"ListItem","position":52,"url":"https://vonds.github.io/lab52.html","name":"Awk Essentials"},{"@type":"ListItem","position":53,"url":"https://vonds.github.io/lab53.html","name":"Terminal Commands (clear, exit, script)"},{"@type":"ListItem","position":54,"url":"https://vonds.github.io/lab54.html","name":"Recover Root Password"},{"@type":"ListItem","position":55,"url":"https://vonds.github.io/lab55.html","name":"Environment Variables"},{"@type":"ListItem","position":56,"url":"https://vonds.github.io/lab56.html","name":"Persistent Sessions with screen"},{"@type":"ListItem","position":57,"url":"https://vonds.github.io/lab57.html","name":"tmux Sessions"},{"@type":"ListItem","position":58,"url":"https://vonds.github.io/lab58.html","name":"Network Commands and Diagnostics"},{"@type":"ListItem","position":59,"url":"https://vonds.github.io/lab59.html","name":"NIC Information and Diagnostics with ethtool"},{"@type":"ListItem","position":60,"url":"https://vonds.github.io/lab60.html","name":"Basic Static IPv4 Setup & Connectivity Test"},{"@type":"ListItem","position":61,"url":"https://vonds.github.io/lab61.html","name":"Modern Network Management Tools"},{"@type":"ListItem","position":62,"url":"https://vonds.github.io/lab62.html","name":"SSH and Telnet - Remote Access"},{"@type":"ListItem","position":63,"url":"https://vonds.github.io/lab63.html","name":"Configure and Secure SSH"},{"@type":"ListItem","position":64,"url":"https://vonds.github.io/lab64.html","name":"SSH Keys - Passwordless Authentication"},{"@type":"ListItem","position":65,"url":"https://vonds.github.io/lab65.html","name":"The ss Command - View and Analyze Socket Connections"},{"@type":"ListItem","position":66,"url":"https://vonds.github.io/lab66.html","name":"Using curl and ping for Network Testing"},{"@type":"ListItem","position":67,"url":"https://vonds.github.io/lab67.html","name":"FTP - File Transfer Protocol"},{"@type":"ListItem","position":68,"url":"https://vonds.github.io/lab68.html","name":"SCP - Secure Copy Protocol"},{"@type":"ListItem","position":69,"url":"https://vonds.github.io/lab69.html","name":"Remote Synchronization with rsync"},{"@type":"ListItem","position":70,"url":"https://vonds.github.io/lab70.html","name":"Downloading Files with wget"},{"@type":"ListItem","position":71,"url":"https://vonds.github.io/lab71.html","name":"System Updates and Repos"},{"@type":"ListItem","position":72,"url":"https://vonds.github.io/lab72.html","name":"Creating a Local Package Repository"},{"@type":"ListItem","position":73,"url":"https://vonds.github.io/lab73.html","name":"Advanced Package Management"},{"@type":"ListItem","position":74,"url":"https://vonds.github.io/lab74.html","name":"Rolling Back Patches and Updates"},{"@type":"ListItem","position":75,"url":"https://vonds.github.io/lab75.html","name":"DNS Service Bring-Up"},{"@type":"ListItem","position":76,"url":"https://vonds.github.io/lab76.html","name":"DNS Lookup Validation"},{"@type":"ListItem","position":77,"url":"https://vonds.github.io/lab77.html","name":"Time Synchronization with chrony"},{"@type":"ListItem","position":78,"url":"https://vonds.github.io/lab78.html","name":"Managing Time with timedatectl"},{"@type":"ListItem","position":79,"url":"https://vonds.github.io/lab79.html","name":"Working with System Time using date"},{"@type":"ListItem","position":80,"url":"https://vonds.github.io/lab80.html","name":"Installing and Configuring Postfix (MTA)"},{"@type":"ListItem","position":81,"url":"https://vonds.github.io/lab81.html","name":"Setting Up a Web Server"},{"@type":"ListItem","position":82,"url":"https://vonds.github.io/lab82.html","name":"Installing, Validating, and Managing Nginx"},{"@type":"ListItem","position":83,"url":"https://vonds.github.io/lab83.html","name":"Linux Web-Based Administration"},{"@type":"ListItem","position":84,"url":"https://vonds.github.io/lab84.html","name":"Setting Up a Proxy Server with Squid"},{"@type":"ListItem","position":85,"url":"https://vonds.github.io/lab85.html","name":"Central Logging with rsyslog"},{"@type":"ListItem","position":86,"url":"https://vonds.github.io/lab86.html","name":"Configuring an rsyslog Client for Remote Logging"},{"@type":"ListItem","position":87,"url":"https://vonds.github.io/lab87.html","name":"Network Troubleshooting with netcat"},{"@type":"ListItem","position":88,"url":"https://vonds.github.io/lab88.html","name":"Managing Log Rotation with logrotate"},{"@type":"ListItem","position":89,"url":"https://vonds.github.io/lab89.html","name":"Managing User Passwords and Aging Policies"},{"@type":"ListItem","position":90,"url":"https://vonds.github.io/lab90.html","name":"Configuring Account Lockout with faillock"},{"@type":"ListItem","position":91,"url":"https://vonds.github.io/lab91.html","name":"OpenLDAP Server Installation and Initial Configuration"},{"@type":"ListItem","position":92,"url":"https://vonds.github.io/lab92.html","name":"Tracing Network Traffic with traceroute"},{"@type":"ListItem","position":93,"url":"https://vonds.github.io/lab93.html","name":"Opening Image Files from the Command Line"},{"@type":"ListItem","position":94,"url":"https://vonds.github.io/lab94.html","name":"Configuring the Linux Firewall"},{"@type":"ListItem","position":95,"url":"https://vonds.github.io/lab95.html","name":"Tuning System Performance"},{"@type":"ListItem","position":96,"url":"https://vonds.github.io/lab96.html","name":"Running Containers with Podman"},{"@type":"ListItem","position":97,"url":"https://vonds.github.io/lab97.html","name":"Set up a basic NTP client with chronyd"},{"@type":"ListItem","position":98,"url":"https://vonds.github.io/lab98.html","name":"Installing, Configuring, and Managing Ansible"},{"@type":"ListItem","position":99,"url":"https://vonds.github.io/lab99.html","name":"Creating and Using Ansible Roles"},{"@type":"ListItem","position":100,"url":"https://vonds.github.io/lab100.html","name":"Agent-Based Configuration with ansible-pull"},{"@type":"ListItem","position":101,"url":"https://vonds.github.io/lab101.html","name":"Secure Secrets with Ansible Vault"},{"@type":"ListItem","position":102,"url":"https://vonds.github.io/lab102.html","name":"Managing Dynamic Inventories in Ansible"},{"@type":"ListItem","position":103,"url":"https://vonds.github.io/lab103.html","name":"Managing Roles with ansible-galaxy"},{"@type":"ListItem","position":104,"url":"https://vonds.github.io/lab104.html","name":"Installing, Configuring, and Managing OpenVPN"},{"@type":"ListItem","position":105,"url":"https://vonds.github.io/lab105.html","name":"Installing, Configuring, and Managing a DHCP Server"},{"@type":"ListItem","position":106,"url":"https://vonds.github.io/lab106.html","name":"Managing Users, Groups, and Permissions"},{"@type":"ListItem","position":107,"url":"https://vonds.github.io/lab107.html","name":"Hardware Inventory Basics"},{"@type":"ListItem","position":108,"url":"https://vonds.github.io/lab108.html","name":"Kernel Module Fundamentals"},{"@type":"ListItem","position":109,"url":"https://vonds.github.io/lab109.html","name":"Persistent Module Configuration"},{"@type":"ListItem","position":110,"url":"https://vonds.github.io/lab110.html","name":"Monitor Hardware Events"},{"@type":"ListItem","position":111,"url":"https://vonds.github.io/lab111.html","name":"Proc CPU & Memory Exploration"},{"@type":"ListItem","position":112,"url":"https://vonds.github.io/lab112.html","name":"Proc Hardware Resources"},{"@type":"ListItem","position":113,"url":"https://vonds.github.io/lab113.html","name":"sysfs Exploration"},{"@type":"ListItem","position":114,"url":"https://vonds.github.io/lab114.html","name":"RHEL Bootloader Basics"},{"@type":"ListItem","position":115,"url":"https://vonds.github.io/lab115.html","name":"Systemd Targets & Runlevels"},{"@type":"ListItem","position":116,"url":"https://vonds.github.io/lab116.html","name":"Identify Mass Storage Types"},{"@type":"ListItem","position":117,"url":"https://vonds.github.io/lab117.html","name":"Debian Package Management with dpkg"},{"@type":"ListItem","position":118,"url":"https://vonds.github.io/lab118.html","name":"Reconfiguring Installed Packages on RHEL"},{"@type":"ListItem","position":119,"url":"https://vonds.github.io/lab119.html","name":"YUM Basics"},{"@type":"ListItem","position":120,"url":"https://vonds.github.io/lab120.html","name":"DNF/RPM Package Management Basics"},{"@type":"ListItem","position":121,"url":"https://vonds.github.io/lab121.html","name":"Configure DNF Repositories (RHEL)"},{"@type":"ListItem","position":122,"url":"https://vonds.github.io/lab122.html","name":"RPM Package Management"},{"@type":"ListItem","position":123,"url":"https://vonds.github.io/lab123.html","name":"Partition /dev/sdb with msdos (MBR) using parted"},{"@type":"ListItem","position":124,"url":"https://vonds.github.io/lab124.html","name":"Create and Delete GPT Partitions with parted"},{"@type":"ListItem","position":125,"url":"https://vonds.github.io/lab125.html","name":"LVM Basics"},{"@type":"ListItem","position":126,"url":"https://vonds.github.io/lab126.html","name":"Dynamic Linker & Shared Library"},{"@type":"ListItem","position":127,"url":"https://vonds.github.io/lab127.html","name":"Network Troubleshooting"},{"@type":"ListItem","position":128,"url":"https://vonds.github.io/lab128.html","name":"Firewall Troubleshooting for SSH Access"},{"@type":"ListItem","position":129,"url":"https://vonds.github.io/lab129.html","name":"Fix Intermittent Connectivity (MTU)"},{"@type":"ListItem","position":130,"url":"https://vonds.github.io/lab130.html","name":"Networking Fundamentals \u2014 Restore Connectivity"},{"@type":"ListItem","position":131,"url":"https://vonds.github.io/lab131.html","name":"Fix Wrong Hostname Resolution (hosts override)"},{"@type":"ListItem","position":132,"url":"https://vonds.github.io/lab132.html","name":"Fix Slow Hostname Lookups (Reverse DNS)"},{"@type":"ListItem","position":133,"url":"https://vonds.github.io/lab133.html","name":"Investigate Port 443 Failure (Path + Firewall)"},{"@type":"ListItem","position":134,"url":"https://vonds.github.io/lab134.html","name":"Fix DNS Failure Caused by Bad resolv.conf"},{"@type":"ListItem","position":135,"url":"https://vonds.github.io/lab135.html","name":"Fix Wrong Static IP on eth0"},{"@type":"ListItem","position":136,"url":"https://vonds.github.io/lab136.html","name":"Fix Missing Journal Logs and Restore Time Sync"},{"@type":"ListItem","position":137,"url":"https://vonds.github.io/lab137.html","name":"Time Sync & Logging Workflow"},{"@type":"ListItem","position":138,"url":"https://vonds.github.io/lab138.html","name":"Printing & Mail Queue Workflow"},{"@type":"ListItem","position":139,"url":"https://vonds.github.io/lab139.html","name":"Remote Syslog & Logrotate Workflow"},{"@type":"ListItem","position":140,"url":"https://vonds.github.io/lab140.html","name":"Defaults & Realistic Provisioning Workflow"},{"@type":"ListItem","position":141,"url":"https://vonds.github.io/lab141.html","name":"Postfix Queue & Time/Journal Workflow"},{"@type":"ListItem","position":142,"url":"https://vonds.github.io/lab142.html","name":"Printing, Journald, and Time Workflow"},{"@type":"ListItem","position":143,"url":"https://vonds.github.io/lab143.html","name":"Journal Cleanup & Printing Workflow"},{"@type":"ListItem","position":144,"url":"https://vonds.github.io/lab144.html","name":"Journald Persistence & Rsyslog Remote Forward"},{"@type":"ListItem","position":145,"url":"https://vonds.github.io/lab145.html","name":"RHCSA Admin Tasks \u2014 Permissions + Cron + at + Time + Accounts"},{"@type":"ListItem","position":146,"url":"https://vonds.github.io/lab146.html","name":"Administrative Tasks, Users, Groups, and Account Aging"},{"@type":"ListItem","position":147,"url":"https://vonds.github.io/lab147.html","name":"RHCSA User + Group Admin \u2014 tsuli Account Workflow"},{"@type":"ListItem","position":148,"url":"https://vonds.github.io/lab148.html","name":"User Crontab Workflow"},{"@type":"ListItem","position":149,"url":"https://vonds.github.io/lab149.html","name":"RHCSA chage Password Aging Controls \u2014 fatima Remediation Workflow"},{"@type":"ListItem","position":150,"url":"https://vonds.github.io/lab150.html","name":"Secure User Onboarding Workflow"},{"@type":"ListItem","position":151,"url":"https://vonds.github.io/lab151.html","name":"usermod User Account Modification"},{"@type":"ListItem","position":152,"url":"https://vonds.github.io/lab152.html","name":"userdel User Account Deletion"},{"@type":"ListItem","position":153,"url":"https://vonds.github.io/lab153.html","name":"getent Database Lookup"},{"@type":"ListItem","position":154,"url":"https://vonds.github.io/lab154.html","name":"Password Management"},{"@type":"ListItem","position":155,"url":"https://vonds.github.io/lab155.html","name":"groupadd Group Management"},{"@type":"ListItem","position":156,"url":"https://vonds.github.io/lab156.html","name":"Docker Basics"},{"@type":"ListItem","position":157,"url":"https://vonds.github.io/lab157.html","name":"Docker Networking"},{"@type":"ListItem","position":158,"url":"https://vonds.github.io/lab158.html","name":"Docker Volumes"},{"@type":"ListItem","position":159,"url":"https://vonds.github.io/lab159.html","name":"Docker Images"},{"@type":"ListItem","position":160,"url":"https://vonds.github.io/lab160.html","name":"Docker Compose"},{"@type":"ListItem","position":161,"url":"https://vonds.github.io/lab161.html","name":"Healthchecks (HEALTHCHECK + docker ps)"},{"@type":"ListItem","position":162,"url":"https://vonds.github.io/lab162.html","name":"Flatpak Real-World App Deployment (Obsidian)"},{"@type":"ListItem","position":163,"url":"https://vonds.github.io/lab163.html","name":"Flatpak Trust, Remotes & Permissions"},{"@type":"ListItem","position":164,"url":"https://vonds.github.io/lab164.html","name":"SELinux Basics"},{"@type":"ListItem","position":165,"url":"https://vonds.github.io/lab165.html","name":"SELinux & httpd"}]}}</script>
 </head>
+<body class="docs">
+<a class="skip" href="#main">Skip to content</a>
+<header class="header solid" id="header">
+  <div class="wrap">
+    <a class="brand" href="index.html" aria-label="Vonds home">
+      <img class="logo-dark" src="assets/images/logo-dark.svg" alt="Vonds">
+      <img class="logo-light" src="assets/images/logo-light.svg" alt="" aria-hidden="true">
+    </a>
+    <button class="menu-btn" id="menuOpen" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="overlay">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</header>
 
-<body>
-	<!-- PRELOADER -->
-	<div class="page-loader">
-		<div class="loader">Loading...</div>
-	</div>
+<div class="overlay" id="overlay" aria-hidden="true">
+  <button class="close" id="menuClose" type="button" aria-label="Close menu">&times;</button>
+  <nav aria-label="Main">
+    <a class="alt" href="index.html">Home</a>
+    <a class="alt" href="index.html#about">About</a>
+    <a class="alt" href="index.html#portfolio">Portfolio</a>
+    <div class="sub">
+      <a class="alt" href="https://black-signal-demo.netlify.app/">Black Signal</a>
+      <a class="alt" href="https://deeds-demo.netlify.app/">DEEDS</a>
+      <a class="alt" href="https://digital-resource-map-demo.netlify.app/">Digital Resource Map</a>
+      <a class="alt" href="https://thetravelingarchive.com/">The Traveling Archive</a>
+      <a class="alt" href="https://github.com/vonds/sentinel">Sentinel</a>
+      <a class="alt" href="docs.html">exit_0 Labs</a>
+    </div>
+    <a class="alt" href="index.html#services">Services</a>
+    <a class="alt" href="index.html#contact">Contact</a>
+    <a class="alt" href="https://www.linkedin.com/in/vonds/">LinkedIn</a>
+  </nav>
+  <div class="foot alt">Vonds &copy; <span id="year">2026</span></div>
+</div>
 
-	<!-- OVERLAY MENU -->
-	<div id="overlay-menu" class="overlay-menu">
-		<a href="#" id="overlay-menu-hide" class="navigation-hide">
-			<i class="ion-close-round"></i>
-		</a>
+<main class="x0" id="main">
+  <div class="x0-wrap">
+    <nav class="crumbs alt" aria-label="Breadcrumb"><a href="index.html">Vonds</a><span class="sep" aria-hidden="true">/</span><span aria-current="page">exit_0 Labs</span></nav>
+    <header class="x0-head">
+      <p class="eyebrow alt"><b>Open source</b> &middot; Linux labs</p>
+      <h1>exit_0 Labs</h1>
+      <p class="lede">exit_0 is a terminal-based Linux lab environment built around real system administration tasks. The labs are designed to develop operational habits: inspecting system state, applying safe changes, verifying results, and diagnosing failures.</p><p class="lede">These write-ups form the operational backbone of the labs. Each one documents the objective, the commands involved, the expected system state, and the common breakpoints that surface in production environments. The emphasis is on repeatable workflows, clear verification, and stable outcomes rather than one-off command success.</p><p class="lede">exit_0 is intended for Linux system administrators and IT professionals transitioning into Linux-focused roles.</p>
+      <div class="stats" role="list">
+        <div role="listitem"><b>165</b><span class="alt">Hands-on labs</span></div>
+        <div role="listitem"><b>13</b><span class="alt">Topic areas</span></div>
+        <div role="listitem"><b>Free</b><span class="alt">And open source</span></div>
+      </div>
+      <div class="head-actions">
+        <a class="btn solid" href="lab1.html">Start with Lab 001 &rarr;</a>
+        <a class="btn" href="https://github.com/vonds/exit_0" target="_blank" rel="noopener">View on GitHub</a>
+        <p class="support alt">Support exit_0 <a href="http://venmo.com/u/vonds" target="_blank" rel="noopener">Venmo</a><a href="https://cash.app/$VondsDubuisson" target="_blank" rel="noopener">Cash App</a></p>
+      </div>
+    </header>
+    <div class="x0-grid">
+      <aside class="x0-side" aria-label="Topics">
+        <nav class="toc">
+          <p class="toc-h alt">Topics</p>
+          <ul class="cats" id="labCats"></ul>
+        </nav>
+      </aside>
+      <section aria-label="All labs">
+        <div class="search" role="search">
+          <label for="labSearch">Search labs</label>
+          <input id="labSearch" type="search" placeholder="Try: lvm, boot, ssh, docker, 042" autocomplete="off" spellcheck="false">
+          <button class="btn" id="clearLabSearch" type="button" hidden>Clear</button>
+        </div>
+        <p class="count alt" id="labCount" role="status" aria-live="polite">Showing <b>165</b> of 165 labs</p>
+        <ul class="labs" id="labsGrid">
+<li data-filter="processes storage kernel modules pci raid megaraid hardware diagnostics" data-title="RAID Controller Module Identification" data-num="001"><a href="lab1.html"><span class="num">Lab 001</span><span class="t">RAID Controller Module Identification</span><span class="cat">processes</span></a></li>
+<li data-filter="logging shell monitoring realtime tail grep syslog messages auth kernel security alerts triage" data-title="Real-Time Log Filter Setup" data-num="002"><a href="lab2.html"><span class="num">Lab 002</span><span class="t">Real-Time Log Filter Setup</span><span class="cat">logging</span></a></li>
+<li data-filter="shell text sed substitution config editing" data-title="Basic sed Substitution" data-num="003"><a href="lab3.html"><span class="num">Lab 003</span><span class="t">Basic sed Substitution</span><span class="cat">shell</span></a></li>
+<li data-filter="services security ssh sed hardening config" data-title="Using sed To Do SSH Config Hardening" data-num="004"><a href="lab4.html"><span class="num">Lab 004</span><span class="t">Using sed To Do SSH Config Hardening</span><span class="cat">services</span></a></li>
+<li data-filter="services processes systemd boot" data-title="Investigate the System Boot Process" data-num="005"><a href="lab5.html"><span class="num">Lab 005</span><span class="t">Investigate the System Boot Process</span><span class="cat">services</span></a></li>
+<li data-filter="services boot security blacklisting" data-title="Blacklisting a Problematic Kernel Module" data-num="006"><a href="lab6.html"><span class="num">Lab 006</span><span class="t">Blacklisting a Problematic Kernel Module</span><span class="cat">services</span></a></li>
+<li data-filter="services boot shell modules" data-title="Inspect and Load Kernel Modules" data-num="007"><a href="lab7.html"><span class="num">Lab 007</span><span class="t">Inspect and Load Kernel Modules</span><span class="cat">services</span></a></li>
+<li data-filter="services boot scheduling runlevel" data-title="Identify and Change Default Runlevel" data-num="008"><a href="lab8.html"><span class="num">Lab 008</span><span class="t">Identify and Change Default Runlevel</span><span class="cat">services</span></a></li>
+<li data-filter="services processes systemd troubleshooting" data-title="Diagnose and Manage a Faulty Service" data-num="009"><a href="lab9.html"><span class="num">Lab 009</span><span class="t">Diagnose and Manage a Faulty Service</span><span class="cat">services</span></a></li>
+<li data-filter="permissions ownership chmod chgrp umask security audit logs file access users groups" data-title="Manage File Permissions and Ownership" data-num="010"><a href="lab10.html"><span class="num">Lab 010</span><span class="t">Manage File Permissions and Ownership</span><span class="cat">permissions</span></a></li>
+<li data-filter="networking dns routing ip ping dig nslookup gateway interface resolvconf connectivity linux" data-title="Basic Network Troubleshooting and Configuration" data-num="011"><a href="lab11.html"><span class="num">Lab 011</span><span class="t">Basic Network Troubleshooting and Configuration</span><span class="cat">networking</span></a></li>
+<li data-filter="scheduling services cron backups" data-title="Schedule and Inspect Cron Jobs" data-num="012"><a href="lab12.html"><span class="num">Lab 012</span><span class="t">Schedule and Inspect Cron Jobs</span><span class="cat">scheduling</span></a></li>
+<li data-filter="logging services journalctl rotation" data-title="Log Management and Troubleshooting with journalctl" data-num="013"><a href="lab13.html"><span class="num">Lab 013</span><span class="t">Log Management and Troubleshooting with journalctl</span><span class="cat">logging</span></a></li>
+<li data-filter="shell packages tar compression" data-title="Archiving and Compressing Files" data-num="014"><a href="lab14.html"><span class="num">Lab 014</span><span class="t">Archiving and Compressing Files</span><span class="cat">shell</span></a></li>
+<li data-filter="users permissions passwords aging" data-title="Manage User Accounts and Password Policies" data-num="015"><a href="lab15.html"><span class="num">Lab 015</span><span class="t">Manage User Accounts and Password Policies</span><span class="cat">users</span></a></li>
+<li data-filter="processes process ps top kill" data-title="Process Management and Job Control" data-num="016"><a href="lab16.html"><span class="num">Lab 016</span><span class="t">Process Management and Job Control</span><span class="cat">processes</span></a></li>
+<li data-filter="storage filesystems fstab" data-title="Mounting Filesystems and Editing /etc/fstab" data-num="017"><a href="lab17.html"><span class="num">Lab 017</span><span class="t">Mounting Filesystems and Editing /etc/fstab</span><span class="cat">storage</span></a></li>
+<li data-filter="storage partitioning fdisk" data-title="Partitioning a Disk Using fdisk" data-num="018"><a href="lab18.html"><span class="num">Lab 018</span><span class="t">Partitioning a Disk Using fdisk</span><span class="cat">storage</span></a></li>
+<li data-filter="shell search find locate xargs" data-title="File Search and Manipulation" data-num="019"><a href="lab19.html"><span class="num">Lab 019</span><span class="t">File Search and Manipulation</span><span class="cat">shell</span></a></li>
+<li data-filter="shell variables environment startup bash" data-title="Manage Environment Variables" data-num="020"><a href="lab20.html"><span class="num">Lab 020</span><span class="t">Manage Environment Variables</span><span class="cat">shell</span></a></li>
+<li data-filter="permissions stickybit chmod directory shared" data-title="Understand and Use Sticky Bit" data-num="021"><a href="lab21.html"><span class="num">Lab 021</span><span class="t">Understand and Use Sticky Bit</span><span class="cat">permissions</span></a></li>
+<li data-filter="services cups printing systemctl lpstat" data-title="Linux Printing with CUPS" data-num="022"><a href="lab22.html"><span class="num">Lab 022</span><span class="t">Linux Printing with CUPS</span><span class="cat">services</span></a></li>
+<li data-filter="packages security gpg integrity rpm dpkg" data-title="Package Integrity" data-num="023"><a href="lab23.html"><span class="num">Lab 023</span><span class="t">Package Integrity</span><span class="cat">packages</span></a></li>
+<li data-filter="permissions security users sticky setuid setgid" data-title="File Permissions and Special Bits" data-num="024"><a href="lab24.html"><span class="num">Lab 024</span><span class="t">File Permissions and Special Bits</span><span class="cat">permissions</span></a></li>
+<li data-filter="logging services troubleshooting journalctl logrotate rotation" data-title="Diagnose Log Issues and Manage Rotation" data-num="025"><a href="lab25.html"><span class="num">Lab 025</span><span class="t">Diagnose Log Issues and Manage Rotation</span><span class="cat">logging</span></a></li>
+<li data-filter="users user-management onboarding accounts groups groupadd useradd usermod passwd userdel groupdel permissions ownership chgrp shared-directory workspace /opt/devwork devteam devstudent devstudent2 /etc/passwd /etc/group getent id grep primary-group supplementary-groups home-directory shell /bin/bash cleanup userdel -r" data-title="User Setup and Permissions" data-num="026"><a href="lab26.html"><span class="num">Lab 026</span><span class="t">User Setup and Permissions</span><span class="cat">users</span></a></li>
+<li data-filter="users security shell password-policy password-aging expiration chage passwd" data-title="Password Aging and Expiration" data-num="027"><a href="lab27.html"><span class="num">Lab 027</span><span class="t">Password Aging and Expiration</span><span class="cat">users</span></a></li>
+<li data-filter="users shell security privilege-escalation sudo su switching-users root-shell login-shell least-privilege access-control authorization sudoers wheel group-membership usermod useradd passwd userdel whoami audit sudo -i sudo &lt;command&gt; su - tempsudo tempsudo /etc/sudoers /etc/sudoers.d visudo policy verification identity boundary escalation patterns" data-title="Switching Users and Sudo Access" data-num="028"><a href="lab28.html"><span class="num">Lab 028</span><span class="t">Switching Users and Sudo Access</span><span class="cat">users</span></a></li>
+<li data-filter="security shell users monitoring user-activity session-monitoring access-review incident-triage login-triage suspicious-login after-hours login-history current-sessions remote-sessions tty pts ssh sshd authentication authorization privilege audit trail forensics evidence-preservation account-lockout account-mitigation who w last id getent grep auth.log /var/log/auth.log /var/log/secure failed-password brute-force password-guessing credential-abuse ip-address source-ip sessions wtmp sudo wheel sudo-group group-membership risk-assessment passwd -l lock-account" data-title="Monitor User Activity" data-num="029"><a href="lab29.html"><span class="num">Lab 029</span><span class="t">Monitor User Activity</span><span class="cat">security</span></a></li>
+<li data-filter="users shell" data-title="Communicating with Users" data-num="030"><a href="lab30.html"><span class="num">Lab 030</span><span class="t">Communicating with Users</span><span class="cat">users</span></a></li>
+<li data-filter="permissions setuid suid setgid sgid sticky-bit sticky chmod octal-permissions chgrp groupadd group-management user-management security" data-title="Special File Permissions" data-num="031"><a href="lab31.html"><span class="num">Lab 031</span><span class="t">Special File Permissions</span><span class="cat">permissions</span></a></li>
+<li data-filter="users security services ldap authentication directory" data-title="Account Authentication" data-num="032"><a href="lab32.html"><span class="num">Lab 032</span><span class="t">Account Authentication</span><span class="cat">users</span></a></li>
+<li data-filter="shell users permissions env bashrc profile" data-title="Environment Variables and Shell Configuration" data-num="033"><a href="lab33.html"><span class="num">Lab 033</span><span class="t">Environment Variables and Shell Configuration</span><span class="cat">shell</span></a></li>
+<li data-filter="shell processes troubleshooting utilities systeminfo" data-title="System Utility Commands Practice" data-num="034"><a href="lab34.html"><span class="num">Lab 034</span><span class="t">System Utility Commands Practice</span><span class="cat">shell</span></a></li>
+<li data-filter="processes scheduling shell jobs monitoring automation" data-title="Processes, Jobs, and Scheduling" data-num="035"><a href="lab35.html"><span class="num">Lab 035</span><span class="t">Processes, Jobs, and Scheduling</span><span class="cat">processes</span></a></li>
+<li data-filter="services systemd systemctl daemon units boot" data-title="Managing Services with systemctl" data-num="036"><a href="lab36.html"><span class="num">Lab 036</span><span class="t">Managing Services with systemctl</span><span class="cat">services</span></a></li>
+<li data-filter="processes ps monitoring inspection resources troubleshooting" data-title="Investigating Processes with ps" data-num="037"><a href="lab37.html"><span class="num">Lab 037</span><span class="t">Investigating Processes with ps</span><span class="cat">processes</span></a></li>
+<li data-filter="processes top monitoring performance resources troubleshooting" data-title="Monitoring System with top" data-num="038"><a href="lab38.html"><span class="num">Lab 038</span><span class="t">Monitoring System with top</span><span class="cat">processes</span></a></li>
+<li data-filter="processes kill signals termination pgrep troubleshooting" data-title="Managing Processes with kill" data-num="039"><a href="lab39.html"><span class="num">Lab 039</span><span class="t">Managing Processes with kill</span><span class="cat">processes</span></a></li>
+<li data-filter="processes signals kill sigterm sigkill trap" data-title="Mastering Process Signals in Linux" data-num="040"><a href="lab40.html"><span class="num">Lab 040</span><span class="t">Mastering Process Signals in Linux</span><span class="cat">processes</span></a></li>
+<li data-filter="processes scheduling jobcontrol jobs foreground background" data-title="Jobs, fg, bg, kill" data-num="041"><a href="lab41.html"><span class="num">Lab 041</span><span class="t">Jobs, fg, bg, kill</span><span class="cat">processes</span></a></li>
+<li data-filter="scheduling processes at atd backup queueing atrm" data-title="One-Time Job Scheduling with at" data-num="042"><a href="lab42.html"><span class="num">Lab 042</span><span class="t">One-Time Job Scheduling with at</span><span class="cat">scheduling</span></a></li>
+<li data-filter="scheduling processes cron intervals hourly daily weekly monthly" data-title="Scheduled Task Intervals" data-num="043"><a href="lab43.html"><span class="num">Lab 043</span><span class="t">Scheduled Task Intervals</span><span class="cat">scheduling</span></a></li>
+<li data-filter="processes scheduling jobcontrol priority nice bg fg" data-title="Process Management" data-num="044"><a href="lab44.html"><span class="num">Lab 044</span><span class="t">Process Management</span><span class="cat">processes</span></a></li>
+<li data-filter="shell troubleshooting storage" data-title="System Monitoring Commands" data-num="045"><a href="lab45.html"><span class="num">Lab 045</span><span class="t">System Monitoring Commands</span><span class="cat">shell</span></a></li>
+<li data-filter="shell security secvices" data-title="System Logs Monitor (/var/log)" data-num="046"><a href="lab46.html"><span class="num">Lab 046</span><span class="t">System Logs Monitor (/var/log)</span><span class="cat">shell</span></a></li>
+<li data-filter="boot troubleshooting secvices" data-title="System Maintenance Commands" data-num="047"><a href="lab47.html"><span class="num">Lab 047</span><span class="t">System Maintenance Commands</span><span class="cat">boot</span></a></li>
+<li data-filter="shell network secvices" data-title="Changing System Hostname" data-num="048"><a href="lab48.html"><span class="num">Lab 048</span><span class="t">Changing System Hostname</span><span class="cat">shell</span></a></li>
+<li data-filter="shell system hardware kernel uname dmidecode info" data-title="Finding System Information" data-num="049"><a href="lab49.html"><span class="num">Lab 049</span><span class="t">Finding System Information</span><span class="cat">shell</span></a></li>
+<li data-filter="shell architecture cpu uname arch lscpu hardware" data-title="Finding System Architecture (arch)" data-num="050"><a href="lab50.html"><span class="num">Lab 050</span><span class="t">Finding System Architecture (arch)</span><span class="cat">shell</span></a></li>
+<li data-filter="shell troubleshooting sosreport diagnostics support sos tar archive" data-title="Generating a System SOS Report" data-num="051"><a href="lab51.html"><span class="num">Lab 051</span><span class="t">Generating a System SOS Report</span><span class="cat">shell</span></a></li>
+<li data-filter="shell awk text parsing filtering formatting" data-title="Awk Essentials" data-num="052"><a href="lab52.html"><span class="num">Lab 052</span><span class="t">Awk Essentials</span><span class="cat">shell</span></a></li>
+<li data-filter="shell terminal session recording" data-title="Terminal Commands (clear, exit, script)" data-num="053"><a href="lab53.html"><span class="num">Lab 053</span><span class="t">Terminal Commands (clear, exit, script)</span><span class="cat">shell</span></a></li>
+<li data-filter="security SELinux grub recovery" data-title="Recover Root Password" data-num="054"><a href="lab54.html"><span class="num">Lab 054</span><span class="t">Recover Root Password</span><span class="cat">security</span></a></li>
+<li data-filter="shell environment" data-title="Environment Variables" data-num="055"><a href="lab55.html"><span class="num">Lab 055</span><span class="t">Environment Variables</span><span class="cat">shell</span></a></li>
+<li data-filter="shell multiplexing" data-title="Persistent Sessions with screen" data-num="056"><a href="lab56.html"><span class="num">Lab 056</span><span class="t">Persistent Sessions with screen</span><span class="cat">shell</span></a></li>
+<li data-filter="shell multiplexing" data-title="tmux Sessions" data-num="057"><a href="lab57.html"><span class="num">Lab 057</span><span class="t">tmux Sessions</span><span class="cat">shell</span></a></li>
+<li data-filter="networking diagnostics" data-title="Network Commands and Diagnostics" data-num="058"><a href="lab58.html"><span class="num">Lab 058</span><span class="t">Network Commands and Diagnostics</span><span class="cat">networking</span></a></li>
+<li data-filter="networking ethtool" data-title="NIC Information and Diagnostics with ethtool" data-num="059"><a href="lab59.html"><span class="num">Lab 059</span><span class="t">NIC Information and Diagnostics with ethtool</span><span class="cat">networking</span></a></li>
+<li data-filter="networking ipv4" data-title="Basic Static IPv4 Setup &amp; Connectivity Test" data-num="060"><a href="lab60.html"><span class="num">Lab 060</span><span class="t">Basic Static IPv4 Setup &amp; Connectivity Test</span><span class="cat">networking</span></a></li>
+<li data-filter="networking networkmanager" data-title="Modern Network Management Tools" data-num="061"><a href="lab61.html"><span class="num">Lab 061</span><span class="t">Modern Network Management Tools</span><span class="cat">networking</span></a></li>
+<li data-filter="networking ssh" data-title="SSH and Telnet - Remote Access" data-num="062"><a href="lab62.html"><span class="num">Lab 062</span><span class="t">SSH and Telnet - Remote Access</span><span class="cat">networking</span></a></li>
+<li data-filter="security ssh" data-title="Configure and Secure SSH" data-num="063"><a href="lab63.html"><span class="num">Lab 063</span><span class="t">Configure and Secure SSH</span><span class="cat">security</span></a></li>
+<li data-filter="security keys" data-title="SSH Keys - Passwordless Authentication" data-num="064"><a href="lab64.html"><span class="num">Lab 064</span><span class="t">SSH Keys - Passwordless Authentication</span><span class="cat">security</span></a></li>
+<li data-filter="networking sockets" data-title="The ss Command - View and Analyze Socket Connections" data-num="065"><a href="lab65.html"><span class="num">Lab 065</span><span class="t">The ss Command - View and Analyze Socket Connections</span><span class="cat">networking</span></a></li>
+<li data-filter="networking http" data-title="Using curl and ping for Network Testing" data-num="066"><a href="lab66.html"><span class="num">Lab 066</span><span class="t">Using curl and ping for Network Testing</span><span class="cat">networking</span></a></li>
+<li data-filter="networking ftp" data-title="FTP - File Transfer Protocol" data-num="067"><a href="lab67.html"><span class="num">Lab 067</span><span class="t">FTP - File Transfer Protocol</span><span class="cat">networking</span></a></li>
+<li data-filter="networking scp" data-title="SCP - Secure Copy Protocol" data-num="068"><a href="lab68.html"><span class="num">Lab 068</span><span class="t">SCP - Secure Copy Protocol</span><span class="cat">networking</span></a></li>
+<li data-filter="networking rsync" data-title="Remote Synchronization with rsync" data-num="069"><a href="lab69.html"><span class="num">Lab 069</span><span class="t">Remote Synchronization with rsync</span><span class="cat">networking</span></a></li>
+<li data-filter="networking wget" data-title="Downloading Files with wget" data-num="070"><a href="lab70.html"><span class="num">Lab 070</span><span class="t">Downloading Files with wget</span><span class="cat">networking</span></a></li>
+<li data-filter="packages repos" data-title="System Updates and Repos" data-num="071"><a href="lab71.html"><span class="num">Lab 071</span><span class="t">System Updates and Repos</span><span class="cat">packages</span></a></li>
+<li data-filter="packages repository" data-title="Creating a Local Package Repository" data-num="072"><a href="lab72.html"><span class="num">Lab 072</span><span class="t">Creating a Local Package Repository</span><span class="cat">packages</span></a></li>
+<li data-filter="packages advanced" data-title="Advanced Package Management" data-num="073"><a href="lab73.html"><span class="num">Lab 073</span><span class="t">Advanced Package Management</span><span class="cat">packages</span></a></li>
+<li data-filter="packages rpm yum apt pacman" data-title="Rolling Back Patches and Updates" data-num="074"><a href="lab74.html"><span class="num">Lab 074</span><span class="t">Rolling Back Patches and Updates</span><span class="cat">packages</span></a></li>
+<li data-filter="networking dns bind named bind9 systemctl dig" data-title="DNS Service Bring-Up" data-num="075"><a href="lab75.html"><span class="num">Lab 075</span><span class="t">DNS Service Bring-Up</span><span class="cat">networking</span></a></li>
+<li data-filter="networking dns nslookup dig ptr in-addr" data-title="DNS Lookup Validation" data-num="076"><a href="lab76.html"><span class="num">Lab 076</span><span class="t">DNS Lookup Validation</span><span class="cat">networking</span></a></li>
+<li data-filter="networking ntp chrony chronyc chronyd dnf systemctl makestep" data-title="Time Synchronization with chrony" data-num="077"><a href="lab77.html"><span class="num">Lab 077</span><span class="t">Time Synchronization with chrony</span><span class="cat">networking</span></a></li>
+<li data-filter="services timedatectl timezone ntp set-time set-ntp" data-title="Managing Time with timedatectl" data-num="078"><a href="lab78.html"><span class="num">Lab 078</span><span class="t">Managing Time with timedatectl</span><span class="cat">services</span></a></li>
+<li data-filter="shell date utc timestamp format" data-title="Working with System Time using date" data-num="079"><a href="lab79.html"><span class="num">Lab 079</span><span class="t">Working with System Time using date</span><span class="cat">shell</span></a></li>
+<li data-filter="services postfix systemctl mail tee apt yum pacman" data-title="Installing and Configuring Postfix (MTA)" data-num="080"><a href="lab80.html"><span class="num">Lab 080</span><span class="t">Installing and Configuring Postfix (MTA)</span><span class="cat">services</span></a></li>
+<li data-filter="services apache httpd apache2 systemctl curl tee apt yum pacman" data-title="Setting Up a Web Server" data-num="081"><a href="lab81.html"><span class="num">Lab 081</span><span class="t">Setting Up a Web Server</span><span class="cat">services</span></a></li>
+<li data-filter="services nginx systemctl ss grep apt yum pacman proxy reload" data-title="Installing, Validating, and Managing Nginx" data-num="082"><a href="lab82.html"><span class="num">Lab 082</span><span class="t">Installing, Validating, and Managing Nginx</span><span class="cat">services</span></a></li>
+<li data-filter="services cockpit systemctl ss grep apt yum dnf pacman xdg-open firefox chromium" data-title="Linux Web-Based Administration" data-num="083"><a href="lab83.html"><span class="num">Lab 083</span><span class="t">Linux Web-Based Administration</span><span class="cat">services</span></a></li>
+<li data-filter="services squid proxy systemctl ss grep apt dnf pacman" data-title="Setting Up a Proxy Server with Squid" data-num="084"><a href="lab84.html"><span class="num">Lab 084</span><span class="t">Setting Up a Proxy Server with Squid</span><span class="cat">services</span></a></li>
+<li data-filter="logging rsyslog systemctl ss grep vim nano apt dnf pacman udp" data-title="Central Logging with rsyslog" data-num="085"><a href="lab85.html"><span class="num">Lab 085</span><span class="t">Central Logging with rsyslog</span><span class="cat">logging</span></a></li>
+<li data-filter="logging rsyslog systemctl journalctl logger tail vim nano apt dnf pacman udp" data-title="Configuring an rsyslog Client for Remote Logging" data-num="086"><a href="lab86.html"><span class="num">Lab 086</span><span class="t">Configuring an rsyslog Client for Remote Logging</span><span class="cat">logging</span></a></li>
+<li data-filter="networking troubleshooting netcat nc tcp udp listen scan echo sudo" data-title="Network Troubleshooting with netcat" data-num="087"><a href="lab87.html"><span class="num">Lab 087</span><span class="t">Network Troubleshooting with netcat</span><span class="cat">networking</span></a></li>
+<li data-filter="logging logrotate rotate compress touch ls cat vim nano apt dnf pacman" data-title="Managing Log Rotation with logrotate" data-num="088"><a href="lab88.html"><span class="num">Lab 088</span><span class="t">Managing Log Rotation with logrotate</span><span class="cat">logging</span></a></li>
+<li data-filter="users passwords useradd passwd chage aging policy" data-title="Managing User Passwords and Aging Policies" data-num="089"><a href="lab89.html"><span class="num">Lab 089</span><span class="t">Managing User Passwords and Aging Policies</span><span class="cat">users</span></a></li>
+<li data-filter="security authentication faillock lockout pam vim nano" data-title="Configuring Account Lockout with faillock" data-num="090"><a href="lab90.html"><span class="num">Lab 090</span><span class="t">Configuring Account Lockout with faillock</span><span class="cat">security</span></a></li>
+<li data-filter="services ldap slapd ldapadd ldapsearch slappasswd systemctl dpkg-reconfigure apt dnf pacman" data-title="OpenLDAP Server Installation and Initial Configuration" data-num="091"><a href="lab91.html"><span class="num">Lab 091</span><span class="t">OpenLDAP Server Installation and Initial Configuration</span><span class="cat">services</span></a></li>
+<li data-filter="networking traceroute icmp tcp udp hops less redirect apt dnf pacman" data-title="Tracing Network Traffic with traceroute" data-num="092"><a href="lab92.html"><span class="num">Lab 092</span><span class="t">Tracing Network Traffic with traceroute</span><span class="cat">networking</span></a></li>
+<li data-filter="shell images ls feh viu xdg-open cargo apt dnf pacman" data-title="Opening Image Files from the Command Line" data-num="093"><a href="lab93.html"><span class="num">Lab 093</span><span class="t">Opening Image Files from the Command Line</span><span class="cat">shell</span></a></li>
+<li data-filter="security networking services ufw firewalld firewall-cmd systemctl ssh http openssh rich-rule zones drop reload status apt dnf pacman" data-title="Configuring the Linux Firewall" data-num="094"><a href="lab94.html"><span class="num">Lab 094</span><span class="t">Configuring the Linux Firewall</span><span class="cat">security</span></a></li>
+<li data-filter="processes services packages tuned nice renice tuned-adm systemctl pgrep ps grep yes killall pkill dnf apt pacman" data-title="Tuning System Performance" data-num="095"><a href="lab95.html"><span class="num">Lab 095</span><span class="t">Tuning System Performance</span><span class="cat">processes</span></a></li>
+<li data-filter="containers podman images pull run ps start logs volume mount inspect rm rmi alpine rootless dnf apt pacman" data-title="Running Containers with Podman" data-num="096"><a href="lab96.html"><span class="num">Lab 096</span><span class="t">Running Containers with Podman</span><span class="cat">containers</span></a></li>
+<li data-filter="services time ntp chrony chronyd chronyc timedatectl systemctl enable start status sources tracking makestep sync drift logs rhel dnf yum conf" data-title="Set up a basic NTP client with chronyd" data-num="097"><a href="lab97.html"><span class="num">Lab 097</span><span class="t">Set up a basic NTP client with chronyd</span><span class="cat">services</span></a></li>
+<li data-filter="services ansible ansible-playbook ansible.cfg ping setup package service nano vim apt dnf pacman" data-title="Installing, Configuring, and Managing Ansible" data-num="098"><a href="lab98.html"><span class="num">Lab 098</span><span class="t">Installing, Configuring, and Managing Ansible</span><span class="cat">services</span></a></li>
+<li data-filter="services ansible ansible-galaxy ansible-playbook ansible-lint inventory nano vim" data-title="Creating and Using Ansible Roles" data-num="099"><a href="lab99.html"><span class="num">Lab 099</span><span class="t">Creating and Using Ansible Roles</span><span class="cat">services</span></a></li>
+<li data-filter="services ansible ansible-pull ansible-core git git-clone cat less sudo crontab mkdir touch" data-title="Agent-Based Configuration with ansible-pull" data-num="100"><a href="lab100.html"><span class="num">Lab 100</span><span class="t">Agent-Based Configuration with ansible-pull</span><span class="cat">services</span></a></li>
+<li data-filter="services ansible ansible-vault ansible-playbook cat nano vim vi rekey view edit create debug vars_files vault-password" data-title="Secure Secrets with Ansible Vault" data-num="101"><a href="lab101.html"><span class="num">Lab 101</span><span class="t">Secure Secrets with Ansible Vault</span><span class="cat">services</span></a></li>
+<li data-filter="services ansible ansible-inventory ansible-playbook python3 json nano vim chmod ping inventory dynamic-inventory script" data-title="Managing Dynamic Inventories in Ansible" data-num="102"><a href="lab102.html"><span class="num">Lab 102</span><span class="t">Managing Dynamic Inventories in Ansible</span><span class="cat">services</span></a></li>
+<li data-filter="services ansible-galaxy ansible-playbook mkdir cd nano vim inventory.ini roles role-install role-search role-init geerlingguy.nginx nginx" data-title="Managing Roles with ansible-galaxy" data-num="103"><a href="lab103.html"><span class="num">Lab 103</span><span class="t">Managing Roles with ansible-galaxy</span><span class="cat">services</span></a></li>
+<li data-filter="networking openvpn easy-rsa make-cadir easyrsa openssl pki cp gunzip tee systemctl openvpn@server server.conf server.conf.gz ca.crt server.crt server.key dh.pem gen-dh gen-req sign-req" data-title="Installing, Configuring, and Managing OpenVPN" data-num="104"><a href="lab104.html"><span class="num">Lab 104</span><span class="t">Installing, Configuring, and Managing OpenVPN</span><span class="cat">networking</span></a></li>
+<li data-filter="networking dhcp dhcpd dhcpd.conf isc-dhcp-server dhcp-server systemctl dhcpd.service isc-dhcp-server.service leases dhcpd.leases apt dnf pacman tee nano vim cat eth0 sysconfig /etc/dhcp /etc/default/isc-dhcp-server /etc/sysconfig/dhcpd /var/lib/dhcp /var/lib/dhcpd" data-title="Installing, Configuring, and Managing a DHCP Server" data-num="105"><a href="lab105.html"><span class="num">Lab 105</span><span class="t">Installing, Configuring, and Managing a DHCP Server</span><span class="cat">networking</span></a></li>
+<li data-filter="users useradd passwd groupadd usermod permissions grep chmod chgrp mkdir ls setgid sudo" data-title="Managing Users, Groups, and Permissions" data-num="106"><a href="lab106.html"><span class="num">Lab 106</span><span class="t">Managing Users, Groups, and Permissions</span><span class="cat">users</span></a></li>
+<li data-filter="processes lspci lsusb lsblk lsmod grep sudo" data-title="Hardware Inventory Basics" data-num="107"><a href="lab107.html"><span class="num">Lab 107</span><span class="t">Hardware Inventory Basics</span><span class="cat">processes</span></a></li>
+<li data-filter="processes lsmod head modinfo modprobe grep rmmod sudo" data-title="Kernel Module Fundamentals" data-num="108"><a href="lab108.html"><span class="num">Lab 108</span><span class="t">Kernel Module Fundamentals</span><span class="cat">processes</span></a></li>
+<li data-filter="processes echo printf tee grep modprobe modinfo lsmod dracut update-initramfs mkinitcpio sudo sh" data-title="Persistent Module Configuration" data-num="109"><a href="lab109.html"><span class="num">Lab 109</span><span class="t">Persistent Module Configuration</span><span class="cat">processes</span></a></li>
+<li data-filter="logging dmesg udevadm tail grep cat sudo" data-title="Monitor Hardware Events" data-num="110"><a href="lab110.html"><span class="num">Lab 110</span><span class="t">Monitor Hardware Events</span><span class="cat">logging</span></a></li>
+<li data-filter="processes proc grep cat awk lscpu free egrep head tail" data-title="Proc CPU &amp; Memory Exploration" data-num="111"><a href="lab111.html"><span class="num">Lab 111</span><span class="t">Proc CPU &amp; Memory Exploration</span><span class="cat">processes</span></a></li>
+<li data-filter="processes cat head watch grep lspci lsmod" data-title="Proc Hardware Resources" data-num="112"><a href="lab112.html"><span class="num">Lab 112</span><span class="t">Proc Hardware Resources</span><span class="cat">processes</span></a></li>
+<li data-filter="storage networking processes shell ls cat readlink grep lsblk" data-title="sysfs Exploration" data-num="113"><a href="lab113.html"><span class="num">Lab 113</span><span class="t">sysfs Exploration</span><span class="cat">storage</span></a></li>
+<li data-filter="services shell grub processes systemctl grep ls head grub2-mkconfig grub2-install" data-title="RHEL Bootloader Basics" data-num="114"><a href="lab114.html"><span class="num">Lab 114</span><span class="t">RHEL Bootloader Basics</span><span class="cat">services</span></a></li>
+<li data-filter="services processes shell systemctl head grep ls who runlevel isolate set-default list-units" data-title="Systemd Targets &amp; Runlevels" data-num="115"><a href="lab115.html"><span class="num">Lab 115</span><span class="t">Systemd Targets &amp; Runlevels</span><span class="cat">services</span></a></li>
+<li data-filter="storage shell lsblk grep cat udevadm egrep readlink xargs basename" data-title="Identify Mass Storage Types" data-num="116"><a href="lab116.html"><span class="num">Lab 116</span><span class="t">Identify Mass Storage Types</span><span class="cat">storage</span></a></li>
+<li data-filter="packages debian shell" data-title="Debian Package Management with dpkg" data-num="117"><a href="lab117.html"><span class="num">Lab 117</span><span class="t">Debian Package Management with dpkg</span><span class="cat">packages</span></a></li>
+<li data-filter="packages dnf rpm timedatectl localectl systemctl ssh-keygen restorecon" data-title="Reconfiguring Installed Packages on RHEL" data-num="118"><a href="lab118.html"><span class="num">Lab 118</span><span class="t">Reconfiguring Installed Packages on RHEL</span><span class="cat">packages</span></a></li>
+<li data-filter="packages troubleshooting rhel" data-title="YUM Basics" data-num="119"><a href="lab119.html"><span class="num">Lab 119</span><span class="t">YUM Basics</span><span class="cat">packages</span></a></li>
+<li data-filter="packages troubleshooting rhel" data-title="DNF/RPM Package Management Basics" data-num="120"><a href="lab120.html"><span class="num">Lab 120</span><span class="t">DNF/RPM Package Management Basics</span><span class="cat">packages</span></a></li>
+<li data-filter="packages repos troubleshooting rhel" data-title="Configure DNF Repositories (RHEL)" data-num="121"><a href="lab121.html"><span class="num">Lab 121</span><span class="t">Configure DNF Repositories (RHEL)</span><span class="cat">packages</span></a></li>
+<li data-filter="packages rpm verification rhel" data-title="RPM Package Management" data-num="122"><a href="lab122.html"><span class="num">Lab 122</span><span class="t">RPM Package Management</span><span class="cat">packages</span></a></li>
+<li data-filter="storage parted mbr rhel" data-title="Partition /dev/sdb with msdos (MBR) using parted" data-num="123"><a href="lab123.html"><span class="num">Lab 123</span><span class="t">Partition /dev/sdb with msdos (MBR) using parted</span><span class="cat">storage</span></a></li>
+<li data-filter="storage parted gpt rhel" data-title="Create and Delete GPT Partitions with parted" data-num="124"><a href="lab124.html"><span class="num">Lab 124</span><span class="t">Create and Delete GPT Partitions with parted</span><span class="cat">storage</span></a></li>
+<li data-filter="storage lvm xfs rhel fstab" data-title="LVM Basics" data-num="125"><a href="lab125.html"><span class="num">Lab 125</span><span class="t">LVM Basics</span><span class="cat">storage</span></a></li>
+<li data-filter="packages alien ldd ldconfig grep head ls tee export" data-title="Dynamic Linker &amp; Shared Library" data-num="126"><a href="lab126.html"><span class="num">Lab 126</span><span class="t">Dynamic Linker &amp; Shared Library</span><span class="cat">packages</span></a></li>
+<li data-filter="networking routing dns troubleshooting systemd-resolved" data-title="Network Troubleshooting" data-num="127"><a href="lab127.html"><span class="num">Lab 127</span><span class="t">Network Troubleshooting</span><span class="cat">networking</span></a></li>
+<li data-filter="networking firewalld ssh incident troubleshooting" data-title="Firewall Troubleshooting for SSH Access" data-num="128"><a href="lab128.html"><span class="num">Lab 128</span><span class="t">Firewall Troubleshooting for SSH Access</span><span class="cat">networking</span></a></li>
+<li data-filter="networking troubleshooting shell" data-title="Fix Intermittent Connectivity (MTU)" data-num="129"><a href="lab129.html"><span class="num">Lab 129</span><span class="t">Fix Intermittent Connectivity (MTU)</span><span class="cat">networking</span></a></li>
+<li data-filter="networking troubleshooting shell" data-title="Networking Fundamentals — Restore Connectivity" data-num="130"><a href="lab130.html"><span class="num">Lab 130</span><span class="t">Networking Fundamentals — Restore Connectivity</span><span class="cat">networking</span></a></li>
+<li data-filter="networking troubleshooting shell dns routing" data-title="Fix Wrong Hostname Resolution (hosts override)" data-num="131"><a href="lab131.html"><span class="num">Lab 131</span><span class="t">Fix Wrong Hostname Resolution (hosts override)</span><span class="cat">networking</span></a></li>
+<li data-filter="networking troubleshooting dns shell nss" data-title="Fix Slow Hostname Lookups (Reverse DNS)" data-num="132"><a href="lab132.html"><span class="num">Lab 132</span><span class="t">Fix Slow Hostname Lookups (Reverse DNS)</span><span class="cat">networking</span></a></li>
+<li data-filter="networking troubleshooting dns" data-title="Investigate Port 443 Failure (Path + Firewall)" data-num="133"><a href="lab133.html"><span class="num">Lab 133</span><span class="t">Investigate Port 443 Failure (Path + Firewall)</span><span class="cat">networking</span></a></li>
+<li data-filter="networking troubleshooting firewall" data-title="Fix DNS Failure Caused by Bad resolv.conf" data-num="134"><a href="lab134.html"><span class="num">Lab 134</span><span class="t">Fix DNS Failure Caused by Bad resolv.conf</span><span class="cat">networking</span></a></li>
+<li data-filter="networking troubleshooting dns" data-title="Fix Wrong Static IP on eth0" data-num="135"><a href="lab135.html"><span class="num">Lab 135</span><span class="t">Fix Wrong Static IP on eth0</span><span class="cat">networking</span></a></li>
+<li data-filter="scheduling systemctl chrony chronyd journalctl timedatectl" data-title="Fix Missing Journal Logs and Restore Time Sync" data-num="136"><a href="lab136.html"><span class="num">Lab 136</span><span class="t">Fix Missing Journal Logs and Restore Time Sync</span><span class="cat">scheduling</span></a></li>
+<li data-filter="services logging time chrony journald rsyslog" data-title="Time Sync &amp; Logging Workflow" data-num="137"><a href="lab137.html"><span class="num">Lab 137</span><span class="t">Time Sync &amp; Logging Workflow</span><span class="cat">services</span></a></li>
+<li data-filter="services logging mail printing cups postfix journald queue" data-title="Printing &amp; Mail Queue Workflow" data-num="138"><a href="lab138.html"><span class="num">Lab 138</span><span class="t">Printing &amp; Mail Queue Workflow</span><span class="cat">services</span></a></li>
+<li data-filter="services logging networking security rsyslog logrotate firewall udp" data-title="Remote Syslog &amp; Logrotate Workflow" data-num="139"><a href="lab139.html"><span class="num">Lab 139</span><span class="t">Remote Syslog &amp; Logrotate Workflow</span><span class="cat">services</span></a></li>
+<li data-filter="services logging networking security rsyslog logrotate firewall udp" data-title="Defaults &amp; Realistic Provisioning Workflow" data-num="140"><a href="lab140.html"><span class="num">Lab 140</span><span class="t">Defaults &amp; Realistic Provisioning Workflow</span><span class="cat">services</span></a></li>
+<li data-filter="services logging time mail postfix aliases journald chrony" data-title="Postfix Queue &amp; Time/Journal Workflow" data-num="141"><a href="lab141.html"><span class="num">Lab 141</span><span class="t">Postfix Queue &amp; Time/Journal Workflow</span><span class="cat">services</span></a></li>
+<li data-filter="services logging time mail printing journald aliases cups" data-title="Printing, Journald, and Time Workflow" data-num="142"><a href="lab142.html"><span class="num">Lab 142</span><span class="t">Printing, Journald, and Time Workflow</span><span class="cat">services</span></a></li>
+<li data-filter="services logging mail printing journald postfix vacuum logrotate" data-title="Journal Cleanup &amp; Printing Workflow" data-num="143"><a href="lab143.html"><span class="num">Lab 143</span><span class="t">Journal Cleanup &amp; Printing Workflow</span><span class="cat">services</span></a></li>
+<li data-filter="services logging networking time journald rsyslog postfix chrony" data-title="Journald Persistence &amp; Rsyslog Remote Forward" data-num="144"><a href="lab144.html"><span class="num">Lab 144</span><span class="t">Journald Persistence &amp; Rsyslog Remote Forward</span><span class="cat">services</span></a></li>
+<li data-filter="permissions scheduling time users cron at chage setgid" data-title="RHCSA Admin Tasks — Permissions + Cron + at + Time + Accounts" data-num="145"><a href="lab145.html"><span class="num">Lab 145</span><span class="t">RHCSA Admin Tasks — Permissions + Cron + at + Time + Accounts</span><span class="cat">permissions</span></a></li>
+<li data-filter="users permissions groups useradd usermod chage cleanup" data-title="Administrative Tasks, Users, Groups, and Account Aging" data-num="146"><a href="lab146.html"><span class="num">Lab 146</span><span class="t">Administrative Tasks, Users, Groups, and Account Aging</span><span class="cat">users</span></a></li>
+<li data-filter="users permissions groups useradd usermod getent shadow" data-title="RHCSA User + Group Admin — tsuli Account Workflow" data-num="147"><a href="lab147.html"><span class="num">Lab 147</span><span class="t">RHCSA User + Group Admin — tsuli Account Workflow</span><span class="cat">users</span></a></li>
+<li data-filter="scheduling cron crontab mailto redirection setuid" data-title="User Crontab Workflow" data-num="148"><a href="lab148.html"><span class="num">Lab 148</span><span class="t">User Crontab Workflow</span><span class="cat">scheduling</span></a></li>
+<li data-filter="users permissions aging chage expiry inactive warning remediation" data-title="RHCSA chage Password Aging Controls — fatima Remediation Workflow" data-num="149"><a href="lab149.html"><span class="num">Lab 149</span><span class="t">RHCSA chage Password Aging Controls — fatima Remediation Workflow</span><span class="cat">users</span></a></li>
+<li data-filter="users useradd groups provisioning uid shell expiry chage" data-title="Secure User Onboarding Workflow" data-num="150"><a href="lab150.html"><span class="num">Lab 150</span><span class="t">Secure User Onboarding Workflow</span><span class="cat">users</span></a></li>
+<li data-filter="users permissions usermod modify groups shell home rename uid expiry" data-title="usermod User Account Modification" data-num="151"><a href="lab151.html"><span class="num">Lab 151</span><span class="t">usermod User Account Modification</span><span class="cat">users</span></a></li>
+<li data-filter="users permissions userdel delete offboarding sessions home verify" data-title="userdel User Account Deletion" data-num="152"><a href="lab152.html"><span class="num">Lab 152</span><span class="t">userdel User Account Deletion</span><span class="cat">users</span></a></li>
+<li data-filter="users networking shell nss getent lookup identity resolution services protocols" data-title="getent Database Lookup" data-num="153"><a href="lab153.html"><span class="num">Lab 153</span><span class="t">getent Database Lookup</span><span class="cat">users</span></a></li>
+<li data-filter="users permissions security passwd password aging policy expiry" data-title="Password Management" data-num="154"><a href="lab154.html"><span class="num">Lab 154</span><span class="t">Password Management</span><span class="cat">users</span></a></li>
+<li data-filter="users permissions groupadd groups gid nss getent provisioning" data-title="groupadd Group Management" data-num="155"><a href="lab155.html"><span class="num">Lab 155</span><span class="t">groupadd Group Management</span><span class="cat">users</span></a></li>
+<li data-filter="containers services networking docker nginx images containers logs exec cleanup" data-title="Docker Basics" data-num="156"><a href="lab156.html"><span class="num">Lab 156</span><span class="t">Docker Basics</span><span class="cat">containers</span></a></li>
+<li data-filter="containers networking services docker bridge dns appnet inspect ping cleanup" data-title="Docker Networking" data-num="157"><a href="lab157.html"><span class="num">Lab 157</span><span class="t">Docker Networking</span><span class="cat">containers</span></a></li>
+<li data-filter="containers storage docker volumes persistence backup restore tar mount appdata cleanup" data-title="Docker Volumes" data-num="158"><a href="lab158.html"><span class="num">Lab 158</span><span class="t">Docker Volumes</span><span class="cat">containers</span></a></li>
+<li data-filter="containers packages docker images tagging transfer offline save load archive tar alpine cleanup" data-title="Docker Images" data-num="159"><a href="lab159.html"><span class="num">Lab 159</span><span class="t">Docker Images</span><span class="cat">containers</span></a></li>
+<li data-filter="containers packages docker compose stack multicontainer nginx redis orchestration yaml services logs teardown cleanup" data-title="Docker Compose" data-num="160"><a href="lab160.html"><span class="num">Lab 160</span><span class="t">Docker Compose</span><span class="cat">containers</span></a></li>
+<li data-filter="containers services docker healthcheck health status ps monitoring" data-title="Healthchecks (HEALTHCHECK + docker ps)" data-num="161"><a href="lab161.html"><span class="num">Lab 161</span><span class="t">Healthchecks (HEALTHCHECK + docker ps)</span><span class="cat">containers</span></a></li>
+<li data-filter="packages flatpak flathub obsidian apps deployment desktop" data-title="Flatpak Real-World App Deployment (Obsidian)" data-num="162"><a href="lab162.html"><span class="num">Lab 162</span><span class="t">Flatpak Real-World App Deployment (Obsidian)</span><span class="cat">packages</span></a></li>
+<li data-filter="packages security flatpak remotes trust permissions sandbox gpg" data-title="Flatpak Trust, Remotes &amp; Permissions" data-num="163"><a href="lab163.html"><span class="num">Lab 163</span><span class="t">Flatpak Trust, Remotes &amp; Permissions</span><span class="cat">packages</span></a></li>
+<li data-filter="security selinux contexts enforcing permissive getenforce setenforce labels" data-title="SELinux Basics" data-num="164"><a href="lab164.html"><span class="num">Lab 164</span><span class="t">SELinux Basics</span><span class="cat">security</span></a></li>
+<li data-filter="security services selinux httpd apache contexts booleans semanage restorecon" data-title="SELinux &amp; httpd" data-num="165"><a href="lab165.html"><span class="num">Lab 165</span><span class="t">SELinux &amp; httpd</span><span class="cat">security</span></a></li>
+        </ul>
+        <p class="empty" id="labEmpty" hidden>No labs match that search. Try a broader term, or clear the filters.</p>
+      </section>
+    </div>
+  </div>
+</main>
 
-		<div class="overlay-menu-inner">
-			<nav class="overlay-menu-nav">
-				<ul id="nav">
-					<li><a href="../index.html">Home</a></li>
-
-					<li class="slidedown">
-						<a href="#">Portfolio</a>
-						<ul>
-							<li><a href="https://github.com/vonds/exit_0" target="_blank">exit_0</a></li>
-							<li><a href="docs.html" target="_blank">exit_0 Documentation</a></li>
-							<li><a href="https://github.com/vonds/sentinel" target="_blank" rel="noopener">Sentinel</a></li>
-						</ul>
-					</li>
-					<li><a href="https://www.linkedin.com/in/vonds/" target="_blank">LinkedIn</a></li>
-					<li><a href="https://github.com/vonds" target="_blank">Github</a></li>
-					<li><a href="mailto:vonds13@gmail.com?subject=Hello Vonds">Contact</a></li>
-				</ul>
-			</nav>
-		</div>
-
-		<div class="overlay-navigation-footer">
-			<div class="container">
-				<div class="row">
-					<div class="col-sm-12 text-center">
-						<p class="copyright font-alt m-b-0">
-							VONDS &copy;
-							<script>document.write(new Date().getFullYear());</script>
-						</p>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
-
-	<!-- WRAPPER -->
-	<div class="wrapper">
-
-		<!-- NAVIGATION -->
-		<nav class="navbar navbar-custom navbar-transparent navbar-light navbar-fixed-top">
-			<div class="container">
-				<div class="navbar-header">
-					<a class="navbar-brand" href="../index.html">
-						<img class="logo-dark" src="../assets/images/logo-dark.svg" alt="Vonds" /><img class="logo-light" src="../assets/images/logo-light.svg" alt="" aria-hidden="true" />
-					</a>
-				</div>
-
-				<ul id="icons-navbar" class="nav navbar-nav navbar-right">
-					<li>
-						<a href="#" id="toggle-menu" class="show-overlay" title="Menu">
-							<span class="icon-bar"></span>
-							<span class="icon-bar"></span>
-							<span class="icon-bar"></span>
-						</a>
-					</li>
-				</ul>
-			</div>
-		</nav>
-
-		<!-- DOCS INDEX -->
-		<section class="module">
-			<div class="container">
-				<h2 id="overview" class="font-alt module-title m-t-0 m-b-40 m-t-60">exit_0 Documentation</h2>
-				<div class="row">
-
-					<!-- LEFT SIDEBAR -->
-					<div class="col-sm-4 col-md-3 lab-sidebar">
-						<div class="docs-sidebar">
-							<div class="docs-widget">
-								<h5 class="widget-title m-b-20">Lab Index</h5>
-								<ul class="docs-nav" id="docsNavPrimary"></ul>
-							</div>
-						</div>
-					</div>
-
-					<!-- MAIN CONTENT -->
-					<div class="col-sm-8 col-md-9">
-						<p class="m-b-20">
-							exit_0 is a terminal-based Linux lab environment built around real system administration tasks. The labs are designed to develop operational habits: inspecting system state, applying safe changes, verifying results, and diagnosing failures.
-						</p>
-
-						<p class="m-b-20">
-							These write-ups form the operational backbone of the labs. Each one documents the objective, the commands involved, the expected system state, and the common breakpoints that surface in production environments. The emphasis is on repeatable workflows, clear verification, and stable outcomes rather than one-off command success.
-						</p>
-
-						<p class="m-b-20">
-							exit_0 is intended for Linux system administrators, and IT professionals transitioning into Linux-focused roles.
-						</p>
-
-						<p class="m-b-20 text-center">
-							Support ongoing maintenance and expansion of exit_0 below:
-						</p>
-						<div class="row">
-							<div class="col-sm-12">
-								<ul class="social-text-links font-alt text-center m-b-20">
-									<li><a href="http://venmo.com/u/vonds" target="_blank">Venmo</a></li>
-									<li><a href="https://cash.app/$VondsDubuisson" target="_blank">Cashapp</a></li>
-								</ul>
-							</div>
-						</div>
-
-						<!-- Search bar (NEW) -->
-						<div class="docs-search-wrap">
-							<label for="labSearch" class="font-alt" style="display:block; margin-bottom:8px;">
-								Search labs
-							</label>
-							<input
-								id="labSearch"
-								class="form-control navbar-light"
-								type="text"
-								placeholder='Examples: shell, LVM, boot, troubleshooting, services, security'
-								aria-label="Search labs by category tag"
-							/>
-							<div class="docs-search-actions">
-								<button id="clearLabSearch" type="button" class="btn btn-sm btn-default">Clear search</button>
-								<button id="showAllLabs" type="button" class="btn btn-sm btn-default">Show all</button>
-							</div>
-						</div>
-
-						<div class="labs-directory">
-							<ul class="labs-grid" id="labsGrid">
-								<li data-filter="processes storage kernel modules pci raid megaraid hardware diagnostics"><a href="lab1.html">Lab 001</a></li>
-								<li data-filter="logging shell monitoring realtime tail grep syslog messages auth kernel security alerts triage"><a href="lab2.html">Lab 002</a></li>
-								<li data-filter="shell text sed substitution config editing"><a href="lab3.html">Lab 003</a></li>
-								<li data-filter="services security ssh sed hardening config"><a href="lab4.html">Lab 004</a></li>
-								<li data-filter="services processes systemd boot"><a href="lab5.html">Lab 005</a></li>
-								<li data-filter="services boot security blacklisting"><a href="lab6.html">Lab 006</a></li>
-								<li data-filter="services boot shell modules"><a href="lab7.html">Lab 007</a></li>
-								<li data-filter="services boot scheduling runlevel"><a href="lab8.html">Lab 008</a></li>
-								<li data-filter="services processes systemd troubleshooting"><a href="lab9.html">Lab 009</a></li>
-								<li data-filter="permissions ownership chmod chgrp umask security audit logs file access users groups" ><a href="lab10.html">Lab 010</a></li>
-								<li data-filter="networking dns routing ip ping dig nslookup gateway interface resolvconf connectivity linux"><a href="lab11.html">Lab 011</a></li>
-								<li data-filter="scheduling services cron backups"><a href="lab12.html">Lab 012</a></li>
-								<li data-filter="logging services journalctl rotation"><a href="lab13.html">Lab 013</a></li>
-								<li data-filter="shell packages tar compression"><a href="lab14.html">Lab 014</a></li>
-								<li data-filter="users permissions passwords aging"><a href="lab15.html">Lab 015</a></li>
-								<li data-filter="processes process ps top kill"><a href="lab16.html">Lab 016</a></li>
-								<li data-filter="storage filesystems fstab"><a href="lab17.html">Lab 017</a></li>
-								<li data-filter="storage partitioning fdisk""><a href="lab18.html">Lab 018</a></li>
-								<li data-filter="shell search find locate xargs"><a href="lab19.html">Lab 019</a></li>
-								<li data-filter="shell variables environment startup bash"><a href="lab20.html">Lab 020</a></li>
-								<li data-filter="permissions stickybit chmod directory shared"><a href="lab21.html">Lab 021</a></li>
-								<li data-filter="services cups printing systemctl lpstat"><a href="lab22.html">Lab 022</a></li>
-								<li data-filter="packages security gpg integrity rpm dpkg"><a href="lab23.html">Lab 023</a></li>
-								<li data-filter="permissions security users sticky setuid setgid"><a href="lab24.html">Lab 024</a></li>
-								<li data-filter="logging services troubleshooting journalctl logrotate rotation"><a href="lab25.html">Lab 025</a></li>
-								<li data-filter="users user-management onboarding accounts groups groupadd useradd usermod passwd userdel groupdel permissions ownership chgrp shared-directory workspace /opt/devwork devteam devstudent devstudent2 /etc/passwd /etc/group getent id grep primary-group supplementary-groups home-directory shell /bin/bash cleanup userdel -r"><a href="lab26.html">Lab 026</a></li>
-								<li data-filter="users security shell password-policy password-aging expiration chage passwd"><a href="lab27.html">Lab 027</a></li>
-								<li data-filter="users shell security privilege-escalation sudo su switching-users root-shell login-shell least-privilege access-control authorization sudoers wheel group-membership usermod useradd passwd userdel whoami audit sudo -i sudo <command> su - tempsudo tempsudo /etc/sudoers /etc/sudoers.d visudo policy verification identity boundary escalation patterns"><a href="lab28.html">Lab 028</a></li>
-								<li data-filter="security shell users monitoring user-activity session-monitoring access-review incident-triage login-triage suspicious-login after-hours login-history current-sessions remote-sessions tty pts ssh sshd authentication authorization privilege audit trail forensics evidence-preservation account-lockout account-mitigation who w last id getent grep auth.log /var/log/auth.log /var/log/secure failed-password brute-force password-guessing credential-abuse ip-address source-ip sessions wtmp sudo wheel sudo-group group-membership risk-assessment passwd -l lock-account"><a href="lab29.html">Lab 029</a></li>
-								<li data-filter="users shell"><a href="lab30.html">Lab 030</a></li>
-								<li data-filter="permissions setuid suid setgid sgid sticky-bit sticky chmod octal-permissions chgrp groupadd group-management user-management security"><a href="lab31.html">Lab 031</a></li>
-								<li data-filter="users security services ldap authentication directory"><a href="lab32.html">Lab 032</a></li>
-								<li data-filter="shell users permissions env bashrc profile"><a href="lab33.html">Lab 033</a></li>
-								<li data-filter="shell processes troubleshooting utilities systeminfo"><a href="lab34.html">Lab 034</a></li>
-								<li data-filter="processes scheduling shell jobs monitoring automation"><a href="lab35.html">Lab 035</a></li>
-								<li data-filter="services systemd systemctl daemon units boot"><a href="lab36.html">Lab 036</a></li>
-								<li data-filter="processes ps monitoring inspection resources troubleshooting"><a href="lab37.html">Lab 037</a></li>
-								<li data-filter="processes top monitoring performance resources troubleshooting"><a href="lab38.html">Lab 038</a></li>
-								<li data-filter="processes kill signals termination pgrep troubleshooting"><a href="lab39.html">Lab 039</a></li>
-								<li data-filter="processes signals kill sigterm sigkill trap"><a href="lab40.html">Lab 040</a></li>
-								<li data-filter="processes scheduling jobcontrol jobs foreground background"><a href="lab41.html">Lab 041</a></li>
-								<li data-filter="scheduling processes at atd backup queueing atrm"><a href="lab42.html">Lab 042</a></li>
-								<li data-filter="scheduling processes cron intervals hourly daily weekly monthly"><a href="lab43.html">Lab 043</a></li>
-								<li data-filter="processes scheduling jobcontrol priority nice bg fg"><a href="lab44.html">Lab 044</a></li>
-								<li data-filter="shell troubleshooting storage"><a href="lab45.html">Lab 045</a></li>
-								<li data-filter="shell security secvices"><a href="lab46.html">Lab 046</a></li>
-								<li data-filter="boot troubleshooting secvices"><a href="lab47.html">Lab 047</a></li>
-								<li data-filter="shell network secvices"><a href="lab48.html">Lab 048</a></li>
-								<li data-filter="shell system hardware kernel uname dmidecode info"><a href="lab49.html">Lab 049</a></li>
-								<li data-filter="shell architecture cpu uname arch lscpu hardware"><a href="lab50.html">Lab 050</a></li>
-								<li data-filter="shell troubleshooting sosreport diagnostics support sos tar archive"><a href="lab51.html">Lab 051</a></li>
-								<li data-filter="shell awk text parsing filtering formatting"><a href="lab52.html">Lab 052</a></li>
-								<li data-filter="shell terminal session recording"><a href="lab53.html">Lab 053</a></li>
-								<li data-filter="security SELinux grub recovery"><a href="lab54.html">Lab 054</a></li>
-								<li data-filter="shell environment"><a href="lab55.html">Lab 055</a></li>
-								<li data-filter="shell multiplexing"><a href="lab56.html">Lab 056</a></li>
-								<li data-filter="shell multiplexing"><a href="lab57.html">Lab 057</a></li>
-								<li data-filter="networking diagnostics"><a href="lab58.html">Lab 058</a></li>
-								<li data-filter="networking ethtool"><a href="lab59.html">Lab 059</a></li>
-								<li data-filter="networking ipv4"><a href="lab60.html">Lab 060</a></li>
-								<li data-filter="networking networkmanager"><a href="lab61.html">Lab 061</a></li>
-								<li data-filter="networking ssh"><a href="lab62.html">Lab 062</a></li>
-								<li data-filter="security ssh"><a href="lab63.html">Lab 063</a></li>
-								<li data-filter="security keys"><a href="lab64.html">Lab 064</a></li>
-								<li data-filter="networking sockets"><a href="lab65.html">Lab 065</a></li>
-								<li data-filter="networking http"><a href="lab66.html">Lab 066</a></li>
-								<li data-filter="networking ftp"><a href="lab67.html">Lab 067</a></li>
-								<li data-filter="networking scp"><a href="lab68.html">Lab 068</a></li>
-								<li data-filter="networking rsync"><a href="lab69.html">Lab 069</a></li>
-								<li data-filter="networking wget"><a href="lab70.html">Lab 070</a></li>
-								<li data-filter="packages repos"><a href="lab71.html">Lab 071</a></li>
-								<li data-filter="packages repository"><a href="lab72.html">Lab 072</a></li>
-								<li data-filter="packages advanced"><a href="lab73.html">Lab 073</a></li>
-								<li data-filter="packages rpm yum apt pacman"><a href="lab74.html">Lab 074</a></li>
-								<li data-filter="networking dns bind named bind9 systemctl dig"><a href="lab75.html">Lab 075</a></li>
-								<li data-filter="networking dns nslookup dig ptr in-addr"><a href="lab76.html">Lab 076</a></li>
-								<li data-filter="networking ntp chrony chronyc chronyd dnf systemctl makestep"><a href="lab77.html">Lab 077</a></li>
-								<li data-filter="services timedatectl timezone ntp set-time set-ntp"><a href="lab78.html">Lab 078</a></li>
-								<li data-filter="shell date utc timestamp format"><a href="lab79.html">Lab 079</a></li>
-								<li data-filter="services postfix systemctl mail tee apt yum pacman"><a href="lab80.html">Lab 080</a></li>
-								<li data-filter="services apache httpd apache2 systemctl curl tee apt yum pacman"><a href="lab81.html">Lab 081</a></li>
-								<li data-filter="services nginx systemctl ss grep apt yum pacman proxy reload"><a href="lab82.html">Lab 082</a></li>
-								<li data-filter="services cockpit systemctl ss grep apt yum dnf pacman xdg-open firefox chromium"><a href="lab83.html">Lab 083</a></li>
-								<li data-filter="services squid proxy systemctl ss grep apt dnf pacman"><a href="lab84.html">Lab 084</a></li>
-								<li data-filter="logging rsyslog systemctl ss grep vim nano apt dnf pacman udp"><a href="lab85.html">Lab 085</a></li>
-								<li data-filter="logging rsyslog systemctl journalctl logger tail vim nano apt dnf pacman udp"><a href="lab86.html">Lab 086</a></li>
-								<li data-filter="networking troubleshooting netcat nc tcp udp listen scan echo sudo"><a href="lab87.html">Lab 087</a></li>
-								<li data-filter="logging logrotate rotate compress touch ls cat vim nano apt dnf pacman"><a href="lab88.html">Lab 088</a></li>
-								<li data-filter="users passwords useradd passwd chage aging policy"><a href="lab89.html">Lab 089</a></li>
-								<li data-filter="security authentication faillock lockout pam vim nano"><a href="lab90.html">Lab 090</a></li>
-								<li data-filter="services ldap slapd ldapadd ldapsearch slappasswd systemctl dpkg-reconfigure apt dnf pacman"><a href="lab91.html">Lab 091</a></li>
-								<li data-filter="networking traceroute icmp tcp udp hops less redirect apt dnf pacman"><a href="lab92.html">Lab 092</a></li>
-								<li data-filter="shell images ls feh viu xdg-open cargo apt dnf pacman"><a href="lab93.html">Lab 093</a></li>
-								<li data-filter="security networking services ufw firewalld firewall-cmd systemctl ssh http openssh rich-rule zones drop reload status apt dnf pacman"><a href="lab94.html">Lab 094</a></li>
-								<li data-filter="processes services packages tuned nice renice tuned-adm systemctl pgrep ps grep yes killall pkill dnf apt pacman"><a href="lab95.html">Lab 095</a></li>
-								<li data-filter="containers podman images pull run ps start logs volume mount inspect rm rmi alpine rootless dnf apt pacman"><a href="lab96.html">Lab 096</a></li>
-								<li data-filter="services time ntp chrony chronyd chronyc timedatectl systemctl enable start status sources tracking makestep sync drift logs rhel dnf yum conf"><a href="lab97.html">Lab 097</a></li>
-								<li data-filter="services ansible ansible-playbook ansible.cfg ping setup package service nano vim apt dnf pacman"><a href="lab98.html">Lab 098</a></li>
-								<li data-filter="services ansible ansible-galaxy ansible-playbook ansible-lint inventory nano vim"><a href="lab99.html">Lab 099</a></li>
-								<li data-filter="services ansible ansible-pull ansible-core git git-clone cat less sudo crontab mkdir touch"><a href="lab100.html">Lab 100</a></li>
-								<li data-filter="services ansible ansible-vault ansible-playbook cat nano vim vi rekey view edit create debug vars_files vault-password"><a href="lab101.html">Lab 101</a></li>
-								<li data-filter="services ansible ansible-inventory ansible-playbook python3 json nano vim chmod ping inventory dynamic-inventory script"><a href="lab102.html">Lab 102</a></li>
-								<li data-filter="services ansible-galaxy ansible-playbook mkdir cd nano vim inventory.ini roles role-install role-search role-init geerlingguy.nginx nginx"><a href="lab103.html">Lab 103</a></li>
-								<li data-filter="networking openvpn easy-rsa make-cadir easyrsa openssl pki cp gunzip tee systemctl openvpn@server server.conf server.conf.gz ca.crt server.crt server.key dh.pem gen-dh gen-req sign-req"><a href="lab104.html">Lab 104</a></li>
-								<li data-filter="networking dhcp dhcpd dhcpd.conf isc-dhcp-server dhcp-server systemctl dhcpd.service isc-dhcp-server.service leases dhcpd.leases apt dnf pacman tee nano vim cat eth0 sysconfig /etc/dhcp /etc/default/isc-dhcp-server /etc/sysconfig/dhcpd /var/lib/dhcp /var/lib/dhcpd"><a href="lab105.html">Lab 105</a></li>
-								<li data-filter="users useradd passwd groupadd usermod permissions grep chmod chgrp mkdir ls setgid sudo"><a href="lab106.html">Lab 106</a></li>
-								<li data-filter="processes lspci lsusb lsblk lsmod grep sudo"><a href="lab107.html">Lab 107</a></li>
-								<li data-filter="processes lsmod head modinfo modprobe grep rmmod sudo"><a href="lab108.html">Lab 108</a></li>
-								<li data-filter="processes echo printf tee grep modprobe modinfo lsmod dracut update-initramfs mkinitcpio sudo sh"><a href="lab109.html">Lab 109</a></li>
-								<li data-filter="logging dmesg udevadm tail grep cat sudo"><a href="lab110.html">Lab 110</a></li>
-								<li data-filter="processes proc grep cat awk lscpu free egrep head tail"><a href="lab111.html">Lab 111</a></li>
-								<li data-filter="processes cat head watch grep lspci lsmod"><a href="lab112.html">Lab 112</a></li>
-								<li data-filter="storage networking processes shell ls cat readlink grep lsblk"><a href="lab113.html">Lab 113</a></li>
-								<li data-filter="services shell grub processes systemctl grep ls head grub2-mkconfig grub2-install"><a href="lab114.html">Lab 114</a></li>
-								<li data-filter="services processes shell systemctl head grep ls who runlevel isolate set-default list-units"><a href="lab115.html">Lab 115</a></li>
-								<li data-filter="storage shell lsblk grep cat udevadm egrep readlink xargs basename"><a href="lab116.html">Lab 116</a></li>
-								<li data-filter="packages debian shell"><a href="lab117.html">Lab 117</a></li>
-								<li data-filter="packages dnf rpm timedatectl localectl systemctl ssh-keygen restorecon"><a href="lab118.html">Lab 118</a></li>
-								<li data-filter="packages troubleshooting rhel"><a href="lab119.html">Lab 119</a></li>
-								<li data-filter="packages troubleshooting rhel"><a href="lab120.html">Lab 120</a></li>
-								<li data-filter="packages repos troubleshooting rhel"><a href="lab121.html">Lab 121</a></li>
-								<li data-filter="packages rpm verification rhel"><a href="lab122.html">Lab 122</a></li>
-								<li data-filter="storage parted mbr rhel"><a href="lab123.html">Lab 123</a></li>
-								<li data-filter="storage parted gpt rhel"><a href="lab124.html">Lab 124</a></li>
-								<li data-filter="storage lvm xfs rhel fstab"><a href="lab125.html">Lab 125</a></li>
-								<li data-filter="packages alien ldd ldconfig grep head ls tee export"><a href="lab126.html">Lab 126</a></li>
-								<li data-filter="networking routing dns troubleshooting systemd-resolved"><a href="lab127.html">Lab 127</a></li>
-								<li data-filter="networking firewalld ssh incident troubleshooting"><a href="lab128.html">Lab 128</a></li>
-								<li data-filter="networking troubleshooting shell"><a href="lab129.html">Lab 129</a></li>
-								<li data-filter="networking troubleshooting shell "><a href="lab130.html">Lab 130</a></li>
-								<li data-filter="networking troubleshooting shell dns routing"><a href="lab131.html">Lab 131</a></li>
-								<li data-filter="networking troubleshooting dns shell nss "><a href="lab132.html">Lab 132</a></li>
-								<li data-filter="networking troubleshooting dns"><a href="lab133.html">Lab 133</a></li>
-								<li data-filter="networking troubleshooting firewall"><a href="lab134.html">Lab 134</a></li>
-								<li data-filter="networking troubleshooting dns"><a href="lab135.html">Lab 135</a></li>
-								<li data-filter="scheduling systemctl chrony chronyd journalctl timedatectl"><a href="lab136.html">Lab 136</a></li>
-								<li data-filter="services logging time chrony journald rsyslog" ><a href="lab137.html">Lab 137</a></li>
-								<li data-filter="services logging mail printing cups postfix journald queue" ><a href="lab138.html">Lab 138</a></li>
-								<li data-filter="services logging networking security rsyslog logrotate firewall udp"><a href="lab139.html">Lab 139</a></li>
-								<li data-filter="services logging networking security rsyslog logrotate firewall udp"><a href="lab140.html">Lab 140</a></li>
-								<li data-filter="services logging time mail postfix aliases journald chrony"><a href="lab141.html">Lab 141</a></li>
-								<li data-filter="services logging time mail printing journald aliases cups"><a href="lab142.html">Lab 142</a></li>
-								<li data-filter="services logging mail printing journald postfix vacuum logrotate"><a href="lab143.html">Lab 143</a></li>
-								<li data-filter="services logging networking time journald rsyslog postfix chrony"><a href="lab144.html">Lab 144</a></li>
-								<li data-filter="permissions scheduling time users cron at chage setgid"><a href="lab145.html">Lab 145</a></li>
-								<li data-filter="users permissions groups useradd usermod chage cleanup"><a href="lab146.html">Lab 146</a></li>
-								<li data-filter="users permissions groups useradd usermod getent shadow"><a href="lab147.html">Lab 147</a></li>
-								<li data-filter="scheduling cron crontab mailto redirection setuid"><a href="lab148.html">Lab 148</a></li>
-								<li data-filter="users permissions aging chage expiry inactive warning remediation"><a href="lab149.html">Lab 149</a></li>
-								<li data-filter="users useradd groups provisioning uid shell expiry chage"><a href="lab150.html">Lab 150</a></li>
-								<li data-filter="users permissions usermod modify groups shell home rename uid expiry"><a href="lab151.html">Lab 151</a></li>
-								<li data-filter="users permissions userdel delete offboarding sessions home verify"><a href="lab152.html">Lab 152</a></li>
-								<li data-filter="users networking shell nss getent lookup identity resolution services protocols"><a href="lab153.html">Lab 153</a></li>
-								<li data-filter="users permissions security passwd password aging policy expiry"><a href="lab154.html">Lab 154</a></li>
-								<li data-filter="users permissions groupadd groups gid nss getent provisioning"><a href="lab155.html">Lab 155</a></li>
-								<li data-filter="containers services networking docker nginx images containers logs exec cleanup"><a href="lab156.html">Lab 156</a></li>
-								<li data-filter="containers networking services docker bridge dns appnet inspect ping cleanup"><a href="lab157.html">Lab 157</a></li>
-								<li data-filter="containers storage docker volumes persistence backup restore tar mount appdata cleanup"><a href="lab158.html">Lab 158</a></li>
-								<li data-filter="containers packages docker images tagging transfer offline save load archive tar alpine cleanup"><a href="lab159.html">Lab 159</a></li>
-								<li data-filter="containers packages docker compose stack multicontainer nginx redis orchestration yaml services logs teardown cleanup"><a href="lab160.html">Lab 160</a></li>
-							</ul>
-						</div>
-
-					</div>
-
-				</div>
-			</div>
-		</section>
-
-		<!-- FOOTER -->
-		<footer class="module bg-light">
-			<div class="container">
-				<div class="row">
-					<div class="col-sm-12">
-						<ul class="social-text-links font-alt text-center m-b-20">
-							<li><a href="https://github.com/vonds" target="_blank">Github</a></li>
-							<li><a href="https://www.linkedin.com/in/vonds/" target="_blank">Linkedin</a></li>
-						</ul>
-					</div>
-				</div>
-
-				<div class="row">
-					<div class="col-sm-12">
-						<p class="copyright text-center m-b-0">
-							VONDS &copy;
-							<script>document.write(new Date().getFullYear());</script>
-						</p>
-
-						<div class="scroll-up">
-							<a href="#totop"><i class="fa fa-angle-double-up"></i></a>
-						</div>
-					</div>
-				</div>
-			</div>
-		</footer>
-
-	</div>
-
-	<!-- Javascript files -->
-
-	<script src="../assets/js/jquery-2.2.4.min.js"></script>
-	<script src="../assets/bootstrap/js/bootstrap.min.js"></script>
-	<script src="../assets/js/jquery.superslides.min.js"></script>
-	<script src="../assets/js/jquery.mb.YTPlayer.min.js"></script>
-	<script src="../assets/js/jquery.magnific-popup.min.js"></script>
-	<script src="../assets/js/jquery.simple-text-rotator.min.js"></script>
-	<script src="../assets/js/imagesloaded.pkgd.js"></script>
-	<script src="../assets/js/isotope.pkgd.min.js"></script>
-	<script src="../assets/js/packery-mode.pkgd.min.js"></script>
-	<script src="../assets/js/appear.js"></script>
-	<script src="../assets/js/jquery.easing.1.3.js"></script>
-	<script src="../assets/js/wow.min.js"></script>
-	<script src="../assets/js/jqBootstrapValidation.js"></script>
-	<script src="../assets/js/jquery.fitvids.js"></script>
-	<script src="../assets/js/jquery.parallax-1.1.3.js"></script>
-	<script src="../assets/js/smoothscroll.js"></script>
-	<script src="../assets/js/custom.js"></script>
-
-
-	<!-- Docs page tiny JS (existing) -->
-	<script src="../assets/js/docs.js"></script>
-
-
+<footer>
+  <img class="mark" src="assets/images/logo-dark.svg" alt="Vonds">
+  <nav aria-label="Footer" class="alt">
+    <a href="index.html#about">About</a><a href="index.html#portfolio">Portfolio</a><a href="docs.html">exit_0 Labs</a><a href="index.html#contact">Contact</a><a href="https://www.linkedin.com/in/vonds/">LinkedIn</a>
+  </nav>
+  <div class="line"></div>
+  <p class="copyright alt">Vonds &copy; 2026</p>
+</footer>
+<button class="to-top" id="toTop" type="button" aria-label="Back to top">&uarr;</button>
+<script src="assets/js/site.js" defer></script>
+<script src="assets/js/docs.js" defer></script>
 </body>
 </html>

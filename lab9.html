@@ -1,202 +1,95 @@
-<!-- lab009.html -->
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="exit_0 Documentation" />
-    <meta name="name" content="Vonds" />
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lab 009: Diagnose and Manage a Faulty Service | exit_0 Labs</title>
+<meta name="description" content="Diagnose why a systemd service fails using systemctl status and journal evidence. Resolve the root cause, restart cleanly, verify runtime health, and ensure…">
+<link rel="canonical" href="https://vonds.github.io/lab9.html">
+<meta name="theme-color" content="#2e2e30">
+<meta name="author" content="Vonds">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="Vonds">
+<meta property="og:url" content="https://vonds.github.io/lab9.html">
+<meta property="og:title" content="Lab 009: Diagnose and Manage a Faulty Service | exit_0 Labs">
+<meta property="og:description" content="Diagnose why a systemd service fails using systemctl status and journal evidence. Resolve the root cause, restart cleanly, verify runtime health, and ensure…">
+<meta property="og:image" content="https://vonds.github.io/assets/images/og/og-exit0.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="exit_0: 165 hands-on Linux labs for real system administration.">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Lab 009: Diagnose and Manage a Faulty Service | exit_0 Labs">
+<meta name="twitter:description" content="Diagnose why a systemd service fails using systemctl status and journal evidence. Resolve the root cause, restart cleanly, verify runtime health, and ensure…">
+<meta name="twitter:image" content="https://vonds.github.io/assets/images/og/og-exit0.jpg">
+<link rel="icon" type="image/svg+xml" href="assets/images/favicon.svg">
+<link rel="icon" type="image/png" href="assets/images/favicon.png">
+<link rel="apple-touch-icon" href="assets/images/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Dosis:wght@300;400;500;600&family=Open+Sans:wght@400;600&display=swap">
+<link rel="stylesheet" href="assets/css/site.css">
+<link rel="stylesheet" href="assets/css/exit0.css">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Vonds","item":"https://vonds.github.io/"},{"@type":"ListItem","position":2,"name":"exit_0 Labs","item":"https://vonds.github.io/docs.html"},{"@type":"ListItem","position":3,"name":"Lab 009","item":"https://vonds.github.io/lab9.html"}]}</script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="header solid" id="header">
+  <div class="wrap">
+    <a class="brand" href="index.html" aria-label="Vonds home">
+      <img class="logo-dark" src="assets/images/logo-dark.svg" alt="Vonds">
+      <img class="logo-light" src="assets/images/logo-light.svg" alt="" aria-hidden="true">
+    </a>
+    <button class="menu-btn" id="menuOpen" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="overlay">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</header>
 
-    <title>Vonds | Lab 009</title>
-
-    <!-- Favicons -->
-    <link rel="icon" type="image/svg+xml" href="../assets/images/favicon.svg" />
-    <link rel="icon" type="image/png" href="../assets/images/favicon.png" />
-    <link rel="apple-touch-icon" href="../assets/images/apple-touch-icon.png" />
-    <link
-      rel="apple-touch-icon"
-      sizes="72x72"
-      href="../assets/images/apple-touch-icon-72x72.png"
-    />
-    <link
-      rel="apple-touch-icon"
-      sizes="114x114"
-      href="../assets/images/apple-touch-icon-114x114.png"
-    />
-
-    <!-- Site styles (your existing) -->
-    <link href="../assets/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
-    <link href="../assets/css/font-awesome.min.css" rel="stylesheet" />
-    <link href="../assets/css/linea-icons.css" rel="stylesheet" />
-    <link href="../assets/css/ionicons.min.css" rel="stylesheet" />
-    <link href="../assets/css/simpletextrotator.css" rel="stylesheet" />
-    <link href="../assets/css/magnific-popup.css" rel="stylesheet" />
-    <link href="../assets/css/owl.carousel.css" rel="stylesheet" />
-    <link href="../assets/css/superslides.css" rel="stylesheet" />
-    <link href="../assets/css/vertical.css" rel="stylesheet" />
-    <link href="../assets/css/animate.css" rel="stylesheet" />
-    <link href="../assets/css/style.css" rel="stylesheet" />
-    <link href="../assets/css/docs.css" rel="stylesheet" />
-
-    <!-- Lab page styles (new) -->
-    <link href="../assets/css/lab.css" rel="stylesheet" />
-
-    <!-- Fonts -->
-    <link
-      href="https://fonts.googleapis.com/css?family=Dosis"
-      rel="stylesheet"
-    />
-  </head>
-
-  <body>
-    <!-- PRELOADER -->
-    <div class="page-loader">
-      <div class="loader">Loading...</div>
+<div class="overlay" id="overlay" aria-hidden="true">
+  <button class="close" id="menuClose" type="button" aria-label="Close menu">&times;</button>
+  <nav aria-label="Main">
+    <a class="alt" href="index.html">Home</a>
+    <a class="alt" href="index.html#about">About</a>
+    <a class="alt" href="index.html#portfolio">Portfolio</a>
+    <div class="sub">
+      <a class="alt" href="https://black-signal-demo.netlify.app/">Black Signal</a>
+      <a class="alt" href="https://deeds-demo.netlify.app/">DEEDS</a>
+      <a class="alt" href="https://digital-resource-map-demo.netlify.app/">Digital Resource Map</a>
+      <a class="alt" href="https://thetravelingarchive.com/">The Traveling Archive</a>
+      <a class="alt" href="https://github.com/vonds/sentinel">Sentinel</a>
+      <a class="alt" href="docs.html">exit_0 Labs</a>
     </div>
+    <a class="alt" href="index.html#services">Services</a>
+    <a class="alt" href="index.html#contact">Contact</a>
+    <a class="alt" href="https://www.linkedin.com/in/vonds/">LinkedIn</a>
+  </nav>
+  <div class="foot alt">Vonds &copy; <span id="year">2026</span></div>
+</div>
 
-    <!-- OVERLAY MENU -->
-    <div id="overlay-menu" class="overlay-menu">
-      <a href="#" id="overlay-menu-hide" class="navigation-hide">
-        <i class="ion-close-round"></i>
-      </a>
-
-      <div class="overlay-menu-inner">
-        <nav class="overlay-menu-nav">
-          <ul id="nav">
-            <li><a href="../index.html">Home</a></li>
-
-            <li class="slidedown">
-              <a href="#">Portfolio</a>
-              <ul>
-                <li>
-                  <a
-                    href="https://github.com/vonds/exit_0"
-                    target="_blank"
-                    rel="noopener"
-                  >
-                    exit_0
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="docs.html"
-                    target="_blank"
-                    rel="noopener"
-                  >
-                    exit_0 Documentation
-                  </a>
-                </li>
-                <li><a href="https://github.com/vonds/sentinel" target="_blank" rel="noopener">Sentinel</a></li>
-              </ul>
-            </li>
-
-            <li>
-              <a
-                href="https://www.linkedin.com/in/vonds/"
-                target="_blank"
-                rel="noopener"
-              >
-                LinkedIn
-              </a>
-            </li>
-            <li>
-              <a href="https://github.com/vonds" target="_blank" rel="noopener">
-                Github
-              </a>
-            </li>
-            <li>
-              <a href="mailto:vonds13@gmail.com?subject=Hello Vonds">Contact</a>
-            </li>
-          </ul>
+<main class="x0" id="main">
+  <div class="x0-wrap">
+    <nav class="crumbs alt" aria-label="Breadcrumb"><a href="index.html">Vonds</a><span class="sep" aria-hidden="true">/</span><a href="docs.html">exit_0 Labs</a><span class="sep" aria-hidden="true">/</span><span aria-current="page">Lab 009</span></nav>
+    <header class="x0-head">
+      <p class="eyebrow alt"><b>Lab 009</b> &middot; services</p>
+      <h1>Diagnose and Manage a Faulty Service</h1>
+      <p class="lede">Diagnose why a systemd service fails using <code>systemctl</code> status and journal evidence. Resolve the root cause, restart cleanly, verify runtime health, and ensure the service is enabled for future boots.</p>
+      <nav class="pager-mini" aria-label="Lab navigation"><a class="alt" href="lab8.html" rel="prev">&larr; Lab 008</a><a class="alt" href="lab10.html" rel="next">Lab 010 &rarr;</a></nav>
+    </header>
+    <div class="x0-grid">
+      <aside class="x0-side" aria-label="On this page">
+        <nav class="toc">
+          <a class="back alt" href="docs.html">&larr; All labs</a>
+          <p class="toc-h alt">On this page</p>
+          <ul><li><a href="#video">Video</a></li><li><a href="#scenario">Scenario</a></li><li><a href="#objective">Objective</a></li><li><a href="#concepts">Concepts</a></li><li><a href="#walkthrough">Walkthrough</a></li><li><a href="#breakpoints">Common breakpoints</a></li><li><a href="#cleanup">Cleanup checklist</a></li><li><a href="#reference">Reference</a></li></ul>
         </nav>
-      </div>
-
-      <div class="overlay-navigation-footer">
-        <div class="container">
-          <div class="row">
-            <div class="col-sm-12 text-center">
-              <p class="copyright font-alt m-b-0">
-                VONDS &copy;
-                <script>
-                  document.write(new Date().getFullYear())
-                </script>
-              </p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- WRAPPER -->
-    <div class="wrapper">
-      <!-- NAVIGATION -->
-      <nav
-        class="navbar navbar-custom navbar-transparent navbar-light navbar-fixed-top"
-      >
-        <div class="container">
-          <div class="navbar-header">
-            <a class="navbar-brand" href="../index.html">
-              <img class="logo-dark" src="../assets/images/logo-dark.svg" alt="Vonds" /><img class="logo-light" src="../assets/images/logo-light.svg" alt="" aria-hidden="true" />
-            </a>
-          </div>
-
-          <ul id="icons-navbar" class="nav navbar-nav navbar-right">
-            <li>
-              <a href="#" id="toggle-menu" class="show-overlay" title="Menu">
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-              </a>
-            </li>
-          </ul>
-        </div>
-      </nav>
-
-      <!-- DOCS PAGE -->
-      <section class="module">
-        <div class="container">
-          <h2 class="font-alt module-title m-t-60">
-            Lab 9: Diagnose and Manage a Faulty Service
-          </h2>
-
-          <nav class="lab-pagination">
-            <a id="prev-lab" class="lab-nav-link" href="#" aria-label="Previous lab">&laquo;</a>
-            <a id="next-lab" class="lab-nav-link" href="#" aria-label="Next lab">&raquo;</a>
-          </nav>
-
-          <div class="row">
-            <!-- LEFT SIDEBAR -->
-            <div class="col-sm-4 col-md-3 lab-sidebar">
-              <div class="docs-sidebar">
-                <div class="docs-widget">
-                  <h5 class="widget-title"><a href="./docs.html">Back to Lab Index</a></h5>
-                  <ul class="docs-nav">
-                    <li><a href="#scenario">Scenario</a></li>
-                    <li><a href="#objective">Objective</a></li>
-                    <li><a href="#concepts">Concepts</a></li>
-                    <li><a href="#walkthrough">Walkthrough</a></li>
-                    <li><a href="#breakpoints">Breakpoints</a></li>
-                    <li><a href="#cleanup">Cleanup</a></li>
-                    <li><a href="#reference">Reference</a></li>
-                  </ul>
-                </div>
-              </div>
-            </div>
-
-            <!-- MAIN CONTENT -->
-            <div class="col-sm-8 col-md-9 lab-doc">
-              <!-- Summary (2 sentences max) -->
-              <p class="m-b-20 lab-summary">
-                Diagnose why a systemd service fails using <code>systemctl</code> status and journal evidence.
-                Resolve the root cause, restart cleanly, verify runtime health, and ensure the service is enabled for future boots.
-              </p>
-
-              <!-- Video -->
+      </aside>
+      <article class="x0-doc">
+<!-- Video -->
               <section class="lab-section" id="video" aria-label="Lab video">
                 <div class="lab-video">
                   <div class="lab-video-embed text-center">
-                    <iframe
-                      src="https://www.youtube.com/embed/boqyy34CoFg?si=6IyPAxaQQo9ujhTy"
+                    <iframe loading="lazy"
+                      src="https://www.youtube-nocookie.com/embed/boqyy34CoFg?si=6IyPAxaQQo9ujhTy"
                       title="YouTube video player"
                       frameborder="0"
                       allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
@@ -206,7 +99,6 @@
                   </div>
                 </div>
               </section>
-
               <!-- Scenario -->
               <section class="lab-section" id="scenario">
                 <div class="lab-chips" aria-label="Tags">
@@ -214,14 +106,11 @@
                   <span class="lab-chip"><span class="lab-chip-key">troubleshooting</span></span>
                   <span class="lab-chip"><span class="lab-chip-key">core</span></span>
                 </div>
-
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">Scenario</h3>
-
                 <p>
                   The <code>nginx.service</code> is failing to start on boot. You must investigate the cause,
                   fix it, and ensure it runs now and on future boots.
                 </p>
-
                 <div class="lab-callout">
                   <div class="lab-callout-label">Operator context</div>
                   <p class="m-b-0">
@@ -230,7 +119,6 @@
                   </p>
                 </div>
               </section>
-
               <!-- Objective -->
               <section class="lab-section alt-background" id="objective">
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">Objective</h3>
@@ -243,7 +131,6 @@
                   <li>Ensure the service starts on boot using <code>systemctl enable</code>.</li>
                 </ul>
               </section>
-
               <!-- Concepts -->
               <section class="lab-section" id="concepts">
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">Concepts</h3>
@@ -255,17 +142,14 @@
                   <li>Prove the service is running and listening where expected after the restart.</li>
                 </ul>
               </section>
-
               <!-- Walkthrough -->
               <section class="lab-section alt-background" id="walkthrough">
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">Walkthrough</h3>
-
                 <!-- Step 1 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
                     <strong class="font-alt">Step 1</strong>: Check the service status.
                   </div>
-
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
@@ -273,12 +157,10 @@
                     </div>
                     <pre><code id="cmd-step-1">systemctl status nginx</code></pre>
                   </div>
-
                   <p>
                     This is your initial triage view: loaded state, enablement, active state, and the failing
                     <code>ExecStart</code> context. If it is failing, pull the journal for the exact error text.
                   </p>
-
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <pre><code id="verify-step-1">● nginx.service - A high performance web server
    Loaded: loaded (/lib/systemd/system/nginx.service; enabled)
@@ -286,13 +168,11 @@
    Process: 1356 ExecStart=/usr/sbin/nginx -g 'daemon on;' (code=exited, status=1/FAILURE)</code></pre>
                   </div>
                 </div>
-
                 <!-- Step 2 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
                     <strong class="font-alt">Step 2</strong>: Pull detailed logs for the unit.
                   </div>
-
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
@@ -300,17 +180,14 @@
                     </div>
                     <pre><code id="cmd-step-2">journalctl -xeu nginx</code></pre>
                   </div>
-
                   <p>
                     This filters the journal to the <code>nginx</code> unit while showing recent errors.
                     Extract the root-cause line and treat it as the starting point for the fix.
                   </p>
-
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <pre><code id="verify-step-2">Jul 18 12:43:01 nginx[1356]: nginx: [emerg] bind() to 0.0.0.0:80 failed (98: Address already in use)
 Jul 18 12:43:01 systemd[1]: nginx.service: Failed with result 'exit-code'.</code></pre>
                   </div>
-
                   <div class="lab-callout">
                     <div class="lab-callout-label">Diagnosis</div>
                     <p class="m-b-0">
@@ -318,13 +195,11 @@ Jul 18 12:43:01 systemd[1]: nginx.service: Failed with result 'exit-code'.</code
                     </p>
                   </div>
                 </div>
-
                 <!-- Step 3 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
                     <strong class="font-alt">Step 3</strong>: Identify what is listening on port 80.
                   </div>
-
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
@@ -332,22 +207,18 @@ Jul 18 12:43:01 systemd[1]: nginx.service: Failed with result 'exit-code'.</code
                     </div>
                     <pre><code id="cmd-step-3">sudo ss -ltnp | grep ':80 '</code></pre>
                   </div>
-
                   <p>
                     Confirm the process name and PID holding the port. This prevents “fixing” nginx when the real issue is an unexpected listener.
                   </p>
-
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <pre><code id="verify-step-3">LISTEN 0      511          0.0.0.0:80        0.0.0.0:*    users:(("apache2",pid=912,fd=4))</code></pre>
                   </div>
                 </div>
-
                 <!-- Step 4 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
                     <strong class="font-alt">Step 4</strong>: Stop the conflicting service.
                   </div>
-
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
@@ -355,18 +226,15 @@ Jul 18 12:43:01 systemd[1]: nginx.service: Failed with result 'exit-code'.</code
                     </div>
                     <pre><code id="cmd-step-4">sudo systemctl stop apache2</code></pre>
                   </div>
-
                   <p>
                     Replace <code>apache2</code> with the actual service name you discovered. The goal is to free port 80 for nginx.
                   </p>
                 </div>
-
                 <!-- Step 5 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
                     <strong class="font-alt">Step 5</strong>: Restart nginx and verify it is running.
                   </div>
-
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
@@ -374,7 +242,6 @@ Jul 18 12:43:01 systemd[1]: nginx.service: Failed with result 'exit-code'.</code
                     </div>
                     <pre><code id="cmd-step-5">sudo systemctl restart nginx</code></pre>
                   </div>
-
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Verification</span>
@@ -382,24 +249,20 @@ Jul 18 12:43:01 systemd[1]: nginx.service: Failed with result 'exit-code'.</code
                     </div>
                     <pre><code id="cmd-step-5b">systemctl status nginx</code></pre>
                   </div>
-
                   <p>
                     A successful restart should transition nginx to <code>active (running)</code>. If it still fails, return to the journal and read the new error.
                   </p>
-
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <pre><code id="verify-step-5">● nginx.service - A high performance web server
    Loaded: loaded (/lib/systemd/system/nginx.service; enabled)
    Active: active (running) since ...</code></pre>
                   </div>
                 </div>
-
                 <!-- Step 6 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
                     <strong class="font-alt">Step 6</strong>: Ensure nginx starts on boot.
                   </div>
-
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
@@ -407,42 +270,35 @@ Jul 18 12:43:01 systemd[1]: nginx.service: Failed with result 'exit-code'.</code
                     </div>
                     <pre><code id="cmd-step-6">sudo systemctl enable nginx</code></pre>
                   </div>
-
                   <p>
                     Enabling a unit configures systemd to start it during boot by creating a symlink under the appropriate target wants directory.
                   </p>
-
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <pre><code id="verify-step-6">Created symlink /etc/systemd/system/multi-user.target.wants/nginx.service → /lib/systemd/system/nginx.service</code></pre>
                   </div>
                 </div>
               </section>
-
               <!-- Breakpoints -->
               <section class="lab-section" id="breakpoints">
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">Common breakpoints</h3>
-
                 <div class="lab-callout">
                   <div class="lab-callout-label">Port 80 still in use after “fix”</div>
                   <p class="m-b-0">
                     Re-run <code>ss -ltnp</code> and confirm the listener actually stopped. If the conflicting service is socket-activated, it may come back unless you stop/disable the socket unit.
                   </p>
                 </div>
-
                 <div class="lab-callout">
                   <div class="lab-callout-label">Service shows “active” but the site is not reachable</div>
                   <p class="m-b-0">
                     Confirm it is listening where you expect (port/interface). If it is bound to <code>127.0.0.1</code> only, remote clients will fail even though the service is running.
                   </p>
                 </div>
-
                 <div class="lab-callout">
                   <div class="lab-callout-label">Restart loops or repeated failures</div>
                   <p class="m-b-0">
                     The journal will contain the most recent failure cause. Read the latest unit logs again with <code>journalctl</code> and focus on the first error line nginx reports.
                   </p>
                 </div>
-
                 <div class="lab-callout">
                   <div class="lab-callout-label">Enable succeeds but service still does not start after reboot</div>
                   <p class="m-b-0">
@@ -450,16 +306,13 @@ Jul 18 12:43:01 systemd[1]: nginx.service: Failed with result 'exit-code'.</code
                   </p>
                 </div>
               </section>
-
               <!-- Cleanup -->
               <section class="lab-section alt-background" id="cleanup">
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">Cleanup checklist</h3>
-
                 <p>
                   This lab only changes state if you stop a conflicting service or enable nginx. Ensure nginx is running,
                   and decide whether the conflicting service should remain stopped in your environment.
                 </p>
-
                 <div class="lab-codeblock m-b-40 m-t-40">
                   <div class="lab-codeblock-header">
                     <span>Commands</span>
@@ -468,7 +321,6 @@ Jul 18 12:43:01 systemd[1]: nginx.service: Failed with result 'exit-code'.</code
                   <pre><code id="cmd-cleanup">systemctl status nginx
 sudo ss -ltnp | grep ':80 '</code></pre>
                 </div>
-
                 <div class="lab-callout">
                   <div class="lab-callout-label">Success signal</div>
                   <p class="m-b-0">
@@ -476,16 +328,13 @@ sudo ss -ltnp | grep ':80 '</code></pre>
                   </p>
                 </div>
               </section>
-
               <!-- Reference -->
               <section class="lab-section" id="reference">
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">Reference</h3>
-
                 <ul class="lab-reference-list">
                   <li>
                     <code>systemctl status &lt;unit&gt;</code>: Shows current unit state and recent unit log lines.
                   </li>
-
                   <li>
                     <code>journalctl -xeu &lt;unit&gt;</code>: Shows recent journal entries for a specific unit with context.
                     <ul>
@@ -494,7 +343,6 @@ sudo ss -ltnp | grep ':80 '</code></pre>
                       <li><code>-x</code>: Show explanatory text when available.</li>
                     </ul>
                   </li>
-
                   <li>
                     <code>ss -ltnp</code>: Shows listening TCP sockets with process details.
                     <ul>
@@ -504,108 +352,33 @@ sudo ss -ltnp | grep ':80 '</code></pre>
                       <li><code>-p</code>: Show process using the socket (requires privileges for full detail).</li>
                     </ul>
                   </li>
-
                   <li>
                     <code>systemctl stop &lt;unit&gt;</code>: Stops a running service immediately.
                   </li>
-
                   <li>
                     <code>systemctl restart &lt;unit&gt;</code>: Stops and then starts the unit.
                   </li>
-
                   <li>
                     <code>systemctl enable &lt;unit&gt;</code>: Configures the unit to start automatically at boot.
                   </li>
                 </ul>
               </section>
-            </div>
-            <!-- /main -->
-          </div>
-          <!-- /row -->
-
-          <nav class="lab-pagination">
-            <a
-              id="prev-lab"
-              class="lab-nav-link"
-              href="#"
-              aria-label="Previous lab"
-            >
-              &uArr;
-            </a>
-          </nav>
-        </div>
-        <!-- /container -->
-      </section>
-
-      <!-- FOOTER -->
-      <footer class="module bg-light">
-        <div class="container">
-          <div class="row">
-            <div class="col-sm-12">
-              <ul class="social-text-links font-alt text-center m-b-20">
-                <li>
-                  <a
-                    href="https://github.com/vonds"
-                    target="_blank"
-                    rel="noopener"
-                  >
-                    Github
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="https://www.linkedin.com/in/vonds/"
-                    target="_blank"
-                    rel="noopener"
-                  >
-                    Linkedin
-                  </a>
-                </li>
-              </ul>
-            </div>
-          </div>
-
-          <div class="row">
-            <div class="col-sm-12">
-              <p class="copyright text-center m-b-0">
-                VONDS &copy;
-                <span id="year"></span>
-              </p>
-
-              <div class="scroll-up">
-                <a href="#totop"><i class="fa fa-angle-double-up"></i></a>
-              </div>
-            </div>
-          </div>
-        </div>
-      </footer>
+        <nav class="pager" aria-label="Previous and next lab"><a class="prev" href="lab8.html" rel="prev"><span class="dir alt">&larr; Previous &middot; Lab 008</span><span class="t">Identify and Change Default Runlevel</span></a><a class="next" href="lab10.html" rel="next"><span class="dir alt">Next &middot; Lab 010 &rarr;</span><span class="t">Manage File Permissions and Ownership</span></a></nav>
+      </article>
     </div>
+  </div>
+</main>
 
-    <!-- Javascript files (your existing) -->
-    <script src="../assets/js/jquery-2.2.4.min.js"></script>
-    <script src="../assets/bootstrap/js/bootstrap.min.js"></script>
-    <script src="../assets/js/jquery.superslides.min.js"></script>
-    <script src="../assets/js/jquery.mb.YTPlayer.min.js"></script>
-    <script src="../assets/js/jquery.magnific-popup.min.js"></script>
-    <script src="../assets/js/owl.carousel.min.js"></script>
-    <script src="../assets/js/jquery.simple-text-rotator.min.js"></script>
-    <script src="../assets/js/imagesloaded.pkgd.js"></script>
-    <script src="../assets/js/isotope.pkgd.min.js"></script>
-    <script src="../assets/js/packery-mode.pkgd.min.js"></script>
-    <script src="../assets/js/appear.js"></script>
-    <script src="../assets/js/jquery.easing.1.3.js"></script>
-    <script src="../assets/js/wow.min.js"></script>
-    <script src="../assets/js/jqBootstrapValidation.js"></script>
-    <script src="../assets/js/jquery.fitvids.js"></script>
-    <script src="../assets/js/jquery.parallax-1.1.3.js"></script>
-    <script src="../assets/js/smoothscroll.js"></script>
-    <script src="../assets/js/custom.js"></script>
-
-    <!-- Lab page JS (new) -->
-    <script src="../assets/js/lab.js"></script>
-
-    <script>
-      document.getElementById("year").textContent = new Date().getFullYear()
-    </script>
-  </body>
+<footer>
+  <img class="mark" src="assets/images/logo-dark.svg" alt="Vonds">
+  <nav aria-label="Footer" class="alt">
+    <a href="index.html#about">About</a><a href="index.html#portfolio">Portfolio</a><a href="docs.html">exit_0 Labs</a><a href="index.html#contact">Contact</a><a href="https://www.linkedin.com/in/vonds/">LinkedIn</a>
+  </nav>
+  <div class="line"></div>
+  <p class="copyright alt">Vonds &copy; 2026</p>
+</footer>
+<button class="to-top" id="toTop" type="button" aria-label="Back to top">&uarr;</button>
+<script src="assets/js/site.js" defer></script>
+<script src="assets/js/lab.js" defer></script>
+</body>
 </html>

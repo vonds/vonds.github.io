@@ -1,220 +1,94 @@
-<!-- lab091.html -->
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="exit_0 Documentation" />
-    <meta name="name" content="Vonds" />
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lab 091: OpenLDAP Server Installation and Initial Configuration | exit_0 Labs</title>
+<meta name="description" content="Install and bring up an OpenLDAP directory service, define a base DN, and initialize core directory entries using LDIF. Validate service health and confirm…">
+<link rel="canonical" href="https://vonds.github.io/lab91.html">
+<meta name="theme-color" content="#2e2e30">
+<meta name="author" content="Vonds">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="Vonds">
+<meta property="og:url" content="https://vonds.github.io/lab91.html">
+<meta property="og:title" content="Lab 091: OpenLDAP Server Installation and Initial Configuration | exit_0 Labs">
+<meta property="og:description" content="Install and bring up an OpenLDAP directory service, define a base DN, and initialize core directory entries using LDIF. Validate service health and confirm…">
+<meta property="og:image" content="https://vonds.github.io/assets/images/og/og-exit0.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="exit_0: 165 hands-on Linux labs for real system administration.">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Lab 091: OpenLDAP Server Installation and Initial Configuration | exit_0 Labs">
+<meta name="twitter:description" content="Install and bring up an OpenLDAP directory service, define a base DN, and initialize core directory entries using LDIF. Validate service health and confirm…">
+<meta name="twitter:image" content="https://vonds.github.io/assets/images/og/og-exit0.jpg">
+<link rel="icon" type="image/svg+xml" href="assets/images/favicon.svg">
+<link rel="icon" type="image/png" href="assets/images/favicon.png">
+<link rel="apple-touch-icon" href="assets/images/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Dosis:wght@300;400;500;600&family=Open+Sans:wght@400;600&display=swap">
+<link rel="stylesheet" href="assets/css/site.css">
+<link rel="stylesheet" href="assets/css/exit0.css">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Vonds","item":"https://vonds.github.io/"},{"@type":"ListItem","position":2,"name":"exit_0 Labs","item":"https://vonds.github.io/docs.html"},{"@type":"ListItem","position":3,"name":"Lab 091","item":"https://vonds.github.io/lab91.html"}]}</script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="header solid" id="header">
+  <div class="wrap">
+    <a class="brand" href="index.html" aria-label="Vonds home">
+      <img class="logo-dark" src="assets/images/logo-dark.svg" alt="Vonds">
+      <img class="logo-light" src="assets/images/logo-light.svg" alt="" aria-hidden="true">
+    </a>
+    <button class="menu-btn" id="menuOpen" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="overlay">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</header>
 
-    <title>Vonds | Lab 091</title>
-
-    <!-- Favicons -->
-    <link rel="icon" type="image/svg+xml" href="../assets/images/favicon.svg" />
-    <link rel="icon" type="image/png" href="../assets/images/favicon.png" />
-    <link rel="apple-touch-icon" href="../assets/images/apple-touch-icon.png" />
-    <link
-      rel="apple-touch-icon"
-      sizes="72x72"
-      href="../assets/images/apple-touch-icon-72x72.png"
-    />
-    <link
-      rel="apple-touch-icon"
-      sizes="114x114"
-      href="../assets/images/apple-touch-icon-114x114.png"
-    />
-
-    <!-- Site styles (your existing) -->
-    <link href="../assets/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
-    <link href="../assets/css/font-awesome.min.css" rel="stylesheet" />
-    <link href="../assets/css/linea-icons.css" rel="stylesheet" />
-    <link href="../assets/css/ionicons.min.css" rel="stylesheet" />
-    <link href="../assets/css/simpletextrotator.css" rel="stylesheet" />
-    <link href="../assets/css/magnific-popup.css" rel="stylesheet" />
-    <link href="../assets/css/owl.carousel.css" rel="stylesheet" />
-    <link href="../assets/css/superslides.css" rel="stylesheet" />
-    <link href="../assets/css/vertical.css" rel="stylesheet" />
-    <link href="../assets/css/animate.css" rel="stylesheet" />
-    <link href="../assets/css/style.css" rel="stylesheet" />
-    <link href="../assets/css/docs.css" rel="stylesheet" />
-
-    <!-- Lab page styles -->
-    <link href="../assets/css/lab.css" rel="stylesheet" />
-
-    <!-- Fonts -->
-    <link
-      href="https://fonts.googleapis.com/css?family=Dosis"
-      rel="stylesheet"
-    />
-  </head>
-
-  <body>
-    <!-- PRELOADER -->
-    <div class="page-loader">
-      <div class="loader">Loading...</div>
+<div class="overlay" id="overlay" aria-hidden="true">
+  <button class="close" id="menuClose" type="button" aria-label="Close menu">&times;</button>
+  <nav aria-label="Main">
+    <a class="alt" href="index.html">Home</a>
+    <a class="alt" href="index.html#about">About</a>
+    <a class="alt" href="index.html#portfolio">Portfolio</a>
+    <div class="sub">
+      <a class="alt" href="https://black-signal-demo.netlify.app/">Black Signal</a>
+      <a class="alt" href="https://deeds-demo.netlify.app/">DEEDS</a>
+      <a class="alt" href="https://digital-resource-map-demo.netlify.app/">Digital Resource Map</a>
+      <a class="alt" href="https://thetravelingarchive.com/">The Traveling Archive</a>
+      <a class="alt" href="https://github.com/vonds/sentinel">Sentinel</a>
+      <a class="alt" href="docs.html">exit_0 Labs</a>
     </div>
+    <a class="alt" href="index.html#services">Services</a>
+    <a class="alt" href="index.html#contact">Contact</a>
+    <a class="alt" href="https://www.linkedin.com/in/vonds/">LinkedIn</a>
+  </nav>
+  <div class="foot alt">Vonds &copy; <span id="year">2026</span></div>
+</div>
 
-    <!-- OVERLAY MENU -->
-    <div id="overlay-menu" class="overlay-menu">
-      <a href="#" id="overlay-menu-hide" class="navigation-hide">
-        <i class="ion-close-round"></i>
-      </a>
-
-      <div class="overlay-menu-inner">
-        <nav class="overlay-menu-nav">
-          <ul id="nav">
-            <li><a href="../index.html">Home</a></li>
-
-            <li class="slidedown">
-              <a href="#">Portfolio</a>
-              <ul>
-                <li>
-                  <a
-                    href="https://github.com/vonds/exit_0"
-                    target="_blank"
-                    rel="noopener"
-                  >
-                    exit_0
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="https://github.com/vonds/sentinel"
-                    target="_blank"
-                    rel="noopener"
-                  >
-                    Sentinel
-                  </a>
-                </li>
-                <li>
-                  <a href="docs.html" target="_blank">exit_0 Documentation</a>
-                </li>
-              </ul>
-            </li>
-
-            <li>
-              <a
-                href="https://www.linkedin.com/in/vonds/"
-                target="_blank"
-                rel="noopener"
-              >
-                LinkedIn
-              </a>
-            </li>
-            <li>
-              <a href="https://github.com/vonds" target="_blank" rel="noopener">
-                Github
-              </a>
-            </li>
-            <li>
-              <a href="mailto:vonds13@gmail.com?subject=Hello Vonds">Contact</a>
-            </li>
-          </ul>
+<main class="x0" id="main">
+  <div class="x0-wrap">
+    <nav class="crumbs alt" aria-label="Breadcrumb"><a href="index.html">Vonds</a><span class="sep" aria-hidden="true">/</span><a href="docs.html">exit_0 Labs</a><span class="sep" aria-hidden="true">/</span><span aria-current="page">Lab 091</span></nav>
+    <header class="x0-head">
+      <p class="eyebrow alt"><b>Lab 091</b> &middot; services</p>
+      <h1>OpenLDAP Server Installation and Initial Configuration</h1>
+      <p class="lede">Install and bring up an OpenLDAP directory service, define a base DN, and initialize core directory entries using LDIF. Validate service health and confirm query results with ldapsearch before adding users and groups.</p>
+      <nav class="pager-mini" aria-label="Lab navigation"><a class="alt" href="lab90.html" rel="prev">&larr; Lab 090</a><a class="alt" href="lab92.html" rel="next">Lab 092 &rarr;</a></nav>
+    </header>
+    <div class="x0-grid">
+      <aside class="x0-side" aria-label="On this page">
+        <nav class="toc">
+          <a class="back alt" href="docs.html">&larr; All labs</a>
+          <p class="toc-h alt">On this page</p>
+          <ul><li><a href="#video">Video</a></li><li><a href="#scenario">Scenario</a></li><li><a href="#objective">Objective</a></li><li><a href="#concepts">Concepts</a></li><li><a href="#walkthrough">Walkthrough</a></li><li><a href="#breakpoints">Common breakpoints</a></li><li><a href="#cleanup">Cleanup checklist</a></li><li><a href="#reference">Reference</a></li></ul>
         </nav>
-      </div>
-
-      <div class="overlay-navigation-footer">
-        <div class="container">
-          <div class="row">
-            <div class="col-sm-12 text-center">
-              <p class="copyright font-alt m-b-0">
-                VONDS &copy;
-                <script>
-                  document.write(new Date().getFullYear())
-                </script>
-              </p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- WRAPPER -->
-    <div class="wrapper">
-      <!-- NAVIGATION -->
-      <nav
-        class="navbar navbar-custom navbar-transparent navbar-light navbar-fixed-top"
-      >
-        <div class="container">
-          <div class="navbar-header">
-            <a class="navbar-brand" href="../index.html">
-              <img class="logo-dark" src="../assets/images/logo-dark.svg" alt="Vonds" /><img class="logo-light" src="../assets/images/logo-light.svg" alt="" aria-hidden="true" />
-            </a>
-          </div>
-
-          <ul id="icons-navbar" class="nav navbar-nav navbar-right">
-            <li>
-              <a href="#" id="toggle-menu" class="show-overlay" title="Menu">
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-              </a>
-            </li>
-          </ul>
-        </div>
-      </nav>
-
-      <!-- DOCS PAGE -->
-      <section class="module">
-        <div class="container">
-          <h2 class="font-alt module-title m-t-60">
-            Lab 91: OpenLDAP Server Installation and Initial Configuration
-          </h2>
-
-          <nav class="lab-pagination">
-            <a
-              id="prev-lab"
-              class="lab-nav-link"
-              href="#"
-              aria-label="Previous lab"
-            >
-              &laquo;
-            </a>
-            <a
-              id="next-lab"
-              class="lab-nav-link"
-              href="#"
-              aria-label="Next lab"
-            >
-              &raquo;
-            </a>
-          </nav>
-
-          <div class="row">
-            <!-- LEFT SIDEBAR -->
-            <div class="col-sm-4 col-md-3 lab-sidebar">
-              <div class="docs-sidebar">
-                <div class="docs-widget">
-                  <h5 class="widget-title">
-                    <a href="./docs.html">Back to Lab Index</a>
-                  </h5>
-                  <ul class="docs-nav">
-                    <li><a href="#scenario">Scenario</a></li>
-                    <li><a href="#objective">Objective</a></li>
-                    <li><a href="#concepts">Concepts</a></li>
-                    <li><a href="#walkthrough">Walkthrough</a></li>
-                    <li><a href="#breakpoints">Breakpoints</a></li>
-                    <li><a href="#cleanup">Cleanup</a></li>
-                    <li><a href="#reference">Reference</a></li>
-                  </ul>
-                </div>
-              </div>
-            </div>
-
-            <!-- MAIN CONTENT -->
-            <div class="col-sm-8 col-md-9 lab-doc">
-              <!-- Summary (2 sentences max) -->
-              <p class="m-b-20 lab-summary">
-                Install and bring up an OpenLDAP directory service, define a base DN, and initialize core directory entries using LDIF.
-                Validate service health and confirm query results with ldapsearch before adding users and groups.
-              </p>
-
-              <!-- Video (kept on page; removed from left panel) -->
-              <section class="lab-section" id="video" aria-label="Lab video">
+      </aside>
+      <article class="x0-doc">
+<section class="lab-section" id="video" aria-label="Lab video">
                 <div class="lab-video">
                   <div class="lab-video-embed text-center">
-                    <iframe
-                      src="https://www.youtube.com/embed/dtmjIi24XXo?si=t9LjkejZ4dcr6Lcx"
+                    <iframe loading="lazy"
+                      src="https://www.youtube-nocookie.com/embed/dtmjIi24XXo?si=t9LjkejZ4dcr6Lcx"
                       title="YouTube video player"
                       frameborder="0"
                       allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
@@ -224,7 +98,6 @@
                   </div>
                 </div>
               </section>
-
               <!-- Scenario -->
               <section class="lab-section" id="scenario">
                 <div class="lab-chips" aria-label="Tags">
@@ -238,16 +111,13 @@
                     <span class="lab-chip-key">services</span>
                   </span>
                 </div>
-
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">
                   Scenario
                 </h3>
-
                 <p>
                   You are standardizing identity lookups across Linux systems and need a baseline directory service that can answer queries reliably.
                   Your task is to install OpenLDAP, establish a base DN, and load initial directory structure so the environment has a known-good starting point.
                 </p>
-
                 <div class="lab-callout">
                   <div class="lab-callout-label">Operator context</div>
                   <p class="m-b-0">
@@ -255,7 +125,6 @@
                   </p>
                 </div>
               </section>
-
               <!-- Objective -->
               <section class="lab-section alt-background" id="objective">
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">
@@ -270,7 +139,6 @@
                   <li>Query the directory to confirm expected entries are present.</li>
                 </ul>
               </section>
-
               <!-- Concepts (no alt-background moving forward) -->
               <section class="lab-section" id="concepts">
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">
@@ -279,28 +147,20 @@
                 <ul>
                   <li>
                     Directory naming: base DN structure (for example
-                    <code>dc=example,dc=com</code>
-                    ) and admin bind DN.
+                    <code>dc=example,dc=com</code>) and admin bind DN.
                   </li>
                   <li>
-                    Service ownership and health validation under systemd (
-                    <code>systemctl</code>
-                    ).
+                    Service ownership and health validation under systemd (<code>systemctl</code>).
                   </li>
                   <li>
                     Password hashing for LDAP using
-                    <code>slappasswd</code>
-                    .
+                    <code>slappasswd</code>.
                   </li>
                   <li>
-                    Schema as the definition layer for objects and attributes (
-                    <code>core.ldif</code>
-                    ).
+                    Schema as the definition layer for objects and attributes (<code>core.ldif</code>).
                   </li>
                   <li>
-                    LDIF as the declarative format for creating directory entries (
-                    <code>ldapadd</code>
-                    ).
+                    LDIF as the declarative format for creating directory entries (<code>ldapadd</code>).
                   </li>
                   <li>
                     Read-only verification using
@@ -309,20 +169,16 @@
                   </li>
                 </ul>
               </section>
-
               <!-- Walkthrough -->
               <section class="lab-section alt-background" id="walkthrough">
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">
                   Walkthrough
                 </h3>
-
                 <!-- Step 1 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
-                    <strong class="font-alt">Step 1</strong>
-                    : Install OpenLDAP server and client utilities.
+                    <strong class="font-alt">Step 1</strong>: Install OpenLDAP server and client utilities.
                   </div>
-
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
@@ -336,27 +192,21 @@
                     </div>
                     <pre><code id="cmd-step-1"># Debian/Ubuntu
 sudo apt install slapd ldap-utils -y
-
 # RHEL/Fedora family
 sudo dnf install openldap-servers openldap-clients -y
-
 # Arch
 sudo pacman -S openldap</code></pre>
                   </div>
-
                   <p>
                     Install the server daemon and client tools so you can configure and validate the directory from the CLI.
                     If you cannot run client queries locally, you do not have a reliable baseline to build on.
                   </p>
                 </div>
-
                 <!-- Step 2 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
-                    <strong class="font-alt">Step 2</strong>
-                    : Initialize the directory configuration (Debian/Ubuntu flow).
+                    <strong class="font-alt">Step 2</strong>: Initialize the directory configuration (Debian/Ubuntu flow).
                   </div>
-
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
@@ -370,27 +220,22 @@ sudo pacman -S openldap</code></pre>
                     </div>
                     <pre><code id="cmd-step-2">sudo dpkg-reconfigure slapd</code></pre>
                   </div>
-
                   <p>
                     On Debian/Ubuntu,
                     <code>dpkg-reconfigure</code>
                     drives initial configuration (domain, base DN, admin password, database backend).
                     On other distributions the initialization differs, but the target state is the same: a defined base DN and a working admin bind.
                   </p>
-
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <pre><code># Outcome (example):
 slapd configured with your specified domain and base DN.</code></pre>
                   </div>
                 </div>
-
                 <!-- Step 3 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
-                    <strong class="font-alt">Step 3</strong>
-                    : Generate an LDAP password hash.
+                    <strong class="font-alt">Step 3</strong>: Generate an LDAP password hash.
                   </div>
-
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
@@ -404,25 +249,20 @@ slapd configured with your specified domain and base DN.</code></pre>
                     </div>
                     <pre><code id="cmd-step-3">slappasswd</code></pre>
                   </div>
-
                   <p>
                     <code>slappasswd</code>
                     produces an SSHA hash suitable for LDAP password fields.
                     Use this when you are writing LDIF and need a hashed value instead of a plaintext secret.
                   </p>
-
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <pre><code>{SSHA}REDACTED_HASH_OUTPUT</code></pre>
                   </div>
                 </div>
-
                 <!-- Step 4 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
-                    <strong class="font-alt">Step 4</strong>
-                    : Verify <code>slapd</code> is running under systemd.
+                    <strong class="font-alt">Step 4</strong>: Verify <code>slapd</code> is running under systemd.
                   </div>
-
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
@@ -436,26 +276,21 @@ slapd configured with your specified domain and base DN.</code></pre>
                     </div>
                     <pre><code id="cmd-step-4">sudo systemctl status slapd</code></pre>
                   </div>
-
                   <p>
                     This is your baseline service-health check. If
                     <code>slapd</code>
                     is not active, schema and LDIF operations are premature.
                   </p>
-
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <pre><code># Expected pattern:
 slapd is active (running)</code></pre>
                   </div>
                 </div>
-
                 <!-- Step 5 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
-                    <strong class="font-alt">Step 5</strong>
-                    : Load core schema if required by your distro layout.
+                    <strong class="font-alt">Step 5</strong>: Load core schema if required by your distro layout.
                   </div>
-
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Commands</span>
@@ -469,28 +304,22 @@ slapd is active (running)</code></pre>
                     </div>
                     <pre><code id="cmd-step-5"># Debian/Ubuntu schema path example:
 ldapadd -Y EXTERNAL -H ldapi:/// -f /etc/ldap/schema/core.ldif
-
 # RHEL/Fedora schema path example:
 ldapadd -Y EXTERNAL -H ldapi:/// -f /etc/openldap/schema/core.ldif</code></pre>
                   </div>
-
                   <p>
                     Schema defines object types and attributes your directory can store.
                     Some deployments have core schema loaded by default; others require explicit loading using SASL EXTERNAL over the local LDAPI socket.
                   </p>
-
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <pre><code>core.ldif schema loaded successfully.</code></pre>
                   </div>
                 </div>
-
                 <!-- Step 6 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
-                    <strong class="font-alt">Step 6</strong>
-                    : Create a base LDIF for the domain.
+                    <strong class="font-alt">Step 6</strong>: Create a base LDIF for the domain.
                   </div>
-
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
@@ -506,14 +335,12 @@ ldapadd -Y EXTERNAL -H ldapi:/// -f /etc/openldap/schema/core.ldif</code></pre>
 # or
 vim ~/base.ldif</code></pre>
                   </div>
-
                   <p>
                     This LDIF initializes the base DN entry for your directory.
                     Your DN must match the domain you configured; the lab uses
                     <code>dc=example,dc=com</code>
                     as a placeholder.
                   </p>
-
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <pre><code>dn: dc=example,dc=com
 objectClass: top
@@ -523,14 +350,11 @@ o: Example Company
 dc: example</code></pre>
                   </div>
                 </div>
-
                 <!-- Step 7 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
-                    <strong class="font-alt">Step 7</strong>
-                    : Add the base DN using <code>ldapadd</code>.
+                    <strong class="font-alt">Step 7</strong>: Add the base DN using <code>ldapadd</code>.
                   </div>
-
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
@@ -544,26 +368,19 @@ dc: example</code></pre>
                     </div>
                     <pre><code id="cmd-step-7">ldapadd -x -D cn=admin,dc=example,dc=com -W -f ~/base.ldif</code></pre>
                   </div>
-
                   <p>
-                    This performs a simple bind (
-                    <code>-x</code>
-                    ) as the admin DN and adds the LDIF content into the directory.
+                    This performs a simple bind (<code>-x</code>) as the admin DN and adds the LDIF content into the directory.
                     In production you typically use TLS and may bind to a dedicated directory manager DN depending on the deployment model.
                   </p>
-
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <pre><code>Base DN structure added to LDAP directory.</code></pre>
                   </div>
                 </div>
-
                 <!-- Step 8 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
-                    <strong class="font-alt">Step 8</strong>
-                    : Verify directory content with <code>ldapsearch</code>.
+                    <strong class="font-alt">Step 8</strong>: Verify directory content with <code>ldapsearch</code>.
                   </div>
-
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
@@ -577,14 +394,12 @@ dc: example</code></pre>
                     </div>
                     <pre><code id="cmd-step-8">ldapsearch -x -LLL -b dc=example,dc=com</code></pre>
                   </div>
-
                   <p>
                     This performs a read-only search and returns entries under the base DN.
                     It validates that
                     <code>slapd</code>
                     is responding and your base entries exist.
                   </p>
-
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <pre><code># Expected pattern:
 dn: dc=example,dc=com
@@ -594,13 +409,11 @@ objectClass: organization
                   </div>
                 </div>
               </section>
-
               <!-- Common breakpoints -->
               <section class="lab-section" id="breakpoints">
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">
                   Common breakpoints
                 </h3>
-
                 <div class="lab-callout">
                   <div class="lab-callout-label">
                     slapd service is inactive or fails to start
@@ -611,7 +424,6 @@ objectClass: organization
                     shows errors, do not proceed with schema or LDIF operations. Validate package install, check logs, and confirm the service unit is present and enabled.
                   </p>
                 </div>
-
                 <div class="lab-callout">
                   <div class="lab-callout-label">
                     ldapadd with SASL EXTERNAL fails over ldapi
@@ -624,7 +436,6 @@ objectClass: organization
                     endpoint exists on your system.
                   </p>
                 </div>
-
                 <div class="lab-callout">
                   <div class="lab-callout-label">
                     ldapadd simple bind returns invalid credentials
@@ -633,7 +444,6 @@ objectClass: organization
                     Confirm the bind DN matches your configured directory manager DN and that the base DN matches the directory domain. A mismatched DN is a common cause of failed binds in early setup.
                   </p>
                 </div>
-
                 <div class="lab-callout">
                   <div class="lab-callout-label">
                     ldapsearch returns no entries under the base DN
@@ -643,17 +453,14 @@ objectClass: organization
                   </p>
                 </div>
               </section>
-
               <!-- Cleanup -->
               <section class="lab-section alt-background" id="cleanup">
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">
                   Cleanup checklist
                 </h3>
-
                 <p>
                   This lab changes system state by installing packages and starting the directory service. If you are using a disposable environment, stop the service and remove packages when you are done.
                 </p>
-
                 <div class="lab-codeblock m-b-40 m-t-40">
                   <div class="lab-codeblock-header">
                     <span>Commands</span>
@@ -667,246 +474,140 @@ objectClass: organization
                   </div>
                   <pre><code id="cmd-cleanup"># Stop the service (optional)
 sudo systemctl stop slapd
-
 # Remove packages (optional)
 # Debian/Ubuntu
 sudo apt remove --purge slapd ldap-utils -y
-
 # RHEL/Fedora
 sudo dnf remove openldap-servers openldap-clients -y
-
 # Arch
 sudo pacman -Rns openldap</code></pre>
                 </div>
               </section>
-
               <!-- Reference -->
               <section class="lab-section" id="reference">
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">
                   Reference
                 </h3>
-
                 <ul class="lab-reference-list">
                   <li>
-                    <code>apt install slapd ldap-utils</code>
-                    : Installs OpenLDAP server and client tools on Debian/Ubuntu.
+                    <code>apt install slapd ldap-utils</code>: Installs OpenLDAP server and client tools on Debian/Ubuntu.
                     <ul>
                       <li>
-                        <code>slapd</code>
-                        : OpenLDAP directory server daemon.
+                        <code>slapd</code>: OpenLDAP directory server daemon.
                       </li>
                       <li>
-                        <code>ldap-utils</code>
-                        : Client utilities including
+                        <code>ldap-utils</code>: Client utilities including
                         <code>ldapadd</code>
                         and
-                        <code>ldapsearch</code>
-                        .
+                        <code>ldapsearch</code>.
                       </li>
                     </ul>
                   </li>
-
                   <li>
-                    <code>dnf install openldap-servers openldap-clients</code>
-                    : Installs OpenLDAP server and client tools on RHEL/Fedora.
+                    <code>dnf install openldap-servers openldap-clients</code>: Installs OpenLDAP server and client tools on RHEL/Fedora.
                     <ul>
                       <li>
-                        <code>openldap-servers</code>
-                        : Server components for
-                        <code>slapd</code>
-                        .
+                        <code>openldap-servers</code>: Server components for
+                        <code>slapd</code>.
                       </li>
                       <li>
-                        <code>openldap-clients</code>
-                        : Client utilities including
+                        <code>openldap-clients</code>: Client utilities including
                         <code>ldapadd</code>
                         and
-                        <code>ldapsearch</code>
-                        .
+                        <code>ldapsearch</code>.
                       </li>
                     </ul>
                   </li>
-
                   <li>
-                    <code>pacman -S openldap</code>
-                    : Installs OpenLDAP on Arch-based systems.
+                    <code>pacman -S openldap</code>: Installs OpenLDAP on Arch-based systems.
                     <ul>
                       <li>
-                        <code>-S</code>
-                        : Installs packages from sync repositories.
+                        <code>-S</code>: Installs packages from sync repositories.
                       </li>
                     </ul>
                   </li>
-
                   <li>
-                    <code>dpkg-reconfigure slapd</code>
-                    : Runs Debian/Ubuntu interactive initialization for
-                    <code>slapd</code>
-                    .
+                    <code>dpkg-reconfigure slapd</code>: Runs Debian/Ubuntu interactive initialization for
+                    <code>slapd</code>.
                   </li>
-
                   <li>
-                    <code>slappasswd</code>
-                    : Generates SSHA password hashes for LDAP configuration or LDIF use.
+                    <code>slappasswd</code>: Generates SSHA password hashes for LDAP configuration or LDIF use.
                   </li>
-
                   <li>
-                    <code>systemctl status slapd</code>
-                    : Shows service status for the OpenLDAP daemon.
+                    <code>systemctl status slapd</code>: Shows service status for the OpenLDAP daemon.
                     <ul>
                       <li>
-                        <code>status</code>
-                        : Displays current unit state and recent log lines.
+                        <code>status</code>: Displays current unit state and recent log lines.
                       </li>
                     </ul>
                   </li>
-
                   <li>
-                    <code>ldapadd -Y EXTERNAL -H ldapi:/// -f &lt;file.ldif&gt;</code>
-                    : Adds entries using SASL EXTERNAL over the local LDAPI socket.
+                    <code>ldapadd -Y EXTERNAL -H ldapi:/// -f &lt;file.ldif&gt;</code>: Adds entries using SASL EXTERNAL over the local LDAPI socket.
                     <ul>
                       <li>
-                        <code>-Y EXTERNAL</code>
-                        : Uses the EXTERNAL SASL mechanism (local identity).
+                        <code>-Y EXTERNAL</code>: Uses the EXTERNAL SASL mechanism (local identity).
                       </li>
                       <li>
-                        <code>-H ldapi:///</code>
-                        : Targets the local LDAP IPC endpoint.
+                        <code>-H ldapi:///</code>: Targets the local LDAP IPC endpoint.
                       </li>
                       <li>
-                        <code>-f &lt;file.ldif&gt;</code>
-                        : Reads LDIF content from a file.
+                        <code>-f &lt;file.ldif&gt;</code>: Reads LDIF content from a file.
                       </li>
                     </ul>
                   </li>
-
                   <li>
-                    <code>ldapadd -x -D &lt;binddn&gt; -W -f &lt;file.ldif&gt;</code>
-                    : Adds entries using a simple bind as a specified DN.
+                    <code>ldapadd -x -D &lt;binddn&gt; -W -f &lt;file.ldif&gt;</code>: Adds entries using a simple bind as a specified DN.
                     <ul>
                       <li>
-                        <code>-x</code>
-                        : Uses simple authentication (non-SASL).
+                        <code>-x</code>: Uses simple authentication (non-SASL).
                       </li>
                       <li>
-                        <code>-D &lt;binddn&gt;</code>
-                        : Sets the bind DN (for example
-                        <code>cn=admin,dc=example,dc=com</code>
-                        ).
+                        <code>-D &lt;binddn&gt;</code>: Sets the bind DN (for example
+                        <code>cn=admin,dc=example,dc=com</code>).
                       </li>
                       <li>
-                        <code>-W</code>
-                        : Prompts for the bind password.
+                        <code>-W</code>: Prompts for the bind password.
                       </li>
                       <li>
-                        <code>-f &lt;file.ldif&gt;</code>
-                        : Reads LDIF content from a file.
+                        <code>-f &lt;file.ldif&gt;</code>: Reads LDIF content from a file.
                       </li>
                     </ul>
                   </li>
-
                   <li>
-                    <code>ldapsearch -x -LLL -b &lt;baseDN&gt;</code>
-                    : Queries entries under a base DN with clean output formatting.
+                    <code>ldapsearch -x -LLL -b &lt;baseDN&gt;</code>: Queries entries under a base DN with clean output formatting.
                     <ul>
                       <li>
-                        <code>-x</code>
-                        : Uses simple authentication (bindless by default if no
+                        <code>-x</code>: Uses simple authentication (bindless by default if no
                         <code>-D</code>
                         is provided).
                       </li>
                       <li>
-                        <code>-LLL</code>
-                        : Produces simplified output (suppresses comments and version lines).
+                        <code>-LLL</code>: Produces simplified output (suppresses comments and version lines).
                       </li>
                       <li>
-                        <code>-b &lt;baseDN&gt;</code>
-                        : Sets the search base (for example
-                        <code>dc=example,dc=com</code>
-                        ).
+                        <code>-b &lt;baseDN&gt;</code>: Sets the search base (for example
+                        <code>dc=example,dc=com</code>).
                       </li>
                     </ul>
                   </li>
                 </ul>
               </section>
-            </div>
-            <!-- /main -->
-          </div>
-          <!-- /row -->
-        </div>
-        <!-- /container -->
-      </section>
-
-      <!-- FOOTER -->
-      <footer class="module bg-light">
-        <div class="container">
-          <div class="row">
-            <div class="col-sm-12">
-              <ul class="social-text-links font-alt text-center m-b-20">
-                <li>
-                  <a
-                    href="https://github.com/vonds"
-                    target="_blank"
-                    rel="noopener"
-                  >
-                    Github
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="https://www.linkedin.com/in/vonds/"
-                    target="_blank"
-                    rel="noopener"
-                  >
-                    Linkedin
-                  </a>
-                </li>
-              </ul>
-            </div>
-          </div>
-
-          <div class="row">
-            <div class="col-sm-12">
-              <p class="copyright text-center m-b-0">
-                VONDS &copy;
-                <span id="year"></span>
-              </p>
-
-              <div class="scroll-up">
-                <a href="#totop"><i class="fa fa-angle-double-up"></i></a>
-              </div>
-            </div>
-          </div>
-        </div>
-      </footer>
+        <nav class="pager" aria-label="Previous and next lab"><a class="prev" href="lab90.html" rel="prev"><span class="dir alt">&larr; Previous &middot; Lab 090</span><span class="t">Configuring Account Lockout with faillock</span></a><a class="next" href="lab92.html" rel="next"><span class="dir alt">Next &middot; Lab 092 &rarr;</span><span class="t">Tracing Network Traffic with traceroute</span></a></nav>
+      </article>
     </div>
+  </div>
+</main>
 
-    <!-- Javascript files (your existing) -->
-    <script src="../assets/js/jquery-2.2.4.min.js"></script>
-    <script src="../assets/bootstrap/js/bootstrap.min.js"></script>
-    <script src="../assets/js/jquery.superslides.min.js"></script>
-    <script src="../assets/js/jquery.mb.YTPlayer.min.js"></script>
-    <script src="../assets/js/jquery.magnific-popup.min.js"></script>
-    <script src="../assets/js/owl.carousel.min.js"></script>
-    <script src="../assets/js/jquery.simple-text-rotator.min.js"></script>
-    <script src="../assets/js/imagesloaded.pkgd.js"></script>
-    <script src="../assets/js/isotope.pkgd.min.js"></script>
-    <script src="../assets/js/packery-mode.pkgd.min.js"></script>
-    <script src="../assets/js/packery-mode.pkgd.min.js"></script>
-    <script src="../assets/js/appear.js"></script>
-    <script src="../assets/js/jquery.easing.1.3.js"></script>
-    <script src="../assets/js/wow.min.js"></script>
-    <script src="../assets/js/jqBootstrapValidation.js"></script>
-    <script src="../assets/js/jquery.fitvids.js"></script>
-    <script src="../assets/js/jquery.parallax-1.1.3.js"></script>
-    <script src="../assets/js/smoothscroll.js"></script>
-    <script src="../assets/js/custom.js"></script>
-
-    <!-- Lab page JS (new) -->
-    <script src="../assets/js/lab.js"></script>
-
-    <script>
-      document.getElementById('year').textContent = new Date().getFullYear()
-    </script>
-  </body>
+<footer>
+  <img class="mark" src="assets/images/logo-dark.svg" alt="Vonds">
+  <nav aria-label="Footer" class="alt">
+    <a href="index.html#about">About</a><a href="index.html#portfolio">Portfolio</a><a href="docs.html">exit_0 Labs</a><a href="index.html#contact">Contact</a><a href="https://www.linkedin.com/in/vonds/">LinkedIn</a>
+  </nav>
+  <div class="line"></div>
+  <p class="copyright alt">Vonds &copy; 2026</p>
+</footer>
+<button class="to-top" id="toTop" type="button" aria-label="Back to top">&uarr;</button>
+<script src="assets/js/site.js" defer></script>
+<script src="assets/js/lab.js" defer></script>
+</body>
 </html>

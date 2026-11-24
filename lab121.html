@@ -1,214 +1,94 @@
-<!-- lab121.html -->
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="exit_0 Documentation" />
-    <meta name="name" content="Vonds" />
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lab 121: Configure DNF Repositories (RHEL) | exit_0 Labs</title>
+<meta name="description" content="Audit enabled DNF repositories, validate repo definitions under /etc/yum.repos.d , and add a new .repo file safely. Confirm metadata health with dnf…">
+<link rel="canonical" href="https://vonds.github.io/lab121.html">
+<meta name="theme-color" content="#2e2e30">
+<meta name="author" content="Vonds">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="Vonds">
+<meta property="og:url" content="https://vonds.github.io/lab121.html">
+<meta property="og:title" content="Lab 121: Configure DNF Repositories (RHEL) | exit_0 Labs">
+<meta property="og:description" content="Audit enabled DNF repositories, validate repo definitions under /etc/yum.repos.d , and add a new .repo file safely. Confirm metadata health with dnf…">
+<meta property="og:image" content="https://vonds.github.io/assets/images/og/og-exit0.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="exit_0: 165 hands-on Linux labs for real system administration.">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Lab 121: Configure DNF Repositories (RHEL) | exit_0 Labs">
+<meta name="twitter:description" content="Audit enabled DNF repositories, validate repo definitions under /etc/yum.repos.d , and add a new .repo file safely. Confirm metadata health with dnf…">
+<meta name="twitter:image" content="https://vonds.github.io/assets/images/og/og-exit0.jpg">
+<link rel="icon" type="image/svg+xml" href="assets/images/favicon.svg">
+<link rel="icon" type="image/png" href="assets/images/favicon.png">
+<link rel="apple-touch-icon" href="assets/images/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Dosis:wght@300;400;500;600&family=Open+Sans:wght@400;600&display=swap">
+<link rel="stylesheet" href="assets/css/site.css">
+<link rel="stylesheet" href="assets/css/exit0.css">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Vonds","item":"https://vonds.github.io/"},{"@type":"ListItem","position":2,"name":"exit_0 Labs","item":"https://vonds.github.io/docs.html"},{"@type":"ListItem","position":3,"name":"Lab 121","item":"https://vonds.github.io/lab121.html"}]}</script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="header solid" id="header">
+  <div class="wrap">
+    <a class="brand" href="index.html" aria-label="Vonds home">
+      <img class="logo-dark" src="assets/images/logo-dark.svg" alt="Vonds">
+      <img class="logo-light" src="assets/images/logo-light.svg" alt="" aria-hidden="true">
+    </a>
+    <button class="menu-btn" id="menuOpen" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="overlay">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</header>
 
-    <title>Vonds | Lab 121</title>
-
-    <!-- Favicons -->
-    <link rel="icon" type="image/svg+xml" href="../assets/images/favicon.svg" />
-    <link rel="icon" type="image/png" href="../assets/images/favicon.png" />
-    <link rel="apple-touch-icon" href="../assets/images/apple-touch-icon.png" />
-    <link
-      rel="apple-touch-icon"
-      sizes="72x72"
-      href="../assets/images/apple-touch-icon-72x72.png"
-    />
-    <link
-      rel="apple-touch-icon"
-      sizes="114x114"
-      href="../assets/images/apple-touch-icon-114x114.png"
-    />
-
-    <!-- Site styles (your existing) -->
-    <link href="../assets/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
-    <link href="../assets/css/font-awesome.min.css" rel="stylesheet" />
-    <link href="../assets/css/linea-icons.css" rel="stylesheet" />
-    <link href="../assets/css/ionicons.min.css" rel="stylesheet" />
-    <link href="../assets/css/simpletextrotator.css" rel="stylesheet" />
-    <link href="../assets/css/magnific-popup.css" rel="stylesheet" />
-    <link href="../assets/css/owl.carousel.css" rel="stylesheet" />
-    <link href="../assets/css/superslides.css" rel="stylesheet" />
-    <link href="../assets/css/vertical.css" rel="stylesheet" />
-    <link href="../assets/css/animate.css" rel="stylesheet" />
-    <link href="../assets/css/style.css" rel="stylesheet" />
-    <link href="../assets/css/docs.css" rel="stylesheet" />
-
-    <!-- Lab page styles -->
-    <link href="../assets/css/lab.css" rel="stylesheet" />
-
-    <!-- Fonts -->
-    <link href="https://fonts.googleapis.com/css?family=Dosis" rel="stylesheet" />
-  </head>
-
-  <body>
-    <!-- PRELOADER -->
-    <div class="page-loader">
-      <div class="loader">Loading...</div>
+<div class="overlay" id="overlay" aria-hidden="true">
+  <button class="close" id="menuClose" type="button" aria-label="Close menu">&times;</button>
+  <nav aria-label="Main">
+    <a class="alt" href="index.html">Home</a>
+    <a class="alt" href="index.html#about">About</a>
+    <a class="alt" href="index.html#portfolio">Portfolio</a>
+    <div class="sub">
+      <a class="alt" href="https://black-signal-demo.netlify.app/">Black Signal</a>
+      <a class="alt" href="https://deeds-demo.netlify.app/">DEEDS</a>
+      <a class="alt" href="https://digital-resource-map-demo.netlify.app/">Digital Resource Map</a>
+      <a class="alt" href="https://thetravelingarchive.com/">The Traveling Archive</a>
+      <a class="alt" href="https://github.com/vonds/sentinel">Sentinel</a>
+      <a class="alt" href="docs.html">exit_0 Labs</a>
     </div>
+    <a class="alt" href="index.html#services">Services</a>
+    <a class="alt" href="index.html#contact">Contact</a>
+    <a class="alt" href="https://www.linkedin.com/in/vonds/">LinkedIn</a>
+  </nav>
+  <div class="foot alt">Vonds &copy; <span id="year">2026</span></div>
+</div>
 
-    <!-- OVERLAY MENU -->
-    <div id="overlay-menu" class="overlay-menu">
-      <a href="#" id="overlay-menu-hide" class="navigation-hide">
-        <i class="ion-close-round"></i>
-      </a>
-
-      <div class="overlay-menu-inner">
-        <nav class="overlay-menu-nav">
-          <ul id="nav">
-            <li><a href="../index.html">Home</a></li>
-
-            <li class="slidedown">
-              <a href="#">Portfolio</a>
-              <ul>
-                <li>
-                  <a
-                    href="https://github.com/vonds/exit_0"
-                    target="_blank"
-                    rel="noopener"
-                  >
-                    exit_0
-                  </a>
-                </li>
-                <li>
-                  <a href="docs.html" target="_blank" rel="noopener">
-                    exit_0
-                  </a>
-                </li>
-              </ul>
-            </li>
-
-            <li>
-              <a
-                href="https://www.linkedin.com/in/vonds/"
-                target="_blank"
-                rel="noopener"
-              >
-                LinkedIn
-              </a>
-            </li>
-            <li>
-              <a href="https://github.com/vonds" target="_blank" rel="noopener">
-                Github
-              </a>
-            </li>
-            <li>
-              <a href="mailto:vonds13@gmail.com?subject=Hello Vonds">Contact</a>
-            </li>
-          </ul>
+<main class="x0" id="main">
+  <div class="x0-wrap">
+    <nav class="crumbs alt" aria-label="Breadcrumb"><a href="index.html">Vonds</a><span class="sep" aria-hidden="true">/</span><a href="docs.html">exit_0 Labs</a><span class="sep" aria-hidden="true">/</span><span aria-current="page">Lab 121</span></nav>
+    <header class="x0-head">
+      <p class="eyebrow alt"><b>Lab 121</b> &middot; packages</p>
+      <h1>Configure DNF Repositories (RHEL)</h1>
+      <p class="lede">Audit enabled DNF repositories, validate repo definitions under <code>/etc/yum.repos.d</code> , and add a new <code>.repo</code> file safely. Confirm metadata health with <code>dnf makecache</code> , then disable a broken repo cleanly without deleting evidence.</p>
+      <nav class="pager-mini" aria-label="Lab navigation"><a class="alt" href="lab120.html" rel="prev">&larr; Lab 120</a><a class="alt" href="lab122.html" rel="next">Lab 122 &rarr;</a></nav>
+    </header>
+    <div class="x0-grid">
+      <aside class="x0-side" aria-label="On this page">
+        <nav class="toc">
+          <a class="back alt" href="docs.html">&larr; All labs</a>
+          <p class="toc-h alt">On this page</p>
+          <ul><li><a href="#video">Video</a></li><li><a href="#scenario">Scenario</a></li><li><a href="#objective">Objective</a></li><li><a href="#concepts">Concepts</a></li><li><a href="#walkthrough">Walkthrough</a></li><li><a href="#breakpoints">Common breakpoints</a></li><li><a href="#cleanup">Cleanup checklist</a></li><li><a href="#reference">Reference</a></li></ul>
         </nav>
-      </div>
-
-      <div class="overlay-navigation-footer">
-        <div class="container">
-          <div class="row">
-            <div class="col-sm-12 text-center">
-              <p class="copyright font-alt m-b-0">
-                VONDS &copy;
-                <script>
-                  document.write(new Date().getFullYear())
-                </script>
-              </p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- WRAPPER -->
-    <div class="wrapper">
-      <!-- NAVIGATION -->
-      <nav
-        class="navbar navbar-custom navbar-transparent navbar-light navbar-fixed-top"
-      >
-        <div class="container">
-          <div class="navbar-header">
-            <a class="navbar-brand" href="../index.html">
-              <img class="logo-dark" src="../assets/images/logo-dark.svg" alt="Vonds" /><img class="logo-light" src="../assets/images/logo-light.svg" alt="" aria-hidden="true" />
-            </a>
-          </div>
-
-          <ul id="icons-navbar" class="nav navbar-nav navbar-right">
-            <li>
-              <a href="#" id="toggle-menu" class="show-overlay" title="Menu">
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-              </a>
-            </li>
-          </ul>
-        </div>
-      </nav>
-
-      <!-- DOCS PAGE -->
-      <section class="module">
-        <div class="container">
-          <h2 class="font-alt module-title m-t-60">
-            Lab 121: Configure DNF Repositories (RHEL)
-          </h2>
-
-          <nav class="lab-pagination">
-            <a
-              id="prev-lab"
-              class="lab-nav-link"
-              href="#"
-              aria-label="Previous lab"
-            >
-              &laquo;
-            </a>
-            <a
-              id="next-lab"
-              class="lab-nav-link"
-              href="#"
-              aria-label="Next lab"
-            >
-              &raquo;
-            </a>
-          </nav>
-
-          <div class="row">
-            <!-- LEFT SIDEBAR -->
-            <div class="col-sm-4 col-md-3 lab-sidebar">
-              <div class="docs-sidebar">
-                <div class="docs-widget">
-                  <h5 class="widget-title">
-                    <a href="./docs.html">Back to Lab Index</a>
-                  </h5>
-                  <ul class="docs-nav">
-                    <li><a href="#scenario">Scenario</a></li>
-                    <li><a href="#objective">Objective</a></li>
-                    <li><a href="#concepts">Concepts</a></li>
-                    <li><a href="#walkthrough">Walkthrough</a></li>
-                    <li><a href="#breakpoints">Breakpoints</a></li>
-                    <li><a href="#cleanup">Cleanup</a></li>
-                    <li><a href="#reference">Reference</a></li>
-                  </ul>
-                </div>
-              </div>
-            </div>
-
-            <!-- MAIN CONTENT -->
-            <div class="col-sm-8 col-md-9 lab-doc">
-              <p class="m-b-20 lab-summary">
-                Audit enabled DNF repositories, validate repo definitions under
-                <code>/etc/yum.repos.d</code>
-                , and add a new
-                <code>.repo</code>
-                file safely. Confirm metadata health with
-                <code>dnf makecache</code>
-                , then disable a broken repo cleanly without deleting evidence.
-              </p>
-
-              <!-- Video (kept on page; removed from left panel) -->
-              <section class="lab-section" id="video" aria-label="Lab video">
+      </aside>
+      <article class="x0-doc">
+<section class="lab-section" id="video" aria-label="Lab video">
                 <div class="lab-video">
                   <div class="lab-video-embed text-center">
-                    <iframe
-                      src="https://www.youtube.com/embed/5NOwDUhcLBM?si=xdNrp4TzecwnFOR3"
+                    <iframe loading="lazy"
+                      src="https://www.youtube-nocookie.com/embed/5NOwDUhcLBM?si=xdNrp4TzecwnFOR3"
                       title="YouTube video player"
                       frameborder="0"
                       allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
@@ -218,7 +98,6 @@
                   </div>
                 </div>
               </section>
-
               <!-- Scenario -->
               <section class="lab-section" id="scenario">
                 <div class="lab-chips" aria-label="Tags">
@@ -235,11 +114,9 @@
                     <span class="lab-chip-key">rhel</span>
                   </span>
                 </div>
-
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">
                   Scenario
                 </h3>
-
                 <p>
                   A RHEL-like server was cloned into a lab network and package
                   installs are failing. The repo configuration may be incomplete,
@@ -247,7 +124,6 @@
                   is enabled, confirm repo definitions on disk, add a repo file
                   safely, validate metadata, then disable the broken repo cleanly.
                 </p>
-
                 <div class="lab-callout">
                   <div class="lab-callout-label">Operator context</div>
                   <p class="m-b-0">
@@ -258,7 +134,6 @@
                   </p>
                 </div>
               </section>
-
               <!-- Objective -->
               <section class="lab-section alt-background" id="objective">
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">
@@ -268,8 +143,7 @@
                   <li>List enabled repositories and inspect a repo’s details.</li>
                   <li>
                     Audit repo definition files under
-                    <code>/etc/yum.repos.d</code>
-                    .
+                    <code>/etc/yum.repos.d</code>.
                   </li>
                   <li>Back up an existing repo file before changes.</li>
                   <li>
@@ -279,8 +153,7 @@
                   </li>
                   <li>
                     Validate repodata and caching behavior with
-                    <code>dnf makecache</code>
-                    .
+                    <code>dnf makecache</code>.
                   </li>
                   <li>Disable a broken repo without deleting the file.</li>
                   <li>
@@ -288,7 +161,6 @@
                   </li>
                 </ul>
               </section>
-
               <!-- Concepts (no alt-background moving forward) -->
               <section class="lab-section" id="concepts">
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">
@@ -303,8 +175,7 @@
                   <li>
                     Repo health is primarily a metadata problem. If DNF cannot
                     fetch
-                    <code>repodata/repomd.xml</code>
-                    , installs and updates will stall.
+                    <code>repodata/repomd.xml</code>, installs and updates will stall.
                   </li>
                   <li>
                     Disable broken repos before deleting anything. Preserving
@@ -315,27 +186,21 @@
                     so you are not validating against stale repodata.
                   </li>
                   <li>
-                    Use targeted repo inspection (
-                    <code>dnf repoinfo</code>
-                    ) to confirm baseurls and enablement state before you
+                    Use targeted repo inspection (<code>dnf repoinfo</code>) to confirm baseurls and enablement state before you
                     troubleshoot higher layers.
                   </li>
                 </ul>
               </section>
-
               <!-- Walkthrough -->
               <section class="lab-section alt-background" id="walkthrough">
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">
                   Walkthrough
                 </h3>
-
                 <!-- Step 1 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
-                    <strong class="font-alt">Step 1</strong>
-                    : List enabled repositories.
+                    <strong class="font-alt">Step 1</strong>: List enabled repositories.
                   </div>
-
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
@@ -349,13 +214,11 @@
                     </div>
                     <pre><code id="cmd-step-1">dnf repolist enabled</code></pre>
                   </div>
-
                   <p>
                     This is the fastest baseline check when installs fail. If
                     expected repos are missing or disabled, nothing downstream
                     will work.
                   </p>
-
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <pre><code id="verify-step-1">repo id                      repo name
 appstream                    Rocky Linux 9 - AppStream
@@ -363,14 +226,11 @@ baseos                       Rocky Linux 9 - BaseOS
 extras                       Rocky Linux 9 - Extras</code></pre>
                   </div>
                 </div>
-
                 <!-- Step 2 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
-                    <strong class="font-alt">Step 2</strong>
-                    : Confirm repo definition files on disk.
+                    <strong class="font-alt">Step 2</strong>: Confirm repo definition files on disk.
                   </div>
-
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
@@ -384,27 +244,22 @@ extras                       Rocky Linux 9 - Extras</code></pre>
                     </div>
                     <pre><code id="cmd-step-2">ls -1 /etc/yum.repos.d</code></pre>
                   </div>
-
                   <p>
                     Repos are defined by
                     <code>.repo</code>
                     files in this directory. Missing files often explains
                     missing repos.
                   </p>
-
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <pre><code id="verify-step-2">rocky.repo
 rocky-addons.repo</code></pre>
                   </div>
                 </div>
-
                 <!-- Step 3 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
-                    <strong class="font-alt">Step 3</strong>
-                    : Back up a repo file before changes.
+                    <strong class="font-alt">Step 3</strong>: Back up a repo file before changes.
                   </div>
-
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
@@ -418,25 +273,20 @@ rocky-addons.repo</code></pre>
                     </div>
                     <pre><code id="cmd-step-3">sudo cp /etc/yum.repos.d/rocky.repo /etc/yum.repos.d/rocky.repo.bak</code></pre>
                   </div>
-
                   <p>
                     This is your safety net. If a repo change breaks installs,
                     restore quickly and keep troubleshooting with known-good
                     configuration.
                   </p>
-
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <pre><code id="verify-step-3">Backup created: /etc/yum.repos.d/rocky.repo.bak</code></pre>
                   </div>
                 </div>
-
                 <!-- Step 4 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
-                    <strong class="font-alt">Step 4</strong>
-                    : Inspect details for one enabled repo (BaseOS).
+                    <strong class="font-alt">Step 4</strong>: Inspect details for one enabled repo (BaseOS).
                   </div>
-
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
@@ -450,14 +300,12 @@ rocky-addons.repo</code></pre>
                     </div>
                     <pre><code id="cmd-step-4">dnf repoinfo baseos</code></pre>
                   </div>
-
                   <p>
                     Confirm the
                     <code>baseurl</code>
                     and whether the repo is enabled. A bad URL usually turns
                     into metadata errors.
                   </p>
-
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <pre><code id="verify-step-4">Repo-id            : baseos
 Repo-name          : Rocky Linux 9 - BaseOS
@@ -465,18 +313,13 @@ Repo-baseurl       : https://download.rockylinux.org/pub/rocky/9/BaseOS/x86_64/o
 Repo-enabled       : yes</code></pre>
                   </div>
                 </div>
-
                 <!-- Step 5 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
-                    <strong class="font-alt">Step 5</strong>
-                    : Add a custom repo file under
+                    <strong class="font-alt">Step 5</strong>: Add a custom repo file under
                     <code>/etc/yum.repos.d</code>
-                    (
-                    <code>custom.repo</code>
-                    ).
+                    (<code>custom.repo</code>).
                   </div>
-
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
@@ -490,14 +333,11 @@ Repo-enabled       : yes</code></pre>
                     </div>
                     <pre><code id="cmd-step-5">sudo vim /etc/yum.repos.d/custom.repo</code></pre>
                   </div>
-
                   <p>
                     A repo file must include a repo id in brackets and a
-                    <code>baseurl</code>
-                    . This lab uses a deliberately broken URL so you can
+                    <code>baseurl</code>. This lab uses a deliberately broken URL so you can
                     recognize the failure mode.
                   </p>
-
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <pre><code id="verify-step-5">[custom-tools]
 name=Custom Tools Repo
@@ -506,14 +346,11 @@ enabled=1
 gpgcheck=0</code></pre>
                   </div>
                 </div>
-
                 <!-- Step 6 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
-                    <strong class="font-alt">Step 6</strong>
-                    : Verify the repo file is readable and structured correctly.
+                    <strong class="font-alt">Step 6</strong>: Verify the repo file is readable and structured correctly.
                   </div>
-
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
@@ -527,20 +364,16 @@ gpgcheck=0</code></pre>
                     </div>
                     <pre><code id="cmd-step-6">sudo cat /etc/yum.repos.d/custom.repo</code></pre>
                   </div>
-
                   <p>
                     You want to see the bracketed repo id and the URL. Typos
                     here become metadata failures later.
                   </p>
                 </div>
-
                 <!-- Step 7 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
-                    <strong class="font-alt">Step 7</strong>
-                    : Build metadata cache (validate repo access).
+                    <strong class="font-alt">Step 7</strong>: Build metadata cache (validate repo access).
                   </div>
-
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
@@ -554,29 +387,23 @@ gpgcheck=0</code></pre>
                     </div>
                     <pre><code id="cmd-step-7">sudo dnf makecache</code></pre>
                   </div>
-
                   <p>
                     This forces DNF to read repo configuration and attempt to
                     fetch
-                    <code>repodata/repomd.xml</code>
-                    . A 404 usually means the baseurl is wrong or the repo is not
+                    <code>repodata/repomd.xml</code>. A 404 usually means the baseurl is wrong or the repo is not
                     structured correctly.
                   </p>
-
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <pre><code id="verify-step-7">Custom Tools Repo                                0.0  B/s |   0  B     00:00
 Errors during downloading metadata for repository 'custom-tools':
   - Status code: 404 for https://repo.example.lab/rhel/9/x86_64/repodata/repomd.xml</code></pre>
                   </div>
                 </div>
-
                 <!-- Step 8 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
-                    <strong class="font-alt">Step 8</strong>
-                    : Disable the custom repo without deleting the file.
+                    <strong class="font-alt">Step 8</strong>: Disable the custom repo without deleting the file.
                   </div>
-
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
@@ -590,24 +417,19 @@ Errors during downloading metadata for repository 'custom-tools':
                     </div>
                     <pre><code id="cmd-step-8">sudo dnf config-manager --set-disabled custom-tools</code></pre>
                   </div>
-
                   <p>
                     Disabling keeps the configuration on disk for review, while
                     immediately unblocking package operations.
                   </p>
-
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <pre><code id="verify-step-8">Repository 'custom-tools' is disabled.</code></pre>
                   </div>
                 </div>
-
                 <!-- Step 9 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
-                    <strong class="font-alt">Step 9</strong>
-                    : Clean metadata after disabling the repo.
+                    <strong class="font-alt">Step 9</strong>: Clean metadata after disabling the repo.
                   </div>
-
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
@@ -621,24 +443,19 @@ Errors during downloading metadata for repository 'custom-tools':
                     </div>
                     <pre><code id="cmd-step-9">sudo dnf clean metadata</code></pre>
                   </div>
-
                   <p>
                     This removes cached metadata so you can rebuild cleanly and
                     confirm the error no longer appears.
                   </p>
-
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <pre><code id="verify-step-9">0 files removed</code></pre>
                   </div>
                 </div>
-
                 <!-- Step 10 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
-                    <strong class="font-alt">Step 10</strong>
-                    : Confirm the custom repo is not enabled.
+                    <strong class="font-alt">Step 10</strong>: Confirm the custom repo is not enabled.
                   </div>
-
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
@@ -652,12 +469,10 @@ Errors during downloading metadata for repository 'custom-tools':
                     </div>
                     <pre><code id="cmd-step-10">dnf repolist enabled</code></pre>
                   </div>
-
                   <p>
                     Verification is the final step. You should see only expected
                     repos enabled.
                   </p>
-
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <pre><code id="verify-step-10">repo id                      repo name
 appstream                    Rocky Linux 9 - AppStream
@@ -667,13 +482,11 @@ extras                       Rocky Linux 9 - Extras
                   </div>
                 </div>
               </section>
-
               <!-- Common breakpoints -->
               <section class="lab-section" id="breakpoints">
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">
                   Common breakpoints
                 </h3>
-
                 <div class="lab-callout">
                   <div class="lab-callout-label">
                     dnf repolist shows no enabled repos
@@ -683,11 +496,9 @@ extras                       Rocky Linux 9 - Extras
                     across the board. Confirm repo files exist in
                     <code>/etc/yum.repos.d</code>
                     and that expected sections are set to
-                    <code>enabled=1</code>
-                    .
+                    <code>enabled=1</code>.
                   </p>
                 </div>
-
                 <div class="lab-callout">
                   <div class="lab-callout-label">
                     repomd.xml download errors (404 or timeout)
@@ -699,7 +510,6 @@ extras                       Rocky Linux 9 - Extras
                     repo endpoint.
                   </p>
                 </div>
-
                 <div class="lab-callout">
                   <div class="lab-callout-label">
                     config-manager command not found
@@ -710,11 +520,9 @@ extras                       Rocky Linux 9 - Extras
                     is unavailable, the plugin package may not be installed on
                     your distro. Install the appropriate plugin package, or
                     disable the repo by editing the repo file and setting
-                    <code>enabled=0</code>
-                    .
+                    <code>enabled=0</code>.
                   </p>
                 </div>
-
                 <div class="lab-callout">
                   <div class="lab-callout-label">
                     metadata errors persist after disabling the repo
@@ -728,19 +536,16 @@ extras                       Rocky Linux 9 - Extras
                   </p>
                 </div>
               </section>
-
               <!-- Cleanup -->
               <section class="lab-section alt-background" id="cleanup">
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">
                   Cleanup checklist
                 </h3>
-
                 <p>
                   Your cleanup is confirming the system is back to a known-good
                   repo state and the broken repo is disabled but preserved on
                   disk for review.
                 </p>
-
                 <div class="lab-codeblock m-b-40 m-t-40">
                   <div class="lab-codeblock-header">
                     <span>Commands</span>
@@ -756,7 +561,6 @@ extras                       Rocky Linux 9 - Extras
 sudo dnf clean metadata
 sudo dnf makecache</code></pre>
                 </div>
-
                 <div class="lab-callout">
                   <div class="lab-callout-label">Success signal</div>
                   <p class="m-b-0">
@@ -766,143 +570,62 @@ sudo dnf makecache</code></pre>
                   </p>
                 </div>
               </section>
-
               <!-- Reference -->
               <section class="lab-section" id="reference">
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">
                   Reference
                 </h3>
-
                 <ul class="lab-reference-list">
                   <li>
-                    <code>ls -1 /etc/yum.repos.d</code>
-                    : Lists repo definition files present on disk.
+                    <code>ls -1 /etc/yum.repos.d</code>: Lists repo definition files present on disk.
                   </li>
-
                   <li>
-                    <code>cp /etc/yum.repos.d/&lt;file&gt; /etc/yum.repos.d/&lt;file&gt;.bak</code>
-                    : Creates a backup of a repo file before changes.
+                    <code>cp /etc/yum.repos.d/&lt;file&gt; /etc/yum.repos.d/&lt;file&gt;.bak</code>: Creates a backup of a repo file before changes.
                   </li>
-
                   <li>
-                    <code>vim /etc/yum.repos.d/&lt;name&gt;.repo</code>
-                    : Creates or edits a repo definition file.
+                    <code>vim /etc/yum.repos.d/&lt;name&gt;.repo</code>: Creates or edits a repo definition file.
                   </li>
-
                   <li>
-                    <code>cat /etc/yum.repos.d/&lt;name&gt;.repo</code>
-                    : Validates a repo file is readable and contains expected keys.
+                    <code>cat /etc/yum.repos.d/&lt;name&gt;.repo</code>: Validates a repo file is readable and contains expected keys.
                   </li>
-
                   <li>
-                    <code>dnf repolist enabled</code>
-                    : Shows repositories currently enabled.
+                    <code>dnf repolist enabled</code>: Shows repositories currently enabled.
                   </li>
-
                   <li>
-                    <code>dnf repoinfo &lt;repoid&gt;</code>
-                    : Shows repository details (baseurl, enabled state, etc.).
+                    <code>dnf repoinfo &lt;repoid&gt;</code>: Shows repository details (baseurl, enabled state, etc.).
                   </li>
-
                   <li>
-                    <code>dnf makecache</code>
-                    : Builds repository metadata cache to validate repo access.
+                    <code>dnf makecache</code>: Builds repository metadata cache to validate repo access.
                   </li>
-
                   <li>
-                    <code>dnf config-manager --set-disabled &lt;repoid&gt;</code>
-                    : Disables a repo without deleting the repo file.
+                    <code>dnf config-manager --set-disabled &lt;repoid&gt;</code>: Disables a repo without deleting the repo file.
                     <ul>
                       <li>
-                        <code>--set-disabled</code>
-                        : Marks the repo as disabled.
+                        <code>--set-disabled</code>: Marks the repo as disabled.
                       </li>
                     </ul>
                   </li>
-
                   <li>
-                    <code>dnf clean metadata</code>
-                    : Removes cached metadata after repo changes.
+                    <code>dnf clean metadata</code>: Removes cached metadata after repo changes.
                   </li>
                 </ul>
               </section>
-            </div>
-            <!-- /main -->
-          </div>
-          <!-- /row -->
-        </div>
-        <!-- /container -->
-      </section>
-
-      <!-- FOOTER -->
-      <footer class="module bg-light">
-        <div class="container">
-          <div class="row">
-            <div class="col-sm-12">
-              <ul class="social-text-links font-alt text-center m-b-20">
-                <li>
-                  <a
-                    href="https://github.com/vonds"
-                    target="_blank"
-                    rel="noopener"
-                  >
-                    Github
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="https://www.linkedin.com/in/vonds/"
-                    target="_blank"
-                    rel="noopener"
-                  >
-                    Linkedin
-                  </a>
-                </li>
-              </ul>
-            </div>
-          </div>
-
-          <div class="row">
-            <div class="col-sm-12">
-              <p class="copyright text-center m-b-0">
-                VONDS &copy;
-                <span id="year"></span>
-              </p>
-
-              <div class="scroll-up">
-                <a href="#totop"><i class="fa fa-angle-double-up"></i></a>
-              </div>
-            </div>
-          </div>
-        </div>
-      </footer>
+        <nav class="pager" aria-label="Previous and next lab"><a class="prev" href="lab120.html" rel="prev"><span class="dir alt">&larr; Previous &middot; Lab 120</span><span class="t">DNF/RPM Package Management Basics</span></a><a class="next" href="lab122.html" rel="next"><span class="dir alt">Next &middot; Lab 122 &rarr;</span><span class="t">RPM Package Management</span></a></nav>
+      </article>
     </div>
+  </div>
+</main>
 
-    <!-- Javascript files (your existing) -->
-    <script src="../assets/js/jquery-2.2.4.min.js"></script>
-    <script src="../assets/bootstrap/js/bootstrap.min.js"></script>
-    <script src="../assets/js/jquery.superslides.min.js"></script>
-    <script src="../assets/js/jquery.mb.YTPlayer.min.js"></script>
-    <script src="../assets/js/jquery.magnific-popup.min.js"></script>
-    <script src="../assets/js/owl.carousel.min.js"></script>
-    <script src="../assets/js/jquery.simple-text-rotator.min.js"></script>
-    <script src="../assets/js/imagesloaded.pkgd.js"></script>
-    <script src="../assets/js/isotope.pkgd.min.js"></script>
-    <script src="../assets/js/packery-mode.pkgd.min.js"></script>
-    <script src="../assets/js/appear.js"></script>
-    <script src="../assets/js/jquery.easing.1.3.js"></script>
-    <script src="../assets/js/wow.min.js"></script>
-    <script src="../assets/js/jqBootstrapValidation.js"></script>
-    <script src="../assets/js/jquery.fitvids.js"></script>
-    <script src="../assets/js/jquery.parallax-1.1.3.js"></script>
-    <script src="../assets/js/smoothscroll.js"></script>
-    <script src="../assets/js/custom.js"></script>
-
-    <!-- Lab page JS (new) -->
-    <script src="../assets/js/lab.js"></script>
-
-    <script>
-      document.getElementById('year').textContent = new Date().getFullYear()
-    </script>
-  </body>
+<footer>
+  <img class="mark" src="assets/images/logo-dark.svg" alt="Vonds">
+  <nav aria-label="Footer" class="alt">
+    <a href="index.html#about">About</a><a href="index.html#portfolio">Portfolio</a><a href="docs.html">exit_0 Labs</a><a href="index.html#contact">Contact</a><a href="https://www.linkedin.com/in/vonds/">LinkedIn</a>
+  </nav>
+  <div class="line"></div>
+  <p class="copyright alt">Vonds &copy; 2026</p>
+</footer>
+<button class="to-top" id="toTop" type="button" aria-label="Back to top">&uarr;</button>
+<script src="assets/js/site.js" defer></script>
+<script src="assets/js/lab.js" defer></script>
+</body>
 </html>
