@@ -56,18 +56,20 @@
   var pf = doc.getElementById('portfolio');
   if (pf && window.CSS && CSS.supports('color', 'color-mix(in srgb, red 50%, blue)')) {
     var dkT = 0, dkC = 0, ticking = false;
+    // the room is dark while your eye (the middle of the screen) is inside the portfolio,
+    // and the light changes over most of a screen's height on either side, on a smootherstep curve
     var measure = function () {
-      var r = pf.getBoundingClientRect(), vh = innerHeight;
-      var enter = clamp((vh * 0.78 - r.top) / (vh * 0.42));
-      var leave = clamp((r.bottom - vh * 0.22) / (vh * 0.42));
-      dkT = Math.min(enter, leave);
-      dkT = dkT * dkT * (3 - 2 * dkT); // smoothstep
+      var r = pf.getBoundingClientRect(), vh = innerHeight, mid = vh * 0.5, span = vh * 0.75;
+      var enter = clamp((mid - r.top + span * 0.5) / span);
+      var leave = clamp((r.bottom - mid + span * 0.5) / span);
+      var t = Math.min(enter, leave);
+      dkT = t * t * t * (t * (t * 6 - 15) + 10); // smootherstep
       if (!ticking) { ticking = true; requestAnimationFrame(step); }
     };
     var step = function () {
-      dkC += (dkT - dkC) * (reduce ? 1 : 0.14);
+      dkC += (dkT - dkC) * (reduce ? 1 : 0.09);
       if (Math.abs(dkT - dkC) < 0.002) dkC = dkT;
-      pf.style.setProperty('--dk', dkC.toFixed(3));
+      root.style.setProperty('--dk', dkC.toFixed(3));
       body.classList.toggle('xp-dark-grain', dkC > 0.5);
       if (dkC !== dkT) requestAnimationFrame(step); else ticking = false;
     };

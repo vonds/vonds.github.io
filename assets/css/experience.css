@@ -28,7 +28,7 @@ html.xp-go .hero .scroll-cue{opacity:1;transform:none;transition:opacity 1.2s ea
 .hero .rule{transform-origin:center}
 
 /* ---------- 3. gallery darkening (portfolio) ---------- */
-#portfolio{position:relative;--dk:0;
+#portfolio{position:relative;
   --xp-bg:color-mix(in srgb,#141416 calc(var(--dk) * 100%),#ffffff);
   --xp-fg:color-mix(in srgb,#ececec calc(var(--dk) * 100%),#2e2e30);
   --xp-fg2:color-mix(in srgb,#b8b8bc calc(var(--dk) * 100%),#4a4a4c);
@@ -100,3 +100,36 @@ html.xp-cur select{cursor:pointer!important}
 /* terminal: isolate from the site's form styles */
 .xp-term form{background:none!important;border:0!important;box-shadow:none!important;margin:0!important;border-top:1px solid rgba(255,255,255,.06)!important}
 .xp-term input{all:unset;flex:1;min-width:0;color:#fff;font:inherit;caret-color:#fff}
+
+/* ---------- 3b. room light: one light level shared by every section around the portfolio ---------- */
+:root{--dk:0;
+  --xp-fg:color-mix(in srgb,#ececec calc(var(--dk) * 100%),#2e2e30);
+  --xp-fg2:color-mix(in srgb,#b8b8bc calc(var(--dk) * 100%),#4a4a4c);
+  --xp-line:color-mix(in srgb,#34343a calc(var(--dk) * 100%),#cdcdcd)}
+#portfolio::before,#portfolio::after{display:none}
+#about{background:color-mix(in srgb,#141416 calc(var(--dk) * 100%),#ffffff)}
+.pillars.band{background:color-mix(in srgb,#141416 calc(var(--dk) * 100%),#ebebeb)}
+#portfolio{background:color-mix(in srgb,#141416 calc(var(--dk) * 100%),#ffffff)}
+#services{--xp-bg:color-mix(in srgb,#141416 calc(var(--dk) * 100%),#ebebeb);background:var(--xp-bg)}
+/* pillars */
+.pillars .num,.pillars h3{color:var(--xp-fg)}
+.pillars p{color:var(--xp-fg2)}
+.pillars .bar{background:var(--xp-fg)}
+.pillars .grid > div + div{border-color:var(--xp-line)}
+/* services: the room dims, the cards stay lit */
+#services .eyebrow,#services .lede{color:var(--xp-fg2)}
+#services .eyebrow b,#services .title{color:var(--xp-fg)}
+#services .title::after{background:var(--xp-fg)}
+#services .services{background:var(--xp-line);border-color:var(--xp-line);box-shadow:0 30px 80px rgba(0,0,0,calc(var(--dk) * .4))}
+#services .step{border-top-color:var(--xp-fg)}
+#services .step .n{background:var(--xp-bg);color:var(--xp-fg)}
+#services .step h3{color:var(--xp-fg)}
+#services .step p{color:var(--xp-fg2)}
+/* while the room is dimmed, the white sections take on the band gray so no edge can form between them */
+#about,#portfolio{--xp-base:color-mix(in srgb,#ebebeb clamp(0%,calc(var(--dk) * 500%),100%),#ffffff)}
+#about{background:color-mix(in srgb,#141416 calc(var(--dk) * 100%),var(--xp-base))}
+#portfolio{background:color-mix(in srgb,#141416 calc(var(--dk) * 100%),var(--xp-base))}
+/* text flips in a narrow band around the midpoint, so it always contrasts with the room */
+:root{--dkt:clamp(0,calc((var(--dk) - .42) * 6.25),1);
+  --xp-fg:color-mix(in srgb,#ececec calc(var(--dkt) * 100%),#2e2e30);
+  --xp-fg2:color-mix(in srgb,#b8b8bc calc(var(--dkt) * 100%),#4a4a4c)}
