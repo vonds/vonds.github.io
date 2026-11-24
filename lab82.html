@@ -1,206 +1,97 @@
-<!-- lab082.html -->
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="exit_0 Documentation" />
-    <meta name="name" content="Vonds" />
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lab 082: Installing, Validating, and Managing Nginx | exit_0 Labs</title>
+<meta name="description" content="Install and bring up Nginx so it can sit in front of an internal app as a reverse proxy. Validate configuration syntax, reload safely, and confirm the…">
+<link rel="canonical" href="https://vonds.github.io/lab82.html">
+<meta name="theme-color" content="#2e2e30">
+<meta name="author" content="Vonds">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="Vonds">
+<meta property="og:url" content="https://vonds.github.io/lab82.html">
+<meta property="og:title" content="Lab 082: Installing, Validating, and Managing Nginx | exit_0 Labs">
+<meta property="og:description" content="Install and bring up Nginx so it can sit in front of an internal app as a reverse proxy. Validate configuration syntax, reload safely, and confirm the…">
+<meta property="og:image" content="https://vonds.github.io/assets/images/og/og-exit0.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="exit_0: 165 hands-on Linux labs for real system administration.">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Lab 082: Installing, Validating, and Managing Nginx | exit_0 Labs">
+<meta name="twitter:description" content="Install and bring up Nginx so it can sit in front of an internal app as a reverse proxy. Validate configuration syntax, reload safely, and confirm the…">
+<meta name="twitter:image" content="https://vonds.github.io/assets/images/og/og-exit0.jpg">
+<link rel="icon" type="image/svg+xml" href="assets/images/favicon.svg">
+<link rel="icon" type="image/png" href="assets/images/favicon.png">
+<link rel="apple-touch-icon" href="assets/images/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Dosis:wght@300;400;500;600&family=Open+Sans:wght@400;600&display=swap">
+<link rel="stylesheet" href="assets/css/site.css">
+<link rel="stylesheet" href="assets/css/exit0.css">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Vonds","item":"https://vonds.github.io/"},{"@type":"ListItem","position":2,"name":"exit_0 Labs","item":"https://vonds.github.io/docs.html"},{"@type":"ListItem","position":3,"name":"Lab 082","item":"https://vonds.github.io/lab82.html"}]}</script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="header solid" id="header">
+  <div class="wrap">
+    <a class="brand" href="index.html" aria-label="Vonds home">
+      <img class="logo-dark" src="assets/images/logo-dark.svg" alt="Vonds">
+      <img class="logo-light" src="assets/images/logo-light.svg" alt="" aria-hidden="true">
+    </a>
+    <button class="menu-btn" id="menuOpen" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="overlay">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</header>
 
-    <title>Vonds | Lab 082</title>
-
-    <!-- Favicons -->
-    <link rel="icon" type="image/svg+xml" href="../assets/images/favicon.svg" />
-    <link rel="icon" type="image/png" href="../assets/images/favicon.png" />
-    <link rel="apple-touch-icon" href="../assets/images/apple-touch-icon.png" />
-    <link
-      rel="apple-touch-icon"
-      sizes="72x72"
-      href="../assets/images/apple-touch-icon-72x72.png"
-    />
-    <link
-      rel="apple-touch-icon"
-      sizes="114x114"
-      href="../assets/images/apple-touch-icon-114x114.png"
-    />
-
-    <!-- Site styles (your existing) -->
-    <link href="../assets/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
-    <link href="../assets/css/font-awesome.min.css" rel="stylesheet" />
-    <link href="../assets/css/linea-icons.css" rel="stylesheet" />
-    <link href="../assets/css/ionicons.min.css" rel="stylesheet" />
-    <link href="../assets/css/simpletextrotator.css" rel="stylesheet" />
-    <link href="../assets/css/magnific-popup.css" rel="stylesheet" />
-    <link href="../assets/css/owl.carousel.css" rel="stylesheet" />
-    <link href="../assets/css/superslides.css" rel="stylesheet" />
-    <link href="../assets/css/vertical.css" rel="stylesheet" />
-    <link href="../assets/css/animate.css" rel="stylesheet" />
-    <link href="../assets/css/style.css" rel="stylesheet" />
-    <link href="../assets/css/docs.css" rel="stylesheet" />
-
-    <!-- Lab page styles -->
-    <link href="../assets/css/lab.css" rel="stylesheet" />
-
-    <!-- Fonts -->
-    <link href="https://fonts.googleapis.com/css?family=Dosis" rel="stylesheet" />
-  </head>
-
-  <body>
-    <!-- PRELOADER -->
-    <div class="page-loader">
-      <div class="loader">Loading...</div>
+<div class="overlay" id="overlay" aria-hidden="true">
+  <button class="close" id="menuClose" type="button" aria-label="Close menu">&times;</button>
+  <nav aria-label="Main">
+    <a class="alt" href="index.html">Home</a>
+    <a class="alt" href="index.html#about">About</a>
+    <a class="alt" href="index.html#portfolio">Portfolio</a>
+    <div class="sub">
+      <a class="alt" href="https://black-signal-demo.netlify.app/">Black Signal</a>
+      <a class="alt" href="https://deeds-demo.netlify.app/">DEEDS</a>
+      <a class="alt" href="https://digital-resource-map-demo.netlify.app/">Digital Resource Map</a>
+      <a class="alt" href="https://thetravelingarchive.com/">The Traveling Archive</a>
+      <a class="alt" href="https://github.com/vonds/sentinel">Sentinel</a>
+      <a class="alt" href="docs.html">exit_0 Labs</a>
     </div>
+    <a class="alt" href="index.html#services">Services</a>
+    <a class="alt" href="index.html#contact">Contact</a>
+    <a class="alt" href="https://www.linkedin.com/in/vonds/">LinkedIn</a>
+  </nav>
+  <div class="foot alt">Vonds &copy; <span id="year">2026</span></div>
+</div>
 
-    <!-- OVERLAY MENU -->
-    <div id="overlay-menu" class="overlay-menu">
-      <a href="#" id="overlay-menu-hide" class="navigation-hide">
-        <i class="ion-close-round"></i>
-      </a>
-
-      <div class="overlay-menu-inner">
-        <nav class="overlay-menu-nav">
-          <ul id="nav">
-            <li><a href="../index.html">Home</a></li>
-
-            <li class="slidedown">
-              <a href="#">Portfolio</a>
-              <ul>
-                <li>
-                  <a
-                    href="https://github.com/vonds/exit_0"
-                    target="_blank"
-                    rel="noopener"
-                  >
-                    exit_0
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="https://github.com/vonds/sentinel"
-                    target="_blank"
-                    rel="noopener"
-                  >
-                    Sentinel
-                  </a>
-                </li>
-              </ul>
-            </li>
-
-            <li>
-              <a
-                href="https://www.linkedin.com/in/vonds/"
-                target="_blank"
-                rel="noopener"
-              >
-                LinkedIn
-              </a>
-            </li>
-            <li>
-              <a href="https://github.com/vonds" target="_blank" rel="noopener">
-                Github
-              </a>
-            </li>
-            <li>
-              <a href="mailto:vonds13@gmail.com?subject=Hello Vonds">Contact</a>
-            </li>
-          </ul>
+<main class="x0" id="main">
+  <div class="x0-wrap">
+    <nav class="crumbs alt" aria-label="Breadcrumb"><a href="index.html">Vonds</a><span class="sep" aria-hidden="true">/</span><a href="docs.html">exit_0 Labs</a><span class="sep" aria-hidden="true">/</span><span aria-current="page">Lab 082</span></nav>
+    <header class="x0-head">
+      <p class="eyebrow alt"><b>Lab 082</b> &middot; services</p>
+      <h1>Installing, Validating, and Managing Nginx</h1>
+      <p class="lede">Install and bring up Nginx so it can sit in front of an internal app as a reverse proxy. Validate configuration syntax, reload safely, and confirm the service is listening on port 80.</p>
+      <nav class="pager-mini" aria-label="Lab navigation"><a class="alt" href="lab81.html" rel="prev">Lab 081</a><a class="alt" href="lab83.html" rel="next">Lab 083</a></nav>
+    </header>
+    <div class="x0-grid">
+      <aside class="x0-side" aria-label="On this page">
+        <nav class="toc">
+          <a class="back alt" href="docs.html">All labs</a>
+          <p class="toc-h alt">On this page</p>
+          <ul><li><a href="#video">Video</a></li><li><a href="#scenario">Scenario</a></li><li><a href="#objective">Objective</a></li><li><a href="#concepts">Concepts</a></li><li><a href="#walkthrough">Walkthrough</a></li><li><a href="#breakpoints">Breakpoints</a></li><li><a href="#cleanup">Cleanup checklist</a></li><li><a href="#reference">Reference</a></li></ul>
         </nav>
-      </div>
-
-      <div class="overlay-navigation-footer">
-        <div class="container">
-          <div class="row">
-            <div class="col-sm-12 text-center">
-              <p class="copyright font-alt m-b-0">
-                VONDS &copy;
-                <script>
-                  document.write(new Date().getFullYear())
-                </script>
-              </p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- WRAPPER -->
-    <div class="wrapper">
-      <!-- NAVIGATION -->
-      <nav
-        class="navbar navbar-custom navbar-transparent navbar-light navbar-fixed-top"
-      >
-        <div class="container">
-          <div class="navbar-header">
-            <a class="navbar-brand" href="../index.html">
-              <img class="logo-dark" src="../assets/images/logo-dark.svg" alt="Vonds" /><img class="logo-light" src="../assets/images/logo-light.svg" alt="" aria-hidden="true" />
-            </a>
-          </div>
-
-        <ul id="icons-navbar" class="nav navbar-nav navbar-right">
-          <li>
-            <a href="#" id="toggle-menu" class="show-overlay" title="Menu">
-              <span class="icon-bar"></span>
-              <span class="icon-bar"></span>
-              <span class="icon-bar"></span>
-            </a>
-          </li>
-        </ul>
-        </div>
-      </nav>
-
-      <!-- DOCS PAGE -->
-      <section class="module">
-        <div class="container">
-          <h2 class="font-alt module-title m-t-60">
-            Lab 82: Installing, Validating, and Managing Nginx
-          </h2>
-
-          <nav class="lab-pagination">
-            <a id="prev-lab" class="lab-nav-link" href="#" aria-label="Previous lab">
-              &laquo;
-            </a>
-            <a id="next-lab" class="lab-nav-link" href="#" aria-label="Next lab">
-              &raquo;
-            </a>
-          </nav>
-
-          <div class="row">
-            <!-- LEFT SIDEBAR -->
-            <div class="col-sm-4 col-md-3 lab-sidebar">
-              <div class="docs-sidebar">
-                <div class="docs-widget">
-                  <h5 class="widget-title">
-                    <a href="./docs.html">Back to Lab Index</a>
-                  </h5>
-                  <ul class="docs-nav">
-                    <li><a href="#scenario">Scenario</a></li>
-                    <li><a href="#objective">Objective</a></li>
-                    <li><a href="#concepts">Concepts</a></li>
-                    <li><a href="#walkthrough">Walkthrough</a></li>
-                    <li><a href="#breakpoints">Breakpoints</a></li>
-                    <li><a href="#cleanup">Cleanup</a></li>
-                    <li><a href="#reference">Reference</a></li>
-                  </ul>
-                </div>
-              </div>
-            </div>
-
-            <!-- MAIN CONTENT -->
-            <div class="col-sm-8 col-md-9 lab-doc">
-              <!-- Summary (2 sentences max) -->
-              <p class="m-b-20 lab-summary">
-                Install and bring up Nginx so it can sit in front of an internal app as a reverse proxy. Validate configuration syntax,
-                reload safely, and confirm the service is listening on port 80.
-              </p>
-
-              <!-- Optional Video -->
+      </aside>
+      <article class="x0-doc">
+<!-- Optional Video -->
               <section class="lab-section" id="video" aria-label="Lab video">
                 <div class="lab-video">
                   <div class="lab-video-embed text-center">
-                    <iframe
+                    <iframe loading="lazy"
                       width="560"
                       height="315"
-                      src="https://www.youtube.com/embed/PBoK2kPNic0?si=rm5cGl8z4TWb6xrd"
+                      src="https://www.youtube-nocookie.com/embed/PBoK2kPNic0?si=rm5cGl8z4TWb6xrd"
                       title="YouTube video player"
                       frameborder="0"
                       allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
@@ -210,7 +101,6 @@
                   </div>
                 </div>
               </section>
-
               <!-- Scenario -->
               <section class="lab-section" id="scenario">
                 <div class="lab-chips" aria-label="Tags">
@@ -224,17 +114,14 @@
                     <span class="lab-chip-key">networking</span>
                   </span>
                 </div>
-
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">
                   Scenario
                 </h3>
-
                 <p>
                   Nginx will sit in front of an internal application as a reverse proxy. You’ve already planned your configuration changes,
                   and now you need to install Nginx, validate its configuration, reload it safely, and confirm that it’s actually serving
                   traffic on the expected port.
                 </p>
-
                 <div class="lab-callout">
                   <div class="lab-callout-label">Operator context</div>
                   <p class="m-b-0">
@@ -243,13 +130,11 @@
                   </p>
                 </div>
               </section>
-
               <!-- Objective -->
               <section class="lab-section alt-background" id="objective">
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">
                   Objective
                 </h3>
-
                 <ul>
                   <li>Install the Nginx package using your distro’s package manager.</li>
                   <li>Enable and start the <code>nginx</code> service so it persists across reboots.</li>
@@ -257,13 +142,11 @@
                   <li>Reload Nginx and confirm it is listening on <code>:80</code> using <code>ss</code>.</li>
                 </ul>
               </section>
-
               <!-- Concepts -->
               <section class="lab-section" id="concepts">
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">
                   Concepts
                 </h3>
-
                 <ul>
                   <li>
                     A safe change workflow is: validate config (<code>nginx -t</code>), then reload (<code>systemctl reload</code>), then
@@ -277,20 +160,16 @@
                   </li>
                 </ul>
               </section>
-
               <!-- Walkthrough -->
               <section class="lab-section alt-background" id="walkthrough">
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">
                   Walkthrough
                 </h3>
-
                 <!-- Step 1 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
-                    <strong class="font-alt">Step 1</strong>
-                    : Install the Nginx package.
+                    <strong class="font-alt">Step 1</strong>: Install the Nginx package.
                   </div>
-
                   <div class="lab-callout">
                     <div class="lab-callout-label">Note</div>
                     <p class="m-b-0">
@@ -298,7 +177,6 @@
                       <code>yum</code>.
                     </p>
                   </div>
-
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Commands</span>
@@ -308,33 +186,26 @@
                     </div>
                     <pre><code id="cmd-step-1"># RHEL / CentOS / Fedora
 sudo dnf install -y nginx
-
 # Debian/Ubuntu
 sudo apt update
 sudo apt install -y nginx
-
 # Arch
 sudo pacman -S nginx</code></pre>
                   </div>
-
                   <p>
                     Installing Nginx provides the service unit, default config layout, and binaries needed to validate syntax and run as a
                     front-end proxy.
                   </p>
-
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <pre><code># Example result (varies by distro):
 # nginx installed successfully.</code></pre>
                   </div>
                 </div>
-
                 <!-- Step 2 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
-                    <strong class="font-alt">Step 2</strong>
-                    : Enable and start Nginx.
+                    <strong class="font-alt">Step 2</strong>: Enable and start Nginx.
                   </div>
-
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
@@ -344,25 +215,20 @@ sudo pacman -S nginx</code></pre>
                     </div>
                     <pre><code id="cmd-step-2">sudo systemctl enable --now nginx</code></pre>
                   </div>
-
                   <p>
                     This starts Nginx immediately and ensures it comes up on reboot. If the unit fails, inspect status output and recent
                     logs.
                   </p>
-
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <pre><code># Quick verification:
 systemctl status nginx --no-pager</code></pre>
                   </div>
                 </div>
-
                 <!-- Step 3 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
-                    <strong class="font-alt">Step 3</strong>
-                    : Validate Nginx configuration syntax.
+                    <strong class="font-alt">Step 3</strong>: Validate Nginx configuration syntax.
                   </div>
-
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
@@ -372,25 +238,20 @@ systemctl status nginx --no-pager</code></pre>
                     </div>
                     <pre><code id="cmd-step-3">sudo nginx -t</code></pre>
                   </div>
-
                   <p>
                     Always validate config before applying it. A successful test confirms Nginx can parse the active configuration and is
                     safe to reload.
                   </p>
-
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <pre><code>nginx: the configuration file /etc/nginx/nginx.conf syntax is ok
 nginx: configuration file /etc/nginx/nginx.conf test is successful</code></pre>
                   </div>
                 </div>
-
                 <!-- Step 4 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
-                    <strong class="font-alt">Step 4</strong>
-                    : Reload Nginx safely.
+                    <strong class="font-alt">Step 4</strong>: Reload Nginx safely.
                   </div>
-
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
@@ -400,25 +261,20 @@ nginx: configuration file /etc/nginx/nginx.conf test is successful</code></pre>
                     </div>
                     <pre><code id="cmd-step-4">sudo systemctl reload nginx</code></pre>
                   </div>
-
                   <p>
                     Reload applies configuration changes without tearing down the entire service like a restart would. If reload fails,
                     re-run <code>nginx -t</code> and check logs for the exact error.
                   </p>
-
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <pre><code># Example:
 # Reloaded nginx configuration.</code></pre>
                   </div>
                 </div>
-
                 <!-- Step 5 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
-                    <strong class="font-alt">Step 5</strong>
-                    : Confirm Nginx is listening on port 80.
+                    <strong class="font-alt">Step 5</strong>: Confirm Nginx is listening on port 80.
                   </div>
-
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
@@ -428,25 +284,20 @@ nginx: configuration file /etc/nginx/nginx.conf test is successful</code></pre>
                     </div>
                     <pre><code id="cmd-step-5">sudo ss -lntp | grep -E ':\b80\b' || true</code></pre>
                   </div>
-
                   <p>
                     This is your socket-level readiness check. You should see a listener bound to <code>:80</code>. If you don’t, confirm
                     the unit is active and review logs.
                   </p>
-
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <pre><code># Example:
 LISTEN 0 511 0.0.0.0:80 ... nginx</code></pre>
                   </div>
                 </div>
-
                 <!-- Step 6 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
-                    <strong class="font-alt">Step 6</strong>
-                    : Prove it serves traffic with a local HTTP request.
+                    <strong class="font-alt">Step 6</strong>: Prove it serves traffic with a local HTTP request.
                   </div>
-
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Commands</span>
@@ -457,32 +308,27 @@ LISTEN 0 511 0.0.0.0:80 ... nginx</code></pre>
                     <pre><code id="cmd-step-6">curl -I http://localhost
 curl -s http://localhost | head</code></pre>
                   </div>
-
                   <p>
                     This is the HTTP-level validation. Headers confirm status and server response; the body check ensures you actually get
                     a page back.
                   </p>
-
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <pre><code># Example:
 HTTP/1.1 200 OK</code></pre>
                   </div>
                 </div>
               </section>
-
               <!-- Breakpoints -->
               <section class="lab-section" id="breakpoints">
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">
                   Breakpoints
                 </h3>
-
                 <div class="lab-callout">
                   <div class="lab-callout-label">nginx -t fails</div>
                   <p class="m-b-0">
                     Do not reload. Fix the reported file/line, then re-run <code>nginx -t</code> until it passes.
                   </p>
                 </div>
-
                 <div class="lab-callout">
                   <div class="lab-callout-label">port 80 is already in use</div>
                   <p class="m-b-0">
@@ -490,7 +336,6 @@ HTTP/1.1 200 OK</code></pre>
                     run Nginx on the same host.
                   </p>
                 </div>
-
                 <div class="lab-callout">
                   <div class="lab-callout-label">curl connects but returns unexpected content</div>
                   <p class="m-b-0">
@@ -499,17 +344,14 @@ HTTP/1.1 200 OK</code></pre>
                   </p>
                 </div>
               </section>
-
               <!-- Cleanup -->
               <section class="lab-section alt-background" id="cleanup">
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">
                   Cleanup checklist
                 </h3>
-
                 <p>
                   If you want to revert to a clean state, disable/stop the service. Remove the package only if you’re done practicing.
                 </p>
-
                 <div class="lab-codeblock m-b-40 m-t-40">
                   <div class="lab-codeblock-header">
                     <span>Commands</span>
@@ -519,33 +361,27 @@ HTTP/1.1 200 OK</code></pre>
                   </div>
                   <pre><code id="cmd-cleanup"># Stop/disable
 sudo systemctl disable --now nginx
-
 # Optional: remove the default web content (paths vary by distro)
 # Keep it simple for the lab:
 sudo rm -f /usr/share/nginx/html/index.html 2>/dev/null || true
 sudo rm -f /var/www/html/index.html 2>/dev/null || true</code></pre>
                 </div>
               </section>
-
               <!-- Reference (minimal; commands listed once; sub-bullets only for options/flags) -->
               <section class="lab-section" id="reference">
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">
                   Reference
                 </h3>
-
                 <ul class="lab-reference-list">
                   <li>
                     <code>dnf install nginx</code>: Install Nginx on RHEL-family systems.
                   </li>
-
                   <li>
                     <code>apt install nginx</code>: Install Nginx on Debian/Ubuntu systems.
                   </li>
-
                   <li>
                     <code>pacman -S nginx</code>: Install Nginx on Arch.
                   </li>
-
                   <li>
                     <code>systemctl enable --now nginx</code>: Enable at boot and start immediately.
                     <ul>
@@ -553,18 +389,15 @@ sudo rm -f /var/www/html/index.html 2>/dev/null || true</code></pre>
                       <li><code>--now</code>: start immediately</li>
                     </ul>
                   </li>
-
                   <li>
                     <code>nginx -t</code>: Validate configuration syntax and active config tree.
                     <ul>
                       <li><code>-t</code>: test configuration and exit</li>
                     </ul>
                   </li>
-
                   <li>
                     <code>systemctl reload nginx</code>: Reload config without a full restart.
                   </li>
-
                   <li>
                     <code>ss -lntp</code>: Show listening TCP sockets and owning processes.
                     <ul>
@@ -574,7 +407,6 @@ sudo rm -f /var/www/html/index.html 2>/dev/null || true</code></pre>
                       <li><code>-p</code>: process info</li>
                     </ul>
                   </li>
-
                   <li>
                     <code>curl http://localhost</code>: Test HTTP response locally.
                     <ul>
@@ -582,7 +414,6 @@ sudo rm -f /var/www/html/index.html 2>/dev/null || true</code></pre>
                       <li><code>-s</code>: silent mode</li>
                     </ul>
                   </li>
-
                   <li>
                     <code>journalctl -u nginx</code>: View Nginx service logs.
                     <ul>
@@ -592,85 +423,22 @@ sudo rm -f /var/www/html/index.html 2>/dev/null || true</code></pre>
                   </li>
                 </ul>
               </section>
-            </div>
-            <!-- /main -->
-          </div>
-          <!-- /row -->
-
-          <nav class="lab-pagination">
-            <a id="prev-lab" class="lab-nav-link" href="#" aria-label="Back to top">
-              &uArr;
-            </a>
-          </nav>
-        </div>
-        <!-- /container -->
-      </section>
-
-      <!-- FOOTER -->
-      <footer class="module bg-light">
-        <div class="container">
-          <div class="row">
-            <div class="col-sm-12">
-              <ul class="social-text-links font-alt text-center m-b-20">
-                <li>
-                  <a
-                    href="https://github.com/vonds"
-                    target="_blank"
-                    rel="noopener"
-                  >
-                    Github
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="https://www.linkedin.com/in/vonds/"
-                    target="_blank"
-                    rel="noopener"
-                  >
-                    Linkedin
-                  </a>
-                </li>
-              </ul>
-            </div>
-          </div>
-
-          <div class="row">
-            <div class="col-sm-12">
-              <p class="copyright text-center m-b-0">
-                VONDS &copy;
-                <span id="year"></span>
-              </p>
-
-              <div class="scroll-up">
-                <a href="#totop"><i class="fa fa-angle-double-up"></i></a>
-              </div>
-            </div>
-          </div>
-        </div>
-      </footer>
+        <nav class="pager" aria-label="Previous and next lab"><a class="prev" href="lab81.html" rel="prev"><span class="dir alt">Previous &middot; Lab 081</span><span class="t">Setting Up a Web Server</span></a><a class="next" href="lab83.html" rel="next"><span class="dir alt">Next &middot; Lab 083</span><span class="t">Linux Web-Based Administration</span></a></nav>
+      </article>
     </div>
+  </div>
+</main>
 
-    <!-- Javascript files (your existing) -->
-    <script src="../assets/js/jquery-2.2.4.min.js"></script>
-    <script src="../assets/bootstrap/js/bootstrap.min.js"></script>
-    <script src="../assets/js/jquery.superslides.min.js"></script>
-    <script src="../assets/js/jquery.mb.YTPlayer.min.js"></script>
-    <script src="../assets/js/jquery.magnific-popup.min.js"></script>
-    <script src="../assets/js/owl.carousel.min.js"></script>
-    <script src="../assets/js/jquery.simple-text-rotator.min.js"></script>
-    <script src="../assets/js/imagesloaded.pkgd.js"></script>
-    <script src="../assets/js/isotope.pkgd.min.js"></script>
-    <script src="../assets/js/packery-mode.pkgd.min.js"></script>
-    <script src="../assets/js/appear.js"></script>
-    <script src="../assets/js/jquery.easing.1.3.js"></script>
-    <script src="../assets/js/wow.min.js"></script>
-    <script src="../assets/js/jqBootstrapValidation.js"></script>
-    <script src="../assets/js/jquery.fitvids.js"></script>
-    <script src="../assets/js/jquery.parallax-1.1.3.js"></script>
-    <script src="../assets/js/smoothscroll.js"></script>
-    <script src="../assets/js/custom.js"></script>
-
-    <!-- Lab page JS -->
-    <script src="../assets/js/lab.js"></script>
-  </body>
+<footer>
+  <img class="mark" src="assets/images/logo-dark.svg" alt="Vonds">
+  <nav aria-label="Footer" class="alt">
+    <a href="index.html#about">About</a><a href="index.html#portfolio">Portfolio</a><a href="docs.html">exit_0 Labs</a><a href="index.html#contact">Contact</a><a href="https://www.linkedin.com/in/vonds/">LinkedIn</a>
+  </nav>
+  <div class="line"></div>
+  <p class="copyright alt">Vonds &copy; 2026</p>
+</footer>
+<button class="to-top" id="toTop" type="button" aria-label="Back to top"><i class="chev" aria-hidden="true"></i></button>
+<script src="assets/js/site.js" defer></script>
+<script src="assets/js/lab.js" defer></script>
+</body>
 </html>

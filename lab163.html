@@ -1,205 +1,94 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="exit_0 Documentation" />
-    <meta name="name" content="Vonds" />
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lab 163: Flatpak Trust, Remotes &amp; Permissions | exit_0 Labs</title>
+<meta name="description" content="Audit Flatpak trust sources and application permissions, then apply tighter access controls using overrides. Verify the changes are enforceable and the…">
+<link rel="canonical" href="https://vonds.github.io/lab163.html">
+<meta name="theme-color" content="#2e2e30">
+<meta name="author" content="Vonds">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="Vonds">
+<meta property="og:url" content="https://vonds.github.io/lab163.html">
+<meta property="og:title" content="Lab 163: Flatpak Trust, Remotes &amp; Permissions | exit_0 Labs">
+<meta property="og:description" content="Audit Flatpak trust sources and application permissions, then apply tighter access controls using overrides. Verify the changes are enforceable and the…">
+<meta property="og:image" content="https://vonds.github.io/assets/images/og/og-exit0.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="exit_0: 165 hands-on Linux labs for real system administration.">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Lab 163: Flatpak Trust, Remotes &amp; Permissions | exit_0 Labs">
+<meta name="twitter:description" content="Audit Flatpak trust sources and application permissions, then apply tighter access controls using overrides. Verify the changes are enforceable and the…">
+<meta name="twitter:image" content="https://vonds.github.io/assets/images/og/og-exit0.jpg">
+<link rel="icon" type="image/svg+xml" href="assets/images/favicon.svg">
+<link rel="icon" type="image/png" href="assets/images/favicon.png">
+<link rel="apple-touch-icon" href="assets/images/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Dosis:wght@300;400;500;600&family=Open+Sans:wght@400;600&display=swap">
+<link rel="stylesheet" href="assets/css/site.css">
+<link rel="stylesheet" href="assets/css/exit0.css">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Vonds","item":"https://vonds.github.io/"},{"@type":"ListItem","position":2,"name":"exit_0 Labs","item":"https://vonds.github.io/docs.html"},{"@type":"ListItem","position":3,"name":"Lab 163","item":"https://vonds.github.io/lab163.html"}]}</script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="header solid" id="header">
+  <div class="wrap">
+    <a class="brand" href="index.html" aria-label="Vonds home">
+      <img class="logo-dark" src="assets/images/logo-dark.svg" alt="Vonds">
+      <img class="logo-light" src="assets/images/logo-light.svg" alt="" aria-hidden="true">
+    </a>
+    <button class="menu-btn" id="menuOpen" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="overlay">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</header>
 
-    <title>Vonds | Lab 163</title>
-
-    <!-- Favicons -->
-    <link rel="icon" type="image/svg+xml" href="../assets/images/favicon.svg" />
-    <link rel="icon" type="image/png" href="../assets/images/favicon.png" />
-    <link rel="apple-touch-icon" href="../assets/images/apple-touch-icon.png" />
-    <link
-      rel="apple-touch-icon"
-      sizes="72x72"
-      href="../assets/images/apple-touch-icon-72x72.png"
-    />
-    <link
-      rel="apple-touch-icon"
-      sizes="114x114"
-      href="../assets/images/apple-touch-icon-114x114.png"
-    />
-
-    <!-- Site styles (your existing) -->
-    <link href="../assets/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
-    <link href="../assets/css/font-awesome.min.css" rel="stylesheet" />
-    <link href="../assets/css/linea-icons.css" rel="stylesheet" />
-    <link href="../assets/css/ionicons.min.css" rel="stylesheet" />
-    <link href="../assets/css/simpletextrotator.css" rel="stylesheet" />
-    <link href="../assets/css/magnific-popup.css" rel="stylesheet" />
-    <link href="../assets/css/owl.carousel.css" rel="stylesheet" />
-    <link href="../assets/css/superslides.css" rel="stylesheet" />
-    <link href="../assets/css/vertical.css" rel="stylesheet" />
-    <link href="../assets/css/animate.css" rel="stylesheet" />
-    <link href="../assets/css/style.css" rel="stylesheet" />
-    <link href="../assets/css/docs.css" rel="stylesheet" />
-
-    <!-- Lab page styles -->
-    <link href="../assets/css/lab.css" rel="stylesheet" />
-
-    <!-- Fonts -->
-    <link href="https://fonts.googleapis.com/css?family=Dosis" rel="stylesheet" />
-  </head>
-
-  <body>
-    <!-- PRELOADER -->
-    <div class="page-loader">
-      <div class="loader">Loading...</div>
+<div class="overlay" id="overlay" aria-hidden="true">
+  <button class="close" id="menuClose" type="button" aria-label="Close menu">&times;</button>
+  <nav aria-label="Main">
+    <a class="alt" href="index.html">Home</a>
+    <a class="alt" href="index.html#about">About</a>
+    <a class="alt" href="index.html#portfolio">Portfolio</a>
+    <div class="sub">
+      <a class="alt" href="https://black-signal-demo.netlify.app/">Black Signal</a>
+      <a class="alt" href="https://deeds-demo.netlify.app/">DEEDS</a>
+      <a class="alt" href="https://digital-resource-map-demo.netlify.app/">Digital Resource Map</a>
+      <a class="alt" href="https://thetravelingarchive.com/">The Traveling Archive</a>
+      <a class="alt" href="https://github.com/vonds/sentinel">Sentinel</a>
+      <a class="alt" href="docs.html">exit_0 Labs</a>
     </div>
+    <a class="alt" href="index.html#services">Services</a>
+    <a class="alt" href="index.html#contact">Contact</a>
+    <a class="alt" href="https://www.linkedin.com/in/vonds/">LinkedIn</a>
+  </nav>
+  <div class="foot alt">Vonds &copy; <span id="year">2026</span></div>
+</div>
 
-    <!-- OVERLAY MENU -->
-    <div id="overlay-menu" class="overlay-menu">
-      <a href="#" id="overlay-menu-hide" class="navigation-hide">
-        <i class="ion-close-round"></i>
-      </a>
-
-      <div class="overlay-menu-inner">
-        <nav class="overlay-menu-nav">
-          <ul id="nav">
-            <li><a href="../index.html">Home</a></li>
-
-            <li class="slidedown">
-              <a href="#">Portfolio</a>
-              <ul>
-                <li>
-                  <a href="https://github.com/vonds/exit_0" target="_blank">
-                    exit_0
-                  </a>
-                </li>
-                <li>
-                  <a href="https://github.com/vonds/sentinel" target="_blank">
-                    Sentinel
-                  </a>
-                </li>
-                <li>
-                  <a href="docs.html" target="_blank">exit_0 Documentation</a>
-                </li>
-              </ul>
-            </li>
-
-            <li>
-              <a
-                href="https://www.linkedin.com/in/vonds/"
-                target="_blank"
-                rel="noopener"
-              >
-                LinkedIn
-              </a>
-            </li>
-            <li>
-              <a href="https://github.com/vonds" target="_blank" rel="noopener">
-                Github
-              </a>
-            </li>
-            <li>
-              <a href="mailto:vonds13@gmail.com?subject=Hello Vonds">Contact</a>
-            </li>
-          </ul>
+<main class="x0" id="main">
+  <div class="x0-wrap">
+    <nav class="crumbs alt" aria-label="Breadcrumb"><a href="index.html">Vonds</a><span class="sep" aria-hidden="true">/</span><a href="docs.html">exit_0 Labs</a><span class="sep" aria-hidden="true">/</span><span aria-current="page">Lab 163</span></nav>
+    <header class="x0-head">
+      <p class="eyebrow alt"><b>Lab 163</b> &middot; packages</p>
+      <h1>Flatpak Trust, Remotes &amp; Permissions</h1>
+      <p class="lede">Audit Flatpak trust sources and application permissions, then apply tighter access controls using overrides. Verify the changes are enforceable and the application still launches as expected.</p>
+      <nav class="pager-mini" aria-label="Lab navigation"><a class="alt" href="lab162.html" rel="prev">Lab 162</a><a class="alt" href="lab164.html" rel="next">Lab 164</a></nav>
+    </header>
+    <div class="x0-grid">
+      <aside class="x0-side" aria-label="On this page">
+        <nav class="toc">
+          <a class="back alt" href="docs.html">All labs</a>
+          <p class="toc-h alt">On this page</p>
+          <ul><li><a href="#video">Video</a></li><li><a href="#scenario">Scenario</a></li><li><a href="#objective">Objective</a></li><li><a href="#concepts">Concepts</a></li><li><a href="#walkthrough">Walkthrough</a></li><li><a href="#breakpoints">Common breakpoints</a></li><li><a href="#cleanup">Cleanup checklist</a></li><li><a href="#reference">Reference</a></li></ul>
         </nav>
-      </div>
-
-      <div class="overlay-navigation-footer">
-        <div class="container">
-          <div class="row">
-            <div class="col-sm-12 text-center">
-              <p class="copyright font-alt m-b-0">
-                VONDS &copy;
-                <script>
-                  document.write(new Date().getFullYear())
-                </script>
-              </p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- WRAPPER -->
-    <div class="wrapper">
-      <!-- NAVIGATION -->
-      <nav class="navbar navbar-custom navbar-transparent navbar-light navbar-fixed-top">
-        <div class="container">
-          <div class="navbar-header">
-            <a class="navbar-brand" href="../index.html">
-              <img class="logo-dark" src="../assets/images/logo-dark.svg" alt="Vonds" /><img class="logo-light" src="../assets/images/logo-light.svg" alt="" aria-hidden="true" />
-            </a>
-          </div>
-
-          <ul id="icons-navbar" class="nav navbar-nav navbar-right">
-            <li>
-              <a href="#" id="toggle-menu" class="show-overlay" title="Menu">
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-              </a>
-            </li>
-          </ul>
-        </div>
-      </nav>
-
-      <!-- DOCS PAGE -->
-      <section class="module">
-        <div class="container">
-          <h2 class="font-alt module-title m-t-60">
-            Lab 163: Flatpak Trust, Remotes &amp; Permissions
-          </h2>
-
-          <nav class="lab-pagination">
-            <a
-              id="prev-lab"
-              class="lab-nav-link"
-              href="#"
-              aria-label="Previous lab"
-            >
-              &laquo;
-            </a>
-            <a
-              id="next-lab"
-              class="lab-nav-link"
-              href="#"
-              aria-label="Next lab"
-            >
-              &raquo;
-            </a>
-          </nav>
-
-          <div class="row">
-            <!-- LEFT SIDEBAR -->
-            <div class="col-sm-4 col-md-3 lab-sidebar">
-              <div class="docs-sidebar">
-                <div class="docs-widget">
-                  <h5 class="widget-title">
-                    <a href="./docs.html">Back to Lab Index</a>
-                  </h5>
-                  <ul class="docs-nav">
-                    <li><a href="#scenario">Scenario</a></li>
-                    <li><a href="#objective">Objective</a></li>
-                    <li><a href="#concepts">Concepts</a></li>
-                    <li><a href="#walkthrough">Walkthrough</a></li>
-                    <li><a href="#breakpoints">Breakpoints</a></li>
-                    <li><a href="#cleanup">Cleanup</a></li>
-                    <li><a href="#reference">Reference</a></li>
-                  </ul>
-                </div>
-              </div>
-            </div>
-
-            <!-- MAIN CONTENT -->
-            <div class="col-sm-8 col-md-9 lab-doc">
-              <p class="m-b-20 lab-summary">
-                Audit Flatpak trust sources and application permissions, then apply tighter access controls using overrides.
-                Verify the changes are enforceable and the application still launches as expected.
-              </p>
-
-              <!-- Video (kept on page; removed from left panel) -->
-              <section class="lab-section" id="video" aria-label="Lab video">
+      </aside>
+      <article class="x0-doc">
+<section class="lab-section" id="video" aria-label="Lab video">
                 <div class="lab-video">
                   <div class="lab-video-embed text-center">
-                    <iframe
-                      src="https://www.youtube.com/embed/9GnMDk_VWWs?si=NFRwtzPBrEZ9o3KJ"
+                    <iframe loading="lazy"
+                      src="https://www.youtube-nocookie.com/embed/9GnMDk_VWWs?si=NFRwtzPBrEZ9o3KJ"
                       title="Lab 163 video player"
                       frameborder="0"
                       allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
@@ -209,7 +98,6 @@
                   </div>
                 </div>
               </section>
-
               <!-- Scenario -->
               <section class="lab-section" id="scenario">
                 <div class="lab-chips" aria-label="Tags">
@@ -223,17 +111,14 @@
                     <span class="lab-chip-key">policy</span>
                   </span>
                 </div>
-
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">
                   Scenario
                 </h3>
-
                 <p>
                   A developer reports: “My Flatpak app can read my home directory and access the network.”
                   You need to validate the trust source (remotes), inspect current permissions on a target Flatpak app,
                   then apply a tighter policy that is verifiable. The app must still launch so the user can continue working.
                 </p>
-
                 <div class="lab-callout">
                   <div class="lab-callout-label">Operator context</div>
                   <p class="m-b-0">
@@ -242,7 +127,6 @@
                   </p>
                 </div>
               </section>
-
               <!-- Objective -->
               <section class="lab-section alt-background" id="objective">
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">
@@ -257,7 +141,6 @@
                   <li>Validate behavior by launching the app, then reset overrides to restore defaults.</li>
                 </ul>
               </section>
-
               <!-- Concepts (no alt-background moving forward) -->
               <section class="lab-section" id="concepts">
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">
@@ -281,20 +164,16 @@
                   </li>
                 </ul>
               </section>
-
               <!-- Walkthrough -->
               <section class="lab-section alt-background" id="walkthrough">
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">
                   Walkthrough
                 </h3>
-
                 <!-- Step 1 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
-                    <strong class="font-alt">Step 1</strong>
-                    : Confirm Flatpak is installed.
+                    <strong class="font-alt">Step 1</strong>: Confirm Flatpak is installed.
                   </div>
-
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
@@ -308,24 +187,19 @@
                     </div>
                     <pre><code id="cmd-step-1">flatpak --version</code></pre>
                   </div>
-
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <pre><code>  Flatpak 1.14.6</code></pre>
                   </div>
-
                   <p>
                     This is a baseline check that the client exists and the workstation can run Flatpak workflows. If Flatpak is
                     missing, you cannot proceed with permission auditing or policy enforcement.
                   </p>
                 </div>
-
                 <!-- Step 2 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
-                    <strong class="font-alt">Step 2</strong>
-                    : List configured remotes with details.
+                    <strong class="font-alt">Step 2</strong>: List configured remotes with details.
                   </div>
-
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
@@ -339,25 +213,20 @@
                     </div>
                     <pre><code id="cmd-step-2">flatpak remotes --show-details</code></pre>
                   </div>
-
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <pre><code>  Name     Title    URL                                         Collection ID  Subset  Filter  Priority  Options
   flathub  Flathub  https://dl.flathub.org/repo/                 org.flathub    -       -       1         system</code></pre>
                   </div>
-
                   <p>
                     Remotes define the trust source for applications and runtimes. You need to know exactly where content is coming
                     from before you evaluate permissions.
                   </p>
                 </div>
-
                 <!-- Step 3 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
-                    <strong class="font-alt">Step 3</strong>
-                    : Confirm Flathub is installed as a system remote.
+                    <strong class="font-alt">Step 3</strong>: Confirm Flathub is installed as a system remote.
                   </div>
-
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
@@ -371,25 +240,20 @@
                     </div>
                     <pre><code id="cmd-step-3">flatpak remote-list --system</code></pre>
                   </div>
-
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <pre><code>  Name     Options
   flathub  system</code></pre>
                   </div>
-
                   <p>
                     System remotes apply consistently across users on the workstation. This matters when you need policy and install
                     behavior to be repeatable.
                   </p>
                 </div>
-
                 <!-- Step 4 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
-                    <strong class="font-alt">Step 4</strong>
-                    : Search Flathub for Flatseal (permissions manager).
+                    <strong class="font-alt">Step 4</strong>: Search Flathub for Flatseal (permissions manager).
                   </div>
-
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
@@ -403,25 +267,20 @@
                     </div>
                     <pre><code id="cmd-step-4">flatpak search flatseal</code></pre>
                   </div>
-
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <pre><code>  Name      Description                         Application ID                 Version  Branch  Remotes
   Flatseal  Manage Flatpak application permissions  com.github.tchx84.Flatseal  2.2.0    stable  flathub</code></pre>
                   </div>
-
                   <p>
                     Capture the application ID. Even if your enforcement is CLI-based, Flatseal is useful in support workflows when
                     you need quick review and stakeholder visibility.
                   </p>
                 </div>
-
                 <!-- Step 5 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
-                    <strong class="font-alt">Step 5</strong>
-                    : Install Flatseal from Flathub.
+                    <strong class="font-alt">Step 5</strong>: Install Flatseal from Flathub.
                   </div>
-
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
@@ -435,7 +294,6 @@
                     </div>
                     <pre><code id="cmd-step-5">sudo flatpak install -y flathub com.github.tchx84.Flatseal</code></pre>
                   </div>
-
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <pre><code>  Looking for matches…
   Installing…
@@ -443,20 +301,16 @@
   2. [####################] com.github.tchx84.Flatseal 2.2.0 stable
   Installation complete.</code></pre>
                   </div>
-
                   <p>
                     Flatseal requires the GNOME platform runtime. On first install, expect runtime pulls that are larger than the
                     application itself.
                   </p>
                 </div>
-
                 <!-- Step 6 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
-                    <strong class="font-alt">Step 6</strong>
-                    : Confirm an example app is installed (Firefox Flatpak).
+                    <strong class="font-alt">Step 6</strong>: Confirm an example app is installed (Firefox Flatpak).
                   </div>
-
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
@@ -470,24 +324,19 @@
                     </div>
                     <pre><code id="cmd-step-6">flatpak list --app | grep -i firefox</code></pre>
                   </div>
-
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <pre><code>  Firefox  org.mozilla.firefox  123.0.1  stable  flathub  system</code></pre>
                   </div>
-
                   <p>
                     This lab uses Firefox as the target application for permission inspection and overrides. If Firefox is not
                     present, you cannot validate the policy changes against a known app ID.
                   </p>
                 </div>
-
                 <!-- Step 7 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
-                    <strong class="font-alt">Step 7</strong>
-                    : Inspect current permissions for Firefox.
+                    <strong class="font-alt">Step 7</strong>: Inspect current permissions for Firefox.
                   </div>
-
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
@@ -501,7 +350,6 @@
                     </div>
                     <pre><code id="cmd-step-7">flatpak info --show-permissions org.mozilla.firefox</code></pre>
                   </div>
-
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <pre><code>  [Context]
   shared=network;ipc;
@@ -511,20 +359,16 @@
   [Session Bus Policy]
   org.freedesktop.Notifications=talk</code></pre>
                   </div>
-
                   <p>
                     This output is your permission baseline. You need a before/after view so you can prove what changed and confirm
                     that enforcement is active.
                   </p>
                 </div>
-
                 <!-- Step 8 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
-                    <strong class="font-alt">Step 8</strong>
-                    : Restrict filesystem access with an override.
+                    <strong class="font-alt">Step 8</strong>: Restrict filesystem access with an override.
                   </div>
-
                   <div class="lab-callout">
                     <div class="lab-callout-label">Policy note</div>
                     <p class="m-b-0">
@@ -532,7 +376,6 @@
                       access and document expected behavior changes for the user.
                     </p>
                   </div>
-
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
@@ -546,20 +389,16 @@
                     </div>
                     <pre><code id="cmd-step-8">sudo flatpak override --nosocket=ssh-auth --nofilesystem=home --nofilesystem=xdg-download org.mozilla.firefox</code></pre>
                   </div>
-
                   <p>
                     This applies explicit restrictions: remove the SSH agent socket and block access to the home directory and the
                     downloads portal. You will verify enforcement in a later step.
                   </p>
                 </div>
-
                 <!-- Step 9 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
-                    <strong class="font-alt">Step 9</strong>
-                    : Restrict network access with an override.
+                    <strong class="font-alt">Step 9</strong>: Restrict network access with an override.
                   </div>
-
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
@@ -573,20 +412,16 @@
                     </div>
                     <pre><code id="cmd-step-9">sudo flatpak override --unshare=network org.mozilla.firefox</code></pre>
                   </div>
-
                   <p>
                     Disabling network access is a strong control. The app should still launch, but browsing and external calls should
                     fail. Treat this as a targeted policy test.
                   </p>
                 </div>
-
                 <!-- Step 10 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
-                    <strong class="font-alt">Step 10</strong>
-                    : Verify applied overrides for Firefox.
+                    <strong class="font-alt">Step 10</strong>: Verify applied overrides for Firefox.
                   </div>
-
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
@@ -600,26 +435,21 @@
                     </div>
                     <pre><code id="cmd-step-10">flatpak override --show org.mozilla.firefox</code></pre>
                   </div>
-
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <pre><code>  [Context]
   unshare=network;
   filesystems=!home;!xdg-download;
   sockets=!ssh-auth;</code></pre>
                   </div>
-
                   <p>
                     This is the enforcement proof. You should see the explicit restrictions reflected in the override output.
                   </p>
                 </div>
-
                 <!-- Step 11 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
-                    <strong class="font-alt">Step 11</strong>
-                    : Launch Firefox to validate policy behavior.
+                    <strong class="font-alt">Step 11</strong>: Launch Firefox to validate policy behavior.
                   </div>
-
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
@@ -633,27 +463,22 @@
                     </div>
                     <pre><code id="cmd-step-11">flatpak run org.mozilla.firefox</code></pre>
                   </div>
-
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <pre><code>  [flatpak] Launching org.mozilla.firefox...
   (GUI application started)
   (Browsing fails as expected: network is disabled by override)
   (Application exited)</code></pre>
                   </div>
-
                   <p>
                     A successful security change is not just “settings applied.” You need runtime validation. The app should start,
                     and the expected restriction (no network) should be observable.
                   </p>
                 </div>
-
                 <!-- Step 12 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
-                    <strong class="font-alt">Step 12</strong>
-                    : Reset overrides to restore defaults.
+                    <strong class="font-alt">Step 12</strong>: Reset overrides to restore defaults.
                   </div>
-
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
@@ -667,20 +492,17 @@
                     </div>
                     <pre><code id="cmd-step-12">sudo flatpak override --reset org.mozilla.firefox</code></pre>
                   </div>
-
                   <p>
                     Reset is part of safe operations. You return the workstation to a known baseline after validating the policy
                     behavior.
                   </p>
                 </div>
               </section>
-
               <!-- Common breakpoints -->
               <section class="lab-section" id="breakpoints">
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">
                   Common breakpoints
                 </h3>
-
                 <div class="lab-callout">
                   <div class="lab-callout-label">
                     Flathub remote not present or not system-scoped
@@ -690,7 +512,6 @@
                     Confirm remote scope and document what is approved for the environment.
                   </p>
                 </div>
-
                 <div class="lab-callout">
                   <div class="lab-callout-label">
                     flatpak install fails due to policy or connectivity
@@ -700,7 +521,6 @@
                     the remote URL and validate that software sourcing is permitted.
                   </p>
                 </div>
-
                 <div class="lab-callout">
                   <div class="lab-callout-label">
                     Firefox app ID not found
@@ -710,7 +530,6 @@
                     it. Confirm the app list and select a known installed Flatpak app ID for testing.
                   </p>
                 </div>
-
                 <div class="lab-callout">
                   <div class="lab-callout-label">
                     App launches with degraded behavior
@@ -721,18 +540,15 @@
                   </p>
                 </div>
               </section>
-
               <!-- Cleanup -->
               <section class="lab-section alt-background" id="cleanup">
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">
                   Cleanup checklist
                 </h3>
-
                 <p>
                   This lab installs Flatseal and applies overrides to a Flatpak application. Clean up by removing Flatseal if it is
                   not needed on the workstation and confirming overrides have been reset.
                 </p>
-
                 <div class="lab-codeblock m-b-40 m-t-40">
                   <div class="lab-codeblock-header">
                     <span>Commands</span>
@@ -748,7 +564,6 @@
 sudo flatpak uninstall -y com.github.tchx84.Flatseal
 flatpak override --show org.mozilla.firefox</code></pre>
                 </div>
-
                 <div class="lab-callout">
                   <div class="lab-callout-label">Success signal</div>
                   <p class="m-b-0">
@@ -757,188 +572,104 @@ flatpak override --show org.mozilla.firefox</code></pre>
                   </p>
                 </div>
               </section>
-
               <!-- Reference -->
               <section class="lab-section" id="reference">
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">
                   Reference
                 </h3>
-
                 <ul class="lab-reference-list">
                   <li>
-                    <code>flatpak --version</code>
-                    : Prints the installed Flatpak version.
+                    <code>flatpak --version</code>: Prints the installed Flatpak version.
                   </li>
-
                   <li>
-                    <code>flatpak remotes --show-details</code>
-                    : Lists configured remotes with detailed metadata.
+                    <code>flatpak remotes --show-details</code>: Lists configured remotes with detailed metadata.
                     <ul>
-                      <li><code>--show-details</code> : Includes URL, collection ID, and installation scope.</li>
+                      <li><code>--show-details</code>: Includes URL, collection ID, and installation scope.</li>
                     </ul>
                   </li>
-
                   <li>
-                    <code>flatpak remote-list --system</code>
-                    : Lists remotes configured system-wide.
+                    <code>flatpak remote-list --system</code>: Lists remotes configured system-wide.
                     <ul>
-                      <li><code>--system</code> : Restricts output to system installation scope.</li>
+                      <li><code>--system</code>: Restricts output to system installation scope.</li>
                     </ul>
                   </li>
-
                   <li>
-                    <code>flatpak search &lt;term&gt;</code>
-                    : Searches remotes for matching applications.
+                    <code>flatpak search &lt;term&gt;</code>: Searches remotes for matching applications.
                   </li>
-
                   <li>
-                    <code>sudo flatpak install -y flathub com.github.tchx84.Flatseal</code>
-                    : Installs Flatseal from Flathub non-interactively.
+                    <code>sudo flatpak install -y flathub com.github.tchx84.Flatseal</code>: Installs Flatseal from Flathub non-interactively.
                     <ul>
-                      <li><code>-y</code> : Automatically answers “yes” to prompts.</li>
-                      <li><code>flathub</code> : Remote name used as the install source.</li>
+                      <li><code>-y</code>: Automatically answers “yes” to prompts.</li>
+                      <li><code>flathub</code>: Remote name used as the install source.</li>
                     </ul>
                   </li>
-
                   <li>
-                    <code>flatpak list --app | grep -i firefox</code>
-                    : Confirms the Firefox Flatpak is installed.
+                    <code>flatpak list --app | grep -i firefox</code>: Confirms the Firefox Flatpak is installed.
                     <ul>
-                      <li><code>--app</code> : Shows only applications (not runtimes).</li>
-                      <li><code>|</code> : Pipes output from the left command into the right command.</li>
-                      <li><code>grep -i firefox</code> : Filters lines matching “firefox” case-insensitively.</li>
+                      <li><code>--app</code>: Shows only applications (not runtimes).</li>
+                      <li><code>|</code>: Pipes output from the left command into the right command.</li>
+                      <li><code>grep -i firefox</code>: Filters lines matching “firefox” case-insensitively.</li>
                     </ul>
                   </li>
-
                   <li>
-                    <code>flatpak info --show-permissions org.mozilla.firefox</code>
-                    : Shows the current permission set for a Flatpak application.
+                    <code>flatpak info --show-permissions org.mozilla.firefox</code>: Shows the current permission set for a Flatpak application.
                     <ul>
-                      <li><code>--show-permissions</code> : Prints sandbox permissions and bus policies.</li>
+                      <li><code>--show-permissions</code>: Prints sandbox permissions and bus policies.</li>
                     </ul>
                   </li>
-
                   <li>
-                    <code>sudo flatpak override --nosocket=ssh-auth --nofilesystem=home --nofilesystem=xdg-download org.mozilla.firefox</code>
-                    : Applies a restrictive override for sockets and filesystem access.
+                    <code>sudo flatpak override --nosocket=ssh-auth --nofilesystem=home --nofilesystem=xdg-download org.mozilla.firefox</code>: Applies a restrictive override for sockets and filesystem access.
                     <ul>
-                      <li><code>--nosocket=ssh-auth</code> : Removes access to the SSH agent socket.</li>
-                      <li><code>--nofilesystem=home</code> : Removes access to the user’s home directory.</li>
-                      <li><code>--nofilesystem=xdg-download</code> : Removes access to the downloads directory.</li>
+                      <li><code>--nosocket=ssh-auth</code>: Removes access to the SSH agent socket.</li>
+                      <li><code>--nofilesystem=home</code>: Removes access to the user’s home directory.</li>
+                      <li><code>--nofilesystem=xdg-download</code>: Removes access to the downloads directory.</li>
                     </ul>
                   </li>
-
                   <li>
-                    <code>sudo flatpak override --unshare=network org.mozilla.firefox</code>
-                    : Disables network access for the application.
+                    <code>sudo flatpak override --unshare=network org.mozilla.firefox</code>: Disables network access for the application.
                     <ul>
-                      <li><code>--unshare=network</code> : Removes network namespace sharing.</li>
+                      <li><code>--unshare=network</code>: Removes network namespace sharing.</li>
                     </ul>
                   </li>
-
                   <li>
-                    <code>flatpak override --show org.mozilla.firefox</code>
-                    : Displays effective overrides applied to the application.
+                    <code>flatpak override --show org.mozilla.firefox</code>: Displays effective overrides applied to the application.
                     <ul>
-                      <li><code>--show</code> : Prints overrides currently in effect.</li>
+                      <li><code>--show</code>: Prints overrides currently in effect.</li>
                     </ul>
                   </li>
-
                   <li>
-                    <code>flatpak run org.mozilla.firefox</code>
-                    : Launches the application by ID.
+                    <code>flatpak run org.mozilla.firefox</code>: Launches the application by ID.
                   </li>
-
                   <li>
-                    <code>sudo flatpak override --reset org.mozilla.firefox</code>
-                    : Resets overrides to application defaults.
+                    <code>sudo flatpak override --reset org.mozilla.firefox</code>: Resets overrides to application defaults.
                     <ul>
-                      <li><code>--reset</code> : Removes override rules for the application.</li>
+                      <li><code>--reset</code>: Removes override rules for the application.</li>
                     </ul>
                   </li>
-
                   <li>
-                    <code>sudo flatpak uninstall -y com.github.tchx84.Flatseal</code>
-                    : Uninstalls Flatseal non-interactively.
+                    <code>sudo flatpak uninstall -y com.github.tchx84.Flatseal</code>: Uninstalls Flatseal non-interactively.
                     <ul>
-                      <li><code>-y</code> : Automatically answers “yes” to prompts.</li>
+                      <li><code>-y</code>: Automatically answers “yes” to prompts.</li>
                     </ul>
                   </li>
                 </ul>
               </section>
-            </div>
-            <!-- /main -->
-          </div>
-          <!-- /row -->
-        </div>
-        <!-- /container -->
-      </section>
-
-      <!-- FOOTER -->
-      <footer class="module bg-light">
-        <div class="container">
-          <div class="row">
-            <div class="col-sm-12">
-              <ul class="social-text-links font-alt text-center m-b-20">
-                <li>
-                  <a href="https://github.com/vonds" target="_blank" rel="noopener">
-                    Github
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="https://www.linkedin.com/in/vonds/"
-                    target="_blank"
-                    rel="noopener"
-                  >
-                    Linkedin
-                  </a>
-                </li>
-              </ul>
-            </div>
-          </div>
-
-          <div class="row">
-            <div class="col-sm-12">
-              <p class="copyright text-center m-b-0">
-                VONDS &copy;
-                <span id="year"></span>
-              </p>
-
-              <div class="scroll-up">
-                <a href="#totop"><i class="fa fa-angle-double-up"></i></a>
-              </div>
-            </div>
-          </div>
-        </div>
-      </footer>
+        <nav class="pager" aria-label="Previous and next lab"><a class="prev" href="lab162.html" rel="prev"><span class="dir alt">Previous &middot; Lab 162</span><span class="t">Flatpak Real-World App Deployment (Obsidian)</span></a><a class="next" href="lab164.html" rel="next"><span class="dir alt">Next &middot; Lab 164</span><span class="t">SELinux Basics</span></a></nav>
+      </article>
     </div>
+  </div>
+</main>
 
-    <!-- Javascript files (your existing) -->
-    <script src="../assets/js/jquery-2.2.4.min.js"></script>
-    <script src="../assets/bootstrap/js/bootstrap.min.css"></script>
-    <script src="../assets/js/jquery.superslides.min.js"></script>
-    <script src="../assets/js/jquery.mb.YTPlayer.min.js"></script>
-    <script src="../assets/js/jquery.magnific-popup.min.js"></script>
-    <script src="../assets/js/owl.carousel.min.js"></script>
-    <script src="../assets/js/jquery.simple-text-rotator.min.js"></script>
-    <script src="../assets/js/imagesloaded.pkgd.js"></script>
-    <script src="../assets/js/isotope.pkgd.min.js"></script>
-    <script src="../assets/js/packery-mode.pkgd.min.js"></script>
-    <script src="../assets/js/appear.js"></script>
-    <script src="../assets/js/jquery.easing.1.3.js"></script>
-    <script src="../assets/js/wow.min.js"></script>
-    <script src="../assets/js/jqBootstrapValidation.js"></script>
-    <script src="../assets/js/jquery.fitvids.js"></script>
-    <script src="../assets/js/jquery.parallax-1.1.3.js"></script>
-    <script src="../assets/js/smoothscroll.js"></script>
-    <script src="../assets/js/custom.js"></script>
-
-    <!-- Lab page JS (new) -->
-    <script src="../assets/js/lab.js"></script>
-
-    <script>
-      document.getElementById('year').textContent = new Date().getFullYear()
-    </script>
-  </body>
+<footer>
+  <img class="mark" src="assets/images/logo-dark.svg" alt="Vonds">
+  <nav aria-label="Footer" class="alt">
+    <a href="index.html#about">About</a><a href="index.html#portfolio">Portfolio</a><a href="docs.html">exit_0 Labs</a><a href="index.html#contact">Contact</a><a href="https://www.linkedin.com/in/vonds/">LinkedIn</a>
+  </nav>
+  <div class="line"></div>
+  <p class="copyright alt">Vonds &copy; 2026</p>
+</footer>
+<button class="to-top" id="toTop" type="button" aria-label="Back to top"><i class="chev" aria-hidden="true"></i></button>
+<script src="assets/js/site.js" defer></script>
+<script src="assets/js/lab.js" defer></script>
+</body>
 </html>

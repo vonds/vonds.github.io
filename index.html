@@ -3,8 +3,29 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Vonds</title>
-<meta name="description" content="Vonds builds software, secures systems and trains the people who use them.">
+<title>Vonds | Software, Systems &amp; Security</title>
+<meta name="description" content="Vonds builds software, secures the systems it runs on, and trains the people who use it. Work includes Black Signal, DEEDS and the Digital Resource Map.">
+<link rel="canonical" href="https://vonds.github.io/">
+<meta name="theme-color" content="#2e2e30">
+<meta name="author" content="Vonds">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Vonds">
+<meta property="og:url" content="https://vonds.github.io/">
+<meta property="og:title" content="Vonds | Software, Systems &amp; Security">
+<meta property="og:description" content="Vonds builds software, secures the systems it runs on, and trains the people who use it. Work includes Black Signal, DEEDS and the Digital Resource Map.">
+<meta property="og:image" content="https://vonds.github.io/assets/images/og/og-site.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Vonds: software, systems and security. I build software, secure the systems it runs on, and train the people who use it.">
+<meta property="og:locale" content="en_US">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Vonds | Software, Systems &amp; Security">
+<meta name="twitter:description" content="Vonds builds software, secures the systems it runs on, and trains the people who use it. Work includes Black Signal, DEEDS and the Digital Resource Map.">
+<meta name="twitter:image" content="https://vonds.github.io/assets/images/og/og-site.jpg">
+<meta name="twitter:image:alt" content="Vonds: software, systems and security.">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"Person","name":"Vonds","url":"https://vonds.github.io/","image":"https://vonds.github.io/assets/images/og/og-site.jpg","jobTitle":"Technical consultant","description":"Vonds builds software, secures the systems it runs on, and trains the people who use it. Work includes Black Signal, DEEDS and the Digital Resource Map.","sameAs":["https://www.linkedin.com/in/vonds/"],"knowsAbout":["Web and app development","Linux systems engineering","Security hardening","Technical training and curriculum"]}
+</script>
 <link rel="icon" type="image/svg+xml" href="assets/images/favicon.svg">
 <link rel="icon" type="image/png" href="assets/images/favicon.png">
 <link rel="apple-touch-icon" href="assets/images/apple-touch-icon.png">
@@ -156,6 +177,11 @@
   .two{display:grid;grid-template-columns:1fr 1fr;gap:16px}
   form .btn{width:100%;justify-content:center;cursor:pointer}
   .form-note{margin:14px 0 0;font-size:13px;color:var(--muted);min-height:1.5em}
+  .form-note.ok{color:#1f1f21;font-weight:600}
+  .form-note.err{color:#1f1f21}
+  .form-note.err::before{content:"";display:inline-block;width:6px;height:6px;margin:0 8px 2px 0;background:#1f1f21;transform:rotate(45deg)}
+  .hp{position:absolute!important;left:-9999px!important;width:1px;height:1px;opacity:0}
+  form .btn:disabled{opacity:.7;cursor:progress}
 
 
   /* ---------- Case study pop-up ---------- */
@@ -188,6 +214,7 @@
   footer .copyright{margin:0;font-size:13px;letter-spacing:3px;color:#3d3d3d}
   .to-top{position:fixed;right:22px;bottom:22px;z-index:40;width:44px;height:44px;border:1px solid var(--ink);background:#fff;color:var(--ink);font-size:18px;cursor:pointer;opacity:0;visibility:hidden;transition:opacity .3s,background .2s,color .2s}
   .to-top.show{opacity:1;visibility:visible}
+  .to-top .chev{display:block;width:10px;height:10px;margin:4px auto 0;border-left:1.5px solid currentColor;border-top:1.5px solid currentColor;transform:rotate(45deg)}
   .to-top:hover{background:var(--ink);color:#fff}
 
   /* ---------- Motion ---------- */
@@ -484,6 +511,38 @@ body.swap .warp{transition:none!important;opacity:0}
 @media (prefers-reduced-motion:reduce){.ffcue i::after{animation:none;top:30%}}
 @media (max-width:700px){.ffcue{bottom:calc(18px + env(safe-area-inset-bottom))}}
 @media (max-width:700px){.ff .deep[data-i="0"] .dtxt{bottom:calc(96px + env(safe-area-inset-bottom))}}
+/* v11: closing screen arrives sooner */
+.ff .deep[data-i="6"]{height:220vh}
+.ff .fadeout{height:35vh}
+/* v12: View work, a doorway into the descent */
+.dive-btn{position:relative;overflow:hidden;isolation:isolate;gap:16px;padding:15px 22px 15px 32px;transition:background .35s var(--ease),border-color .35s,box-shadow .45s var(--ease),transform .2s}
+.dive-btn .dv-label{position:relative;z-index:2;transition:letter-spacing .45s var(--ease)}
+.dive-btn .dv-count{position:relative;z-index:2;padding-left:16px;border-left:1px solid rgba(255,255,255,.28);font-size:11px;letter-spacing:2px;color:rgba(255,255,255,.72);transition:color .35s}
+.dive-btn::after{content:"";position:absolute;inset:0;z-index:1;pointer-events:none;background:linear-gradient(100deg,transparent 30%,rgba(255,255,255,.22) 48%,rgba(255,255,255,.05) 56%,transparent 70%);transform:translateX(-120%);animation:dvSheen 5.5s cubic-bezier(.4,0,.2,1) 1.6s infinite}
+@keyframes dvSheen{0%{transform:translateX(-120%)}28%,100%{transform:translateX(120%)}}
+.dive-btn .dv-well{position:absolute;inset:0;z-index:0;background:radial-gradient(ellipse at 50% 50%,#050506 0,#141416 70%,#1c1c1e 100%);opacity:0;transition:opacity .45s var(--ease);perspective:120px}
+.dive-btn .dv-well i{position:absolute;left:50%;top:50%;width:100%;height:100%;border:1px solid rgba(255,255,255,.5);transform:translate(-50%,-50%) translateZ(-260px);opacity:0}
+.btn.solid.dive-btn:hover,.btn.solid.dive-btn:focus-visible{background:#141416;border-color:#141416;color:#fff;box-shadow:0 14px 34px rgba(0,0,0,.28)}
+.dive-btn:hover .dv-label,.dive-btn:focus-visible .dv-label{text-shadow:0 0 14px rgba(255,255,255,.55)}
+.dive-btn:hover .dv-count,.dive-btn:focus-visible .dv-count{color:#fff}
+.dive-btn:hover .dv-well,.dive-btn:focus-visible .dv-well{opacity:1}
+.dive-btn:hover .dv-well i,.dive-btn:focus-visible .dv-well i{animation:dvRush 1.6s cubic-bezier(.5,0,.85,.5) infinite}
+.dive-btn .dv-well i:nth-child(2){animation-delay:.4s}.dive-btn .dv-well i:nth-child(3){animation-delay:.8s}.dive-btn .dv-well i:nth-child(4){animation-delay:1.2s}
+.dive-btn:hover::after,.dive-btn:focus-visible::after{animation:none;opacity:0}
+@keyframes dvRush{0%{transform:translate(-50%,-50%) translateZ(-260px);opacity:0}25%{opacity:.8}100%{transform:translate(-50%,-50%) translateZ(90px);opacity:0}}
+.dive-btn:active{transform:scale(.98)}
+@media (prefers-reduced-motion:reduce){.dive-btn::after{display:none}.dive-btn:hover .dv-well i,.dive-btn:focus-visible .dv-well i{animation:none}}
+.ff .dtxt p,.ff .pcard dd,.ff .pcard .lede,.ffend .endp{text-wrap:pretty}
+/* v13: intro card sits near the vertical centre */
+@media (min-width:701px){
+  .ff .deep[data-i="0"]{--ox:min(22vw,calc(50vw - 330px + 260px));--oy:0vh}
+  .ff .deep[data-i="0"] .dtxt{bottom:calc(50vh - 115px)}
+}
+@media (min-width:701px) and (max-width:1280px){.ff .deep[data-i="0"]{--ox:19vw}}
+@media (max-width:700px){
+  .ff .deep[data-i="0"]{--oy:-27vh}
+  .ff .deep[data-i="0"] .dtxt{bottom:calc(50vh - 165px)}
+}
 
 </style>
 </head>
@@ -532,7 +591,7 @@ body.swap .warp{transition:none!important;opacity:0}
       <p class="role alt">Software · Systems · Security</p>
       <p class="pitch">I build software, secure the systems it runs on, and train the people who use it.</p>
       <div class="buttons">
-        <a class="btn solid" href="#portfolio" data-dive>View work</a>
+        <a class="btn solid dive-btn" href="#portfolio" data-dive aria-label="View work: six projects"><span class="dv-well" aria-hidden="true"><i></i><i></i><i></i><i></i></span><span class="dv-label">View work</span><span class="dv-count" aria-hidden="true">06</span></a>
         <a class="btn line" href="#contact">Start a project</a>
       </div>
     </div>
@@ -585,7 +644,7 @@ body.swap .warp{transition:none!important;opacity:0}
 
         <article class="work reveal">
           <a class="frame" href="https://black-signal-demo.netlify.app/" aria-label="Open Black Signal">
-            <img src="assets/images/portfolio/black-signal.png" alt="BLACK SIGNAL kunda logo"><span class="visit alt">Visit site &rarr;</span>
+            <img src="assets/images/portfolio/black-signal.png" alt="BLACK SIGNAL kunda logo"><span class="visit alt">Visit site</span>
           </a>
           <div class="cap">
             <div class="kicker alt">Platform · Founder</div>
@@ -599,7 +658,7 @@ body.swap .warp{transition:none!important;opacity:0}
 
         <article class="work reveal">
           <a class="frame" href="https://deeds-demo.netlify.app/" aria-label="Open DEEDS">
-            <img src="assets/images/portfolio/deeds.png" alt="DEEDS hibiscus logo"><span class="visit alt">Visit site &rarr;</span>
+            <img src="assets/images/portfolio/deeds.png" alt="DEEDS hibiscus logo"><span class="visit alt">Visit site</span>
           </a>
           <div class="cap">
             <div class="kicker alt">Web app · MVP</div>
@@ -614,7 +673,7 @@ body.swap .warp{transition:none!important;opacity:0}
 
         <article class="work reveal">
           <a class="frame" href="https://digital-resource-map-demo.netlify.app/" aria-label="Open Digital Resource Map">
-            <img src="assets/images/portfolio/resource-map.png" alt="Pass It On logo"><span class="visit alt">Visit site &rarr;</span>
+            <img src="assets/images/portfolio/resource-map.png" alt="Pass It On logo"><span class="visit alt">Visit site</span>
           </a>
           <div class="cap">
             <div class="kicker alt">Web app · Pass It On</div>
@@ -629,7 +688,7 @@ body.swap .warp{transition:none!important;opacity:0}
 
         <article class="work reveal">
           <a class="frame" href="https://thetravelingarchive.com/" aria-label="Open The Traveling Archive">
-            <img src="assets/images/portfolio/traveling-archive.png" alt="The Traveling Archive shell logo"><span class="visit alt">Visit site &rarr;</span>
+            <img src="assets/images/portfolio/traveling-archive.png" alt="The Traveling Archive shell logo"><span class="visit alt">Visit site</span>
           </a>
           <div class="cap">
             <div class="kicker alt">Website · Beyond the Cover</div>
@@ -644,7 +703,7 @@ body.swap .warp{transition:none!important;opacity:0}
 
         <article class="work reveal">
           <a class="frame" href="https://github.com/vonds/sentinel" aria-label="Open Sentinel on GitHub">
-            <img src="assets/images/portfolio/sentinel.png" alt="Sentinel hexagon eye logo"><span class="visit alt">View code &rarr;</span>
+            <img src="assets/images/portfolio/sentinel.png" alt="Sentinel hexagon eye logo"><span class="visit alt">View code</span>
           </a>
           <div class="cap">
             <div class="kicker alt">Security · Bash</div>
@@ -658,7 +717,7 @@ body.swap .warp{transition:none!important;opacity:0}
 
         <article class="work reveal">
           <a class="frame" href="https://github.com/vonds/exit_0" aria-label="Open exit_0 on GitHub">
-            <img src="assets/images/portfolio/exit0.png" alt="exit_0 wordmark"><span class="visit alt">View code &rarr;</span>
+            <img src="assets/images/portfolio/exit0.png" alt="exit_0 wordmark"><span class="visit alt">View code</span>
           </a>
           <div class="cap">
             <div class="kicker alt">Terminal · 2025</div>
@@ -738,7 +797,8 @@ body.swap .warp{transition:none!important;opacity:0}
             <option>Web or app development</option><option>Linux &amp; infrastructure</option><option>Security hardening</option><option>Training &amp; curriculum</option><option>Something else</option>
           </select></div>
         <div class="field"><label for="f-msg">What are you working on?</label><textarea id="f-msg" name="message" required></textarea></div>
-        <button class="btn solid" type="submit">Send message <span class="arrow" aria-hidden="true">&rarr;</span></button>
+        <button class="btn solid" type="submit">Send message</button>
+        <input type="checkbox" name="botcheck" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true">
         <p class="form-note" id="formNote" role="status"></p>
       </form>
     </div>
@@ -763,42 +823,42 @@ body.swap .warp{transition:none!important;opacity:0}
       <div class="kicker alt" id="csKicker"></div>
       <h3 id="csTitle"></h3>
       <div id="csBody"></div>
-      <a class="btn solid" id="csLink" href="#">Visit site <span class="arrow" aria-hidden="true">&rarr;</span></a>
+      <a class="btn solid" id="csLink" href="#">Visit site </a>
     </div>
   </div>
 </dialog>
 
-<button class="to-top" id="toTop" type="button" aria-label="Back to top">&uarr;</button>
+<button class="to-top" id="toTop" type="button" aria-label="Back to top"><i class="chev" aria-hidden="true"></i></button>
 
 <div class="ff" id="ff" role="dialog" aria-modal="true" aria-label="Selected work" aria-hidden="true">
 <button class="ffclose" type="button" data-ffclose aria-label="Close and return to the site"><i aria-hidden="true"></i></button>
 <div class="blackout" aria-hidden="true"></div><div class="ffcue" aria-hidden="true"><span>Scroll</span><i></i></div><nav class="rail" aria-label="Projects"><ol><li><button type="button" data-jump="1" aria-label="Black Signal"><i></i><b>01</b><span>01 &middot; Black Signal</span></button></li><li><button type="button" data-jump="2" aria-label="DEEDS"><i></i><b>02</b><span>02 &middot; DEEDS</span></button></li><li><button type="button" data-jump="3" aria-label="Digital Resource Map"><i></i><b>03</b><span>03 &middot; Digital Resource Map</span></button></li><li><button type="button" data-jump="4" aria-label="The Traveling Archive"><i></i><b>04</b><span>04 &middot; The Traveling Archive</span></button></li><li><button type="button" data-jump="5" aria-label="Sentinel"><i></i><b>05</b><span>05 &middot; Sentinel</span></button></li><li><button type="button" data-jump="6" aria-label="exit_0"><i></i><b>06</b><span>06 &middot; exit_0</span></button></li></ol></nav><div class="descent" data-descent><div class="shaft" aria-hidden="true"><canvas class="wellc"></canvas><div class="pit"></div></div><div class="gauge" aria-hidden="true"><span class="gl">Depth</span><span class="gv">0000</span><span class="gu">m</span><i></i></div><section class="deep" data-scene data-i="0" aria-label="Introduction"><div class="stick"><div class="obj"><div class="big">06</div></div>
-<div class="dtxt" data-at=".25"><span class="kick">Selected work</span><h2>Six problems worth solving.</h2><p>Software for learners, nonprofits and the communities they serve, from certification training to a map of free internet.</p></div></div></section><section class="deep" data-scene data-i="1" aria-label="Black Signal"><div class="stick"><div class="obj"><div class="holo"><img src="assets/images/portfolio/black-signal.png" alt="Black Signal logo"><span class="br tl"></span><span class="br tr"></span><span class="br bl"></span><span class="br bott"></span><span class="scan"></span></div><span class="hlabel">01 &middot; Black Signal</span></div>
+<div class="dtxt" data-at=".25"><span class="kick">The work</span><h2>Six problems worth solving.</h2><p>Training that works offline. Service that gets verified. Free help people can actually find, and the servers it all runs&nbsp;on.</p></div></div></section><section class="deep" data-scene data-i="1" aria-label="Black Signal"><div class="stick"><div class="obj"><div class="holo"><img src="assets/images/portfolio/black-signal.png" alt="Black Signal logo"><span class="br tl"></span><span class="br tr"></span><span class="br bl"></span><span class="br bott"></span><span class="scan"></span></div><span class="hlabel">01 &middot; Black Signal</span></div>
 <article class="dtxt pcard" data-at=".28"><div class="ptop"><span class="kick">Platform · Founder</span><span class="pidx">01 / 06</span></div><h2>Black Signal</h2>
 <p class="lede">Certification training that still works when the internet doesn’t.</p>
 <dl><dt>The problem</dt><dd>Cert prep is expensive, passive and assumes a fast connection, which shuts out many of the people who would benefit most.</dd><dt>What I built</dt><dd>An adaptive platform for Linux, Security+, Python and C, with terminal labs that feel real, C that compiles right in the browser, spaced repetition and full offline support.</dd><dt>Where it stands</dt><dd>Live demo. Paid plans and a console for schools and training programs are in development.</dd></dl>
-<a class="pvisit" href="https://black-signal-demo.netlify.app/" target="_blank" rel="noopener">Try the demo &rarr;</a></article></div></section><section class="deep" data-scene data-i="2" aria-label="DEEDS"><div class="stick"><div class="obj"><div class="holo"><img src="assets/images/portfolio/deeds.png" alt="DEEDS logo"><span class="br tl"></span><span class="br tr"></span><span class="br bl"></span><span class="br bott"></span><span class="scan"></span></div><span class="hlabel">02 &middot; DEEDS</span></div>
+<a class="pvisit" href="https://black-signal-demo.netlify.app/" target="_blank" rel="noopener">Try the demo</a></article></div></section><section class="deep" data-scene data-i="2" aria-label="DEEDS"><div class="stick"><div class="obj"><div class="holo"><img src="assets/images/portfolio/deeds.png" alt="DEEDS logo"><span class="br tl"></span><span class="br tr"></span><span class="br bl"></span><span class="br bott"></span><span class="scan"></span></div><span class="hlabel">02 &middot; DEEDS</span></div>
 <article class="dtxt pcard" data-at=".28"><div class="ptop"><span class="kick">Web app · CTO</span><span class="pidx">02 / 06</span></div><h2>DEEDS</h2>
 <p class="lede">Community service, verified and remembered.</p>
 <dl><dt>The problem</dt><dd>Community service is hard to verify and easy to forget, so the people doing the work rarely get credit for it.</dd><dt>What I built</dt><dd>Challenges to join, a verifier workflow that confirms the work and a personal Impact Passport that keeps the record.</dd><dt>Where it stands</dt><dd>Preparing a pilot with Roxbury Community College.</dd></dl>
-<a class="pvisit" href="https://deeds-demo.netlify.app/" target="_blank" rel="noopener">Open the demo &rarr;</a></article></div></section><section class="deep" data-scene data-i="3" aria-label="Digital Resource Map"><div class="stick"><div class="obj"><div class="holo"><img src="assets/images/portfolio/resource-map.png" alt="Digital Resource Map logo"><span class="br tl"></span><span class="br tr"></span><span class="br bl"></span><span class="br bott"></span><span class="scan"></span></div><span class="hlabel">03 &middot; Digital Resource Map</span></div>
+<a class="pvisit" href="https://deeds-demo.netlify.app/" target="_blank" rel="noopener">Open the demo</a></article></div></section><section class="deep" data-scene data-i="3" aria-label="Digital Resource Map"><div class="stick"><div class="obj"><div class="holo"><img src="assets/images/portfolio/resource-map.png" alt="Digital Resource Map logo"><span class="br tl"></span><span class="br tr"></span><span class="br bl"></span><span class="br bott"></span><span class="scan"></span></div><span class="hlabel">03 &middot; Digital Resource Map</span></div>
 <article class="dtxt pcard" data-at=".28"><div class="ptop"><span class="kick">Web app · Pass It On</span><span class="pidx">03 / 06</span></div><h2>Digital Resource Map</h2>
 <p class="lede">Free devices, internet and training, found in seconds.</p>
 <dl><dt>The problem</dt><dd>Free devices, internet and digital skills training existed, but residents couldn’t find what was near them.</dd><dt>What I built</dt><dd>A searchable map for Pass It On, built in-house so the nonprofit doesn’t have to pay for an outside platform.</dd><dt>Where it stands</dt><dd>Covers four Maryland counties, including Baltimore City.</dd></dl>
-<a class="pvisit" href="https://digital-resource-map-demo.netlify.app/" target="_blank" rel="noopener">Open the demo &rarr;</a></article></div></section><section class="deep" data-scene data-i="4" aria-label="The Traveling Archive"><div class="stick"><div class="obj"><div class="holo"><img src="assets/images/portfolio/traveling-archive.png" alt="The Traveling Archive logo"><span class="br tl"></span><span class="br tr"></span><span class="br bl"></span><span class="br bott"></span><span class="scan"></span></div><span class="hlabel">04 &middot; The Traveling Archive</span></div>
+<a class="pvisit" href="https://digital-resource-map-demo.netlify.app/" target="_blank" rel="noopener">Open the demo</a></article></div></section><section class="deep" data-scene data-i="4" aria-label="The Traveling Archive"><div class="stick"><div class="obj"><div class="holo"><img src="assets/images/portfolio/traveling-archive.png" alt="The Traveling Archive logo"><span class="br tl"></span><span class="br tr"></span><span class="br bl"></span><span class="br bott"></span><span class="scan"></span></div><span class="hlabel">04 &middot; The Traveling Archive</span></div>
 <article class="dtxt pcard" data-at=".28"><div class="ptop"><span class="kick">Website · Beyond the Cover</span><span class="pidx">04 / 06</span></div><h2>The Traveling Archive</h2>
 <p class="lede">A roving literary pop-up that remembers every reader.</p>
 <dl><dt>The problem</dt><dd>A pop-up literary project needed visitors to respond at every stop, and a way to follow readers from one stop to the next.</dd><dt>What I built</dt><dd>A QR code at each host location opens that stop’s page, with a featured book and its own prompt. Responses carry across stops, so returning readers are recognized and winners can be reached.</dd><dt>Where it stands</dt><dd>Live for Beyond the Cover, which brings Black literature, art and archives to communities across the DMV.</dd></dl>
-<a class="pvisit" href="https://thetravelingarchive.com/" target="_blank" rel="noopener">Visit the site &rarr;</a></article></div></section><section class="deep" data-scene data-i="5" aria-label="Sentinel"><div class="stick"><div class="obj"><div class="holo"><img src="assets/images/portfolio/sentinel.png" alt="Sentinel logo"><span class="br tl"></span><span class="br tr"></span><span class="br bl"></span><span class="br bott"></span><span class="scan"></span></div><span class="hlabel">05 &middot; Sentinel</span></div>
+<a class="pvisit" href="https://thetravelingarchive.com/" target="_blank" rel="noopener">Visit the site</a></article></div></section><section class="deep" data-scene data-i="5" aria-label="Sentinel"><div class="stick"><div class="obj"><div class="holo"><img src="assets/images/portfolio/sentinel.png" alt="Sentinel logo"><span class="br tl"></span><span class="br tr"></span><span class="br bl"></span><span class="br bott"></span><span class="scan"></span></div><span class="hlabel">05 &middot; Sentinel</span></div>
 <article class="dtxt pcard" data-at=".28"><div class="ptop"><span class="kick">Security · Open source</span><span class="pidx">05 / 06</span></div><h2>Sentinel</h2>
 <p class="lede">A secure server baseline you can prove.</p>
 <dl><dt>The problem</dt><dd>Server hardening is often manual, inconsistent and hard to audit.</dd><dt>What I built</dt><dd>A Bash toolkit that hardens SSH, the firewall, sudo and password policy, with a dry run, automatic backups and timestamped audit reports.</dd><dt>Where it stands</dt><dd>Open source on GitHub.</dd></dl>
-<a class="pvisit" href="https://github.com/vonds/sentinel" target="_blank" rel="noopener">View on GitHub &rarr;</a></article></div></section><section class="deep" data-scene data-i="6" aria-label="exit_0"><div class="stick"><div class="obj"><div class="holo"><img src="assets/images/portfolio/exit0.png" alt="exit_0 logo"><span class="br tl"></span><span class="br tr"></span><span class="br bl"></span><span class="br bott"></span><span class="scan"></span></div><span class="hlabel">06 &middot; exit_0</span></div>
+<a class="pvisit" href="https://github.com/vonds/sentinel" target="_blank" rel="noopener">View on GitHub</a></article></div></section><section class="deep" data-scene data-i="6" aria-label="exit_0"><div class="stick"><div class="obj"><div class="holo"><img src="assets/images/portfolio/exit0.png" alt="exit_0 logo"><span class="br tl"></span><span class="br tr"></span><span class="br bl"></span><span class="br bott"></span><span class="scan"></span></div><span class="hlabel">06 &middot; exit_0</span></div>
 <article class="dtxt pcard" data-at=".28"><div class="ptop"><span class="kick">Training · Open source</span><span class="pidx">06 / 06</span></div><h2>exit_0</h2>
 <p class="lede">Real Linux failures, practiced safely.</p>
 <dl><dt>The problem</dt><dd>Linux learners rarely face real failures until it happens at work.</dd><dt>What I built</dt><dd>Hundreds of scenario labs covering recovery, storage, services, boot problems and configuration drift.</dd><dt>Where it stands</dt><dd>Open source on GitHub.</dd></dl>
-<a class="pvisit" href="https://github.com/vonds/exit_0" target="_blank" rel="noopener">View on GitHub &rarr;</a></article></div></section><div class="fadeout" aria-hidden="true"></div></div>
-<section class="ffend"><h2>Have a problem worth solving?</h2><p class="endp">I take on client projects and partner with organizations doing work like this, as a builder, a consultant or a trainer.</p><div class="feat"><article class="ftile"><button type="button" class="fjump" data-jump="3" aria-label="Back to Digital Resource Map"><img src="assets/images/portfolio/resource-map.png" alt=""></button><span class="kick">Web app · Pass It On</span><h3>Digital Resource Map</h3><p>Free devices, internet and training, found in seconds.</p><a class="pvisit" href="https://digital-resource-map-demo.netlify.app/" target="_blank" rel="noopener">Open the demo &rarr;</a></article><article class="ftile"><button type="button" class="fjump" data-jump="1" aria-label="Back to Black Signal"><img src="assets/images/portfolio/black-signal.png" alt=""></button><span class="kick">Platform · Founder</span><h3>Black Signal</h3><p>Certification training that still works when the internet doesn’t.</p><a class="pvisit" href="https://black-signal-demo.netlify.app/" target="_blank" rel="noopener">Try the demo &rarr;</a></article></div><ul class="recap"><li><button type="button" data-jump="2" aria-label="Back to DEEDS"><img src="assets/images/portfolio/deeds.png" alt=""><span>DEEDS</span></button></li><li><button type="button" data-jump="4" aria-label="Back to The Traveling Archive"><img src="assets/images/portfolio/traveling-archive.png" alt=""><span>The Traveling Archive</span></button></li><li><button type="button" data-jump="5" aria-label="Back to Sentinel"><img src="assets/images/portfolio/sentinel.png" alt=""><span>Sentinel</span></button></li><li><button type="button" data-jump="6" aria-label="Back to exit_0"><img src="assets/images/portfolio/exit0.png" alt=""><span>exit_0</span></button></li></ul><div class="ffbtns"><button class="pvisit" type="button" data-ffclose data-goto="contact">Start a project</button></div></section>
+<a class="pvisit" href="https://github.com/vonds/exit_0" target="_blank" rel="noopener">View on GitHub</a></article></div></section><div class="fadeout" aria-hidden="true"></div></div>
+<section class="ffend"><h2>Have a problem worth solving?</h2><p class="endp">I take on client projects and partner with organizations doing work like this, as a builder, a consultant or a trainer.</p><div class="feat"><article class="ftile"><button type="button" class="fjump" data-jump="3" aria-label="Back to Digital Resource Map"><img src="assets/images/portfolio/resource-map.png" alt=""></button><span class="kick">Web app · Pass It On</span><h3>Digital Resource Map</h3><p>Free devices, internet and training, found in seconds.</p><a class="pvisit" href="https://digital-resource-map-demo.netlify.app/" target="_blank" rel="noopener">Open the demo</a></article><article class="ftile"><button type="button" class="fjump" data-jump="1" aria-label="Back to Black Signal"><img src="assets/images/portfolio/black-signal.png" alt=""></button><span class="kick">Platform · Founder</span><h3>Black Signal</h3><p>Certification training that still works when the internet doesn’t.</p><a class="pvisit" href="https://black-signal-demo.netlify.app/" target="_blank" rel="noopener">Try the demo</a></article></div><ul class="recap"><li><button type="button" data-jump="2" aria-label="Back to DEEDS"><img src="assets/images/portfolio/deeds.png" alt=""><span>DEEDS</span></button></li><li><button type="button" data-jump="4" aria-label="Back to The Traveling Archive"><img src="assets/images/portfolio/traveling-archive.png" alt=""><span>The Traveling Archive</span></button></li><li><button type="button" data-jump="5" aria-label="Back to Sentinel"><img src="assets/images/portfolio/sentinel.png" alt=""><span>Sentinel</span></button></li><li><button type="button" data-jump="6" aria-label="Back to exit_0"><img src="assets/images/portfolio/exit0.png" alt=""><span>exit_0</span></button></li></ul><div class="ffbtns"><button class="pvisit" type="button" data-ffclose data-goto="contact">Start a project</button></div></section>
 </div>
 <div class="warp" aria-hidden="true"><i style="--k:0"></i><i style="--k:1"></i><i style="--k:2"></i><i style="--k:3"></i><i style="--k:4"></i><i style="--k:5"></i><i style="--k:6"></i><i style="--k:7"></i><i style="--k:8"></i><i style="--k:9"></i></div>
 <script>
@@ -846,15 +906,31 @@ body.swap .warp{transition:none!important;opacity:0}
     try{navigator.clipboard.writeText(email).then(function(){done('Copied');},function(){done('Select & copy');});}catch(e){done('Select & copy');}
   });
 
-  var form=document.getElementById('contactForm'), note=document.getElementById('formNote');
+  /* Contact form: sends through Web3Forms (https://web3forms.com).
+     Paste the access key Web3Forms emailed you between the quotes. The key is safe to be public.
+     With no key, the form falls back to opening the visitor's email app. */
+  var WEB3FORMS_KEY='2e9cf619-57b7-4c94-a281-bc68ebf28da8';
+  var form=document.getElementById('contactForm'), note=document.getElementById('formNote'), sendBtn=form.querySelector('button[type="submit"]'), sendLabel=sendBtn.textContent;
+  function setNote(msg,state){note.textContent=msg;note.className='form-note'+(state?' '+state:'');}
+  function mailtoFallback(subject,body){window.location.href='mailto:'+email+'?subject='+encodeURIComponent(subject)+'&body='+encodeURIComponent(body);}
   form.addEventListener('submit',function(e){
     e.preventDefault();
     var name=form.name.value.trim(), from=form.email.value.trim(), msg=form.message.value.trim(), type=form.type.value;
-    if(!name||!from||!msg){note.textContent='Please fill in your name, email and a short message.';return;}
+    if(!name||!from||!msg){setNote('Please fill in your name, email and a short message.','err');(!name?form.name:!from?form.email:form.message).focus();return;}
+    if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(from)){setNote('That email address doesn’t look right. Please check it.','err');form.email.focus();return;}
     var subject='Project inquiry: '+type, body=msg+'\n\n'+name+'\n'+from;
-    var href='mailto:'+email+'?subject='+encodeURIComponent(subject)+'&body='+encodeURIComponent(body);
-    note.textContent='Opening your email app with this message ready to send. If nothing opens, email '+email+' directly.';
-    window.location.href=href;
+    if(!WEB3FORMS_KEY){setNote('Opening your email app with this message ready to send. If nothing opens, email '+email+' directly.');mailtoFallback(subject,body);return;}
+    if(form.botcheck&&form.botcheck.checked){return;}
+    sendBtn.disabled=true;sendBtn.textContent='Sending…';form.setAttribute('aria-busy','true');setNote('');
+    fetch('https://api.web3forms.com/submit',{method:'POST',headers:{'Content-Type':'application/json','Accept':'application/json'},
+      body:JSON.stringify({access_key:WEB3FORMS_KEY,subject:subject,from_name:'vonds.github.io',name:name,email:from,replyto:from,project_type:type,message:msg})})
+      .then(function(r){return r.json().catch(function(){return {success:false};});})
+      .then(function(d){
+        if(d&&d.success){form.reset();setNote('Thanks, '+name.split(' ')[0]+'. Your message is on its way, and I’ll be in touch soon.','ok');sendBtn.textContent='Message sent';setTimeout(function(){sendBtn.textContent=sendLabel;sendBtn.disabled=false;},4000);}
+        else{throw new Error('rejected');}
+      })
+      .catch(function(){sendBtn.textContent=sendLabel;sendBtn.disabled=false;setNote('Sorry, that didn’t go through. Please try again, or email '+email+' directly.','err');})
+      .then(function(){form.removeAttribute('aria-busy');});
   });
 })();
 </script>
@@ -936,11 +1012,11 @@ body.swap .warp{transition:none!important;opacity:0}
   var lastScene = scenes[scenes.length - 1], fend = ff.querySelector('.ffend'), bo = -1;
   function endState() {
     var vh = window.innerHeight, r = lastScene.getBoundingClientRect();
-    var span = (r.height - vh), start = r.top + span * 0.7;   // fade while exit_0 is still pinned
-    var v = clamp(-start / (span * 0.3));
+    var span = (r.height - vh), start = r.top + span * 0.6;   // fade while exit_0 is still pinned
+    var v = clamp(-start / (span * 0.32));
     if (Math.abs(v - bo) > 0.002) { bo = v; ff.style.setProperty('--bo', v.toFixed(3)); }
     var er = fend.getBoundingClientRect();
-    fend.classList.toggle('in', reduce || er.top < vh * 0.45);
+    fend.classList.toggle('in', reduce || er.top < vh * 0.85);
   }
   function railState() {
     var cur = current();

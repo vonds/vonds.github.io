@@ -1,219 +1,95 @@
-<!-- lab079.html -->
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="exit_0 Documentation" />
-    <meta name="name" content="Vonds" />
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lab 079: Working with System Time using date | exit_0 Labs</title>
+<meta name="description" content="Use date to confirm local time, compare it to UTC for log correlation, generate script-friendly timestamps, and compute a future maintenance window using…">
+<link rel="canonical" href="https://vonds.github.io/lab79.html">
+<meta name="theme-color" content="#2e2e30">
+<meta name="author" content="Vonds">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="Vonds">
+<meta property="og:url" content="https://vonds.github.io/lab79.html">
+<meta property="og:title" content="Lab 079: Working with System Time using date | exit_0 Labs">
+<meta property="og:description" content="Use date to confirm local time, compare it to UTC for log correlation, generate script-friendly timestamps, and compute a future maintenance window using…">
+<meta property="og:image" content="https://vonds.github.io/assets/images/og/og-exit0.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="exit_0: 165 hands-on Linux labs for real system administration.">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Lab 079: Working with System Time using date | exit_0 Labs">
+<meta name="twitter:description" content="Use date to confirm local time, compare it to UTC for log correlation, generate script-friendly timestamps, and compute a future maintenance window using…">
+<meta name="twitter:image" content="https://vonds.github.io/assets/images/og/og-exit0.jpg">
+<link rel="icon" type="image/svg+xml" href="assets/images/favicon.svg">
+<link rel="icon" type="image/png" href="assets/images/favicon.png">
+<link rel="apple-touch-icon" href="assets/images/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Dosis:wght@300;400;500;600&family=Open+Sans:wght@400;600&display=swap">
+<link rel="stylesheet" href="assets/css/site.css">
+<link rel="stylesheet" href="assets/css/exit0.css">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Vonds","item":"https://vonds.github.io/"},{"@type":"ListItem","position":2,"name":"exit_0 Labs","item":"https://vonds.github.io/docs.html"},{"@type":"ListItem","position":3,"name":"Lab 079","item":"https://vonds.github.io/lab79.html"}]}</script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="header solid" id="header">
+  <div class="wrap">
+    <a class="brand" href="index.html" aria-label="Vonds home">
+      <img class="logo-dark" src="assets/images/logo-dark.svg" alt="Vonds">
+      <img class="logo-light" src="assets/images/logo-light.svg" alt="" aria-hidden="true">
+    </a>
+    <button class="menu-btn" id="menuOpen" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="overlay">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</header>
 
-    <title>Vonds | Lab 079</title>
-
-    <!-- Favicons -->
-    <link rel="icon" type="image/svg+xml" href="../assets/images/favicon.svg" />
-    <link rel="icon" type="image/png" href="../assets/images/favicon.png" />
-    <link rel="apple-touch-icon" href="../assets/images/apple-touch-icon.png" />
-    <link
-      rel="apple-touch-icon"
-      sizes="72x72"
-      href="../assets/images/apple-touch-icon-72x72.png"
-    />
-    <link
-      rel="apple-touch-icon"
-      sizes="114x114"
-      href="../assets/images/apple-touch-icon-114x114.png"
-    />
-
-    <!-- Site styles (your existing) -->
-    <link href="../assets/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
-    <link href="../assets/css/font-awesome.min.css" rel="stylesheet" />
-    <link href="../assets/css/linea-icons.css" rel="stylesheet" />
-    <link href="../assets/css/ionicons.min.css" rel="stylesheet" />
-    <link href="../assets/css/simpletextrotator.css" rel="stylesheet" />
-    <link href="../assets/css/magnific-popup.css" rel="stylesheet" />
-    <link href="../assets/css/owl.carousel.css" rel="stylesheet" />
-    <link href="../assets/css/superslides.css" rel="stylesheet" />
-    <link href="../assets/css/vertical.css" rel="stylesheet" />
-    <link href="../assets/css/animate.css" rel="stylesheet" />
-    <link href="../assets/css/style.css" rel="stylesheet" />
-    <link href="../assets/css/docs.css" rel="stylesheet" />
-
-    <!-- Lab page styles -->
-    <link href="../assets/css/lab.css" rel="stylesheet" />
-
-    <!-- Fonts -->
-    <link href="https://fonts.googleapis.com/css?family=Dosis" rel="stylesheet" />
-  </head>
-
-  <body>
-    <!-- PRELOADER -->
-    <div class="page-loader">
-      <div class="loader">Loading...</div>
+<div class="overlay" id="overlay" aria-hidden="true">
+  <button class="close" id="menuClose" type="button" aria-label="Close menu">&times;</button>
+  <nav aria-label="Main">
+    <a class="alt" href="index.html">Home</a>
+    <a class="alt" href="index.html#about">About</a>
+    <a class="alt" href="index.html#portfolio">Portfolio</a>
+    <div class="sub">
+      <a class="alt" href="https://black-signal-demo.netlify.app/">Black Signal</a>
+      <a class="alt" href="https://deeds-demo.netlify.app/">DEEDS</a>
+      <a class="alt" href="https://digital-resource-map-demo.netlify.app/">Digital Resource Map</a>
+      <a class="alt" href="https://thetravelingarchive.com/">The Traveling Archive</a>
+      <a class="alt" href="https://github.com/vonds/sentinel">Sentinel</a>
+      <a class="alt" href="docs.html">exit_0 Labs</a>
     </div>
+    <a class="alt" href="index.html#services">Services</a>
+    <a class="alt" href="index.html#contact">Contact</a>
+    <a class="alt" href="https://www.linkedin.com/in/vonds/">LinkedIn</a>
+  </nav>
+  <div class="foot alt">Vonds &copy; <span id="year">2026</span></div>
+</div>
 
-    <!-- OVERLAY MENU -->
-    <div id="overlay-menu" class="overlay-menu">
-      <a href="#" id="overlay-menu-hide" class="navigation-hide">
-        <i class="ion-close-round"></i>
-      </a>
-
-      <div class="overlay-menu-inner">
-        <nav class="overlay-menu-nav">
-          <ul id="nav">
-            <li><a href="../index.html">Home</a></li>
-
-            <li class="slidedown">
-              <a href="#">Portfolio</a>
-              <ul>
-                <li>
-                  <a
-                    href="https://github.com/vonds/exit_0"
-                    target="_blank"
-                    rel="noopener"
-                  >
-                    exit_0
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="https://github.com/vonds/sentinel"
-                    target="_blank"
-                    rel="noopener"
-                  >
-                    Sentinel
-                  </a>
-                </li>
-                <li>
-                  <a href="docs.html" target="_blank" rel="noopener">
-                    exit_0 Documentation
-                  </a>
-                </li>
-              </ul>
-            </li>
-
-            <li>
-              <a
-                href="https://www.linkedin.com/in/vonds/"
-                target="_blank"
-                rel="noopener"
-              >
-                LinkedIn
-              </a>
-            </li>
-            <li>
-              <a href="https://github.com/vonds" target="_blank" rel="noopener">
-                Github
-              </a>
-            </li>
-            <li>
-              <a href="mailto:vonds13@gmail.com?subject=Hello Vonds">Contact</a>
-            </li>
-          </ul>
+<main class="x0" id="main">
+  <div class="x0-wrap">
+    <nav class="crumbs alt" aria-label="Breadcrumb"><a href="index.html">Vonds</a><span class="sep" aria-hidden="true">/</span><a href="docs.html">exit_0 Labs</a><span class="sep" aria-hidden="true">/</span><span aria-current="page">Lab 079</span></nav>
+    <header class="x0-head">
+      <p class="eyebrow alt"><b>Lab 079</b> &middot; shell</p>
+      <h1>Working with System Time using date</h1>
+      <p class="lede">Use <code>date</code> to confirm local time, compare it to UTC for log correlation, generate script-friendly timestamps, and compute a future maintenance window using human-readable expressions. This lab focuses on the time checks you run constantly during incidents and planned changes.</p>
+      <nav class="pager-mini" aria-label="Lab navigation"><a class="alt" href="lab78.html" rel="prev">Lab 078</a><a class="alt" href="lab80.html" rel="next">Lab 080</a></nav>
+    </header>
+    <div class="x0-grid">
+      <aside class="x0-side" aria-label="On this page">
+        <nav class="toc">
+          <a class="back alt" href="docs.html">All labs</a>
+          <p class="toc-h alt">On this page</p>
+          <ul><li><a href="#video">Video</a></li><li><a href="#scenario">Scenario</a></li><li><a href="#objective">Objective</a></li><li><a href="#concepts">Concepts</a></li><li><a href="#walkthrough">Walkthrough</a></li><li><a href="#breakpoints">Common breakpoints</a></li><li><a href="#cleanup">Cleanup checklist</a></li><li><a href="#reference">Reference</a></li></ul>
         </nav>
-      </div>
-
-      <div class="overlay-navigation-footer">
-        <div class="container">
-          <div class="row">
-            <div class="col-sm-12 text-center">
-              <p class="copyright font-alt m-b-0">
-                VONDS &copy;
-                <script>
-                  document.write(new Date().getFullYear())
-                </script>
-              </p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- WRAPPER -->
-    <div class="wrapper">
-      <!-- NAVIGATION -->
-      <nav
-        class="navbar navbar-custom navbar-transparent navbar-light navbar-fixed-top"
-      >
-        <div class="container">
-          <div class="navbar-header">
-            <a class="navbar-brand" href="../index.html">
-              <img class="logo-dark" src="../assets/images/logo-dark.svg" alt="Vonds" /><img class="logo-light" src="../assets/images/logo-light.svg" alt="" aria-hidden="true" />
-            </a>
-          </div>
-
-          <ul id="icons-navbar" class="nav navbar-nav navbar-right">
-            <li>
-              <a href="#" id="toggle-menu" class="show-overlay" title="Menu">
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-              </a>
-            </li>
-          </ul>
-        </div>
-      </nav>
-
-      <!-- DOCS PAGE -->
-      <section class="module">
-        <div class="container">
-          <h2 class="font-alt module-title m-t-60">
-            Lab 79: Working with System Time using date
-          </h2>
-
-          <nav class="lab-pagination">
-            <a
-              id="prev-lab"
-              class="lab-nav-link"
-              href="#"
-              aria-label="Previous lab"
-            >
-              &laquo;
-            </a>
-            <a
-              id="next-lab"
-              class="lab-nav-link"
-              href="#"
-              aria-label="Next lab"
-            >
-              &raquo;
-            </a>
-          </nav>
-
-          <div class="row">
-            <!-- LEFT SIDEBAR -->
-            <div class="col-sm-4 col-md-3 lab-sidebar">
-              <div class="docs-sidebar">
-                <div class="docs-widget">
-                  <h5 class="widget-title">
-                    <a href="./docs.html">Back to Lab Index</a>
-                  </h5>
-                  <ul class="docs-nav">
-                    <li><a href="#scenario">Scenario</a></li>
-                    <li><a href="#objective">Objective</a></li>
-                    <li><a href="#concepts">Concepts</a></li>
-                    <li><a href="#walkthrough">Walkthrough</a></li>
-                    <li><a href="#breakpoints">Breakpoints</a></li>
-                    <li><a href="#cleanup">Cleanup</a></li>
-                    <li><a href="#reference">Reference</a></li>
-                  </ul>
-                </div>
-              </div>
-            </div>
-
-            <!-- MAIN CONTENT -->
-            <div class="col-sm-8 col-md-9 lab-doc">
-              <p class="m-b-20 lab-summary">
-                Use <code>date</code> to confirm local time, compare it to UTC for log correlation, generate script-friendly
-                timestamps, and compute a future maintenance window using human-readable expressions. This lab focuses on the
-                time checks you run constantly during incidents and planned changes.
-              </p>
-
-              <!-- Video (kept on page; not in left nav) -->
+      </aside>
+      <article class="x0-doc">
+<!-- Video (kept on page; not in left nav) -->
               <section class="lab-section" id="video" aria-label="Lab video">
                 <div class="lab-video">
                   <div class="lab-video-embed text-center">
-                    <iframe
-                      src="https://www.youtube.com/embed/zQCa8xx_3sc?si=x99Mr2roVp4VDWqn"
+                    <iframe loading="lazy"
+                      src="https://www.youtube-nocookie.com/embed/zQCa8xx_3sc?si=x99Mr2roVp4VDWqn"
                       title="YouTube video player"
                       frameborder="0"
                       allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
@@ -223,7 +99,6 @@
                   </div>
                 </div>
               </section>
-
               <!-- Scenario -->
               <section class="lab-section" id="scenario">
                 <div class="lab-chips" aria-label="Tags">
@@ -237,18 +112,15 @@
                     <span class="lab-chip-key">scripting</span>
                   </span>
                 </div>
-
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">
                   Scenario
                 </h3>
-
                 <p>
                   You support multiple Linux servers and need quick, reliable time checks to troubleshoot issues and prepare for a
                   maintenance window. You must verify local time, compare it against UTC for consistent log review across regions,
                   generate a standardized timestamp for scripts, and calculate the next Friday at 09:00 local time to schedule an
                   upcoming change.
                 </p>
-
                 <div class="lab-callout">
                   <div class="lab-callout-label">Operator context</div>
                   <p class="m-b-0">
@@ -257,13 +129,11 @@
                   </p>
                 </div>
               </section>
-
               <!-- Objective -->
               <section class="lab-section alt-background" id="objective">
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">
                   Objective
                 </h3>
-
                 <ul>
                   <li>Display current local time with <code>date</code>.</li>
                   <li>Display current UTC time with <code>date -u</code>.</li>
@@ -271,13 +141,11 @@
                   <li>Compute a future maintenance window using <code>date -d</code>.</li>
                 </ul>
               </section>
-
               <!-- Concepts -->
               <section class="lab-section" id="concepts">
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">
                   Concepts
                 </h3>
-
                 <ul>
                   <li>
                     UTC is the clean reference point for cross-host log correlation, especially across regions and cloud control planes.
@@ -293,20 +161,16 @@
                   </li>
                 </ul>
               </section>
-
               <!-- Walkthrough -->
               <section class="lab-section alt-background" id="walkthrough">
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">
                   Walkthrough
                 </h3>
-
                 <!-- Step 1 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
-                    <strong class="font-alt">Step 1</strong>
-                    : Show the current local date and time.
+                    <strong class="font-alt">Step 1</strong>: Show the current local date and time.
                   </div>
-
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
@@ -316,24 +180,19 @@
                     </div>
                     <pre><code id="cmd-step-1">date</code></pre>
                   </div>
-
                   <p>
                     This prints the system’s current local time. It is the fastest sanity check when timestamps look wrong or when
                     you need to confirm time drift during an incident.
                   </p>
-
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <pre><code>Fri Nov 29 09:34:15 EST 2025</code></pre>
                   </div>
                 </div>
-
                 <!-- Step 2 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
-                    <strong class="font-alt">Step 2</strong>
-                    : Display current time in UTC.
+                    <strong class="font-alt">Step 2</strong>: Display current time in UTC.
                   </div>
-
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
@@ -343,24 +202,19 @@
                     </div>
                     <pre><code id="cmd-step-2">date -u</code></pre>
                   </div>
-
                   <p>
                     UTC is commonly used for log correlation across hosts and vendors. If you are comparing timestamps between a
                     local datacenter host and a cloud service, UTC prevents timezone guessing.
                   </p>
-
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <pre><code>Fri Nov 29 14:34:15 UTC 2025</code></pre>
                   </div>
                 </div>
-
                 <!-- Step 3 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
-                    <strong class="font-alt">Step 3</strong>
-                    : Print a script-friendly timestamp.
+                    <strong class="font-alt">Step 3</strong>: Print a script-friendly timestamp.
                   </div>
-
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
@@ -370,25 +224,20 @@
                     </div>
                     <pre><code id="cmd-step-3">date '+%F %T %Z'</code></pre>
                   </div>
-
                   <p>
                     <code>%F</code> produces <code>YYYY-MM-DD</code>,
                     <code>%T</code> produces <code>HH:MM:SS</code>, and
                     <code>%Z</code> prints the timezone abbreviation. This format is clean for scripts and tickets.
                   </p>
-
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <pre><code>2025-11-29 09:34:15 EST</code></pre>
                   </div>
                 </div>
-
                 <!-- Step 4 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
-                    <strong class="font-alt">Step 4</strong>
-                    : Generate a sortable filename timestamp.
+                    <strong class="font-alt">Step 4</strong>: Generate a sortable filename timestamp.
                   </div>
-
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
@@ -398,24 +247,19 @@
                     </div>
                     <pre><code id="cmd-step-4">date '+%Y%m%d_%H%M%S'</code></pre>
                   </div>
-
                   <p>
                     This is a common pattern for backups, reports, and logs. It sorts naturally and avoids spaces/colons that can be
                     awkward in filenames.
                   </p>
-
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <pre><code>20251129_093415</code></pre>
                   </div>
                 </div>
-
                 <!-- Step 5 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
-                    <strong class="font-alt">Step 5</strong>
-                    : Calculate the next Friday at 09:00 local time.
+                    <strong class="font-alt">Step 5</strong>: Calculate the next Friday at 09:00 local time.
                   </div>
-
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
@@ -425,24 +269,19 @@
                     </div>
                     <pre><code id="cmd-step-5">date -d 'next Friday 09:00'</code></pre>
                   </div>
-
                   <p>
                     The <code>-d</code> option parses a human-readable expression and computes the resulting date/time. This is useful
                     for validating maintenance windows and schedule logic quickly without doing mental math.
                   </p>
-
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <pre><code>Fri Dec 05 09:00:00 EST 2025</code></pre>
                   </div>
                 </div>
-
                 <!-- Step 6 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
-                    <strong class="font-alt">Step 6</strong>
-                    : Compute the same window in UTC for cross-team coordination.
+                    <strong class="font-alt">Step 6</strong>: Compute the same window in UTC for cross-team coordination.
                   </div>
-
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
@@ -452,23 +291,19 @@
                     </div>
                     <pre><code id="cmd-step-6">date -u -d 'next Friday 09:00'</code></pre>
                   </div>
-
                   <p>
                     If your org coordinates changes in UTC, compute the timestamp directly in UTC and paste it into the change ticket.
                   </p>
-
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <pre><code>Fri Dec 05 14:00:00 UTC 2025</code></pre>
                   </div>
                 </div>
               </section>
-
               <!-- Breakpoints -->
               <section class="lab-section" id="breakpoints">
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">
                   Common breakpoints
                 </h3>
-
                 <div class="lab-callout">
                   <div class="lab-callout-label">date -d returns “invalid date”</div>
                   <p class="m-b-0">
@@ -476,7 +311,6 @@
                     more explicit string (for example <code>"next fri 09:00"</code> or <code>"2025-12-05 09:00"</code>).
                   </p>
                 </div>
-
                 <div class="lab-callout">
                   <div class="lab-callout-label">Local time looks right, but logs don’t match</div>
                   <p class="m-b-0">
@@ -484,7 +318,6 @@
                     and check the host timezone configuration (timedatectl) if needed.
                   </p>
                 </div>
-
                 <div class="lab-callout">
                   <div class="lab-callout-label">Clock drift keeps coming back</div>
                   <p class="m-b-0">
@@ -493,18 +326,15 @@
                   </p>
                 </div>
               </section>
-
               <!-- Cleanup -->
               <section class="lab-section alt-background" id="cleanup">
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">
                   Cleanup checklist
                 </h3>
-
                 <p>
                   This lab is read-only by default. If you used these commands inside a script or changed timezone/time elsewhere, confirm
                   you are back in a steady state.
                 </p>
-
                 <div class="lab-codeblock m-b-40 m-t-40">
                   <div class="lab-codeblock-header">
                     <span>Commands</span>
@@ -515,7 +345,6 @@
                   <pre><code id="cmd-cleanup">date
 date -u</code></pre>
                 </div>
-
                 <div class="lab-callout">
                   <div class="lab-callout-label">Success signal</div>
                   <p class="m-b-0">
@@ -523,27 +352,20 @@ date -u</code></pre>
                   </p>
                 </div>
               </section>
-
               <!-- Reference (commands -> options hierarchy) -->
               <section class="lab-section" id="reference">
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">
                   Reference
                 </h3>
-
                 <ul class="lab-reference-list">
                   <li>
-                    <code>date</code>
-                    : Prints the current system time using the default local timezone format.
+                    <code>date</code>: Prints the current system time using the default local timezone format.
                   </li>
-
                   <li>
-                    <code>date -u</code>
-                    : Prints time in UTC.
+                    <code>date -u</code>: Prints time in UTC.
                   </li>
-
                   <li>
-                    <code>date '+&lt;FORMAT&gt;'</code>
-                    : Prints a formatted timestamp.
+                    <code>date '+&lt;FORMAT&gt;'</code>: Prints a formatted timestamp.
                     <ul>
                       <li><code>%F</code>: <code>YYYY-MM-DD</code></li>
                       <li><code>%T</code>: <code>HH:MM:SS</code></li>
@@ -551,94 +373,33 @@ date -u</code></pre>
                       <li><code>%Y%m%d_%H%M%S</code>: common sortable filename timestamp pattern</li>
                     </ul>
                   </li>
-
                   <li>
-                    <code>date -d '&lt;expression&gt;'</code>
-                    : Computes a date/time from a human-readable expression.
+                    <code>date -d '&lt;expression&gt;'</code>: Computes a date/time from a human-readable expression.
                     <ul>
                       <li><code>next Friday 09:00</code>: example maintenance window expression</li>
                     </ul>
                   </li>
-
                   <li>
-                    <code>date -u -d '&lt;expression&gt;'</code>
-                    : Computes a parsed date/time expression in UTC.
+                    <code>date -u -d '&lt;expression&gt;'</code>: Computes a parsed date/time expression in UTC.
                   </li>
                 </ul>
               </section>
-            </div>
-            <!-- /main -->
-          </div>
-          <!-- /row -->
-        </div>
-        <!-- /container -->
-      </section>
-
-      <!-- FOOTER -->
-      <footer class="module bg-light">
-        <div class="container">
-          <div class="row">
-            <div class="col-sm-12">
-              <ul class="social-text-links font-alt text-center m-b-20">
-                <li>
-                  <a href="https://github.com/vonds" target="_blank" rel="noopener">
-                    Github
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="https://www.linkedin.com/in/vonds/"
-                    target="_blank"
-                    rel="noopener"
-                  >
-                    Linkedin
-                  </a>
-                </li>
-              </ul>
-            </div>
-          </div>
-
-          <div class="row">
-            <div class="col-sm-12">
-              <p class="copyright text-center m-b-0">
-                VONDS &copy;
-                <span id="year"></span>
-              </p>
-
-              <div class="scroll-up">
-                <a href="#totop"><i class="fa fa-angle-double-up"></i></a>
-              </div>
-            </div>
-          </div>
-        </div>
-      </footer>
+        <nav class="pager" aria-label="Previous and next lab"><a class="prev" href="lab78.html" rel="prev"><span class="dir alt">Previous &middot; Lab 078</span><span class="t">Managing Time with timedatectl</span></a><a class="next" href="lab80.html" rel="next"><span class="dir alt">Next &middot; Lab 080</span><span class="t">Installing and Configuring Postfix (MTA)</span></a></nav>
+      </article>
     </div>
+  </div>
+</main>
 
-    <!-- Javascript files (your existing) -->
-    <script src="../assets/js/jquery-2.2.4.min.js"></script>
-    <script src="../assets/bootstrap/js/bootstrap.min.js"></script>
-    <script src="../assets/js/jquery.superslides.min.js"></script>
-    <script src="../assets/js/jquery.mb.YTPlayer.min.js"></script>
-    <script src="../assets/js/jquery.magnific-popup.min.js"></script>
-    <script src="../assets/js/owl.carousel.min.js"></script>
-    <script src="../assets/js/jquery.simple-text-rotator.min.js"></script>
-    <script src="../assets/js/imagesloaded.pkgd.js"></script>
-    <script src="../assets/js/isotope.pkgd.min.js"></script>
-    <script src="../assets/js/packery-mode.pkgd.min.js"></script>
-    <script src="../assets/js/appear.js"></script>
-    <script src="../assets/js/jquery.easing.1.3.js"></script>
-    <script src="../assets/js/wow.min.js"></script>
-    <script src="../assets/js/jqBootstrapValidation.js"></script>
-    <script src="../assets/js/jquery.fitvids.js"></script>
-    <script src="../assets/js/jquery.parallax-1.1.3.js"></script>
-    <script src="../assets/js/smoothscroll.js"></script>
-    <script src="../assets/js/custom.js"></script>
-
-    <!-- Lab page JS (new) -->
-    <script src="../assets/js/lab.js"></script>
-
-    <script>
-      document.getElementById('year').textContent = new Date().getFullYear()
-    </script>
-  </body>
+<footer>
+  <img class="mark" src="assets/images/logo-dark.svg" alt="Vonds">
+  <nav aria-label="Footer" class="alt">
+    <a href="index.html#about">About</a><a href="index.html#portfolio">Portfolio</a><a href="docs.html">exit_0 Labs</a><a href="index.html#contact">Contact</a><a href="https://www.linkedin.com/in/vonds/">LinkedIn</a>
+  </nav>
+  <div class="line"></div>
+  <p class="copyright alt">Vonds &copy; 2026</p>
+</footer>
+<button class="to-top" id="toTop" type="button" aria-label="Back to top"><i class="chev" aria-hidden="true"></i></button>
+<script src="assets/js/site.js" defer></script>
+<script src="assets/js/lab.js" defer></script>
+</body>
 </html>

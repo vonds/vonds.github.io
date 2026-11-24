@@ -1,185 +1,95 @@
-<!-- lab004.html -->
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="exit_0 Documentation" />
-    <meta name="name" content="Vonds" />
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lab 004: Using sed To Do SSH Config Hardening | exit_0 Labs</title>
+<meta name="description" content="Harden SSH configuration using precise sed substitutions against a test sshd_config file. You will disable root login, disable password authentication, and…">
+<link rel="canonical" href="https://vonds.github.io/lab4.html">
+<meta name="theme-color" content="#2e2e30">
+<meta name="author" content="Vonds">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="Vonds">
+<meta property="og:url" content="https://vonds.github.io/lab4.html">
+<meta property="og:title" content="Lab 004: Using sed To Do SSH Config Hardening | exit_0 Labs">
+<meta property="og:description" content="Harden SSH configuration using precise sed substitutions against a test sshd_config file. You will disable root login, disable password authentication, and…">
+<meta property="og:image" content="https://vonds.github.io/assets/images/og/og-exit0.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="exit_0: 165 hands-on Linux labs for real system administration.">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Lab 004: Using sed To Do SSH Config Hardening | exit_0 Labs">
+<meta name="twitter:description" content="Harden SSH configuration using precise sed substitutions against a test sshd_config file. You will disable root login, disable password authentication, and…">
+<meta name="twitter:image" content="https://vonds.github.io/assets/images/og/og-exit0.jpg">
+<link rel="icon" type="image/svg+xml" href="assets/images/favicon.svg">
+<link rel="icon" type="image/png" href="assets/images/favicon.png">
+<link rel="apple-touch-icon" href="assets/images/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Dosis:wght@300;400;500;600&family=Open+Sans:wght@400;600&display=swap">
+<link rel="stylesheet" href="assets/css/site.css">
+<link rel="stylesheet" href="assets/css/exit0.css">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Vonds","item":"https://vonds.github.io/"},{"@type":"ListItem","position":2,"name":"exit_0 Labs","item":"https://vonds.github.io/docs.html"},{"@type":"ListItem","position":3,"name":"Lab 004","item":"https://vonds.github.io/lab4.html"}]}</script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="header solid" id="header">
+  <div class="wrap">
+    <a class="brand" href="index.html" aria-label="Vonds home">
+      <img class="logo-dark" src="assets/images/logo-dark.svg" alt="Vonds">
+      <img class="logo-light" src="assets/images/logo-light.svg" alt="" aria-hidden="true">
+    </a>
+    <button class="menu-btn" id="menuOpen" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="overlay">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</header>
 
-    <title>Vonds | Lab 004</title>
-
-    <!-- Favicons -->
-    <link rel="icon" type="image/svg+xml" href="../assets/images/favicon.svg" />
-    <link rel="icon" type="image/png" href="../assets/images/favicon.png" />
-    <link rel="apple-touch-icon" href="../assets/images/apple-touch-icon.png" />
-    <link rel="apple-touch-icon" sizes="72x72" href="../assets/images/apple-touch-icon-72x72.png" />
-    <link
-      rel="apple-touch-icon"
-      sizes="114x114"
-      href="../assets/images/apple-touch-icon-114x114.png"
-    />
-
-    <!-- Site styles (your existing) -->
-    <link href="../assets/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
-    <link href="../assets/css/font-awesome.min.css" rel="stylesheet" />
-    <link href="../assets/css/linea-icons.css" rel="stylesheet" />
-    <link href="../assets/css/ionicons.min.css" rel="stylesheet" />
-    <link href="../assets/css/simpletextrotator.css" rel="stylesheet" />
-    <link href="../assets/css/magnific-popup.css" rel="stylesheet" />
-    <link href="../assets/css/owl.carousel.css" rel="stylesheet" />
-    <link href="../assets/css/superslides.css" rel="stylesheet" />
-    <link href="../assets/css/vertical.css" rel="stylesheet" />
-    <link href="../assets/css/animate.css" rel="stylesheet" />
-    <link href="../assets/css/style.css" rel="stylesheet" />
-    <link href="../assets/css/docs.css" rel="stylesheet" />
-
-    <!-- Lab page styles -->
-    <link href="../assets/css/lab.css" rel="stylesheet" />
-
-    <!-- Fonts -->
-    <link href="https://fonts.googleapis.com/css?family=Dosis" rel="stylesheet" />
-  </head>
-
-  <body>
-    <!-- PRELOADER -->
-    <div class="page-loader">
-      <div class="loader">Loading...</div>
+<div class="overlay" id="overlay" aria-hidden="true">
+  <button class="close" id="menuClose" type="button" aria-label="Close menu">&times;</button>
+  <nav aria-label="Main">
+    <a class="alt" href="index.html">Home</a>
+    <a class="alt" href="index.html#about">About</a>
+    <a class="alt" href="index.html#portfolio">Portfolio</a>
+    <div class="sub">
+      <a class="alt" href="https://black-signal-demo.netlify.app/">Black Signal</a>
+      <a class="alt" href="https://deeds-demo.netlify.app/">DEEDS</a>
+      <a class="alt" href="https://digital-resource-map-demo.netlify.app/">Digital Resource Map</a>
+      <a class="alt" href="https://thetravelingarchive.com/">The Traveling Archive</a>
+      <a class="alt" href="https://github.com/vonds/sentinel">Sentinel</a>
+      <a class="alt" href="docs.html">exit_0 Labs</a>
     </div>
+    <a class="alt" href="index.html#services">Services</a>
+    <a class="alt" href="index.html#contact">Contact</a>
+    <a class="alt" href="https://www.linkedin.com/in/vonds/">LinkedIn</a>
+  </nav>
+  <div class="foot alt">Vonds &copy; <span id="year">2026</span></div>
+</div>
 
-    <!-- OVERLAY MENU -->
-    <div id="overlay-menu" class="overlay-menu">
-      <a href="#" id="overlay-menu-hide" class="navigation-hide">
-        <i class="ion-close-round"></i>
-      </a>
-
-      <div class="overlay-menu-inner">
-        <nav class="overlay-menu-nav">
-          <ul id="nav">
-            <li><a href="../index.html">Home</a></li>
-
-            <li class="slidedown">
-              <a href="#">Portfolio</a>
-              <ul>
-                <li>
-                  <a href="https://github.com/vonds/exit_0" target="_blank" rel="noopener">
-                    exit_0
-                  </a>
-                </li>
-                <li>
-                  <a href="docs.html" target="_blank" rel="noopener">
-                    exit_0 Documentation
-                  </a>
-                </li>
-                <li>
-                  <a href="https://github.com/vonds/sentinel" target="_blank" rel="noopener">
-                    Sentinel
-                  </a>
-                </li>
-              </ul>
-            </li>
-
-            <li>
-              <a href="https://www.linkedin.com/in/vonds/" target="_blank" rel="noopener">
-                LinkedIn
-              </a>
-            </li>
-            <li>
-              <a href="https://github.com/vonds" target="_blank" rel="noopener">
-                Github
-              </a>
-            </li>
-            <li>
-              <a href="mailto:vonds13@gmail.com?subject=Hello Vonds">Contact</a>
-            </li>
-          </ul>
+<main class="x0" id="main">
+  <div class="x0-wrap">
+    <nav class="crumbs alt" aria-label="Breadcrumb"><a href="index.html">Vonds</a><span class="sep" aria-hidden="true">/</span><a href="docs.html">exit_0 Labs</a><span class="sep" aria-hidden="true">/</span><span aria-current="page">Lab 004</span></nav>
+    <header class="x0-head">
+      <p class="eyebrow alt"><b>Lab 004</b> &middot; services</p>
+      <h1>Using sed To Do SSH Config Hardening</h1>
+      <p class="lede">Harden SSH configuration using precise <code>sed</code> substitutions against a test <code>sshd_config</code> file. You will disable root login, disable password authentication, and change the SSH port using CLI-only edits.</p>
+      <nav class="pager-mini" aria-label="Lab navigation"><a class="alt" href="lab3.html" rel="prev">Lab 003</a><a class="alt" href="lab5.html" rel="next">Lab 005</a></nav>
+    </header>
+    <div class="x0-grid">
+      <aside class="x0-side" aria-label="On this page">
+        <nav class="toc">
+          <a class="back alt" href="docs.html">All labs</a>
+          <p class="toc-h alt">On this page</p>
+          <ul><li><a href="#video">Video</a></li><li><a href="#scenario">Scenario</a></li><li><a href="#objective">Objective</a></li><li><a href="#concepts">Concepts</a></li><li><a href="#walkthrough">Walkthrough</a></li><li><a href="#breakpoints">Common breakpoints</a></li><li><a href="#cleanup">Cleanup checklist</a></li><li><a href="#reference">Reference</a></li></ul>
         </nav>
-      </div>
-
-      <div class="overlay-navigation-footer">
-        <div class="container">
-          <div class="row">
-            <div class="col-sm-12 text-center">
-              <p class="copyright font-alt m-b-0">
-                VONDS &copy;
-                <script>
-                  document.write(new Date().getFullYear())
-                </script>
-              </p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- WRAPPER -->
-    <div class="wrapper">
-      <!-- NAVIGATION -->
-      <nav class="navbar navbar-custom navbar-transparent navbar-light navbar-fixed-top">
-        <div class="container">
-          <div class="navbar-header">
-            <a class="navbar-brand" href="../index.html">
-              <img class="logo-dark" src="../assets/images/logo-dark.svg" alt="Vonds" /><img class="logo-light" src="../assets/images/logo-light.svg" alt="" aria-hidden="true" />
-            </a>
-          </div>
-
-          <ul id="icons-navbar" class="nav navbar-nav navbar-right">
-            <li>
-              <a href="#" id="toggle-menu" class="show-overlay" title="Menu">
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-              </a>
-            </li>
-          </ul>
-        </div>
-      </nav>
-
-      <!-- DOCS PAGE -->
-      <section class="module">
-        <div class="container">
-          <h2 class="font-alt module-title m-t-60">
-            Lab 4: Using sed To Do SSH Config Hardening
-          </h2>
-
-          <nav class="lab-pagination">
-            <a id="prev-lab" class="lab-nav-link" href="#" aria-label="Previous lab">&laquo;</a>
-            <a id="next-lab" class="lab-nav-link" href="#" aria-label="Next lab">&raquo;</a>
-          </nav>
-
-          <div class="row">
-            <!-- LEFT SIDEBAR -->
-            <div class="col-sm-4 col-md-3 lab-sidebar">
-              <div class="docs-sidebar">
-                <div class="docs-widget">
-                  <h5 class="widget-title"><a href="./docs.html">Back to Lab Index</a></h5>
-                  <ul class="docs-nav">
-                    <li><a href="#scenario">Scenario</a></li>
-                    <li><a href="#objective">Objective</a></li>
-                    <li><a href="#concepts">Concepts</a></li>
-                    <li><a href="#walkthrough">Walkthrough</a></li>
-                    <li><a href="#breakpoints">Breakpoints</a></li>
-                    <li><a href="#cleanup">Cleanup</a></li>
-                    <li><a href="#reference">Reference</a></li>
-                  </ul>
-                </div>
-              </div>
-            </div>
-
-            <!-- MAIN CONTENT -->
-            <div class="col-sm-8 col-md-9 lab-doc">
-              <p class="m-b-20 lab-summary">
-                Harden SSH configuration using precise <code>sed</code> substitutions against a test
-                <code>sshd_config</code> file. You will disable root login, disable password
-                authentication, and change the SSH port using CLI-only edits.
-              </p>
-
-              <!-- Video (kept on page; removed from left panel moving forward) -->
+      </aside>
+      <article class="x0-doc">
+<!-- Video (kept on page; removed from left panel moving forward) -->
               <section class="lab-section" id="video" aria-label="Lab video">
                 <div class="lab-video">
                   <div class="lab-video-embed text-center">
-                    <iframe
-                      src="https://www.youtube.com/embed/cUn2evRCIjo?si=jwYvqWmiVjAdYiie"
+                    <iframe loading="lazy"
+                      src="https://www.youtube-nocookie.com/embed/cUn2evRCIjo?si=jwYvqWmiVjAdYiie"
                       title="YouTube video player"
                       frameborder="0"
                       allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
@@ -189,7 +99,6 @@
                   </div>
                 </div>
               </section>
-
               <!-- Scenario -->
               <section class="lab-section" id="scenario">
                 <div class="lab-chips" aria-label="Tags">
@@ -197,9 +106,7 @@
                   <span class="lab-chip"><span class="lab-chip-key">services</span></span>
                   <span class="lab-chip"><span class="lab-chip-key">core</span></span>
                 </div>
-
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">Scenario</h3>
-
                 <p>
                   Your task is to harden SSH settings using the <code>sed</code> command. You have
                   a sample SSH daemon configuration at <code>/tmp/sshd_config</code>, and you must
@@ -207,7 +114,6 @@
                   <code>PasswordAuthentication</code> to <code>no</code>, and change the SSH
                   <code>Port</code> to <code>2222</code>.
                 </p>
-
                 <div class="lab-callout">
                   <div class="lab-callout-label">Operator context</div>
                   <p class="m-b-0">
@@ -218,7 +124,6 @@
                   </p>
                 </div>
               </section>
-
               <!-- Objective -->
               <section class="lab-section alt-background" id="objective">
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">Objective</h3>
@@ -228,7 +133,6 @@
                   <li>Confirm the resulting configuration values are correct.</li>
                 </ul>
               </section>
-
               <!-- Concepts (no alt-background moving forward) -->
               <section class="lab-section" id="concepts">
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">Concepts</h3>
@@ -250,17 +154,14 @@
                   </li>
                 </ul>
               </section>
-
               <!-- Walkthrough -->
               <section class="lab-section alt-background" id="walkthrough">
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">Walkthrough</h3>
-
                 <!-- Step 1 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
                     <strong class="font-alt">Step 1</strong>: View the current SSH daemon configuration.
                   </div>
-
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
@@ -268,12 +169,10 @@
                     </div>
                     <pre><code id="cmd-step-1">cat /tmp/sshd_config</code></pre>
                   </div>
-
                   <p>
                     Confirm the current directive values before modifying anything. This prevents
                     you from hardening the wrong file or guessing the current state.
                   </p>
-
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <pre><code id="verify-step-1"># SSH Daemon Configuration
 PermitRootLogin yes
@@ -281,14 +180,12 @@ PasswordAuthentication yes
 Port 22</code></pre>
                   </div>
                 </div>
-
                 <!-- Step 2 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
                     <strong class="font-alt">Step 2</strong>: Disable root login by setting
                     <code>PermitRootLogin</code> to <code>no</code>.
                   </div>
-
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
@@ -296,20 +193,17 @@ Port 22</code></pre>
                     </div>
                     <pre><code id="cmd-step-2">sed -i 's/^PermitRootLogin yes/PermitRootLogin no/' /tmp/sshd_config</code></pre>
                   </div>
-
                   <p>
                     The match is anchored with <code>^</code> so only the directive line starting with
                     <code>PermitRootLogin</code> is changed.
                   </p>
                 </div>
-
                 <!-- Step 3 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
                     <strong class="font-alt">Step 3</strong>: Disable password authentication by setting
                     <code>PasswordAuthentication</code> to <code>no</code>.
                   </div>
-
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
@@ -317,19 +211,16 @@ Port 22</code></pre>
                     </div>
                     <pre><code id="cmd-step-3">sed -i 's/^PasswordAuthentication yes/PasswordAuthentication no/' /tmp/sshd_config</code></pre>
                   </div>
-
                   <p>
                     This performs a targeted substitution for the
                     <code>PasswordAuthentication</code> directive only.
                   </p>
                 </div>
-
                 <!-- Step 4 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
                     <strong class="font-alt">Step 4</strong>: Change the SSH port to <code>2222</code>.
                   </div>
-
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
@@ -337,12 +228,10 @@ Port 22</code></pre>
                     </div>
                     <pre><code id="cmd-step-4">sed -i 's/^Port 22/Port 2222/' /tmp/sshd_config</code></pre>
                   </div>
-
                   <p>
                     This updates the <code>Port</code> directive line from <code>22</code> to
                     <code>2222</code> without touching other lines.
                   </p>
-
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <pre><code id="verify-step-4">PermitRootLogin no
 PasswordAuthentication no
@@ -350,11 +239,9 @@ Port 2222</code></pre>
                   </div>
                 </div>
               </section>
-
               <!-- Common breakpoints -->
               <section class="lab-section" id="breakpoints">
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">Common breakpoints</h3>
-
                 <div class="lab-callout">
                   <div class="lab-callout-label">No change after running sed</div>
                   <p class="m-b-0">
@@ -364,7 +251,6 @@ Port 2222</code></pre>
                     and adjust the match pattern.
                   </p>
                 </div>
-
                 <div class="lab-callout">
                   <div class="lab-callout-label">Directive appears multiple times</div>
                   <p class="m-b-0">
@@ -373,7 +259,6 @@ Port 2222</code></pre>
                     line overrides it. Use <code>grep -n</code> to find duplicates and resolve them.
                   </p>
                 </div>
-
                 <div class="lab-callout">
                   <div class="lab-callout-label">Permission denied</div>
                   <p class="m-b-0">
@@ -382,7 +267,6 @@ Port 2222</code></pre>
                     appropriate.
                   </p>
                 </div>
-
                 <div class="lab-callout">
                   <div class="lab-callout-label">Lockout risk in production</div>
                   <p class="m-b-0">
@@ -392,16 +276,13 @@ Port 2222</code></pre>
                   </p>
                 </div>
               </section>
-
               <!-- Cleanup -->
               <section class="lab-section alt-background" id="cleanup">
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">Cleanup checklist</h3>
-
                 <p>
                   This lab modifies a temporary test file. Cleanup is resetting the file so you can
                   repeat the workflow.
                 </p>
-
                 <div class="lab-codeblock m-b-40 m-t-40">
                   <div class="lab-codeblock-header">
                     <span>Optional</span>
@@ -411,11 +292,9 @@ Port 2222</code></pre>
 sed -i 's/^PermitRootLogin no/PermitRootLogin yes/' /tmp/sshd_config
 sed -i 's/^PasswordAuthentication no/PasswordAuthentication yes/' /tmp/sshd_config
 sed -i 's/^Port 2222/Port 22/' /tmp/sshd_config
-
 # Verify
 cat /tmp/sshd_config</code></pre>
                 </div>
-
                 <div class="lab-callout">
                   <div class="lab-callout-label">Success signal</div>
                   <p class="m-b-0">
@@ -424,16 +303,13 @@ cat /tmp/sshd_config</code></pre>
                   </p>
                 </div>
               </section>
-
               <!-- Reference -->
               <section class="lab-section" id="reference">
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">Reference</h3>
-
                 <ul class="lab-reference-list">
                   <li>
                     <code>cat &lt;file&gt;</code>: Prints file contents to standard output.
                   </li>
-
                   <li>
                     <code>sed -i 's/pattern/replacement/' &lt;file&gt;</code>: Replaces the first match of
                     <code>pattern</code> on each line and writes changes back to the file.
@@ -443,85 +319,28 @@ cat /tmp/sshd_config</code></pre>
                       <li><code>s/old/new/</code>: Substitution operator.</li>
                     </ul>
                   </li>
-
                   <li><code>/tmp/sshd_config</code>: Temporary test configuration file used in this lab.</li>
                   <li><code>PermitRootLogin</code>: Controls whether the root user can log in over SSH.</li>
                   <li><code>PasswordAuthentication</code>: Controls whether SSH allows password-based logins.</li>
                   <li><code>Port</code>: Specifies the TCP port where <code>sshd</code> listens for incoming connections.</li>
                 </ul>
               </section>
-            </div>
-            <!-- /main -->
-          </div>
-          <!-- /row -->
-
-          <nav class="lab-pagination">
-            <a id="prev-lab" class="lab-nav-link" href="#" aria-label="Previous lab">&uArr;</a>
-          </nav>
-        </div>
-        <!-- /container -->
-      </section>
-
-      <!-- FOOTER -->
-      <footer class="module bg-light">
-        <div class="container">
-          <div class="row">
-            <div class="col-sm-12">
-              <ul class="social-text-links font-alt text-center m-b-20">
-                <li>
-                  <a href="https://github.com/vonds" target="_blank" rel="noopener">
-                    Github
-                  </a>
-                </li>
-                <li>
-                  <a href="https://www.linkedin.com/in/vonds/" target="_blank" rel="noopener">
-                    Linkedin
-                  </a>
-                </li>
-              </ul>
-            </div>
-          </div>
-
-          <div class="row">
-            <div class="col-sm-12">
-              <p class="copyright text-center m-b-0">
-                VONDS &copy; <span id="year"></span>
-              </p>
-
-              <div class="scroll-up">
-                <a href="#totop"><i class="fa fa-angle-double-up"></i></a>
-              </div>
-            </div>
-          </div>
-        </div>
-      </footer>
+        <nav class="pager" aria-label="Previous and next lab"><a class="prev" href="lab3.html" rel="prev"><span class="dir alt">Previous &middot; Lab 003</span><span class="t">Basic sed Substitution</span></a><a class="next" href="lab5.html" rel="next"><span class="dir alt">Next &middot; Lab 005</span><span class="t">Investigate the System Boot Process</span></a></nav>
+      </article>
     </div>
+  </div>
+</main>
 
-    <!-- Javascript files (your existing) -->
-    <script src="../assets/js/jquery-2.2.4.min.js"></script>
-    <script src="../assets/bootstrap/js/bootstrap.min.js"></script>
-    <script src="../assets/js/jquery.superslides.min.js"></script>
-    <script src="../assets/js/jquery.mb.YTPlayer.min.js"></script>
-    <script src="../assets/js/jquery.magnific-popup.min.js"></script>
-    <script src="../assets/js/owl.carousel.min.js"></script>
-    <script src="../assets/js/jquery.simple-text-rotator.min.js"></script>
-    <script src="../assets/js/imagesloaded.pkgd.js"></script>
-    <script src="../assets/js/isotope.pkgd.min.js"></script>
-    <script src="../assets/js/packery-mode.pkgd.min.js"></script>
-    <script src="../assets/js/appear.js"></script>
-    <script src="../assets/js/jquery.easing.1.3.js"></script>
-    <script src="../assets/js/wow.min.js"></script>
-    <script src="../assets/js/jqBootstrapValidation.js"></script>
-    <script src="../assets/js/jquery.fitvids.js"></script>
-    <script src="../assets/js/jquery.parallax-1.1.3.js"></script>
-    <script src="../assets/js/smoothscroll.js"></script>
-    <script src="../assets/js/custom.js"></script>
-
-    <!-- Lab page JS (new) -->
-    <script src="../assets/js/lab.js"></script>
-
-    <script>
-      document.getElementById("year").textContent = new Date().getFullYear()
-    </script>
-  </body>
+<footer>
+  <img class="mark" src="assets/images/logo-dark.svg" alt="Vonds">
+  <nav aria-label="Footer" class="alt">
+    <a href="index.html#about">About</a><a href="index.html#portfolio">Portfolio</a><a href="docs.html">exit_0 Labs</a><a href="index.html#contact">Contact</a><a href="https://www.linkedin.com/in/vonds/">LinkedIn</a>
+  </nav>
+  <div class="line"></div>
+  <p class="copyright alt">Vonds &copy; 2026</p>
+</footer>
+<button class="to-top" id="toTop" type="button" aria-label="Back to top"><i class="chev" aria-hidden="true"></i></button>
+<script src="assets/js/site.js" defer></script>
+<script src="assets/js/lab.js" defer></script>
+</body>
 </html>

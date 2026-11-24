@@ -1,191 +1,94 @@
-<!-- lab122.html -->
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="exit_0 Documentation" />
-    <meta name="name" content="Vonds" />
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lab 122: RPM Package Management | exit_0 Labs</title>
+<meta name="description" content="Use rpm directly to query installed packages and file ownership, verify package integrity, validate a local RPM, and perform controlled local install/remove…">
+<link rel="canonical" href="https://vonds.github.io/lab122.html">
+<meta name="theme-color" content="#2e2e30">
+<meta name="author" content="Vonds">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="Vonds">
+<meta property="og:url" content="https://vonds.github.io/lab122.html">
+<meta property="og:title" content="Lab 122: RPM Package Management | exit_0 Labs">
+<meta property="og:description" content="Use rpm directly to query installed packages and file ownership, verify package integrity, validate a local RPM, and perform controlled local install/remove…">
+<meta property="og:image" content="https://vonds.github.io/assets/images/og/og-exit0.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="exit_0: 165 hands-on Linux labs for real system administration.">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Lab 122: RPM Package Management | exit_0 Labs">
+<meta name="twitter:description" content="Use rpm directly to query installed packages and file ownership, verify package integrity, validate a local RPM, and perform controlled local install/remove…">
+<meta name="twitter:image" content="https://vonds.github.io/assets/images/og/og-exit0.jpg">
+<link rel="icon" type="image/svg+xml" href="assets/images/favicon.svg">
+<link rel="icon" type="image/png" href="assets/images/favicon.png">
+<link rel="apple-touch-icon" href="assets/images/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Dosis:wght@300;400;500;600&family=Open+Sans:wght@400;600&display=swap">
+<link rel="stylesheet" href="assets/css/site.css">
+<link rel="stylesheet" href="assets/css/exit0.css">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Vonds","item":"https://vonds.github.io/"},{"@type":"ListItem","position":2,"name":"exit_0 Labs","item":"https://vonds.github.io/docs.html"},{"@type":"ListItem","position":3,"name":"Lab 122","item":"https://vonds.github.io/lab122.html"}]}</script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="header solid" id="header">
+  <div class="wrap">
+    <a class="brand" href="index.html" aria-label="Vonds home">
+      <img class="logo-dark" src="assets/images/logo-dark.svg" alt="Vonds">
+      <img class="logo-light" src="assets/images/logo-light.svg" alt="" aria-hidden="true">
+    </a>
+    <button class="menu-btn" id="menuOpen" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="overlay">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</header>
 
-    <title>Vonds | Lab 122</title>
-
-    <!-- Favicons -->
-    <link rel="icon" type="image/svg+xml" href="../assets/images/favicon.svg" />
-    <link rel="icon" type="image/png" href="../assets/images/favicon.png" />
-    <link rel="apple-touch-icon" href="../assets/images/apple-touch-icon.png" />
-    <link
-      rel="apple-touch-icon"
-      sizes="72x72"
-      href="../assets/images/apple-touch-icon-72x72.png"
-    />
-    <link
-      rel="apple-touch-icon"
-      sizes="114x114"
-      href="../assets/images/apple-touch-icon-114x114.png"
-    />
-
-    <!-- Site styles (your existing) -->
-    <link href="../assets/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
-    <link href="../assets/css/font-awesome.min.css" rel="stylesheet" />
-    <link href="../assets/css/linea-icons.css" rel="stylesheet" />
-    <link href="../assets/css/ionicons.min.css" rel="stylesheet" />
-    <link href="../assets/css/simpletextrotator.css" rel="stylesheet" />
-    <link href="../assets/css/magnific-popup.css" rel="stylesheet" />
-    <link href="../assets/css/owl.carousel.css" rel="stylesheet" />
-    <link href="../assets/css/superslides.css" rel="stylesheet" />
-    <link href="../assets/css/vertical.css" rel="stylesheet" />
-    <link href="../assets/css/animate.css" rel="stylesheet" />
-    <link href="../assets/css/style.css" rel="stylesheet" />
-    <link href="../assets/css/docs.css" rel="stylesheet" />
-
-    <!-- Lab page styles -->
-    <link href="../assets/css/lab.css" rel="stylesheet" />
-
-    <!-- Fonts -->
-    <link href="https://fonts.googleapis.com/css?family=Dosis" rel="stylesheet" />
-  </head>
-
-  <body>
-    <!-- PRELOADER -->
-    <div class="page-loader">
-      <div class="loader">Loading...</div>
+<div class="overlay" id="overlay" aria-hidden="true">
+  <button class="close" id="menuClose" type="button" aria-label="Close menu">&times;</button>
+  <nav aria-label="Main">
+    <a class="alt" href="index.html">Home</a>
+    <a class="alt" href="index.html#about">About</a>
+    <a class="alt" href="index.html#portfolio">Portfolio</a>
+    <div class="sub">
+      <a class="alt" href="https://black-signal-demo.netlify.app/">Black Signal</a>
+      <a class="alt" href="https://deeds-demo.netlify.app/">DEEDS</a>
+      <a class="alt" href="https://digital-resource-map-demo.netlify.app/">Digital Resource Map</a>
+      <a class="alt" href="https://thetravelingarchive.com/">The Traveling Archive</a>
+      <a class="alt" href="https://github.com/vonds/sentinel">Sentinel</a>
+      <a class="alt" href="docs.html">exit_0 Labs</a>
     </div>
+    <a class="alt" href="index.html#services">Services</a>
+    <a class="alt" href="index.html#contact">Contact</a>
+    <a class="alt" href="https://www.linkedin.com/in/vonds/">LinkedIn</a>
+  </nav>
+  <div class="foot alt">Vonds &copy; <span id="year">2026</span></div>
+</div>
 
-    <!-- OVERLAY MENU -->
-    <div id="overlay-menu" class="overlay-menu">
-      <a href="#" id="overlay-menu-hide" class="navigation-hide">
-        <i class="ion-close-round"></i>
-      </a>
-
-      <div class="overlay-menu-inner">
-        <nav class="overlay-menu-nav">
-          <ul id="nav">
-            <li><a href="../index.html">Home</a></li>
-
-            <li class="slidedown">
-              <a href="#">Portfolio</a>
-              <ul>
-                <li>
-                  <a href="https://github.com/vonds/exit_0" target="_blank" rel="noopener">
-                    exit_0
-                  </a>
-                </li>
-                <li>
-                  <a href="docs.html" target="_blank" rel="noopener">
-                    exit_0
-                  </a>
-                </li>
-              </ul>
-            </li>
-
-            <li>
-              <a href="https://www.linkedin.com/in/vonds/" target="_blank" rel="noopener">
-                LinkedIn
-              </a>
-            </li>
-            <li>
-              <a href="https://github.com/vonds" target="_blank" rel="noopener">
-                Github
-              </a>
-            </li>
-            <li>
-              <a href="mailto:vonds13@gmail.com?subject=Hello Vonds">Contact</a>
-            </li>
-          </ul>
+<main class="x0" id="main">
+  <div class="x0-wrap">
+    <nav class="crumbs alt" aria-label="Breadcrumb"><a href="index.html">Vonds</a><span class="sep" aria-hidden="true">/</span><a href="docs.html">exit_0 Labs</a><span class="sep" aria-hidden="true">/</span><span aria-current="page">Lab 122</span></nav>
+    <header class="x0-head">
+      <p class="eyebrow alt"><b>Lab 122</b> &middot; packages</p>
+      <h1>RPM Package Management</h1>
+      <p class="lede">Use <code>rpm</code> directly to query installed packages and file ownership, verify package integrity, validate a local RPM, and perform controlled local install/remove workflows. Finish by rebuilding the RPM database as a recovery step when state is inconsistent.</p>
+      <nav class="pager-mini" aria-label="Lab navigation"><a class="alt" href="lab121.html" rel="prev">Lab 121</a><a class="alt" href="lab123.html" rel="next">Lab 123</a></nav>
+    </header>
+    <div class="x0-grid">
+      <aside class="x0-side" aria-label="On this page">
+        <nav class="toc">
+          <a class="back alt" href="docs.html">All labs</a>
+          <p class="toc-h alt">On this page</p>
+          <ul><li><a href="#video">Video</a></li><li><a href="#scenario">Scenario</a></li><li><a href="#objective">Objective</a></li><li><a href="#concepts">Concepts</a></li><li><a href="#walkthrough">Walkthrough</a></li><li><a href="#breakpoints">Common breakpoints</a></li><li><a href="#cleanup">Cleanup checklist</a></li><li><a href="#reference">Reference</a></li></ul>
         </nav>
-      </div>
-
-      <div class="overlay-navigation-footer">
-        <div class="container">
-          <div class="row">
-            <div class="col-sm-12 text-center">
-              <p class="copyright font-alt m-b-0">
-                VONDS &copy;
-                <script>
-                  document.write(new Date().getFullYear())
-                </script>
-              </p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- WRAPPER -->
-    <div class="wrapper">
-      <!-- NAVIGATION -->
-      <nav class="navbar navbar-custom navbar-transparent navbar-light navbar-fixed-top">
-        <div class="container">
-          <div class="navbar-header">
-            <a class="navbar-brand" href="../index.html">
-              <img class="logo-dark" src="../assets/images/logo-dark.svg" alt="Vonds" /><img class="logo-light" src="../assets/images/logo-light.svg" alt="" aria-hidden="true" />
-            </a>
-          </div>
-
-          <ul id="icons-navbar" class="nav navbar-nav navbar-right">
-            <li>
-              <a href="#" id="toggle-menu" class="show-overlay" title="Menu">
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-              </a>
-            </li>
-          </ul>
-        </div>
-      </nav>
-
-      <!-- DOCS PAGE -->
-      <section class="module">
-        <div class="container">
-          <h2 class="font-alt module-title m-t-60">
-            Lab 122: RPM Package Management
-          </h2>
-
-          <nav class="lab-pagination">
-            <a id="prev-lab" class="lab-nav-link" href="#" aria-label="Previous lab">
-              &laquo;
-            </a>
-            <a id="next-lab" class="lab-nav-link" href="#" aria-label="Next lab">
-              &raquo;
-            </a>
-          </nav>
-
-          <div class="row">
-            <!-- LEFT SIDEBAR -->
-            <div class="col-sm-4 col-md-3 lab-sidebar">
-              <div class="docs-sidebar">
-                <div class="docs-widget">
-                  <h5 class="widget-title">
-                    <a href="./docs.html">Back to Lab Index</a>
-                  </h5>
-                  <ul class="docs-nav">
-                    <li><a href="#scenario">Scenario</a></li>
-                    <li><a href="#objective">Objective</a></li>
-                    <li><a href="#concepts">Concepts</a></li>
-                    <li><a href="#walkthrough">Walkthrough</a></li>
-                    <li><a href="#breakpoints">Breakpoints</a></li>
-                    <li><a href="#cleanup">Cleanup</a></li>
-                    <li><a href="#reference">Reference</a></li>
-                  </ul>
-                </div>
-              </div>
-            </div>
-
-            <!-- MAIN CONTENT -->
-            <div class="col-sm-8 col-md-9 lab-doc">
-              <p class="m-b-20 lab-summary">
-                Use <code>rpm</code> directly to query installed packages and file ownership, verify
-                package integrity, validate a local RPM, and perform controlled local install/remove
-                workflows. Finish by rebuilding the RPM database as a recovery step when state is
-                inconsistent.
-              </p>
-
-              <!-- Video (kept on page; removed from left panel) -->
-              <section class="lab-section" id="video" aria-label="Lab video">
+      </aside>
+      <article class="x0-doc">
+<section class="lab-section" id="video" aria-label="Lab video">
                 <div class="lab-video">
                   <div class="lab-video-embed text-center">
-                    <iframe
-                      src="https://www.youtube.com/embed/VlzPjPCPlSI?si=qoAKtRDXPxpf1tpX"
+                    <iframe loading="lazy"
+                      src="https://www.youtube-nocookie.com/embed/VlzPjPCPlSI?si=qoAKtRDXPxpf1tpX"
                       title="YouTube video player"
                       frameborder="0"
                       allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
@@ -195,7 +98,6 @@
                   </div>
                 </div>
               </section>
-
               <!-- Scenario -->
               <section class="lab-section" id="scenario">
                 <div class="lab-chips" aria-label="Tags">
@@ -212,11 +114,9 @@
                     <span class="lab-chip-key">rhel</span>
                   </span>
                 </div>
-
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">
                   Scenario
                 </h3>
-
                 <p>
                   You are working on an RPM-based system where you need low-level package visibility
                   and repair options without relying on higher-level workflows. Your goal is to use
@@ -224,7 +124,6 @@
                   package integrity, confirm signatures on a local RPM, install or upgrade it, remove
                   it cleanly, and perform basic database maintenance.
                 </p>
-
                 <div class="lab-callout">
                   <div class="lab-callout-label">Operator context</div>
                   <p class="m-b-0">
@@ -236,7 +135,6 @@
                   </p>
                 </div>
               </section>
-
               <!-- Objective -->
               <section class="lab-section alt-background" id="objective">
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">
@@ -246,52 +144,42 @@
                   <li>List installed RPM packages (quick inventory).</li>
                   <li>
                     Inspect installed package metadata with
-                    <code>rpm -qi</code>
-                    .
+                    <code>rpm -qi</code>.
                   </li>
                   <li>
                     List files installed by a package with
-                    <code>rpm -ql</code>
-                    .
+                    <code>rpm -ql</code>.
                   </li>
                   <li>
                     Resolve file ownership with
-                    <code>rpm -qf</code>
-                    .
+                    <code>rpm -qf</code>.
                   </li>
                   <li>
                     Verify package integrity with
-                    <code>rpm -V</code>
-                    .
+                    <code>rpm -V</code>.
                   </li>
                   <li>
                     Validate signature and digests on a local RPM with
-                    <code>rpm -K</code>
-                    .
+                    <code>rpm -K</code>.
                   </li>
                   <li>
                     Query metadata from an uninstalled RPM with
-                    <code>rpm -qp --info</code>
-                    .
+                    <code>rpm -qp --info</code>.
                   </li>
                   <li>
                     Install or upgrade a local RPM with
-                    <code>rpm -Uvh</code>
-                    .
+                    <code>rpm -Uvh</code>.
                   </li>
                   <li>
                     Remove a package with
-                    <code>rpm -e</code>
-                    .
+                    <code>rpm -e</code>.
                   </li>
                   <li>
                     Rebuild the RPM database with
-                    <code>rpm --rebuilddb</code>
-                    .
+                    <code>rpm --rebuilddb</code>.
                   </li>
                 </ul>
               </section>
-
               <!-- Concepts (no alt-background moving forward) -->
               <section class="lab-section" id="concepts">
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">
@@ -299,53 +187,36 @@
                 </h3>
                 <ul>
                   <li>
-                    RPM database queries are local truth for installed package state (
-                    <code>rpm -qa</code>
-                    ,
-                    <code>rpm -qi</code>
-                    ).
+                    RPM database queries are local truth for installed package state (<code>rpm -qa</code>,
+                    <code>rpm -qi</code>).
                   </li>
                   <li>
-                    File ownership and provenance is an RPM workflow (
-                    <code>rpm -qf</code>
-                    ) and is a core troubleshooting primitive.
+                    File ownership and provenance is an RPM workflow (<code>rpm -qf</code>) and is a core troubleshooting primitive.
                   </li>
                   <li>
-                    Verification checks detect drift from packaged state (
-                    <code>rpm -V</code>
-                    ) and help triage suspected tampering or corruption.
+                    Verification checks detect drift from packaged state (<code>rpm -V</code>) and help triage suspected tampering or corruption.
                   </li>
                   <li>
-                    Signature and digest checks validate trust before local installation (
-                    <code>rpm -K</code>
-                    ).
+                    Signature and digest checks validate trust before local installation (<code>rpm -K</code>).
                   </li>
                   <li>
-                    Local file installation is controlled and explicit (
-                    <code>rpm -Uvh</code>
-                    ) and should be used when repos are unavailable or when you need an exact build.
+                    Local file installation is controlled and explicit (<code>rpm -Uvh</code>) and should be used when repos are unavailable or when you need an exact build.
                   </li>
                   <li>
-                    Database rebuild is a recovery operation (
-                    <code>rpm --rebuilddb</code>
-                    ), not a routine step.
+                    Database rebuild is a recovery operation (<code>rpm --rebuilddb</code>), not a routine step.
                   </li>
                 </ul>
               </section>
-
               <!-- Walkthrough -->
               <section class="lab-section alt-background" id="walkthrough">
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">
                   Walkthrough
                 </h3>
-
                 <!-- Step 1 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
-                    <strong class="font-alt">Step 1</strong>
-                    : List the first 10 installed RPM packages.
+                    <strong class="font-alt">Step 1</strong>: List the first 10 installed RPM packages.
                   </div>
-
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
@@ -355,11 +226,9 @@
                     </div>
                     <pre><code id="cmd-step-1">rpm -qa | head -n 10</code></pre>
                   </div>
-
                   <p>
                     This gives you a fast inventory sample and confirms the RPM database is readable.
                   </p>
-
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <pre><code>bash-5.1.8-3.el9.x86_64
 coreutils-8.32-34.el9.x86_64
@@ -373,16 +242,12 @@ vim-minimal-8.2.2637-20.el9.x86_64
 which-2.21-29.el9.x86_64</code></pre>
                   </div>
                 </div>
-
                 <!-- Step 2 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
-                    <strong class="font-alt">Step 2</strong>
-                    : Show installed package info for
-                    <code>bash</code>
-                    .
+                    <strong class="font-alt">Step 2</strong>: Show installed package info for
+                    <code>bash</code>.
                   </div>
-
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
@@ -392,11 +257,9 @@ which-2.21-29.el9.x86_64</code></pre>
                     </div>
                     <pre><code id="cmd-step-2">rpm -qi bash</code></pre>
                   </div>
-
                   <p>
                     Use this when you need install-time context, summary, architecture, and release metadata.
                   </p>
-
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <pre><code>Name        : bash
 Version     : 5.1.8
@@ -406,16 +269,12 @@ Summary     : The GNU Bourne Again shell
 License     : GPLv3+</code></pre>
                   </div>
                 </div>
-
                 <!-- Step 3 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
-                    <strong class="font-alt">Step 3</strong>
-                    : List files installed by
-                    <code>bash</code>
-                    .
+                    <strong class="font-alt">Step 3</strong>: List files installed by
+                    <code>bash</code>.
                   </div>
-
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
@@ -425,27 +284,21 @@ License     : GPLv3+</code></pre>
                     </div>
                     <pre><code id="cmd-step-3">rpm -ql bash</code></pre>
                   </div>
-
                   <p>
                     This helps when you need to confirm expected files exist or identify what should exist.
                   </p>
-
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <pre><code>/bin/bash
 /etc/skel/.bashrc
 /usr/share/man/man1/bash.1.gz</code></pre>
                   </div>
                 </div>
-
                 <!-- Step 4 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
-                    <strong class="font-alt">Step 4</strong>
-                    : Identify which package owns
-                    <code>/bin/bash</code>
-                    .
+                    <strong class="font-alt">Step 4</strong>: Identify which package owns
+                    <code>/bin/bash</code>.
                   </div>
-
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
@@ -455,25 +308,19 @@ License     : GPLv3+</code></pre>
                     </div>
                     <pre><code id="cmd-step-4">rpm -qf /bin/bash</code></pre>
                   </div>
-
                   <p>
                     This is the file-ownership lookup you use during troubleshooting and cleanup.
                   </p>
-
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <pre><code>bash-5.1.8-3.el9.x86_64</code></pre>
                   </div>
                 </div>
-
                 <!-- Step 5 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
-                    <strong class="font-alt">Step 5</strong>
-                    : Verify integrity of installed
-                    <code>bash</code>
-                    .
+                    <strong class="font-alt">Step 5</strong>: Verify integrity of installed
+                    <code>bash</code>.
                   </div>
-
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
@@ -483,12 +330,10 @@ License     : GPLv3+</code></pre>
                     </div>
                     <pre><code id="cmd-step-5">rpm -V bash</code></pre>
                   </div>
-
                   <p>
                     Verification reports unexpected changes. Clean output usually means no differences from packaged
                     state, excluding expected config behavior.
                   </p>
-
                   <div class="lab-callout">
                     <div class="lab-callout-label">What to look for</div>
                     <p class="m-b-0">
@@ -497,14 +342,11 @@ License     : GPLv3+</code></pre>
                     </p>
                   </div>
                 </div>
-
                 <!-- Step 6 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
-                    <strong class="font-alt">Step 6</strong>
-                    : Validate signature and digests of a local RPM.
+                    <strong class="font-alt">Step 6</strong>: Validate signature and digests of a local RPM.
                   </div>
-
                   <div class="lab-callout">
                     <div class="lab-callout-label">Safety note</div>
                     <p class="m-b-0">
@@ -512,7 +354,6 @@ License     : GPLv3+</code></pre>
                       origin and transport path.
                     </p>
                   </div>
-
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
@@ -522,23 +363,18 @@ License     : GPLv3+</code></pre>
                     </div>
                     <pre><code id="cmd-step-6">rpm -K htop-3.3.0-1.el9.x86_64.rpm</code></pre>
                   </div>
-
                   <p>
                     This is a trust check before installation. You want clean digests and a valid signature status.
                   </p>
-
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <pre><code>htop-3.3.0-1.el9.x86_64.rpm: digests signatures OK</code></pre>
                   </div>
                 </div>
-
                 <!-- Step 7 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
-                    <strong class="font-alt">Step 7</strong>
-                    : Query metadata from a local RPM (not installed).
+                    <strong class="font-alt">Step 7</strong>: Query metadata from a local RPM (not installed).
                   </div>
-
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
@@ -548,11 +384,9 @@ License     : GPLv3+</code></pre>
                     </div>
                     <pre><code id="cmd-step-7">rpm -qp --info htop-3.3.0-1.el9.x86_64.rpm</code></pre>
                   </div>
-
                   <p>
                     Use this to confirm name, version, and architecture before you install a local file.
                   </p>
-
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <pre><code>Name        : htop
 Version     : 3.3.0
@@ -561,14 +395,11 @@ Architecture: x86_64
 Summary     : Interactive process viewer</code></pre>
                   </div>
                 </div>
-
                 <!-- Step 8 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
-                    <strong class="font-alt">Step 8</strong>
-                    : Install or upgrade the local RPM with progress output.
+                    <strong class="font-alt">Step 8</strong>: Install or upgrade the local RPM with progress output.
                   </div>
-
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
@@ -578,7 +409,6 @@ Summary     : Interactive process viewer</code></pre>
                     </div>
                     <pre><code id="cmd-step-8">sudo rpm -Uvh htop-3.3.0-1.el9.x86_64.rpm</code></pre>
                   </div>
-
                   <p>
                     <code>-U</code>
                     upgrades or installs,
@@ -587,23 +417,19 @@ Summary     : Interactive process viewer</code></pre>
                     <code>-h</code>
                     prints a progress bar. Use this for controlled local installs outside of repo workflows.
                   </p>
-
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <pre><code>Preparing...                          ################################# [100%]
 Updating / installing...
    1:htop-3.3.0-1.el9                 ################################# [100%]</code></pre>
                   </div>
                 </div>
-
                 <!-- Step 9 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
-                    <strong class="font-alt">Step 9</strong>
-                    : Remove the
+                    <strong class="font-alt">Step 9</strong>: Remove the
                     <code>htop</code>
                     package.
                   </div>
-
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
@@ -613,26 +439,21 @@ Updating / installing...
                     </div>
                     <pre><code id="cmd-step-9">sudo rpm -e htop</code></pre>
                   </div>
-
                   <p>
                     This erases files owned by the package and removes it from the RPM database. Dependency checks may
                     block removal.
                   </p>
-
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <pre><code>Preparing packages...
 Erasing     : htop-3.3.0-1.el9.x86_64
 Verifying   : htop-3.3.0-1.el9.x86_64</code></pre>
                   </div>
                 </div>
-
                 <!-- Step 10 -->
                 <div class="lab-step">
                   <div class="lab-step-title">
-                    <strong class="font-alt">Step 10</strong>
-                    : Rebuild the RPM database (maintenance).
+                    <strong class="font-alt">Step 10</strong>: Rebuild the RPM database (maintenance).
                   </div>
-
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <div class="lab-codeblock-header">
                       <span>Command</span>
@@ -642,25 +463,21 @@ Verifying   : htop-3.3.0-1.el9.x86_64</code></pre>
                     </div>
                     <pre><code id="cmd-step-10">sudo rpm --rebuilddb</code></pre>
                   </div>
-
                   <p>
                     This is a repair step when the RPM database becomes inconsistent or corrupted. Treat it as a
                     recovery operation, not a routine action.
                   </p>
-
                   <div class="lab-codeblock m-b-40 m-t-40">
                     <pre><code>Rebuilding RPM database...
 Done.</code></pre>
                   </div>
                 </div>
               </section>
-
               <!-- Common breakpoints -->
               <section class="lab-section" id="breakpoints">
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">
                   Common breakpoints
                 </h3>
-
                 <div class="lab-callout">
                   <div class="lab-callout-label">
                     rpm -V reports unexpected differences
@@ -670,7 +487,6 @@ Done.</code></pre>
                     and expected admin changes. Use the output as a triage signal, then validate the specific files.
                   </p>
                 </div>
-
                 <div class="lab-callout">
                   <div class="lab-callout-label">
                     rpm -K reports NOT OK
@@ -680,7 +496,6 @@ Done.</code></pre>
                     are checking the correct file. Treat failed checks as an integrity incident until proven otherwise.
                   </p>
                 </div>
-
                 <div class="lab-callout">
                   <div class="lab-callout-label">
                     rpm -e fails due to dependencies
@@ -690,7 +505,6 @@ Done.</code></pre>
                     workflow that can resolve dependency changes safely.
                   </p>
                 </div>
-
                 <div class="lab-callout">
                   <div class="lab-callout-label">
                     rpm --rebuilddb takes a long time or errors
@@ -702,18 +516,15 @@ Done.</code></pre>
                   </p>
                 </div>
               </section>
-
               <!-- Cleanup -->
               <section class="lab-section alt-background" id="cleanup">
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">
                   Cleanup checklist
                 </h3>
-
                 <p>
                   If you installed a local test RPM, remove it and confirm package state is clean. If you rebuilt the
                   database as part of recovery, verify RPM queries still work normally.
                 </p>
-
                 <div class="lab-codeblock m-b-40 m-t-40">
                   <div class="lab-codeblock-header">
                     <span>Commands</span>
@@ -725,7 +536,6 @@ Done.</code></pre>
 sudo rpm -e htop || true
 rpm -qa | head -n 5</code></pre>
                 </div>
-
                 <div class="lab-callout">
                   <div class="lab-callout-label">Success signal</div>
                   <p class="m-b-0">
@@ -733,205 +543,122 @@ rpm -qa | head -n 5</code></pre>
                   </p>
                 </div>
               </section>
-
               <!-- Reference -->
               <section class="lab-section" id="reference">
                 <h3 class="font-alt lab-section-title m-b-40 m-t-40">
                   Reference
                 </h3>
-
                 <ul class="lab-reference-list">
                   <li>
-                    <code>rpm -qa</code>
-                    : Lists installed packages.
+                    <code>rpm -qa</code>: Lists installed packages.
                     <ul>
                       <li>
-                        <code>-q</code>
-                        : Query mode.
+                        <code>-q</code>: Query mode.
                       </li>
                       <li>
-                        <code>-a</code>
-                        : Queries all installed packages.
+                        <code>-a</code>: Queries all installed packages.
                       </li>
                     </ul>
                   </li>
-
                   <li>
-                    <code>rpm -qi &lt;pkg&gt;</code>
-                    : Shows installed package metadata.
+                    <code>rpm -qi &lt;pkg&gt;</code>: Shows installed package metadata.
                     <ul>
                       <li>
-                        <code>-i</code>
-                        : Displays package information (name, version, release, summary, etc.).
+                        <code>-i</code>: Displays package information (name, version, release, summary, etc.).
                       </li>
                     </ul>
                   </li>
-
                   <li>
-                    <code>rpm -ql &lt;pkg&gt;</code>
-                    : Lists files installed by a package.
+                    <code>rpm -ql &lt;pkg&gt;</code>: Lists files installed by a package.
                     <ul>
                       <li>
-                        <code>-l</code>
-                        : Lists files for the queried package.
+                        <code>-l</code>: Lists files for the queried package.
                       </li>
                     </ul>
                   </li>
-
                   <li>
-                    <code>rpm -qf &lt;path&gt;</code>
-                    : Identifies which package owns a file path.
+                    <code>rpm -qf &lt;path&gt;</code>: Identifies which package owns a file path.
                     <ul>
                       <li>
-                        <code>-f</code>
-                        : Queries by file ownership.
+                        <code>-f</code>: Queries by file ownership.
                       </li>
                     </ul>
                   </li>
-
                   <li>
-                    <code>rpm -V &lt;pkg&gt;</code>
-                    : Verifies installed package contents against packaged state.
+                    <code>rpm -V &lt;pkg&gt;</code>: Verifies installed package contents against packaged state.
                     <ul>
                       <li>
-                        <code>-V</code>
-                        : Verification mode (checksums, permissions, sizes, timestamps, etc.).
+                        <code>-V</code>: Verification mode (checksums, permissions, sizes, timestamps, etc.).
                       </li>
                     </ul>
                   </li>
-
                   <li>
-                    <code>rpm -K &lt;file.rpm&gt;</code>
-                    : Validates digests and signatures for a local RPM file.
+                    <code>rpm -K &lt;file.rpm&gt;</code>: Validates digests and signatures for a local RPM file.
                     <ul>
                       <li>
-                        <code>-K</code>
-                        : Checks package signature and digest information.
+                        <code>-K</code>: Checks package signature and digest information.
                       </li>
                     </ul>
                   </li>
-
                   <li>
-                    <code>rpm -qp --info &lt;file.rpm&gt;</code>
-                    : Queries metadata from an RPM file without installing it.
+                    <code>rpm -qp --info &lt;file.rpm&gt;</code>: Queries metadata from an RPM file without installing it.
                     <ul>
                       <li>
-                        <code>-p</code>
-                        : Operates on a package file instead of the installed database.
+                        <code>-p</code>: Operates on a package file instead of the installed database.
                       </li>
                       <li>
-                        <code>--info</code>
-                        : Displays package information for the file.
+                        <code>--info</code>: Displays package information for the file.
                       </li>
                     </ul>
                   </li>
-
                   <li>
-                    <code>rpm -Uvh &lt;file.rpm&gt;</code>
-                    : Installs or upgrades from a local RPM file.
+                    <code>rpm -Uvh &lt;file.rpm&gt;</code>: Installs or upgrades from a local RPM file.
                     <ul>
                       <li>
-                        <code>-U</code>
-                        : Upgrades if installed, otherwise installs.
+                        <code>-U</code>: Upgrades if installed, otherwise installs.
                       </li>
                       <li>
-                        <code>-v</code>
-                        : Verbose output.
+                        <code>-v</code>: Verbose output.
                       </li>
                       <li>
-                        <code>-h</code>
-                        : Prints hash marks to show progress.
+                        <code>-h</code>: Prints hash marks to show progress.
                       </li>
                     </ul>
                   </li>
-
                   <li>
-                    <code>rpm -e &lt;pkg&gt;</code>
-                    : Removes a package (erase).
+                    <code>rpm -e &lt;pkg&gt;</code>: Removes a package (erase).
                     <ul>
                       <li>
-                        <code>-e</code>
-                        : Erases the package and owned files (dependency checks apply).
+                        <code>-e</code>: Erases the package and owned files (dependency checks apply).
                       </li>
                     </ul>
                   </li>
-
                   <li>
-                    <code>rpm --rebuilddb</code>
-                    : Rebuilds the RPM database as a recovery operation.
+                    <code>rpm --rebuilddb</code>: Rebuilds the RPM database as a recovery operation.
                     <ul>
                       <li>
-                        <code>--rebuilddb</code>
-                        : Recreates database indexes from installed package headers.
+                        <code>--rebuilddb</code>: Recreates database indexes from installed package headers.
                       </li>
                     </ul>
                   </li>
                 </ul>
               </section>
-            </div>
-            <!-- /main -->
-          </div>
-          <!-- /row -->
-        </div>
-        <!-- /container -->
-      </section>
-
-      <!-- FOOTER -->
-      <footer class="module bg-light">
-        <div class="container">
-          <div class="row">
-            <div class="col-sm-12">
-              <ul class="social-text-links font-alt text-center m-b-20">
-                <li>
-                  <a href="https://github.com/vonds" target="_blank" rel="noopener">Github</a>
-                </li>
-                <li>
-                  <a href="https://www.linkedin.com/in/vonds/" target="_blank" rel="noopener">Linkedin</a>
-                </li>
-              </ul>
-            </div>
-          </div>
-
-          <div class="row">
-            <div class="col-sm-12">
-              <p class="copyright text-center m-b-0">
-                VONDS &copy; <span id="year"></span>
-              </p>
-
-              <div class="scroll-up">
-                <a href="#totop"><i class="fa fa-angle-double-up"></i></a>
-              </div>
-            </div>
-          </div>
-        </div>
-      </footer>
+        <nav class="pager" aria-label="Previous and next lab"><a class="prev" href="lab121.html" rel="prev"><span class="dir alt">Previous &middot; Lab 121</span><span class="t">Configure DNF Repositories (RHEL)</span></a><a class="next" href="lab123.html" rel="next"><span class="dir alt">Next &middot; Lab 123</span><span class="t">Partition /dev/sdb with msdos (MBR) using parted</span></a></nav>
+      </article>
     </div>
+  </div>
+</main>
 
-    <!-- Javascript files (your existing) -->
-    <script src="../assets/js/jquery-2.2.4.min.js"></script>
-    <script src="../assets/bootstrap/js/bootstrap.min.css"></script>
-    <script src="../assets/js/jquery.superslides.min.js"></script>
-    <script src="../assets/js/jquery.mb.YTPlayer.min.js"></script>
-    <script src="../assets/js/jquery.magnific-popup.min.js"></script>
-    <script src="../assets/js/owl.carousel.min.js"></script>
-    <script src="../assets/js/jquery.simple-text-rotator.min.js"></script>
-    <script src="../assets/js/imagesloaded.pkgd.js"></script>
-    <script src="../assets/js/isotope.pkgd.min.js"></script>
-    <script src="../assets/js/packery-mode.pkgd.min.js"></script>
-    <script src="../assets/js/appear.js"></script>
-    <script src="../assets/js/jquery.easing.1.3.js"></script>
-    <script src="../assets/js/wow.min.js"></script>
-    <script src="../assets/js/jqBootstrapValidation.js"></script>
-    <script src="../assets/js/jquery.fitvids.js"></script>
-    <script src="../assets/js/jquery.parallax-1.1.3.js"></script>
-    <script src="../assets/js/smoothscroll.js"></script>
-    <script src="../assets/js/custom.js"></script>
-
-    <!-- Lab page JS (new) -->
-    <script src="../assets/js/lab.js"></script>
-
-    <script>
-      document.getElementById('year').textContent = new Date().getFullYear()
-    </script>
-  </body>
+<footer>
+  <img class="mark" src="assets/images/logo-dark.svg" alt="Vonds">
+  <nav aria-label="Footer" class="alt">
+    <a href="index.html#about">About</a><a href="index.html#portfolio">Portfolio</a><a href="docs.html">exit_0 Labs</a><a href="index.html#contact">Contact</a><a href="https://www.linkedin.com/in/vonds/">LinkedIn</a>
+  </nav>
+  <div class="line"></div>
+  <p class="copyright alt">Vonds &copy; 2026</p>
+</footer>
+<button class="to-top" id="toTop" type="button" aria-label="Back to top"><i class="chev" aria-hidden="true"></i></button>
+<script src="assets/js/site.js" defer></script>
+<script src="assets/js/lab.js" defer></script>
+</body>
 </html>
