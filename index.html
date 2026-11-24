@@ -399,7 +399,7 @@ body.landing .warp{opacity:1;animation:warpOut .9s ease forwards}
 .ffend.in > *{opacity:1;transform:none}
 .ffend.in > :nth-child(2){transition-delay:.25s}
 .ffend.in > :nth-child(3){transition-delay:.35s}
-.ffend.in > :nth-child(4){transition-delay:.95s}
+.ffend.in > :nth-child(3){transition-delay:.4s}.ffend.in > :nth-child(4){transition-delay:.7s}.ffend.in > :nth-child(5){transition-delay:1s}
 .ffend .recap li{opacity:0;transform:translateY(14px);transition:opacity .8s ease,transform .9s cubic-bezier(.2,.7,.2,1)}
 .ffend.in .recap li{opacity:1;transform:none}
 .ffend.in .recap li:nth-child(1){transition-delay:.45s}.ffend.in .recap li:nth-child(2){transition-delay:.52s}.ffend.in .recap li:nth-child(3){transition-delay:.59s}
@@ -452,6 +452,26 @@ body.swap .warp{transition:none!important;opacity:0}
   .ff .deep:has(.pcard.on) .holo{opacity:.18;transition:opacity .6s ease}
 }
 @media (max-width:700px){.ffend{padding:7vh 18px;gap:10px}.ffend h2{font-size:30px}.recap{margin:14px 0 18px}.recap button{width:92px;padding:10px 6px}}
+
+/* v9: featured pair on the closing screen */
+.feat{display:grid;grid-template-columns:repeat(2,minmax(0,340px));gap:16px;margin:30px 0 6px;justify-content:center}
+.ftile{display:grid;justify-items:center;gap:8px;padding:26px 24px 24px;background:linear-gradient(180deg,rgba(255,255,255,.055),rgba(255,255,255,.015));border:1px solid rgba(255,255,255,.16);text-align:center;position:relative}
+.ftile::before,.ftile::after{content:"";position:absolute;width:14px;height:14px;border:solid rgba(255,255,255,.7);border-width:0}
+.ftile::before{left:8px;top:8px;border-left-width:1px;border-top-width:1px}
+.ftile::after{right:8px;bottom:8px;border-right-width:1px;border-bottom-width:1px}
+.fjump{background:none;border:0;padding:0;cursor:pointer;margin-bottom:6px}
+.fjump img{width:120px;height:120px;object-fit:cover;filter:invert(.93) grayscale(1);-webkit-mask-image:radial-gradient(circle,#000 52%,transparent 71%);mask-image:radial-gradient(circle,#000 52%,transparent 71%);transition:transform .5s cubic-bezier(.2,.7,.2,1)}
+.fjump:hover img,.fjump:focus-visible img{transform:scale(1.06)}
+.ftile .kick{color:#9a9a9e;font-size:10px}
+.ftile h3{margin:0;font:400 22px/1.15 Dosis,sans-serif;letter-spacing:.08em;text-transform:uppercase;color:#ececec}
+.ftile p{margin:0 0 10px;color:#c4c4c8;font-size:14px;line-height:1.55;max-width:260px}
+.ffend .recap{margin:14px 0 26px}
+.ffend .recap button{width:100px;padding:10px 8px}
+.ffend .recap img{width:40px;height:40px}
+@media (max-width:700px){.feat{grid-template-columns:1fr;gap:10px;margin:16px 0 4px;width:100%}.ftile{padding:18px 16px;grid-template-columns:72px 1fr;justify-items:start;text-align:left;column-gap:14px}
+  .fjump{grid-row:1 / span 4;margin:0}.fjump img{width:72px;height:72px}.ftile h3{font-size:18px}.ftile p{font-size:13px;margin-bottom:6px}.ftile .pvisit{padding:10px 14px}
+  .ffend .recap button{width:76px}}
+.recap li{display:flex}.recap button{height:100%;box-sizing:border-box;align-content:start}
 
 </style>
 </head>
@@ -766,7 +786,7 @@ body.swap .warp{transition:none!important;opacity:0}
 <p class="lede">Real Linux failures, practiced safely.</p>
 <dl><dt>The problem</dt><dd>Linux learners rarely face real failures until it happens at work.</dd><dt>What I built</dt><dd>Hundreds of scenario labs covering recovery, storage, services, boot problems and configuration drift.</dd><dt>Where it stands</dt><dd>Open source on GitHub.</dd></dl>
 <a class="pvisit" href="https://github.com/vonds/exit_0" target="_blank" rel="noopener">View on GitHub &rarr;</a></article></div></section><div class="fadeout" aria-hidden="true"></div></div>
-<section class="ffend"><h2>Have a problem worth solving?</h2><p class="endp">I take on client projects and partner with organizations doing work like this, as a builder, a consultant or a trainer.</p><ul class="recap"><li><button type="button" data-jump="1" aria-label="Back to Black Signal"><img src="assets/images/portfolio/black-signal.png" alt=""><span>Black Signal</span></button></li><li><button type="button" data-jump="2" aria-label="Back to DEEDS"><img src="assets/images/portfolio/deeds.png" alt=""><span>DEEDS</span></button></li><li><button type="button" data-jump="3" aria-label="Back to Digital Resource Map"><img src="assets/images/portfolio/resource-map.png" alt=""><span>Digital Resource Map</span></button></li><li><button type="button" data-jump="4" aria-label="Back to The Traveling Archive"><img src="assets/images/portfolio/traveling-archive.png" alt=""><span>The Traveling Archive</span></button></li><li><button type="button" data-jump="5" aria-label="Back to Sentinel"><img src="assets/images/portfolio/sentinel.png" alt=""><span>Sentinel</span></button></li><li><button type="button" data-jump="6" aria-label="Back to exit_0"><img src="assets/images/portfolio/exit0.png" alt=""><span>exit_0</span></button></li></ul><div class="ffbtns"><button class="pvisit" type="button" data-ffclose data-goto="contact">Start a project</button></div></section>
+<section class="ffend"><h2>Have a problem worth solving?</h2><p class="endp">I take on client projects and partner with organizations doing work like this, as a builder, a consultant or a trainer.</p><div class="feat"><article class="ftile"><button type="button" class="fjump" data-jump="3" aria-label="Back to Digital Resource Map"><img src="assets/images/portfolio/resource-map.png" alt=""></button><span class="kick">Web app · Pass It On</span><h3>Digital Resource Map</h3><p>Free devices, internet and training, found in seconds.</p><a class="pvisit" href="https://digital-resource-map-demo.netlify.app/" target="_blank" rel="noopener">Open the demo &rarr;</a></article><article class="ftile"><button type="button" class="fjump" data-jump="1" aria-label="Back to Black Signal"><img src="assets/images/portfolio/black-signal.png" alt=""></button><span class="kick">Platform · Founder</span><h3>Black Signal</h3><p>Certification training that still works when the internet doesn’t.</p><a class="pvisit" href="https://black-signal-demo.netlify.app/" target="_blank" rel="noopener">Try the demo &rarr;</a></article></div><ul class="recap"><li><button type="button" data-jump="2" aria-label="Back to DEEDS"><img src="assets/images/portfolio/deeds.png" alt=""><span>DEEDS</span></button></li><li><button type="button" data-jump="4" aria-label="Back to The Traveling Archive"><img src="assets/images/portfolio/traveling-archive.png" alt=""><span>The Traveling Archive</span></button></li><li><button type="button" data-jump="5" aria-label="Back to Sentinel"><img src="assets/images/portfolio/sentinel.png" alt=""><span>Sentinel</span></button></li><li><button type="button" data-jump="6" aria-label="Back to exit_0"><img src="assets/images/portfolio/exit0.png" alt=""><span>exit_0</span></button></li></ul><div class="ffbtns"><button class="pvisit" type="button" data-ffclose data-goto="contact">Start a project</button></div></section>
 </div>
 <div class="warp" aria-hidden="true"><i style="--k:0"></i><i style="--k:1"></i><i style="--k:2"></i><i style="--k:3"></i><i style="--k:4"></i><i style="--k:5"></i><i style="--k:6"></i><i style="--k:7"></i><i style="--k:8"></i><i style="--k:9"></i></div>
 <script>
