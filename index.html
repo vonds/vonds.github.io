@@ -508,6 +508,24 @@ body.swap .warp{transition:none!important;opacity:0}
 /* v11: closing screen arrives sooner */
 .ff .deep[data-i="6"]{height:220vh}
 .ff .fadeout{height:35vh}
+/* v12: View work, a doorway into the descent */
+.dive-btn{position:relative;overflow:hidden;isolation:isolate;gap:16px;padding:15px 22px 15px 32px;transition:background .35s var(--ease),border-color .35s,box-shadow .45s var(--ease),transform .2s}
+.dive-btn .dv-label{position:relative;z-index:2;transition:letter-spacing .45s var(--ease)}
+.dive-btn .dv-count{position:relative;z-index:2;padding-left:16px;border-left:1px solid rgba(255,255,255,.28);font-size:11px;letter-spacing:2px;color:rgba(255,255,255,.72);transition:color .35s}
+.dive-btn::after{content:"";position:absolute;inset:0;z-index:1;pointer-events:none;background:linear-gradient(100deg,transparent 30%,rgba(255,255,255,.22) 48%,rgba(255,255,255,.05) 56%,transparent 70%);transform:translateX(-120%);animation:dvSheen 5.5s cubic-bezier(.4,0,.2,1) 1.6s infinite}
+@keyframes dvSheen{0%{transform:translateX(-120%)}28%,100%{transform:translateX(120%)}}
+.dive-btn .dv-well{position:absolute;inset:0;z-index:0;background:radial-gradient(ellipse at 50% 50%,#050506 0,#141416 70%,#1c1c1e 100%);opacity:0;transition:opacity .45s var(--ease);perspective:120px}
+.dive-btn .dv-well i{position:absolute;left:50%;top:50%;width:100%;height:100%;border:1px solid rgba(255,255,255,.5);transform:translate(-50%,-50%) translateZ(-260px);opacity:0}
+.btn.solid.dive-btn:hover,.btn.solid.dive-btn:focus-visible{background:#141416;border-color:#141416;color:#fff;box-shadow:0 14px 34px rgba(0,0,0,.28)}
+.dive-btn:hover .dv-label,.dive-btn:focus-visible .dv-label{text-shadow:0 0 14px rgba(255,255,255,.55)}
+.dive-btn:hover .dv-count,.dive-btn:focus-visible .dv-count{color:#fff}
+.dive-btn:hover .dv-well,.dive-btn:focus-visible .dv-well{opacity:1}
+.dive-btn:hover .dv-well i,.dive-btn:focus-visible .dv-well i{animation:dvRush 1.6s cubic-bezier(.5,0,.85,.5) infinite}
+.dive-btn .dv-well i:nth-child(2){animation-delay:.4s}.dive-btn .dv-well i:nth-child(3){animation-delay:.8s}.dive-btn .dv-well i:nth-child(4){animation-delay:1.2s}
+.dive-btn:hover::after,.dive-btn:focus-visible::after{animation:none;opacity:0}
+@keyframes dvRush{0%{transform:translate(-50%,-50%) translateZ(-260px);opacity:0}25%{opacity:.8}100%{transform:translate(-50%,-50%) translateZ(90px);opacity:0}}
+.dive-btn:active{transform:scale(.98)}
+@media (prefers-reduced-motion:reduce){.dive-btn::after{display:none}.dive-btn:hover .dv-well i,.dive-btn:focus-visible .dv-well i{animation:none}}
 
 </style>
 </head>
@@ -556,7 +574,7 @@ body.swap .warp{transition:none!important;opacity:0}
       <p class="role alt">Software · Systems · Security</p>
       <p class="pitch">I build software, secure the systems it runs on, and train the people who use it.</p>
       <div class="buttons">
-        <a class="btn solid" href="#portfolio" data-dive>View work</a>
+        <a class="btn solid dive-btn" href="#portfolio" data-dive aria-label="View work: six projects"><span class="dv-well" aria-hidden="true"><i></i><i></i><i></i><i></i></span><span class="dv-label">View work</span><span class="dv-count" aria-hidden="true">06</span></a>
         <a class="btn line" href="#contact">Start a project</a>
       </div>
     </div>
@@ -749,7 +767,6 @@ body.swap .warp{transition:none!important;opacity:0}
         <p>App development, infrastructure, Linux training, or a system that needs to stop breaking. Tell me what you’re working on.</p>
         <div class="direct">
           <div class="row"><span class="label">Email</span><a href="mailto:vonds13@gmail.com">vonds13@gmail.com</a><button class="copy" type="button" id="copyEmail">Copy</button></div>
-          <div class="row"><span class="label">Call</span><a href="mailto:vonds13@gmail.com" data-book>Book a 20-minute call</a></div>
           <div class="row"><span class="label">LinkedIn</span><a href="https://www.linkedin.com/in/vonds/">linkedin.com/in/vonds</a></div>
         </div>
       </div>
@@ -823,7 +840,7 @@ body.swap .warp{transition:none!important;opacity:0}
 <p class="lede">Real Linux failures, practiced safely.</p>
 <dl><dt>The problem</dt><dd>Linux learners rarely face real failures until it happens at work.</dd><dt>What I built</dt><dd>Hundreds of scenario labs covering recovery, storage, services, boot problems and configuration drift.</dd><dt>Where it stands</dt><dd>Open source on GitHub.</dd></dl>
 <a class="pvisit" href="https://github.com/vonds/exit_0" target="_blank" rel="noopener">View on GitHub &rarr;</a></article></div></section><div class="fadeout" aria-hidden="true"></div></div>
-<section class="ffend"><h2>Have a problem worth solving?</h2><p class="endp">I take on client projects and partner with organizations doing work like this, as a builder, a consultant or a trainer.</p><div class="feat"><article class="ftile"><button type="button" class="fjump" data-jump="3" aria-label="Back to Digital Resource Map"><img src="assets/images/portfolio/resource-map.png" alt=""></button><span class="kick">Web app · Pass It On</span><h3>Digital Resource Map</h3><p>Free devices, internet and training, found in seconds.</p><a class="pvisit" href="https://digital-resource-map-demo.netlify.app/" target="_blank" rel="noopener">Open the demo &rarr;</a></article><article class="ftile"><button type="button" class="fjump" data-jump="1" aria-label="Back to Black Signal"><img src="assets/images/portfolio/black-signal.png" alt=""></button><span class="kick">Platform · Founder</span><h3>Black Signal</h3><p>Certification training that still works when the internet doesn’t.</p><a class="pvisit" href="https://black-signal-demo.netlify.app/" target="_blank" rel="noopener">Try the demo &rarr;</a></article></div><ul class="recap"><li><button type="button" data-jump="2" aria-label="Back to DEEDS"><img src="assets/images/portfolio/deeds.png" alt=""><span>DEEDS</span></button></li><li><button type="button" data-jump="4" aria-label="Back to The Traveling Archive"><img src="assets/images/portfolio/traveling-archive.png" alt=""><span>The Traveling Archive</span></button></li><li><button type="button" data-jump="5" aria-label="Back to Sentinel"><img src="assets/images/portfolio/sentinel.png" alt=""><span>Sentinel</span></button></li><li><button type="button" data-jump="6" aria-label="Back to exit_0"><img src="assets/images/portfolio/exit0.png" alt=""><span>exit_0</span></button></li></ul><div class="ffbtns"><button class="pvisit" type="button" data-ffclose data-goto="contact">Start a project</button><a class="pvisit ghost" href="mailto:vonds13@gmail.com" data-book>Book a 20-minute call</a></div></section>
+<section class="ffend"><h2>Have a problem worth solving?</h2><p class="endp">I take on client projects and partner with organizations doing work like this, as a builder, a consultant or a trainer.</p><div class="feat"><article class="ftile"><button type="button" class="fjump" data-jump="3" aria-label="Back to Digital Resource Map"><img src="assets/images/portfolio/resource-map.png" alt=""></button><span class="kick">Web app · Pass It On</span><h3>Digital Resource Map</h3><p>Free devices, internet and training, found in seconds.</p><a class="pvisit" href="https://digital-resource-map-demo.netlify.app/" target="_blank" rel="noopener">Open the demo &rarr;</a></article><article class="ftile"><button type="button" class="fjump" data-jump="1" aria-label="Back to Black Signal"><img src="assets/images/portfolio/black-signal.png" alt=""></button><span class="kick">Platform · Founder</span><h3>Black Signal</h3><p>Certification training that still works when the internet doesn’t.</p><a class="pvisit" href="https://black-signal-demo.netlify.app/" target="_blank" rel="noopener">Try the demo &rarr;</a></article></div><ul class="recap"><li><button type="button" data-jump="2" aria-label="Back to DEEDS"><img src="assets/images/portfolio/deeds.png" alt=""><span>DEEDS</span></button></li><li><button type="button" data-jump="4" aria-label="Back to The Traveling Archive"><img src="assets/images/portfolio/traveling-archive.png" alt=""><span>The Traveling Archive</span></button></li><li><button type="button" data-jump="5" aria-label="Back to Sentinel"><img src="assets/images/portfolio/sentinel.png" alt=""><span>Sentinel</span></button></li><li><button type="button" data-jump="6" aria-label="Back to exit_0"><img src="assets/images/portfolio/exit0.png" alt=""><span>exit_0</span></button></li></ul><div class="ffbtns"><button class="pvisit" type="button" data-ffclose data-goto="contact">Start a project</button></div></section>
 </div>
 <div class="warp" aria-hidden="true"><i style="--k:0"></i><i style="--k:1"></i><i style="--k:2"></i><i style="--k:3"></i><i style="--k:4"></i><i style="--k:5"></i><i style="--k:6"></i><i style="--k:7"></i><i style="--k:8"></i><i style="--k:9"></i></div>
 <script>
@@ -871,10 +888,6 @@ body.swap .warp{transition:none!important;opacity:0}
     try{navigator.clipboard.writeText(email).then(function(){done('Copied');},function(){done('Select & copy');});}catch(e){done('Select & copy');}
   });
 
-  /* Booking: paste a scheduling link (e.g. Calendly) here and every "Book a call" link uses it. */
-  var BOOKING_URL='';
-  var bookMail='mailto:vonds13@gmail.com?subject='+encodeURIComponent('20-minute intro call')+'&body='+encodeURIComponent('Hi Vonds,\n\nI\'d like to set up a 20-minute call about:\n\n\nA few times that work for me (with time zone):\n- \n- \n\nThanks,\n');
-  document.querySelectorAll('[data-book]').forEach(function(a){a.href=BOOKING_URL||bookMail; if(BOOKING_URL){a.target='_blank';a.rel='noopener';}});
   var form=document.getElementById('contactForm'), note=document.getElementById('formNote');
   form.addEventListener('submit',function(e){
     e.preventDefault();
