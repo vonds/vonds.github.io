@@ -133,3 +133,11 @@ html.xp-cur select{cursor:pointer!important}
 :root{--dkt:clamp(0,calc((var(--dk) - .42) * 6.25),1);
   --xp-fg:color-mix(in srgb,#ececec calc(var(--dkt) * 100%),#2e2e30);
   --xp-fg2:color-mix(in srgb,#b8b8bc calc(var(--dkt) * 100%),#4a4a4c)}
+
+/* ---------- 3c. the navbar follows the room light ---------- */
+.header.scrolled{background:color-mix(in srgb,color-mix(in srgb,#141416 calc(var(--dk) * 100%),#fafafa) 97%,transparent);
+  box-shadow:0 1px 0 color-mix(in srgb,rgba(255,255,255,.08) calc(var(--dk) * 100%),rgba(0,0,0,.12)),0 8px 24px rgba(0,0,0,calc(.06 + var(--dk) * .25))}
+.header.scrolled .brand{position:relative;display:block}
+.header.scrolled .brand .logo-dark{display:block;opacity:calc(1 - var(--dkt))}
+.header.scrolled .brand .logo-light{display:block;position:absolute;left:0;top:0;opacity:var(--dkt)}
+.header.scrolled .menu-btn span{background:var(--xp-fg)}
