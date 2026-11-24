@@ -143,6 +143,77 @@
     }, true);
   }
 
+
+  /* ---------- phones ---------- */
+  var touch = window.matchMedia && matchMedia('(hover: none), (pointer: coarse)').matches;
+  // phones: place each logo in the open space above its card and size it to fit, so the two never touch
+  var mq = window.matchMedia ? matchMedia('(max-width: 700px)') : null;
+  var layoutDescent = function () {
+    var scenes = doc.querySelectorAll('.ff .deep[data-i]');
+    scenes.forEach(function (sc) {
+      if (sc.getAttribute('data-i') === '0') return;
+      if (!mq || !mq.matches) { sc.style.removeProperty('--oy'); sc.style.removeProperty('--hs'); return; }
+      var card = sc.querySelector('.pcard'), obj = sc.querySelector('.obj');
+      if (!card || !obj) return;
+      var vh = innerHeight, cs = getComputedStyle(card);
+      var bottom = parseFloat(cs.bottom) || 16;
+      var cardTop = vh - bottom - card.offsetHeight;
+      var zoneTop = 66, zoneBottom = cardTop - 12, avail = Math.max(60, zoneBottom - zoneTop);
+      var natural = obj.offsetHeight || 190;
+      var hs = Math.max(0.5, Math.min(1.3, avail / natural));
+      var centre = zoneTop + avail / 2;
+      sc.style.setProperty('--hs', hs.toFixed(3));
+      sc.style.setProperty('--oy', Math.round(centre - vh / 2) + 'px');
+    });
+  };
+  layoutDescent();
+  addEventListener('resize', layoutDescent);
+  if (mq && mq.addEventListener) mq.addEventListener('change', layoutDescent);
+  // re-measure when the descent opens (fonts and layout are final by then)
+  var ffEl = doc.getElementById('ff');
+  if (ffEl && 'MutationObserver' in window) new MutationObserver(function () { if (ffEl.classList.contains('open')) { layoutDescent(); setTimeout(layoutDescent, 400); } }).observe(ffEl, { attributes: true, attributeFilter: ['class'] });
+  if (doc.fonts && doc.fonts.ready) doc.fonts.ready.then(layoutDescent);
+
+  // phones: each card carries its logo as a corner badge (shown by CSS under 700px only)
+  doc.querySelectorAll('.ff .deep[data-i]').forEach(function (sc) {
+    if (sc.getAttribute('data-i') === '0') return;
+    var src = sc.querySelector('.holo img'), card = sc.querySelector('.pcard');
+    if (!src || !card || card.querySelector('.ml')) return;
+    var b = doc.createElement('span'); b.className = 'ml'; b.setAttribute('aria-hidden', 'true');
+    b.innerHTML = '<img alt="" src="' + src.getAttribute('src') + '"><i class="sl"></i>';
+    card.insertBefore(b, card.firstChild);
+  });
+  // back to top: only when you are heading back up, and never over the form
+  var tt = doc.getElementById('toTop');
+  if (tt && touch) {
+    var lastY = scrollY, idle = null, contact = doc.getElementById('contact'), foot = doc.querySelector('footer');
+    var near = function (el) { if (!el) return false; var r = el.getBoundingClientRect(); return r.top < innerHeight && r.bottom > 0; };
+    tt.classList.add('xp-away');
+    addEventListener('scroll', function () {
+      var y = scrollY, up = y < lastY - 4;
+      if (Math.abs(y - lastY) > 4) lastY = y;
+      var blocked = near(contact) || near(foot) || y < innerHeight;
+      tt.classList.toggle('xp-away', blocked || !up);
+      clearTimeout(idle);
+      if (!blocked && up) idle = setTimeout(function () { tt.classList.add('xp-away'); }, 2200);
+    }, { passive: true });
+  }
+  // full-screen screenshot on phones: open centred, show a swipe hint
+  var lbEl = doc.getElementById('lb');
+  if (lbEl && 'MutationObserver' in window) {
+    var hint = null;
+    new MutationObserver(function () {
+      if (!lbEl.open || !matchMedia('(max-width: 700px)').matches) return;
+      var img = doc.getElementById('lbImg');
+      var centre = function () { lbEl.scrollLeft = (lbEl.scrollWidth - lbEl.clientWidth) / 2; };
+      if (img.complete) centre(); else img.addEventListener('load', centre, { once: true });
+      setTimeout(centre, 60);
+      if (!hint) { hint = doc.createElement('div'); hint.className = 'xp-swipe'; hint.textContent = 'Swipe to explore'; lbEl.appendChild(hint); }
+      hint.classList.remove('gone'); setTimeout(function () { hint.classList.add('gone'); }, 2600);
+      lbEl.addEventListener('scroll', function () { hint.classList.add('gone'); }, { once: true, passive: true });
+    }).observe(lbEl, { attributes: true, attributeFilter: ['open'] });
+  }
+
   /* ---------- 8. hidden terminal (press `) ---------- */
   var projects = Array.prototype.slice.call(doc.querySelectorAll('#portfolio .work')).map(function (w) {
     var a = w.querySelector('h3 a');

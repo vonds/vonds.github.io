@@ -182,3 +182,116 @@ html.xp-cur select{cursor:pointer!important}
   #contact .two{gap:0}
 }
 @media (prefers-reduced-motion:reduce){#contact .status i{animation:none}}
+
+/* ================= phones: nothing obstructs anything ================= */
+.to-top.xp-away{opacity:0!important;visibility:hidden!important}
+@media (max-width:700px){
+  /* case study: the zoom chip moves away from the close button */
+  .cs-zoom{left:10px!important;right:auto!important;bottom:10px!important}
+  dialog.cs.has-shot .cs-close{top:calc(10px + env(safe-area-inset-top))}
+
+  /* full-screen screenshot: shown big, swipe to pan */
+  dialog.lb[open]{justify-content:flex-start;overflow-x:auto;overflow-y:hidden;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;scroll-snap-type:none}
+  dialog.lb img{max-width:none!important;max-height:none!important;height:min(calc(100svh - 170px),640px)!important;width:auto!important;margin:0 20px;flex:none}
+  .lb-close{top:calc(14px + env(safe-area-inset-top));right:14px}
+  .xp-swipe{position:fixed;left:50%;bottom:calc(28px + env(safe-area-inset-bottom));transform:translateX(-50%);padding:10px 16px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);color:#ececec;font:500 11px/1 Dosis,sans-serif;letter-spacing:.28em;text-transform:uppercase;pointer-events:none;transition:opacity .6s ease;white-space:nowrap}
+  .xp-swipe.gone{opacity:0}
+
+  /* descent: the logo arrives alone, then hands off to the card */
+  .ff .pcard{top:auto;max-height:calc(100svh - 100px - env(safe-area-inset-top));overflow-y:auto;overscroll-behavior:contain}
+  .ff .pcard .ptop{align-items:center}
+  .ff .pcard .mini{display:block;width:44px;height:44px;flex:none;object-fit:cover;filter:invert(.93) grayscale(1);
+    -webkit-mask-image:radial-gradient(circle,#000 50%,transparent 70%);mask-image:radial-gradient(circle,#000 50%,transparent 70%);margin:-6px 10px -6px -6px}
+  .ff .pcard .ptop .kick{flex:1}
+
+  /* rail and close: bigger targets, clear of the notch, never touching */
+  .rail{top:calc(10px + env(safe-area-inset-top));left:8px}
+  .rail ol{gap:0}
+  .rail button{padding:14px 5px;min-height:44px}
+  .ffclose{top:calc(10px + env(safe-area-inset-top));right:10px;width:44px;height:44px}
+
+  /* closing screen fits one screen */
+  .ffend{padding:calc(72px + env(safe-area-inset-top)) 18px calc(32px + env(safe-area-inset-bottom));gap:8px;min-height:100svh}
+  .ffend h2{font-size:26px!important;letter-spacing:.06em;margin-bottom:4px}
+  .ffend .endp{font-size:14px;line-height:1.6}
+  .feat{margin:14px 0 2px!important;gap:8px!important}
+  .ftile{padding:14px 14px!important;grid-template-columns:56px 1fr!important;column-gap:12px!important;row-gap:4px!important}
+  .fjump img{width:56px!important;height:56px!important}
+  .ftile .kick{font-size:9.5px!important}.ftile h3{font-size:16px!important}.ftile p{font-size:12.5px!important;margin-bottom:4px!important}
+  .ftile .pvisit{padding:9px 12px!important;font-size:10.5px!important}
+  .ffend .recap{margin:8px 0 14px!important;gap:6px!important;flex-wrap:nowrap}
+  .ffend .recap button{width:auto!important;min-width:0;flex:1;padding:10px 4px!important;gap:6px!important;font-size:8.5px!important;letter-spacing:.08em!important}
+  .ffend .recap li{flex:1;min-width:0}
+  .ffend .recap img{width:34px!important;height:34px!important}
+  .ffend .recap{width:100%}
+}
+@media (max-width:700px) and (max-height:700px){
+  .ftile p{display:none}
+  .ffend .endp{display:none}
+}
+.ff .pcard .mini{display:none}
+@media (max-width:700px){.ff .pcard .mini{display:block}}
+
+/* phones: logo and card share the screen like on desktop, positioned by script so they never touch */
+@media (max-width:700px){
+  .ff .pcard .mini{display:none!important}
+  .ff .deep[data-scene][data-i]:not([data-i="0"]) .obj{scale:var(--hs,1);transition:none}
+  .ff .deep[data-scene][data-i="1"],.ff .deep[data-scene][data-i="3"],.ff .deep[data-scene][data-i="5"]{--ox:min(18vw,90px)}
+  .ff .deep[data-scene][data-i="2"],.ff .deep[data-scene][data-i="4"],.ff .deep[data-scene][data-i="6"]{--ox:max(-18vw,-90px)}
+  .ff .pcard{padding:16px 18px 18px!important;max-height:none;overflow:visible}
+  .ff .pcard h2{font-size:22px!important;margin:4px 0 2px!important}
+  .ff .pcard .lede{font-size:15px!important;margin:0 0 2px!important;line-height:1.35!important}
+  .ff .pcard dl{margin:6px 0 12px!important;gap:1px!important}
+  .ff .pcard dt{margin-top:6px!important;font-size:10px!important}
+  .ff .pcard dd{font-size:12.5px!important;line-height:1.5!important}
+  .ff .pcard .pvisit{padding:11px 16px;font-size:11px}
+  .ff .hlabel{font-size:9.5px;padding:5px 8px}
+}
+@media (max-width:700px) and (max-height:700px){
+  .ff .pcard dd{font-size:12px!important;line-height:1.45!important}
+  .ff .pcard .lede{font-size:14px!important}
+}
+
+/* ================= phones: corner-badge logo that powers on like a screen ================= */
+.ff .pcard .ml{display:none}
+@media (max-width:700px){
+  .ff .deep[data-scene][data-i]:not([data-i="0"]) .obj{display:none!important}
+  .ff .pcard{padding-top:58px!important;overflow:visible!important}
+  .ff .pcard .ml{display:block;position:absolute;top:-50px;right:16px;width:96px;height:96px;z-index:2;background:#141416;
+    border:1px solid rgba(255,255,255,.16);box-shadow:0 16px 40px rgba(0,0,0,.5);transform-origin:50% 50%;transform:scale(0,.004);opacity:0}
+  .ff .deep[data-i="2"] .pcard .ml,.ff .deep[data-i="4"] .pcard .ml,.ff .deep[data-i="6"] .pcard .ml{right:auto;left:16px}
+  .ff .pcard .ml img{display:block;width:100%;height:100%;object-fit:cover;filter:invert(.93) grayscale(1);
+    -webkit-mask-image:radial-gradient(circle,#000 52%,transparent 71%);mask-image:radial-gradient(circle,#000 52%,transparent 71%)}
+  .ff .pcard .ml .sl{position:absolute;inset:0;pointer-events:none;background:repeating-linear-gradient(180deg,rgba(255,255,255,.045) 0 1px,transparent 1px 3px)}
+  .ff .pcard .ml::before,.ff .pcard .ml::after{content:"";position:absolute;width:10px;height:10px;border:solid rgba(255,255,255,.7);border-width:0;z-index:1}
+  .ff .pcard .ml::before{left:4px;top:4px;border-left-width:1px;border-top-width:1px}
+  .ff .pcard .ml::after{right:4px;bottom:4px;border-right-width:1px;border-bottom-width:1px}
+  .ff .pcard.on .ml{animation:xpCrtOn .8s cubic-bezier(.2,.8,.2,1) .18s both}
+  .ff .pcard.on .ml img{animation:xpFlicker .9s steps(1) .55s both}
+  .ff .pcard:not(.on) .ml{animation:xpCrtOff .34s cubic-bezier(.6,0,.8,.4) both}
+}
+@keyframes xpCrtOn{
+  0%{opacity:1;transform:scale(0,.004);background-color:#f2f2f4;box-shadow:0 0 24px 4px rgba(255,255,255,.7)}
+  30%{transform:scale(1,.004);background-color:#f2f2f4;box-shadow:0 0 28px 6px rgba(255,255,255,.75)}
+  58%{transform:scale(1,1.06);background-color:#3a3a3e;box-shadow:0 0 40px rgba(255,255,255,.35),0 16px 40px rgba(0,0,0,.5)}
+  76%{transform:scale(1,.97);background-color:#1c1c1f}
+  100%{opacity:1;transform:scale(1,1);background-color:#141416;box-shadow:0 16px 40px rgba(0,0,0,.5)}}
+@keyframes xpCrtOff{
+  0%{opacity:1;transform:scale(1,1)}
+  55%{opacity:1;transform:scale(1,.004);background-color:#f2f2f4;box-shadow:0 0 24px 4px rgba(255,255,255,.6)}
+  85%{opacity:1;transform:scale(.06,.004);background-color:#fff}
+  100%{opacity:0;transform:scale(0,0)}}
+@keyframes xpFlicker{0%{opacity:.25}12%{opacity:1}22%{opacity:.55}34%{opacity:1}60%{opacity:.85}70%,100%{opacity:1}}
+@media (prefers-reduced-motion:reduce){
+  .ff .pcard .ml,.ff .pcard.on .ml,.ff .pcard:not(.on) .ml,.ff .pcard.on .ml img{animation:none!important;transform:none;opacity:1}}
+/* phones: card + badge centred as one group, clear of the rail and close button */
+@media (max-width:700px){
+  .ff .deep[data-i]:not([data-i="0"]) .pcard{top:calc(64px + env(safe-area-inset-top))!important;bottom:calc(12px + env(safe-area-inset-bottom))!important;
+    margin:auto 0!important;height:max-content;max-height:calc(100svh - 76px - env(safe-area-inset-top) - env(safe-area-inset-bottom))}
+}
+@media (max-width:700px) and (max-height:760px){
+  .ff .pcard{padding-top:46px!important}
+  .ff .pcard .ml{width:78px;height:78px;top:-40px}
+  .ff .deep[data-i]:not([data-i="0"]) .pcard{top:calc(52px + env(safe-area-inset-top))!important}
+  .ff .pcard .lede{display:none}
+}
