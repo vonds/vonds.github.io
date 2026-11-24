@@ -177,6 +177,11 @@
   .two{display:grid;grid-template-columns:1fr 1fr;gap:16px}
   form .btn{width:100%;justify-content:center;cursor:pointer}
   .form-note{margin:14px 0 0;font-size:13px;color:var(--muted);min-height:1.5em}
+  .form-note.ok{color:#1f1f21;font-weight:600}
+  .form-note.err{color:#1f1f21}
+  .form-note.err::before{content:"";display:inline-block;width:6px;height:6px;margin:0 8px 2px 0;background:#1f1f21;transform:rotate(45deg)}
+  .hp{position:absolute!important;left:-9999px!important;width:1px;height:1px;opacity:0}
+  form .btn:disabled{opacity:.7;cursor:progress}
 
 
   /* ---------- Case study pop-up ---------- */
@@ -793,6 +798,7 @@ body.swap .warp{transition:none!important;opacity:0}
           </select></div>
         <div class="field"><label for="f-msg">What are you working on?</label><textarea id="f-msg" name="message" required></textarea></div>
         <button class="btn solid" type="submit">Send message</button>
+        <input type="checkbox" name="botcheck" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true">
         <p class="form-note" id="formNote" role="status"></p>
       </form>
     </div>
@@ -900,15 +906,31 @@ body.swap .warp{transition:none!important;opacity:0}
     try{navigator.clipboard.writeText(email).then(function(){done('Copied');},function(){done('Select & copy');});}catch(e){done('Select & copy');}
   });
 
-  var form=document.getElementById('contactForm'), note=document.getElementById('formNote');
+  /* Contact form: sends through Web3Forms (https://web3forms.com).
+     Paste the access key Web3Forms emailed you between the quotes. The key is safe to be public.
+     With no key, the form falls back to opening the visitor's email app. */
+  var WEB3FORMS_KEY='';
+  var form=document.getElementById('contactForm'), note=document.getElementById('formNote'), sendBtn=form.querySelector('button[type="submit"]'), sendLabel=sendBtn.textContent;
+  function setNote(msg,state){note.textContent=msg;note.className='form-note'+(state?' '+state:'');}
+  function mailtoFallback(subject,body){window.location.href='mailto:'+email+'?subject='+encodeURIComponent(subject)+'&body='+encodeURIComponent(body);}
   form.addEventListener('submit',function(e){
     e.preventDefault();
     var name=form.name.value.trim(), from=form.email.value.trim(), msg=form.message.value.trim(), type=form.type.value;
-    if(!name||!from||!msg){note.textContent='Please fill in your name, email and a short message.';return;}
+    if(!name||!from||!msg){setNote('Please fill in your name, email and a short message.','err');(!name?form.name:!from?form.email:form.message).focus();return;}
+    if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(from)){setNote('That email address doesn’t look right. Please check it.','err');form.email.focus();return;}
     var subject='Project inquiry: '+type, body=msg+'\n\n'+name+'\n'+from;
-    var href='mailto:'+email+'?subject='+encodeURIComponent(subject)+'&body='+encodeURIComponent(body);
-    note.textContent='Opening your email app with this message ready to send. If nothing opens, email '+email+' directly.';
-    window.location.href=href;
+    if(!WEB3FORMS_KEY){setNote('Opening your email app with this message ready to send. If nothing opens, email '+email+' directly.');mailtoFallback(subject,body);return;}
+    if(form.botcheck&&form.botcheck.checked){return;}
+    sendBtn.disabled=true;sendBtn.textContent='Sending…';form.setAttribute('aria-busy','true');setNote('');
+    fetch('https://api.web3forms.com/submit',{method:'POST',headers:{'Content-Type':'application/json','Accept':'application/json'},
+      body:JSON.stringify({access_key:WEB3FORMS_KEY,subject:subject,from_name:'vonds.github.io',name:name,email:from,replyto:from,project_type:type,message:msg})})
+      .then(function(r){return r.json().catch(function(){return {success:false};});})
+      .then(function(d){
+        if(d&&d.success){form.reset();setNote('Thanks, '+name.split(' ')[0]+'. Your message is on its way, and I’ll be in touch soon.','ok');sendBtn.textContent='Message sent';setTimeout(function(){sendBtn.textContent=sendLabel;sendBtn.disabled=false;},4000);}
+        else{throw new Error('rejected');}
+      })
+      .catch(function(){sendBtn.textContent=sendLabel;sendBtn.disabled=false;setNote('Sorry, that didn’t go through. Please try again, or email '+email+' directly.','err');})
+      .then(function(){form.removeAttribute('aria-busy');});
   });
 })();
 </script>
