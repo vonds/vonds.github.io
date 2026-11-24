@@ -59,3 +59,4 @@ footer .copyright{margin:0;font-size:13px;letter-spacing:3px;color:#3d3d3d}
 .skip{position:absolute;left:12px;top:-60px;z-index:100;background:#2e2e30;color:#fff;padding:10px 16px;font:500 13px Dosis,sans-serif;letter-spacing:2px;text-transform:uppercase}
 .skip:focus{top:12px}
 @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*::before,*::after{transition-duration:.01ms!important;animation-duration:.01ms!important}}
+.to-top .chev{display:block;width:10px;height:10px;margin:4px auto 0;border-left:1.5px solid currentColor;border-top:1.5px solid currentColor;transform:rotate(45deg)}
