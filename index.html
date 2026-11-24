@@ -29,15 +29,15 @@
   /* ---------- Header ---------- */
   .header{position:fixed;inset:0 0 auto 0;z-index:50;padding:22px 0;transition:background .35s var(--ease),padding .35s var(--ease),box-shadow .35s}
   .header .wrap{display:flex;align-items:center;justify-content:space-between}
-  .header.scrolled{background:rgba(38,38,40,.94);padding:12px 0;box-shadow:0 1px 0 rgba(255,255,255,.06)}
+  .header.scrolled{background:rgba(250,250,250,.97);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);padding:12px 0;box-shadow:0 1px 0 rgba(0,0,0,.12),0 8px 24px rgba(0,0,0,.06)}
   .brand img{height:30px;width:auto}
   .brand .logo-light{display:none}
-  .header.scrolled .logo-dark{display:none}
-  .header.scrolled .logo-light{display:block}
+  .header.scrolled .logo-dark{display:block}
+  .header.scrolled .logo-light{display:none}
   .menu-btn{width:48px;height:48px;margin-right:-12px;background:none;border:0;cursor:pointer;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:5px}
   .menu-btn span{display:block;width:24px;height:2px;background:var(--ink);transition:background .3s,transform .3s var(--ease)}
   .menu-btn:hover span:nth-child(2){transform:translateX(4px)}
-  .header.scrolled .menu-btn span{background:#fff}
+  .header.scrolled .menu-btn span{background:var(--ink)}
 
   /* ---------- Overlay menu ---------- */
   .overlay{position:fixed;inset:0;z-index:60;background:rgba(38,38,40,.97);display:flex;align-items:center;justify-content:center;opacity:0;visibility:hidden;transition:opacity .4s var(--ease),visibility .4s}
@@ -473,6 +473,18 @@ body.swap .warp{transition:none!important;opacity:0}
   .ffend .recap button{width:76px}}
 .recap li{display:flex}.recap button{height:100%;box-sizing:border-box;align-content:start}
 
+/* v10: scroll cue */
+.ffcue{position:fixed;left:50%;bottom:30px;z-index:5;display:grid;justify-items:center;gap:10px;transform:translateX(-50%);pointer-events:none;
+  font:500 10px/1 Dosis,sans-serif;letter-spacing:.42em;text-indent:.42em;text-transform:uppercase;color:#c4c4c8;opacity:0;transition:opacity .9s ease,transform .9s cubic-bezier(.2,.7,.2,1)}
+.ffcue i{position:relative;display:block;width:1px;height:42px;background:rgba(255,255,255,.18);overflow:hidden}
+.ffcue i::after{content:"";position:absolute;left:0;top:-40%;width:1px;height:40%;background:#ececec;animation:cueDrop 2.2s cubic-bezier(.6,0,.3,1) infinite}
+@keyframes cueDrop{0%{top:-40%}70%,100%{top:100%}}
+.ff.open:not(.building) .ffcue{opacity:.85}
+.ff.moved .ffcue{opacity:0!important;transform:translateX(-50%) translateY(10px)}
+@media (prefers-reduced-motion:reduce){.ffcue i::after{animation:none;top:30%}}
+@media (max-width:700px){.ffcue{bottom:calc(18px + env(safe-area-inset-bottom))}}
+@media (max-width:700px){.ff .deep[data-i="0"] .dtxt{bottom:calc(96px + env(safe-area-inset-bottom))}}
+
 </style>
 </head>
 <body>
@@ -760,7 +772,7 @@ body.swap .warp{transition:none!important;opacity:0}
 
 <div class="ff" id="ff" role="dialog" aria-modal="true" aria-label="Selected work" aria-hidden="true">
 <button class="ffclose" type="button" data-ffclose aria-label="Close and return to the site"><i aria-hidden="true"></i></button>
-<div class="blackout" aria-hidden="true"></div><nav class="rail" aria-label="Projects"><ol><li><button type="button" data-jump="1" aria-label="Black Signal"><i></i><b>01</b><span>01 &middot; Black Signal</span></button></li><li><button type="button" data-jump="2" aria-label="DEEDS"><i></i><b>02</b><span>02 &middot; DEEDS</span></button></li><li><button type="button" data-jump="3" aria-label="Digital Resource Map"><i></i><b>03</b><span>03 &middot; Digital Resource Map</span></button></li><li><button type="button" data-jump="4" aria-label="The Traveling Archive"><i></i><b>04</b><span>04 &middot; The Traveling Archive</span></button></li><li><button type="button" data-jump="5" aria-label="Sentinel"><i></i><b>05</b><span>05 &middot; Sentinel</span></button></li><li><button type="button" data-jump="6" aria-label="exit_0"><i></i><b>06</b><span>06 &middot; exit_0</span></button></li></ol></nav><div class="descent" data-descent><div class="shaft" aria-hidden="true"><canvas class="wellc"></canvas><div class="pit"></div></div><div class="gauge" aria-hidden="true"><span class="gl">Depth</span><span class="gv">0000</span><span class="gu">m</span><i></i></div><section class="deep" data-scene data-i="0" aria-label="Introduction"><div class="stick"><div class="obj"><div class="big">06</div></div>
+<div class="blackout" aria-hidden="true"></div><div class="ffcue" aria-hidden="true"><span>Scroll</span><i></i></div><nav class="rail" aria-label="Projects"><ol><li><button type="button" data-jump="1" aria-label="Black Signal"><i></i><b>01</b><span>01 &middot; Black Signal</span></button></li><li><button type="button" data-jump="2" aria-label="DEEDS"><i></i><b>02</b><span>02 &middot; DEEDS</span></button></li><li><button type="button" data-jump="3" aria-label="Digital Resource Map"><i></i><b>03</b><span>03 &middot; Digital Resource Map</span></button></li><li><button type="button" data-jump="4" aria-label="The Traveling Archive"><i></i><b>04</b><span>04 &middot; The Traveling Archive</span></button></li><li><button type="button" data-jump="5" aria-label="Sentinel"><i></i><b>05</b><span>05 &middot; Sentinel</span></button></li><li><button type="button" data-jump="6" aria-label="exit_0"><i></i><b>06</b><span>06 &middot; exit_0</span></button></li></ol></nav><div class="descent" data-descent><div class="shaft" aria-hidden="true"><canvas class="wellc"></canvas><div class="pit"></div></div><div class="gauge" aria-hidden="true"><span class="gl">Depth</span><span class="gv">0000</span><span class="gu">m</span><i></i></div><section class="deep" data-scene data-i="0" aria-label="Introduction"><div class="stick"><div class="obj"><div class="big">06</div></div>
 <div class="dtxt" data-at=".25"><span class="kick">Selected work</span><h2>Six problems worth solving.</h2><p>Software for learners, nonprofits and the communities they serve, from certification training to a map of free internet.</p></div></div></section><section class="deep" data-scene data-i="1" aria-label="Black Signal"><div class="stick"><div class="obj"><div class="holo"><img src="assets/images/portfolio/black-signal.png" alt="Black Signal logo"><span class="br tl"></span><span class="br tr"></span><span class="br bl"></span><span class="br bott"></span><span class="scan"></span></div><span class="hlabel">01 &middot; Black Signal</span></div>
 <article class="dtxt pcard" data-at=".28"><div class="ptop"><span class="kick">Platform · Founder</span><span class="pidx">01 / 06</span></div><h2>Black Signal</h2>
 <p class="lede">Certification training that still works when the internet doesn’t.</p>
@@ -961,6 +973,7 @@ body.swap .warp{transition:none!important;opacity:0}
     });
     railState();
     endState();
+    ff.classList.toggle('moved', ff.scrollTop > window.innerHeight * 0.55 + 140);
     if (moving) requestAnimationFrame(frame); else running = false;
   }
   function update(snap) {
