@@ -247,7 +247,7 @@
         '  clear             clear the screen\n' +
         '  exit              close the terminal');
     },
-    whoami: function () { print('Vonds. Software, systems and security: I build software, secure the systems it runs on, and train the people who use it.'); },
+    whoami: function () { print('Vonds. Software, systems, and security.'); },
     ls: function (a) {
       if (a && /^proj/.test(a)) { print(projects.map(function (p) { return p.slug; }).join('    ')); return; }
       print('about/    projects/    services/    contact/');
