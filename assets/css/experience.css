@@ -338,3 +338,4 @@ html.xp-cur select{cursor:pointer!important}
   .ff .deep[data-scene][data-i="2"],.ff .deep[data-scene][data-i="4"],.ff .deep[data-scene][data-i="6"]{--ox:calc((var(--cw) + var(--gap)) / -2);--oy:-14px}
 }
 footer .mark{margin-bottom:28px!important}
+.hero .buttons{margin-top:44px}
