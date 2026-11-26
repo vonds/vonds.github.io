@@ -219,7 +219,7 @@
       if (px < -50) { px = mx; py = my; }
       cur.classList.add('on');
       var t = e.target;
-      cur.classList.toggle('hot', !!(t.closest && t.closest(HOT)));
+      cur.classList.toggle('hot', !!(t.closest && t.closest(HOT)) && !(t.closest && t.closest('.header .brand')));
       cur.classList.toggle('hide', !!(t.closest && t.closest(TEXT)) || !!doc.querySelector('dialog[open]'));
       if (!moving) { moving = true; requestAnimationFrame(move); }
     }, { passive: true });

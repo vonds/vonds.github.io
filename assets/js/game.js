@@ -678,7 +678,8 @@
     var ins = P();
     for (var i = 0; i < s.obs.length; i++) { var q = s.obs[i], qb = GY - q.lift, qt = qb - q.h; if (bx2 > q.x + ins && bx1 < q.x + q.w - ins && by2 > qt + ins && by1 < qb - ins * .5) return die(); }
     for (var j = 0; j < s.tok.length; j++) { var tk = s.tok[j], tx = tk.x + 3.5 * P(), ty = GY - tk.lift - 4 * P(); if (Math.abs(tx - px) < 6 * P() && ty > by1 - 4 * P() && ty < by2) { tk.got = true; s.bonus += 50; s.pops.push({ x: tx, y: ty, t: 0 }); burst(tx, ty, 10, 160 * k, .5); } }
-    if (T.trail) { s.trail.push({ x: px, y: s.py, f: poseNow() }); if (s.trail.length > 5) s.trail.shift(); }
+    // motion trail runs on every level, so it never freezes after a level change
+    s.trail.push({ x: px, y: s.py, f: poseNow() }); if (s.trail.length > 7) s.trail.shift();
   }
 
   function text(str, x, y, size, color, align, spacing) {
@@ -699,7 +700,7 @@
     s.pops.forEach(function (pp) { ctx.globalAlpha = 1 - pp.t / .9; text('+50', pp.x, pp.y - pp.t * 40 * k, 12 * k, T.hud, 'center', 3); ctx.globalAlpha = 1; });
     var px = PX(), sz = SZ();
     if (s.mode !== 'over' || s.overT < .08) {
-      s.trail.forEach(function (p, i) { ctx.globalAlpha = (i + 1) / s.trail.length * .16; T.player(ctx, p.x - (s.trail.length - i) * 7 * k, p.y - sz * .42, sz, p.f, true); });
+      s.trail.forEach(function (p, i) { ctx.globalAlpha = (i + 1) / s.trail.length * .22; T.player(ctx, p.x - (s.trail.length - i) * 7.5 * k, p.y - sz * .42, sz, p.f, true); });
       ctx.globalAlpha = 1;
       var tilt = 0, sq = s.squash * .5;
       var idle = 0;
