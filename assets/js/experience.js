@@ -78,6 +78,76 @@
     measure();
   }
 
+
+  /* ---------- section index ---------- */
+  var IDX = [['about', 'About'], ['portfolio', 'Work'], ['services', 'Services'], ['contact', 'Contact']]
+    .map(function (x) { return { el: doc.getElementById(x[0]), id: x[0], label: x[1] }; }).filter(function (x) { return x.el; });
+  if (IDX.length) {
+    var nav = doc.createElement('nav');
+    nav.className = 'xp-index'; nav.setAttribute('aria-label', 'Sections');
+    nav.innerHTML = '<ol>' + IDX.map(function (x, i) {
+      return '<li><a href="#' + x.id + '"><span class="lb">' + x.label + '</span><span class="n">0' + (i + 1) + '</span><span class="tr"><i></i></span></a></li>';
+    }).join('') + '</ol>';
+    body.appendChild(nav);
+    var links = nav.querySelectorAll('a');
+    var idxUpdate = function () {
+      var vh = innerHeight, mid = vh * 0.45, any = false;
+      IDX.forEach(function (x, i) {
+        var r = x.el.getBoundingClientRect();
+        var f = clamp((mid - r.top) / Math.max(1, r.height));
+        links[i].querySelector('.tr').style.setProperty('--f', f.toFixed(3));
+        var on = r.top <= mid && r.bottom > mid; links[i].classList.toggle('on', on);
+        if (on) { any = true; links[i].setAttribute('aria-current', 'true'); } else links[i].removeAttribute('aria-current');
+      });
+      var heroR = hero ? hero.getBoundingClientRect() : { bottom: 0 };
+      var foot = doc.querySelector('footer'), fr = foot ? foot.getBoundingClientRect() : { top: 1e9 };
+      nav.classList.toggle('show', heroR.bottom < vh * 0.4 && fr.top > vh * 0.6);
+    };
+    var idxTick = false;
+    addEventListener('scroll', function () { if (!idxTick) { idxTick = true; requestAnimationFrame(function () { idxTick = false; idxUpdate(); }); } }, { passive: true });
+    addEventListener('resize', idxUpdate); idxUpdate();
+  }
+
+  /* ---------- ink-bleed headings ---------- */
+  if (!reduce) root.classList.add('xp-ink');
+
+
+  /* ---------- live product previews ---------- */
+  var frames = doc.querySelectorAll('#portfolio .work .frame');
+  var saveData = navigator.connection && navigator.connection.saveData;
+  if (frames.length && !reduce) {
+    var mk = function (fr) {
+      if (fr._pv) return fr._pv;
+      var img = fr.querySelector('img'); if (!img) return null;
+      var name = (img.getAttribute('src') || '').split('/').pop().replace(/\.(png|jpe?g|webp)$/, '');
+      var pv = doc.createElement('span'); pv.className = 'pv'; pv.setAttribute('aria-hidden', 'true');
+      pv.innerHTML = '<video muted loop playsinline preload="none" src="assets/video/' + name + '.mp4"></video><span class="tag"><i></i>Live preview</span>';
+      fr.appendChild(pv); fr._pv = pv; fr._v = pv.querySelector('video');
+      return pv;
+    };
+    var play = function (fr) { if (!mk(fr)) return; fr.classList.add('playing'); var pr = fr._v.play(); if (pr && pr.catch) pr.catch(function () {}); };
+    var stop = function (fr) { if (!fr._v) return; fr.classList.remove('playing'); var v = fr._v; setTimeout(function () { if (!fr.classList.contains('playing')) { v.pause(); try { v.currentTime = 0; } catch (e) {} } }, 560); };
+    if (fine) {
+      frames.forEach(function (fr) {
+        fr.addEventListener('pointerenter', function () { play(fr); });
+        fr.addEventListener('pointerleave', function () { stop(fr); });
+        fr.addEventListener('focus', function () { play(fr); });
+        fr.addEventListener('blur', function () { stop(fr); });
+      });
+    } else if (!saveData && 'IntersectionObserver' in window) {
+      // phones: the tile in the middle of the screen plays on its own
+      var vis = new Map();
+      var pick = function () {
+        var best = null, bestD = 1e9, mid = innerHeight / 2;
+        vis.forEach(function (on, fr) { if (!on) return; var r = fr.getBoundingClientRect(), d = Math.abs((r.top + r.bottom) / 2 - mid); if (d < bestD) { bestD = d; best = fr; } });
+        frames.forEach(function (fr) { if (fr === best) { if (!fr.classList.contains('playing')) play(fr); } else if (fr.classList.contains('playing')) stop(fr); });
+      };
+      var io2 = new IntersectionObserver(function (es) { es.forEach(function (e) { vis.set(e.target, e.intersectionRatio > 0.6); }); pick(); }, { threshold: [0, 0.6, 1] });
+      frames.forEach(function (fr) { io2.observe(fr); });
+      addEventListener('scroll', function () { if (vis.size) requestAnimationFrame(pick); }, { passive: true });
+    }
+  }
+
   /* ---------- 4. film grain ---------- */
   var grain = doc.createElement('div');
   grain.className = 'xp-grain'; grain.setAttribute('aria-hidden', 'true');
