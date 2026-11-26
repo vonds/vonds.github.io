@@ -925,8 +925,38 @@
       x.fillStyle = light ? 'rgba(20,20,22,.55)' : 'rgba(236,236,236,.38)'; for (var j = 0; j < pts.length; j += 2) x.fillRect(pts[j], pts[j + 1], 1, 1);
       return (frontCache[key] = c);
     }
+    // out of breath, from the side: bent over, hands on knees (facing right; flipped when he faces left)
+    var PANT = [
+      '......................', '......................', '......................',
+      '...........HHHHH......', '.........HHhHHHHHH..W.', '........HHhHHHHHHHH...', '.......HHHHHHHHHHHHH..',
+      '.......HHHHHHHSSSSSH..', '......HHHHHHDSSSSSSS..', '......HHHHHHDSSSSESSS.', '.....HHHH.HHDDSSSSSRS.',
+      '.....HHH...HSSSSSSSEE.', '....HHH...TTSSSSSSS...', '....HH...TTTTSSSSS....', '...HH..TTTTTTTA.......',
+      '...H..TTTTTTTTAA......', '...H.TTTTTTTTT.AA.....', '.....LLLLLLLL...AA....', '.....PPPPPPPP...SS....',
+      '......PPP..PPP.SSS....', '......PPP...PPP.......', '......PPP....PP.......', '......PPP....PP.......',
+      '.....BBBB....BBBB.....', '......................', '......................'];
+    var pantCache = {};
+    function pantImg(light, phase) {
+      var key = (light ? 'L' : 'D') + phase; if (pantCache[key]) return pantCache[key];
+      var pal = palette(LOOK), c = document.createElement('canvas'); c.width = 22; c.height = 26; var x = c.getContext('2d');
+      PANT.forEach(function (row, y) {
+        for (var i = 0; i < 22; i++) {
+          var ch = row.charAt(i); if (ch === '.') continue;
+          if (ch === 'W') { if (phase) continue; x.fillStyle = 'rgb(236,236,240)'; x.fillRect(i, y, 1, 1); continue; }   // a bead of sweat
+          var dy = phase && y < 18 ? 1 : 0;   // the upper body heaves down on each breath
+          x.fillStyle = pal[ch] || pal.S; x.fillRect(i, y + dy, 1, 1);
+        }
+      });
+      var d = x.getImageData(0, 0, 22, 26).data, pts = [];
+      for (var yy = 0; yy < 26; yy++) for (var xx = 0; xx < 22; xx++) {
+        if (d[(yy * 22 + xx) * 4 + 3]) continue;
+        if ([[1,0],[-1,0],[0,1],[0,-1]].some(function (o) { var a = xx + o[0], b = yy + o[1]; return a >= 0 && b >= 0 && a < 22 && b < 26 && d[(b * 22 + a) * 4 + 3] > 200; })) pts.push(xx, yy);
+      }
+      x.fillStyle = light ? 'rgba(20,20,22,.55)' : 'rgba(236,236,236,.38)'; for (var j = 0; j < pts.length; j += 2) x.fillRect(pts[j], pts[j + 1], 1, 1);
+      return (pantCache[key] = c);
+    }
     function render(pose, dark) {
       var u = S * R; cx2.setTransform(1, 0, 0, 1, 0, 0); cx2.clearRect(0, 0, cv2.width, cv2.height); cx2.imageSmoothingEnabled = false;
+      if (pose === 'pant0' || pose === 'pant1') { cx2.drawImage(pantImg(!dark, pose === 'pant1' ? 1 : 0), OX * u, OY * u, 22 * u, 26 * u); return; }
       if (pose === 'front' || pose === 'frontb') { cx2.drawImage(frontImg(!dark, pose === 'frontb'), OX * u, OY * u, 22 * u, 26 * u); return; }
       cx2.drawImage(frame(pose, null, !dark), OX * u, OY * u, 22 * u, 26 * u);
       var pts = STICK[pose] || [];
@@ -955,7 +985,7 @@
     function say(html, actions) {
       txt.innerHTML = html; acts.innerHTML = '';
       (actions || []).forEach(function (a) {
-        var b = document.createElement('button'); b.type = 'button'; b.textContent = a.label; if (a.quiet) b.className = 'q';
+        var b = document.createElement('button'); b.type = 'button'; b.textContent = a.label; if (a.quiet) b.className = 'q'; if (a.code) { b.className = 'cmd'; b.setAttribute('aria-label', 'Run ' + a.label); }
         b.addEventListener('click', function (e) { e.stopPropagation(); a.fn(); }); acts.appendChild(b);
       });
       talk.classList.remove('pop'); void talk.offsetWidth; talk.classList.add('pop');
@@ -964,9 +994,9 @@
     // o: { id, dark, pose, x, y, side, enter: 'drop'|'rise'|'pop', rope, mirror, text, actions }
     // walking on or off screen: run frames timed to the distance covered, facing the way he moves
     var walkRaf = 0;
-    function walk(fromX, toX, y, dark, done) {
+    function walk(fromX, toX, y, dark, done, fast) {
       cancelAnimationFrame(walkRaf);
-      var t0 = 0, dur = Math.min(1.25, .45 + Math.abs(toX - fromX) / 900), faceLeft = toX < fromX, lastF = '';
+      var t0 = 0, dur = fast ? Math.min(.75, .3 + Math.abs(toX - fromX) / 1800) : Math.min(1.25, .45 + Math.abs(toX - fromX) / 900), faceLeft = toX < fromX, lastF = '';
       el.classList.toggle('flip', faceLeft);
       (function stepW(ts) {
         if (!t0) t0 = ts;
@@ -1109,41 +1139,55 @@
 
     /* ---- 2. The terminal: an offer at the footer, then a short tour inside ---- */
     var T2 = window.VondsTerm, TOUR = 'vonds-tour';
+    var coarse = window.matchMedia && matchMedia('(hover: none), (pointer: coarse)').matches;
     var steps = [
-      { want: function (d) { return d.cmd === 'help'; }, pose: 'gpoint', text: 'This is the terminal. Type <code>help</code> and press Enter to see what it can do.' },
-      { want: function (d) { return d.cmd === 'ls' || d.cmd === 'll' || d.cmd === 'dir'; }, pose: 'gpoint', text: 'Nice. Now list the work with <code>ls projects</code>.' },
-      { want: function (d) { return d.cmd === 'cat' && d.arg; }, pose: 'gpoint', text: 'Pick one and read about it, like <code>cat black-signal</code>. <span class="tip">Tab finishes names for you.</span>' },
-      { want: function (d) { return d.cmd === 'play' || d.cmd === 'game' || d.cmd === 'jump' || d.cmd === './jump'; }, pose: 'gpoint', text: 'You can <code>open</code> a project or <code>cd about</code> to jump around. Last secret: type <code>play</code>.' }
+      { cmd: 'help', want: function (d) { return d.cmd === 'help'; }, text: 'This is the terminal. Type <code>help</code> and press Enter to see what it can do.', tap: 'Tap below to run <code>help</code>, or type it yourself.' },
+      { cmd: 'ls projects', want: function (d) { return d.cmd === 'ls' || d.cmd === 'll' || d.cmd === 'dir'; }, text: 'Nice. Now list the work with <code>ls projects</code>.', tap: 'Nice. Now list the work.' },
+      { cmd: 'cat black-signal', want: function (d) { return d.cmd === 'cat' && d.arg; }, text: 'Read about one, like <code>cat black-signal</code>. <span class="tip">Tab finishes names for you.</span>', tap: 'Read about one of the projects.' },
+      { cmd: 'play', want: function (d) { return d.cmd === 'play' || d.cmd === 'game' || d.cmd === 'jump' || d.cmd === './jump'; }, text: 'You can also <code>open</code> a project or <code>cd about</code> to jump around. Last secret: type <code>play</code>.', tap: 'Last secret: there’s a game.' }
     ];
+    STICK.gup = [[15, 11], [15, 10], [16, 9], [16, 8], [16, 7], [16, 6], [17, 5], [17, 4], [17, 3], [17, 2], [17, 1], [18, 0], [18, -1], [18, -2], [18, -3], [18, -4]];
+    POSE.gup = { bl: 'down', fl: 'down', ba: 'mid', fa: 'up', bob: 0, sway: 0 };
     var stepI = 0, touring = false;
-    var phoneTour = function (on) {   // on phones, slide the terminal down a little so the guide has room above it
-      if (innerWidth >= 640) return;
-      T2.win.style.marginTop = on ? '170px' : ''; T2.win.style.height = on ? 'calc(100% - 180px)' : '';
+    // compact layout when there isn't room beside the terminal (phones, small windows): terminal up top, Vee below it
+    function compact() { var sz = api.size(); return innerWidth < 640 || coarse && innerWidth < 900 || T2.win.getBoundingClientRect().left < sz.w * .95 + 16; }
+    var phoneTour = function (on) {
+      var c = on && compact();
+      T2.win.style.alignSelf = c ? 'flex-start' : ''; T2.win.style.marginTop = c ? '8px' : ''; T2.win.style.height = c ? '48vh' : '';
     };
+    // Vee stands so the tip of his stick lands right on the line where you type
     function termSpot() {
-      var w = T2.win.getBoundingClientRect(), sz = api.size();
-      if (w.left > sz.w * .9 + 16) return { x: w.left - sz.w * .82, y: Math.min(innerHeight - sz.h - 12, w.bottom - sz.h * .92), side: 'above', mirror: false };
-      return { x: w.right - sz.w * .9, y: Math.max(6, w.top - sz.h * .78), side: 'left', mirror: true };
+      var f = T2.form.getBoundingClientRect(), w = T2.win.getBoundingClientRect();
+      if (!compact()) {
+        var tx = w.left + 14, ty = f.top + f.height / 2;
+        return { x: tx - (OX + 29.5) * S, y: ty - (OY + 6.5) * S, side: 'above', mirror: false, pose: 'gpoint' };
+      }
+      var tx2 = f.left + 26, ty2 = w.bottom + 2;
+      return { x: tx2 - 12.5 * S, y: ty2 - (OY - 4 + .5) * S, side: 'right', mirror: true, pose: 'gup' };
     }
+    var runFor = function (cmd) { T2.run(cmd); };
     function tourStep() {
-      var st2 = steps[stepI], p = termSpot();
-      phoneTour(true); p = termSpot();
-      show({ id: 'tour', dark: true, pose: st2.pose, x: p.x, y: p.y, side: p.side, mirror: p.mirror, enter: cur && cur.id === 'tour' ? 'stay' : 'walk', avoid: function () { return T2.win.getBoundingClientRect(); },
-        text: '<span class="step">' + (stepI + 1) + ' of ' + steps.length + '</span>' + st2.text,
-        actions: [{ label: 'End tour', quiet: true, fn: function () { touring = false; store.set(TOUR, 'skipped'); hide('walk'); phoneTour(false); T2.input.focus(); } }] });
+      var st2 = steps[stepI]; phoneTour(true);
+      var p = termSpot(), small = compact();
+      show({ id: 'tour', dark: true, pose: p.pose, x: p.x, y: p.y, side: p.side, mirror: p.mirror, enter: cur && cur.id === 'tour' ? 'stay' : 'walk', avoid: function () { return T2.win.getBoundingClientRect(); },
+        text: '<span class="step">' + (stepI + 1) + ' of ' + steps.length + '</span>' + (small ? st2.tap : st2.text),
+        actions: [{ label: st2.cmd, code: true, fn: function () { runFor(st2.cmd); } },
+                  { label: 'End tour', quiet: true, fn: function () { touring = false; store.set(TOUR, 'skipped'); hide('walk'); phoneTour(false); if (!coarse) T2.input.focus(); } }] });
     }
     function startTour() { touring = true; stepI = 0; store.set(TOUR, 'started'); tourStep(); }
     function offerInTerm() {
       phoneTour(true); var p = termSpot();
+      if (coarse) T2.input.blur();   // keep the phone keyboard out of the way
       show({ id: 'tour', dark: true, pose: 'ghold', avoid: function () { return T2.win.getBoundingClientRect(); }, x: p.x, y: p.y, side: p.side, mirror: p.mirror, enter: 'walk',
         text: 'First time in here? I can show you around in four quick steps.',
-        actions: [{ label: 'Show me', fn: function () { startTour(); T2.input.focus(); } }, { label: 'I’m good', quiet: true, fn: function () { store.set(TOUR, 'skipped'); hide('walk'); phoneTour(false); T2.input.focus(); } }] });
+        actions: [{ label: 'Show me', fn: function () { startTour(); if (!coarse) T2.input.focus(); } }, { label: 'I’m good', quiet: true, fn: function () { store.set(TOUR, 'skipped'); hide('walk'); phoneTour(false); if (!coarse) T2.input.focus(); } }] });
     }
     if (T2) {
       document.addEventListener('xp-term', function (e) {
         var d = e.detail || {};
         if (d.type === 'open') {
           var state = store.get(TOUR);
+          if (touring && coarse) T2.input.blur();
           if (touring) setTimeout(tourStep, 260);
           else if (state !== 'done' && state !== 'skipped') setTimeout(offerInTerm, 380);
         } else if (d.type === 'close') { phoneTour(false); if (api.active() === 'tour' || api.active() === 'footer') hide('walk'); }
@@ -1155,7 +1199,7 @@
           }
         }
       });
-      window.addEventListener('resize', function () { if (api.active() === 'tour' && T2.isOpen()) { var p = termSpot(); cur.x = p.x; cur.y = p.y; place(p.x, p.y, p.side); } });
+      window.addEventListener('resize', function () { if (api.active() === 'tour' && T2.isOpen()) { phoneTour(true); var p = termSpot(); cur.x = p.x; cur.y = p.y; body.style.transform = 'translate3d(' + Math.round(p.x) + 'px,' + Math.round(p.y) + 'px,0)'; place(p.x, p.y, p.side); } });
 
       // the offer, at the end of the page
       var foot = document.querySelector('footer');
@@ -1167,7 +1211,26 @@
             setTimeout(function () { if (!api.active() && !T2.isOpen()) waitScene(); }, 500);
           });
         }, { threshold: .6 }).observe(foot);
-        window.addEventListener('scroll', function () { if (api.active() === 'footer' && foot.getBoundingClientRect().top > innerHeight) hide('walk'); }, { passive: true });
+        // scroll up from the bottom and he startles: a jump, a turn, and he runs off
+        var lastSY = window.scrollY || 0;
+        window.addEventListener('scroll', function () {
+          var sy = window.scrollY || 0, up = sy < lastSY - 3; lastSY = sy;
+          if (api.active() === 'footer' && up) flee();
+        }, { passive: true });
+        var flee = function () {
+          var was = cur; if (!was) return; cur = null;
+          clearTimeout(hideT); cancelAnimationFrame(walkRaf);
+          el.classList.add('walking');                        // the card disappears at once
+          var bx = (function () { var m = /translate3d\(([-\d.]+)px/.exec(body.style.transform); return m ? +m[1] : was.x; })();
+          var toRight = true;
+          el.classList.toggle('flip', !toRight);
+          render('gjump', false); body.classList.remove('hop'); void body.offsetWidth; body.classList.add('hop');
+          setTimeout(function () {
+            if (cur) return;
+            var fin = function () { if (!cur) el.className = 'gguide'; }; fin.out = true;
+            walk(bx, innerWidth + 8, was.y, false, fin, true);
+          }, 340);
+        };
 
         // runs in under the form, stops above the footer logo, catches his breath, turns to you: "Wait......"
         var waitScene = function () {
@@ -1178,19 +1241,23 @@
           el.className = 'gguide on in walking e-walk light'; rope.style.display = 'none';
           walk(innerWidth + 8, x, y, false, function () {
             if (cur !== o) return;
-            // catch his breath: quick heaves and little puffs
-            var n = 0, heave = setInterval(function () {
+            // catch his breath from the side: bent over, heaving, gasping out "Wait..."
+            el.classList.add('flip'); el.classList.remove('walking');
+            say('<strong class="wait">Wait</strong>', []); place(o.x, o.y, 'above');
+            var n = 0, dots = 0, heave = setInterval(function () {
               if (cur !== o) { clearInterval(heave); return; }
-              render(n % 2 ? 'idle2' : 'idle', false);
-              if (n % 3 === 0) puff(x + (OX + 4) * S, y + (OY + 11) * S);
-              if (++n > 12) {
+              render(n % 2 ? 'pant1' : 'pant0', false);
+              if (n % 2 === 0) puff(x + (OX + 2) * S, y + (OY + 11) * S);
+              if (n % 3 === 2 && dots < 3) { dots++; txt.innerHTML = '<strong class="wait">Wait' + new Array(dots + 1).join('.') + '</strong>'; place(o.x, o.y, 'above'); }
+              if (++n > 10) {
                 clearInterval(heave);
-                el.classList.remove('flip'); render('front', false);           // turn to face the visitor
-                setTimeout(function () { if (cur === o) render('frontb', false); }, 520);
-                setTimeout(function () { if (cur === o) render('front', false); }, 640);
-                setTimeout(function () { if (cur === o) talkWait(o); }, 820);
+                render('idle', false);                                          // straightens up
+                setTimeout(function () { if (cur !== o) return; el.classList.remove('flip'); render('front', false); }, 220);   // turns to face you
+                setTimeout(function () { if (cur === o) render('frontb', false); }, 640);
+                setTimeout(function () { if (cur === o) render('front', false); }, 760);
+                setTimeout(function () { if (cur === o) talkWait(o); }, 900);
               }
-            }, 120);
+            }, 280);
           });
           setTimeout(function () { if (cur === o) hide('walk'); }, 18000);
         };
@@ -1200,23 +1267,10 @@
           setTimeout(function () { p.remove(); }, 900);
         };
         var talkWait = function (o) {
-          el.classList.remove('walking');
-          var dots = 0, base = '<strong class="wait">Wait</strong>';
-          say(base, []); place(o.x, o.y, 'above');
-          var typing = setInterval(function () {
-            if (cur !== o) { clearInterval(typing); return; }
-            dots++; txt.innerHTML = '<strong class="wait">Wait' + new Array(dots + 1).join('.') + '</strong>'; place(o.x, o.y, 'above');
-            if (dots >= 6) {
-              clearInterval(typing);
-              setTimeout(function () {
-                if (cur !== o) return;
-                say('<strong class="wait">Wait......</strong> Let me show you something before you go!' + (innerWidth < 640 ? '' : ' <span class="tip">This site has a hidden terminal. You can also press <code>`</code> anytime.</span>'),
-                  [{ label: 'Show me', fn: function () { hide('walk'); setTimeout(function () { touring = true; stepI = 0; store.set(TOUR, 'started'); T2.open(); }, 200); } },
-                   { label: 'Not now', quiet: true, fn: function () { hide('walk'); } }]);
-                place(o.x, o.y, 'above');
-              }, 900);
-            }
-          }, 190);
+          say('<strong class="wait">Wait...</strong> Let me show you something before you go!' + (innerWidth < 640 ? '' : ' <span class="tip">This site has a hidden terminal. You can also press <code>`</code> anytime.</span>'),
+            [{ label: 'Show me', fn: function () { hide('walk'); setTimeout(function () { touring = true; stepI = 0; store.set(TOUR, 'started'); T2.open(coarse); }, 200); } },
+             { label: 'Not now', quiet: true, fn: function () { hide('walk'); } }]);
+          place(o.x, o.y, 'above');
         };
       }
     }

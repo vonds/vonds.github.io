@@ -394,12 +394,12 @@
     if (cmds[c]) cmds[c](a); else print(esc(c) + ': command not found. Type <span class="c">help</span>');
     try { doc.dispatchEvent(new CustomEvent('xp-term', { detail: { type: 'cmd', cmd: c, arg: a, known: !!cmds[c] } })); } catch (e) {}
   }
-  function openTerm() {
+  function openTerm(noFocus) {
     if (term.classList.contains('open')) return;
     opener = doc.activeElement;
     if (!out.innerHTML) print('<span class="d">you found the terminal. type</span> <span class="c">help</span> <span class="d">to look around.</span>');
     term.classList.add('open'); body.style.overflow = 'hidden';
-    setTimeout(function () { input.focus(); }, 30);
+    if (noFocus !== true) setTimeout(function () { input.focus(); }, 30);
     try { doc.dispatchEvent(new CustomEvent('xp-term', { detail: { type: 'open' } })); } catch (e) {}
   }
   function close() {
@@ -434,6 +434,7 @@
     e.preventDefault();
     if (term.classList.contains('open')) close(); else openTerm();
   });
-  window.VondsTerm = { open: openTerm, close: close, win: term.querySelector('.win'), input: input, isOpen: function () { return term.classList.contains('open'); } };
+  window.VondsTerm = { open: openTerm, close: close, win: term.querySelector('.win'), form: term.querySelector('form'), input: input, isOpen: function () { return term.classList.contains('open'); },
+    run: function (v) { input.value = ''; hist.push(v); hi = hist.length; run(v); } };
   try { console.log('%cpsst. press ` for a terminal.', 'font:14px monospace;color:#2e2e30'); } catch (e) {}
 })();
