@@ -906,9 +906,24 @@
     function scale() { R = Math.min(3, window.devicePixelRatio || 1); S = innerWidth < 640 ? 2.4 : 3; cv2.width = Math.round(GW * S * R); cv2.height = Math.round(GH * S * R); cv2.style.width = GW * S + 'px'; cv2.style.height = GH * S + 'px'; }
     // front-facing Vee (for when he turns to the visitor): left half, mirrored
     var FRONT_HALF = [
-      '...........', '.......DDDD', '.....DHHHhH', '....DHHHHHH', '...HHHHHHHH', '..DDHHSSSSS', '..DdHSSSSSS', '..DdHSSESSS', '..DDHSSESSS',
-      '..HHHSSSSSS', '..HH.SSRSSS', '..HH..SSSSE', '..H....SSSS', '..H......SS', '..H..TTTTTT', '..HTTTTTTTT', '..STTTTTTTT', '..STTTTTTTT',
-      '..SSTTTTTTT', '....LLLLLLL', '......PPPP.', '......PPPP.', '......PPPP.', '.....BBBBB.', '...........', '...........'];
+      '...........', '......DDDDD', '....DHHhHHH', '...DHHHHhHH', '..HHHHHHHHH', '.HDDHHSSSSS', '..DdHSSSSSS', '..DdHSSESSS', '..DDHSSESSS',
+      '....HSSSSSS', '....HSSRSSS', '....H.SSSSE', '....H..SSSS', '.........SS', '.....TTTTTT', '...STTTTTTT', '...STTTTTTT', '...STTTTTTT',
+      '...SSTTTTTT', '....LLLLLLL', '......PPPP.', '......PPPP.', '......PPPP.', '.....BBBBB.', '...........', '...........'];
+    // locs: thick, wavy strands that fall past the waist, matching the side view
+    var WAVE = [0, 0, 1, 1];
+    function locsFront(x, pal) {
+      function strand(x0, y, last) { [0, 1].forEach(function (k) { var c = last ? 'H' : (k ? 'H' : 'h'); x.fillStyle = pal[c]; x.fillRect(x0 + k, y, 1, 1); x.fillRect(21 - x0 - k, y, 1, 1); }); }
+      for (var y = 6; y <= 21; y++) strand(y < 14 ? 0 : WAVE[(y - 14) % 4], y, y === 21);            // outer strand, outside the arm
+      for (var y2 = 9; y2 <= 20; y2++) strand(y2 < 14 ? 2 : 4 + WAVE[(y2 - 12) % 4], y2, y2 === 20);   // inner strand, falling over the chest
+      x.fillStyle = pal.D; for (var y3 = 9; y3 <= 13; y3++) { x.fillRect(4, y3, 1, 1); x.fillRect(17, y3, 1, 1); }   // shadow between the strand and the face
+    }
+    function locsBack(x, pal) {
+      for (var k = 0; k < 6; k++) for (var y = 12; y <= 21 - (k % 2); y++) {
+        var x0 = 2 + k * 3 + WAVE[y % 4], end = y === 21 - (k % 2);
+        x.fillStyle = pal[end ? 'H' : 'h']; x.fillRect(x0, y, 1, 1); x.fillStyle = pal.H; x.fillRect(x0 + 1, y, 1, 1);
+        if (k < 5) x.clearRect(x0 + 2, y, 1, 1);   // a gap between strands, like the side view
+      }
+    }
     var frontCache = {};
     function frontImg(light, blink) {
       var key = (light ? 'L' : 'D') + (blink ? 'b' : ''); if (frontCache[key]) return frontCache[key];
@@ -918,6 +933,7 @@
         for (var i = 0; i < 22; i++) { var ch = row.charAt(i); if (ch === '.') continue; if (blink && ch === 'E') ch = 'S'; x.fillStyle = pal[ch] || pal.S; x.fillRect(i, y, 1, 1); }
       });
       if (blink) { x.fillStyle = pal.E; x.fillRect(7, 8, 1, 1); x.fillRect(14, 8, 1, 1); }
+      locsFront(x, pal);
       var d = x.getImageData(0, 0, 22, 26).data, pts = [];
       for (var yy = 0; yy < 26; yy++) for (var xx = 0; xx < 22; xx++) {
         if (d[(yy * 22 + xx) * 4 + 3]) continue;
@@ -963,6 +979,7 @@
         var row = half + half.split('').reverse().join('');
         for (var i = 0; i < 22; i++) { var ch = row.charAt(i); if (ch === '.') continue; if (y <= 13 && 'SERK'.indexOf(ch) >= 0) ch = (i + y) % 5 ? 'H' : 'h'; x.fillStyle = pal[ch] || pal.S; x.fillRect(i, y, 1, 1); }
       });
+      locsBack(x, pal);
       var d = x.getImageData(0, 0, 22, 26).data, pts = [];
       for (var yy = 0; yy < 26; yy++) for (var xx = 0; xx < 22; xx++) {
         if (d[(yy * 22 + xx) * 4 + 3]) continue;

@@ -63,6 +63,7 @@
     try { var sv = JSON.parse(localStorage.getItem('vonds-quest') || 'null'); if (sv) for (var k0 in sv) save[k0] = sv[k0]; } catch (e) {}
     function store() { try { localStorage.setItem('vonds-quest', JSON.stringify(save)); } catch (e) {} }
     function maxHp() { return 60 + (save.lvl - 1) * 14; }
+    function xpNeed() { return 30 + (save.lvl - 1) * 25; }
     function maxMp() { return 24 + (save.lvl - 1) * 6; }
 
     /* ---------- the town ---------- */
@@ -269,35 +270,56 @@
     };
     // Vee's attacks are real commands, learned one at a time. Each bug carries a scenario that one of them solves.
     var COMMANDS = [
-      { cmd: 'whoami', learn: 'Use it to confirm which account you are running as.', fx: 'multi2', hit: 'Two clean hits.',
-        when: ['You are logged in, but not sure which account you are using.', 'Before you touch anything on this box, confirm which user you are.'] },
-      { cmd: 'pwd', learn: 'Use it when you have lost track of where you are in the filesystem.', fx: 'focus', hit: 'Bearings found. Your next hit lands double.',
-        when: ['You have changed directories five times and lost track of where you are.', 'Before deleting anything, print the directory you are standing in.'] },
-      { cmd: 'ls', learn: 'Use it to see what is inside a directory.', fx: 'multi3', hit: 'Three quick hits.',
-        when: ['You need to see which files are in this directory.', 'Something is hiding in this folder. List what is here.'] },
-      { cmd: 'cat', learn: 'Use it to print a file’s contents without opening an editor.', fx: 'heal', hit: 'Vee reads the file and recovers HP.',
-        when: ['Read what is inside config.txt without opening an editor.', 'Dump the contents of notes.md to the screen.'] },
-      { cmd: 'grep', learn: 'Use it to search text for a pattern. It reveals weak spots, so your next hit lands double.', fx: 'expose', hit: 'The weak spot is marked. It takes extra damage for 3 turns.',
-        when: ['Find every line that contains ERROR in a huge log file.', 'Search the config for the word timeout.'] },
-      { cmd: 'chmod', learn: 'Use it to change file permissions. It locks a bug in place.', fx: 'stun', hit: 'Locked. It cannot act for 2 turns.',
-        when: ['Your script will not run: permission denied. Make it executable.', 'Lock a file down so nobody else can read it.'] },
-      { cmd: 'ps', learn: 'Use it to list the processes that are running.', fx: 'slow', hit: 'Throttled. Its attacks are halved for 3 turns.',
-        when: ['Something is eating the CPU. See which processes are running.', 'Check whether the web server process is still alive.'] },
-      { cmd: 'kill', learn: 'Use it to end a process by its PID. It hits very hard.', fx: 'heavy', hit: 'A massive hit.',
-        when: ['A frozen program will not quit. End it by its PID.', 'A runaway process is flooding the logs. Stop it.'] },
-      { cmd: 'sudo', learn: 'Use it to run a command as an administrator. It hits every bug at once.', fx: 'all', hit: 'Every bug takes the hit.',
-        when: ['Installing a package fails until you run it with admin rights.', 'Editing a system file needs root privileges.'] },
-      { cmd: 'df', learn: 'Use it to check free disk space.', fx: 'leak', hit: 'It starts leaking HP every turn.',
-        when: ['The server says the disk is full. Check how much space is left.', 'Before uploading a big backup, see how much room each drive has.'] },
-      { cmd: 'ssh', learn: 'Use it to log into another machine securely.', fx: 'crit', hit: 'Inside its defenses: a guaranteed critical.',
-        when: ['Log into the remote server at 10.0.0.5.', 'Open a secure shell on the backup machine.'] },
-      { cmd: 'tail', learn: 'Use it to read the end of a file, or follow a log as it grows.', fx: 'multi2', hit: 'Two hits, tracking it as it moves.',
-        when: ['Watch the newest lines of a log as they are written.', 'Show only the last ten lines of the error log.'] }
+      { cmd: "whoami", learn: "Use it to confirm which account you are running as.", fx: 'multi2', hit: "Two clean hits.",
+        when: [{ t: "You are logged in, but not sure which account you are using.", ex: ["whoami"] }, { t: "Before you touch anything on this box, confirm which user you are.", ex: ["whoami"] }, { t: "A script is failing with permission errors. Check which user it is running as.", ex: ["whoami"] }] },
+      { cmd: "pwd", learn: "Use it when you have lost track of where you are in the filesystem.", fx: 'focus', hit: "Bearings found. Your next hit lands double.",
+        when: [{ t: "You have changed directories five times and lost track of where you are.", ex: ["pwd"] }, { t: "Before deleting anything, print the directory you are standing in.", ex: ["pwd"] }, { t: "You need the full path of this folder to paste into a config file.", ex: ["pwd"] }] },
+      { cmd: "ls", learn: "Use it to see what is inside a directory. Add -a to show hidden files.", fx: 'multi3', hit: "Three quick hits.",
+        when: [{ t: "You need to see which files are in this directory.", ex: ["ls"] }, { t: "Something is hiding in this folder. Show hidden files too.", ex: ["ls -a", "ls -la", "ls -al"] }, { t: "List the contents of the logs folder.", ex: ["ls logs", "ls logs/"] }, { t: "Show file sizes and permissions in a long list.", ex: ["ls -l", "ls -la", "ls -al", "ls -lh"] }] },
+      { cmd: "cd", learn: "Use it to move into another directory.", fx: 'expose', hit: "Vee steps inside its directory. It takes extra damage for 3 turns.",
+        when: [{ t: "Move into the projects folder.", ex: ["cd projects", "cd projects/"] }, { t: "Go back up one directory.", ex: ["cd .."] }, { t: "Jump straight to your home directory.", ex: ["cd", "cd ~"] }, { t: "Change into /var/log to read the system logs.", ex: ["cd /var/log", "cd /var/log/"] }] },
+      { cmd: "cat", learn: "Use it to print a file’s contents without opening an editor.", fx: 'heal', hit: "Vee reads the file and recovers HP.",
+        when: [{ t: "Read what is inside config.txt without opening an editor.", ex: ["cat config.txt"] }, { t: "Dump the contents of notes.md to the screen.", ex: ["cat notes.md"] }, { t: "Check what is in /etc/hostname.", ex: ["cat /etc/hostname"] }] },
+      { cmd: "mkdir", learn: "Use it to create a new directory. Vee builds a wall and takes half damage next round.", fx: 'guard', hit: "A wall goes up. Incoming damage is halved this round.",
+        when: [{ t: "Create a new folder called backups.", ex: ["mkdir backups"] }, { t: "Make a directory named reports for this month’s files.", ex: ["mkdir reports"] }, { t: "Create the nested folders site/assets/img in one go.", ex: ["mkdir -p site/assets/img"] }] },
+      { cmd: "touch", learn: "Use it to create an empty file, or update a file’s timestamp.", fx: 'multi2', hit: "Two quick hits.",
+        when: [{ t: "Create an empty file called todo.txt.", ex: ["touch todo.txt"] }, { t: "Make a blank index.html to start a new page.", ex: ["touch index.html"] }, { t: "Create an empty .gitignore in this project.", ex: ["touch .gitignore"] }] },
+      { cmd: "cp", learn: "Use it to copy files. Add -r to copy a whole folder.", fx: 'multi2', hit: "Vee copies the attack. Two hits.",
+        when: [{ t: "Make a backup copy of config.txt called config.bak.", ex: ["cp config.txt config.bak"] }, { t: "Copy report.pdf into the shared folder.", ex: ["cp report.pdf shared", "cp report.pdf shared/"] }, { t: "Copy the whole photos folder to photos_old.", ex: ["cp -r photos photos_old", "cp -R photos photos_old"] }] },
+      { cmd: "mv", learn: "Use it to move or rename files.", fx: 'stun', hit: "Moved out of the way. It cannot act for 2 turns.",
+        when: [{ t: "Move report.txt into the archive folder.", ex: ["mv report.txt archive", "mv report.txt archive/"] }, { t: "Rename draft.md to final.md.", ex: ["mv draft.md final.md"] }, { t: "Move every .log file into the old folder.", ex: ["mv *.log old", "mv *.log old/"] }] },
+      { cmd: "grep", learn: "Use it to search text for a pattern.", fx: 'expose', hit: "The weak spot is marked. It takes extra damage for 3 turns.",
+        when: [{ t: "Find every line that contains ERROR in app.log.", ex: ["grep ERROR app.log", "grep \"ERROR\" app.log", "grep 'ERROR' app.log"] }, { t: "Search config.yml for the word timeout.", ex: ["grep timeout config.yml"] }, { t: "Search every file in this folder for TODO.", ex: ["grep -r TODO .", "grep -r TODO", "grep -R TODO .", "grep -rn TODO ."] }] },
+      { cmd: "rm", learn: "Use it to delete files. Careful: there is no trash can.", fx: 'heavy', hit: "Deleted. A massive hit.",
+        when: [{ t: "Delete the file old.txt.", ex: ["rm old.txt"] }, { t: "Remove every .tmp file in this folder.", ex: ["rm *.tmp"] }, { t: "Delete the empty-looking cache folder and everything in it.", ex: ["rm -r cache", "rm -rf cache", "rm -r cache/", "rm -rf cache/"] }] },
+      { cmd: "chmod", learn: "Use it to change file permissions. It locks a bug in place.", fx: 'stun', hit: "Locked. It cannot act for 2 turns.",
+        when: [{ t: "deploy.sh will not run: permission denied. Make it executable.", ex: ["chmod +x deploy.sh", "chmod 755 deploy.sh", "chmod u+x deploy.sh"] }, { t: "Lock secrets.txt so only you can read and write it.", ex: ["chmod 600 secrets.txt"] }, { t: "Remove write permission for everyone else on notes.md.", ex: ["chmod go-w notes.md", "chmod o-w notes.md"] }] },
+      { cmd: "find", learn: "Use it to search for files by name, size or age.", fx: 'crit', hit: "Found it. A guaranteed critical.",
+        when: [{ t: "Somewhere under this folder is a file named budget.xlsx. Find it.", ex: ["find . -name budget.xlsx", "find -name budget.xlsx"] }, { t: "Find every .jpg file under photos.", ex: ["find photos -name \"*.jpg\"", "find photos -name '*.jpg'"] }, { t: "List the files in /tmp changed in the last day.", ex: ["find /tmp -mtime -1"] }] },
+      { cmd: "ps", learn: "Use it to list the processes that are running.", fx: 'slow', hit: "Throttled. Its attacks are halved for 3 turns.",
+        when: [{ t: "Something is eating the CPU. See which processes are running.", ex: ["ps", "ps aux", "ps -ef"] }, { t: "Check whether nginx is still running.", ex: ["ps aux | grep nginx", "ps -ef | grep nginx"] }, { t: "List every process on the machine, from every user.", ex: ["ps aux", "ps -ef", "ps -e"] }] },
+      { cmd: "kill", learn: "Use it to end a process by its PID. It hits very hard.", fx: 'heavy', hit: "A massive hit.",
+        when: [{ t: "A frozen program has PID 4821. End it.", ex: ["kill 4821"] }, { t: "Process 990 ignores a normal kill. Force it to stop.", ex: ["kill -9 990"] }, { t: "A runaway process, PID 3107, is flooding the logs. Stop it.", ex: ["kill 3107", "kill -9 3107"] }] },
+      { cmd: "tail", learn: "Use it to read the end of a file, or follow a log as it grows.", fx: 'multi2', hit: "Two hits, tracking it as it moves.",
+        when: [{ t: "Watch the newest lines of server.log as they are written.", ex: ["tail -f server.log"] }, { t: "Show only the last ten lines of error.log.", ex: ["tail error.log", "tail -n 10 error.log"] }, { t: "Show the last 50 lines of access.log.", ex: ["tail -n 50 access.log", "tail -50 access.log"] }] },
+      { cmd: "df", learn: "Use it to check free disk space.", fx: 'leak', hit: "It starts leaking HP every turn.",
+        when: [{ t: "The server says the disk is full. Check how much space is left.", ex: ["df", "df -h"] }, { t: "Show free space on every drive in human-readable sizes.", ex: ["df -h"] }, { t: "Before uploading a big backup, see how much room each drive has.", ex: ["df", "df -h"] }] },
+      { cmd: "chown", learn: "Use it to change who owns a file.", fx: 'stun', hit: "Ownership seized. It cannot act for 2 turns.",
+        when: [{ t: "Make the user vee the owner of site.conf.", ex: ["chown vee site.conf", "sudo chown vee site.conf"] }, { t: "Give the www folder and everything in it to user web.", ex: ["chown -R web www", "sudo chown -R web www"] }] },
+      { cmd: "tar", learn: "Use it to bundle files into one archive, or unpack one.", fx: 'all', hit: "Bundled together. Every bug takes the hit.",
+        when: [{ t: "Pack the project folder into project.tar.gz.", ex: ["tar -czf project.tar.gz project", "tar czf project.tar.gz project", "tar -czvf project.tar.gz project"] }, { t: "Unpack backup.tar.gz here.", ex: ["tar -xzf backup.tar.gz", "tar xzf backup.tar.gz", "tar -xzvf backup.tar.gz", "tar -xf backup.tar.gz"] }] },
+      { cmd: "sudo", learn: "Use it to run a command as an administrator. It hits every bug at once.", fx: 'all', hit: "Every bug takes the hit.",
+        when: [{ t: "Installing curl fails until you run it with admin rights.", ex: ["sudo apt install curl", "sudo dnf install curl", "sudo yum install curl"] }, { t: "Restart the nginx service. It needs root.", ex: ["sudo systemctl restart nginx"] }, { t: "Editing /etc/hosts needs root privileges. Open it in nano.", ex: ["sudo nano /etc/hosts"] }] },
+      { cmd: "ssh", learn: "Use it to log into another machine securely.", fx: 'crit', hit: "Inside its defenses: a guaranteed critical.",
+        when: [{ t: "Log into the server at 10.0.0.5.", ex: ["ssh 10.0.0.5"] }, { t: "Log into backup.local as the user admin.", ex: ["ssh admin@backup.local"] }, { t: "Connect to 10.0.0.9 on port 2222.", ex: ["ssh -p 2222 10.0.0.9"] }] }
     ];
     if (!save.known || !save.known.length) save.known = ['whoami'];
     if (save.bw == null) save.bw = 0;
     function cmdInfo(c) { return COMMANDS.filter(function (x) { return x.cmd === c; })[0]; }
-    var LEARN_AT = [1, 2, 3, 4, 6, 8, 10, 13, 16, 20, 24];
+    function nextCmd() { return COMMANDS.filter(function (x) { return save.known.indexOf(x.cmd) < 0; })[0]; }
+    save.known = save.known.filter(function (c) { return cmdInfo(c); });
+    while (save.known.length < save.lvl && nextCmd()) save.known.push(nextCmd().cmd);   // one command per level
+    function norm(t) { return String(t).trim().replace(/\s+/g, ' ').replace(/[“”]/g, '"').replace(/[‘’]/g, "'"); }
 
     var B = null;   // the battle in progress
     function rnd(a, b) { return a + Math.floor(Math.random() * (b - a + 1)); }
@@ -313,8 +335,8 @@
         var kind = kinds[Math.floor(Math.random() * kinds.length)], f = FOES[kind], slot = SLOTS[i];
         var c = save.known[Math.floor(Math.random() * save.known.length)], info = cmdInfo(c);
         foes.push({ kind: kind, foe: f, hp: Math.round(f.hp * (n >= 4 ? .7 : 1)), max: Math.round(f.hp * (n >= 4 ? .7 : 1)), soft: soft, stun: 0, shake: 0, flash: 0, dead: false, fade: 0, sc: sc,
-          cmd: c, scenario: info.when[Math.floor(Math.random() * info.when.length)],
-          fx: slot[0], fy: slot[1], ph: Math.random() * 6, exposed: 0, slow: 0, leak: 0 });
+          cmd: c, sc0: info.when[Math.floor(Math.random() * info.when.length)],
+          get scenario() { return this.sc0.t; }, fx: slot[0], fy: slot[1], ph: Math.random() * 6, exposed: 0, slow: 0, leak: 0 });
       }
       B = { foes: foes, focus: false, phase: 'intro', t: 0, vx: 0, pops: [], menu: 'main', sel: 0, cast: 0, target: 0, pending: null };
       mode = 'swirl'; swirlT = 0;
@@ -401,10 +423,12 @@
     }
     function closePrompt() { termBox.classList.remove('on'); termIn.blur(); }
     function submitCmd(raw) {
-      var f = B.foes[B.target], typed = (raw || '').trim().split(/\s+/)[0].toLowerCase().replace(/^\.\//, ''), info = cmdInfo(f.cmd);
+      var f = B.foes[B.target], line = norm(raw || ''), info = cmdInfo(f.cmd);
+      if (f.cmd !== 'sudo') line = line.replace(/^sudo /, '');
+      var typed = line.split(' ')[0].toLowerCase().replace(/^\.\//, ''), exact = f.sc0.ex.some(function (e) { return norm(e).replace(f.cmd !== 'sudo' ? /^sudo / : /^$/, '') === line; });
       closePrompt(); B.phase = 'anim'; B.cast = 1;
       if (typed === f.cmd) {
-        var n = base() * 1.5, fxid = info.fx, msg2 = '$ ' + typed + '. ' + info.hit, extra = '';
+        var n = base() * (exact ? 2 : 1.5), fxid = info.fx, msg2 = (exact ? 'Exact. ' : '$ ' + typed + '. ') + info.hit, extra = '';
         if (fxid === 'multi2' || fxid === 'multi3') {
           var hits = fxid === 'multi3' ? 3 : 2, k3 = 0, per = n / (hits === 3 ? 2.1 : 1.6);
           log(msg2); hitFoe(f, per);
@@ -417,12 +441,13 @@
         else {
           extra = hitFoe(f, n);
           if (!f.dead) { if (fxid === 'stun') f.stun = 2; if (fxid === 'expose') f.exposed = 3; if (fxid === 'slow') f.slow = 3; if (fxid === 'leak') f.leak = 3; }
+          if (fxid === 'guard') B.guard = 1;
           if (fxid === 'focus') B.focus = true;
           if (fxid === 'heal') { var hh = Math.min(maxHp() - save.hp, 18 + save.lvl * 2); save.hp += hh; pop('+' + hh, 258, 70); }
         }
         log(msg2 + extra); B.vx = 1;
       } else {
-        log((typed ? '$ ' + typed + '. Not quite. ' : 'Nothing typed. ') + 'This one called for ' + f.cmd + '. Half power.' + hitFoe(f, base() * .5));
+        log((typed ? '$ ' + typed + '. Not quite. ' : 'Nothing typed. ') + 'This one called for: ' + f.sc0.ex[0] + '. Half power.' + hitFoe(f, base() * .5));
       }
       after();
     }
@@ -449,28 +474,30 @@
         if (f.leak > 0) { f.leak--; var lk = 6 + save.lvl; f.hp = Math.max(0, f.hp - lk); pop(String(lk), f.fx + 16, f.fy - 34); if (f.hp <= 0) { f.dead = true; f.fade = 1; hudOn(); if (!living().length) return setTimeout(win, 600); return setTimeout(next, 500); } }
         if (f.exposed > 0) f.exposed--;
         if (f.stun > 0) { f.stun--; log('The ' + foeName(f) + ' strains against its permissions.'); return setTimeout(next, 650); }
-        var n = Math.max(1, Math.round(rnd(f.foe.atk[0], f.foe.atk[1]) * f.soft * (f.slow > 0 ? .5 : 1))); if (f.slow > 0) f.slow--;
+        var n = Math.max(1, Math.round(rnd(f.foe.atk[0], f.foe.atk[1]) * f.soft * (f.slow > 0 ? .5 : 1) * (B.guard ? .5 : 1))); if (f.slow > 0) f.slow--;
         save.hp = Math.max(0, save.hp - n); pop(String(n), 258, 70); B.hurt = 1; f.lunge = 1;
         log('The ' + foeName(f) + ' ' + f.foe.move + '. ' + n + ' damage.'); hudOn();
         if (save.hp <= 0) return setTimeout(lose, 900);
         setTimeout(next, 800);
       })();
     }
-    function myTurn() { if (!B) return; B.phase = 'menu'; menu('main'); hudOn(); }
+    function myTurn() { if (!B) return; B.guard = 0; B.phase = 'menu'; menu('main'); hudOn(); }
     function win() {
       var xp = 0, n = B.foes.length; B.foes.forEach(function (f) { xp += f.foe.xp + rnd(0, 3); });
       save.xp += xp; save.wins += n; save.linux += n; save.bw++;
       var lines = ['The rot clears. Vee gains ' + xp + ' XP.'];
       if (Math.random() < .2 + n * .05) { save.coffee++; lines.push('Something useful in the debris: a coffee.'); }
-      while (save.xp >= save.lvl * 40) { save.xp -= save.lvl * 40; save.lvl++; save.hp = maxHp(); lines.push('Level ' + save.lvl + '. Vee runs a little faster, a little cleaner.'); }
-      // a new command, on a schedule
-      var next = COMMANDS[save.known.length];
-      if (next && LEARN_AT.indexOf(save.bw) >= 0) { save.known.push(next.cmd); lines.push('New command learned: ' + next.cmd + '.', next.learn + ' Bugs may now carry problems that need it.'); }
-      store(); B.phase = 'done'; cmdBox.classList.remove('on');
+      while (save.xp >= xpNeed()) {
+        save.xp -= xpNeed(); save.lvl++; save.hp = maxHp();
+        lines.push('LEVEL UP. Vee is now level ' + save.lvl + '. Max HP ' + maxHp() + '.');
+        var nc = nextCmd(); if (nc) { save.known.push(nc.cmd); lines.push('New command: ' + nc.cmd + '. ' + nc.learn, 'Bugs can now bring problems that need ' + nc.cmd + '.'); }
+      }
+      lines.push('Next level in ' + (xpNeed() - save.xp) + ' XP.');
+      store(); B.phase = 'done'; cmdBox.classList.remove('on'); hud.classList.remove('on'); closePrompt();
       setTimeout(function () { say('', lines, null, endBattle); }, 600);
     }
     function lose() {
-      B.phase = 'done'; cmdBox.classList.remove('on'); closePrompt();
+      B.phase = 'done'; cmdBox.classList.remove('on'); hud.classList.remove('on'); closePrompt();
       say('', ['Vee’s process halts.', 'Somewhere, a watchdog notices. He restarts at the spire.'], null, function () { save.hp = maxHp(); store(); me.x = 5; me.y = 4; me.px = me.x * TS; me.py = me.y * TS; me.dir = 'down'; endBattle(); });
     }
     function endBattle() { store(); B = null; closePrompt(); hud.classList.remove('on'); cmdBox.classList.remove('on'); titleEl.classList.remove('on'); mode = 'map'; me.safe = 5; }
