@@ -392,6 +392,7 @@
     if (!c) return;
     if (c === 'cd') { var s = doc.getElementById((a || '').replace(/[\/~.]/g, '')); if (s) { close(); s.scrollIntoView(); } else print('cd: ' + esc(a) + ': try about, projects, services or contact'); return; }
     if (cmds[c]) cmds[c](a); else print(esc(c) + ': command not found. Type <span class="c">help</span>');
+    try { doc.dispatchEvent(new CustomEvent('xp-term', { detail: { type: 'cmd', cmd: c, arg: a, known: !!cmds[c] } })); } catch (e) {}
   }
   function openTerm() {
     if (term.classList.contains('open')) return;
@@ -399,9 +400,12 @@
     if (!out.innerHTML) print('<span class="d">you found the terminal. type</span> <span class="c">help</span> <span class="d">to look around.</span>');
     term.classList.add('open'); body.style.overflow = 'hidden';
     setTimeout(function () { input.focus(); }, 30);
+    try { doc.dispatchEvent(new CustomEvent('xp-term', { detail: { type: 'open' } })); } catch (e) {}
   }
   function close() {
+    var was = term.classList.contains('open');
     term.classList.remove('open'); body.style.overflow = '';
+    if (was) try { doc.dispatchEvent(new CustomEvent('xp-term', { detail: { type: 'close' } })); } catch (e) {}
     if (opener && opener.focus) opener.focus({ preventScroll: true });
   }
   term.querySelector('form').addEventListener('submit', function (e) {
@@ -430,5 +434,6 @@
     e.preventDefault();
     if (term.classList.contains('open')) close(); else openTerm();
   });
+  window.VondsTerm = { open: openTerm, close: close, win: term.querySelector('.win'), input: input, isOpen: function () { return term.classList.contains('open'); } };
   try { console.log('%cpsst. press ` for a terminal.', 'font:14px monospace;color:#2e2e30'); } catch (e) {}
 })();
