@@ -79,35 +79,6 @@
   }
 
 
-  /* ---------- depth-of-field hero ---------- */
-  if (hero && !reduce) {
-    var stage = doc.createElement('div');
-    stage.className = 'dof-stage'; stage.setAttribute('aria-hidden', 'true');
-    stage.innerHTML = '<i class="bg"></i><i class="fg"></i><i class="wash"></i>';
-    var probe = new Image();
-    probe.onload = function () { hero.insertBefore(stage, hero.firstChild); hero.classList.add('dof'); };
-    probe.src = 'assets/images/hero-fg.webp';
-    var mxT = 0, myT = 0, mxC = 0, myC = 0, dofOn = true, usedPointer = false, tilt = false, t1 = performance.now();
-    if (fine) hero.addEventListener('pointermove', function (e) {
-      var r = hero.getBoundingClientRect(); usedPointer = true;
-      mxT = ((e.clientX - r.left) / r.width - 0.5) * 2; myT = ((e.clientY - r.top) / r.height - 0.5) * 2;
-    });
-    if (fine) hero.addEventListener('pointerleave', function () { mxT = 0; myT = 0; });
-    addEventListener('deviceorientation', function (e) {
-      if (e.gamma == null) return; tilt = true;
-      mxT = Math.max(-1, Math.min(1, e.gamma / 22)); myT = Math.max(-1, Math.min(1, (e.beta - 45) / 26));
-    }, { passive: true });
-    if ('IntersectionObserver' in window) new IntersectionObserver(function (es) { dofOn = es[0].isIntersecting; if (dofOn) requestAnimationFrame(dofStep); }).observe(hero);
-    var dofStep = function (now) {
-      if (!dofOn) return;
-      if (!usedPointer && !tilt) { var t = (now - t1) / 1000; mxT = Math.sin(t * 0.32) * 0.7; myT = Math.sin(t * 0.21 + 0.8) * 0.4; }
-      mxC += (mxT - mxC) * 0.06; myC += (myT - myC) * 0.06;
-      stage.style.setProperty('--mx', mxC.toFixed(3)); stage.style.setProperty('--my', myC.toFixed(3));
-      requestAnimationFrame(dofStep);
-    };
-    requestAnimationFrame(dofStep);
-  }
-
   /* ---------- section index ---------- */
   var IDX = [['about', 'About'], ['portfolio', 'Work'], ['services', 'Services'], ['contact', 'Contact']]
     .map(function (x) { return { el: doc.getElementById(x[0]), id: x[0], label: x[1] }; }).filter(function (x) { return x.el; });

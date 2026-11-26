@@ -340,15 +340,6 @@ html.xp-cur select{cursor:pointer!important}
 footer .mark{margin-bottom:28px!important}
 .hero .buttons{margin-top:44px}
 
-/* ================= depth-of-field hero ================= */
-.hero.dof{background:none}
-.hero.dof::before{display:none}
-.dof-stage{position:absolute;inset:-4%;z-index:-1;pointer-events:none;animation:heroDrift 32s ease-in-out infinite alternate}
-.dof-stage > i{position:absolute;inset:0;background:center/cover no-repeat;will-change:transform}
-.dof-stage .bg{background-image:url("../images/hero-bg.jpg");transform:translate3d(calc(var(--mx,0) * -12px),calc(var(--my,0) * -7px),0) scale(1.03)}
-.dof-stage .fg{background-image:url("../images/hero-fg.webp");transform:translate3d(calc(var(--mx,0) * 16px),calc(var(--my,0) * 9px),0) scale(1.03)}
-.dof-stage .wash{background:rgba(255,255,255,.46)}
-
 /* ================= section index ================= */
 .xp-index{position:fixed;right:28px;top:50%;z-index:900;transform:translateY(-50%);opacity:0;visibility:hidden;transition:opacity .6s ease,visibility 0s linear .6s}
 .xp-index.show{opacity:1;visibility:visible;transition:opacity .6s ease}
@@ -368,10 +359,8 @@ html.xp-ink .title:not(.in){filter:blur(10px);opacity:0;text-shadow:0 0 22px col
 html.xp-ink .title.in{filter:blur(0);opacity:1;text-shadow:0 0 0 transparent}
 
 @media (prefers-reduced-motion:reduce){
-  .dof-stage{animation:none}.dof-stage > i{transform:none!important}
   html.xp-ink .title:not(.in){filter:none;opacity:1;text-shadow:none}
 }
-.hero > .dof-stage{position:absolute;z-index:-1}
 
 /* ================= live product previews ================= */
 .work .frame{position:relative;overflow:hidden}
