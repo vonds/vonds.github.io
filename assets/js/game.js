@@ -906,23 +906,25 @@
     function scale() { R = Math.min(3, window.devicePixelRatio || 1); S = innerWidth < 640 ? 2.4 : 3; cv2.width = Math.round(GW * S * R); cv2.height = Math.round(GH * S * R); cv2.style.width = GW * S + 'px'; cv2.style.height = GH * S + 'px'; }
     // front-facing Vee (for when he turns to the visitor): left half, mirrored
     var FRONT_HALF = [
-      '...........', '......DDDDD', '....DHHhHHH', '...DHHHHhHH', '..HHHHHHHHH', '.HDDHHSSSSS', '..DdHSSSSSS', '..DdHSSESSS', '..DDHSSESSS',
-      '....HSSSSSS', '....HSSRSSS', '....H.SSSSE', '....H..SSSS', '.........SS', '.....TTTTTT', '...STTTTTTT', '...STTTTTTT', '...STTTTTTT',
-      '...SSTTTTTT', '....LLLLLLL', '......PPPP.', '......PPPP.', '......PPPP.', '.....BBBBB.', '...........', '...........'];
+      '...........', '.......DDDD', '.....DHHHHH', '....DHHhHHH', '...DHHHHHHh', '..HDHHHHHHH', '..DDHHSSSSS', '.HDdHHSSSSS', '.HDdHSSSESS',
+      '.HDDHSSSESS', '.HHHHSSSSSS', '.HHHHSRSSSS', '.HHHH.SSSSE', '.HHHH..SSSS', '.......TTTT', '......STTTT', '......STTTT', '......STTTT',
+      '.......TTTT', '.......LLLL', '........PP.', '........PP.', '........PP.', '.......BBB.', '...........', '...........'];
     // locs: thick, wavy strands that fall past the waist, matching the side view
-    var WAVE = [0, 0, 1, 1];
+    var WAVE = [0, 0, 0, 1, 1, 1];
     function locsFront(x, pal) {
-      function strand(x0, y, last) { [0, 1].forEach(function (k) { var c = last ? 'H' : (k ? 'H' : 'h'); x.fillStyle = pal[c]; x.fillRect(x0 + k, y, 1, 1); x.fillRect(21 - x0 - k, y, 1, 1); }); }
-      for (var y = 6; y <= 21; y++) strand(y < 14 ? 0 : WAVE[(y - 14) % 4], y, y === 21);            // outer strand, outside the arm
-      for (var y2 = 9; y2 <= 20; y2++) strand(y2 < 14 ? 2 : 4 + WAVE[(y2 - 12) % 4], y2, y2 === 20);   // inner strand, falling over the chest
-      x.fillStyle = pal.D; for (var y3 = 9; y3 <= 13; y3++) { x.fillRect(4, y3, 1, 1); x.fillRect(17, y3, 1, 1); }   // shadow between the strand and the face
+      function strand(x0, y, last) { [0, 1].forEach(function (k) { var c = last || k ? 'H' : 'h'; x.fillStyle = pal[c]; x.fillRect(x0 + k, y, 1, 1); x.fillRect(21 - x0 - k, y, 1, 1); }); }
+      for (var y = 10; y <= 20; y++) { x.clearRect(0, y, 6, 1); x.clearRect(16, y, 6, 1); }
+      for (var y1 = 10; y1 <= 20; y1++) strand(WAVE[y1 % 6], y1, y1 === 20);            // outer strand
+      for (var y2 = 10; y2 <= 19; y2++) strand(3 + WAVE[(y2 + 2) % 6], y2, y2 === 19);        // inner strand, beside the arm
+      for (var y3 = 15; y3 <= 17; y3++) { x.fillStyle = pal.S; x.fillRect(6, y3, 1, 1); x.fillRect(15, y3, 1, 1); }   // arms stay in front
     }
     function locsBack(x, pal) {
-      for (var k = 0; k < 6; k++) for (var y = 12; y <= 21 - (k % 2); y++) {
-        var x0 = 2 + k * 3 + WAVE[y % 4], end = y === 21 - (k % 2);
+      for (var y0 = 12; y0 <= 21; y0++) { x.clearRect(3, y0, 16, 1); if (y0 <= 20) { x.fillStyle = 'rgba(236,236,236,.38)'; x.fillRect(3, y0, 16, 1); } }   // the light seams between strands
+      for (var k = 0; k < 5; k++) for (var y = 12; y <= 21 - (k % 2); y++) {
+        var x0 = 3 + k * 3 + WAVE[(y + k * 2) % 6], end = y === 21 - (k % 2);
         x.fillStyle = pal[end ? 'H' : 'h']; x.fillRect(x0, y, 1, 1); x.fillStyle = pal.H; x.fillRect(x0 + 1, y, 1, 1);
-        if (k < 5) x.clearRect(x0 + 2, y, 1, 1);   // a gap between strands, like the side view
       }
+      for (var y4 = 20; y4 <= 22; y4++) { x.fillStyle = pal.P; x.fillRect(8, y4, 2, 1); x.fillRect(12, y4, 2, 1); }   // legs show below the hair
     }
     var frontCache = {};
     function frontImg(light, blink) {
