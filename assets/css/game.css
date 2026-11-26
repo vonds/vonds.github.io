@@ -1,0 +1,29 @@
+/* hidden game overlay (opened from the hero logo) */
+.gm{position:fixed;inset:0;z-index:2147483000;font-family:Dosis,system-ui,sans-serif;display:none;align-items:center;justify-content:center;background:rgba(6,6,7,0);transition:background .5s ease}
+.gm.open{display:flex}
+.gm.show{background:rgba(6,6,7,.86);backdrop-filter:blur(6px)}
+.gm .scr{position:relative;width:min(1000px,94vw);height:min(460px,62vh);overflow:hidden;background:#000;
+    clip-path:inset(50% 0 50% 0);transition:clip-path .8s cubic-bezier(.77,0,.18,1);box-shadow:0 40px 120px rgba(0,0,0,.6)}
+.gm.show .scr{clip-path:inset(0 0 0 0)}
+.gm .seam{position:absolute;left:0;right:0;top:50%;height:1px;opacity:0;pointer-events:none;
+    background:linear-gradient(90deg,transparent,#fff 20%,#fff 80%,transparent);box-shadow:0 0 16px 2px rgba(255,255,255,.4)}
+.gm.show .seam.a{animation:sa .8s cubic-bezier(.77,0,.18,1) both}
+.gm.show .seam.b{animation:sb .8s cubic-bezier(.77,0,.18,1) both}
+@keyframes sa{0%{top:50%;opacity:0}15%{opacity:1}100%{top:0;opacity:0}}
+@keyframes sb{0%{top:50%;opacity:0}15%{opacity:1}100%{top:100%;opacity:0}}
+.gm canvas{outline:none;display:block;width:100%;height:100%;touch-action:none;cursor:pointer}
+.gm .x{position:absolute;right:22px;top:20px;width:44px;height:44px;border:0;background:none;cursor:pointer;opacity:0;transition:opacity .4s .5s}
+.gm.show .x{opacity:1}
+.gm .x i{position:absolute;left:10px;right:10px;top:50%;height:1px;background:#e8e8e8}
+.gm .x i:first-child{transform:rotate(45deg)}.gm .x i:last-child{transform:rotate(-45deg)}
+.gm .x:focus{outline:none}.gm .x:hover i{background:#fff}
+.gm .meta{position:absolute;left:0;right:0;bottom:calc(50% - min(230px,31vh) - 44px);display:flex;justify-content:center;gap:28px;
+    font:500 11px/1 Dosis;letter-spacing:.28em;text-transform:uppercase;color:#8a8a90;opacity:0;transition:opacity .4s .6s}
+.gm.show .meta{opacity:1}
+.gm .meta span:first-child{color:#e8e8e8}
+.gm .meta .sm{display:none}
+@media (max-width:640px){
+  .gm .scr{width:100vw;height:56vh}
+  .gm .meta{flex-direction:column;align-items:center;gap:10px;bottom:calc(22vh - 60px)}
+  .gm .meta .lg{display:none}.gm .meta .sm{display:inline}
+}
