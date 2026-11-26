@@ -238,3 +238,23 @@
 .rpg-x:focus-visible,.rpg-x:focus,.rpg button:focus-visible{outline:none;box-shadow:none}
 .rpg-term .row,.rpg-term .row span,.rpg-term input{font-family:'Press Start 2P',ui-monospace,monospace!important;font-size:1em!important;font-weight:400!important;letter-spacing:0!important;text-transform:none!important;color:#fff}
 .rpg-term .row span{color:#c6c6cc}
+/* Meridian: district title cards, status and puzzle prompts */
+.rpg-area{position:absolute;left:0;right:0;top:14%;text-align:center;pointer-events:none;opacity:0;transform:translateY(-6px);transition:opacity .6s ease,transform .6s ease;font-family:'Press Start 2P',monospace;color:#fff;text-shadow:2px 2px 0 rgba(0,0,0,.75)}
+.rpg-area.on{opacity:1;transform:none}
+.rpg-area b{display:block;font-weight:400;font-size:clamp(11px,2.1vw,22px);letter-spacing:.08em}
+.rpg-area b::after{content:'';display:block;width:min(240px,46%);height:1px;margin:12px auto 10px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.8),transparent)}
+.rpg-area span{display:block;font-size:clamp(6px,.9vw,10px);line-height:1.9;color:#cfcfda;padding:0 8%}
+.rpg-msg p em{font-style:normal;color:#9a9aa8}
+.rpg-term .sc b{font-weight:400;color:#fff;margin-right:6px}
+.rpg-term .sc em{font-style:normal;color:#b8b8c4;display:block;margin-bottom:4px}
+.rpg-foes .foe.boss{grid-column:1/-1;display:flex;flex-direction:column;align-items:stretch;gap:6px;white-space:normal;text-align:left}
+.rpg-foes .foe.boss i{display:block;height:6px;border:1px solid #8a8a94;background:rgba(0,0,0,.5)}
+.rpg-foes .foe.boss i b{display:block;height:100%;background:linear-gradient(90deg,#9a9aa6,#f2f2f6)}
+.rpg-foes .foe.boss em{font-style:normal;font-size:.8em;color:#b8b8c4}
+/* phones: during a battle the menus sit below the scene instead of covering it */
+@media (hover:none),(pointer:coarse),(max-width:760px){
+  .rpg-scr canvas{height:calc(100vw * 9 / 16)}
+  .rpg-scr:has(.rpg-hud.on){aspect-ratio:auto;height:calc(100vw * 9 / 16 + 196px)}
+  .rpg-scr:has(.rpg-hud.on) .rpg-hud{height:178px;bottom:8px}
+  .rpg:has(.rpg-hud.on) .rpg-pad{display:none}
+}

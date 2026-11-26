@@ -11,7 +11,7 @@
   var pick = document.createElement('div'); pick.className = 'gpick'; pick.setAttribute('role', 'dialog'); pick.setAttribute('aria-modal', 'true'); pick.setAttribute('aria-label', 'Choose a game');
   pick.innerHTML = '<div class="ff4w gpick-w"><b class="ff4n">Vee</b><p class="gpick-q">Pick a game.</p>' +
     '<button type="button" class="gpick-o" data-g="runner"><canvas width="44" height="52"></canvas><span><strong>' + NAMES.runner + '</strong><em>An endless runner. Clear the bugs. Stay online.</em></span></button>' +
-    '<button type="button" class="gpick-o" data-g="rpg"><canvas width="44" height="52"></canvas><span><strong>' + NAMES.rpg + '</strong><em>A short RPG about the city the rich left behind.</em></span></button>' +
+    '<button type="button" class="gpick-o" data-g="rpg"><canvas width="44" height="52"></canvas><span><strong>' + NAMES.rpg + '</strong><em>An RPG about the city the rich left behind.</em></span></button>' +
     '<button type="button" class="gpick-c">Not now</button></div>';
   document.body.appendChild(pick);
   var opts = [].slice.call(pick.querySelectorAll('.gpick-o')), sel = 0, pickFrom = null;
@@ -76,126 +76,163 @@
     function xpNeed() { return 30 + (save.lvl - 1) * 25; }
     function maxMp() { return 24 + (save.lvl - 1) * 6; }
 
-    /* ---------- the town ---------- */
-    var MAP = [
-      'TTTTTTTTTTTTTTTTTTTT',
-      'T..AAAA......BBBBB.T',
-      'T..AAAA......BBBBB.T',
-      'T..AAdA..s...BBdBB.T',
-      'T....=.........=...T',
-      'T==================>',
-      'T.....=....n.......T',
-      'T,,,,.=.....,,,,,,.T',
-      'T,,,,.=.....,,,,,,.T',
-      'T,,,,.=.....,,,,,,.T',
-      'TTTTTTTTTTTTTTTTTTTT'];
-    function tile(x, y) { return (MAP[y] || '')[x] || 'T'; }
-    function solid(x, y) { return 'TABdsn'.indexOf(tile(x, y)) >= 0; }
+    /* ---------- the world ---------- */
+    var WD = window.MeridianWorld, ART = window.MeridianArt;
+    if (!save.flags) save.flags = {};
+    if (!save.lit) save.lit = { spire: 1, archive: 1 };
+    if (!save.opened) save.opened = {};
+    if (!save.keys) save.keys = {};
+    if (!save.seen) save.seen = {};
+    if (!save.area || !WD.areas[save.area]) { save.area = 'plaza'; save.x = WD.areas.plaza.spawn[0]; save.y = WD.areas.plaza.spawn[1]; }
+    if (!save.rest) save.rest = ['plaza', 6, 7];
+    var F = save.flags;
     function hs(n) { n = Math.sin(n * 127.1 + 311.7) * 43758.5453; return n - Math.floor(n); }
-    var mapCanvas = document.createElement('canvas'); mapCanvas.width = W; mapCanvas.height = H;
-    (function paint() {
-      // a virtual world: dark grid ground, glowing circuit roads, data pylons, static fields, futuristic homes
-      var g = mapCanvas.getContext('2d');
-      function px(x, y, w, h, c) { g.fillStyle = c; g.fillRect(x, y, w, h); }
-      px(0, 0, W, H, '#07070a');
-      for (var y = 0; y < MAP.length; y++) for (var x = 0; x < 20; x++) {
-        var t = tile(x, y), X = x * TS, Y = y * TS;
-        px(X, Y, TS, TS, '#0b0b10'); px(X, Y, TS, 1, '#15151c'); px(X, Y, 1, TS, '#15151c'); px(X, Y, 1, 1, '#2a2a34');
-        if (t === '=' || t === '>') {
-          var hz = tile(x - 1, y) === '=' || tile(x + 1, y) === '=' || t === '>';
-          px(X, Y, TS, TS, '#101017');
-          if (hz) { px(X, Y + 2, TS, 1, '#8c8c96'); px(X, Y + 13, TS, 1, '#8c8c96'); if (x % 2) px(X + 2, Y + 7, 8, 2, 'rgba(236,236,242,.45)'); }
-          else { px(X + 2, Y, 1, TS, '#8c8c96'); px(X + 13, Y, 1, TS, '#8c8c96'); if (y % 2) px(X + 7, Y + 2, 2, 8, 'rgba(236,236,242,.45)'); }
-          if (hs(x * 13 + y * 31) > .72) {   // cracks where the traces have failed
-            var cx0 = X + 3 + Math.floor(hs(x + y) * 9); px(cx0, Y + 1, 1, 4, '#060609'); px(cx0 + 1, Y + 4, 1, 4, '#060609'); px(cx0, Y + 8, 2, 1, '#060609');
-            if (hz) px(X + 4, Y + 2, 5, 1, '#3a3a42'); else px(X + 2, Y + 5, 1, 5, '#3a3a42');
-          }
-        } else if (t === ',') {
-          for (var i = 0; i < 18; i++) { var r = hs(x * 41 + y * 17 + i); px(X + Math.floor(hs(x * 9 + y * 23 + i * 3) * 15), Y + Math.floor(hs(x * 29 + y * 5 + i * 7) * 15), r > .7 ? 2 : 1, 1, r > .85 ? '#6e6e7a' : r > .5 ? '#3a3a46' : '#262630'); }
-        } else if (t === 'T') {
-          // data pylons: slim obelisks with lit edges
-          px(X + 5, Y + 3, 6, 13, '#16161d'); px(X + 5, Y + 3, 1, 13, '#5c5c68'); px(X + 10, Y + 3, 1, 13, '#2c2c36');
-          px(X + 6, Y + 1, 4, 2, '#16161d'); px(X + 7, Y, 2, 1, '#9a9aa6');
-          var dead = hs(x * 7 + y * 11) > .62;   // some pylons have gone dark, a few are cracked
-          for (var k = 0; k < 3; k++) px(X + 7, Y + 6 + k * 3, 2, 1, dead ? '#202028' : (x + y + k) % 3 ? '#3a3a46' : '#a8a8b4');
-          if (dead) { px(X + 7, Y, 2, 1, '#2a2a32'); if (hs(x + y * 3) > .5) { px(X + 8, Y + 5, 1, 4, '#050507'); px(X + 9, Y + 9, 1, 3, '#050507'); } }
-        } else if (t === 's') {
-          px(X + 7, Y + 9, 2, 7, '#3a3a46'); px(X + 4, Y + 14, 8, 2, '#22222b');
-        } else if (t === '.' && hs(x * 3 + y * 47) > .86) {
-          // holes where the world has stopped rendering
-          px(X + 3, Y + 4, 9, 7, '#000000'); px(X + 5, Y + 2, 5, 2, '#000000'); px(X + 2, Y + 7, 2, 3, '#000000'); px(X + 12, Y + 6, 2, 3, '#000000');
-          px(X + 4, Y + 11, 6, 2, '#000000'); px(X + 3, Y + 4, 1, 1, '#2a2a34'); px(X + 11, Y + 10, 1, 1, '#2a2a34');
-        }
-      }
-      // SIGNAL TOWER (Black Signal): a glass spire home with light strips, orbit rings and a beacon
-      var tx = 3 * TS, ty = 1 * TS;
-      px(tx + 10, ty + 2, 44, 46, '#12121a'); px(tx + 10, ty + 2, 44, 1, '#7a7a86');
-      px(tx + 10, ty + 2, 1, 46, '#a0a0ac'); px(tx + 53, ty + 2, 1, 46, '#3a3a46');
-      for (var st = 0; st < 5; st++) px(tx + 15 + st * 8, ty + 6, 2, 34, st === 3 ? '#14141b' : st % 2 ? '#2e2e3a' : '#52525e');
-      px(tx + 44, ty + 22, 7, 5, '#050508'); px(tx + 46, ty + 27, 3, 3, '#050508');
-      px(tx + 14, ty + 18, 36, 1, '#5a5a66'); px(tx + 14, ty + 30, 36, 1, '#5a5a66');
-      px(tx + 2, ty + 40, 60, 8, '#0f0f15'); px(tx + 2, ty + 40, 60, 1, '#9a9aa6');
-      px(tx + 22, ty - 6, 20, 8, '#12121a'); px(tx + 22, ty - 6, 20, 1, '#7a7a86');
-      px(tx + 30, ty - 16, 4, 10, '#1a1a22'); px(tx + 31, ty - 16, 1, 10, '#8a8a96');
-      g.strokeStyle = 'rgba(220,220,230,.55)'; g.lineWidth = 1; g.beginPath(); g.ellipse(tx + 32.5, ty - 10.5, 13, 3, 0, 0, 7); g.stroke();
-      g.strokeStyle = 'rgba(220,220,230,.3)'; g.beginPath(); g.ellipse(tx + 32.5, ty - 5.5, 18, 4, 0, 0, 7); g.stroke();
-      px(5 * TS + 3, 3 * TS + 1, 10, 15, '#060609'); px(5 * TS + 2, 3 * TS, 12, 1, '#e8e8f0'); px(5 * TS + 2, 3 * TS, 1, 16, '#c8c8d4'); px(5 * TS + 13, 3 * TS, 1, 16, '#c8c8d4');
-      // DATA ARCHIVE (Digital Resource Map): a domed home wrapped in map-grid lines
-      var lx = 13 * TS, ly = 1 * TS, cxD = lx + 40, cyD = ly + 34;
-      px(lx + 2, ly + 34, 76, 14, '#101017'); px(lx + 2, ly + 34, 76, 1, '#9a9aa6');
-      g.fillStyle = '#12121a'; g.beginPath(); g.ellipse(cxD, cyD, 34, 30, 0, Math.PI, 0); g.fill();
-      g.strokeStyle = 'rgba(200,200,212,.55)'; g.beginPath(); g.ellipse(cxD, cyD, 34, 30, 0, Math.PI, 0); g.stroke();
-      g.strokeStyle = 'rgba(160,160,172,.35)';
-      for (var m = 1; m < 4; m++) { g.beginPath(); g.ellipse(cxD, cyD, 34 * m / 4, 30, 0, Math.PI, 0); g.stroke(); }
-      for (var n = 1; n < 4; n++) { var yy = cyD - 30 * n / 4, ww = 34 * Math.sqrt(1 - Math.pow(n / 4, 2)); g.beginPath(); g.moveTo(cxD - ww, yy + .5); g.lineTo(cxD + ww, yy + .5); g.stroke(); }
-      px(cxD - 1, ly + 1, 2, 4, '#9a9aa6');
-      px(cxD + 9, ly + 12, 10, 8, '#030305'); px(cxD + 11, ly + 10, 6, 2, '#030305'); px(cxD + 8, ly + 15, 1, 3, '#5a5a66'); px(cxD + 19, ly + 13, 1, 4, '#5a5a66');
-      g.strokeStyle = 'rgba(230,230,240,.4)'; g.beginPath(); g.ellipse(cxD, ly + 38, 40, 4, 0, 0, 7); g.stroke();
-      px(15 * TS + 3, 3 * TS + 1, 10, 15, '#060609'); px(15 * TS + 2, 3 * TS, 12, 1, '#e8e8f0'); px(15 * TS + 2, 3 * TS, 1, 16, '#c8c8d4'); px(15 * TS + 13, 3 * TS, 1, 16, '#c8c8d4');
-    })();
-    // things that move: data packets on the roads, the beacon, flickering static, holograms
-    function drawLive(t) {
-      var c = cx;
-      // beacon on the spire
-      if (Math.floor(t * 2) % 2 === 0) { c.fillStyle = '#ffffff'; c.fillRect(3 * TS + 31, TS - 18, 2, 2); c.fillStyle = 'rgba(255,255,255,.18)'; c.fillRect(3 * TS + 27, TS - 22, 10, 10); }
-      // packets travel along the main road and down the side roads
-      c.fillStyle = 'rgba(245,245,250,.9)';
-      for (var p = 0; p < 3; p++) { var u = (t * .18 + p / 3) % 1; c.fillRect(Math.floor(TS + u * 18 * TS), 5 * TS + 7, 3, 2); }
-      var v1 = (t * .5) % 1; c.fillRect(5 * TS + 7, Math.floor(4 * TS + v1 * TS), 2, 3);
-      var v2 = (t * .5 + .5) % 1; c.fillRect(15 * TS + 7, Math.floor(4 * TS + v2 * TS), 2, 3);
-      // static fields shimmer
-      for (var i = 0; i < 14; i++) { var r1 = hs(i * 7 + Math.floor(t * 8)), r2 = hs(i * 13 + Math.floor(t * 8)); var fx = r1 < .5 ? 1 + Math.floor(r1 * 2 * 4) : 12 + Math.floor((r1 - .5) * 2 * 6), fy = 7 + Math.floor(r2 * 3); c.fillStyle = 'rgba(200,200,214,' + (.25 + r2 * .4) + ')'; c.fillRect(fx * TS + Math.floor(hs(i + t) * 14), fy * TS + Math.floor(hs(i * 3 + t) * 14), 2, 1); }
-      // the kiosk's floating hologram panel
-      var bob = Math.round(Math.sin(t * 2) * 1), kx = 9 * TS, ky = 3 * TS - 2 + bob;
-      c.fillStyle = 'rgba(210,210,224,' + (Math.random() < .05 ? .15 : .32) + ')'; c.fillRect(kx + 1, ky, 14, 9);
-      c.fillStyle = 'rgba(255,255,255,.75)'; c.fillRect(kx + 1, ky, 14, 1); c.fillRect(kx + 3, ky + 3, 9, 1); c.fillRect(kx + 3, ky + 5, 6, 1);
-      // the firewall on the east road
-      for (var fb = 0; fb < 4; fb++) { var a = .25 + .35 * Math.abs(Math.sin(t * 3 + fb)); c.fillStyle = 'rgba(230,230,240,' + a + ')'; c.fillRect(19 * TS + 2 + fb * 3, 5 * TS + 1, 1, 14); }
-      c.fillStyle = 'rgba(255,255,255,.5)'; c.fillRect(19 * TS + 1, 5 * TS + 1 + Math.floor((t * 20) % 14), 13, 1);
-      // doors pulse
-      var dp = .25 + .2 * Math.sin(t * 3); c.fillStyle = 'rgba(230,230,240,' + dp + ')'; c.fillRect(5 * TS + 4, 3 * TS + 2, 8, 13); c.fillRect(15 * TS + 4, 3 * TS + 2, 8, 13);
+    function lights() { return WD.anchors.filter(function (a) { return save.lit[a.id]; }).length; }
+    function isLit(id) { return !!save.lit[id]; }
+
+    var AREA = null, MAP = null, PAINTED = null, painted = {};
+    function stamp(area) {
+      var rows = area.map.map(function (r) { return r.split(''); });
+      (area.blds || []).forEach(function (b) { if (!b.w) return; for (var y = b.y; y < b.y + b.h; y++) for (var x = b.x; x < b.x + b.w; x++) rows[y][x] = 'X'; if (b.door != null) rows[b.y + b.h - 1][b.x + b.door] = 'd'; });
+      return rows.map(function (r) { return r.join(''); });
     }
-    function drawDecay(t) {
-      // debris drifts upward and fades, like the world slowly coming apart
-      for (var i = 0; i < 16; i++) {
-        var life = (t * .12 + hs(i * 5)) % 1, x = hs(i * 17) * W, y = H - life * (H + 20);
-        cx.fillStyle = 'rgba(210,210,224,' + (.5 * (1 - life)) + ')'; cx.fillRect(Math.floor(x + Math.sin(t + i) * 4), Math.floor(y), i % 3 ? 1 : 2, i % 3 ? 1 : 2);
-      }
-      // now and then a building briefly fails to render
-      var g2 = Math.floor(t * 3);
-      if (hs(g2 * 1.7) > .82) {
-        var bx = hs(g2) > .5 ? 3 * TS + 12 : 13 * TS + 16, by = TS + 4 + Math.floor(hs(g2 * 3) * 30);
-        for (var j = 0; j < 4; j++) { cx.fillStyle = j % 2 ? 'rgba(0,0,0,.85)' : 'rgba(220,220,236,.35)'; cx.fillRect(bx + Math.floor(hs(g2 + j) * 30), by + j * 2, 8 + Math.floor(hs(g2 * 2 + j) * 14), 2); }
-      }
+    function litFor(b) {
+      if (b.kind === 'spire') return lights() === 6 || !!F.ending;
+      if (b.kind === 'ledger') return isLit('ledger');
+      if (b.kind === 'core') return isLit('exit0');
+      return true;
     }
+    function paintCurrent() { var key = AREA.id; if (!painted[key]) painted[key] = ART.paintArea(AREA, MAP, litFor); PAINTED = painted[key]; }
+    function repaint() { painted = {}; if (AREA) paintCurrent(); }
+    function tile(x, y) { return (MAP[y] || '')[x] || '~'; }
+    function key(x, y) { return x + ',' + y; }
+    function gateOpen(x, y) { var g = AREA.gates && AREA.gates[key(x, y)]; if (!g) return false; return AREA.id === 'plaza' ? isLit('ledger') && isLit('wagon') && isLit('exit0') : isLit('keep'); }
+    function wagonAt() { if (!AREA.wagon) return null; var s = isLit('wagon') ? 2 : Math.min(2, F.wagon || 0); return AREA.wagon[s]; }
+    function npcAt(x, y) { var n = null; (AREA.npcs || []).forEach(function (p) { if (p.x === x && p.y === y) n = p; }); return n; }
+    function blocked(x, y) {
+      var t = tile(x, y);
+      if ('TX~pdsocFlG'.indexOf(t) >= 0 && !(t === 'G' && gateOpen(x, y))) return true;
+      if (npcAt(x, y)) return true;
+      var w = wagonAt(); if (w && y === w[1] && (x === w[0] || x === w[0] + 1)) return true;
+      return false;
+    }
+    var me = { x: save.x, y: save.y, dir: 'down', px: save.x * TS, py: save.y * TS, moving: false, step: 0, steps: 0, safe: 4 };
+    var cam = { x: 0, y: 0 };
+    function load(id, x, y) {
+      AREA = WD.areas[id]; AREA.id = id; MAP = stamp(AREA); paintCurrent();
+      save.area = id; save.x = me.x = x; save.y = me.y = y; me.px = x * TS; me.py = y * TS; me.moving = false; me.safe = 4;
+      save.seen[id] = 1; store(); placeCam();
+    }
+    function placeCam() {
+      var mw = MAP[0].length * TS, mh = MAP.length * TS;
+      cam.x = mw <= W ? (mw - W) / 2 : Math.max(0, Math.min(mw - W, me.px + 8 - W / 2));
+      var top = -(PAINTED ? PAINTED.pad : 0); cam.y = Math.max(top, Math.min(mh - H, me.py + 4 - H / 2)); if (mh - top <= H) cam.y = top + (mh - top - H) / 2;
+      cam.x = Math.round(cam.x); cam.y = Math.round(cam.y);
+    }
+    var areaEl = document.createElement('div'); areaEl.className = 'rpg-area'; areaEl.innerHTML = '<b></b><span></span>';
+    root.querySelector('.rpg-scr').appendChild(areaEl);
+    var areaT = 0;
+    function showArea() { areaEl.querySelector('b').textContent = AREA.name; areaEl.querySelector('span').textContent = AREA.sub; areaEl.classList.add('on'); clearTimeout(areaT); areaT = setTimeout(function () { areaEl.classList.remove('on'); }, 3200); }
+    var fade = null;   // { t, to: [id, x, y], done }
+    function travel(to) { if (fade) return; fade = { t: 0, to: to, swapped: false }; held = null; }
+
+    /* ---------- what the world can do, for the dialogue ---------- */
+    var afterTalk = [];
+    function gainXp(n) {
+      var lines = []; save.xp += n;
+      while (save.xp >= xpNeed()) {
+        save.xp -= xpNeed(); save.lvl++; save.hp = maxHp();
+        lines.push('LEVEL UP. Vee is now level ' + save.lvl + '. Max HP ' + maxHp() + '.');
+        var nc = nextCmd(); if (nc) { save.known.push(nc.cmd); lines.push('New command: ' + nc.cmd + '. ' + nc.learn, 'Bugs can now bring problems that need ' + nc.cmd + '.'); }
+      }
+      store(); return lines;
+    }
+    var G = {
+      f: F, save: save,
+      say: function (who, lines, choices, done) { say(who, lines, choices, done); },
+      boss: function (id, onWin) { startBattle({ boss: id, onWin: onWin }); },
+      puzzle: function (title, steps, done) { openPuzzle(title, steps, done); },
+      rest: function () { save.hp = maxHp(); save.rest = [AREA.id, me.x, me.y]; store(); },
+      give: function (it, n) { n = n || 1; if (ITEMS.some(function (x) { return x.id === it; })) save.items[it] = (save.items[it] || 0) + n; else save.keys[it] = (save.keys[it] || 0) + n; store(); },
+      take: function (it) { if (save.keys[it]) save.keys[it]--; store(); },
+      has: function (it) { return (save.keys[it] || 0) > 0; },
+      light: function (id) { save.lit[id] = 1; store(); repaint(); },
+      lit: isLit, lights: lights,
+      atlas: function () { mode = 'atlas'; areaEl.classList.remove('on'); },
+      link: function (url) { window.open(url, '_blank', 'noopener'); },
+      note: function (t) { log(t); },
+      xp: function (n) { var l = gainXp(n); if (l.length) afterTalk.push.apply(afterTalk, l); },
+      ending: function (kind) { runEnding(kind); }
+    };
+    function readLog(id) {
+      var first = !F[id]; F[id] = 1; store();
+      var n = WD.logOrder.filter(function (k) { return F[k]; }).length;
+      say('Log', WD.logs[id].concat(first ? ['(Log ' + n + ' of 10 recovered.)'] : []));
+    }
+    function openCache(x, y) {
+      var k = AREA.id + ':' + key(x, y), c = AREA.caches[key(x, y)];
+      if (save.opened[k]) return say('', ['An empty data cache. Someone got here first. You did.']);
+      save.opened[k] = 1; G.give(c.item, c.n);
+      var it = ITEMS.filter(function (i) { return i.id === c.item; })[0];
+      say('', [c.text || ('A sealed data cache. Inside: ' + (c.n > 1 ? c.n + ' ' : 'a ') + (it ? it.name.toLowerCase() + (c.n > 1 ? 's' : '') : c.item) + '.')]);
+    }
+    function status() {
+      var marks = WD.anchors.map(function (a) { return (isLit(a.id) ? '[x] ' : '[ ] ') + a.name + ' <em>(' + a.project + ')</em>'; }).join('<br>');
+      var logs = WD.logOrder.filter(function (k) { return F[k]; }).length;
+      say('Vee', ['Level ' + save.lvl + ' · HP ' + save.hp + '/' + maxHp() + ' · Next level in ' + (xpNeed() - save.xp) + ' XP<br>' + save.known.length + ' commands · ' + logs + ' of 10 logs · ' + AREA.name, marks]);
+    }
+    function runEnding(kind) {
+      F.ending = kind; store(); repaint();
+      say('', WD.endings[kind], null, function () {
+        say('', WD.endings.after, null, function () { save.lit.spire = 1; store(); repaint(); travel(['plaza', 15, 8]); });
+      });
+    }
+
+    /* ---------- typed puzzles on the map (the Proving Rooms, Ash's audit) ---------- */
+    var PZ = null;
+    function openPuzzle(title, steps, done) { PZ = { title: title, steps: steps, i: 0, done: done }; areaEl.classList.remove('on'); showPuzzle(); }
+    function showPuzzle(note) {
+      var s = PZ.steps[PZ.i]; held = null;
+      termBox.querySelector('.sc').innerHTML = '<b>' + PZ.title + '</b> ' + (note ? '<em>' + note + '</em> ' : '') + s.t;
+      var chips = termBox.querySelector('.chips'); chips.innerHTML = '';
+      save.known.slice().sort().forEach(function (c) { var b = document.createElement('button'); b.type = 'button'; b.textContent = c; b.addEventListener('click', function () { termIn.value = c + ' '; termIn.focus(); }); chips.appendChild(b); });
+      termIn.value = ''; termBox.classList.add('on'); setTimeout(function () { termIn.focus(); }, 30);
+    }
+    function submitPuzzle(raw) {
+      var s = PZ.steps[PZ.i], line = norm(raw || '').replace(/^sudo /, '');
+      var ok = s.ex.some(function (e) { return norm(e).replace(/^sudo /, '') === line; });
+      if (!ok) return showPuzzle('Not quite. One way: ' + s.ex[0] + '. Try it.');
+      PZ.i++;
+      if (PZ.i < PZ.steps.length) return showPuzzle('exit 0.');
+      var d = PZ.done; PZ = null; closePrompt(); if (d) d();
+    }
+    function cancelPuzzle() { PZ = null; closePrompt(); say('', ['You step back. The prompt will be here when you return.']); }
+
+    /* ---------- interacting ---------- */
+    function facing() { var d = { up: [0, -1], down: [0, 1], left: [-1, 0], right: [1, 0] }[me.dir]; return [me.x + d[0], me.y + d[1]]; }
+    function interact() {
+      var f = facing(), x = f[0], y = f[1], t = tile(x, y), k = key(x, y), n = npcAt(x, y), w = wagonAt();
+      if (n) return WD.talk[n.id] ? WD.talk[n.id](G) : null;
+      if (w && y === w[1] && (x === w[0] || x === w[0] + 1)) return WD.wagon(G);
+      if (t === 'd') {
+        var b = (AREA.blds || []).filter(function (b2) { return b2.door != null && b2.x + b2.door === x && b2.y + b2.h - 1 === y; })[0];
+        var h = b && (WD.doors[AREA.id + ':' + b.kind] || WD.doors[AREA.id + ':' + k]);
+        return h ? h(G, b) : say('', ['Locked. The door doesn’t recognize you. Doors here only remember who paid.']);
+      }
+      if (t === 'o' && AREA.logs[k]) return readLog(AREA.logs[k]);
+      if (t === 'c' && AREA.caches[k]) return openCache(x, y);
+      if (t === 's' && WD.spots[AREA.id + ':' + k]) return WD.spots[AREA.id + ':' + k](G);
+      if (t === 'F' && WD.spots[AREA.id + ':F']) return WD.spots[AREA.id + ':F'](G);
+      if (t === 'p') return say('', [['The tree is mostly wireframe. You can see the numbers through it.', 'Bark, a texture. Leaves, a texture. This one still has both. For now.', 'A tag on the trunk: SPECIES 0x2F, OAK (APPROX.).'][Math.floor(hs(x * 7 + y) * 3)]]);
+      if (t === 'G' && !gateOpen(x, y)) return say('', AREA.id === 'plaza' ? ['The east gate is sealed. A panel reads: FIVE LANDMARKS REQUIRED.', 'Answering: ' + lights() + ' of 6.'] : ['The east gate won’t open while the keep is compromised.']);
+    }
+
     function drawScan() {
       cx.fillStyle = 'rgba(0,0,0,.18)'; for (var y = 0; y < H; y += 2) cx.fillRect(0, y, W, 1);
       var g = cx.createRadialGradient(W / 2, H / 2, H * .35, W / 2, H / 2, W * .65); g.addColorStop(0, 'rgba(0,0,0,0)'); g.addColorStop(1, 'rgba(0,0,0,.5)'); cx.fillStyle = g; cx.fillRect(0, 0, W, H);
     }
 
     /* ---------- Vee on the map ---------- */
-    var me = { x: 9, y: 5, dir: 'down', px: 9 * TS, py: 5 * TS, moving: false, step: 0, steps: 0, safe: 4 };
-    var npc = { x: 11, y: 6 };
     function veeImg() {
       var walk = me.moving ? Math.floor(me.step / 4) % 4 : -1;
       if (me.dir === 'left' || me.dir === 'right') return { img: SP.frame(walk >= 0 ? 'run' + walk : 'idle'), flip: me.dir === 'left' };
@@ -241,30 +278,11 @@
       if (!last) { talking.i++; showLine(); return; }
       var d = talking.done; endTalk(); if (d) d();
     }
-    function endTalk() { talking = null; msg.classList.remove('on'); }
+    function endTalk() { talking = null; msg.classList.remove('on'); if (afterTalk.length && mode === 'map') { var q = afterTalk.splice(0); setTimeout(function () { say('', q); }, 60); } }
     function choiceMove(d) {
       if (!talking || !talking.choices || talking.i !== talking.lines.length - 1) return;
       talking.sel = (talking.sel + d + talking.choices.length) % talking.choices.length;
       [].forEach.call(msgOpts.children, function (b, j) { b.className = j === talking.sel ? 'on' : ''; });
-    }
-
-    /* ---------- interactions in town ---------- */
-    function facing() { var d = { up: [0, -1], down: [0, 1], left: [-1, 0], right: [1, 0] }[me.dir]; return [me.x + d[0], me.y + d[1]]; }
-    function interact() {
-      var f = facing(), t = tile(f[0], f[1]);
-      if (f[0] === npc.x && f[1] === npc.y) {
-        say('Wren', save.wins ? ['Another light came back on, over by the east wall. That was you.', 'If you’re hurt, the spire still mends. Don’t ask it for much.'] :
-          ['You’re still running. I thought I was the last process awake.', 'When the owners took the Lift Upstream, they ran the numbers. Repairing Meridian cost more than replacing it. So they replaced it.', 'Without the signal the city forgets itself, a street at a time. The landmarks still remember what was built here. Start with them.']);
-      } else if (t === 's') {
-        say('Kiosk', ['MERIDIAN. Population 1,204. Peak 2,000,000.', 'Six landmarks hold the city’s memory. Two still answer. The rest went dark with the east districts.']);
-      } else if (t === 'd' && f[0] === 5) {
-        save.hp = maxHp(); store();
-        say('The Spire', ['BLACK SIGNAL. A school for operators: adaptive training in Linux, Security+, Python, and C, with labs that keep working when the network doesn’t.', 'The spire hums against your code. HP restored.'],
-          [{ label: 'Try the demo', fn: function () { window.open('https://black-signal-demo.netlify.app/', '_blank', 'noopener'); } }, { label: 'Back', fn: null }]);
-      } else if (t === 'd' && f[0] === 15) {
-        say('The Archive', ['DIGITAL RESOURCE MAP. A living index of free devices, internet access, and digital-skills training across Maryland.', 'Every record in the dome points someone toward help they didn’t know was there.'],
-          [{ label: 'Try the demo', fn: function () { window.open('https://digital-resource-map-demo.netlify.app/', '_blank', 'noopener'); } }, { label: 'Back', fn: null }]);
-      }
     }
 
     /* ---------- battle ---------- */
@@ -335,21 +353,26 @@
     function rnd(a, b) { return a + Math.floor(Math.random() * (b - a + 1)); }
     function living() { return B.foes.filter(function (f) { return !f.dead; }); }
     function startBattle(force) {
-      var kinds = Object.keys(FOES), r = Math.random(), n = force || (r < .3 ? 1 : r < .55 ? 2 : r < .75 ? 3 : r < .87 ? 4 : r < .95 ? 5 : 6);
+      var opt = typeof force === 'object' ? force : {}, bossDef = opt.boss ? WD.bosses[opt.boss] : null; if (typeof force === 'object') force = 0;
+      var enc = AREA.enc || WD.areas.plaza.enc, tier = AREA.tier || 1, kinds = enc.foes || Object.keys(FOES), r = Math.random(), n = force || (r < .3 ? 1 : r < .55 ? 2 : r < .75 ? 3 : r < .87 ? 4 : r < .95 ? 5 : 6);
+      if (!force) n = Math.min(n, enc.max || 6); if (bossDef) n = 1;
       // up to three across; a back row for groups of four or more. Bigger groups hit softer and break faster.
       var SLOTS = [[], [[66, 108]], [[40, 98], [104, 114]], [[28, 94], [92, 110], [140, 94]], [[26, 92], [86, 92], [52, 116], [112, 116]],
         [[18, 90], [74, 90], [130, 90], [44, 116], [102, 116]], [[14, 90], [66, 90], [118, 90], [34, 116], [86, 116], [138, 116]]][n];
       var sc = n <= 2 ? 3 : 2, foes = [], soft = [1, 1, .8, .62, .5, .42, .36][n];
       endTalk();
       for (var i = 0; i < n; i++) {
-        var kind = kinds[Math.floor(Math.random() * kinds.length)], f = FOES[kind], slot = SLOTS[i];
+        var kind = bossDef ? bossDef.kind : kinds[Math.floor(Math.random() * kinds.length)], base0 = FOES[kind], slot = bossDef ? [34, 120] : SLOTS[i];
+        var f = bossDef ? { name: bossDef.name, hp: bossDef.hp, atk: bossDef.atk, move: bossDef.move, xp: bossDef.xp, boss: true } :
+          { name: base0.name, hp: Math.round(base0.hp * (.6 + .4 * tier)), atk: [Math.round(base0.atk[0] * (.7 + .3 * tier)), Math.round(base0.atk[1] * (.7 + .3 * tier))], move: base0.move, xp: Math.round(base0.xp * tier) };
+        if (bossDef) sc = bossDef.sc;
         var c = save.known[Math.floor(Math.random() * save.known.length)], info = cmdInfo(c);
         foes.push({ kind: kind, foe: f, hp: Math.round(f.hp * (n >= 4 ? .7 : 1)), max: Math.round(f.hp * (n >= 4 ? .7 : 1)), soft: soft, stun: 0, shake: 0, flash: 0, dead: false, fade: 0, sc: sc,
           cmd: c, sc0: info.when[Math.floor(Math.random() * info.when.length)],
           get scenario() { return this.sc0.t; }, fx: slot[0], fy: slot[1], ph: Math.random() * 6, exposed: 0, slow: 0, leak: 0 });
       }
-      B = { foes: foes, focus: false, phase: 'intro', t: 0, vx: 0, pops: [], menu: 'main', sel: 0, cast: 0, target: 0, pending: null };
-      mode = 'swirl'; swirlT = 0;
+      B = { foes: foes, focus: false, phase: 'intro', t: 0, vx: 0, pops: [], menu: 'main', sel: 0, cast: 0, target: 0, pending: null, boss: bossDef, onWin: opt.onWin, theme: AREA.theme };
+      mode = 'swirl'; swirlT = 0; areaEl.classList.remove('on');
     }
     function foeName(f) { return f.foe.name.toLowerCase(); }
     function groupName() {
@@ -361,8 +384,9 @@
       foesBox.innerHTML = '';
       B.foes.forEach(function (f, i) {
         if (f.dead) return;
-        var e = document.createElement('button'); e.type = 'button'; e.className = 'foe' + (B.phase === 'target' && i === B.target ? ' on' : '');
-        e.textContent = f.foe.name;
+        var e = document.createElement('button'); e.type = 'button'; e.className = 'foe' + (B.phase === 'target' && i === B.target ? ' on' : '') + (f.foe.boss ? ' boss' : '');
+        if (f.foe.boss) e.innerHTML = '<span>' + f.foe.name + '</span><i><b style="width:' + Math.max(0, Math.round(f.hp / f.max * 100)) + '%"></b></i><em>' + f.hp + ' / ' + f.max + '</em>';
+        else e.textContent = f.foe.name;
         e.addEventListener('click', function () { if (B && B.phase === 'target') { B.target = i; confirmTarget(); } });
         e.addEventListener('mouseenter', function () { if (B && B.phase === 'target') { B.target = i; showScenario(); hudOn(); } });
         foesBox.appendChild(e);
@@ -375,7 +399,7 @@
           { label: 'Fight', tip: 'A plain attack at Vee’s regular strength.', fn: function () { chooseTarget('fight'); } },
           { label: 'Shell', tip: 'Open a shell and type the command that solves a bug’s problem. Right: a bonus attack. Wrong: half power.', fn: function () { chooseTarget('cmd'); } },
           { label: 'Item', tip: 'Bits, bytes and bigger: data that restores HP.', fn: function () { menu('items'); } },
-          { label: 'Run', tip: 'Slip away into the dark.', fn: runAway }]
+          B.boss ? { label: 'Run', off: true, tip: 'There is no running from this one.', fn: runAway } : { label: 'Run', tip: 'Slip away into the dark.', fn: runAway }]
         : ITEMS.filter(function (it) { return save.items[it.id] > 0; }).map(function (it) { return { label: (innerWidth < 640 && it.short) || it.name, right: 'x' + save.items[it.id], tip: it.tip, fn: function () { item(it.id); } }; })
             .concat([{ label: 'Back', tip: ITEMS.some(function (it) { return save.items[it.id] > 0; }) ? '' : 'No data left. Bugs sometimes drop some.', fn: function () { menu('main'); } }]);
       cmdBox.classList.remove('wide');   // keep Vee's HP in view while choosing an item
@@ -423,8 +447,8 @@
     termBox.innerHTML = '<p class="sc"></p><label class="row"><span>vee@meridian:~$</span><input type="text" spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Type a command"></label><div class="chips"></div><div class="act"><button type="submit">Enter</button><button type="button" class="q">Back</button></div>';
     root.querySelector('.rpg-scr').appendChild(termBox);
     var termIn = termBox.querySelector('input');
-    termBox.querySelector('.q').addEventListener('click', cancelTarget);
-    termBox.addEventListener('submit', function (e) { e.preventDefault(); if (B && B.phase === 'type') submitCmd(termIn.value); });
+    termBox.querySelector('.q').addEventListener('click', function () { if (PZ) cancelPuzzle(); else cancelTarget(); });
+    termBox.addEventListener('submit', function (e) { e.preventDefault(); if (PZ) submitPuzzle(termIn.value); else if (B && B.phase === 'type') submitCmd(termIn.value); });
     function openPrompt(ti) {
       var f = B.foes[ti]; B.phase = 'type'; titleEl.classList.remove('on');
       termBox.querySelector('.sc').textContent = f.foe.name + ': ' + f.scenario;
@@ -493,70 +517,82 @@
         setTimeout(next, 800);
       })();
     }
-    function myTurn() { if (!B) return; B.guard = 0; B.phase = 'menu'; menu('main'); hudOn(); }
+    function myTurn() {
+      if (!B) return; B.guard = 0; B.phase = 'menu';
+      if (B.boss) B.foes.forEach(function (f) { var c = save.known[Math.floor(Math.random() * save.known.length)], info = cmdInfo(c); f.cmd = c; f.sc0 = info.when[Math.floor(Math.random() * info.when.length)]; });   // a boss brings a new problem every turn
+      menu('main'); hudOn();
+    }
     function win() {
-      var xp = 0, n = B.foes.length; B.foes.forEach(function (f) { xp += f.foe.xp + rnd(0, 3); });
-      save.xp += xp; save.wins += n; save.linux += n; save.bw++;
-      var lines = ['The rot clears. Vee gains ' + xp + ' XP.'];
+      var xp = 0, n = B.foes.length, boss = B.boss, onWin = B.onWin; B.foes.forEach(function (f) { xp += f.foe.xp + (boss ? 0 : rnd(0, 3)); });
+      save.wins += n; save.linux += n; save.bw++;
+      var lines = [boss ? boss.name + ' is gone.' + (xp ? ' Vee gains ' + xp + ' XP.' : '') : 'The rot clears. Vee gains ' + xp + ' XP.'];
+      if (!boss && AREA.id === 'commons' && F.deeds && (F.commonsWins || 0) < 3) { F.commonsWins = (F.commonsWins || 0) + 1; lines.push('Deed: fairground cleared, ' + F.commonsWins + ' of 3.'); }
       if (Math.random() < .35 + n * .07) {   // bigger finds as Vee levels up
         var r2 = Math.random() * (40 + save.lvl * 6), tier = r2 < 40 ? 0 : r2 < 60 ? 1 : r2 < 75 ? 2 : r2 < 85 ? 3 : 4;
         tier = Math.min(tier, Math.floor(save.lvl / 3) + 1); var drop = ITEMS[tier];
         save.items[drop.id] = (save.items[drop.id] || 0) + 1; lines.push('The bug drops clean data: a ' + drop.name.toLowerCase() + '.');
       }
-      while (save.xp >= xpNeed()) {
-        save.xp -= xpNeed(); save.lvl++; save.hp = maxHp();
-        lines.push('LEVEL UP. Vee is now level ' + save.lvl + '. Max HP ' + maxHp() + '.');
-        var nc = nextCmd(); if (nc) { save.known.push(nc.cmd); lines.push('New command: ' + nc.cmd + '. ' + nc.learn, 'Bugs can now bring problems that need ' + nc.cmd + '.'); }
-      }
+      lines = lines.concat(gainXp(xp));
       lines.push('Next level in ' + (xpNeed() - save.xp) + ' XP.');
       store(); B.phase = 'done'; cmdBox.classList.remove('on'); hud.classList.remove('on'); closePrompt();
-      setTimeout(function () { say('', lines, null, endBattle); }, 600);
+      setTimeout(function () { say('', lines, null, function () { endBattle(); if (onWin) setTimeout(onWin, 80); }); }, 600);
     }
     function lose() {
       B.phase = 'done'; cmdBox.classList.remove('on'); hud.classList.remove('on'); closePrompt();
-      say('', ['Vee’s process halts.', 'Somewhere, a watchdog notices. He restarts at the spire.'], null, function () { save.hp = maxHp(); store(); me.x = 5; me.y = 4; me.px = me.x * TS; me.py = me.y * TS; me.dir = 'down'; endBattle(); });
+      say('', ['Vee’s process halts.', 'Somewhere, a watchdog notices. He restarts at the last place that mended him.'], null, function () { save.hp = maxHp(); store(); endBattle(); me.dir = 'down'; load(save.rest[0], save.rest[1], save.rest[2]); showArea(); });
     }
     function endBattle() { store(); B = null; closePrompt(); hud.classList.remove('on'); cmdBox.classList.remove('on'); titleEl.classList.remove('on'); mode = 'map'; me.safe = 5; }
 
     /* ---------- loop and drawing ---------- */
     var mode = 'map', raf = 0, last = 0, swirlT = 0, keys = {}, held = null;
     function drawMap() {
-      cx.drawImage(mapCanvas, 0, 0);
-      // NPC: a townsperson, drawn simply
-      var nx = npc.x * TS, ny = npc.y * TS;
       var tnow = performance.now() / 1000;
-      drawLive(tnow);
-      // Ada, a hologram on a light pad
-      cx.fillStyle = 'rgba(220,220,236,.25)'; cx.beginPath(); cx.ellipse(nx + 8, ny + 15, 7, 2.5, 0, 0, 7); cx.fill();
-      cx.globalAlpha = Math.random() < .06 ? .35 : .78;
-      cx.fillStyle = '#dcdce8'; cx.fillRect(nx + 5, ny + 1, 6, 6); cx.fillStyle = '#5a5a6a'; cx.fillRect(nx + 6, ny + 3, 1, 1); cx.fillRect(nx + 9, ny + 3, 1, 1);
-      cx.fillStyle = '#a8a8bc'; cx.fillRect(nx + 4, ny + 7, 8, 6); cx.fillRect(nx + 5, ny + 13, 2, 2); cx.fillRect(nx + 9, ny + 13, 2, 2);
-      cx.fillStyle = 'rgba(10,10,16,.5)'; for (var sl = 0; sl < 14; sl += 2) cx.fillRect(nx + 4, ny + 1 + sl, 8, 1);
-      cx.globalAlpha = 1;
-      // Vee, feet on the tile
-      var v = veeImg(), vx = me.px - 3, vy = me.py - 10 - (v.bob ? 1 : 0);
-      cx.fillStyle = 'rgba(220,220,236,.16)'; cx.beginPath(); cx.ellipse(me.px + 8, me.py + 15, 7, 2.5, 0, 0, 7); cx.fill();
-      drawSprite(v.img, vx, vy, v.flip);
-      drawDecay(tnow);
+      if (!me.moving || true) placeCam();
+      cx.fillStyle = '#000'; cx.fillRect(0, 0, W, H);
+      cx.drawImage(PAINTED.base, -cam.x, -cam.y - PAINTED.pad);
+      var st = { lights: PAINTED.lights, readLog: function (x, y) { var id = AREA.logs && AREA.logs[key(x, y)]; return id && F[id]; }, opened: function (x, y) { return save.opened[AREA.id + ':' + key(x, y)]; },
+        gateOpen: gateOpen, isLit: isLit, signal: lights() === 6 || !!F.ending, tether: F.ending === 'cut' ? 'cut' : F.ending === 'reverse' ? 'down' : 'up' };
+      ART.live(cx, AREA, MAP, tnow, cam, st, 'under');
+      // people, the wagon and Vee, nearest drawn last
+      var list = (AREA.npcs || []).map(function (n) { return { y: n.y, draw: function () { ART.person(cx, n.x * TS - cam.x, n.y * TS - cam.y, n, tnow); } }; });
+      var w = wagonAt(); if (w) list.push({ y: w[1], draw: function () { ART.wagon(cx, w[0] * TS - cam.x, w[1] * TS - cam.y, tnow); } });
+      list.push({ y: me.py / TS + .01, draw: function () {
+        var v = veeImg(), vx = me.px - 3 - cam.x, vy = me.py - 10 - (v.bob ? 1 : 0) - cam.y;
+        cx.fillStyle = 'rgba(0,0,0,.35)'; cx.beginPath(); cx.ellipse(me.px + 8 - cam.x, me.py + 15 - cam.y, 7, 2.5, 0, 0, 7); cx.fill();
+        drawSprite(v.img, vx, vy, v.flip);
+      } });
+      list.sort(function (a, b) { return a.y - b.y; }).forEach(function (o) { o.draw(); });
+      cx.drawImage(PAINTED.over, -cam.x, -cam.y - PAINTED.pad);
+      // behind a tall building, Vee shows through as a ghost so you never lose him
+      var vb = PAINTED.rises.some(function (r) { return me.px + 14 > r.x && me.px + 2 < r.x + r.w && me.py > r.y - 4 && me.py < r.y + r.h; });
+      if (vb) { var v2 = veeImg(); cx.save(); cx.globalAlpha = .55; drawSprite(v2.img, me.px - 3 - cam.x, me.py - 10 - (v2.bob ? 1 : 0) - cam.y, v2.flip); cx.restore(); }
+      ART.live(cx, AREA, MAP, tnow, cam, st, 'over');
+      drawScan();
+      if (fade) { var a = fade.t < .35 ? fade.t / .35 : Math.max(0, 1 - (fade.t - .35) / .35); cx.fillStyle = 'rgba(0,0,0,' + Math.min(1, a) + ')'; cx.fillRect(0, 0, W, H); }
+    }
+    // the Archive's map of the city
+    function drawAtlas() {
+      var tnow = performance.now() / 1000;
+      cx.fillStyle = '#050507'; cx.fillRect(0, 0, W, H);
+      cx.strokeStyle = 'rgba(200,200,214,.08)'; for (var gx = 0; gx < W; gx += 16) { cx.beginPath(); cx.moveTo(gx + .5, 0); cx.lineTo(gx + .5, H); cx.stroke(); } for (var gy = 0; gy < H; gy += 16) { cx.beginPath(); cx.moveTo(0, gy + .5); cx.lineTo(W, gy + .5); cx.stroke(); }
+      function pos(id) { var p = WD.atlas[id]; return [24 + p[0] * 48, 22 + p[1] * 40]; }
+      cx.strokeStyle = 'rgba(220,220,236,.45)'; WD.links.forEach(function (l) { var a = pos(l[0]), b = pos(l[1]); cx.beginPath(); cx.moveTo(a[0] + .5, a[1] + .5); cx.lineTo(b[0] + .5, b[1] + .5); cx.stroke(); });
+      var anchorAt = { plaza: ['spire', 'archive'], commons: ['ledger'], gardens: ['wagon'], undercroft: ['exit0'], bastion: ['keep'] };
+      Object.keys(WD.atlas).forEach(function (id) {
+        var p = pos(id), seen = save.seen[id], here = id === AREA.id, A2 = WD.areas[id];
+        cx.fillStyle = seen ? '#16161d' : '#0a0a0d'; cx.fillRect(p[0] - 18, p[1] - 9, 36, 18); cx.fillStyle = seen ? '#c0c0cc' : '#3a3a46'; cx.fillRect(p[0] - 18, p[1] - 9, 36, 1);
+        if (here && Math.floor(tnow * 3) % 2) { cx.strokeStyle = '#ffffff'; cx.strokeRect(p[0] - 19.5, p[1] - 10.5, 39, 21); }
+        var nm = seen ? A2.name.replace(/^The /, '').replace('Meridian ', '').replace('Lift ', '').toUpperCase() : '???';
+        ART.text(cx, nm.slice(0, 8), Math.round(p[0] - ART.textW(nm.slice(0, 8)) / 2), p[1] - 5, seen ? '#ececf4' : '#4a4a56');
+        (anchorAt[id] || []).forEach(function (a, i) { var on = isLit(a); cx.fillStyle = on ? '#ffffff' : '#3a3a46'; cx.fillRect(p[0] - 4 + i * 6, p[1] + 3, 4, 4); if (on) { cx.fillStyle = 'rgba(255,255,255,.2)'; cx.fillRect(p[0] - 5 + i * 6, p[1] + 2, 6, 6); } });
+      });
+      ART.text(cx, 'MERIDIAN', 8, 6, '#ffffff', 2);
+      ART.text(cx, 'LANDMARKS ' + lights() + ' OF 6', 8, H - 22, '#c0c0cc'); ART.text(cx, 'PRESS ANY KEY', 8, H - 12, Math.floor(tnow * 2) % 2 ? '#ffffff' : '#6a6a76');
       drawScan();
     }
     function drawBattle(dt) {
-      var tt = performance.now() / 1000, hy = 64, gy2 = 126;   // horizon, and where the menus begin
-      var g = cx.createLinearGradient(0, 0, 0, hy); g.addColorStop(0, '#040406'); g.addColorStop(1, '#1e1e27'); cx.fillStyle = g; cx.fillRect(0, 0, W, hy);
-      for (var s3 = 0; s3 < 22; s3++) { cx.fillStyle = 'rgba(236,236,246,' + (.15 + hs(s3) * .4) + ')'; cx.fillRect(Math.floor(hs(s3 * 3) * W), Math.floor(hs(s3 * 7) * (hy - 30)), 1, 1); }
-      for (var sk = 0; sk < 16; sk++) {   // the distant skyline: tall and beautiful, many towers dark
-        var bw = 8 + hs(sk * 3) * 12, bh = 16 + hs(sk * 7) * 34, bx2 = sk * 21 - 4, lit = hs(sk * 11) > .45;
-        cx.fillStyle = '#101017'; cx.fillRect(bx2, hy - bh, bw, bh); cx.fillStyle = lit ? 'rgba(220,220,236,.45)' : 'rgba(80,80,92,.3)'; cx.fillRect(bx2, hy - bh, 1, bh);
-        if (lit) for (var wy2 = hy - bh + 3; wy2 < hy - 3; wy2 += 4) if (hs(sk * 13 + wy2) > .6) { cx.fillStyle = 'rgba(230,230,242,.4)'; cx.fillRect(bx2 + 3, wy2, 1, 1); }
-      }
-      var ax = W * .7 + ((tt * 3) % 80), ay = 14 - ((tt * .8) % 10);   // the Lift, rising Upstream
-      cx.fillStyle = 'rgba(240,240,248,.85)'; cx.fillRect(Math.floor(ax), Math.floor(ay), 6, 2); cx.fillStyle = 'rgba(240,240,248,.25)'; cx.fillRect(Math.floor(ax) - 9, Math.floor(ay) + 1, 9, 1);
-      var fg = cx.createLinearGradient(0, hy, 0, H); fg.addColorStop(0, '#16161d'); fg.addColorStop(1, '#0a0a0e'); cx.fillStyle = fg; cx.fillRect(0, hy, W, H - hy);
-      cx.fillStyle = 'rgba(236,236,246,.55)'; cx.fillRect(0, hy, W, 1);
-      for (var j = -18; j <= 18; j++) { cx.strokeStyle = 'rgba(220,220,236,' + (.16 - Math.abs(j) * .006) + ')'; cx.beginPath(); cx.moveTo(W / 2 + j * 9 + .5, hy); cx.lineTo(W / 2 + j * 34 + .5, H); cx.stroke(); }
-      for (var q = 0; q < 9; q++) { var z = (q + (tt * .25) % 1) / 9, yz = Math.floor(hy + (H - hy) * z * z) + .5; cx.strokeStyle = 'rgba(220,220,236,' + (.04 + z * .2) + ')'; cx.beginPath(); cx.moveTo(0, yz); cx.lineTo(W, yz); cx.stroke(); }
-      // cracks in the floor: the decline reaches here too
-      cx.fillStyle = '#050507'; [[60, 80, 14], [180, 96, 10], [130, 118, 18], [228, 84, 8]].forEach(function (c3) { cx.fillRect(c3[0], c3[1], c3[2], 1); cx.fillRect(c3[0] + 3, c3[1] + 1, Math.floor(c3[2] / 2), 1); });
+      var tt = performance.now() / 1000, hy = 64;
+      ART.backdrop(cx, (B && B.theme) || (AREA && AREA.theme) || 'plaza', tt, W, H, hy);
       if (!B) return;
       B.t += dt; B.vx = Math.max(0, B.vx - dt * 2.5); B.hurt = Math.max(0, (B.hurt || 0) - dt * 3); B.cast = Math.max(0, B.cast - dt * 2);
       // the bugs, on the left, turned to face Vee; nearer rows drawn last
@@ -597,27 +633,37 @@
       if (swirlT > .8) { mode = 'battle'; B.phase = 'intro'; hudOn(); log('The rot takes shape: ' + groupName() + '.'); setTimeout(myTurn, 1100); }
     }
     function update(dt) {
-      if (mode !== 'map' || talking) return;
+      if (fade) {
+        fade.t += dt;
+        if (!fade.swapped && fade.t >= .35) { fade.swapped = true; load(fade.to[0], fade.to[1], fade.to[2]); }
+        if (fade.t >= .7) { fade = null; showArea(); }
+        return;
+      }
+      if (mode !== 'map' || talking || PZ) return;
       if (me.moving) {
         var tx = me.x * TS, ty = me.y * TS, sp = 70 * dt;
         me.px += Math.sign(tx - me.px) * Math.min(sp, Math.abs(tx - me.px)); me.py += Math.sign(ty - me.py) * Math.min(sp, Math.abs(ty - me.py)); me.step++;
         if (me.px === tx && me.py === ty) {
-          me.moving = false; me.steps++;
-          if (tile(me.x, me.y) === '>') { me.x--; me.moving = true; say('', ['The east districts are walled off. Four landmarks are somewhere past the dark.']); return; }
-          if (tile(me.x, me.y) === ',' && --me.safe <= 0 && Math.random() < .16) { startBattle(); return; }
+          me.moving = false; me.steps++; save.x = me.x; save.y = me.y; if (me.steps % 6 === 0) store();
+          var k = key(me.x, me.y), ex = AREA.exits && AREA.exits[k], gt = AREA.gates && AREA.gates[k];
+          if (ex) return travel(ex);
+          if (gt && gateOpen(me.x, me.y)) return travel(gt.to);
+          if (WD.steps[AREA.id]) { WD.steps[AREA.id](G, me.x, me.y); if (talking) return; }
+          var enc = AREA.enc;
+          if (enc && enc.tiles.indexOf(tile(me.x, me.y)) >= 0 && --me.safe <= 0 && Math.random() < enc.rate) { startBattle(); return; }
         }
       }
       if (!me.moving && held) tryMove(held);
     }
     function tryMove(d) {
       me.dir = d; var v = { up: [0, -1], down: [0, 1], left: [-1, 0], right: [1, 0] }[d], nx = me.x + v[0], ny = me.y + v[1];
-      if (solid(nx, ny) || (nx === npc.x && ny === npc.y)) return;
+      if (blocked(nx, ny)) return;
       me.x = nx; me.y = ny; me.moving = true;
     }
     function loop(ts) {
       var dt = Math.min(.05, (ts - (last || ts)) / 1000); last = ts;
       update(dt);
-      if (mode === 'map') drawMap(); else if (mode === 'swirl') drawSwirl(dt); else drawBattle(dt);
+      if (mode === 'map') drawMap(); else if (mode === 'atlas') drawAtlas(); else if (mode === 'swirl') drawSwirl(dt); else drawBattle(dt);
       raf = requestAnimationFrame(loop);
     }
 
@@ -641,11 +687,14 @@
         else if (k === 'b' && B.menu !== 'main') menu('main');
         return;
       }
-      if (mode === 'map') { if (k === 'a') interact(); else if (k !== 'b') held = k; }
+      if (mode === 'atlas') { mode = 'map'; return; }
+      if (fade || PZ) return;
+      if (mode === 'map') { if (k === 'a') interact(); else if (k === 'b') status(); else held = k; }
     }
     function release(k) { if (held === k) held = null; }
     document.addEventListener('keydown', function (e) {
       if (!root.classList.contains('open')) return;
+      if (PZ) { if (e.key === 'Escape') { e.preventDefault(); cancelPuzzle(); } e.stopPropagation(); return; }
       if (B && B.phase === 'type') { if (e.key === 'Escape') { e.preventDefault(); cancelTarget(); } e.stopPropagation(); return; }
       if (e.key === 'Escape') { if (B && B.phase === 'target') cancelTarget(); else if (B && B.menu && B.menu !== 'main' && B.phase === 'menu') menu('main'); else close(); return; }
       var k = KEYMAP[e.key] || (e.key === 'Enter' || e.key === ' ' || e.key === 'z' || e.key === 'Z' ? 'a' : e.key === 'x' || e.key === 'X' || e.key === 'Backspace' ? 'b' : null);
@@ -666,9 +715,10 @@
       opener = document.activeElement; root.classList.add('open'); document.body.style.overflow = 'hidden';
       requestAnimationFrame(function () { root.classList.add('show'); });
       cancelAnimationFrame(raf); last = 0; raf = requestAnimationFrame(loop);
+      if (!AREA) load(save.area, save.x, save.y);
       if (mode === 'map' && !talking) {
-        if (!save.met) { save.met = true; store(); say('', ['Meridian was built to be the most beautiful place on the network. For a while, it was.', 'Then the people who owned it took the Lift Upstream, to a newer world, and stopped paying for this one.', 'Nothing broken was ever fixed again. The rot set in. Last night, the signal at the heart of the city went quiet.', 'You are Vee, a maintenance process nobody remembered to shut down. You know one command so far: whoami. You will learn more. ' + (coarse ? 'Use the pad to move and A to talk.' : 'Arrow keys to move. Enter or Z to talk.')]); }
-        else say('', ['Vee reconnects. Meridian is still here, for now. Level ' + save.lvl + '.']);
+        if (!save.met) { save.met = true; store(); say('', ['Meridian was built to be the most beautiful place on the network. Two million people lived here. For a while, it was everything it promised.', 'Then the people who owned it built a newer world, Upstream, and took the Lift. Forty thousand seats. They stopped paying for this one.', 'Nothing broken was ever fixed again. The rot set in. District by district, the city has been going dark. Last night, the signal at its heart went quiet.', 'You are Vee, a maintenance process nobody remembered to shut down. You know one command so far: whoami. You will learn more.', coarse ? 'Use the pad to move, A to talk and B for status.' : 'Arrow keys to move. Enter or Z to talk. X for status.'], null, showArea); }
+        else { showArea(); say('', ['Vee reconnects. ' + AREA.name + '. Level ' + save.lvl + '.']); }
       }
       root.querySelector('.rpg-x').focus({ preventScroll: true });
     }
@@ -677,7 +727,7 @@
       setTimeout(function () { if (!root.classList.contains('show')) { root.classList.remove('open'); cancelAnimationFrame(raf); } }, 400);
       if (opener && opener.focus) opener.focus({ preventScroll: true });
     }
-    window.__quest = { battle: function (n) { startBattle(n); }, state: function () { return { mode: mode, B: B, me: me, talking: !!talking, save: save }; }, press: press, release: release, advance: advance };
+    window.__quest = { battle: function (n) { startBattle(n); }, boss: function (id) { startBattle({ boss: id }); }, go: function (id, x, y) { if (!AREA) load(id, x, y); else travel([id, x, y]); }, state: function () { return { mode: mode, B: B, me: me, talking: !!talking, save: save, area: AREA && AREA.id, PZ: PZ, map: MAP }; }, press: press, release: release, advance: advance, interact: function () { interact(); }, face: function (d) { me.dir = d; }, puzzle: function (v) { submitPuzzle(v); } };
     return { open: open, close: close };
   })();
 })();
