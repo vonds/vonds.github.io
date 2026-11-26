@@ -939,9 +939,39 @@
       if (cur) place(cur.x, cur.y, cur.side);
     }
     // o: { id, dark, pose, x, y, side, enter: 'drop'|'rise'|'pop', rope, mirror, text, actions }
+    // walking on or off screen: run frames timed to the distance covered, facing the way he moves
+    var walkRaf = 0;
+    function walk(fromX, toX, y, dark, done) {
+      cancelAnimationFrame(walkRaf);
+      var t0 = 0, dur = Math.min(1.25, .45 + Math.abs(toX - fromX) / 900), faceLeft = toX < fromX, lastF = '';
+      el.classList.toggle('flip', faceLeft);
+      (function stepW(ts) {
+        if (!t0) t0 = ts;
+        var u = Math.min(1, (ts - t0) / 1000 / dur), e = done.out ? u * u : 1 - Math.pow(1 - u, 2.2), x = fromX + (toX - fromX) * e;
+        var f = 'run' + (Math.floor(Math.abs(x - fromX) / (3.4 * S)) % 4);
+        if (f !== lastF) { render(f, dark); lastF = f; }
+        body.style.transform = 'translate3d(' + Math.round(x) + 'px,' + Math.round(y) + 'px,0)';
+        if (u < 1) walkRaf = requestAnimationFrame(stepW); else done();
+      })(performance.now());
+    }
     function show(o) {
-      clearTimeout(hideT); scale(); cur = o;
-      el.className = 'gguide on ' + (o.dark ? 'dark ' : 'light ') + 'e-' + (o.enter || 'pop') + (o.mirror ? ' flip' : '');
+      clearTimeout(hideT); cancelAnimationFrame(walkRaf); scale();
+      var continuing = cur && o.enter === 'stay'; cur = o;
+      if (o.enter === 'walk') {
+        // always arrive from off screen, on the side he is standing nearest to
+        var fromRight = o.from ? o.from === 'right' : o.x + GW * S / 2 > innerWidth / 2;
+        el.className = 'gguide on in walking e-walk ' + (o.dark ? 'dark' : 'light');
+        rope.style.display = 'none';
+        say(o.text, o.actions); place(o.x, o.y, o.side);
+        var arrive = function () {
+          if (cur !== o) return;
+          render(o.pose || 'ghold', o.dark); el.classList.toggle('flip', !!o.mirror);
+          el.classList.remove('walking'); say(o.text, o.actions); place(o.x, o.y, o.side);
+        };
+        walk(fromRight ? innerWidth + 8 : -GW * S - 8, o.x, o.y, o.dark, arrive);
+        return;
+      }
+      el.className = 'gguide on ' + (o.dark ? 'dark ' : 'light ') + 'e-' + (o.enter || 'pop') + (o.mirror ? ' flip' : '') + (continuing ? ' in' : '');
       render(o.pose || 'ghold', o.dark);
       rope.style.display = o.rope ? 'block' : 'none';
       if (o.rope) { rope.style.left = Math.round(o.x + (o.mirror ? GW - 20 : 20) * S) + 'px'; rope.style.height = Math.round(o.y + (OY + 2) * S) + 'px'; }
@@ -956,6 +986,14 @@
     }
     function hide(exit) {
       if (!cur) return; var was = cur; cur = null;
+      if (exit === 'walk') {
+        // walk back off screen toward the nearest edge
+        el.classList.add('walking');
+        var toRight = was.x + GW * S / 2 > innerWidth / 2, fin = function () { if (!cur) el.className = 'gguide'; };
+        fin.out = true;
+        walk(was.x, toRight ? innerWidth + 8 : -GW * S - 8, was.y, was.dark, fin);
+        return was;
+      }
       el.classList.remove('in'); el.classList.add('x-' + (exit || 'fade'));
       hideT = setTimeout(function () { if (!cur) el.className = 'gguide'; }, 650);
       return was;
@@ -1067,16 +1105,16 @@
     function tourStep() {
       var st2 = steps[stepI], p = termSpot();
       phoneTour(true); p = termSpot();
-      show({ id: 'tour', dark: true, pose: st2.pose, x: p.x, y: p.y, side: p.side, mirror: p.mirror, enter: cur && cur.id === 'tour' ? 'stay' : 'pop', avoid: function () { return T2.win.getBoundingClientRect(); },
+      show({ id: 'tour', dark: true, pose: st2.pose, x: p.x, y: p.y, side: p.side, mirror: p.mirror, enter: cur && cur.id === 'tour' ? 'stay' : 'walk', avoid: function () { return T2.win.getBoundingClientRect(); },
         text: '<span class="step">' + (stepI + 1) + ' of ' + steps.length + '</span>' + st2.text,
-        actions: [{ label: 'End tour', quiet: true, fn: function () { touring = false; store.set(TOUR, 'skipped'); hide('fade'); phoneTour(false); T2.input.focus(); } }] });
+        actions: [{ label: 'End tour', quiet: true, fn: function () { touring = false; store.set(TOUR, 'skipped'); hide('walk'); phoneTour(false); T2.input.focus(); } }] });
     }
     function startTour() { touring = true; stepI = 0; store.set(TOUR, 'started'); tourStep(); }
     function offerInTerm() {
       phoneTour(true); var p = termSpot();
-      show({ id: 'tour', dark: true, pose: 'ghold', avoid: function () { return T2.win.getBoundingClientRect(); }, x: p.x, y: p.y, side: p.side, mirror: p.mirror, enter: 'pop',
+      show({ id: 'tour', dark: true, pose: 'ghold', avoid: function () { return T2.win.getBoundingClientRect(); }, x: p.x, y: p.y, side: p.side, mirror: p.mirror, enter: 'walk',
         text: 'First time in here? I can show you around in four quick steps.',
-        actions: [{ label: 'Show me', fn: function () { startTour(); T2.input.focus(); } }, { label: 'I’m good', quiet: true, fn: function () { store.set(TOUR, 'skipped'); hide('fade'); phoneTour(false); T2.input.focus(); } }] });
+        actions: [{ label: 'Show me', fn: function () { startTour(); T2.input.focus(); } }, { label: 'I’m good', quiet: true, fn: function () { store.set(TOUR, 'skipped'); hide('walk'); phoneTour(false); T2.input.focus(); } }] });
     }
     if (T2) {
       document.addEventListener('xp-term', function (e) {
@@ -1085,11 +1123,11 @@
           var state = store.get(TOUR);
           if (touring) setTimeout(tourStep, 260);
           else if (state !== 'done' && state !== 'skipped') setTimeout(offerInTerm, 380);
-        } else if (d.type === 'close') { phoneTour(false); if (api.active() === 'tour' || api.active() === 'footer') hide('fade'); }
+        } else if (d.type === 'close') { phoneTour(false); if (api.active() === 'tour' || api.active() === 'footer') hide('walk'); }
         else if (d.type === 'cmd' && touring) {
           if (steps[stepI].want(d)) {
             stepI++;
-            if (stepI >= steps.length) { touring = false; store.set(TOUR, 'done'); hide('fade'); phoneTour(false); return; }
+            if (stepI >= steps.length) { touring = false; store.set(TOUR, 'done'); hide('walk'); phoneTour(false); return; }
             hop(function () { if (touring) tourStep(); });
           }
         }
@@ -1108,15 +1146,15 @@
             setTimeout(function () {
               if (api.active() || T2.isOpen()) return;
               var sz = api.size(), phone = innerWidth < 640;
-              show({ id: 'footer', dark: false, pose: 'ghold', x: innerWidth - sz.w - (phone ? 56 : 84), y: innerHeight - sz.h - (phone ? 10 : 22), side: phone ? 'above' : 'left', mirror: true, enter: 'rise',
+              show({ id: 'footer', dark: false, pose: 'ghold', x: innerWidth - sz.w - (phone ? 56 : 84), y: innerHeight - sz.h - (phone ? 10 : 22), side: phone ? 'above' : 'left', mirror: true, enter: 'walk', from: 'right',
                 text: '<strong>Wait!</strong> Let me show you something before you go!' + (phone ? '' : ' <span class="tip">This site has a hidden terminal. You can also press <code>`</code> anytime.</span>'),
-                actions: [{ label: 'Show me', fn: function () { hide('fade'); setTimeout(function () { touring = true; stepI = 0; store.set(TOUR, 'started'); T2.open(); }, 200); } },
-                          { label: 'Not now', quiet: true, fn: function () { hide('down'); } }] });
-              setTimeout(function () { if (api.active() === 'footer') hide('down'); }, 14000);
+                actions: [{ label: 'Show me', fn: function () { hide('walk'); setTimeout(function () { touring = true; stepI = 0; store.set(TOUR, 'started'); T2.open(); }, 200); } },
+                          { label: 'Not now', quiet: true, fn: function () { hide('walk'); } }] });
+              setTimeout(function () { if (api.active() === 'footer') hide('walk'); }, 14000);
             }, 700);
           });
         }, { threshold: .6 }).observe(foot);
-        window.addEventListener('scroll', function () { if (api.active() === 'footer' && foot.getBoundingClientRect().top > innerHeight) hide('down'); }, { passive: true });
+        window.addEventListener('scroll', function () { if (api.active() === 'footer' && foot.getBoundingClientRect().top > innerHeight) hide('walk'); }, { passive: true });
       }
     }
   })();
