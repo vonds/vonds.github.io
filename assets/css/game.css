@@ -48,6 +48,9 @@
 .gguide.e-drop canvas{transform:translateY(-120px)}.gguide.e-drop.flip canvas{transform:translateY(-120px) scaleX(-1)}
 .gguide.e-rise canvas{transform:translateY(40px)}.gguide.e-rise.flip canvas{transform:translateY(40px) scaleX(-1)}
 .gguide.e-stay canvas{transition:none}
+.gguide.e-walk canvas{opacity:1;transform:none;transition:none;animation:none}
+.gguide.e-walk.flip canvas{transform:scaleX(-1)}
+.gguide.walking .gtalk{opacity:0!important;pointer-events:none;transition:opacity .15s ease}
 .gguide.x-up canvas{opacity:0;transform:translateY(-140px);transition:transform .5s cubic-bezier(.5,0,.75,0),opacity .45s ease .05s}
 .gguide.x-down canvas{opacity:0;transform:translateY(40px);transition:transform .45s cubic-bezier(.5,0,.75,0),opacity .4s ease}
 .gguide.x-fade canvas{opacity:0;transition:opacity .3s ease}
