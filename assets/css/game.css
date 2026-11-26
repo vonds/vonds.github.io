@@ -1,3 +1,5 @@
+/* Press Start 2P (SIL Open Font License, see assets/fonts) for Vee's text boxes */
+@font-face{font-family:'Press Start 2P';src:url('../fonts/press-start-2p.woff2') format('woff2');font-weight:400;font-style:normal;font-display:swap}
 /* hidden game overlay (opened from the hero logo) */
 .gm{position:fixed;inset:0;z-index:2147483000;font-family:Dosis,system-ui,sans-serif;display:none;align-items:center;justify-content:center;background:rgba(6,6,7,0);transition:background .5s ease}
 .gm.open{display:flex}
@@ -111,3 +113,37 @@
 /* Vee hanging upside down in Step inside */
 .vhang{position:fixed;left:50%;top:0;z-index:2600;pointer-events:none;image-rendering:pixelated;display:none;will-change:transform}
 .vhang.on{display:block}
+
+/* Vee's tour: the line to type in glows, and the stick tip pulses where it touches */
+.xp-term form.vee-target{position:relative;box-shadow:inset 0 0 0 1px rgba(255,255,255,.35);animation:veeLine 1.8s ease-in-out infinite}
+@keyframes veeLine{0%,100%{background:rgba(255,255,255,.02)}50%{background:rgba(255,255,255,.09)}}
+.gguide .gtip{position:absolute;width:10px;height:10px;margin:-5px 0 0 -5px;border-radius:50%;background:#fff;box-shadow:0 0 12px 3px rgba(255,255,255,.7);opacity:0;pointer-events:none}
+.gguide .gtip.on{animation:veeTip 1.4s ease-out infinite}
+.gguide:not(.in) .gtip,.gguide.walking .gtip{display:none}
+@keyframes veeTip{0%{opacity:.95;transform:scale(.5)}70%{opacity:0;transform:scale(2.4)}100%{opacity:0;transform:scale(2.4)}}
+
+/* ---------- Vee's text boxes: a Final Fantasy IV style window, in grayscale ---------- */
+.gguide .gtalk,.vtalk{
+  background:linear-gradient(180deg,#55555c 0%,#2c2c31 42%,#111114 100%)!important;color:#fff!important;
+  border:3px solid #ececf2!important;border-radius:8px;
+  box-shadow:0 0 0 2px #11131f,inset 0 0 0 1px #9a9aa2,5px 6px 0 rgba(0,0,0,.28)!important;
+  font:400 10px/2 'Press Start 2P',ui-monospace,monospace!important;letter-spacing:0!important;text-shadow:1px 1px 0 rgba(0,0,0,.55);
+  -webkit-backdrop-filter:none!important;backdrop-filter:none!important;padding:14px 16px 13px!important}
+.gguide .gwho,.vtalk b{display:block;margin:0 0 8px;font:400 9px/1 'Press Start 2P',monospace!important;letter-spacing:.08em!important;color:#c6c6cc!important;text-transform:none}
+.gguide .gtalk strong,.gguide .gtalk strong.wait{font:400 12px/1.7 'Press Start 2P',monospace!important;letter-spacing:0!important}
+.gguide .gtalk code{font:400 10px/1 'Press Start 2P',monospace!important;background:rgba(0,0,10,.35)!important;color:#fff!important;padding:3px 5px}
+.gguide .gtalk .tip{font-size:8px;line-height:1.9;color:#c6c6cc;opacity:1}
+.gguide .gtalk .step{font:400 8px/1 'Press Start 2P',monospace!important;letter-spacing:.06em!important;color:#c6c6cc;opacity:1}
+.gguide .gacts{gap:10px;margin-top:14px;flex-wrap:wrap}
+.gguide .gacts button,.gguide.light .gacts button,.gguide.dark .gacts button{
+  font:400 9px/1 'Press Start 2P',monospace!important;letter-spacing:0!important;text-transform:none!important;
+  background:rgba(0,0,20,.25)!important;color:#fff!important;border:2px solid #ececf2!important;border-radius:5px;padding:9px 11px!important;text-shadow:1px 1px 0 rgba(0,0,0,.5)}
+.gguide .gacts button:hover,.gguide .gacts button:focus-visible{background:rgba(255,255,255,.18)!important;outline:none}
+.gguide .gacts button.q,.gguide.light .gacts button.q,.gguide.dark .gacts button.q{border-color:transparent!important;background:transparent!important;color:#c6c6cc!important}
+.gguide .gacts button.q:hover{color:#fff!important}
+.gguide .gacts button.cmd::before{content:"$ ";opacity:.7}
+.gguide .gtalk .tw-hide{visibility:hidden}
+@media (max-width:640px){.gguide .gtalk,.vtalk{font-size:9px!important;padding:12px 13px 11px!important}.gguide .gtalk strong.wait{font-size:11px!important}}
+/* Step inside: the box under hanging Vee */
+.vtalk{position:fixed;left:50%;top:0;z-index:2600;pointer-events:none;white-space:nowrap;opacity:0;transform:translate(-50%,6px);transition:opacity .25s ease,transform .35s cubic-bezier(.16,1,.3,1)}
+.vtalk.on{opacity:1;transform:translate(-50%,0)}

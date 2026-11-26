@@ -969,7 +969,7 @@
     function place(x, y, side) {
       body.style.transform = 'translate3d(' + Math.round(x) + 'px,' + Math.round(y) + 'px,0)';
       var w = GW * S, h = GH * S, tw = talk.offsetWidth, th = talk.offsetHeight, tx, ty;
-      if (side === 'right') { tx = x + w * .78; ty = y + h * .22; }
+      if (side === 'right') { tx = x + w * (cur && cur.pose === 'greach' ? .97 : .78); ty = y + h * .22; }
       else if (side === 'left') { tx = x + w * .2 - tw; ty = y + h * .2; }
       else if (side === 'above') { tx = x + w / 2 - tw / 2; ty = y - th + h * .1; }
       else { tx = x + w / 2 - tw / 2; ty = y + h * .95; }
@@ -982,8 +982,16 @@
       talk.style.transform = 'translate3d(' + Math.round(tx) + 'px,' + Math.round(ty) + 'px,0)';
       talk.setAttribute('data-side', side);
     }
-    function say(html, actions) {
+    var twTimer = 0;
+    function typewrite(node, speed) {
+      clearInterval(twTimer);
+      var chars = [];
+      (function walk(n) { for (var c = n.firstChild; c; c = c.nextSibling) { if (c.nodeType === 3) { var t = c.textContent, sp = document.createElement('span'); sp.className = 'tw'; c.parentNode.replaceChild(sp, c); for (var i = 0; i < t.length; i++) { var ch = document.createElement('span'); ch.className = 'tw-hide'; ch.textContent = t[i]; sp.appendChild(ch); chars.push(ch); } c = sp; } else walk(c); } })(node);
+      var i = 0; twTimer = setInterval(function () { for (var k = 0; k < 2 && i < chars.length; k++) chars[i++].className = ''; if (i >= chars.length) clearInterval(twTimer); }, speed || 22);
+    }
+    function say(html, actions, noType) {
       txt.innerHTML = html; acts.innerHTML = '';
+      if (!noType && !reduce) typewrite(txt);
       (actions || []).forEach(function (a) {
         var b = document.createElement('button'); b.type = 'button'; b.textContent = a.label; if (a.quiet) b.className = 'q'; if (a.code) { b.className = 'cmd'; b.setAttribute('aria-label', 'Run ' + a.label); }
         b.addEventListener('click', function (e) { e.stopPropagation(); a.fn(); }); acts.appendChild(b);
@@ -1094,6 +1102,8 @@
         return (hangCache[key] = c);
       };
       var hv = document.createElement('canvas'); hv.className = 'vhang'; hv.setAttribute('aria-hidden', 'true'); document.body.appendChild(hv);
+      var vt = document.createElement('div'); vt.className = 'vtalk'; vt.setAttribute('role', 'status'); vt.innerHTML = '<b>Vee</b><span>Scroll down</span>'; document.body.appendChild(vt);
+      var vtShown = false;
       var hg = hv.getContext('2d'), hS = 4, hR = 1, hT0 = 0, hRaf = 0, hOut = 0, hOn = false, hLast = '';
       var hangSize = function () { hR = Math.min(3, window.devicePixelRatio || 1); hS = innerWidth < 640 ? 3 : 4; hv.width = Math.round(HW * hS * hR); hv.height = Math.round(HH * hS * hR); hv.style.width = HW * hS + 'px'; hv.style.height = HH * hS + 'px'; hLast = ''; };
       var hangFrame = function (ts) {
@@ -1109,13 +1119,15 @@
         if (hOut) { var u = Math.min(1, (ts - hOut) / 420); y -= u * u * (HH * hS); if (u >= 1) { hangStop(); return; } }
         var key = arm + sway;
         if (key !== hLast) { hLast = key; hg.setTransform(1, 0, 0, 1, 0, 0); hg.clearRect(0, 0, hv.width, hv.height); hg.imageSmoothingEnabled = false; hg.drawImage(hangImg(arm, sway), 0, 0, hv.width, hv.height); }
+        if (!hOut && t > 1.25 && !vtShown) { vtShown = true; vt.style.top = Math.round((HH - HIDE - 1) * hS + 10) + 'px'; vt.classList.add('on'); typewrite(vt.querySelector('span'), 45); }
+        if (hOut && vtShown) { vtShown = false; vt.classList.remove('on'); }
         hv.style.transformOrigin = '50% ' + (HIDE * hS) + 'px';
         hv.style.transform = 'translate3d(-50%,' + Math.round(-HIDE * hS + y) + 'px,0) rotate(' + rot.toFixed(2) + 'deg)';
         hRaf = requestAnimationFrame(hangFrame);
       };
       var hangShow = function () { hangSize(); hT0 = 0; hOut = 0; hOn = true; hv.classList.add('on'); cancelAnimationFrame(hRaf); hRaf = requestAnimationFrame(hangFrame); };
       var hangLeave = function () { if (hOn && !hOut) hOut = performance.now(); };
-      var hangStop = function () { cancelAnimationFrame(hRaf); hOn = false; hOut = 0; hv.classList.remove('on'); };
+      var hangStop = function () { cancelAnimationFrame(hRaf); hOn = false; hOut = 0; hv.classList.remove('on'); vt.classList.remove('on'); vtShown = false; };
 
       var openAt = 0, lastMove = 0, lastY = 0, shown = 0, scrolledAny = false, tick = 0;
       function atEnd() { var e = ff.querySelector('.ffend'); return e ? e.getBoundingClientRect().top < innerHeight * .9 : false; }
@@ -1148,6 +1160,8 @@
     ];
     STICK.gup = [[15, 11], [15, 10], [16, 9], [16, 8], [16, 7], [16, 6], [17, 5], [17, 4], [17, 3], [17, 2], [17, 1], [18, 0], [18, -1], [18, -2], [18, -3], [18, -4]];
     POSE.gup = { bl: 'down', fl: 'down', ba: 'mid', fa: 'up', bob: 0, sway: 0 };
+    STICK.greach = [[20, 10], [21, 9], [21, 8], [22, 7], [22, 6], [23, 5], [23, 4], [24, 3], [24, 2], [25, 1], [25, 0], [26, -1], [26, -2], [27, -3], [27, -4]];
+    POSE.greach = { bl: 'down', fl: 'down', ba: 'mid', fa: 'point', bob: 0, sway: 0 };
     var stepI = 0, touring = false;
     // compact layout when there isn't room beside the terminal (phones, small windows): terminal up top, Vee below it
     function compact() { var sz = api.size(); return innerWidth < 640 || coarse && innerWidth < 900 || T2.win.getBoundingClientRect().left < sz.w * .95 + 16; }
@@ -1160,19 +1174,27 @@
       var f = T2.form.getBoundingClientRect(), w = T2.win.getBoundingClientRect();
       if (!compact()) {
         var tx = w.left + 14, ty = f.top + f.height / 2;
-        return { x: tx - (OX + 29.5) * S, y: ty - (OY + 6.5) * S, side: 'above', mirror: false, pose: 'gpoint' };
+        return { x: tx - (OX + 29.5) * S, y: ty - (OY + 6.5) * S, side: 'above', mirror: false, pose: 'gpoint', tipX: tx, tipY: ty };
       }
-      var tx2 = f.left + 26, ty2 = w.bottom + 2;
-      return { x: tx2 - 12.5 * S, y: ty2 - (OY - 4 + .5) * S, side: 'right', mirror: true, pose: 'gup' };
+      var tx2 = Math.min(f.left + 104, w.right - 40), ty2 = f.bottom - 5;
+      return { x: tx2 - (OX + 27.5) * S, y: ty2 - (OY - 4 + .5) * S, side: 'right', mirror: false, pose: 'greach', tipX: tx2, tipY: ty2 };
     }
     var runFor = function (cmd) { T2.run(cmd); };
+    var tipEl = document.createElement('i'); tipEl.className = 'gtip'; el.appendChild(tipEl);
+    function target(p) {
+      T2.form.classList.toggle('vee-target', !!p);
+      if (!p) { tipEl.classList.remove('on'); return; }
+      tipEl.style.left = Math.round(p.tipX) + 'px'; tipEl.style.top = Math.round(p.tipY) + 'px';
+      setTimeout(function () { if (api.active() === 'tour') tipEl.classList.add('on'); }, 900);
+    }
     function tourStep() {
       var st2 = steps[stepI]; phoneTour(true);
       var p = termSpot(), small = compact();
+      target(p);
       show({ id: 'tour', dark: true, pose: p.pose, x: p.x, y: p.y, side: p.side, mirror: p.mirror, enter: cur && cur.id === 'tour' ? 'stay' : 'walk', avoid: function () { return T2.win.getBoundingClientRect(); },
         text: '<span class="step">' + (stepI + 1) + ' of ' + steps.length + '</span>' + (small ? st2.tap : st2.text),
         actions: [{ label: st2.cmd, code: true, fn: function () { runFor(st2.cmd); } },
-                  { label: 'End tour', quiet: true, fn: function () { touring = false; store.set(TOUR, 'skipped'); hide('walk'); phoneTour(false); if (!coarse) T2.input.focus(); } }] });
+                  { label: 'End tour', quiet: true, fn: function () { touring = false; store.set(TOUR, 'skipped'); hide('walk'); phoneTour(false); target(null); if (!coarse) T2.input.focus(); } }] });
     }
     function startTour() { touring = true; stepI = 0; store.set(TOUR, 'started'); tourStep(); }
     function offerInTerm() {
@@ -1180,7 +1202,7 @@
       if (coarse) T2.input.blur();   // keep the phone keyboard out of the way
       show({ id: 'tour', dark: true, pose: 'ghold', avoid: function () { return T2.win.getBoundingClientRect(); }, x: p.x, y: p.y, side: p.side, mirror: p.mirror, enter: 'walk',
         text: 'First time in here? I can show you around in four quick steps.',
-        actions: [{ label: 'Show me', fn: function () { startTour(); if (!coarse) T2.input.focus(); } }, { label: 'I’m good', quiet: true, fn: function () { store.set(TOUR, 'skipped'); hide('walk'); phoneTour(false); if (!coarse) T2.input.focus(); } }] });
+        actions: [{ label: 'Show me', fn: function () { startTour(); if (!coarse) T2.input.focus(); } }, { label: 'I’m good', quiet: true, fn: function () { store.set(TOUR, 'skipped'); hide('walk'); phoneTour(false); target(null); if (!coarse) T2.input.focus(); } }] });
     }
     if (T2) {
       document.addEventListener('xp-term', function (e) {
@@ -1190,16 +1212,16 @@
           if (touring && coarse) T2.input.blur();
           if (touring) setTimeout(tourStep, 260);
           else if (state !== 'done' && state !== 'skipped') setTimeout(offerInTerm, 380);
-        } else if (d.type === 'close') { phoneTour(false); if (api.active() === 'tour' || api.active() === 'footer') hide('walk'); }
+        } else if (d.type === 'close') { phoneTour(false); target(null); if (api.active() === 'tour' || api.active() === 'footer') hide('walk'); }
         else if (d.type === 'cmd' && touring) {
           if (steps[stepI].want(d)) {
             stepI++;
-            if (stepI >= steps.length) { touring = false; store.set(TOUR, 'done'); hide('walk'); phoneTour(false); return; }
+            if (stepI >= steps.length) { touring = false; store.set(TOUR, 'done'); hide('walk'); phoneTour(false); target(null); return; }
             hop(function () { if (touring) tourStep(); });
           }
         }
       });
-      window.addEventListener('resize', function () { if (api.active() === 'tour' && T2.isOpen()) { phoneTour(true); var p = termSpot(); cur.x = p.x; cur.y = p.y; body.style.transform = 'translate3d(' + Math.round(p.x) + 'px,' + Math.round(p.y) + 'px,0)'; place(p.x, p.y, p.side); } });
+      window.addEventListener('resize', function () { if (api.active() === 'tour' && T2.isOpen()) { phoneTour(true); var p = termSpot(); if (touring) target(p); cur.x = p.x; cur.y = p.y; body.style.transform = 'translate3d(' + Math.round(p.x) + 'px,' + Math.round(p.y) + 'px,0)'; place(p.x, p.y, p.side); } });
 
       // the offer, at the end of the page
       var foot = document.querySelector('footer');
