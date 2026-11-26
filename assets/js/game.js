@@ -144,7 +144,7 @@
     function arm(type, sx, ch) { var cells = ARM[type]; cells.forEach(function (cl, i) { var hand = i === cells.length - 1, cc = hand || (L.sleeves === 'short' && i >= 2) ? 'S' : ch; px(sx + cl[0], 15 + cl[1], cc); if (!hand) px(sx + cl[0], 16 + cl[1], cc); }); }
     function leg(type, ch, shoe) { var l = LEG[type]; l[0].forEach(function (cl) { px(cl[0], cl[1], ch); }); l[1].forEach(function (cl) { px(cl[0], cl[1], shoe); }); }
     if (L.pack) map(PACK);
-    if (!L.pony) STRANDS.forEach(function (st, i) { strand(st, i); });
+    if (!L.pony && !L.noLocs) STRANDS.forEach(function (st, i) { strand(st, i); });
     arm(pose.ba, 9, 'a'); leg(pose.bl, 'Q', 'b');
     map(BODY); map(HEAD);
     if (L.pony) { strand([3, 3, .95, -3], 0); strand([5, 3, .8, -2], 1); px(5, 3, 'D'); px(6, 3, 'D'); }
@@ -159,8 +159,9 @@
     if (L.big) { px(13, 7, 'E'); px(14, 7, 'W'); px(13, 8, 'E'); px(14, 8, 'E'); px(15, 10, 'R'); px(16, 10, 'R'); px(16, 11, 'E'); }
     else if (L.sil) { px(13, 7, 'W'); px(13, 8, 'W'); }
     else { px(13, 7, 'E'); px(13, 8, 'E'); }
-    if (!L.hoodUp && !L.pony) strand(FRONT, 1);
+    if (!L.hoodUp && !L.pony && !L.noLocs) strand(FRONT, 1);
     leg(pose.fl, 'P', 'B'); arm(pose.fa, 11, 'A');
+    if (L.noOutline) return (cache[key] = cvs);
     var id = c.getImageData(0, 0, 22, 26), d = id.data, out = [];
     for (var y = 0; y < 26; y++) for (var x = 0; x < 22; x++) {
       if (d[(y * 22 + x) * 4 + 3]) continue;
@@ -782,6 +783,7 @@
   });
   /* ---------- hints that the game exists ---------- */
   window.VondsGame = { open: function () { open(0); } };
+  window.VondsSprite = { frame: frame, look: function () { return LOOK; }, pose: POSE, arm: ARM };
   try {
     console.log('%cV O N D S', 'font:600 20px Dosis,system-ui,sans-serif;letter-spacing:.6em;color:#2e2e30');
     console.log('%cHey, fellow builder. The logo up in the hero is a game.\nOr open the terminal with ` and type play.', 'font:13px ui-monospace,Menlo,Consolas,monospace;color:#5a5a60;line-height:1.6');
@@ -791,57 +793,332 @@
   (function peek() {
     if (window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches) return;
     var wrap = document.createElement('div'); wrap.className = 'gpeek'; wrap.setAttribute('aria-hidden', 'true');
-    wrap.innerHTML = '<svg class="gline"><path/></svg><div class="gbub">Psst. Click the logo.</div><canvas></canvas>';
+    wrap.innerHTML = '<i class="gshadow"></i><canvas></canvas>';
     document.body.appendChild(wrap);
-    var pc = wrap.querySelector('canvas'), px2 = pc.getContext('2d'), bub = wrap.querySelector('.gbub'), path = wrap.querySelector('path'), svg = wrap.querySelector('svg');
-    var S, CW, CH, raf2 = 0, t0 = 0, played = false;
-    function size() { S = innerWidth < 640 ? 2.5 : 3; CW = Math.round(22 * S); CH = Math.round(26 * S); pc.width = CW * 2; pc.height = CH * 2; pc.style.width = CW + 'px'; pc.style.height = CH + 'px'; }
-    function ok() { return (window.scrollY || 0) < 40 && !document.hidden && !gm.classList.contains('open') && !document.body.classList.contains('diving') && !document.querySelector('.xp-term.open, .overlay.open, .cs.open, dialog[open]'); }
+    var pc = wrap.querySelector('canvas'), px2 = pc.getContext('2d'), shadow = wrap.querySelector('.gshadow');
+    var S, CW, CH, R = 1, raf2 = 0, t0 = 0, played = false, landed = false, kicked = false, prev = null;
+    // afterimages for the run-off, same effect as in the game
+    var ghosts = [], hist = [];
+    for (var gi = 0; gi < 7; gi++) { var gcv = document.createElement('canvas'); gcv.className = 'gghost'; wrap.insertBefore(gcv, pc); ghosts.push(gcv); }
+    function snap(v) { return Math.round(v * R) / R; }
+    function paint(cv, name, mirror) {
+      var c = cv.getContext('2d'); c.setTransform(1, 0, 0, 1, 0, 0); c.clearRect(0, 0, cv.width, cv.height); c.imageSmoothingEnabled = false;
+      if (mirror) { c.translate(cv.width, 0); c.scale(-1, 1); }
+      c.drawImage(frame(name, null, true), 0, 0, cv.width, cv.height);
+    }
+    function trail(name, x, y, mirror) {
+      hist.push({ n: name, x: x, y: y, m: mirror }); if (hist.length > ghosts.length) hist.shift();
+      ghosts.forEach(function (g, i) {
+        var h = hist[i]; if (!h) { g.style.opacity = 0; return; }
+        if (g.width !== pc.width) { g.width = pc.width; g.height = pc.height; g.style.width = CW + 'px'; g.style.height = CH + 'px'; }
+        paint(g, h.n, h.m);
+        g.style.transform = 'translate3d(' + snap(h.x + (hist.length - i) * 3.5 * S * (h.m ? 1 : -1)) + 'px,' + snap(h.y) + 'px,0)';
+        g.style.opacity = ((i + 1) / ghosts.length * .32).toFixed(3);
+      });
+    }
+    function clearTrail() { hist = []; ghosts.forEach(function (g) { g.style.opacity = 0; }); }
+    function size() {
+      R = Math.min(3, window.devicePixelRatio || 1); S = innerWidth < 640 ? 2.5 : 3; CW = Math.round(22 * S); CH = Math.round(26 * S);
+      pc.width = Math.round(CW * R); pc.height = Math.round(CH * R); pc.style.width = CW + 'px'; pc.style.height = CH + 'px';
+    }
+    function ok() { return (window.scrollY || 0) < 40 && !document.hidden && !(window.VondsGuide && window.VondsGuide.active()) && !gm.classList.contains('open') && !document.body.classList.contains('diving') && !document.querySelector('.xp-term.open, .overlay.open, .cs.open, dialog[open]'); }
     // where he stops: just below and left of the logo, so the raised hand points up at it
     function spot() {
       var b = brand ? brand.getBoundingClientRect() : { left: 40, right: 70, top: 20, bottom: 60, width: 30, height: 40 };
-      if (b.left > 20.5 * S + 10) return { x: b.left - 2 - 20.5 * S, y: b.bottom + 10 - 12.5 * S, logo: b, flip: false };
+      if (b.left > 20.5 * S + 10) return { x: b.left - 2 - 20.5 * S, y: b.bottom + 10 - 12.5 * S, flip: false };
       // no room on the left (phones): stand below and right of the logo, turn back and point up at it
-      return { x: b.right + 4 - 1.5 * S, y: b.bottom + 4, logo: b, flip: true };
+      return { x: b.right + 4 - 1.5 * S, y: b.bottom + 4, flip: true };
     }
-    function draw(name, x, y, mirror) {
-      px2.setTransform(1, 0, 0, 1, 0, 0); px2.clearRect(0, 0, pc.width, pc.height); px2.imageSmoothingEnabled = false;
-      if (mirror) { px2.translate(pc.width, 0); px2.scale(-1, 1); }
-      px2.drawImage(frame(name, null, true), 0, 0, pc.width, pc.height);
-      pc.style.transform = 'translate(' + x + 'px,' + y + 'px)';
+    // name, position, facing, how high off the ground, and a squash amount for landings
+    function draw(name, x, y, mirror, air, squash) {
+      if (!prev || prev.n !== name || prev.m !== mirror) { paint(pc, name, mirror); prev = { n: name, m: mirror }; }
+      var sq = squash || 0, lift = air || 0;
+      pc.style.transform = 'translate3d(' + snap(x) + 'px,' + snap(y - lift) + 'px,0) scale(' + (1 + sq * .08).toFixed(3) + ',' + (1 - sq * .1).toFixed(3) + ')';
+      var feet = y + 25 * S, cx = x + (mirror ? 10.5 : 11.5) * S, f = Math.max(.35, 1 - lift / (14 * S));
+      shadow.style.transform = 'translate3d(' + snap(cx - 5 * S) + 'px,' + snap(feet - 1.2 * S) + 'px,0) scale(' + f.toFixed(3) + ')';
+      shadow.style.width = (10 * S) + 'px'; shadow.style.height = (2.4 * S) + 'px'; shadow.style.opacity = (.55 * f).toFixed(3);
     }
-    function end() { cancelAnimationFrame(raf2); wrap.classList.remove('on', 'talk'); if (brand) brand.classList.remove('g-pulse'); path.setAttribute('d', ''); }
-    var WALK = 1.7, POINT = 3.6, HOP = .38, RUN = .6;
+    // little pixel dust puffs at the feet
+    function dust(x, y, dir, n) {
+      for (var i = 0; i < n; i++) {
+        var d2 = document.createElement('i'); d2.className = 'gdust';
+        var sz = Math.round(S * (1 + Math.random())), dx = (dir * (6 + Math.random() * 14) + (Math.random() - .5) * 10) * S / 3, dy = -(3 + Math.random() * 9) * S / 3;
+        d2.style.cssText = 'width:' + sz + 'px;height:' + sz + 'px;transform:translate3d(' + snap(x) + 'px,' + snap(y) + 'px,0);--dx:' + dx.toFixed(1) + 'px;--dy:' + dy.toFixed(1) + 'px;animation-delay:' + (i * 18) + 'ms';
+        wrap.appendChild(d2); setTimeout(function (el) { return function () { el.remove(); }; }(d2), 900);
+      }
+    }
+    function end() { cancelAnimationFrame(raf2); clearTrail(); wrap.classList.remove('on'); prev = null; }
+    var WALK = 1.8, REST = .35, POINT = 2.8, HOP = .4, RUN = .62;
+    function ease(u) { return u < .5 ? 4 * u * u * u : 1 - Math.pow(-2 * u + 2, 3) / 2; }
     function step(ts) {
       if (!t0) t0 = ts;
-      var t = (ts - t0) / 1000, sp = spot(), from = -CW - 10, walkFrame = 'run' + (Math.floor(t * 7) % 4);
+      var t = (ts - t0) / 1000, sp = spot(), from = -CW - 10;
       if (!ok()) { end(); return; }
-      if (t < WALK) {                                     // walk in along the top
-        var e = t / WALK; e = e < .85 ? e / .85 : 1;
-        draw(e < 1 ? walkFrame : 'idle', from + (sp.x - from) * (1 - Math.pow(1 - e, 1.6)), sp.y, false);
-      } else if (t < WALK + POINT) {                       // point at the logo
-        var tp = t - WALK;
-        draw(tp < .15 && sp.flip ? 'idle' : Math.floor(tp * 2.6) % 2 ? 'point2' : 'point', sp.x, sp.y, sp.flip);
-        wrap.classList.add('talk'); if (brand) brand.classList.add('g-pulse');
-        var r = pc.getBoundingClientRect(), hx = sp.flip ? r.left + 1.5 * S : r.left + 21 * S, hy = r.top + 12 * S, lx = sp.logo.left + sp.logo.width * .3, ly = sp.logo.bottom - 2, k3 = Math.min(1, tp / .45);
-        path.setAttribute('d', 'M' + hx + ' ' + hy + ' L' + (hx + (lx - hx) * k3) + ' ' + (hy + (ly - hy) * k3));
-        if (sp.flip) { bub.style.left = (r.right + 6) + 'px'; bub.style.top = (r.top + r.height * .3) + 'px'; }
-        else { bub.style.left = (sp.logo.right + 16) + 'px'; bub.style.top = (sp.logo.top + sp.logo.height / 2 - 16) + 'px'; }
-      } else if (t < WALK + POINT + HOP) {                 // turn toward the exit and do a quick hop
-        wrap.classList.remove('talk'); if (brand) brand.classList.remove('g-pulse'); path.setAttribute('d', '');
-        var u = (t - WALK - POINT) / HOP;
-        draw(u > .12 && u < .88 ? 'jump' : 'idle', sp.x, sp.y - Math.sin(Math.PI * u) * 9 * S, true);
-      } else if (t < WALK + POINT + HOP + RUN) {           // then run off screen
-        var e2 = (t - WALK - POINT - HOP) / RUN;
-        draw('run' + (Math.floor(t * 13) % 4), sp.x + (from - sp.x) * e2 * e2, sp.y, true);
+      var footX = sp.x + (sp.flip ? 10.5 : 11.5) * S, feet = sp.y + 25 * S;
+      if (t < WALK) {                                      // walk in, steps matched to distance so feet never slide
+        var e = 1 - Math.pow(1 - t / WALK, 2.2), x = from + (sp.x - from) * e, travelled = x - from;
+        draw(t / WALK > .97 ? 'idle' : 'run' + (Math.floor(travelled / (3.4 * S)) % 4), x, sp.y, false);
+      } else if (t < WALK + REST) {                        // a breath before pointing
+        draw(sp.flip && t - WALK > .12 ? 'idle2' : 'idle', sp.x, sp.y, sp.flip && t - WALK > .12);
+      } else if (t < WALK + REST + POINT) {                // point at the logo, with a small bounce
+        var tp = t - WALK - REST;
+        draw(Math.floor(tp * 2.4) % 2 ? 'point2' : 'point', sp.x, sp.y, sp.flip);
+      } else if (t < WALK + REST + POINT + HOP + .12) {    // turn toward the exit, quick hop, soft landing
+        var u = (t - WALK - REST - POINT) / HOP;
+        if (u <= 1) draw(u > .12 && u < .88 ? 'jump' : 'idle', sp.x, sp.y, true, Math.sin(Math.PI * u) * 8 * S, u < .12 ? (.12 - u) * 4 : 0);
+        else { if (!landed) { landed = true; dust(footX, feet - S, 0, 6); } draw('idle', sp.x, sp.y, true, 0, 1 - (u - 1) * HOP / .12); }
+      } else if (t < WALK + REST + POINT + HOP + .12 + RUN) {   // then run off screen, trail streaming behind
+        var e2 = (t - WALK - REST - POINT - HOP - .12) / RUN, rx = sp.x + (from - sp.x) * e2 * e2 * (1.2 - .2 * e2);
+        if (!kicked) { kicked = true; dust(footX + 2 * S, feet - S, 1, 7); }
+        var rf = 'run' + (Math.floor((sp.x - rx) / (3 * S)) % 4);
+        draw(rf, rx, sp.y, true); trail(rf, rx, sp.y, true);
       } else { end(); return; }
       raf2 = requestAnimationFrame(step);
     }
-    function go() { if (!ok() || played) return; size(); svg.setAttribute('width', innerWidth); svg.setAttribute('height', innerHeight); t0 = 0; wrap.classList.add('on'); raf2 = requestAnimationFrame(step); }
-    setInterval(go, 30000);
+    function go() { if (!ok() || played) return; size(); t0 = 0; landed = kicked = false; prev = null; wrap.classList.add('on'); raf2 = requestAnimationFrame(step); }
+    setTimeout(go, 8000); setInterval(go, 30000);
     // stop nudging once they have found it
     var o2 = open; open = function (i) { played = true; end(); o2(i); }; window.VondsGame.open = function () { open(0); };
     window.__gpeek = go;
+  })();
+
+  /* ---------- Vee: a small guide with a pointer stick ---------- */
+  (function guide() {
+    var reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+    POSE.gdown = { bl: 'down', fl: 'down', ba: 'mid', fa: 'fwd', bob: 0, sway: 0 };
+    POSE.gpoint = { bl: 'down', fl: 'down', ba: 'mid', fa: 'point', bob: 0, sway: 0 };
+    POSE.ghold = { bl: 'down', fl: 'down', ba: 'mid', fa: 'mid', bob: 0, sway: 0 };
+    POSE.gjump = { bl: 'trail', fl: 'tuck', ba: 'back', fa: 'up', bob: 0, sway: 3, lift: 3 };
+    // stick pixels in sprite-canvas coordinates (x, y), last two are the bright tip
+    var STICK = {
+      gdown: [[16, 18], [16, 19], [17, 20], [17, 21], [17, 22], [18, 23], [18, 24], [18, 25], [18, 26]],
+      gpoint: [[21, 11], [22, 10], [23, 10], [24, 9], [25, 8], [26, 8], [27, 7], [28, 6], [29, 6]],
+      ghold: [[13, 20], [13, 19], [13, 18], [13, 17], [13, 16], [13, 15], [13, 14], [13, 13], [13, 12], [13, 11]],
+      gjump: []
+    };
+    var GW = 40, GH = 40, OX = 9, OY = 6;
+    var el = document.createElement('div'); el.className = 'gguide';
+    el.innerHTML = '<i class="grope"></i><div class="gbody"><canvas></canvas></div><div class="gtalk" role="status"><b class="gwho">Vee</b><p></p><div class="gacts"></div></div>';
+    document.body.appendChild(el);
+    var body = el.querySelector('.gbody'), cv2 = el.querySelector('canvas'), cx2 = cv2.getContext('2d'), talk = el.querySelector('.gtalk'), txt = talk.querySelector('p'), acts = talk.querySelector('.gacts'), rope = el.querySelector('.grope');
+    var S = 3, R = 1, cur = null, hideT = 0;
+    function scale() { R = Math.min(3, window.devicePixelRatio || 1); S = innerWidth < 640 ? 2.4 : 3; cv2.width = Math.round(GW * S * R); cv2.height = Math.round(GH * S * R); cv2.style.width = GW * S + 'px'; cv2.style.height = GH * S + 'px'; }
+    function render(pose, dark) {
+      var u = S * R; cx2.setTransform(1, 0, 0, 1, 0, 0); cx2.clearRect(0, 0, cv2.width, cv2.height); cx2.imageSmoothingEnabled = false;
+      cx2.drawImage(frame(pose, null, !dark), OX * u, OY * u, 22 * u, 26 * u);
+      var pts = STICK[pose] || [];
+      pts.forEach(function (q, i) {
+        var tip = i >= pts.length - 2;
+        cx2.fillStyle = tip ? (dark ? '#f4f4f4' : '#2e2e30') : (dark ? '#c4c4c8' : '#7a7a80');
+        cx2.fillRect((OX + q[0]) * u, (OY + q[1]) * u, u, u);
+      });
+    }
+    function place(x, y, side) {
+      body.style.transform = 'translate3d(' + Math.round(x) + 'px,' + Math.round(y) + 'px,0)';
+      var w = GW * S, h = GH * S, tw = talk.offsetWidth, th = talk.offsetHeight, tx, ty;
+      if (side === 'right') { tx = x + w * .78; ty = y + h * .22; }
+      else if (side === 'left') { tx = x + w * .2 - tw; ty = y + h * .2; }
+      else if (side === 'above') { tx = x + w / 2 - tw / 2; ty = y - th + h * .1; }
+      else { tx = x + w / 2 - tw / 2; ty = y + h * .95; }
+      tx = Math.max(10, Math.min(innerWidth - tw - 10, tx)); ty = Math.max(10, Math.min(innerHeight - th - 10, ty));
+      var av = cur && cur.avoid && cur.avoid();   // keep the card off whatever it is explaining
+      if (av && tx < av.right && tx + tw > av.left && ty < av.bottom && ty + th > av.top) {
+        if (av.left - tw - 14 >= 10) tx = av.left - tw - 14;
+        else ty = Math.max(8, av.top - th - 10);
+      }
+      talk.style.transform = 'translate3d(' + Math.round(tx) + 'px,' + Math.round(ty) + 'px,0)';
+      talk.setAttribute('data-side', side);
+    }
+    function say(html, actions) {
+      txt.innerHTML = html; acts.innerHTML = '';
+      (actions || []).forEach(function (a) {
+        var b = document.createElement('button'); b.type = 'button'; b.textContent = a.label; if (a.quiet) b.className = 'q';
+        b.addEventListener('click', function (e) { e.stopPropagation(); a.fn(); }); acts.appendChild(b);
+      });
+      talk.classList.remove('pop'); void talk.offsetWidth; talk.classList.add('pop');
+      if (cur) place(cur.x, cur.y, cur.side);
+    }
+    // o: { id, dark, pose, x, y, side, enter: 'drop'|'rise'|'pop', rope, mirror, text, actions }
+    function show(o) {
+      clearTimeout(hideT); scale(); cur = o;
+      el.className = 'gguide on ' + (o.dark ? 'dark ' : 'light ') + 'e-' + (o.enter || 'pop') + (o.mirror ? ' flip' : '');
+      render(o.pose || 'ghold', o.dark);
+      rope.style.display = o.rope ? 'block' : 'none';
+      if (o.rope) { rope.style.left = Math.round(o.x + (o.mirror ? GW - 20 : 20) * S) + 'px'; rope.style.height = Math.round(o.y + (OY + 2) * S) + 'px'; }
+      say(o.text, o.actions);
+      place(o.x, o.y, o.side);
+      requestAnimationFrame(function () { requestAnimationFrame(function () { el.classList.add('in'); }); });
+    }
+    function pose(p) { if (cur) { cur.pose = p; render(p, cur.dark); } }
+    function hop(then) {
+      if (!cur) return; var p0 = cur.pose; render('gjump', cur.dark); body.classList.remove('hop'); void body.offsetWidth; body.classList.add('hop');
+      setTimeout(function () { if (cur) render(p0, cur.dark); if (then) then(); }, 380);
+    }
+    function hide(exit) {
+      if (!cur) return; var was = cur; cur = null;
+      el.classList.remove('in'); el.classList.add('x-' + (exit || 'fade'));
+      hideT = setTimeout(function () { if (!cur) el.className = 'gguide'; }, 650);
+      return was;
+    }
+    var api = { show: show, say: say, pose: pose, hop: hop, hide: hide, active: function () { return cur && cur.id; }, size: function () { return { w: GW * S, h: GH * S }; } };
+    window.VondsGuide = api;
+
+    var store = { get: function (k) { try { return localStorage.getItem(k); } catch (e) { return null; } }, set: function (k, v) { try { localStorage.setItem(k, v); } catch (e) {} } };
+
+    /* ---- 1. Step inside: Vee bungees down upside down, swings, and points the way ---- */
+    var ff = document.getElementById('ff');
+    if (ff && !reduce) {
+      var hangLook = {}, hk; for (hk in LOOK) hangLook[hk] = LOOK[hk];
+      hangLook.noLocs = true; hangLook.noOutline = true; hangLook.name = 'hang';
+      var HW = 28, HH = 44, HOX = 3, HIDE = 9, hangCache = {};
+      // body flipped, locs redrawn falling from the crown, arm hanging beside the face with a finger pointing down
+      var hangImg = function (arm, sway) {
+        var key = arm + '|' + sway; if (hangCache[key]) return hangCache[key];
+        var c = document.createElement('canvas'); c.width = HW; c.height = HH; var x = c.getContext('2d');
+        x.save(); x.translate(HOX, 26); x.scale(1, -1); x.drawImage(frame('idle', hangLook, false), 0, 0); x.restore();
+        var px = function (a, b, col) { x.fillStyle = col; x.fillRect(a, b, 1, 1); };
+        var skin = 'rgb(117,117,120)', sleeve = 'rgb(205,205,210)', sleeveD = 'rgb(160,160,166)';
+        [[HOX + 3, 19, 11], [HOX + 7, 22, 14], [HOX + 11, 23, 13], [HOX + 15, 22, 10]].forEach(function (st, si) {
+          for (var i = 0; i < st[2]; i++) {
+            var t = i / st[2], dx = Math.round(sway * t * t * 2.2), yy = st[1] + i;
+            px(st[0] + dx, yy, (i + si) % 4 === 1 ? 'rgb(118,118,124)' : 'rgb(70,70,74)');
+            if (i < st[2] - 1) px(st[0] + dx + 1, yy, 'rgb(52,52,56)');
+          }
+        });
+        var ax = HOX + 18;
+        px(ax, 9, sleeve); px(ax + 1, 9, sleeve); px(ax, 10, sleeveD); px(ax + 1, 10, sleeveD);
+        if (arm === 'fling') { for (var j = 0; j < 6; j++) { px(ax + 1 + j, 11 + j * .6 | 0, skin); px(ax + 1 + j, 12 + j * .6 | 0, skin); } }
+        else {
+          for (var r2 = 11; r2 < 21; r2++) { px(ax, r2, skin); px(ax + 1, r2, skin); }
+          px(ax - 1, 21, skin); px(ax, 21, skin); px(ax + 1, 21, skin); px(ax, 22, skin); px(ax + 1, 22, skin); px(ax + 1, 23, skin); px(ax + 1, 24, skin);
+        }
+        var d = x.getImageData(0, 0, HW, HH).data, pts = [];
+        var A = function (a, b) { return a >= 0 && b >= 0 && a < HW && b < HH && d[(b * HW + a) * 4 + 3] > 200; };
+        for (var y = 0; y < HH; y++) for (var xx = 0; xx < HW; xx++) {
+          if (A(xx, y)) continue;
+          if (y > 20 && (A(xx - 1, y) || A(xx - 2, y)) && (A(xx + 1, y) || A(xx + 2, y))) continue;
+          if (A(xx + 1, y) || A(xx - 1, y) || A(xx, y + 1) || A(xx, y - 1)) pts.push(xx, y);
+        }
+        x.fillStyle = 'rgba(236,236,236,.38)'; for (var i2 = 0; i2 < pts.length; i2 += 2) x.fillRect(pts[i2], pts[i2 + 1], 1, 1);
+        return (hangCache[key] = c);
+      };
+      var hv = document.createElement('canvas'); hv.className = 'vhang'; hv.setAttribute('aria-hidden', 'true'); document.body.appendChild(hv);
+      var hg = hv.getContext('2d'), hS = 4, hR = 1, hT0 = 0, hRaf = 0, hOut = 0, hOn = false, hLast = '';
+      var hangSize = function () { hR = Math.min(3, window.devicePixelRatio || 1); hS = innerWidth < 640 ? 3 : 4; hv.width = Math.round(HW * hS * hR); hv.height = Math.round(HH * hS * hR); hv.style.width = HW * hS + 'px'; hv.style.height = HH * hS + 'px'; hLast = ''; };
+      var hangFrame = function (ts) {
+        if (!hT0) hT0 = ts;
+        var t = (ts - hT0) / 1000, y, arm = 'point', rot = 0, sway = 0;
+        if (t < 1.3) {                                   // bungee: drop fast, two bounces
+          var e = t / 1.3; y = e < .14 ? -HH * hS * (1 - e / .14) : -38 * Math.exp(-4.2 * (e - .14)) * Math.sin((e - .14) * 15.5) ;
+          arm = e < .3 ? 'fling' : 'point'; sway = e < .3 ? -1 : 0;
+        } else {                                         // then a gentle pendulum swing while pointing
+          var ramp = Math.min(1, (t - 1.3) / 1.2), a = Math.sin((t - 1.3) * 1.7);
+          y = 0; rot = a * 6 * ramp; sway = Math.round(-a * 1.4 * ramp * 2) / 2;
+        }
+        if (hOut) { var u = Math.min(1, (ts - hOut) / 420); y -= u * u * (HH * hS); if (u >= 1) { hangStop(); return; } }
+        var key = arm + sway;
+        if (key !== hLast) { hLast = key; hg.setTransform(1, 0, 0, 1, 0, 0); hg.clearRect(0, 0, hv.width, hv.height); hg.imageSmoothingEnabled = false; hg.drawImage(hangImg(arm, sway), 0, 0, hv.width, hv.height); }
+        hv.style.transformOrigin = '50% ' + (HIDE * hS) + 'px';
+        hv.style.transform = 'translate3d(-50%,' + Math.round(-HIDE * hS + y) + 'px,0) rotate(' + rot.toFixed(2) + 'deg)';
+        hRaf = requestAnimationFrame(hangFrame);
+      };
+      var hangShow = function () { hangSize(); hT0 = 0; hOut = 0; hOn = true; hv.classList.add('on'); cancelAnimationFrame(hRaf); hRaf = requestAnimationFrame(hangFrame); };
+      var hangLeave = function () { if (hOn && !hOut) hOut = performance.now(); };
+      var hangStop = function () { cancelAnimationFrame(hRaf); hOn = false; hOut = 0; hv.classList.remove('on'); };
+
+      var openAt = 0, lastMove = 0, lastY = 0, shown = 0, scrolledAny = false, tick = 0;
+      function atEnd() { var e = ff.querySelector('.ffend'); return e ? e.getBoundingClientRect().top < innerHeight * .9 : false; }
+      ff.addEventListener('scroll', function () {
+        var d = Math.abs(ff.scrollTop - lastY); lastY = ff.scrollTop;
+        if (d > 2) { lastMove = performance.now(); if (openAt && performance.now() - openAt > 600) scrolledAny = true; }
+        if (hOn && d > 1) hangLeave();
+      }, { passive: true });
+      new MutationObserver(function () {
+        var on = ff.classList.contains('open');
+        if (on && !openAt) { openAt = lastMove = performance.now(); lastY = ff.scrollTop; shown = 0; scrolledAny = false; clearInterval(tick); tick = setInterval(check, 400); }
+        if (!on && openAt) { openAt = 0; clearInterval(tick); hangStop(); }
+      }).observe(ff, { attributes: true, attributeFilter: ['class'] });
+      // first visit: right after the opening scene settles if they have not moved; later: when they stall partway down
+      function check() {
+        if (!openAt || hOn || api.active() || document.hidden || atEnd() || shown >= 4) return;
+        var now = performance.now(), wait = !scrolledAny ? 3600 : 9000;
+        if (now - Math.max(openAt, lastMove) > wait) { shown++; hangShow(); }
+      }
+    }
+
+    /* ---- 2. The terminal: an offer at the footer, then a short tour inside ---- */
+    var T2 = window.VondsTerm, TOUR = 'vonds-tour';
+    var steps = [
+      { want: function (d) { return d.cmd === 'help'; }, pose: 'gpoint', text: 'This is the terminal. Type <code>help</code> and press Enter to see what it can do.' },
+      { want: function (d) { return d.cmd === 'ls' || d.cmd === 'll' || d.cmd === 'dir'; }, pose: 'gpoint', text: 'Nice. Now list the work with <code>ls projects</code>.' },
+      { want: function (d) { return d.cmd === 'cat' && d.arg; }, pose: 'gpoint', text: 'Pick one and read about it, like <code>cat black-signal</code>. <span class="tip">Tab finishes names for you.</span>' },
+      { want: function (d) { return d.cmd === 'play' || d.cmd === 'game' || d.cmd === 'jump' || d.cmd === './jump'; }, pose: 'gpoint', text: 'You can <code>open</code> a project or <code>cd about</code> to jump around. Last secret: type <code>play</code>.' }
+    ];
+    var stepI = 0, touring = false;
+    var phoneTour = function (on) {   // on phones, slide the terminal down a little so the guide has room above it
+      if (innerWidth >= 640) return;
+      T2.win.style.marginTop = on ? '170px' : ''; T2.win.style.height = on ? 'calc(100% - 180px)' : '';
+    };
+    function termSpot() {
+      var w = T2.win.getBoundingClientRect(), sz = api.size();
+      if (w.left > sz.w * .9 + 16) return { x: w.left - sz.w * .82, y: Math.min(innerHeight - sz.h - 12, w.bottom - sz.h * .92), side: 'above', mirror: false };
+      return { x: w.right - sz.w * .9, y: Math.max(6, w.top - sz.h * .78), side: 'left', mirror: true };
+    }
+    function tourStep() {
+      var st2 = steps[stepI], p = termSpot();
+      phoneTour(true); p = termSpot();
+      show({ id: 'tour', dark: true, pose: st2.pose, x: p.x, y: p.y, side: p.side, mirror: p.mirror, enter: cur && cur.id === 'tour' ? 'stay' : 'pop', avoid: function () { return T2.win.getBoundingClientRect(); },
+        text: '<span class="step">' + (stepI + 1) + ' of ' + steps.length + '</span>' + st2.text,
+        actions: [{ label: 'End tour', quiet: true, fn: function () { touring = false; store.set(TOUR, 'skipped'); hide('fade'); phoneTour(false); T2.input.focus(); } }] });
+    }
+    function startTour() { touring = true; stepI = 0; store.set(TOUR, 'started'); tourStep(); }
+    function offerInTerm() {
+      phoneTour(true); var p = termSpot();
+      show({ id: 'tour', dark: true, pose: 'ghold', avoid: function () { return T2.win.getBoundingClientRect(); }, x: p.x, y: p.y, side: p.side, mirror: p.mirror, enter: 'pop',
+        text: 'First time in here? I can show you around in four quick steps.',
+        actions: [{ label: 'Show me', fn: function () { startTour(); T2.input.focus(); } }, { label: 'I’m good', quiet: true, fn: function () { store.set(TOUR, 'skipped'); hide('fade'); phoneTour(false); T2.input.focus(); } }] });
+    }
+    if (T2) {
+      document.addEventListener('xp-term', function (e) {
+        var d = e.detail || {};
+        if (d.type === 'open') {
+          var state = store.get(TOUR);
+          if (touring) setTimeout(tourStep, 260);
+          else if (state !== 'done' && state !== 'skipped') setTimeout(offerInTerm, 380);
+        } else if (d.type === 'close') { phoneTour(false); if (api.active() === 'tour' || api.active() === 'footer') hide('fade'); }
+        else if (d.type === 'cmd' && touring) {
+          if (steps[stepI].want(d)) {
+            stepI++;
+            if (stepI >= steps.length) { touring = false; store.set(TOUR, 'done'); hide('fade'); phoneTour(false); return; }
+            hop(function () { if (touring) tourStep(); });
+          }
+        }
+      });
+      window.addEventListener('resize', function () { if (api.active() === 'tour' && T2.isOpen()) { var p = termSpot(); cur.x = p.x; cur.y = p.y; place(p.x, p.y, p.side); } });
+
+      // the offer, at the end of the page
+      var foot = document.querySelector('footer');
+      if (foot && 'IntersectionObserver' in window) {
+        var offered = false;
+        new IntersectionObserver(function (en) {
+          en.forEach(function (x) {
+            var st3 = store.get(TOUR);
+            if (!x.isIntersecting || offered || st3 === 'done' || st3 === 'skipped' || api.active() || T2.isOpen() || document.body.classList.contains('diving')) return;
+            offered = true;
+            setTimeout(function () {
+              if (api.active() || T2.isOpen()) return;
+              var sz = api.size(), phone = innerWidth < 640;
+              show({ id: 'footer', dark: false, pose: 'ghold', x: innerWidth - sz.w - (phone ? 56 : 84), y: innerHeight - sz.h - (phone ? 10 : 22), side: phone ? 'above' : 'left', mirror: true, enter: 'rise',
+                text: '<strong>Wait!</strong> Let me show you something before you go!' + (phone ? '' : ' <span class="tip">This site has a hidden terminal. You can also press <code>`</code> anytime.</span>'),
+                actions: [{ label: 'Show me', fn: function () { hide('fade'); setTimeout(function () { touring = true; stepI = 0; store.set(TOUR, 'started'); T2.open(); }, 200); } },
+                          { label: 'Not now', quiet: true, fn: function () { hide('down'); } }] });
+              setTimeout(function () { if (api.active() === 'footer') hide('down'); }, 14000);
+            }, 700);
+          });
+        }, { threshold: .6 }).observe(foot);
+        window.addEventListener('scroll', function () { if (api.active() === 'footer' && foot.getBoundingClientRect().top > innerHeight) hide('down'); }, { passive: true });
+      }
+    }
   })();
 
 })();

@@ -29,20 +29,76 @@
 }
 
 /* ---------- hints that the logo is a game ---------- */
-.header .brand{position:relative}
-.header .brand::before{content:"";position:absolute;left:50%;top:50%;width:44px;height:44px;margin:-22px 0 0 -22px;border:1px solid #2e2e30;border-radius:50%;opacity:0;pointer-events:none}
-.header .brand.g-pulse::before{animation:gPulse 1.3s cubic-bezier(.16,1,.3,1) infinite}
-@keyframes gPulse{0%{transform:scale(.6);opacity:.55}100%{transform:scale(1.5);opacity:0}}
-
-.gpeek{position:fixed;inset:0;z-index:40;pointer-events:none;display:none}
+.gpeek{position:fixed;inset:0;z-index:40;pointer-events:none;display:none;overflow:hidden}
 .gpeek.on{display:block}
-.gpeek canvas{position:absolute;left:0;top:0;image-rendering:pixelated;filter:drop-shadow(0 4px 4px rgba(0,0,0,.14))}
-.gpeek svg{position:absolute;left:0;top:0;overflow:visible}
-.gpeek path{fill:none;stroke:#2e2e30;stroke-width:1.5;stroke-dasharray:1.5 7;stroke-linecap:round;opacity:.6}
-.gpeek .gbub{position:absolute;left:0;top:0;padding:10px 14px;background:#fff;border:1px solid #2e2e30;color:#2e2e30;font:500 12px/1 Dosis,system-ui,sans-serif;letter-spacing:.2em;text-transform:uppercase;white-space:nowrap;
-  opacity:0;transform:translateX(-6px) scale(.96);transform-origin:0 50%;transition:opacity .35s ease,transform .45s cubic-bezier(.16,1,.3,1)}
-.gpeek .gbub::after{content:"";position:absolute;left:-6px;top:50%;margin-top:-5px;width:10px;height:10px;background:#fff;border-left:1px solid #2e2e30;border-bottom:1px solid #2e2e30;transform:rotate(45deg)}
-.gpeek.talk .gbub{opacity:1;transform:none}
+.gpeek canvas{position:absolute;left:0;top:0;image-rendering:pixelated;transform-origin:50% 96%;will-change:transform}
+.gpeek .gghost{opacity:0;will-change:transform,opacity}
+.gpeek .gshadow{position:absolute;left:0;top:0;border-radius:50%;background:radial-gradient(closest-side,rgba(20,20,22,.5),rgba(20,20,22,0));transform-origin:50% 50%;will-change:transform,opacity}
+.gpeek .gdust{position:absolute;left:0;top:0;background:#6a6a70;opacity:0;animation:gDust .62s cubic-bezier(.2,.7,.3,1) forwards}
+@keyframes gDust{0%{opacity:.75;translate:0 0}100%{opacity:0;translate:var(--dx) var(--dy)}}
+
+/* ---------- Vee, the guide ---------- */
+.gguide{position:fixed;inset:0;z-index:2600;pointer-events:none;display:none}
+.gguide.on{display:block}
+.gguide .gbody{position:absolute;left:0;top:0;will-change:transform}
+.gguide canvas{display:block;image-rendering:pixelated;opacity:0;transform:translateY(-14px);transition:opacity .35s ease,transform .7s cubic-bezier(.2,1.3,.4,1)}
+.gguide.flip canvas{transform:translateY(-14px) scaleX(-1)}
+.gguide.in canvas{opacity:1;transform:none;animation:gBreathe 2.6s ease-in-out .8s infinite}
+.gguide.flip.in canvas{transform:scaleX(-1);animation-name:gBreatheF}
+.gguide.e-drop canvas{transform:translateY(-120px)}.gguide.e-drop.flip canvas{transform:translateY(-120px) scaleX(-1)}
+.gguide.e-rise canvas{transform:translateY(40px)}.gguide.e-rise.flip canvas{transform:translateY(40px) scaleX(-1)}
+.gguide.e-stay canvas{transition:none}
+.gguide.x-up canvas{opacity:0;transform:translateY(-140px);transition:transform .5s cubic-bezier(.5,0,.75,0),opacity .45s ease .05s}
+.gguide.x-down canvas{opacity:0;transform:translateY(40px);transition:transform .45s cubic-bezier(.5,0,.75,0),opacity .4s ease}
+.gguide.x-fade canvas{opacity:0;transition:opacity .3s ease}
+.gguide .gbody.hop canvas{animation:gHop2 .38s cubic-bezier(.3,.7,.4,1)}
+.gguide.flip .gbody.hop canvas{animation:gHop2F .38s cubic-bezier(.3,.7,.4,1)}
+@keyframes gBreathe{0%,100%{transform:translateY(0)}50%{transform:translateY(-2px)}}
+@keyframes gBreatheF{0%,100%{transform:translateY(0) scaleX(-1)}50%{transform:translateY(-2px) scaleX(-1)}}
+@keyframes gHop2{0%,100%{transform:translateY(0)}45%{transform:translateY(-16px)}}
+@keyframes gHop2F{0%,100%{transform:translateY(0) scaleX(-1)}45%{transform:translateY(-16px) scaleX(-1)}}
+.gguide .grope{position:absolute;top:0;width:1px;display:none;background:linear-gradient(rgba(236,236,236,0),rgba(236,236,236,.55));transform-origin:top;transform:scaleY(0);transition:transform .7s cubic-bezier(.2,1,.3,1)}
+.gguide.in .grope{transform:scaleY(1)}
+.gguide.x-up .grope{transform:scaleY(0);transition:transform .45s cubic-bezier(.5,0,.75,0)}
+
+.gguide .gtalk{position:absolute;left:0;top:0;max-width:min(300px,calc(100vw - 20px));padding:14px 16px 13px;pointer-events:auto;
+  font:400 14px/1.5 Dosis,system-ui,sans-serif;letter-spacing:.02em;opacity:0;transition:opacity .3s ease .15s}
+.gguide.in .gtalk{opacity:1}
+.gguide.x-up .gtalk,.gguide.x-down .gtalk,.gguide.x-fade .gtalk{opacity:0;transition:opacity .2s ease}
+.gguide .gtalk.pop p{animation:gPop .45s cubic-bezier(.16,1,.3,1)}
+@keyframes gPop{0%{opacity:0;transform:translateY(4px)}100%{opacity:1;transform:none}}
+.gguide .gwho{display:block;margin:0 0 6px;font:600 10px/1 Dosis,sans-serif;letter-spacing:.3em;text-transform:uppercase}
+.gguide .gtalk p{margin:0}
+.gguide .gtalk strong{font-weight:600;letter-spacing:.04em}
+.gguide .gtalk code{font:500 13px/1 ui-monospace,Menlo,Consolas,monospace;padding:2px 6px;white-space:nowrap}
+.gguide .gtalk .tip{display:block;margin-top:6px;font-size:12px;opacity:.7}
+.gguide .gtalk .step{display:block;margin-bottom:5px;font:600 10px/1 Dosis,sans-serif;letter-spacing:.24em;text-transform:uppercase;opacity:.55}
+.gguide .gacts{display:flex;gap:8px;margin-top:12px}
+.gguide .gacts:empty{display:none}
+.gguide .gacts button{appearance:none;cursor:pointer;font:600 11px/1 Dosis,sans-serif;letter-spacing:.22em;text-transform:uppercase;padding:9px 13px;border:1px solid;transition:background .2s,color .2s}
+.gguide .gacts button.q{padding-left:4px;padding-right:4px}
+.gguide.light .gacts button.q,.gguide.dark .gacts button.q{border-color:transparent}
+/* light pages */
+.gguide.light .gtalk{background:#fff;color:#2e2e30;border:1px solid #2e2e30;box-shadow:0 18px 40px rgba(0,0,0,.1)}
+.gguide.light .gwho{color:#7a7a80}
+.gguide.light .gtalk code{background:#f0f0f1;color:#1a1a1c}
+.gguide.light .gacts button{background:#2e2e30;color:#fff;border-color:#2e2e30}
+.gguide.light .gacts button:hover{background:#111}
+.gguide.light .gacts button.q{color:#6a6a70;background:transparent}
+.gguide.light .gacts button.q:hover{color:#2e2e30}
+/* dark scenes */
+.gguide.dark .gtalk{background:rgba(18,18,20,.92);color:#e8e8ea;border:1px solid rgba(255,255,255,.22);box-shadow:0 18px 50px rgba(0,0,0,.5);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
+.gguide.dark .gwho{color:#8e8e94}
+.gguide.dark .gtalk code{background:rgba(255,255,255,.09);color:#fff}
+.gguide.dark .gacts button{background:#ececec;color:#111;border-color:#ececec}
+.gguide.dark .gacts button:hover{background:#fff}
+.gguide.dark .gacts button.q{color:#a0a0a6;background:transparent}
+.gguide.dark .gacts button.q:hover{color:#fff}
 @media (max-width:640px){
-  .gpeek .gbub{font-size:10px;padding:8px 11px;letter-spacing:.14em}
+  .gguide .gtalk{font-size:13px;padding:12px 13px 11px;max-width:min(250px,calc(100vw - 20px))}
 }
+@media (prefers-reduced-motion:reduce){.gguide canvas,.gguide .gtalk{transition:none!important;animation:none!important}}
+
+/* Vee hanging upside down in Step inside */
+.vhang{position:fixed;left:50%;top:0;z-index:2600;pointer-events:none;image-rendering:pixelated;display:none;will-change:transform}
+.vhang.on{display:block}
