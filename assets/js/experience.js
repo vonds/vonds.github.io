@@ -353,7 +353,7 @@
         '  about             jump to the About section\n' +
         '  contact           how to reach me\n' +
         '  step-inside       take the descent\n' +
-        '  play              play the hidden game\n' +
+        '  play              play a hidden game (uptime or meridian)\n' +
         '  clear             clear the screen\n' +
         '  exit              close the terminal');
     },
@@ -383,7 +383,7 @@
     sudo: function () { print('nice try.'); },
     pwd: function () { print('/home/vonds'); },
     date: function () { print(new Date().toString()); },
-    play: function () { print('<span class="d">loading ./jump …</span>'); setTimeout(function () { close(); if (window.VondsGame) setTimeout(window.VondsGame.open, 260); }, 350); }
+    play: function (a) { print('<span class="d">loading games …</span>'); setTimeout(function () { close(); setTimeout(function () { if (window.VondsPick) window.VondsPick(a); else if (window.VondsGame) window.VondsGame.open(); }, 260); }, 350); }
   };
   cmds.descend = cmds['step-inside']; cmds.ll = cmds.ls; cmds.dir = cmds.ls; cmds.quit = cmds.exit; cmds.game = cmds.play; cmds.jump = cmds.play; cmds['./jump'] = cmds.play;
   function run(line) {

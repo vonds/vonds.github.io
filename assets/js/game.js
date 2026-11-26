@@ -779,11 +779,12 @@
   if (brand) brand.addEventListener('click', function (e) {
     // in the hero the logo opens the game; further down it still goes home
     if (window.scrollY > window.innerHeight * .5 || document.body.classList.contains('diving')) return;
-    e.preventDefault(); open(0);
+    e.preventDefault(); if (window.VondsPick) window.VondsPick(); else open(0);
   });
   /* ---------- hints that the game exists ---------- */
   window.VondsGame = { open: function () { open(0); } };
-  window.VondsSprite = { frame: frame, look: function () { return LOOK; }, pose: POSE, arm: ARM };
+  window.VondsSprite = { frame: frame, look: function () { return LOOK; }, pose: POSE, arm: ARM,
+    bug: function (kind, f) { var fr = OBMAP[kind]; return obCanvas(fr[f % fr.length], false, 'rpg' + kind + (f % fr.length)); }, bugs: Object.keys(OBMAP) };
   try {
     console.log('%cV O N D S', 'font:600 20px Dosis,system-ui,sans-serif;letter-spacing:.6em;color:#2e2e30');
     console.log('%cHey, fellow builder. The logo up in the hero is a game.\nOr open the terminal with ` and type play.', 'font:13px ui-monospace,Menlo,Consolas,monospace;color:#5a5a60;line-height:1.6');
@@ -954,6 +955,23 @@
       x.fillStyle = light ? 'rgba(20,20,22,.55)' : 'rgba(236,236,236,.38)'; for (var j = 0; j < pts.length; j += 2) x.fillRect(pts[j], pts[j + 1], 1, 1);
       return (pantCache[key] = c);
     }
+    var backCache = {};
+    function backImg(light) {
+      var key = light ? 'L' : 'D'; if (backCache[key]) return backCache[key];
+      var pal = palette(LOOK), c = document.createElement('canvas'); c.width = 22; c.height = 26; var x = c.getContext('2d');
+      FRONT_HALF.forEach(function (half, y) {
+        var row = half + half.split('').reverse().join('');
+        for (var i = 0; i < 22; i++) { var ch = row.charAt(i); if (ch === '.') continue; if (y <= 13 && 'SERK'.indexOf(ch) >= 0) ch = (i + y) % 5 ? 'H' : 'h'; x.fillStyle = pal[ch] || pal.S; x.fillRect(i, y, 1, 1); }
+      });
+      var d = x.getImageData(0, 0, 22, 26).data, pts = [];
+      for (var yy = 0; yy < 26; yy++) for (var xx = 0; xx < 22; xx++) {
+        if (d[(yy * 22 + xx) * 4 + 3]) continue;
+        if ([[1,0],[-1,0],[0,1],[0,-1]].some(function (o) { var a = xx + o[0], b = yy + o[1]; return a >= 0 && b >= 0 && a < 22 && b < 26 && d[(b * 22 + a) * 4 + 3] > 200; })) pts.push(xx, yy);
+      }
+      x.fillStyle = light ? 'rgba(20,20,22,.55)' : 'rgba(236,236,236,.38)'; for (var j = 0; j < pts.length; j += 2) x.fillRect(pts[j], pts[j + 1], 1, 1);
+      return (backCache[key] = c);
+    }
+    if (window.VondsSprite) { window.VondsSprite.front = function (blink) { return frontImg(false, blink); }; window.VondsSprite.back = function () { return backImg(false); }; }
     function render(pose, dark) {
       var u = S * R; cx2.setTransform(1, 0, 0, 1, 0, 0); cx2.clearRect(0, 0, cv2.width, cv2.height); cx2.imageSmoothingEnabled = false;
       if (pose === 'pant0' || pose === 'pant1') { cx2.drawImage(pantImg(!dark, pose === 'pant1' ? 1 : 0), OX * u, OY * u, 22 * u, 26 * u); return; }
