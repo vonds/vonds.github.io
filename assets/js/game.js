@@ -1160,12 +1160,10 @@
       // the offer, at the end of the page
       var foot = document.querySelector('footer');
       if (foot && 'IntersectionObserver' in window) {
-        var offered = false;
         new IntersectionObserver(function (en) {
           en.forEach(function (x) {
-            var st3 = store.get(TOUR);
-            if (!x.isIntersecting || offered || st3 === 'done' || st3 === 'skipped' || api.active() || T2.isOpen() || document.body.classList.contains('diving')) return;
-            offered = true;
+            // every time the visitor reaches the very bottom
+            if (!x.isIntersecting || api.active() || T2.isOpen() || document.body.classList.contains('diving')) return;
             setTimeout(function () { if (!api.active() && !T2.isOpen()) waitScene(); }, 500);
           });
         }, { threshold: .6 }).observe(foot);
