@@ -59,8 +59,18 @@
     var hud = root.querySelector('.rpg-hud'), foesBox = root.querySelector('.rpg-foes'), partyBox = root.querySelector('.rpg-party'), cmdBox = root.querySelector('.rpg-cmd'), titleEl = root.querySelector('.rpg-title');
 
     /* ---------- save data ---------- */
-    var save = { lvl: 1, xp: 0, hp: 60, mp: 24, coffee: 3, notes: 2, linux: 0, wins: 0, met: false };
+    var save = { lvl: 1, xp: 0, hp: 60, mp: 24, items: { bit: 3, byte: 1 }, notes: 2, linux: 0, wins: 0, met: false };
     try { var sv = JSON.parse(localStorage.getItem('vonds-quest') || 'null'); if (sv) for (var k0 in sv) save[k0] = sv[k0]; } catch (e) {}
+    // healing items: data, in growing sizes
+    var ITEMS = [
+      { id: 'bit', name: 'Bit', heal: 15, tip: 'The smallest unit of data. Restores 15 HP.' },
+      { id: 'byte', name: 'Byte', heal: 35, tip: 'Eight bits. Restores 35 HP.' },
+      { id: 'kb', short: 'KB', name: 'Kilobyte', heal: 70, tip: 'A thousand bytes. Restores 70 HP.' },
+      { id: 'mb', short: 'MB', name: 'Megabyte', heal: 140, tip: 'A million bytes. Restores 140 HP.' },
+      { id: 'gb', short: 'GB', name: 'Gigabyte', heal: 9999, tip: 'A billion bytes. Restores all HP.' }
+    ];
+    if (!save.items) save.items = { bit: 3, byte: 1 };
+    if (save.coffee) { save.items.bit = (save.items.bit || 0) + save.coffee; } delete save.coffee;   // older saves
     function store() { try { localStorage.setItem('vonds-quest', JSON.stringify(save)); } catch (e) {} }
     function maxHp() { return 60 + (save.lvl - 1) * 14; }
     function xpNeed() { return 30 + (save.lvl - 1) * 25; }
@@ -364,10 +374,11 @@
       var list = which === 'main' ? [
           { label: 'Fight', tip: 'A plain attack at Vee’s regular strength.', fn: function () { chooseTarget('fight'); } },
           { label: 'Shell', tip: 'Open a shell and type the command that solves a bug’s problem. Right: a bonus attack. Wrong: half power.', fn: function () { chooseTarget('cmd'); } },
-          { label: 'Item', tip: 'Coffee, and anything found in the debris.', fn: function () { menu('items'); } },
+          { label: 'Item', tip: 'Bits, bytes and bigger: data that restores HP.', fn: function () { menu('items'); } },
           { label: 'Run', tip: 'Slip away into the dark.', fn: runAway }]
-        : [{ label: 'Coffee', right: 'x' + save.coffee, off: !save.coffee, tip: 'Restores 25 HP.', fn: function () { item('coffee'); } }, { label: 'Back', fn: function () { menu('main'); } }];
-      cmdBox.classList.toggle('wide', which !== 'main');
+        : ITEMS.filter(function (it) { return save.items[it.id] > 0; }).map(function (it) { return { label: (innerWidth < 640 && it.short) || it.name, right: 'x' + save.items[it.id], tip: it.tip, fn: function () { item(it.id); } }; })
+            .concat([{ label: 'Back', tip: ITEMS.some(function (it) { return save.items[it.id] > 0; }) ? '' : 'No data left. Bugs sometimes drop some.', fn: function () { menu('main'); } }]);
+      cmdBox.classList.remove('wide');   // keep Vee's HP in view while choosing an item
       list.forEach(function (o, j) {
         var b = document.createElement('button'); b.type = 'button'; b.disabled = !!o.off; b.className = j === 0 ? 'on' : '';
         b.innerHTML = '<span>' + o.label + '</span>' + (o.right ? '<em>' + o.right + '</em>' : '');
@@ -379,7 +390,7 @@
     }
     function setSel(j) {
       if (!B || !B.list) return; B.sel = (j + B.list.length) % B.list.length;
-      [].forEach.call(cmdBox.querySelectorAll('button'), function (b, i) { b.className = i === B.sel ? 'on' : ''; });
+      [].forEach.call(cmdBox.querySelectorAll('button'), function (b, i) { b.className = i === B.sel ? 'on' : ''; if (i === B.sel && b.scrollIntoView) b.scrollIntoView({ block: 'nearest' }); });
       var o = B.list[B.sel]; if (o && o.tip) log(o.tip, true);
     }
     var logT = 0;
@@ -454,7 +465,8 @@
     function after() { hudOn(); setTimeout(!living().length ? win : foesTurn, 900); }
     function item(which) {
       B.phase = 'anim'; cmdBox.classList.remove('on');
-      if (which === 'coffee' && save.coffee) { save.coffee--; var h = Math.min(maxHp() - save.hp, 25); save.hp += h; pop('+' + h, 258, 70); log('Vee drinks a coffee. +' + h + ' HP.'); }
+      var it = ITEMS.filter(function (x) { return x.id === which; })[0];
+      if (it && save.items[which] > 0) { save.items[which]--; var h = Math.min(maxHp() - save.hp, it.heal); save.hp += h; pop('+' + h, 258, 70); log('Vee absorbs a ' + it.name.toLowerCase() + ' of clean data. +' + h + ' HP.'); store(); }
       hudOn(); setTimeout(foesTurn, 700);
     }
     function runAway() {
@@ -486,7 +498,11 @@
       var xp = 0, n = B.foes.length; B.foes.forEach(function (f) { xp += f.foe.xp + rnd(0, 3); });
       save.xp += xp; save.wins += n; save.linux += n; save.bw++;
       var lines = ['The rot clears. Vee gains ' + xp + ' XP.'];
-      if (Math.random() < .2 + n * .05) { save.coffee++; lines.push('Something useful in the debris: a coffee.'); }
+      if (Math.random() < .35 + n * .07) {   // bigger finds as Vee levels up
+        var r2 = Math.random() * (40 + save.lvl * 6), tier = r2 < 40 ? 0 : r2 < 60 ? 1 : r2 < 75 ? 2 : r2 < 85 ? 3 : 4;
+        tier = Math.min(tier, Math.floor(save.lvl / 3) + 1); var drop = ITEMS[tier];
+        save.items[drop.id] = (save.items[drop.id] || 0) + 1; lines.push('The bug drops clean data: a ' + drop.name.toLowerCase() + '.');
+      }
       while (save.xp >= xpNeed()) {
         save.xp -= xpNeed(); save.lvl++; save.hp = maxHp();
         lines.push('LEVEL UP. Vee is now level ' + save.lvl + '. Max HP ' + maxHp() + '.');
