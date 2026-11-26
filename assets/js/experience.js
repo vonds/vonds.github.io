@@ -353,6 +353,7 @@
         '  about             jump to the About section\n' +
         '  contact           how to reach me\n' +
         '  step-inside       take the descent\n' +
+        '  play              play the hidden game\n' +
         '  clear             clear the screen\n' +
         '  exit              close the terminal');
     },
@@ -381,9 +382,10 @@
     exit: function () { close(); },
     sudo: function () { print('nice try.'); },
     pwd: function () { print('/home/vonds'); },
-    date: function () { print(new Date().toString()); }
+    date: function () { print(new Date().toString()); },
+    play: function () { print('<span class="d">loading ./jump …</span>'); setTimeout(function () { close(); if (window.VondsGame) setTimeout(window.VondsGame.open, 260); }, 350); }
   };
-  cmds.descend = cmds['step-inside']; cmds.ll = cmds.ls; cmds.dir = cmds.ls; cmds.quit = cmds.exit;
+  cmds.descend = cmds['step-inside']; cmds.ll = cmds.ls; cmds.dir = cmds.ls; cmds.quit = cmds.exit; cmds.game = cmds.play; cmds.jump = cmds.play; cmds['./jump'] = cmds.play;
   function run(line) {
     var parts = line.trim().split(/\s+/), c = (parts.shift() || '').toLowerCase(), a = parts.join(' ');
     print('<span class="d">$</span> <span class="c">' + esc(line) + '</span>');

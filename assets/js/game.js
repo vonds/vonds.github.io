@@ -57,7 +57,7 @@
   // locs: strands of 2px hanging from the back of the head; length set by LOOK.locs
   var STRANDS = [[1, 8, .95], [4, 7, 1.05], [7, 9, .85]];
   var FRONT = [8, 12, .5];   // one strand that falls in front of the shoulder
-  var ARM = { fwd: [[0,0],[1,0],[2,1],[3,1]], mid: [[0,0],[0,1],[0,2],[0,3]], back: [[0,0],[-1,1],[-2,1],[-3,2]], up: [[0,0],[1,-1],[2,-2],[2,-3]] };
+  var ARM = { fwd: [[0,0],[1,0],[2,1],[3,1]], mid: [[0,0],[0,1],[0,2],[0,3]], back: [[0,0],[-1,1],[-2,1],[-3,2]], up: [[0,0],[1,-1],[2,-2],[2,-3]], point: [[0,0],[1,0],[2,-1],[3,-1],[4,-2],[5,-2],[6,-3],[7,-4],[8,-4]] };
   var LEG = {
     down:  [[[9,19],[10,19],[9,20],[10,20],[9,21],[10,21]], [[9,22],[10,22],[11,22]]],
     fwd:   [[[11,19],[12,19],[12,20],[13,20],[13,21],[14,21]], [[13,22],[14,22],[15,22]]],
@@ -74,7 +74,9 @@
     jump: { bl: 'trail', fl: 'tuck', ba: 'back', fa: 'up',  bob: 0,  sway: 3, lift: 3 },
     fall: { bl: 'back', fl: 'fwd',  ba: 'up',   fa: 'up',   bob: 0,  sway: -1, lift: 2 },
     idle: { bl: 'down', fl: 'down', ba: 'mid',  fa: 'mid',  bob: 0,  sway: 0 },
-    idle2:{ bl: 'down', fl: 'down', ba: 'mid',  fa: 'mid',  bob: -1, sway: 0 }
+    idle2:{ bl: 'down', fl: 'down', ba: 'mid',  fa: 'mid',  bob: -1, sway: 0 },
+    point:{ bl: 'down', fl: 'down', ba: 'mid',  fa: 'point', bob: 0, sway: 0 },
+    point2:{ bl: 'down', fl: 'down', ba: 'mid', fa: 'point', bob: -1, sway: 1 }
   };
   // extra pieces used by the ten versions
   var HOODDOWN = { r: 11, rows: ['....OOOOO...........', '...OOOOOOO..........', '...OoOOOOO..........', '....OOOO............'] };
@@ -117,13 +119,14 @@
       var y = (c[0] * .3 + c[1] * .59 + c[2] * .11) / 255, ex = 'SKR'.indexOf(key) >= 0 ? .78 : .55; p[key] = rgb([1, 1, 1].map(function () { return 30 + 225 * Math.pow(y, ex); }));
     }
     p.H = 'rgb(66,66,70)'; p.h = 'rgb(112,112,118)'; p.E = 'rgb(8,8,8)'; p.W = 'rgb(242,242,242)';
+    p.D = 'rgb(14,14,16)'; p.d = 'rgb(54,54,58)';   // headphones: black band and cups
     if (L.sil) { for (var s2 in p) p[s2] = 'rgb(10,10,11)'; p.W = 'rgb(242,242,242)'; }
     return p;
   }
   var cache = {};
-  function frame(name, L) {
+  function frame(name, L, onLight) {
     L = L || LOOK;
-    var key = L.name + name + (T && T.light ? 'L' : 'D');
+    var lightBg = onLight || !!(T && T.light), key = L.name + name + (lightBg ? 'L' : 'D');
     if (cache[key]) return cache[key];
     var pal = palette(L), cvs = document.createElement('canvas'); cvs.width = 22; cvs.height = 26;
     var c = cvs.getContext('2d'), pose = POSE[name], oy = 1 + pose.bob;
@@ -163,7 +166,7 @@
       if (d[(y * 22 + x) * 4 + 3]) continue;
       if ([[1,0],[-1,0],[0,1],[0,-1]].some(function (o) { var xx = x + o[0], yy = y + o[1]; return xx >= 0 && yy >= 0 && xx < 22 && yy < 26 && d[(yy * 22 + xx) * 4 + 3] > 200; })) out.push(x, y);
     }
-    c.fillStyle = L.sil ? 'rgba(242,242,242,.92)' : (T && T.light) ? 'rgba(20,20,22,.55)' : 'rgba(236,236,236,.38)'; for (var i = 0; i < out.length; i += 2) c.fillRect(out[i], out[i + 1], 1, 1);
+    c.fillStyle = L.sil ? 'rgba(242,242,242,.92)' : lightBg ? 'rgba(20,20,22,.55)' : 'rgba(236,236,236,.38)'; for (var i = 0; i < out.length; i += 2) c.fillRect(out[i], out[i + 1], 1, 1);
     return (cache[key] = cvs);
   }
   function P() { return Math.max(2, Math.round(2.9 * k * DPR)) / DPR; }
@@ -777,4 +780,68 @@
     if (window.scrollY > window.innerHeight * .5 || document.body.classList.contains('diving')) return;
     e.preventDefault(); open(0);
   });
+  /* ---------- hints that the game exists ---------- */
+  window.VondsGame = { open: function () { open(0); } };
+  try {
+    console.log('%cV O N D S', 'font:600 20px Dosis,system-ui,sans-serif;letter-spacing:.6em;color:#2e2e30');
+    console.log('%cHey, fellow builder. The logo up in the hero is a game.\nOr open the terminal with ` and type play.', 'font:13px ui-monospace,Menlo,Consolas,monospace;color:#5a5a60;line-height:1.6');
+  } catch (e) {}
+
+  // every 30 seconds in the hero, the sprite walks in along the top, points at the logo, hops, and runs off
+  (function peek() {
+    if (window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    var wrap = document.createElement('div'); wrap.className = 'gpeek'; wrap.setAttribute('aria-hidden', 'true');
+    wrap.innerHTML = '<svg class="gline"><path/></svg><div class="gbub">Psst. Click the logo.</div><canvas></canvas>';
+    document.body.appendChild(wrap);
+    var pc = wrap.querySelector('canvas'), px2 = pc.getContext('2d'), bub = wrap.querySelector('.gbub'), path = wrap.querySelector('path'), svg = wrap.querySelector('svg');
+    var S, CW, CH, raf2 = 0, t0 = 0, played = false;
+    function size() { S = innerWidth < 640 ? 2.5 : 3; CW = Math.round(22 * S); CH = Math.round(26 * S); pc.width = CW * 2; pc.height = CH * 2; pc.style.width = CW + 'px'; pc.style.height = CH + 'px'; }
+    function ok() { return (window.scrollY || 0) < 40 && !document.hidden && !gm.classList.contains('open') && !document.body.classList.contains('diving') && !document.querySelector('.xp-term.open, .overlay.open, .cs.open, dialog[open]'); }
+    // where he stops: just below and left of the logo, so the raised hand points up at it
+    function spot() {
+      var b = brand ? brand.getBoundingClientRect() : { left: 40, right: 70, top: 20, bottom: 60, width: 30, height: 40 };
+      if (b.left > 20.5 * S + 10) return { x: b.left - 2 - 20.5 * S, y: b.bottom + 10 - 12.5 * S, logo: b, flip: false };
+      // no room on the left (phones): stand below and right of the logo, turn back and point up at it
+      return { x: b.right + 4 - 1.5 * S, y: b.bottom + 4, logo: b, flip: true };
+    }
+    function draw(name, x, y, mirror) {
+      px2.setTransform(1, 0, 0, 1, 0, 0); px2.clearRect(0, 0, pc.width, pc.height); px2.imageSmoothingEnabled = false;
+      if (mirror) { px2.translate(pc.width, 0); px2.scale(-1, 1); }
+      px2.drawImage(frame(name, null, true), 0, 0, pc.width, pc.height);
+      pc.style.transform = 'translate(' + x + 'px,' + y + 'px)';
+    }
+    function end() { cancelAnimationFrame(raf2); wrap.classList.remove('on', 'talk'); if (brand) brand.classList.remove('g-pulse'); path.setAttribute('d', ''); }
+    var WALK = 1.7, POINT = 3.6, HOP = .38, RUN = .6;
+    function step(ts) {
+      if (!t0) t0 = ts;
+      var t = (ts - t0) / 1000, sp = spot(), from = -CW - 10, walkFrame = 'run' + (Math.floor(t * 7) % 4);
+      if (!ok()) { end(); return; }
+      if (t < WALK) {                                     // walk in along the top
+        var e = t / WALK; e = e < .85 ? e / .85 : 1;
+        draw(e < 1 ? walkFrame : 'idle', from + (sp.x - from) * (1 - Math.pow(1 - e, 1.6)), sp.y, false);
+      } else if (t < WALK + POINT) {                       // point at the logo
+        var tp = t - WALK;
+        draw(tp < .15 && sp.flip ? 'idle' : Math.floor(tp * 2.6) % 2 ? 'point2' : 'point', sp.x, sp.y, sp.flip);
+        wrap.classList.add('talk'); if (brand) brand.classList.add('g-pulse');
+        var r = pc.getBoundingClientRect(), hx = sp.flip ? r.left + 1.5 * S : r.left + 21 * S, hy = r.top + 12 * S, lx = sp.logo.left + sp.logo.width * .3, ly = sp.logo.bottom - 2, k3 = Math.min(1, tp / .45);
+        path.setAttribute('d', 'M' + hx + ' ' + hy + ' L' + (hx + (lx - hx) * k3) + ' ' + (hy + (ly - hy) * k3));
+        if (sp.flip) { bub.style.left = (r.right + 6) + 'px'; bub.style.top = (r.top + r.height * .3) + 'px'; }
+        else { bub.style.left = (sp.logo.right + 16) + 'px'; bub.style.top = (sp.logo.top + sp.logo.height / 2 - 16) + 'px'; }
+      } else if (t < WALK + POINT + HOP) {                 // turn toward the exit and do a quick hop
+        wrap.classList.remove('talk'); if (brand) brand.classList.remove('g-pulse'); path.setAttribute('d', '');
+        var u = (t - WALK - POINT) / HOP;
+        draw(u > .12 && u < .88 ? 'jump' : 'idle', sp.x, sp.y - Math.sin(Math.PI * u) * 9 * S, true);
+      } else if (t < WALK + POINT + HOP + RUN) {           // then run off screen
+        var e2 = (t - WALK - POINT - HOP) / RUN;
+        draw('run' + (Math.floor(t * 13) % 4), sp.x + (from - sp.x) * e2 * e2, sp.y, true);
+      } else { end(); return; }
+      raf2 = requestAnimationFrame(step);
+    }
+    function go() { if (!ok() || played) return; size(); svg.setAttribute('width', innerWidth); svg.setAttribute('height', innerHeight); t0 = 0; wrap.classList.add('on'); raf2 = requestAnimationFrame(step); }
+    setInterval(go, 30000);
+    // stop nudging once they have found it
+    var o2 = open; open = function (i) { played = true; end(); o2(i); }; window.VondsGame.open = function () { open(0); };
+    window.__gpeek = go;
+  })();
+
 })();
