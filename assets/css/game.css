@@ -73,6 +73,9 @@
 .gguide .gwho{display:block;margin:0 0 6px;font:600 10px/1 Dosis,sans-serif;letter-spacing:.3em;text-transform:uppercase}
 .gguide .gtalk p{margin:0}
 .gguide .gtalk strong{font-weight:600;letter-spacing:.04em}
+.gguide .gtalk strong.wait{display:block;font-size:18px;letter-spacing:.08em;margin-bottom:2px}
+.gguide .gpuff{position:absolute;width:6px;height:6px;border-radius:50%;background:rgba(46,46,48,.28);pointer-events:none;animation:gPuff .9s ease-out forwards}
+@keyframes gPuff{0%{opacity:.9;transform:translate(0,0) scale(.6)}100%{opacity:0;transform:translate(-14px,-18px) scale(1.8)}}
 .gguide .gtalk code{font:500 13px/1 ui-monospace,Menlo,Consolas,monospace;padding:2px 6px;white-space:nowrap}
 .gguide .gtalk .tip{display:block;margin-top:6px;font-size:12px;opacity:.7}
 .gguide .gtalk .step{display:block;margin-bottom:5px;font:600 10px/1 Dosis,sans-serif;letter-spacing:.24em;text-transform:uppercase;opacity:.55}

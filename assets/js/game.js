@@ -903,8 +903,31 @@
     var body = el.querySelector('.gbody'), cv2 = el.querySelector('canvas'), cx2 = cv2.getContext('2d'), talk = el.querySelector('.gtalk'), txt = talk.querySelector('p'), acts = talk.querySelector('.gacts'), rope = el.querySelector('.grope');
     var S = 3, R = 1, cur = null, hideT = 0;
     function scale() { R = Math.min(3, window.devicePixelRatio || 1); S = innerWidth < 640 ? 2.4 : 3; cv2.width = Math.round(GW * S * R); cv2.height = Math.round(GH * S * R); cv2.style.width = GW * S + 'px'; cv2.style.height = GH * S + 'px'; }
+    // front-facing Vee (for when he turns to the visitor): left half, mirrored
+    var FRONT_HALF = [
+      '...........', '.......DDDD', '.....DHHHhH', '....DHHHHHH', '...HHHHHHHH', '..DDHHSSSSS', '..DdHSSSSSS', '..DdHSSESSS', '..DDHSSESSS',
+      '..HHHSSSSSS', '..HH.SSRSSS', '..HH..SSSSE', '..H....SSSS', '..H......SS', '..H..TTTTTT', '..HTTTTTTTT', '..STTTTTTTT', '..STTTTTTTT',
+      '..SSTTTTTTT', '....LLLLLLL', '......PPPP.', '......PPPP.', '......PPPP.', '.....BBBBB.', '...........', '...........'];
+    var frontCache = {};
+    function frontImg(light, blink) {
+      var key = (light ? 'L' : 'D') + (blink ? 'b' : ''); if (frontCache[key]) return frontCache[key];
+      var pal = palette(LOOK), c = document.createElement('canvas'); c.width = 22; c.height = 26; var x = c.getContext('2d');
+      FRONT_HALF.forEach(function (half, y) {
+        var row = half + half.split('').reverse().join('');
+        for (var i = 0; i < 22; i++) { var ch = row.charAt(i); if (ch === '.') continue; if (blink && ch === 'E') ch = 'S'; x.fillStyle = pal[ch] || pal.S; x.fillRect(i, y, 1, 1); }
+      });
+      if (blink) { x.fillStyle = pal.E; x.fillRect(7, 8, 1, 1); x.fillRect(14, 8, 1, 1); }
+      var d = x.getImageData(0, 0, 22, 26).data, pts = [];
+      for (var yy = 0; yy < 26; yy++) for (var xx = 0; xx < 22; xx++) {
+        if (d[(yy * 22 + xx) * 4 + 3]) continue;
+        if ([[1,0],[-1,0],[0,1],[0,-1]].some(function (o) { var a = xx + o[0], b = yy + o[1]; return a >= 0 && b >= 0 && a < 22 && b < 26 && d[(b * 22 + a) * 4 + 3] > 200; })) pts.push(xx, yy);
+      }
+      x.fillStyle = light ? 'rgba(20,20,22,.55)' : 'rgba(236,236,236,.38)'; for (var j = 0; j < pts.length; j += 2) x.fillRect(pts[j], pts[j + 1], 1, 1);
+      return (frontCache[key] = c);
+    }
     function render(pose, dark) {
       var u = S * R; cx2.setTransform(1, 0, 0, 1, 0, 0); cx2.clearRect(0, 0, cv2.width, cv2.height); cx2.imageSmoothingEnabled = false;
+      if (pose === 'front' || pose === 'frontb') { cx2.drawImage(frontImg(!dark, pose === 'frontb'), OX * u, OY * u, 22 * u, 26 * u); return; }
       cx2.drawImage(frame(pose, null, !dark), OX * u, OY * u, 22 * u, 26 * u);
       var pts = STICK[pose] || [];
       pts.forEach(function (q, i) {
@@ -1143,18 +1166,60 @@
             var st3 = store.get(TOUR);
             if (!x.isIntersecting || offered || st3 === 'done' || st3 === 'skipped' || api.active() || T2.isOpen() || document.body.classList.contains('diving')) return;
             offered = true;
-            setTimeout(function () {
-              if (api.active() || T2.isOpen()) return;
-              var sz = api.size(), phone = innerWidth < 640;
-              show({ id: 'footer', dark: false, pose: 'ghold', x: innerWidth - sz.w - (phone ? 56 : 84), y: innerHeight - sz.h - (phone ? 10 : 22), side: phone ? 'above' : 'left', mirror: true, enter: 'walk', from: 'right',
-                text: '<strong>Wait!</strong> Let me show you something before you go!' + (phone ? '' : ' <span class="tip">This site has a hidden terminal. You can also press <code>`</code> anytime.</span>'),
-                actions: [{ label: 'Show me', fn: function () { hide('walk'); setTimeout(function () { touring = true; stepI = 0; store.set(TOUR, 'started'); T2.open(); }, 200); } },
-                          { label: 'Not now', quiet: true, fn: function () { hide('walk'); } }] });
-              setTimeout(function () { if (api.active() === 'footer') hide('walk'); }, 14000);
-            }, 700);
+            setTimeout(function () { if (!api.active() && !T2.isOpen()) waitScene(); }, 500);
           });
         }, { threshold: .6 }).observe(foot);
         window.addEventListener('scroll', function () { if (api.active() === 'footer' && foot.getBoundingClientRect().top > innerHeight) hide('walk'); }, { passive: true });
+
+        // runs in under the form, stops above the footer logo, catches his breath, turns to you: "Wait......"
+        var waitScene = function () {
+          var sz = api.size(), phone = innerWidth < 640, mark = foot.querySelector('.mark') || foot;
+          var r = mark.getBoundingClientRect(), x = innerWidth / 2 - sz.w / 2, y = r.top - 8 - (OY + 25) * S;
+          var o = { id: 'footer', dark: false, pose: 'front', x: x, y: y, side: 'above', mirror: false, enter: 'walk', from: 'right', text: '', actions: [] };
+          clearTimeout(hideT); cancelAnimationFrame(walkRaf); scale(); cur = o;
+          el.className = 'gguide on in walking e-walk light'; rope.style.display = 'none';
+          walk(innerWidth + 8, x, y, false, function () {
+            if (cur !== o) return;
+            // catch his breath: quick heaves and little puffs
+            var n = 0, heave = setInterval(function () {
+              if (cur !== o) { clearInterval(heave); return; }
+              render(n % 2 ? 'idle2' : 'idle', false);
+              if (n % 3 === 0) puff(x + (OX + 4) * S, y + (OY + 11) * S);
+              if (++n > 12) {
+                clearInterval(heave);
+                el.classList.remove('flip'); render('front', false);           // turn to face the visitor
+                setTimeout(function () { if (cur === o) render('frontb', false); }, 520);
+                setTimeout(function () { if (cur === o) render('front', false); }, 640);
+                setTimeout(function () { if (cur === o) talkWait(o); }, 820);
+              }
+            }, 120);
+          });
+          setTimeout(function () { if (cur === o) hide('walk'); }, 18000);
+        };
+        var puff = function (px, py) {
+          var p = document.createElement('i'); p.className = 'gpuff';
+          p.style.left = Math.round(px) + 'px'; p.style.top = Math.round(py) + 'px'; el.appendChild(p);
+          setTimeout(function () { p.remove(); }, 900);
+        };
+        var talkWait = function (o) {
+          el.classList.remove('walking');
+          var dots = 0, base = '<strong class="wait">Wait</strong>';
+          say(base, []); place(o.x, o.y, 'above');
+          var typing = setInterval(function () {
+            if (cur !== o) { clearInterval(typing); return; }
+            dots++; txt.innerHTML = '<strong class="wait">Wait' + new Array(dots + 1).join('.') + '</strong>'; place(o.x, o.y, 'above');
+            if (dots >= 6) {
+              clearInterval(typing);
+              setTimeout(function () {
+                if (cur !== o) return;
+                say('<strong class="wait">Wait......</strong> Let me show you something before you go!' + (innerWidth < 640 ? '' : ' <span class="tip">This site has a hidden terminal. You can also press <code>`</code> anytime.</span>'),
+                  [{ label: 'Show me', fn: function () { hide('walk'); setTimeout(function () { touring = true; stepI = 0; store.set(TOUR, 'started'); T2.open(); }, 200); } },
+                   { label: 'Not now', quiet: true, fn: function () { hide('walk'); } }]);
+                place(o.x, o.y, 'above');
+              }, 900);
+            }
+          }, 190);
+        };
       }
     }
   })();
