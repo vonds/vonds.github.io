@@ -83,6 +83,9 @@
 .gguide .gacts:empty{display:none}
 .gguide .gacts button{appearance:none;cursor:pointer;font:600 11px/1 Dosis,sans-serif;letter-spacing:.22em;text-transform:uppercase;padding:9px 13px;border:1px solid;transition:background .2s,color .2s}
 .gguide .gacts button.q{padding-left:4px;padding-right:4px}
+.gguide .gacts button.cmd{font:600 13px/1 ui-monospace,Menlo,Consolas,monospace;letter-spacing:0;text-transform:none;padding:10px 14px}
+.gguide .gacts button.cmd::before{content:"$ ";opacity:.55}
+@media (hover:none),(pointer:coarse){.gguide .gacts button{min-height:40px}}
 .gguide.light .gacts button.q,.gguide.dark .gacts button.q{border-color:transparent}
 /* light pages */
 .gguide.light .gtalk{background:#fff;color:#2e2e30;border:1px solid #2e2e30;box-shadow:0 18px 40px rgba(0,0,0,.1)}
