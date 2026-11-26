@@ -121,12 +121,40 @@
       var img = fr.querySelector('img'); if (!img) return null;
       var name = (img.getAttribute('src') || '').split('/').pop().replace(/\.(png|jpe?g|webp)$/, '');
       var pv = doc.createElement('span'); pv.className = 'pv'; pv.setAttribute('aria-hidden', 'true');
-      pv.innerHTML = '<video muted loop playsinline preload="none" src="assets/video/' + name + '.mp4"></video><span class="tag"><i></i>Live preview</span>';
+      pv.innerHTML = '<span class="scr"><video muted loop playsinline preload="none" src="assets/video/' + name + '.mp4"></video></span>' +
+        '<span class="seam"></span><span class="seam"></span><span class="hud"><i></i><i></i><i></i><i></i></span>' +
+        '<span class="tag"><i></i>Live preview</span><span class="tc">00:00</span><span class="prog"><b></b></span><span class="arm"></span>';
       fr.appendChild(pv); fr._pv = pv; fr._v = pv.querySelector('video');
+      fr._tc = pv.querySelector('.tc'); fr._pb = pv.querySelector('.prog b');
       return pv;
     };
-    var play = function (fr) { if (!mk(fr)) return; fr.classList.add('playing'); var pr = fr._v.play(); if (pr && pr.catch) pr.catch(function () {}); };
-    var stop = function (fr) { if (!fr._v) return; fr.classList.remove('playing'); var v = fr._v; setTimeout(function () { if (!fr.classList.contains('playing')) { v.pause(); try { v.currentTime = 0; } catch (e) {} } }, 560); };
+    // timecode and loop progress, only while a tile is live
+    var tick = function (fr) {
+      if (!fr.classList.contains('live')) return;
+      var v = fr._v, d = v.duration || 0, t = v.currentTime || 0;
+      if (d) fr._pb.style.setProperty('--t', (t / d).toFixed(4));
+      var s2 = Math.floor(t); fr._tc.textContent = '00:' + (s2 < 10 ? '0' : '') + s2;
+      requestAnimationFrame(function () { tick(fr); });
+    };
+    var goLive = function (fr) {
+      if (!fr.classList.contains('playing') || fr.classList.contains('live')) return;
+      // next frame, so the opening transition always runs from closed
+      requestAnimationFrame(function () { if (fr.classList.contains('playing')) { fr.classList.add('live'); tick(fr); } });
+    };
+    var play = function (fr) {
+      if (!mk(fr)) return;
+      fr.classList.remove('arming'); fr.classList.add('playing');
+      var v = fr._v;
+      // reveal only once real frames are ready, so the screen never opens on black
+      if (v.readyState >= 3) goLive(fr); else v.addEventListener('playing', function () { goLive(fr); }, { once: true });
+      var pr = v.play(); if (pr && pr.catch) pr.catch(function () {});
+    };
+    var stop = function (fr) {
+      fr.classList.remove('arming');
+      if (!fr._v) return;
+      fr.classList.remove('playing', 'live'); var v = fr._v;
+      setTimeout(function () { if (!fr.classList.contains('playing')) { v.pause(); try { v.currentTime = 0; } catch (e) {} } }, 650);
+    };
     if (fine) {
       frames.forEach(function (fr) {
         fr.addEventListener('pointerenter', function () { play(fr); });
@@ -136,11 +164,22 @@
       });
     } else if (!saveData && 'IntersectionObserver' in window) {
       // phones: the tile in the middle of the screen plays on its own
-      var vis = new Map();
+      var vis = new Map(), pending = null, waitT = 0;
       var pick = function () {
         var best = null, bestD = 1e9, mid = innerHeight / 2;
         vis.forEach(function (on, fr) { if (!on) return; var r = fr.getBoundingClientRect(), d = Math.abs((r.top + r.bottom) / 2 - mid); if (d < bestD) { bestD = d; best = fr; } });
-        frames.forEach(function (fr) { if (fr === best) { if (!fr.classList.contains('playing')) play(fr); } else if (fr.classList.contains('playing')) stop(fr); });
+        frames.forEach(function (fr) { if (fr !== best && fr.classList.contains('playing')) stop(fr); });
+        // wait 2 seconds on the centered tile before its preview starts
+        if (best !== pending) {
+          clearTimeout(waitT);
+          if (pending && pending !== best) pending.classList.remove('arming');
+          pending = best;
+          if (best && !best.classList.contains('playing')) {
+            mk(best); best._v.preload = 'auto'; best._v.load();
+            void best.offsetWidth; best.classList.add('arming');
+            waitT = setTimeout(function () { if (pending === best) play(best); }, 2000);
+          }
+        }
       };
       var io2 = new IntersectionObserver(function (es) { es.forEach(function (e) { vis.set(e.target, e.intersectionRatio > 0.6); }); pick(); }, { threshold: [0, 0.6, 1] });
       frames.forEach(function (fr) { io2.observe(fr); });

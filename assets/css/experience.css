@@ -363,13 +363,61 @@ html.xp-ink .title.in{filter:blur(0);opacity:1;text-shadow:0 0 0 transparent}
 }
 
 /* ================= live product previews ================= */
+/* the tile powers on like a display: a seam of light opens from the center,
+   the picture resolves out of a soft bloom, then HUD details settle in */
 .work .frame{position:relative;overflow:hidden}
-.work .frame .pv{position:absolute;inset:0;z-index:2;display:flex;align-items:center;justify-content:center;background:#141416;opacity:0;pointer-events:none;
-  transition:opacity .55s cubic-bezier(.16,1,.3,1)}
-.work .frame .pv video{display:block;width:100%;height:auto;transform:scale(1.04);transition:transform 1.2s cubic-bezier(.16,1,.3,1)}
-.work .frame .pv .tag{position:absolute;left:14px;bottom:12px;display:flex;align-items:center;gap:8px;font:500 10px/1 Dosis,sans-serif;letter-spacing:.28em;text-transform:uppercase;color:#c4c4c8}
-.work .frame .pv .tag i{width:5px;height:5px;background:#ececec;transform:rotate(45deg)}
-.work .frame .pv::after{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(180deg,rgba(20,20,22,.0) 60%,rgba(20,20,22,.55))}
-.work .frame.playing .pv{opacity:1}
-.work .frame.playing .pv video{transform:none}
+.work .frame .pv{position:absolute;inset:0;z-index:2;pointer-events:none;--e:cubic-bezier(.16,1,.3,1);--io:cubic-bezier(.77,0,.18,1)}
+.work .frame .pv .scr{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:#0d0d0f;
+  clip-path:inset(50% 0 50% 0);transition:clip-path .55s var(--io)}
+.work .frame .pv video{display:block;width:100%;height:auto;transform:scale(1.07);filter:blur(12px) brightness(1.7) contrast(.75) saturate(0);
+  transition:transform .7s var(--e),filter .5s var(--e);will-change:transform,filter}
+/* fine scanlines and a soft vignette over the picture */
+.work .frame .pv .scr::before{content:"";position:absolute;inset:0;z-index:1;
+  background:repeating-linear-gradient(180deg,rgba(255,255,255,.035) 0 1px,transparent 1px 3px);mix-blend-mode:overlay}
+.work .frame .pv .scr::after{content:"";position:absolute;inset:0;z-index:1;
+  background:radial-gradient(120% 90% at 50% 45%,transparent 55%,rgba(8,8,10,.55)),linear-gradient(180deg,transparent 62%,rgba(10,10,12,.7))}
+/* the two edges of light that open the screen */
+.work .frame .pv .seam{position:absolute;left:0;right:0;top:50%;height:1px;z-index:3;opacity:0;
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,.95) 18%,#fff 50%,rgba(255,255,255,.95) 82%,transparent);
+  box-shadow:0 0 14px 1px rgba(255,255,255,.45),0 0 40px 4px rgba(255,255,255,.12)}
+/* HUD corner brackets */
+.work .frame .pv .hud i{position:absolute;width:16px;height:16px;z-index:3;border:0 solid rgba(236,236,236,.75);opacity:0;
+  transition:opacity .4s var(--e),transform .6s var(--e)}
+.work .frame .pv .hud i:nth-child(1){top:12px;left:12px;border-top-width:1px;border-left-width:1px;transform:translate(-6px,-6px)}
+.work .frame .pv .hud i:nth-child(2){top:12px;right:12px;border-top-width:1px;border-right-width:1px;transform:translate(6px,-6px)}
+.work .frame .pv .hud i:nth-child(3){bottom:12px;left:12px;border-bottom-width:1px;border-left-width:1px;transform:translate(-6px,6px)}
+.work .frame .pv .hud i:nth-child(4){bottom:12px;right:12px;border-bottom-width:1px;border-right-width:1px;transform:translate(6px,6px)}
+/* label, timecode and loop progress */
+.work .frame .pv .tag,.work .frame .pv .tc{position:absolute;bottom:20px;z-index:3;font:500 10px/1 Dosis,sans-serif;text-transform:uppercase;color:#d4d4d8;opacity:0;
+  transition:opacity .45s var(--e),letter-spacing .9s var(--e),transform .6s var(--e);transform:translateY(5px)}
+.work .frame .pv .tag{left:36px;display:flex;align-items:center;gap:9px;letter-spacing:.5em}
+.work .frame .pv .tag i{width:5px;height:5px;background:#f2f2f2;transform:rotate(45deg);box-shadow:0 0 8px rgba(255,255,255,.6)}
+.work .frame .pv .tc{right:36px;letter-spacing:.2em;font-variant-numeric:tabular-nums;color:#9a9aa0}
+.work .frame .pv .prog{position:absolute;left:36px;right:36px;bottom:12px;height:1px;z-index:3;background:rgba(255,255,255,.12);opacity:0;transition:opacity .4s var(--e)}
+.work .frame .pv .prog b{position:absolute;inset:0;background:#ededed;transform-origin:left;transform:scaleX(var(--t,0));box-shadow:0 0 6px rgba(255,255,255,.5)}
+/* phones: a hairline charges across the bottom while the tile waits to play */
+.work .frame .pv .arm{position:absolute;left:0;right:0;bottom:0;height:1px;z-index:4;transform-origin:left;transform:scaleX(0);opacity:0;
+  background:linear-gradient(90deg,rgba(255,255,255,.2),#fff);box-shadow:0 0 10px rgba(255,255,255,.55)}
+
+/* waiting (phones) */
+.work .frame.arming .pv .arm{opacity:1;transform:scaleX(1);transition:transform 2s linear,opacity .3s}
+.work .frame.arming .pv .hud i{opacity:.4;transform:none}
+/* live */
+.work .frame.live .pv .scr{clip-path:inset(0 0 0 0);transition:clip-path .95s var(--io)}
+.work .frame.live .pv video{transform:none;filter:none;transition:transform 1.8s var(--e) .1s,filter 1.2s var(--e) .25s}
+.work .frame.live .pv .seam{animation:pvSeam .95s var(--io) both}
+.work .frame.live .pv .seam+.seam{animation-name:pvSeam2}
+.work .frame.live .pv .hud i{opacity:1;transform:none;transition-delay:.55s}
+.work .frame.live .pv .tag{opacity:1;transform:none;letter-spacing:.28em;transition-delay:.7s}
+.work .frame.live .pv .tc{opacity:1;transform:none;transition-delay:.8s}
+.work .frame.live .pv .prog{opacity:1;transition-delay:.85s}
+.work .frame.live .pv .arm{opacity:0;transform:scaleX(1);transition:opacity .5s}
+@keyframes pvSeam{0%{top:50%;opacity:0}12%{opacity:1}85%{opacity:.85}100%{top:0;opacity:0}}
+@keyframes pvSeam2{0%{top:50%;opacity:0}12%{opacity:1}85%{opacity:.85}100%{top:calc(100% - 1px);opacity:0}}
+@media (max-width:600px){
+  .work .frame .pv .hud i{width:12px;height:12px}
+  .work .frame .pv .tag{left:28px;bottom:18px;font-size:9px}
+  .work .frame .pv .tc{right:28px;bottom:18px;font-size:9px}
+  .work .frame .pv .prog{left:28px;right:28px;bottom:11px}
+}
 @media (prefers-reduced-motion:reduce){.work .frame .pv{display:none}}
