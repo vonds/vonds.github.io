@@ -508,38 +508,19 @@
 
   /* ---------- on-brand pixel obstacles ---------- */
   var OBMAP = {
-    bug: [[
-      'M.........', '.MLLLLL...', 'MLWLLLLLL.', '.LLLDLLLLL', '.LLLDLLLLL', '..L.L.L.L.', '.L.L.L.L..'], [
-      'M.........', '.MLLLLL...', 'MLWLLLLLL.', '.LLLDLLLLL', '.LLLDLLLLL', '..L.L.L.L.', '...L.L.L.L']],
-    virus: [[
-      '....W....', '.W.MMM.W.', '..MLLLM..', '.MLLDLLM.', 'WMLDLDLMW', '.MLLDLLM.', '..MLLLM..', '.W.MMM.W.', '....W....'], [
-      'W...M...W', '...MMM...', '..MLLLM..', '.MLLDLLM.', 'MMLDLDLMM', '.MLLDLLM.', '..MLLLM..', '...MMM...', 'W...M...W']],
-    eye: [[
-      '..MMMMM..', '.MLLLLLM.', 'MWKKWWWWM', 'MWKKWWWWM', '.MLLLLLM.', '..MMMMM..', '....M....', '....M....', '....M....', '....M....', '....M....', '...MMM...', '..MMMMM..'], [
-      '..MMMMM..', '.MLLLLLM.', 'MLLLLLLLM', 'MMMMMMMMM', '.MLLLLLM.', '..MMMMM..', '....M....', '....M....', '....M....', '....M....', '....M....', '...MMM...', '..MMMMM..']],
-    duck: [[
-      '...LLL.......', '..LLLLL......', '..LKLLL......', 'MMLLLLL......', '..LLLL.......', '.LLLLLLLLL...', 'LLLLLLLLLLLMM', 'LLLLLDDDLLLMW', '.LLLLLLLLL.MM', '..LLLLLLL....'], [
-      '.............', '...LLL.......', '..LLLLL......', '..LKLLL......', 'MMLLLLL......', '.LLLLLLLLL...', 'LLLLLLLLLLLMM', 'LLLLLDDDLLLMW', '.LLLLLLLLL.MM', '..LLLLLLL....']],
-    trojan: [[
-      '..MM........', '.MLLM.......', 'MLKLLM......', 'MLLLLLM.....', '.MMLLLLM....', '....LLLLLLLM', '....LLLLLLLL', '....LLLLLLLL', '....L.L..L.L', '...DDDDDDDDD', '....WM...WM.', '....MW...MW.'], [
-      '..MM........', '.MLLM.......', 'MLKLLM......', 'MLLLLLM.....', '.MMLLLLM....', '....LLLLLLLM', '....LLLLLLLL', '....LLLLLLLL', '....L.L..L.L', '...DDDDDDDDD', '....MW...MW.', '....WM...WM.']],
-    wall: [[
-      '..W....W..', '.WLW..WLW.', '.LML.LMLL.', 'DDDDDDDDDD', 'MMMMDMMMMD', 'DDDDDDDDDD', 'MMDMMMMDMM', 'DDDDDDDDDD', 'MMMMDMMMMD', 'DDDDDDDDDD', 'MMDMMMMDMM', 'DDDDDDDDDD'], [
-      '.W....W...', 'WLW..WLW..', 'LML..LMLL.', 'DDDDDDDDDD', 'MMMMDMMMMD', 'DDDDDDDDDD', 'MMDMMMMDMM', 'DDDDDDDDDD', 'MMMMDMMMMD', 'DDDDDDDDDD', 'MMDMMMMDMM', 'DDDDDDDDDD']],
-    lock: [[
-      '..MMMMM..', '.MD...DM.', '.M.....M.', '.M.....M.', 'LLLLLLLLL', 'LWLLLLLLL', 'LLLKKKLLL', 'LLLKKKLLL', 'LLLLKLLLL', 'LLLLKLLLL', 'LLLLLLLLL', 'DDDDDDDDD'], [
-      '..MMMMM..', '.MD...DM.', '.M.....M.', '.M.....M.', 'LLLLLLLLL', 'LLLLLLLLL', 'LLLKKKLLL', 'LLLKKKLLL', 'LLLLKLLLL', 'LLLLKLLLL', 'LLLLLLLLL', 'DDDDDDDDD']],
-    tomb: [['.....MMMMM.....', '...MMLLLLLMM...', '..MLLLLLLLLLM..', '.MLLLLLLLLLLLM.', 'MLLLLLLLLLLLLLM', 'MLDLDLDDDLDLDLM', 'MLDLDLDLDLDLDLM', 'MLDDDLDLDLDDDLM', 'MLLLDLDLDLLLDLM', 'MLLLDLDDDLLLDLM', 'MLLLLLLLLLLLLLM', 'MLLLLLLLLLLLLLM', 'DDDDDDDDDDDDDDD']],
-    phish: [[
-      '.....W.....', '.....W..W..', '.....WWWW..', 'MMMMMMMMMMM', 'MWMLLLLLMWM', 'MLLWMLMWLLM', 'MLLLLWLLLLM', 'MLLLLLLLLLM', 'MLLLLLLLLLM', 'MMMMMMMMMMM']]
+    beetle: [[".M..............", "..M....DDDDDD...", "...M.DDLLLLLLDD.", "....DLWWLLLLLLLD", "..MMDLLLLLLLLLLD", ".MWMDLLLLLLLLLLD", "MMMMDMMMMMMMMMMD", ".M..DDDDDDDDDDD.", "...M..M...M..M..", "..M..M...M..M..."], [".M..............", "..M....DDDDDD...", "...M.DDLLLLLLDD.", "....DLWWLLLLLLLD", "..MMDLLLLLLLLLLD", ".MWMDLLLLLLLLLLD", "MMMMDMMMMMMMMMMD", ".M..DDDDDDDDDDD.", "....M..M...M..M.", "...M..M...M..M.."]],
+    spider: [["......MMM......", ".....MLLLM.....", "....MLWLWLM....", "M...MLLLLLM...M", ".M..DMLLLMD..M.", "..MDMMDDDMMDM..", ".M.M.DLLLD.M.M.", "M.M..DLLLD..M.M", "..M...DDD...M..", ".M...........M."], ["......MMM......", ".....MLLLM.....", "....MLWLWLM....", "M...MLLLLLM...M", ".M..DMLLLMD..M.", "..MDMMDDDMMDM..", ".M.M.DLLLD.M.M.", ".M.M.DLLLD.M.M.", "M..M..DDD..M..M", "...M.......M..."]],
+    worm: [["................", ".M..............", ".LLL............", "LWDLMLLMLLMLLMLL", "LLLLMLLMLLMLLMLD", ".DD.DD.DD.DD.DD."], ["......LMLLM.....", ".M...LL...LL....", ".LLL.L.....LL...", "LWDLL.......LL..", "LLLL.........LLD", ".DD...........DD"]],
+    moth: [["..M........M..", "...M......M...", "LLL.M.DD.M.LLL", "LMLL..DD..LLML", "LWMLL.DD.LLMWL", "LMMLLLDDLLLMML", ".LLLLLDDLLLLL.", "...LL.DD.LL...", "......DD......"], ["..M........M..", "...M......M...", "....M.DD.M....", "..LL..DD..LL..", ".LMLL.DD.LLML.", "LWMMLLDDLLMMWL", "LMMLLLDDLLLMML", "LLLL..DD..LLLL", ".LL...DD...LL."]],
+    virus: [[".....W.....", ".W...M...W.", "..M.DDD.M..", "...DLLLD...", "..DLWLLLD..", "WMDLLLLLDMW", "..DLLLLLD..", "...DLLLD...", "..M.DDD.M..", ".W...M...W.", ".....W....."], ["...W...W...", "....M.M....", "W...DDD...W", ".M.DLLLD.M.", "..DLWLLLD..", "..DLLLLLD..", "..DLLLLLD..", ".M.DLLLD.M.", "W...DDD...W", "....M.M....", "...W...W..."]],
+    bytebug: [[".M............", "..M...DDDDD...", "...MDDLLDLLDD.", "..MMDLDLLLLDLD", ".MWMDLLLDLLLLD", "MMMMDLDLLLDLLD", ".M..DDDDDDDDD.", "...M..M..M..M.", "..M..M..M..M.."], [".M............", "..M...DDDDD...", "...MDDLLDLLDD.", "..MMDLDLLLLDLD", ".MWMDLLLDLLLLD", "MMMMDLDLLLDLLD", ".M..DDDDDDDDD.", "....M..M..M..M", "...M..M..M..M."]],
+    centipede: [["M...................", ".M..................", ".MDDDDDDDDDDDDDDDDD.", "MWLLMLLMLLMLLMLLMLLD", "MMLLMLLMLLMLLMLLMLLD", ".M.DDDDDDDDDDDDDDDD.", "..M.M.M.M.M.M.M.M.M."], ["M...................", ".M..................", ".MDDDDDDDDDDDDDDDDD.", "MWLLMLLMLLMLLMLLMLLD", "MMLLMLLMLLMLLMLLMLLD", ".M.DDDDDDDDDDDDDDDD.", ".M.M.M.M.M.M.M.M.M.."]],
+    scorpion: [["..........WM...", "...........M...", "............M..", "............M..", "...........ML..", "..........LL...", "MM.....LLLL....", "M.M.DDLLLLLL...", ".MMDLLLLLLLD...", "MMWDLLLLLLD....", "...M.M.M.M....."], [".........WM....", "..........M....", "...........M...", "............M..", "...........ML..", "..........LL...", "MM.....LLLL....", "M.M.DDLLLLLL...", ".MMDLLLLLLLD...", "MMWDLLLLLLD....", "....M.M.M.M...."]]
   };
+  var BUGSPEC = {"beetle": {"vx": 46, "fps": 9, "hover": 0}, "spider": {"vx": 72, "fps": 12, "hover": 0}, "worm": {"vx": 24, "fps": 3, "hover": 0}, "moth": {"vx": 30, "fps": 11, "hover": 3.2}, "virus": {"vx": 0, "fps": 4, "hover": 3}, "bytebug": {"vx": 40, "fps": 9, "hover": 0}, "centipede": {"vx": 30, "fps": 10, "hover": 0}, "scorpion": {"vx": 18, "fps": 5, "hover": 0}};
   var EXITS = ['exit 1', 'exit 2', 'exit 126', 'exit 127', 'exit 130', 'exit 137', 'exit 139', 'exit 255'];
-  var POOLS = {
-    descent: ['virus', 'bug', 'exit'], data: ['exit', 'corrupt', 'bug'], firewall: ['wall', 'lock', 'wall'], circuit: ['bug', 'virus', 'duck'],
-    alley: ['trojan', 'phish', 'lock'], tunnel: ['exit', 'virus', 'phish'], server: ['duck', 'bug', 'exit'], glitch: ['corrupt', 'tomb', 'corrupt'],
-    radar: ['eye', 'virus', 'eye'], ridge: ['eye', 'trojan'], blacksignal: ['virus', 'corrupt', 'phish'], signal: ['bug', 'lock', 'exit'],
-    terminal: ['exit', 'bug', 'exit'], skyline: ['duck', 'eye', 'lock'], ink: ['trojan', 'bug', 'tomb']
-  };
+  var BUGS = ["beetle", "spider", "worm", "moth", "virus", "bytebug", "centipede", "scorpion"];
+  var POOLS = {}; ['descent','data','firewall','circuit','alley','tunnel','server','glitch','radar','ridge','blacksignal','signal','terminal','skyline','ink'].forEach(function (id) { POOLS[id] = BUGS; });
   function obPal(light) {
     return light ? { W: '#151515', L: '#3a3a3c', M: '#6a6a6c', D: '#a8a49c', K: '#eeebe4' } : { W: '#f4f4f4', L: '#c4c4c8', M: '#808086', D: '#3c3c42', K: '#111113' };
   }
@@ -559,13 +540,11 @@
     var p = P(), o = { kind: kind, lift: 0, vx: 0, ph: Math.random() * 6 };
     if (kind === 'exit') { o.label = EXITS[(Math.random() * EXITS.length) | 0]; ctx.font = '600 ' + Math.round(4 * p) + 'px ui-monospace,Menlo,Consolas,monospace'; o.w = Math.ceil(ctx.measureText(o.label).width / p + 5) * p; o.h = 10 * p; return o; }
     if (kind === 'corrupt') { o.w = 9 * p; o.h = 11 * p; return o; }
-    var m = OBMAP[kind][0]; o.w = m[0].length * p; o.h = m.length * p;
-    if (kind === 'bug') o.vx = 46 * k;
-    if (kind === 'virus') o.base = 3;
-    if (kind === 'phish') o.base = 1.5;
+    var m = OBMAP[kind][0], sp = BUGSPEC[kind]; o.w = m[0].length * p; o.h = m.length * p;
+    o.vx = sp.vx * k; if (sp.hover) o.base = sp.hover;
     return o;
   }
-  function obFrame(o) { return Math.floor((st.t + o.ph) * (o.kind === 'bug' ? 9 : o.kind === 'eye' ? .6 : 4)) % 2; }
+  function obFrame(o) { return Math.floor((st.t + o.ph) * ((BUGSPEC[o.kind] || {}).fps || 4)) % 2; }
   function drawOb(c, o) {
     var p = P(), light = !!(o.th && o.th.light), x = Math.round(o.x * DPR) / DPR, y = Math.round((GY - o.lift - o.h) * DPR) / DPR, img;
     c.save(); c.imageSmoothingEnabled = false;
@@ -588,10 +567,33 @@
   // stacked-V tokens to collect for bonus points
   var TOKEN = ['M.....M', 'LM...ML', '.LM.ML.', 'M.LML.M', 'LM.L.ML', '.LM.ML.', '..LML..', '...L...'];
   function drawToken(c, tk) {
-    var p = P(), light = !!(T && T.light), img = obCanvas(TOKEN, light, 'tok' + light), bob = Math.sin(st.t * 4 + tk.ph) * 2 * p;
-    c.save(); c.imageSmoothingEnabled = false; if (!light) { c.shadowColor = 'rgba(255,255,255,.6)'; c.shadowBlur = 12; }
-    c.drawImage(img, Math.round(tk.x - p), Math.round(GY - tk.lift - 8 * p + bob - p), img.width * p, img.height * p); c.restore();
+    // collectibles read as reward, not threat: a glowing coin that spins, sparkles, and says +50
+    var p = P(), light = !!(T && T.light), bob = Math.sin(st.t * 4 + tk.ph) * 2 * p;
+    var cx = tk.x + 3.5 * p, cy = GY - tk.lift - 4 * p + bob, r = 5.5 * p, spin = Math.cos(st.t * 3.2 + tk.ph), sx = Math.max(.18, Math.abs(spin));
+    var ink = light ? '21,21,21' : '255,255,255', face = light ? '#151515' : '#f6f6f6', cut = light ? '#eeebe4' : '#151517';
+    c.save();
+    var pulse = .55 + .45 * Math.sin(st.t * 5 + tk.ph), g = c.createRadialGradient(cx, cy, r * .6, cx, cy, r * 2.6);
+    g.addColorStop(0, 'rgba(' + ink + ',' + (.28 * pulse) + ')'); g.addColorStop(1, 'rgba(' + ink + ',0)');
+    c.fillStyle = g; c.beginPath(); c.arc(cx, cy, r * 2.6, 0, Math.PI * 2); c.fill();
+    if (!light) { c.shadowColor = 'rgba(255,255,255,.9)'; c.shadowBlur = 14; }
+    c.fillStyle = face; c.beginPath(); c.ellipse(cx, cy, r * sx, r, 0, 0, Math.PI * 2); c.fill();
+    c.shadowBlur = 0;
+    c.strokeStyle = cut; c.lineWidth = p * .8; c.beginPath(); c.ellipse(cx, cy, r * sx * .78, r * .78, 0, 0, Math.PI * 2); c.stroke();
+    if (sx > .45) {   // the stacked V on the coin face
+      c.save(); c.translate(cx, cy); c.scale(sx, 1); c.strokeStyle = cut; c.lineWidth = p * .95; c.lineJoin = 'miter';
+      c.beginPath(); c.moveTo(-2.4 * p, -2.6 * p); c.lineTo(0, -.4 * p); c.lineTo(2.4 * p, -2.6 * p); c.moveTo(-2.4 * p, -.2 * p); c.lineTo(0, 2 * p); c.lineTo(2.4 * p, -.2 * p); c.stroke(); c.restore();
+    }
+    c.fillStyle = 'rgba(' + ink + ',.95)';
+    for (var i = 0; i < 4; i++) {
+      var a2 = st.t * 1.6 + tk.ph + i * Math.PI / 2, tw = Math.max(0, Math.sin(st.t * 6 + i * 1.7 + tk.ph)), sr = r * 1.9;
+      if (tw < .2) continue; var px2 = cx + Math.cos(a2) * sr, py2 = cy + Math.sin(a2) * sr, z = p * (.6 + tw * .9);
+      c.fillRect(px2 - z * 1.5, py2 - z * .3, z * 3, z * .6); c.fillRect(px2 - z * .3, py2 - z * 1.5, z * .6, z * 3);
+    }
+    c.globalAlpha = .75; c.font = '600 ' + Math.round(3.6 * p) + 'px Dosis,system-ui,sans-serif'; c.textAlign = 'center'; c.fillStyle = 'rgba(' + ink + ',.85)';
+    c.fillText('+50', cx, cy - r - 4 * p); c.textAlign = 'left';
+    c.restore();
   }
+
 
   /* ---------- game state ---------- */
   THEMES.forEach(function (th) { if (!th.player) th.player = function (c, x, y, sz, name, ghost) { drawSprite(c, x, y + sz * .42, name || poseNow(), !ghost && !!th.trail); }; if (!th.font) th.font = '500 13px Dosis'; });
