@@ -106,7 +106,7 @@
     function repaint() { painted = {}; if (AREA) paintCurrent(); }
     function tile(x, y) { return (MAP[y] || '')[x] || '~'; }
     function key(x, y) { return x + ',' + y; }
-    function gateOpen(x, y) { var g = AREA.gates && AREA.gates[key(x, y)]; if (!g) return false; return AREA.id === 'plaza' ? isLit('ledger') && isLit('wagon') && isLit('exit0') : isLit('keep'); }
+    function gateOpen(x, y) { var g = AREA.gates && AREA.gates[key(x, y)]; if (!g) return false; return g.need ? !!g.need(G) : false; }
     function wagonAt() { if (!AREA.wagon) return null; var s = isLit('wagon') ? 2 : Math.min(2, F.wagon || 0); return AREA.wagon[s]; }
     function npcAt(x, y) { var n = null; (AREA.npcs || []).forEach(function (p) { if (p.x === x && p.y === y) n = p; }); return n; }
     function blocked(x, y) {
@@ -154,7 +154,11 @@
       puzzle: function (title, steps, done) { openPuzzle(title, steps, done); },
       rest: function () { save.hp = maxHp(); save.rest = [AREA.id, me.x, me.y]; store(); },
       give: function (it, n) { n = n || 1; if (ITEMS.some(function (x) { return x.id === it; })) save.items[it] = (save.items[it] || 0) + n; else save.keys[it] = (save.keys[it] || 0) + n; store(); },
-      take: function (it) { if (save.keys[it]) save.keys[it]--; store(); },
+      take: function (it, n) { save.keys[it] = Math.max(0, (save.keys[it] || 0) - (n || 1)); store(); },
+      count: function (it) { return save.keys[it] || 0; },
+      travel: function (to) { travel(to); },
+      readLog: function (id) { readLog(id); },
+      logCount: function () { return WD.logOrder.filter(function (k) { return F[k]; }).length; },
       has: function (it) { return (save.keys[it] || 0) > 0; },
       light: function (id) { save.lit[id] = 1; store(); repaint(); },
       lit: isLit, lights: lights,
@@ -166,8 +170,8 @@
     };
     function readLog(id) {
       var first = !F[id]; F[id] = 1; store();
-      var n = WD.logOrder.filter(function (k) { return F[k]; }).length;
-      say('Log', WD.logs[id].concat(first ? ['(Log ' + n + ' of 10 recovered.)'] : []));
+      var n = WD.logOrder.filter(function (k) { return F[k]; }).length, mara = WD.logOrder.indexOf(id) >= 0;
+      say(mara ? 'Log' : 'Record', WD.logs[id].concat(first && mara ? ['(Log ' + n + ' of 10 recovered.)'] : []));
     }
     function openCache(x, y) {
       var k = AREA.id + ':' + key(x, y), c = AREA.caches[key(x, y)];
@@ -179,7 +183,8 @@
     function status() {
       var marks = WD.anchors.map(function (a) { return (isLit(a.id) ? '[x] ' : '[ ] ') + a.name + ' <em>(' + a.project + ')</em>'; }).join('<br>');
       var logs = WD.logOrder.filter(function (k) { return F[k]; }).length;
-      say('Vee', ['Level ' + save.lvl + ' · HP ' + save.hp + '/' + maxHp() + ' · Next level in ' + (xpNeed() - save.xp) + ' XP<br>' + save.known.length + ' commands · ' + logs + ' of 10 logs · ' + AREA.name, marks]);
+      var jr = WD.journal ? WD.journal(G) : [];
+      say('Vee', ['Level ' + save.lvl + ' · HP ' + save.hp + '/' + maxHp() + ' · Next level in ' + (xpNeed() - save.xp) + ' XP<br>' + save.known.length + ' commands · ' + logs + ' of 10 logs · ' + AREA.name, marks].concat(jr.length ? ['<em>Journal</em><br>' + jr.join('<br>')] : []));
     }
     function runEnding(kind) {
       F.ending = kind; store(); repaint();
@@ -224,7 +229,7 @@
       if (t === 's' && WD.spots[AREA.id + ':' + k]) return WD.spots[AREA.id + ':' + k](G);
       if (t === 'F' && WD.spots[AREA.id + ':F']) return WD.spots[AREA.id + ':F'](G);
       if (t === 'p') return say('', [['The tree is mostly wireframe. You can see the numbers through it.', 'Bark, a texture. Leaves, a texture. This one still has both. For now.', 'A tag on the trunk: SPECIES 0x2F, OAK (APPROX.).'][Math.floor(hs(x * 7 + y) * 3)]]);
-      if (t === 'G' && !gateOpen(x, y)) return say('', AREA.id === 'plaza' ? ['The east gate is sealed. A panel reads: FIVE LANDMARKS REQUIRED.', 'Answering: ' + lights() + ' of 6.'] : ['The east gate won’t open while the keep is compromised.']);
+      if (t === 'G' && !gateOpen(x, y)) { var gd = AREA.gates[k]; return say('', (gd && gd.shut) || (AREA.id === 'plaza' ? ['The east gate is sealed. A panel reads: FIVE LANDMARKS REQUIRED.', 'Answering: ' + lights() + ' of 6.'] : ['The east gate won’t open while the keep is compromised.'])); }
     }
 
     function drawScan() {
@@ -259,6 +264,7 @@
     // say a sequence of lines; the last can offer choices
     function say(who, lines, choices, done) {
       talking = { who: who, lines: lines, i: 0, choices: choices, done: done, sel: 0 };
+      if (typeof areaEl !== 'undefined') areaEl.classList.remove('on');
       msg.classList.add('on'); showLine();
     }
     function showLine() {
@@ -372,6 +378,7 @@
           get scenario() { return this.sc0.t; }, fx: slot[0], fy: slot[1], ph: Math.random() * 6, exposed: 0, slow: 0, leak: 0 });
       }
       B = { foes: foes, focus: false, phase: 'intro', t: 0, vx: 0, pops: [], menu: 'main', sel: 0, cast: 0, target: 0, pending: null, boss: bossDef, onWin: opt.onWin, theme: AREA.theme };
+      var hook = opt.boss && WD.bossStart && WD.bossStart[opt.boss], hookMsg = hook ? hook(G, foes[0]) : null; if (hookMsg) setTimeout(function () { log(hookMsg); }, 1300);
       mode = 'swirl'; swirlT = 0; areaEl.classList.remove('on');
     }
     function foeName(f) { return f.foe.name.toLowerCase(); }
@@ -551,7 +558,7 @@
       cx.fillStyle = '#000'; cx.fillRect(0, 0, W, H);
       cx.drawImage(PAINTED.base, -cam.x, -cam.y - PAINTED.pad);
       var st = { lights: PAINTED.lights, readLog: function (x, y) { var id = AREA.logs && AREA.logs[key(x, y)]; return id && F[id]; }, opened: function (x, y) { return save.opened[AREA.id + ':' + key(x, y)]; },
-        gateOpen: gateOpen, isLit: isLit, signal: lights() === 6 || !!F.ending, tether: F.ending === 'cut' ? 'cut' : F.ending === 'reverse' ? 'down' : 'up' };
+        gateOpen: gateOpen, isLit: isLit, signal: lights() === 6 || !!F.ending, tether: F.ending === 'cut' ? 'cut' : F.ending === 'reverse' ? 'down' : 'up', fpos: PAINTED.fpos, radio: !!F.radio, mara: !!F.mara };
       ART.live(cx, AREA, MAP, tnow, cam, st, 'under');
       // people, the wagon and Vee, nearest drawn last
       var list = (AREA.npcs || []).map(function (n) { return { y: n.y, draw: function () { ART.person(cx, n.x * TS - cam.x, n.y * TS - cam.y, n, tnow); } }; });
@@ -575,15 +582,16 @@
       var tnow = performance.now() / 1000;
       cx.fillStyle = '#050507'; cx.fillRect(0, 0, W, H);
       cx.strokeStyle = 'rgba(200,200,214,.08)'; for (var gx = 0; gx < W; gx += 16) { cx.beginPath(); cx.moveTo(gx + .5, 0); cx.lineTo(gx + .5, H); cx.stroke(); } for (var gy = 0; gy < H; gy += 16) { cx.beginPath(); cx.moveTo(0, gy + .5); cx.lineTo(W, gy + .5); cx.stroke(); }
-      function pos(id) { var p = WD.atlas[id]; return [24 + p[0] * 48, 22 + p[1] * 40]; }
+      function pos(id) { var p = WD.atlas[id]; return [30 + p[0] * 50, 16 + p[1] * 34]; }
+      var LABEL = { plaza: 'PLAZA', commons: 'COMMONS', halflight: 'HALFLIGHT', gardens: 'GLASSHOUSE', undercroft: 'UNDERCROFT', bastion: 'BASTION', quiet: 'THE QUIET', terminal: 'TERMINAL', line: 'THE LINE', patchwork: 'PATCHWORK', upper: 'UPPER RING', cold: 'COLD STORE' };
       cx.strokeStyle = 'rgba(220,220,236,.45)'; WD.links.forEach(function (l) { var a = pos(l[0]), b = pos(l[1]); cx.beginPath(); cx.moveTo(a[0] + .5, a[1] + .5); cx.lineTo(b[0] + .5, b[1] + .5); cx.stroke(); });
       var anchorAt = { plaza: ['spire', 'archive'], commons: ['ledger'], gardens: ['wagon'], undercroft: ['exit0'], bastion: ['keep'] };
       Object.keys(WD.atlas).forEach(function (id) {
         var p = pos(id), seen = save.seen[id], here = id === AREA.id, A2 = WD.areas[id];
-        cx.fillStyle = seen ? '#16161d' : '#0a0a0d'; cx.fillRect(p[0] - 18, p[1] - 9, 36, 18); cx.fillStyle = seen ? '#c0c0cc' : '#3a3a46'; cx.fillRect(p[0] - 18, p[1] - 9, 36, 1);
-        if (here && Math.floor(tnow * 3) % 2) { cx.strokeStyle = '#ffffff'; cx.strokeRect(p[0] - 19.5, p[1] - 10.5, 39, 21); }
-        var nm = seen ? A2.name.replace(/^The /, '').replace('Meridian ', '').replace('Lift ', '').toUpperCase() : '???';
-        ART.text(cx, nm.slice(0, 8), Math.round(p[0] - ART.textW(nm.slice(0, 8)) / 2), p[1] - 5, seen ? '#ececf4' : '#4a4a56');
+        cx.fillStyle = seen ? '#16161d' : '#0a0a0d'; cx.fillRect(p[0] - 22, p[1] - 9, 44, 18); cx.fillStyle = seen ? '#c0c0cc' : '#3a3a46'; cx.fillRect(p[0] - 22, p[1] - 9, 44, 1);
+        if (here && Math.floor(tnow * 3) % 2) { cx.strokeStyle = '#ffffff'; cx.strokeRect(p[0] - 23.5, p[1] - 10.5, 47, 21); }
+        var nm = seen ? LABEL[id] || id.toUpperCase() : '???';
+        ART.text(cx, nm, Math.round(p[0] - ART.textW(nm) / 2), p[1] - 5, seen ? '#ececf4' : '#4a4a56');
         (anchorAt[id] || []).forEach(function (a, i) { var on = isLit(a); cx.fillStyle = on ? '#ffffff' : '#3a3a46'; cx.fillRect(p[0] - 4 + i * 6, p[1] + 3, 4, 4); if (on) { cx.fillStyle = 'rgba(255,255,255,.2)'; cx.fillRect(p[0] - 5 + i * 6, p[1] + 2, 6, 6); } });
       });
       ART.text(cx, 'MERIDIAN', 8, 6, '#ffffff', 2);
@@ -647,7 +655,7 @@
           me.moving = false; me.steps++; save.x = me.x; save.y = me.y; if (me.steps % 6 === 0) store();
           var k = key(me.x, me.y), ex = AREA.exits && AREA.exits[k], gt = AREA.gates && AREA.gates[k];
           if (ex) return travel(ex);
-          if (gt && gateOpen(me.x, me.y)) return travel(gt.to);
+          if (gt && gt.to && gateOpen(me.x, me.y)) return travel(gt.to);
           if (WD.steps[AREA.id]) { WD.steps[AREA.id](G, me.x, me.y); if (talking) return; }
           var enc = AREA.enc;
           if (enc && enc.tiles.indexOf(tile(me.x, me.y)) >= 0 && --me.safe <= 0 && Math.random() < enc.rate) { startBattle(); return; }
@@ -718,7 +726,7 @@
       if (!AREA) load(save.area, save.x, save.y);
       if (mode === 'map' && !talking) {
         if (!save.met) { save.met = true; store(); say('', ['Meridian was built to be the most beautiful place on the network. Two million people lived here. For a while, it was everything it promised.', 'Then the people who owned it built a newer world, Upstream, and took the Lift. Forty thousand seats. They stopped paying for this one.', 'Nothing broken was ever fixed again. The rot set in. District by district, the city has been going dark. Last night, the signal at its heart went quiet.', 'You are Vee, a maintenance process nobody remembered to shut down. You know one command so far: whoami. You will learn more.', coarse ? 'Use the pad to move, A to talk and B for status.' : 'Arrow keys to move. Enter or Z to talk. X for status.'], null, showArea); }
-        else { showArea(); say('', ['Vee reconnects. ' + AREA.name + '. Level ' + save.lvl + '.']); }
+        else say('', ['Vee reconnects. ' + AREA.name + '. Level ' + save.lvl + '.'], null, showArea);
       }
       root.querySelector('.rpg-x').focus({ preventScroll: true });
     }

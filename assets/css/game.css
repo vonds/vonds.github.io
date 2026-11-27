@@ -258,3 +258,4 @@
   .rpg-scr:has(.rpg-hud.on) .rpg-hud{height:178px;bottom:8px}
   .rpg:has(.rpg-hud.on) .rpg-pad{display:none}
 }
+.rpg-opts{flex-wrap:wrap;row-gap:4px}

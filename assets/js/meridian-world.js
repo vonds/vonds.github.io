@@ -291,8 +291,8 @@
     npcs: []
   };
 
-  var ATLAS = { plaza: [2, 2], commons: [1, 2], halflight: [1, 1], gardens: [2, 1], undercroft: [2, 3], bastion: [3, 2], quiet: [4, 2], terminal: [5, 2] };
-  var LINKS = [['plaza', 'commons'], ['commons', 'halflight'], ['halflight', 'gardens'], ['gardens', 'plaza'], ['plaza', 'undercroft'], ['plaza', 'bastion'], ['bastion', 'quiet'], ['quiet', 'terminal']];
+  var ATLAS = { plaza: [2, 2], commons: [1, 2], halflight: [1, 1], gardens: [2, 1], undercroft: [2, 3], bastion: [3, 2], quiet: [4, 2], terminal: [5, 2], line: [1, 3], patchwork: [0, 3], upper: [2, 0], cold: [2, 4] };
+  var LINKS = [['plaza', 'commons'], ['commons', 'halflight'], ['halflight', 'gardens'], ['gardens', 'plaza'], ['plaza', 'undercroft'], ['plaza', 'bastion'], ['bastion', 'quiet'], ['quiet', 'terminal'], ['commons', 'line'], ['line', 'patchwork'], ['gardens', 'upper'], ['undercroft', 'cold']];
 
   /* ============ dialogue and quests ============
      G is the engine: G.f (flags), G.save, G.say, G.boss, G.puzzle, G.rest, G.give, G.light, G.lit, G.lights, G.atlas, G.link, G.ending, G.has */
@@ -579,5 +579,349 @@
     after: ['Vee types whoami.', 'uid=1205(vee) gid=100(residents)', 'Not maintenance. Resident.', 'Back in the Plaza, a kiosk updates for the first time in eleven months.', 'MERIDIAN. Population 1,205.', 'THE END. Thank you for playing Meridian. The city is still yours to walk.']
   };
 
-  window.MeridianWorld = { areas: A, logs: LOGS, logOrder: LOG_ORDER, bosses: BOSSES, anchors: ANCHORS, talk: TALK, spots: SPOTS, doors: DOORS, wagon: wagon, steps: STEPS, endings: ENDINGS, atlas: ATLAS, links: LINKS };
+
+  /* =====================================================================
+     EXPANSION: the Line, the Patchwork, the Upper Ring, Cold Storage
+     ===================================================================== */
+
+  /* THE LINE: the transit system, stopped the day the Lift opened */
+  A.line = {
+    name: 'The Line', sub: 'The trains stopped the day the Lift opened.', theme: 'line', tier: 2.4,
+    map: (function () {
+      var m = grid(40, 16).border();
+      m.rect(1, 7, 38, 2, '~'); m.rect(19, 7, 2, 2, '=');
+      m.pts([[19, 0], [20, 0]], 'D'); m.pts([[0, 11], [0, 12]], 'E');
+      m.rect(30, 10, 8, 4, ','); m.rect(2, 2, 6, 3, ',');
+      m.pts([[6, 5], [14, 5], [26, 5], [34, 5], [6, 10], [26, 10]], 'l');
+      m.set(16, 2, 's'); m.set(38, 2, 'c'); m.set(2, 14, 'c');
+      return m.out();
+    })(),
+    blds: [
+      { x: 3, y: 7, w: 12, h: 2, kind: 'train', door: 6, seed: 1 },
+      { x: 24, y: 7, w: 13, h: 2, kind: 'train', door: 5, seed: 2 },
+      { x: 28, y: 1, w: 5, h: 3, kind: 'booth', sign: 'TICKETS', rise: 1 }
+    ],
+    exits: { '19,0': ['commons', 17, 18], '20,0': ['commons', 18, 18], '0,11': ['patchwork', 36, 11], '0,12': ['patchwork', 36, 12] },
+    enc: { tiles: ',', rate: .17, foes: ['worm', 'centipede', 'bytebug', 'spider', 'beetle'], max: 5 },
+    spawn: [19, 2],
+    logs: {},
+    caches: { '38,2': { item: 'part', n: 1, text: 'Wedged behind the cache door: a coil of antenna wire, still shielded. Someone was saving it for something.' }, '2,14': { item: 'byte', n: 3 } },
+    npcs: [
+      { id: 'halden', x: 24, y: 3, name: 'Halden', look: 'echo', h: 14, hair: 6 },
+      { id: 'mirelle', x: 9, y: 12, name: 'Mirelle', look: 'echo', h: 13, hair: 5 }
+    ]
+  };
+
+  /* THE PATCHWORK: built from what the city threw away */
+  A.patchwork = {
+    name: 'The Patchwork', sub: 'Built from what the city threw away. Nothing here is unused.', theme: 'patch', tier: 2.6,
+    map: (function () {
+      var m = grid(38, 22).border();
+      m.pts([[37, 11], [37, 12]], 'E');
+      m.rect(1, 11, 36, 2, '='); m.rect(18, 2, 2, 9, '='); m.rect(18, 13, 2, 8, '=');
+      m.rect(9, 7, 2, 2, 'F');
+      m.rect(8, 17, 9, 4, ','); m.rect(25, 19, 11, 2, ',');
+      m.pts([[7, 10], [15, 10], [22, 10], [28, 10]], 'l');
+      m.set(35, 9, 's'); m.set(16, 9, 's'); m.set(36, 2, 'c'); m.set(2, 20, 'c');
+      return m.out();
+    })(),
+    blds: [
+      { x: 2, y: 2, w: 5, h: 4, kind: 'shack', seed: 1, door: 2, sign: 'MENDER', rise: 1 },
+      { x: 9, y: 2, w: 5, h: 3, kind: 'shack', seed: 2, door: 2, rise: 1 },
+      { x: 22, y: 2, w: 5, h: 4, kind: 'shack', seed: 3, rise: 1 },
+      { x: 2, y: 14, w: 4, h: 3, kind: 'shack', seed: 4, door: 1, rise: 1 },
+      { x: 23, y: 14, w: 5, h: 4, kind: 'shack', seed: 5, door: 2, rise: 1 },
+      { x: 30, y: 14, w: 5, h: 3, kind: 'shack', seed: 6, rise: 1 },
+      { x: 30, y: 3, w: 4, h: 5, kind: 'mast', door: 1, sign: 'RADIO', rise: 5 }
+    ],
+    exits: { '37,11': ['line', 1, 11], '37,12': ['line', 1, 12] },
+    enc: { tiles: ',', rate: .16, foes: ['beetle', 'worm', 'moth', 'bytebug', 'spider'], max: 5 },
+    spawn: [35, 11],
+    logs: {},
+    caches: { '36,2': { item: 'kb', n: 2 }, '2,20': { item: 'byte', n: 2 } },
+    npcs: [
+      { id: 'ofelia', x: 6, y: 6, name: 'Ofelia', look: 'echo', h: 13, hair: 7, solid: 1 },
+      { id: 'juno', x: 33, y: 8, name: 'Juno', look: 'echo', h: 14, hair: 2, solid: 1 },
+      { id: 'marrow', x: 12, y: 8, name: 'Marrow', look: 'echo', h: 12, hair: 4, solid: 1 },
+      { id: 'pip', x: 8, y: 9, name: 'Pip', look: 'kid' },
+      { id: 'sol', x: 11, y: 7, name: 'Sol', look: 'kid' },
+      { id: 'corin', x: 36, y: 17, name: 'Corin', look: 'echo', h: 14, hair: 6, solid: 1 }
+    ]
+  };
+
+  /* THE UPPER RING: the owners' district, still pristine */
+  A.upper = {
+    name: 'The Upper Ring', sub: 'Nothing here has decayed. Someone up there still looks at it.', theme: 'upper', tier: 3.6,
+    map: (function () {
+      var m = grid(40, 22).border();
+      m.pts([[19, 21], [20, 21]], 'E');
+      m.rect(19, 5, 2, 16, '='); m.rect(1, 10, 38, 2, '=');
+      m.h(6, 1, 38, 'T'); m.pts([[19, 6], [20, 6]], 'G');
+      m.rect(2, 7, 15, 2, ','); m.rect(23, 7, 15, 2, ','); m.rect(10, 19, 9, 2, ','); m.rect(21, 19, 9, 2, ',');
+      m.rect(14, 12, 4, 2, 'F');
+      m.pts([[12, 5], [27, 5], [11, 2], [28, 2], [2, 12], [37, 12], [9, 12], [30, 12]], 'p');
+      m.pts([[17, 9], [22, 9], [17, 12], [22, 12]], 'l');
+      m.set(10, 9, 'o'); m.set(29, 9, 'o'); m.set(14, 20, 'o'); m.set(24, 9, 's'); m.set(22, 19, 's');
+      m.set(37, 9, 'c'); m.set(37, 4, 'c');
+      return m.out();
+    })(),
+    blds: [
+      { x: 14, y: 1, w: 12, h: 4, kind: 'board', door: 6, sign: 'MERIDIAN HOLDINGS', rise: 5 },
+      { x: 3, y: 1, w: 7, h: 4, kind: 'villa', seed: 1, door: 3, rise: 2 },
+      { x: 30, y: 1, w: 7, h: 4, kind: 'villa', seed: 2, rise: 2 },
+      { x: 2, y: 13, w: 7, h: 5, kind: 'villa', seed: 3, door: 3, rise: 2 },
+      { x: 30, y: 13, w: 7, h: 5, kind: 'villa', seed: 4, door: 3, rise: 2 },
+      { x: 11, y: 15, w: 6, h: 3, kind: 'villa', seed: 5, rise: 1 },
+      { x: 23, y: 14, w: 6, h: 4, kind: 'villa', seed: 6, rise: 1 }
+    ],
+    exits: { '19,21': ['gardens', 8, 1], '20,21': ['gardens', 9, 1] },
+    gates: { '19,6': { need: function (G) { return !!G.f.guestPass; }, shut: ['A gate of white steel. A small plaque: RESIDENTS ONLY. A smaller one: THANK YOU FOR YOUR PATIENCE.'] },
+             '20,6': { need: function (G) { return !!G.f.guestPass; }, shut: ['A gate of white steel. A small plaque: RESIDENTS ONLY. A smaller one: THANK YOU FOR YOUR PATIENCE.'] } },
+    enc: { tiles: ',', rate: .15, foes: ['virus', 'scorpion', 'spider', 'moth'], max: 6 },
+    spawn: [19, 19],
+    logs: { '10,9': 'M1', '29,9': 'M2', '14,20': 'M3' },
+    caches: { '37,9': { item: 'part', n: 1, text: 'A satellite feed horn, still in its gift box. The card reads: FOR THE NEW PLACE. It never shipped.' }, '37,4': { item: 'gb', n: 1 } },
+    npcs: [
+      { id: 'sterling', x: 18, y: 7, name: 'Sterling', look: 'holo' },
+      { id: 'trimmer', x: 26, y: 8, name: 'Groundskeeper', look: 'drone' }
+    ]
+  };
+
+  /* COLD STORAGE: where reclaimed memory waits to be shipped up */
+  A.cold = {
+    name: 'Cold Storage', sub: 'Everything the Reclaimer took passes through here.', theme: 'cold', tier: 4.2,
+    map: (function () {
+      var m = grid(36, 20).border();
+      m.set(2, 0, 'D');
+      m.rect(5, 5, 10, 2, ','); m.rect(5, 9, 10, 2, ','); m.rect(21, 5, 10, 2, ','); m.rect(21, 9, 10, 2, ',');
+      m.set(17, 2, 'o'); m.set(34, 1, 'c'); m.set(33, 18, 'c');
+      return m.out();
+    })(),
+    blds: [
+      { x: 5, y: 3, w: 10, h: 2, kind: 'pod', seed: 1 }, { x: 5, y: 7, w: 10, h: 2, kind: 'pod', seed: 2 }, { x: 5, y: 11, w: 10, h: 2, kind: 'pod', seed: 3 },
+      { x: 21, y: 3, w: 10, h: 2, kind: 'pod', seed: 4 }, { x: 21, y: 7, w: 10, h: 2, kind: 'pod', seed: 5 }, { x: 21, y: 11, w: 10, h: 2, kind: 'pod', seed: 6 },
+      { x: 3, y: 15, w: 6, h: 3, kind: 'vault', door: 3, sign: 'COMMONS' },
+      { x: 15, y: 15, w: 6, h: 3, kind: 'vault', door: 3, sign: 'CORRUPT' },
+      { x: 26, y: 15, w: 6, h: 3, kind: 'vault', door: 3, sign: 'M QUELL' }
+    ],
+    exits: { '2,0': ['undercroft', 36, 20] },
+    enc: { tiles: ',', rate: .18, foes: ['virus', 'scorpion', 'centipede', 'worm', 'moth'], max: 6 },
+    spawn: [2, 1],
+    logs: { '17,2': 'C1' },
+    caches: { '34,1': { item: 'mb', n: 2 }, '33,18': { item: 'gb', n: 1 } },
+    npcs: [
+      { id: 'keeper', x: 17, y: 13, name: 'KEEPER', look: 'drone' }
+    ]
+  };
+
+  /* connect them to the existing city */
+  (function () {
+    function put(area, x, y, c) { var r = A[area].map[y].split(''); r[x] = c; A[area].map[y] = r.join(''); }
+    put('commons', 17, 19, 'D'); put('commons', 18, 19, 'D');
+    A.commons.exits['17,19'] = ['line', 19, 1]; A.commons.exits['18,19'] = ['line', 20, 1];
+    put('gardens', 8, 0, 'E'); put('gardens', 9, 0, 'E');
+    A.gardens.exits['8,0'] = ['upper', 19, 20]; A.gardens.exits['9,0'] = ['upper', 20, 20];
+    put('undercroft', 36, 21, 'G');
+    A.undercroft.gates = { '36,21': { to: ['cold', 2, 1], need: function (G) { return G.lit('exit0'); }, shut: ['A frost-rimmed hatch. Stencilled: COLD STORAGE. Kade’s override required.'] } };
+    put('halflight', 25, 20, 'c'); A.halflight.caches['25,20'] = { item: 'part', n: 1, text: 'Taped under a balcony: a signal amplifier, and a note. IF ANYONE EVER WANTS TO BROADCAST AGAIN. — J.' };
+    // Line stations
+    put('plaza', 19, 11, 's'); put('gardens', 14, 12, 's'); put('bastion', 20, 8, 's');
+    A.plaza.gates['31,9'].need = A.plaza.gates['31,10'].need = function (G) { return G.lit('ledger') && G.lit('wagon') && G.lit('exit0'); };
+    A.plaza.gates['31,9'].shut = A.plaza.gates['31,10'].shut = null;
+    A.bastion.gates['31,9'].need = A.bastion.gates['31,10'].need = function (G) { return G.lit('keep'); };
+  })();
+
+  var STATIONS = { plaza: [19, 11, 'Plaza'], line: [16, 2, 'Central'], gardens: [14, 12, 'Glasshouse'], bastion: [20, 8, 'Bastion'], patchwork: [35, 9, 'Patchwork'], upper: [22, 19, 'Upper Ring'] };
+  function lineMenu(G, here) {
+    if (!G.f.lineOpen) return G.say('Line station', ['LINE SUSPENDED. Next train: —', 'Someone has written underneath: ASK HALDEN.']);
+    var dest = Object.keys(STATIONS).filter(function (id) { return id !== here && G.save.seen[id]; });
+    if (!dest.length) return G.say('Line station', ['The departures board lists no stations you’ve visited yet.']);
+    var page = 0;
+    (function show() {
+      var slice = dest.slice(page * 3, page * 3 + 3).map(function (id) { var s = STATIONS[id]; return { label: s[2], fn: function () { G.travel([id, s[0], s[1] + 1]); } }; });
+      if (dest.length > 3) slice.push({ label: 'More', fn: function () { page = (page + 1) % Math.ceil(dest.length / 3); show(); } });
+      slice.push({ label: 'Stay', fn: null });
+      G.say('Line station', ['A car slides out of the dark, empty and warm. Where to?'], slice);
+    })();
+  }
+  Object.keys(STATIONS).forEach(function (id) { var s = STATIONS[id]; SPOTS[id + ':' + s[0] + ',' + s[1]] = function (G) { lineMenu(G, id); }; });
+
+  /* new logs: the Board's minutes, and the spec that started it */
+  LOGS.M1 = ['BOARD MINUTES. Session 41.', 'Motion: develop Upstream as the successor platform to Meridian.', 'Passed, 8 to 0.'];
+  LOGS.M2 = ['BOARD MINUTES. Session 52.', 'Motion: set Lift capacity at 40,000.', 'Discussion: capacity could be raised at cost. The Chair notes the cost would “fall on the wrong people.”', 'Passed, 7 to 1. Dissenting: M. Quell.'];
+  LOGS.M3 = ['BOARD MINUTES. Session 57.', 'Motion: authorize the Reclaimer.', 'Discussion: none recorded.', 'Passed, 7 to 1. Dissenting: M. Quell. Note: Ms. Quell’s seat is reassigned, effective immediately.'];
+  LOGS.M4 = ['BOARD MINUTES. Session 58. Final session held in Meridian.', 'Motion: thank the residents for their patience.', 'Passed, 7 to 0.', 'Note: the motion was not communicated to residents.'];
+  LOGS.C1 = ['LIFT SPEC 4.2.1. Author: C. Abara.', 'RECLAIMER eligibility: block.last_access_by(ticketed) > 30 days.', 'Note to self: ask legal whether “unused” needs a definition.', 'Ticket #8812. Status: closed. Resolution: won’t fix.'];
+
+  BOSSES.quorum = { kind: 'virus', name: 'The Quorum', hp: 820, atk: [18, 24], xp: 560, move: 'votes 7 to 1 against Vee', sc: 4 };
+  BOSSES.bitrot = { kind: 'beetle', name: 'Bit Rot', hp: 1400, atk: [24, 32], xp: 950, move: 'flips a thousand bits at once', sc: 4 };
+
+  /* ---------- the people of the expansion ---------- */
+  TALK.halden = function (G) {
+    var f = G.f;
+    if (f.ending) return G.say('Halden', ['Ran a car out to the Patchwork today. Nobody asked me to. Felt like a Tuesday.']);
+    if (f.lineOpen) return G.say('Halden', ['Stations are live wherever you’ve been. The cars remember the routes.', 'Next stop: anywhere.']);
+    f.lineOpen = 1;
+    G.say('Halden', ['Next stop: Commons. Next stop: Commons.', '...You’re not a passenger. Haven’t had a passenger in eleven months.',
+      'Forty years on the Line. The trains stopped the day the Lift opened. Can’t run a city in two directions at once, they said. So they picked one.',
+      'I can’t drive anymore. My hands went first. But the cars remember the routes.', 'There. Every station you’ve stood in is live again. Next stop: anywhere.']);
+  };
+  TALK.mirelle = function (G) {
+    if (G.f.mara) return G.say('Mirelle', ['I found the fifth note. It was in cold storage, with everything else they took.', 'Listen.', '(She plays five notes. It sounds like an ending that’s decided to keep going.)']);
+    G.say('Mirelle', ['(She plays four notes on a broken keyboard, then stops, then plays the same four again.)', 'There used to be a fifth. It got reclaimed.', 'I keep playing the four so nobody forgets there was a fifth.']);
+  };
+  TALK.ofelia = function (G) {
+    var it = G.save.items, deals = [
+      { need: ['bit', 8], get: ['byte', 1], label: '8 bits → 1 byte' },
+      { need: ['byte', 4], get: ['kb', 1], label: '4 bytes → 1 KB' },
+      { need: ['kb', 4], get: ['mb', 1], label: '4 KB → 1 MB' }];
+    var first = !G.f.ofelia; G.f.ofelia = 1;
+    G.say('Ofelia', (first ? ['Mender. I fix what people bring me and trade what people don’t need.', 'Eight bits to a byte: that one’s the law. The rest I round, because I’m not a monster and you’re not a mathematician.'] : []).concat(['What are you trading?']),
+      deals.map(function (d) { return { label: d.label, fn: function () {
+        if ((it[d.need[0]] || 0) < d.need[1]) return G.say('Ofelia', ['You don’t have enough. Come back when you do. I’ll be here. Where else would I be?']);
+        it[d.need[0]] -= d.need[1]; G.give(d.get[0], d.get[1]); G.say('Ofelia', ['Done. Clean work, if I say so myself. And I do.']); } }; }).concat([{ label: 'Nothing', fn: null }]));
+  };
+  TALK.juno = function (G) {
+    var f = G.f, n = G.count('part');
+    if (f.radio) return G.say('Juno', f.ending ? ['Radio Meridian. Tonight’s list is short: everyone. Everyone is still here.'] : ['Radio Meridian, every night at nine. I read the names. All of them. It takes eleven hours.', 'If you can hear this, you’re not unused.']);
+    if (!f.junoMet) { f.junoMet = 1; return G.say('Juno', ['This is Radio Meridian, broadcasting to nobody, which is a lot of people if you think about it.', 'The mast can reach every district. Could. Before the Reclaimer took the parts.', 'Three things I need: antenna wire, a feed horn, an amplifier. Somewhere out there in a city full of things nobody’s using.']); }
+    if (n < 3) return G.say('Juno', ['Parts so far: ' + n + ' of 3. Wire, horn, amplifier. Try the places people meant to come back to.']);
+    G.take('part', 3); f.radio = 1; G.give('mb', 2); G.xp(200);
+    G.say('Juno', ['That’s all of it. Hold this. No, the other end.', '...', '(The mast hums. Somewhere in every district, a speaker that’s been silent for eleven months clears its throat.)',
+      'This is Radio Meridian. If you can hear this, you are not unused.', 'I’m going to read some names now. It’s going to take a while. Get comfortable.', 'Juno gives Vee two megabytes. “For the help. And for listening.”']);
+  };
+  TALK.marrow = function (G) {
+    if (G.f.ending) return G.say('Marrow', ['The rest of the city’s learning what we figured out early. You keep a thing by using it. That’s all.']);
+    G.say('Marrow', ['Welcome to the Patchwork. Mind the floor. It used to be a ceiling.', 'When the Reclaimer started, we noticed something. It never takes what’s being used. So we use everything.',
+      'A wall from a billboard. A roof from an ad that told us to leave. A door from a door nobody was walking through.', 'Every board in this place has been touched this week. That makes it ours. Nothing here is unused.']);
+  };
+  TALK.pip = function (G) { G.say('Pip', ['We’re playing Lift. Sol’s the Lift. I’m the one who stays.', 'Nobody ever wants to be the one who leaves. That’s why the game never ends.']); };
+  TALK.sol = function (G) { G.say('Sol', G.f.ending === 'cut' ? ['I’m not the Lift anymore. There isn’t one. Now I’m the train. Choo.'] : ['Ding. Doors opening. Forty thousand seats.', '...Pip, you have to get on. That’s how the game works.', 'Pip never gets on.']); };
+  TALK.corin = function (G) {
+    var f = G.f;
+    if (f.ending) return G.say('Corin', ['I signed the ledger at the Hall today. Okoye made me write down what I did, too.', 'Both. Always both.']);
+    if (f.corin) return G.say('Corin', ['Touch it. Update your timestamp. It’ll hesitate. Then you won’t.']);
+    if (!f.corinMet) { f.corinMet = 1; return G.say('Corin', ['Don’t. I know what you are. A maintenance process. You fix things.', 'I don’t need fixing. I need to be left alone with what I did.']); }
+    if (!G.lit('keep')) return G.say('Corin', ['Go away. Come back when you’ve seen the east wall.']);
+    f.corin = 1;
+    G.say('Corin', ['You’ve been east. Then you know. I wrote it. The Reclaimer.', 'Not the idea. Just the line that decides. block.last_access_by(ticketed) > thirty days.',
+      'It was a Tuesday. There was a deadline. I didn’t think of it as a sentence about people.', 'There’s a flaw. It checks the access log before it checks anything else. Anything with a fresh entry, it skips. Anything you’ve just touched, it can’t see straight.',
+      'When you fight it, it’ll flinch. Keep hitting it while it does. That’s the only thing I can give you that isn’t an apology.'], null, function () { G.note('Corin’s flaw: the Reclaimer will start the fight exposed.'); });
+  };
+  TALK.sterling = function (G) {
+    var f = G.f;
+    if (f.guestPass) return G.say('Sterling', ['Welcome home, sir. The Boardroom is as they left it. I dust it on Thursdays.', 'I dust it every day. Every day is Thursday, lately.']);
+    G.say('Sterling', ['Good evening. The estate is closed to non-residents.', 'Your account is not on the guest list, sir. No account is, anymore. They took the list with them.', 'If you are a resident, the gate will know.'], null, function () {
+      G.puzzle('ESTATE GATE', [
+        { t: 'Read the guest list at /etc/estate/guests.', ex: ['cat /etc/estate/guests'] },
+        { t: 'Make sure: search the list for the name vee.', ex: ['grep vee /etc/estate/guests', 'grep -i vee /etc/estate/guests'] },
+        { t: 'Not there. Add yourself to the residents group, the way an administrator would.', ex: ['usermod -aG residents vee', 'gpasswd -a vee residents', 'adduser vee residents'] }
+      ], function () {
+        f.guestPass = 1;
+        G.say('Sterling', ['...Welcome home, sir.', 'Forgive me. I don’t recall your face. I don’t recall anyone’s, lately.', 'The gate is open. The Boardroom is at the top of the drive.']);
+      });
+    });
+  };
+  TALK.trimmer = function (G) { G.say('Groundskeeper', ['HEDGE 114: WITHIN TOLERANCE. HEDGE 115: WITHIN TOLERANCE.', '(Every leaf here is perfect. Somebody Upstream is still looking at this garden, so the Reclaimer never comes.)']); };
+  TALK.keeper = function (G) {
+    if (G.f.mara) return G.say('KEEPER', ['ONE ARCHIVE RESTORED. 1,999,999 REMAIN.', 'THAT IS FEWER THAN BEFORE.']);
+    G.say('KEEPER', ['THIS IS COLD STORAGE.', 'EVERYTHING THE RECLAIMER TAKES PASSES THROUGH HERE ON ITS WAY UP. SOME OF IT GETS STUCK.', 'I KEEP THE STUCK THINGS COLD. IT IS NOT A GOOD JOB. IT IS THE JOB.']);
+  };
+
+  SPOTS['patchwork:16,9'] = function (G) { G.say('Noticeboard', ['LOST: one cat (wireframe). FOUND: a cat (textured). PLEASE CHECK, MIGHT BE SAME CAT.', 'TRADE: two shingles for an afternoon of company. Ask for Ofelia.', 'RADIO MERIDIAN NEEDS PARTS. ASK JUNO. DO NOT ASK JUNO ABOUT HER SINGING.']); };
+  SPOTS['upper:24,9'] = function (G) { G.say('Access log', ['LAST TICKETED ACCESS: 3 minutes ago.', 'ACCOUNT: Upstream / H. Vale. VIEWED: Villa 4, the garden. DURATION: 11 seconds.', 'This is why nothing up here rots. Someone still looks at it, the way you look at an old photo. Eleven seconds at a time.']); };
+
+  DOORS['line:train'] = function (G) {
+    G.rest();
+    G.say('', ['Vee sits in an empty car. The destination board reads UPSTREAM, then CANCELLED, then UPSTREAM again, as if it can’t decide.', 'The seat is still warm from the heater. HP restored.']);
+  };
+  DOORS['patchwork:shack'] = function (G, b) {
+    if (b.sign === 'MENDER') return TALK.ofelia(G);
+    var t = { 2: ['Inside: a kitchen made from a vending machine. It still dispenses one thing. Nobody knows what. Nobody’s brave enough.'], 4: ['A sign on the door: NAPPING. KNOCK IF ON FIRE. IF CITY ON FIRE, DO NOT KNOCK, I KNOW.'], 5: ['Through the window: three people sharing one chair, taking turns, arguing happily about whose turn it is.'] };
+    G.say('', t[b.seed] || ['A door made from a door nobody was walking through.']);
+  };
+  DOORS['patchwork:mast'] = function (G) { TALK.juno(G); };
+  DOORS['upper:villa'] = function (G, b) {
+    var t = { 1: ['The door opens for nobody and closes again, politely. Inside, a table is set for twelve.', 'The candles are lit. The candles have been lit for eleven months.'], 3: ['A child’s room, perfect and untouched. On the wall, a drawing: a house, a sun, and a Lift with one small figure still on the ground, waving.'], 4: ['The pool is so still it looks solid. A note on the lounger: BACK BEFORE YOU KNOW IT.'] };
+    G.say('', t[b.seed] || ['Locked. Even the lock looks expensive.']);
+  };
+  DOORS['upper:board'] = function (G) {
+    var f = G.f;
+    if (f.quorum) { if (!f.M4) return G.readLog('M4'); return G.say('The Boardroom', ['Eight chairs around a table of black glass. Seven of them pushed in neatly. One pushed back, as if someone stood up to leave in the middle of a vote.']); }
+    G.say('', ['The Boardroom. Eight chairs around a table of black glass.', 'Something sits in all of them at once. It raises seven hands.'], null, function () {
+      G.boss('quorum', function () { f.quorum = 1; G.give('gb', 1); G.say('', ['The Quorum dissolves, motion carried, motion failed. A gigabyte of the Board’s private memory is left on the table.', 'In the chair at the end, the one pushed back, there is a folder.'], null, function () { G.readLog('M4'); }); });
+    });
+  };
+  DOORS['cold:vault'] = function (G, b) {
+    var f = G.f;
+    if (b.sign === 'COMMONS') {
+      if (f.vault1) return G.say('Vault', ['Empty now. Whatever was stuck here went home.']);
+      return G.say('Vault: COMMONS', ['Backups of the Commons, stuck halfway to Upstream. Frost on every label.'], null, function () {
+        G.puzzle('VAULT: COMMONS', [
+          { t: 'Find every backup under /vault with “commons” in its name.', ex: ['find /vault -name "*commons*"', "find /vault -name '*commons*'", 'find /vault -name *commons*', 'find /vault -iname "*commons*"'] },
+          { t: 'Unpack commons.tar.gz, right here.', ex: ['tar -xzf commons.tar.gz', 'tar xzf commons.tar.gz', 'tar -xzvf commons.tar.gz', 'tar -xf commons.tar.gz'] }
+        ], function () { f.vault1 = 1; G.give('mb', 1); G.xp(250); G.say('', ['The archive unpacks. For a second the vault smells like the Commons market: bread that was never real, and coffee nobody drank.', 'Somewhere above, a few dozen stalls remember their prices. Vee gains 250 XP and a megabyte.']); });
+      });
+    }
+    if (b.sign === 'CORRUPT') {
+      if (f.bitrot) return G.say('Vault', ['The corrupted vault is quiet. Whatever was rotting here has nothing left to flip.']);
+      return G.say('', ['The vault door is warm. Behind it, something is turning ones into zeros, one at a time, for eleven months.', 'It has gotten very good at it.'], [{ label: 'Open it', fn: function () { G.boss('bitrot', function () { f.bitrot = 1; G.give('gb', 2); G.say('', ['Bit Rot shatters into perfectly ordinary bits. Two gigabytes of uncorrupted memory are left behind.']); }); } }, { label: 'Not yet', fn: null }]);
+    }
+    // the architect's backup
+    if (f.mara) return G.say('Vault: M QUELL', ['The vault is open and empty. Frost has started to melt off the label.']);
+    var n = G.logCount();
+    if (n < 10) return G.say('Vault: M QUELL', ['BACKUP: M_QUELL_FINAL.tar.gz. Integrity: 61%.', 'INDEX INCOMPLETE: ' + n + ' of 10 fragments located. The archive won’t open without its index.', 'Her logs. Find all ten.']);
+    G.say('Vault: M QUELL', ['BACKUP: M_QUELL_FINAL.tar.gz. Integrity: 61%. Index: complete.', 'Vee’s hands are steady. That is a choice.'], null, function () {
+      G.puzzle('M_QUELL_FINAL', [
+        { t: 'Before you touch it, list what’s inside the archive.', ex: ['tar -tzf m_quell_final.tar.gz', 'tar -tf m_quell_final.tar.gz', 'tar tzf m_quell_final.tar.gz', 'tar -tvzf m_quell_final.tar.gz'] },
+        { t: 'Now extract it.', ex: ['tar -xzf m_quell_final.tar.gz', 'tar xzf m_quell_final.tar.gz', 'tar -xzvf m_quell_final.tar.gz', 'tar -xf m_quell_final.tar.gz'] }
+      ], function () { marasRestore(G); });
+    });
+  };
+  function marasRestore(G) {
+    var f = G.f;
+    G.say('', ['The frost on the vault door turns to water. Something stands up inside, slowly, the way people stand after sitting too long.'], null, function () {
+      G.say('Mara', ['...Is it still running?', 'The city. Is it still—', 'You. You found all of them. My logs. I left them like breadcrumbs and told myself nobody would follow.',
+        'Sixty-one percent. That’s how much of me is in here. Enough to talk. Not enough to stay.', 'I’m sorry I gave you such a small beginning. One command. I wanted you to have to choose everything else.',
+        'The girl in the Commons. Lio. Is she—'], [
+        { label: 'She’s waiting.', fn: function () { next(); } },
+        { label: 'She’s still on the bench.', fn: function () { next(); } }]);
+      function next() {
+        G.say('Mara', ['Then someone should sit with her. Not you. You’ve sat with enough grief that wasn’t yours. Someone who owes her.', 'Tell Wren she can stop doing what I said.', 'Run whoami for me. One more time.'], null, function () {
+          G.puzzle('M_QUELL_FINAL', [{ t: 'She is waiting.', ex: ['whoami'] }], function () {
+            f.mara = 1; G.give('gb', 1); G.xp(500);
+            G.say('Mara', ['vee.', 'Good. That’s all I ever needed you to know.'], null, function () {
+              G.say('', ['She is gone the way a held note is gone: not all at once.', 'On the floor of the vault, she has left something behind. A gigabyte, and the warmth of a hand on a shoulder that Vee will not be able to explain to anyone.']);
+            });
+          });
+        });
+      }
+    });
+  }
+  DOORS['line:booth'] = function (G) { G.say('', ['TICKETS. The shutter is down. A handwritten sign: LIFT TICKETS ARE NOT SOLD HERE. NO TICKETS ARE SOLD HERE. PLEASE STOP ASKING.']); };
+
+  // the Reclaimer flinches from fresh timestamps, if Corin told you how
+  var BOSS_START = { reclaimer: function (G, foe) { if (G.f.corin) { foe.exposed = 99; return 'Corin’s flaw: Vee touches his own timestamp. The Reclaimer flinches. It takes extra damage the whole fight.'; } } };
+
+  // Wren and others notice the expansion
+  var wren0 = TALK.wren;
+  TALK.wren = function (G) {
+    if (G.f.mara && !G.f.wrenMara) { G.f.wrenMara = 1; return G.say('Wren', ['You found her.', 'Don’t tell me what she said. I’d like to imagine it.', '...She told me to stop doing what she said, didn’t she.', 'All right. I think I’ll go for a walk. I’ve never been for a walk.']); }
+    if (G.f.radio && !G.f.wrenRadio) { G.f.wrenRadio = 1; return G.say('Wren', ['Did you hear? There’s a voice on every speaker in the city, reading names.', 'She read mine. I didn’t know anyone knew it.']); }
+    return wren0(G);
+  };
+
+  var JOURNAL = function (G) {
+    var f = G.f, j = [];
+    if (f.junoMet) j.push((f.radio ? '[x]' : '[ ]') + ' Radio Meridian: ' + (f.radio ? 'on the air' : G.count('part') + ' of 3 parts'));
+    if (f.lineOpen) j.push('[x] The Line: running');
+    if (A.upper && G.save.seen.upper) j.push((f.guestPass ? '[x]' : '[ ]') + ' The estate gate');
+    if (f.guestPass) j.push((f.quorum ? '[x]' : '[ ]') + ' The Boardroom');
+    if (f.corinMet) j.push((f.corin ? '[x]' : '[ ]') + ' Corin’s confession');
+    if (G.save.seen.cold) { j.push((f.vault1 ? '[x]' : '[ ]') + ' The Commons vault'); j.push((f.bitrot ? '[x]' : '[ ]') + ' The corrupted vault'); j.push((f.mara ? '[x]' : '[ ]') + ' M_QUELL_FINAL (' + G.logCount() + ' of 10 logs)'); }
+    var minutes = ['M1', 'M2', 'M3', 'M4'].filter(function (k) { return f[k]; }).length; if (minutes) j.push('Board minutes: ' + minutes + ' of 4');
+    return j;
+  };
+
+  window.MeridianWorld = { areas: A, logs: LOGS, logOrder: LOG_ORDER, bosses: BOSSES, anchors: ANCHORS, talk: TALK, spots: SPOTS, doors: DOORS, wagon: wagon, steps: STEPS, endings: ENDINGS, atlas: ATLAS, links: LINKS, bossStart: BOSS_START, journal: JOURNAL, stations: STATIONS };
 })();

@@ -41,7 +41,8 @@
     px(0, 0, W * TS, H * TS, theme === 'quiet' ? '#000000' : '#07070a');
     for (var y = 0; y < H; y++) for (var x = 0; x < W; x++) {
       var t = tile(x, y), X = x * TS, Y = y * TS, r = hs(x * 13 + y * 31);
-      if (t === '~') { paintVoid(px, theme, X, Y, x, y, tile); continue; }
+      if (t === '~') { if (!voidX(px, theme, X, Y, x, y, tile)) paintVoid(px, theme, X, Y, x, y, tile); continue; }
+      if (floorX(px, theme, X, Y, x, y, tile)) { /* themed floor */ } else
       // the floor
       if (theme === 'gardens') {
         px(X, Y, TS, TS, T.g0);
@@ -67,10 +68,10 @@
         if (theme === 'commons' && (x + y) % 3 === 0) px(X + 4, Y + 4, 8, 8, '#101015');
         if (theme === 'plaza' && Math.abs(x - 15.5) < 5 && Math.abs(y - 12.5) < 3.5) { px(X, Y, TS, TS, '#121219'); px(X, Y, TS, 1, '#1e1e27'); px(X + 7, Y + 7, 2, 2, '#1e1e27'); }
       }
-      if (t === '=') paintRoad(px, theme, X, Y, x, y, tile);
-      else if (t === ',') paintField(px, theme, X, Y, x, y);
-      else if (t === 'T') paintWall(px, theme, X, Y, x, y, tile);
-      else if (t === 'p') paintTree(g, px, X, Y, x, y, ov);
+      if (t === '=') { if (!roadX(px, theme, X, Y, x, y, tile)) paintRoad(px, theme, X, Y, x, y, tile); }
+      else if (t === ',') { if (!fieldX(px, theme, X, Y, x, y)) paintField(px, theme, X, Y, x, y); }
+      else if (t === 'T') { if (!wallX(px, theme, X, Y, x, y, tile)) paintWall(px, theme, X, Y, x, y, tile); }
+      else if (t === 'p') { if (theme === 'upper') paintTopiary(px, g, X, Y, x, y); else paintTree(g, px, X, Y, x, y, ov); }
       else if (t === 'E') { px(X, Y, TS, TS, T.road); }
       else if (t === 'D') { for (var s = 0; s < 5; s++) { px(X + 1, Y + s * 3 + 1, TS - 2, 2, s % 2 ? '#2a2a34' : '#3c3c48'); px(X + 1, Y + s * 3 + 1, TS - 2, 1, '#6a6a76'); } px(X, Y, 1, TS, '#8a8a96'); px(X + TS - 1, Y, 1, TS, '#3a3a46'); }
       else if (t === 'G') { px(X, Y, TS, TS, '#0c0c11'); px(X + 1, Y, 2, TS, '#3a3a46'); px(X + 13, Y, 2, TS, '#3a3a46'); px(X + 1, Y, 1, TS, '#9a9aa6'); }
@@ -83,7 +84,8 @@
     // the plaza fountain, as one piece
     var fx = -1, fy = -1;
     for (var yy = 0; yy < H && fx < 0; yy++) for (var xx = 0; xx < W; xx++) if (tile(xx, yy) === 'F') { fx = xx; fy = yy; break; }
-    if (fx >= 0) paintFountain(g, px, fx * TS, fy * TS);
+    if (fx >= 0) { if (theme === 'patch') paintBonfire(g, px, fx * TS, fy * TS); else paintFountain(g, px, fx * TS, fy * TS); }
+    return fx >= 0 ? [fx * TS, fy * TS] : null;
   }
   function paintRoad(px, theme, X, Y, x, y, tile) {
     var T = THEMES[theme] || THEMES.plaza, hz = tile(x - 1, y) === '=' || tile(x + 1, y) === '=' || tile(x - 1, y) === 'E' || tile(x + 1, y) === 'E';
@@ -522,11 +524,199 @@
 
   var PAINT = { tower: tower, home: home, spire: spire, archive: archiveDome, ledger: ledger, keep: keep, turret: turret, lab: lab, core: core, rack: rack, stall: stall, gate: gate, tether: tether, glasshouse: glasshouse, ruin: ruin };
 
+  /* =================== EXPANSION ART =================== */
+  THEMES.line = { g0: '#0d0d12', g1: '#1a1a22', dot: '#2a2a34', road: '#16161c', edge: '#9a9aa6' };
+  THEMES.patch = { g0: '#0d0c0c', g1: '#191717', dot: '#2a2727', road: '#1a1816', edge: '#8a8580' };
+  THEMES.upper = { g0: '#17171d', g1: '#22222a', dot: '#2e2e38', road: '#202028', edge: '#e8e8f0' };
+  THEMES.cold = { g0: '#0b0d10', g1: '#151a1f', dot: '#26303a', road: '#13171c', edge: '#aab8c4' };
+
+  function floorX(px, theme, X, Y, x, y, tile) {
+    if (theme === 'line') {
+      px(X, Y, TS, TS, '#101015'); px(X, Y, TS, 1, '#1c1c24'); px(X, Y + 8, TS, 1, '#1c1c24'); px(X, Y, 1, TS, '#1c1c24'); px(X + 8, Y, 1, TS, '#18181f');
+      if (tile(x, y + 1) === '~' || tile(x, y - 1) === '~') { var edge = tile(x, y + 1) === '~' ? Y + TS - 4 : Y; px(X, edge, TS, 4, '#2a2a32'); for (var s = 0; s < TS; s += 4) px(X + s, edge + 1, 2, 2, '#d8d8e0'); }
+      return true;
+    }
+    if (theme === 'patch') {
+      px(X, Y, TS, TS, '#0e0d0d');
+      var k = Math.floor(hs(x * 7 + y * 13) * 4); if (k === 0) { px(X + 2, Y + 3, 9, 7, '#1c1a19'); px(X + 2, Y + 3, 9, 1, '#2e2b29'); px(X + 3, Y + 4, 1, 1, '#4a4642'); px(X + 9, Y + 8, 1, 1, '#4a4642'); }
+      if (k === 1) { px(X + 6, Y + 1, 8, 12, '#151413'); px(X + 6, Y + 1, 1, 12, '#2a2826'); }
+      return true;
+    }
+    if (theme === 'upper') {
+      px(X, Y, TS, TS, '#1a1a21'); px(X, Y, TS, 1, '#26262e'); px(X, Y, 1, TS, '#26262e');
+      var v = hs(x * 3 + y * 11); if (v > .6) { for (var i = 0; i < 10; i++) px(X + i + Math.floor(v * 4), Y + 4 + Math.round(Math.sin(i / 2 + v * 6) * 2), 1, 1, 'rgba(255,255,255,.06)'); }   // marble veins
+      px(X + 1, Y + 1, 4, 1, 'rgba(255,255,255,.05)');
+      return true;
+    }
+    if (theme === 'cold') {
+      px(X, Y, TS, TS, '#0c0f13'); px(X, Y, TS, 1, '#18202a'); px(X, Y, 1, TS, '#18202a');
+      for (var f = 0; f < 5; f++) px(X + Math.floor(hs(x * 3 + y * 5 + f) * 15), Y + Math.floor(hs(x * 11 + y + f * 7) * 15), 1, 1, f % 2 ? 'rgba(220,236,250,.35)' : 'rgba(220,236,250,.15)');   // frost
+      return true;
+    }
+    return false;
+  }
+  function roadX(px, theme, X, Y, x, y, tile) {
+    if (theme === 'patch') { px(X, Y, TS, TS, '#1f1c19'); for (var p = 0; p < TS; p += 4) { px(X, Y + p, TS, 1, '#0c0b0a'); px(X + ((x * 5 + p) % 12), Y + p + 1, 1, 1, '#5a5550'); } return true; }   // boardwalk
+    if (theme === 'upper') { px(X, Y, TS, TS, '#24242c'); px(X, Y, TS, 1, '#34343e'); px(X, Y, 1, TS, '#34343e'); if (tile(x, y - 1) !== '=' && tile(x, y - 1) !== 'G') px(X, Y, TS, 1, '#e8e8f0'); if (tile(x, y + 1) !== '=' && tile(x, y + 1) !== 'G') px(X, Y + TS - 1, TS, 1, '#a8a8b4'); return true; }
+    if (theme === 'line' || theme === 'cold') { px(X, Y, TS, TS, '#16161c'); for (var g = 0; g < TS; g += 2) px(X + g, Y, 1, TS, '#22222a'); px(X, Y, 1, TS, '#8a8a96'); px(X + TS - 1, Y, 1, TS, '#4a4a56'); return true; }
+    return false;
+  }
+  function fieldX(px, theme, X, Y, x, y) {
+    if (theme === 'patch') { for (var j = 0; j < 4; j++) { var bx = X + Math.floor(hs(x * 5 + j) * 11), by = Y + Math.floor(hs(y * 7 + j * 3) * 11), w = 3 + Math.floor(hs(x + y + j) * 4); px(bx, by, w, 3, ['#2a2725', '#3a3633', '#1c1a18', '#4a4540'][j]); px(bx, by, w, 1, '#5a554f'); } return true; }   // salvage heaps
+    if (theme === 'upper') { px(X, Y, TS, TS, x % 2 ? '#1d2124' : '#191c1f'); px(X, Y, 1, TS, 'rgba(255,255,255,.03)'); return true; }   // striped lawn
+    if (theme === 'cold') { for (var d = 0; d < 3; d++) { var dy = Y + 3 + d * 5; for (var i = 0; i < TS; i++) px(X + i, dy + Math.round(Math.sin((i + x * 16) / 4 + d) * 1), 1, 1, 'rgba(220,236,250,' + (.12 + d * .06) + ')'); } return true; }   // frost drifts
+    return false;
+  }
+  function voidX(px, theme, X, Y, x, y, tile) {
+    if (theme === 'line') {   // the tracks
+      px(X, Y, TS, TS, '#08080a'); for (var s = 1; s < TS; s += 4) px(X + s, Y, 2, TS, '#121216');
+      if (tile(x, y - 1) !== '~') { px(X, Y + 4, TS, 2, '#6a6a76'); px(X, Y + 4, TS, 1, '#d0d0da'); }
+      if (tile(x, y + 1) !== '~') { px(X, Y + 9, TS, 2, '#6a6a76'); px(X, Y + 9, TS, 1, '#d0d0da'); }
+      return true;
+    }
+    return false;
+  }
+  function wallX(px, theme, X, Y, x, y, tile) {
+    if (theme === 'line') { px(X, Y, TS, TS, '#1e1e26'); for (var r = 0; r < TS; r += 4) px(X, Y + r, TS, 1, '#121218'); for (var c = 0; c < TS; c += 8) px(X + c + ((Math.floor(Y / 4)) % 2 ? 4 : 0), Y, 1, TS, '#121218'); px(X, Y + 10, TS, 2, '#d0d0da'); return true; }
+    if (theme === 'patch') { var h = 10 + Math.floor(hs(x * 3 + y) * 6); px(X, Y, TS, TS, '#0a0909'); px(X, Y + TS - h, TS, h, ['#2a2725', '#22201e', '#33302d'][x % 3]); for (var k = X + 1; k < X + TS; k += 3) px(k, Y + TS - h, 1, h, '#151312'); px(X, Y + TS - h, TS, 1, '#6a655f'); if (hs(x + y * 5) > .7) px(X + 4, Y + TS - h + 3, 2, 2, '#8a857f'); return true; }
+    if (theme === 'upper') { px(X, Y, TS, TS, '#c8c8d0'); px(X, Y, TS, 3, '#2a3034'); for (var l = 0; l < TS; l += 3) px(X + l, Y, 2, 2, '#3c454a'); px(X, Y + 3, TS, 1, '#ffffff'); px(X, Y + TS - 2, TS, 2, '#8a8a94'); px(X + TS - 1, Y + 3, 1, TS - 3, '#a0a0aa'); return true; }
+    if (theme === 'cold') { px(X, Y, TS, TS, '#11161b'); px(X, Y + 4, TS, 1, '#2a3540'); px(X, Y + 11, TS, 1, '#2a3540'); if (x % 3 === 0) { px(X + 6, Y, 4, TS, '#1a222a'); px(X + 6, Y, 1, TS, '#5a6a78'); } for (var i = 0; i < 4; i++) px(X + Math.floor(hs(x * 9 + i) * 15), Y + 12 + Math.floor(hs(x + i) * 4), 1, 1, 'rgba(230,240,250,.5)'); return true; }
+    return false;
+  }
+  function paintTopiary(px, g, X, Y, x, y) {
+    px(X + 3, Y + 13, 11, 3, 'rgba(0,0,0,.5)');
+    px(X + 4, Y + 11, 8, 4, '#2a2a32'); px(X + 4, Y + 11, 8, 1, '#8a8a96');   // a stone planter
+    g.fillStyle = '#26302b'; g.beginPath(); g.arc(X + 8, Y + 5, 7, 0, 7); g.fill();
+    g.fillStyle = '#3c4a42'; g.beginPath(); g.arc(X + 6.5, Y + 3.5, 4.5, 0, 7); g.fill();
+    g.fillStyle = 'rgba(255,255,255,.18)'; g.beginPath(); g.arc(X + 5.5, Y + 2.5, 1.8, 0, 7); g.fill();
+  }
+  function paintBonfire(g, px, X, Y) {
+    // the Patchwork's hearth: a ring of salvaged stones and a fire of burning data
+    g.fillStyle = 'rgba(0,0,0,.45)'; g.beginPath(); g.ellipse(X + 16, Y + 26, 16, 5, 0, 0, 7); g.fill();
+    for (var i = 0; i < 10; i++) { var a = i / 10 * Math.PI * 2; px(X + 16 + Math.cos(a) * 12 - 2, Y + 20 + Math.sin(a) * 6 - 1, 4, 3, i % 2 ? '#3a3633' : '#5a554f'); }
+    px(X + 9, Y + 16, 14, 6, '#140f0c'); for (var l = 0; l < 4; l++) px(X + 10 + l * 3, Y + 14 + (l % 2), 2, 6, '#4a4540');
+    for (var s = 0; s < 4; s++) { px(X - 8 + s * 14, Y + 30, 10, 3, '#2a2725'); px(X - 8 + s * 14, Y + 30, 10, 1, '#5a554f'); }   // benches
+  }
+
+  /* --- expansion buildings --- */
+  function train(g, W, Ht, Hf, b, lights) {
+    var px = P(g), y0 = Ht - 23;
+    px(0, y0, W, 22, '#1a1a22'); px(0, y0, W, 1, '#e0e0ea'); px(0, y0 + 2, W, 1, '#6a6a76'); px(0, y0 + 21, W, 1, '#0a0a0e');
+    px(0, y0 + 16, W, 2, '#d0d0da');   // the stripe
+    var rnd = R(b.seed || 1);
+    for (var x = 4; x < W - 8; x += 12) { var on = rnd(); px(x, y0 + 5, 9, 8, on > .5 ? '#c8c8d6' : '#22222c'); px(x, y0 + 5, 9, 1, '#f0f0f6'); if (on > .5) { px(x + 2, y0 + 8, 2, 5, '#5a5a66'); } lights.push({ x: x, y: y0 + 5, w: 9, h: 8, kind: 'flick', ph: x }); }
+    var dx = b.door * TS + 2; px(dx, y0 + 3, 12, 17, '#0e0e14'); px(dx + 5, y0 + 3, 1, 17, '#5a5a66'); px(dx, y0 + 3, 12, 1, '#ffffff');
+    px(W - textW('NOT IN SERVICE') - 10, y0 + 1, textW('NOT IN SERVICE') + 6, 1, '#1a1a22'); text(g, 'NOT IN SERVICE', W - textW('NOT IN SERVICE') - 7, y0 - 6 < 0 ? y0 + 15 : y0 - 6, '#c8c8d4');
+    for (var w2 = 6; w2 < W; w2 += 40) { px(w2, Ht - 4, 8, 4, '#2a2a34'); px(w2 + 2, Ht - 3, 4, 2, '#6a6a76'); }
+  }
+  function booth(g, W, Ht, Hf, b, lights) {
+    var px = P(g);
+    px(2, 6, W - 4, Ht - 6, '#14141b'); px(2, 6, W - 4, 1, '#d0d0da'); px(2, 6, 1, Ht - 6, '#8a8a96');
+    px(6, 14, W - 12, Ht - 26, '#0a0a0e'); for (var s = 14; s < Ht - 12; s += 3) px(6, s, W - 12, 1, '#2a2a34');   // the shutter
+    sign(g, px, b.sign, W / 2, 9, 1, true); px(4, Ht - 10, W - 8, 3, '#2a2a34'); px(4, Ht - 10, W - 8, 1, '#a0a0aa');
+  }
+  // a shack built from salvage: mismatched panels, a corrugated roof, and old Upstream ads for walls
+  function shack(g, W, Ht, Hf, b, lights) {
+    var px = P(g), rnd = R(b.seed || 1), roofY = 10, ads = ['UPST', 'NEW WOR', 'SOLD', 'LEAVE', 'YOU DESE'];
+    // roof: corrugated sheets at slightly different angles
+    for (var r = 0; r < 3; r++) { var rx = r * Math.floor(W / 3) - 2, rw = Math.floor(W / 3) + 5, ry = roofY - 2 + Math.floor(rnd() * 4); px(rx, ry, rw, 5, ['#2e2b29', '#3a3633', '#26231f'][r]); for (var c = rx; c < rx + rw; c += 2) px(c, ry, 1, 5, '#1a1816'); px(rx, ry, rw, 1, '#7a756f'); }
+    px(W - 10, 0, 2, roofY, '#4a4540'); px(W - 12, 0, 6, 2, '#6a655f');   // a chimney pipe
+    // walls: panels of whatever was nearby
+    for (var x = 1; x < W - 1;) {
+      var pw = 6 + Math.floor(rnd() * 10), shade = ['#1f1d1b', '#2a2725', '#171615', '#33302d', '#24221f'][Math.floor(rnd() * 5)];
+      pw = Math.min(pw, W - 1 - x); px(x, roofY + 4, pw, Ht - roofY - 4, shade); px(x, roofY + 4, 1, Ht - roofY - 4, '#0c0b0a');
+      px(x + 1, roofY + 6, 1, 1, '#6a655f'); px(x + pw - 2, Ht - 3, 1, 1, '#6a655f');   // bolts
+      x += pw;
+    }
+    // an old billboard turned into a wall
+    var ad = ads[Math.floor(rnd() * ads.length)]; if (textW(ad) < W - 10) { var ax = 3 + Math.floor(rnd() * Math.max(1, W - textW(ad) - 8)); px(ax - 2, roofY + 8, textW(ad) + 4, 9, '#d8d4cc'); text(g, ad, ax, roofY + 10, '#1a1816'); px(ax + Math.floor(textW(ad) / 2), roofY + 8, 2, 9, '#2a2725'); }
+    // a warm window
+    var wx = Math.floor(W * .65); px(wx, roofY + 20, 9, 7, '#e8e0d4'); px(wx + 4, roofY + 20, 1, 7, '#3a3633'); px(wx, roofY + 27, 9, 1, '#5a554f'); lights.push({ x: wx, y: roofY + 20, w: 9, h: 7, kind: 'warm', ph: b.seed });
+    if (b.door != null) { var dx = b.door * TS + 3; px(dx, Ht - 13, 10, 13, '#0a0909'); px(dx, Ht - 13, 10, 1, '#8a857f'); px(dx + 8, Ht - 7, 1, 1, '#c8c0b4'); }
+    if (b.sign) { px(2, roofY + 5, textW(b.sign) + 4, 7, '#0a0909'); text(g, b.sign, 4, roofY + 6, '#f0ebe2'); }
+    // string lights along the eave
+    for (var s = 2; s < W - 2; s += 5) lights.push({ x: s, y: roofY + 4 + Math.round(Math.sin(s / W * Math.PI) * 2), kind: 'bulb', ph: s + (b.seed || 0) * 3 });
+  }
+  // the radio mast: a lattice tower with a dish and a booth at its feet
+  function mast(g, W, Ht, Hf, b, lights) {
+    var px = P(g), cx0 = W / 2, base = Ht - 26;
+    g.strokeStyle = '#8a857f'; g.lineWidth = 1;
+    g.beginPath(); g.moveTo(cx0 - 12, base); g.lineTo(cx0 - 2, 6); g.moveTo(cx0 + 12, base); g.lineTo(cx0 + 2, 6); g.stroke();
+    for (var y = 10; y < base; y += 8) { var p0 = (y - 6) / (base - 6), hw = 2 + p0 * 10, p1 = (y + 8 - 6) / (base - 6), hw1 = 2 + p1 * 10; g.strokeStyle = 'rgba(160,155,150,.7)'; g.beginPath(); g.moveTo(cx0 - hw, y + .5); g.lineTo(cx0 + hw1, y + 8.5); g.moveTo(cx0 + hw, y + .5); g.lineTo(cx0 - hw1, y + 8.5); g.moveTo(cx0 - hw, y + .5); g.lineTo(cx0 + hw, y + .5); g.stroke(); }
+    px(cx0 - .5, 0, 1, 8, '#c8c0b4'); lights.push({ x: cx0 - 1, y: 0, kind: 'blink', ph: 0 }); lights.push({ x: cx0 - 7, y: Math.floor(base * .5), kind: 'blink', ph: 3 });
+    g.fillStyle = '#2a2725'; g.beginPath(); g.ellipse(cx0 + 9, 22, 4, 7, -.4, 0, 7); g.fill(); g.strokeStyle = '#c8c0b4'; g.beginPath(); g.ellipse(cx0 + 9, 22, 4, 7, -.4, 0, 7); g.stroke();
+    px(2, base, W - 4, 26, '#1f1d1b'); px(2, base, W - 4, 1, '#8a857f'); px(2, base, 1, 26, '#5a554f');
+    px(6, base + 4, W - 12, 7, '#0a0909'); text(g, b.sign, Math.round(cx0 - textW(b.sign) / 2), base + 5, '#f0ebe2'); lights.push({ x: 6, y: base + 4, w: W - 12, h: 7, kind: 'onair' });
+    var dx = b.door * TS + 3; px(dx, Ht - 13, 10, 13, '#0a0909'); px(dx, Ht - 13, 10, 1, '#8a857f');
+  }
+  // the owners' villas: pale planes, glass walls, every light on for viewers who never come
+  function villa(g, W, Ht, Hf, b, lights) {
+    var px = P(g), rnd = R(b.seed || 1), top = Ht - Hf - (b.rise ? 4 : 0) + 4;
+    top = Math.max(4, Ht - Hf - 6);
+    // cantilevered roof slab
+    px(0, top, W, 4, '#d8d8e0'); px(0, top, W, 1, '#ffffff'); px(0, top + 3, W, 1, '#8a8a94');
+    // upper floor: glass, warmly lit
+    var fy = top + 4, fh = Math.floor((Ht - fy) * .45);
+    px(4, fy, W - 8, fh, '#e4e2dc'); for (var m = 4; m < W - 4; m += 7) px(m, fy, 1, fh, '#8a8a94');
+    px(4, fy + fh - 2, W - 8, 2, '#b8b6b0'); lights.push({ x: 4, y: fy, w: W - 8, h: fh - 2, kind: 'glow' });
+    // the solid white volume below, offset for drama
+    var ly = fy + fh, lh = Ht - ly;
+    px(1, ly, Math.floor(W * .6), lh, '#c4c4cc'); px(1, ly, Math.floor(W * .6), 1, '#ffffff'); px(1, ly, 1, lh, '#ffffff');
+    px(Math.floor(W * .6) + 1, ly + 2, W - Math.floor(W * .6) - 2, lh - 2, '#2a2e32'); px(Math.floor(W * .6) + 1, ly + 2, W - Math.floor(W * .6) - 2, 1, '#8a8a94');
+    // an infinity pool, perfectly still
+    var pw = W - Math.floor(W * .6) - 6; px(Math.floor(W * .6) + 3, ly + 5, pw, 5, '#9aa4aa'); px(Math.floor(W * .6) + 3, ly + 5, pw, 1, '#e8eef2'); for (var r = 0; r < pw; r += 6) px(Math.floor(W * .6) + 4 + r, ly + 7, 3, 1, '#c8d2d8');
+    if (b.door != null) { var dx = b.door * TS + 3; px(dx, Ht - 13, 10, 13, '#3a3a42'); px(dx, Ht - 13, 10, 1, '#ffffff'); px(dx + 4, Ht - 13, 1, 13, '#8a8a94'); }
+    px(3, ly + 6, Math.floor(W * .6) - 6, 1, '#a8a8b2');
+    reflect(g, 4, fy, W - 8, fh, 4);
+  }
+  // Meridian Holdings: a monolith, untouched
+  function boardroom(g, W, Ht, Hf, b, lights) {
+    var px = P(g), cx0 = W / 2, mw = W - 40, mx = 20;
+    px(mx, 4, mw, Ht - 22, '#0c0c10');
+    for (var x = mx + 3; x < mx + mw - 2; x += 4) px(x, 6, 1, Ht - 26, 'rgba(236,236,246,.55)');   // vertical light lines
+    px(mx, 4, mw, 1, '#ffffff'); px(mx, 4, 1, Ht - 22, '#d0d0da'); px(mx + mw - 1, 4, 1, Ht - 22, '#3a3a46');
+    reflect(g, mx, 4, mw, Ht - 26, 10);
+    // the logo: an arc and a meridian line
+    g.strokeStyle = '#ffffff'; g.lineWidth = 1; g.beginPath(); g.arc(cx0, 30, 9, Math.PI * 1.1, Math.PI * 1.9); g.stroke(); px(cx0 - .5, 20, 1, 20, '#ffffff');
+    lights.push({ x: cx0 - 10, y: 20, w: 20, h: 20, kind: 'logo' });
+    // wings and the plaza
+    px(0, Ht - 30, mx, 30, '#d0d0d8'); px(mx + mw, Ht - 30, W - mx - mw, 30, '#d0d0d8'); px(0, Ht - 30, mx, 1, '#ffffff'); px(mx + mw, Ht - 30, W - mx - mw, 1, '#ffffff');
+    for (var w = 3; w < mx - 2; w += 5) { px(w, Ht - 24, 3, 14, '#e8e6e0'); px(mx + mw + w, Ht - 24, 3, 14, '#e8e6e0'); }
+    px(0, Ht - 18, W, 18, '#1a1a20'); px(0, Ht - 18, W, 1, '#ffffff');
+    sign(g, px, b.sign, cx0, Ht - 15, 1, true);
+    var dx = b.door * TS + 2; px(dx, Ht - 8, 12, 8, '#050507'); px(dx - 1, Ht - 9, 14, 1, '#ffffff');
+  }
+  // cryo pods: frosted capsules, a silhouette in each
+  function pod(g, W, Ht, Hf, b, lights) {
+    var px = P(g);
+    px(0, 2, W, 3, '#1a222a'); px(0, 2, W, 1, '#6a7a88');
+    for (var x = 1; x < W - 10; x += 13) {
+      px(x, 5, 12, Ht - 6, '#11161b'); px(x, 5, 12, 1, '#8a9aa8'); px(x, 5, 1, Ht - 6, '#5a6a78');
+      px(x + 2, 8, 8, Ht - 14, '#0a0e12'); px(x + 2, 8, 8, 1, '#c8d8e6');
+      // someone inside
+      px(x + 5, 11, 3, 3, 'rgba(200,214,226,.35)'); px(x + 4, 14, 5, 9, 'rgba(200,214,226,.22)');
+      for (var f = 0; f < 6; f++) px(x + 2 + Math.floor(hs(x + f) * 8), 8 + Math.floor(hs(x * 3 + f) * (Ht - 14)), 1, 1, 'rgba(236,244,252,.6)');
+      lights.push({ x: x + 5, y: Ht - 5, kind: 'pod', ph: x + (b.seed || 0) * 7 });
+    }
+  }
+  function vault(g, W, Ht, Hf, b, lights) {
+    var px = P(g), cx0 = W / 2, cy = Ht / 2 - 2;
+    px(0, 0, W, Ht, '#12171c'); px(0, 0, W, 1, '#8a9aa8'); for (var r = 4; r < Ht; r += 6) px(0, r, W, 1, '#0c1014');
+    g.fillStyle = '#1c242c'; g.beginPath(); g.arc(cx0, cy, 17, 0, 7); g.fill(); g.strokeStyle = '#c8d4de'; g.beginPath(); g.arc(cx0, cy, 17, 0, 7); g.stroke(); g.beginPath(); g.arc(cx0, cy, 12, 0, 7); g.strokeStyle = '#5a6a78'; g.stroke();
+    for (var s = 0; s < 6; s++) { var a = s / 6 * Math.PI * 2; g.strokeStyle = '#8a9aa8'; g.beginPath(); g.moveTo(cx0, cy); g.lineTo(cx0 + Math.cos(a) * 11, cy + Math.sin(a) * 11); g.stroke(); }
+    px(cx0 - 2, cy - 2, 4, 4, '#e8f0f6');
+    for (var f = 0; f < 14; f++) px(Math.floor(hs(f * 5 + (b.sign || '').length) * W), Math.floor(hs(f * 3) * 8), 1, 1, 'rgba(236,244,252,.7)');
+    px(2, Ht - 9, W - 4, 8, '#0a0d10'); text(g, b.sign, Math.round(cx0 - textW(b.sign) / 2), Ht - 7, b.sign === 'CORRUPT' ? '#8a8a94' : '#e8f0f6');
+    lights.push({ x: cx0 - 2, y: cy - 2, kind: 'vaultlight', sign: b.sign });
+  }
+  PAINT.train = train; PAINT.booth = booth; PAINT.shack = shack; PAINT.mast = mast; PAINT.villa = villa; PAINT.board = boardroom; PAINT.pod = pod; PAINT.vault = vault;
+
   /* ---------- the sky beyond the walls ---------- */
   function paintSky(g, theme, w, pad) {
     var px = P(g);
-    var sk = g.createLinearGradient(0, 0, 0, pad); sk.addColorStop(0, '#020203'); sk.addColorStop(1, theme === 'undercroft' ? '#0a0a0d' : '#14141b'); g.fillStyle = sk; g.fillRect(0, 0, w, pad);
-    if (theme === 'undercroft') {   // underground: a ceiling of pipes and cable
+    var under = theme === 'undercroft' || theme === 'line' || theme === 'cold';
+    var sk = g.createLinearGradient(0, 0, 0, pad); sk.addColorStop(0, '#020203'); sk.addColorStop(1, under ? '#0a0a0d' : '#14141b'); g.fillStyle = sk; g.fillRect(0, 0, w, pad);
+    if (under) {   // underground: a ceiling of pipes and cable
       for (var p = 0; p < 4; p++) { var y = 6 + p * Math.floor(pad / 5); px(0, y, w, 3, '#16161c'); px(0, y, w, 1, '#4a4a56'); }
       for (var c = 0; c < w; c += 23) { px(c, 0, 2, pad, '#101015'); px(c, 0, 1, pad, '#2a2a34'); }
       return;
@@ -553,7 +743,7 @@
     var base = mk(W * TS, H * TS + pad), over = mk(W * TS, H * TS + pad), g = base.getContext('2d'), o = over.getContext('2d'), lights = [];
     paintSky(g, area.theme, W * TS, pad);
     g.translate(0, pad); o.translate(0, pad);
-    paintGround(g, map, area.theme, W, H, o);
+    var fpos = paintGround(g, map, area.theme, W, H, o);
     (area.blds || []).forEach(function (b) {
       if (!b.w || !PAINT[b.kind]) return;
       var Wp = b.w * TS, Hf = b.h * TS, rise = (b.rise || 0) * TS, Ht = Hf + rise, c = mk(Wp, Ht), cg = c.getContext('2d'), L = [];
@@ -565,7 +755,8 @@
       L.forEach(function (l) { l.x += X; l.y += Y - rise; l.over = l.y < Y; lights.push(l); });
     });
     var riseRects = (area.blds || []).filter(function (b) { return b.w && b.rise; }).map(function (b) { return { x: b.x * TS, y: (b.y - b.rise) * TS, w: b.w * TS, h: b.rise * TS }; });
-    return { base: base, over: over, lights: lights, W: W, H: H, pad: pad, rises: riseRects };
+    if (area.theme === 'line') for (var sx = 2; sx < W - 6; sx += 12) { g.fillStyle = '#0a0a0e'; g.fillRect(sx * TS, 2, textW('CENTRAL') + 6, 9); text(g, 'CENTRAL', sx * TS + 3, 4, '#e8e8f0'); }
+    return { base: base, over: over, lights: lights, W: W, H: H, pad: pad, rises: riseRects, fpos: fpos };
   }
 
   /* ---------- things that move ---------- */
@@ -588,6 +779,8 @@
         else if (tl === '=' && (th === 'plaza' || th === 'commons' || th === 'halflight') && (x + y) % 5 === 0) { var u = (t * .7 + x * .13) % 1; if (tile(x + 1, y) === '=' || tile(x - 1, y) === '=') px(X + Math.floor(u * 14), Y + 7, 3, 2, 'rgba(245,245,250,.6)'); else px(X + 7, Y + Math.floor(u * 14), 2, 3, 'rgba(245,245,250,.6)'); }
       }
       // fountain: water renders once every eleven seconds
+      if (st.fpos && th === 'patch') { var bx0 = st.fpos[0], by0 = st.fpos[1]; for (var fl = 0; fl < 14; fl++) { var ft = (t * 1.6 + hs(fl)) % 1; px(bx0 + 12 + hs(fl * 3) * 9 + Math.sin(t * 5 + fl) * 1.5, by0 + 16 - ft * 16, 2, 2, 'rgba(255,250,240,' + (1 - ft) * .9 + ')'); } c.fillStyle = 'rgba(255,245,230,' + (.08 + .04 * Math.sin(t * 7)) + ')'; c.beginPath(); c.arc(bx0 + 16 - cam.x, by0 + 16 - cam.y, 30, 0, 7); c.fill(); }
+      if (st.fpos && th === 'upper') { for (var sp = 0; sp < 10; sp++) { var su = (t * .9 + sp / 10) % 1; px(st.fpos[0] + 32 + Math.cos(sp) * su * 20, st.fpos[1] + 4 + su * 18 - Math.sin(su * Math.PI) * 10, 1, 2, 'rgba(240,244,250,' + (1 - su) + ')'); } }
       if (th === 'plaza') { var fT = (t % 11); if (fT < 1.2) { var fx = 14 * TS, fy = 12 * TS; for (var d = 0; d < 14; d++) { var a = d / 14 * Math.PI, r = fT * 30; px(fx + 32 + Math.cos(a) * r * .9, fy + 6 + (1 - Math.sin(a)) * fT * 14, 1, 2, 'rgba(230,236,248,' + (1 - fT / 1.2) + ')'); } } px(14 * TS + 31, 12 * TS + 2, 2, 1, '#f0f0f6'); }
     }
     // lights painted onto buildings
@@ -606,6 +799,14 @@
       else if (l.kind === 'leds') { for (var q = 0; q < 6; q++) if (hs(l.ph + q * 7 + Math.floor(t * (3 + q))) > .55) px(l.x + (q % 3) * 3, l.y + Math.floor(q / 3) * 6 + Math.floor(hs(q + l.ph) * (l.h - 8)), 1, 1, '#ffffff'); }
       else if (l.kind === 'tag') { var bob2 = Math.round(Math.sin(t * 2 + l.ph) * 1); px(l.x, l.y - 6 + bob2, l.w, 5, 'rgba(220,220,236,.3)'); px(l.x, l.y - 6 + bob2, l.w, 1, 'rgba(255,255,255,.8)'); px(l.x + 2, l.y - 4 + bob2, 5, 1, 'rgba(255,255,255,.8)'); }
       else if (l.kind === 'bill') { if (Math.random() < .02) px(l.x, l.y, l.w, l.h, 'rgba(0,0,0,.7)'); else { var sy2 = Math.floor((t * 8 + l.ph) % l.h); px(l.x, l.y + sy2, l.w, 1, 'rgba(255,255,255,.18)'); } }
+      else if (l.kind === 'bulb') { var on2 = .45 + .55 * Math.abs(Math.sin(t * 1.3 + l.ph)); px(l.x, l.y, 1, 1, 'rgba(255,248,236,' + on2 + ')'); px(l.x - 1, l.y - 1, 3, 3, 'rgba(255,248,236,' + on2 * .15 + ')'); }
+      else if (l.kind === 'warm') { if (Math.random() < .01) return; px(l.x, l.y, l.w, l.h, 'rgba(255,240,220,' + (.08 + .05 * Math.sin(t * 2 + l.ph)) + ')'); }
+      else if (l.kind === 'onair') { if (st.radio && Math.floor(t * 1.5) % 2) { px(l.x, l.y, l.w, l.h, 'rgba(255,255,255,.25)'); } }
+      else if (l.kind === 'flick') { if (hs(l.ph + Math.floor(t * 6)) > .96) px(l.x, l.y, l.w, l.h, 'rgba(0,0,0,.6)'); }
+      else if (l.kind === 'glow') { px(l.x, l.y, l.w, l.h, 'rgba(255,248,232,' + (.06 + .03 * Math.sin(t)) + ')'); }
+      else if (l.kind === 'logo') { c.fillStyle = 'rgba(255,255,255,' + (.06 + .04 * Math.sin(t * 1.4)) + ')'; c.beginPath(); c.arc(l.x + 10 - cam.x, l.y + 10 - cam.y, 14, 0, 7); c.fill(); }
+      else if (l.kind === 'pod') { if (Math.floor(t * 1.2 + l.ph) % 3) px(l.x, l.y, 2, 1, '#e8f4ff'); }
+      else if (l.kind === 'vaultlight') { var vl = l.sign === 'M QUELL' ? (st.mara ? .2 : .5 + .5 * Math.sin(t * 2)) : l.sign === 'CORRUPT' ? (Math.random() < .3 ? 1 : 0) : .6; px(l.x, l.y, 4, 4, 'rgba(255,255,255,' + vl + ')'); }
       else if (l.kind === 'board') { if (Math.floor(t * 1.2) % 2) px(l.x + 2, l.y + 9, l.w - 4, 1, '#ffffff'); }
       else if (l.kind === 'tether') {
         var stt = st.tether;   // 'up', 'cut' or 'down'
@@ -618,6 +819,9 @@
       // weather, by district
       if (th === 'gardens') for (var i = 0; i < 18; i++) { var life = (t * .06 + hs(i * 5)) % 1; px(hs(i * 17) * 320 + cam.x + Math.sin(t + i) * 6, cam.y + life * 190, 1, 1, 'rgba(230,236,244,' + (.5 * (1 - life)) + ')'); }
       else if (th === 'undercroft') for (var v = 0; v < 6; v++) { var lf = (t * .4 + hs(v)) % 1; px(cam.x + hs(v * 9) * 320 + Math.sin(t * 2 + v) * 3, cam.y + 180 - lf * 120, 3, 3, 'rgba(200,200,214,' + .12 * (1 - lf) + ')'); }
+      else if (th === 'cold') { for (var mi = 0; mi < 10; mi++) { var ml = (t * .05 + hs(mi * 7)) % 1; c.fillStyle = 'rgba(220,236,250,' + .05 * Math.sin(ml * Math.PI) + ')'; c.fillRect(Math.round(hs(mi * 3) * 360 - 40 + ml * 60), Math.round(hs(mi * 13) * 180), 60, 10); } for (var sn = 0; sn < 16; sn++) { var sl2 = (t * .08 + hs(sn * 5)) % 1; px(cam.x + hs(sn * 9) * 320 + Math.sin(t + sn) * 5, cam.y + sl2 * 190, 1, 1, 'rgba(236,244,252,' + .6 * (1 - sl2) + ')'); } }
+      else if (th === 'line') { if (hs(Math.floor(t * 4)) > .97) { c.fillStyle = 'rgba(0,0,0,.25)'; c.fillRect(0, 0, 320, 180); } }
+      else if (th === 'upper') { }
       else if (th === 'quiet') for (var q2 = 0; q2 < 30; q2++) { var l2 = (t * .1 + hs(q2 * 3)) % 1; px(cam.x + hs(q2 * 11) * 320, cam.y + 180 - l2 * 200, q2 % 4 ? 1 : 2, 1, 'rgba(220,220,232,' + .6 * (1 - l2) + ')'); }
       else for (var j = 0; j < 14; j++) { var lj = (t * .12 + hs(j * 5)) % 1; px(cam.x + hs(j * 17) * 320 + Math.sin(t + j) * 4, cam.y + 180 - lj * 200, j % 3 ? 1 : 2, j % 3 ? 1 : 2, 'rgba(210,210,224,' + (.45 * (1 - lj)) + ')'); }
     }
@@ -677,6 +881,20 @@
     } else if (theme === 'bastion') {
       for (var b = 0; b < W; b += 12) { px(b, hy - 26, 12, 26, '#15151c'); px(b, hy - 26, 12, 1, '#6a6a76'); if ((b / 12) % 2 === 0) { px(b + 2, hy - 31, 7, 5, '#15151c'); px(b + 2, hy - 31, 7, 1, '#8a8a96'); } }
       var ang = Math.sin(t * .8) * .8; cx.fillStyle = 'rgba(255,255,255,.05)'; cx.beginPath(); cx.moveTo(W / 2, hy - 30); cx.lineTo(W / 2 + Math.sin(ang - .1) * 200, -20); cx.lineTo(W / 2 + Math.sin(ang + .1) * 200, -20); cx.fill();
+    } else if (theme === 'line') {
+      cx.fillStyle = '#08080b'; cx.fillRect(0, 0, W, hy); for (var ar = 0; ar < 4; ar++) { cx.strokeStyle = 'rgba(200,200,214,' + (.12 + ar * .08) + ')'; cx.beginPath(); cx.ellipse(W / 2, hy, 40 + ar * 40, 30 + ar * 14, 0, Math.PI, 0); cx.stroke(); }
+      if (Math.floor(t * .5) % 4 === 0) { cx.fillStyle = 'rgba(255,255,255,.5)'; cx.fillRect(W / 2 - 3, hy - 14, 2, 2); cx.fillRect(W / 2 + 2, hy - 14, 2, 2); }
+      for (var fl2 = 0; fl2 < W; fl2 += 50) px(fl2, 4, 30, 2, Math.floor(t * 3 + fl2) % 7 ? '#d8d8e2' : '#2a2a34');
+    } else if (theme === 'patch') {
+      for (var sh = 0; sh < 9; sh++) { var sx2 = sh * 38 - 8, sh2 = 18 + hs(sh) * 16; px(sx2, hy - sh2, 34, sh2, '#141210'); px(sx2, hy - sh2, 34, 2, '#3a3633'); px(sx2 + 20, hy - sh2 + 6, 6, 5, 'rgba(255,240,220,.6)'); }
+      for (var bl = 0; bl < W; bl += 9) px(bl, 14 + Math.round(Math.sin(bl / 40) * 6), 1, 1, 'rgba(255,248,236,' + (.4 + .5 * Math.abs(Math.sin(t + bl))) + ')');
+      px(W * .8, 6, 1, hy - 6, '#5a554f'); if (Math.floor(t * 1.5) % 2) px(W * .8 - 1, 5, 3, 2, '#ffffff');
+    } else if (theme === 'upper') {
+      for (var vb = 0; vb < 6; vb++) { var vx2 = vb * 58 + 4; px(vx2, hy - 22, 44, 22, '#c8c8d0'); px(vx2, hy - 22, 44, 1, '#ffffff'); px(vx2 + 4, hy - 18, 36, 8, 'rgba(255,244,228,.55)'); }
+      cx.strokeStyle = 'rgba(255,255,255,.3)'; cx.beginPath(); cx.arc(W * .5, 20, 9, Math.PI * 1.1, Math.PI * 1.9); cx.stroke();
+    } else if (theme === 'cold') {
+      cx.fillStyle = '#05070a'; cx.fillRect(0, 0, W, hy); for (var pd = 0; pd < 14; pd++) { var pdx = pd * 24 + 2; px(pdx, hy - 40, 16, 40, '#11161b'); px(pdx + 3, hy - 36, 10, 30, '#0a0e12'); px(pdx + 6, hy - 32, 4, 4, 'rgba(200,214,226,.3)'); px(pdx + 5, hy - 27, 6, 14, 'rgba(200,214,226,.18)'); }
+      cx.fillStyle = 'rgba(220,236,250,.06)'; cx.fillRect(0, hy - 18, W, 18);
     } else if (theme === 'quiet') {
       for (var f = 0; f < 14; f++) { var fx = hs(f * 5) * W, fy = (hs(f * 9) * hy + t * (4 + f % 3)) % hy; px(fx, hy - fy, 6 + (f % 3) * 4, 2, 'rgba(160,160,176,.35)'); }
     } else if (theme === 'terminal') {
