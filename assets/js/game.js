@@ -1176,7 +1176,7 @@
       '.......TTTT', '.......LLLL', '........PP.', '........PP.', '........PP.', '.......BBB.', '...........', '...........'];
     // locs: thick, wavy strands that fall past the waist, matching the side view
     var WAVE = [0, 0, 0, 1, 1, 1];
-    function locsFront(x, pal) {
+    function locsFront(x, pal, step) {
       function strand(x0, y, last) { [0, 1].forEach(function (k) { var c = last || k ? 'H' : 'h'; x.fillStyle = pal[c]; x.fillRect(x0 + k, y, 1, 1); x.fillRect(21 - x0 - k, y, 1, 1); }); }
       for (var y = 10; y <= 20; y++) { x.clearRect(0, y, 6, 1); x.clearRect(16, y, 6, 1); }
       for (var y1 = 10; y1 <= 20; y1++) strand(WAVE[y1 % 6], y1, y1 === 20);            // outer strand
@@ -1186,6 +1186,11 @@
       var tp = x.getImageData(8, 15, 1, 1).data, shirt = 'rgb(' + tp[0] + ',' + tp[1] + ',' + tp[2] + ')', shirtD = 'rgb(' + (tp[0] * .82 | 0) + ',' + (tp[1] * .82 | 0) + ',' + (tp[2] * .82 | 0) + ')', shirtC = 'rgb(' + (tp[0] * .6 | 0) + ',' + (tp[1] * .6 | 0) + ',' + (tp[2] * .6 | 0) + ')';   // sleeves match the shirt
       for (var y3 = 14; y3 <= 18; y3++) { both(4, y3, 'rgb(14,14,16)'); both(5, y3, y3 <= 16 ? shirtD : pal.R); both(6, y3, y3 <= 16 ? shirt : pal.R); if (y3 <= 16) both(7, y3, shirtC); }
       both(5, 19, 'rgb(14,14,16)'); both(6, 19, 'rgb(14,14,16)'); both(5, 13, 'rgb(14,14,16)');
+      if (step) {   // arms swing opposite the legs: the hand on the planted-foot side comes forward (up a row), the other trails
+        var fx = step === 1 ? 15 : 5;
+        x.fillStyle = pal.R; x.fillRect(fx, 16, 2, 1); x.fillStyle = 'rgb(14,14,16)'; x.fillRect(fx, 18, 2, 2);
+        var bx = step === 1 ? 5 : 15; x.fillStyle = pal.R; x.fillRect(bx, 19, 2, 1); x.fillStyle = 'rgb(14,14,16)'; x.fillRect(bx, 20, 2, 1);
+      }
     }
     function locsBack(x, pal) {
       for (var y0 = 12; y0 <= 21; y0++) { x.clearRect(3, y0, 16, 1); if (y0 <= 20) { x.fillStyle = 'rgba(236,236,236,.38)'; x.fillRect(3, y0, 16, 1); } }   // the light seams between strands
@@ -1195,16 +1200,29 @@
       }
       for (var y4 = 20; y4 <= 22; y4++) { x.fillStyle = pal.P; x.fillRect(8, y4, 2, 1); x.fillRect(12, y4, 2, 1); }   // legs show below the hair
     }
+    // walking, seen from the front or back: one foot lifts and comes forward (a row higher, a pixel wider), the other plants
+    function stepLegs(x, pal, step) {
+      if (!step) return;
+      var lift = step === 1 ? [7, 10] : [11, 14], plant = step === 1 ? [11, 14] : [7, 10], inner = step === 1 ? 8 : 12;
+      x.clearRect(lift[0], 20, 4, 5);
+      x.fillStyle = pal.P; x.fillRect(inner, 20, 2, 1);
+      x.fillStyle = pal.B; x.fillRect(step === 1 ? 7 : 12, 21, 3, 1);              // the lifted shoe, two rows up, its sole showing
+      x.fillStyle = 'rgb(40,40,44)'; x.fillRect(step === 1 ? 7 : 12, 22, 3, 1);
+      x.fillStyle = 'rgba(0,0,0,.4)'; x.fillRect(step === 1 ? 7 : 12, 24, 3, 1);    // its shadow left on the ground
+      x.fillStyle = pal.P; x.fillRect(step === 1 ? 12 : 8, 23, 2, 1);              // the planted leg straightens and takes the weight
+      x.fillStyle = pal.B; x.fillRect(step === 1 ? 12 : 7, 24, 3, 1);
+    }
     var frontCache = {};
-    function frontImg(light, blink) {
-      var key = (light ? 'L' : 'D') + (blink ? 'b' : ''); if (frontCache[key]) return frontCache[key];
+    function frontImg(light, blink, step) {
+      step = step || 0; var key = (light ? 'L' : 'D') + (blink ? 'b' : '') + step; if (frontCache[key]) return frontCache[key];
       var pal = palette(LOOK), c = document.createElement('canvas'); c.width = 22; c.height = 26; var x = c.getContext('2d');
       FRONT_HALF.forEach(function (half, y) {
         var row = half + half.split('').reverse().join('');
         for (var i = 0; i < 22; i++) { var ch = row.charAt(i); if (ch === '.') continue; if (blink && ch === 'E') ch = 'S'; x.fillStyle = pal[ch] || pal.S; x.fillRect(i, y, 1, 1); }
       });
       if (blink) { x.fillStyle = pal.E; x.fillRect(7, 8, 1, 1); x.fillRect(14, 8, 1, 1); }
-      locsFront(x, pal);
+      stepLegs(x, pal, step);
+      locsFront(x, pal, step);
       var d = x.getImageData(0, 0, 22, 26).data, pts = [];
       for (var yy = 0; yy < 26; yy++) for (var xx = 0; xx < 22; xx++) {
         if (d[(yy * 22 + xx) * 4 + 3]) continue;
@@ -1243,14 +1261,18 @@
       return (pantCache[key] = c);
     }
     var backCache = {};
-    function backImg(light) {
-      var key = light ? 'L' : 'D'; if (backCache[key]) return backCache[key];
+    function backImg(light, step) {
+      step = step || 0; var key = (light ? 'L' : 'D') + step; if (backCache[key]) return backCache[key];
       var pal = palette(LOOK), c = document.createElement('canvas'); c.width = 22; c.height = 26; var x = c.getContext('2d');
       FRONT_HALF.forEach(function (half, y) {
         var row = half + half.split('').reverse().join('');
         for (var i = 0; i < 22; i++) { var ch = row.charAt(i); if (ch === '.') continue; if (y <= 13 && 'SERK'.indexOf(ch) >= 0) ch = (i + y) % 5 ? 'H' : 'h'; x.fillStyle = pal[ch] || pal.S; x.fillRect(i, y, 1, 1); }
       });
       locsBack(x, pal);
+      if (step) {   // from behind: the lifted foot shows its sole, the hair sways the other way
+        stepLegs(x, pal, step === 1 ? 2 : 1);
+        x.fillStyle = pal.H; var sw = step === 1 ? 2 : 19; for (var ys = 14; ys <= 20; ys++) x.fillRect(sw, ys, 1, 1);
+      }
       var d = x.getImageData(0, 0, 22, 26).data, pts = [];
       for (var yy = 0; yy < 26; yy++) for (var xx = 0; xx < 22; xx++) {
         if (d[(yy * 22 + xx) * 4 + 3]) continue;
@@ -1303,7 +1325,7 @@
       x.fillStyle = 'rgba(236,236,236,.38)'; for (var j = 0; j < pts.length; j += 2) x.fillRect(pts[j], pts[j + 1], 1, 1);
       return (personCache[key] = c);
     }
-    if (window.VondsSprite) { window.VondsSprite.front = function (blink) { return frontImg(false, blink); }; window.VondsSprite.back = function () { return backImg(false); }; window.VondsSprite.person = personImg; }
+    if (window.VondsSprite) { window.VondsSprite.front = function (blink, step) { return frontImg(false, blink, step); }; window.VondsSprite.back = function (step) { return backImg(false, step); }; window.VondsSprite.person = personImg; }
     function render(pose, dark) {
       var u = S * R; cx2.setTransform(1, 0, 0, 1, 0, 0); cx2.clearRect(0, 0, cv2.width, cv2.height); cx2.imageSmoothingEnabled = false;
       if (pose === 'pant0' || pose === 'pant1') { cx2.drawImage(pantImg(!dark, pose === 'pant1' ? 1 : 0), OX * u, OY * u, 22 * u, 26 * u); return; }

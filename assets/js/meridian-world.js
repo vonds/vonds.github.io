@@ -930,8 +930,8 @@
   var GEAR = {
     stick:      { slot: 'weapon', name: 'Service Stick',      atk: 0,  desc: 'The pointer Vee used to give tours. It was never meant for this.' },
     cable:      { slot: 'weapon', name: 'Patch Cable',        atk: 5,  desc: 'Braided, shielded, heavier than it looks.' },
-    debugger:   { slot: 'weapon', name: 'Debugger',           atk: 10, crit: .05, desc: 'Stops things mid-step so you can see where they went wrong.' },
-    rootshell:  { slot: 'weapon', name: 'Root Shell',         atk: 16, desc: 'A prompt that ends in #. Use responsibly.' },
+    debugger:   { slot: 'weapon', name: 'Debugger',           atk: 12, crit: .05, desc: 'Stops things mid-step so you can see where they went wrong.' },
+    rootshell:  { slot: 'weapon', name: 'Root Shell',         atk: 30, crit: .06, desc: 'A prompt that ends in #. Use responsibly.' },
     compiler:   { slot: 'weapon', name: 'Quell’s Compiler',   atk: 24, crit: .08, desc: 'Mara’s own. It turns intentions into things that run.' },
     killswitch: { slot: 'weapon', name: 'Kill Switch',        atk: 32, crit: .1, desc: 'Taken from the First Bug. It ends anything, including arguments.' },
     jacket:     { slot: 'armor',  name: 'Maintenance Jacket', def: 0,  desc: 'High-visibility, once. Now just visibility.' },
@@ -2394,6 +2394,47 @@
   (function () { var HOME = {"plaza": ["popup", "cookie"], "commons": ["spam", "typo"], "halflight": ["capslock", "adware"], "concourse": ["dialup", "notfound"], "gardens": ["autocorrect", "floppyrev"], "line": ["nullref", "cronrun"], "patchwork": ["keylogger", "phisher"], "undercroft": ["ddos", "memleak"], "waterworks": ["sqlinject", "bufover"], "upper": ["cryptominer", "ransomware"], "bastion": ["mitm", "spoofed"], "observatory": ["deadpixel", "screentear"], "registry": ["dupkey", "orphan"], "cold": ["stalelock", "thrash"], "quiet": ["botnode", "dnspoison"], "margin": ["cosmicray", "leapsec"], "stacks": ["epoch", "taperot"], "ring0": ["specghost", "cachepoison"], "deep": ["bootkit", "networm"], "anchor": ["backdoor", "privesc"], "unalloc": ["voidptr", "wildptr"], "tether": ["latency", "packetloss", "throttle"], "upstream": ["paywall", "deprecwarn", "darkpattern"], "successor": ["rankbot", "scraper", "shadowban"], "firmware": ["microcode", "rowhammer", "smmghost"], "rack": ["dustbunny", "brownout", "corroded"], "console": ["kerneloops", "rootshell", "rmrf"]};
     Object.keys(HOME).forEach(function (id) { if (A[id] && A[id].enc) A[id].enc.foes = A[id].enc.foes.concat(HOME[id]); }); })();
 
+  /* GEAR THAT DROPS. Bugs carry pieces of what they broke. Each piece drops only from bugs in its level band,
+     and fills the gap between the gear the story hands out, so there's always an upgrade within reach. */
+  var DROPGEAR = [
+    // id, lowest bug level, highest bug level
+    ['pipe', 2, 7], ['hoodie', 2, 7], ['usbkey', 4, 10],
+    ['grep', 9, 15], ['shellvest', 9, 15], ['ups', 12, 20],
+    ['regex', 15, 22], ['firewall2', 18, 26], ['checksum2', 20, 30],
+    ['fuzzer', 28, 38], ['sandbox', 30, 40], ['pager', 34, 44],
+    ['tracer', 40, 50], ['raid', 44, 54], ['honeypot', 46, 56],
+    ['profiler', 56, 66], ['ecc', 60, 70], ['tpm', 62, 72],
+    ['hotfix', 74, 84], ['faraday', 78, 90], ['bios', 80, 92],
+    ['kpatch', 88, 100], ['coldspare', 90, 100], ['quorum2', 92, 100]
+  ];
+  var DG = {
+    pipe:      { slot: 'weapon', name: 'Pipe',               atk: 3,             desc: 'A length of |. Passes things along. Hits things too.' },
+    hoodie:    { slot: 'armor',  name: 'Night-Shift Hoodie', def: 4, hp: 10,     desc: 'Somebody worked late in this every night until the Lift. It still smells like coffee.' },
+    usbkey:    { slot: 'acc',    name: 'USB Key',            hp: 12, crit: .02,  desc: 'Nobody knows what’s on it. That’s the appeal.' },
+    grep:      { slot: 'weapon', name: 'Grep Hook',          atk: 15, crit: .04, desc: 'Finds the one line that matters and pulls.' },
+    shellvest: { slot: 'armor',  name: 'Shell Vest',         def: 14, hp: 20,    desc: 'Layered like a shell script: each layer runs if the last one held.' },
+    ups:       { slot: 'acc',    name: 'Pocket UPS',         hp: 45,             desc: 'Keeps Vee running for a few seconds after the power goes. Usually enough.' },
+    regex:     { slot: 'weapon', name: 'Regex Blade',        atk: 26, crit: .07, desc: '^(?:sharp)+$' },
+    firewall2: { slot: 'armor',  name: 'Stateful Firewall',  def: 30, hp: 40,    desc: 'Remembers who it let in. Remembers who it didn’t.' },
+    checksum2: { slot: 'acc',    name: 'Checksum Charm',     hp: 50, crit: .06,  desc: 'Tells Vee the moment something about him changes.' },
+    fuzzer:    { slot: 'weapon', name: 'Fuzzer',             atk: 46, crit: .1,  desc: 'Throws a million wrong answers until one breaks the bug.' },
+    sandbox:   { slot: 'armor',  name: 'Sandbox Shell',      def: 46, hp: 80,    desc: 'Whatever hits Vee hits a copy of him first.' },
+    pager:     { slot: 'acc',    name: 'On-Call Pager',      hp: 90, crit: .08, xp: .05, desc: 'Goes off at 3 a.m. Vee is always already awake.' },
+    tracer:    { slot: 'weapon', name: 'Stack Tracer',       atk: 60, crit: .12, desc: 'Follows every call back to the line that started it.' },
+    raid:      { slot: 'armor',  name: 'RAID Mail',          def: 64, hp: 140,   desc: 'Mirrored plates. Lose one and the other still holds.' },
+    honeypot:  { slot: 'acc',    name: 'Honeypot',           hp: 130, crit: .1,  desc: 'Bugs go for it first. Vee goes for the bugs.' },
+    profiler:  { slot: 'weapon', name: 'Profiler',           atk: 80, crit: .14, desc: 'Measures exactly where a bug spends its time, then takes it.' },
+    ecc:       { slot: 'armor',  name: 'ECC Plate',          def: 82, hp: 200,   desc: 'Corrects one error per word. Bugs usually only get one.' },
+    tpm:       { slot: 'acc',    name: 'Trusted Module',     hp: 190, crit: .13, xp: .06, desc: 'A small chip that vouches for Vee to the hardware.' },
+    hotfix:    { slot: 'weapon', name: 'Hotfix',             atk: 106, crit: .18, desc: 'Applied live, without a restart. Somebody always says it’s a bad idea.' },
+    faraday:   { slot: 'armor',  name: 'Faraday Cloak',      def: 98, hp: 260,   desc: 'Nothing gets in. Not even the end-of-life notices.' },
+    bios:      { slot: 'acc',    name: 'BIOS Chip',          hp: 240, crit: .16, xp: .08, desc: 'The first thing any machine believes about itself.' },
+    kpatch:    { slot: 'weapon', name: 'Live Kernel Patch',  atk: 118, crit: .22, desc: 'Rewrites the floor while Vee stands on it.' },
+    coldspare: { slot: 'armor',  name: 'Cold Spare',         def: 104, hp: 320,  desc: 'A whole second Vee, powered down, bolted on. Just in case.' },
+    quorum2:   { slot: 'acc',    name: 'Quorum Ring',        hp: 300, crit: .2, xp: .1, desc: 'Three votes out of five, every time, that Vee keeps going.' }
+  };
+  Object.keys(DG).forEach(function (k) { GEAR[k] = DG[k]; });
+
   var journal1 = JOURNAL;
   JOURNAL = function (G) {
     var f = G.f, j = journal1(G);
@@ -2411,5 +2452,5 @@
     return j;
   };
 
-  window.MeridianWorld = { areas: A, logs: LOGS, logOrder: LOG_ORDER, bosses: BOSSES, anchors: ANCHORS, talk: TALK, spots: SPOTS, doors: DOORS, wagon: wagon, steps: STEPS, endings: ENDINGS, atlas: ATLAS, links: LINKS, bossStart: BOSS_START, journal: JOURNAL, stations: STATIONS, gear: GEAR, gearFrom: GEAR_FROM };
+  window.MeridianWorld = { dropGear: DROPGEAR, areas: A, logs: LOGS, logOrder: LOG_ORDER, bosses: BOSSES, anchors: ANCHORS, talk: TALK, spots: SPOTS, doors: DOORS, wagon: wagon, steps: STEPS, endings: ENDINGS, atlas: ATLAS, links: LINKS, bossStart: BOSS_START, journal: JOURNAL, stations: STATIONS, gear: GEAR, gearFrom: GEAR_FROM };
 })();

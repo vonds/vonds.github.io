@@ -534,8 +534,9 @@
     function veeImg0() {
       var walk = me.moving ? Math.floor(me.step / 4) % 4 : -1;
       if (me.dir === 'left' || me.dir === 'right') return { img: SP.frame(walk >= 0 ? 'run' + walk : 'idle'), flip: me.dir === 'left' };
-      if (me.dir === 'up') return { img: SP.back ? SP.back() : SP.frame('idle'), flip: false, bob: walk % 2 };
-      return { img: SP.front ? SP.front(false) : SP.frame('idle'), flip: false, bob: walk % 2 };
+      var step = walk < 0 ? 0 : [1, 0, 2, 0][walk];   // front and back walks: left foot, together, right foot, together
+      if (me.dir === 'up') return { img: SP.back ? SP.back(step) : SP.frame('idle'), flip: false, bob: walk % 2 };
+      return { img: SP.front ? SP.front(false, step) : SP.frame('idle'), flip: false, bob: walk % 2 };
     }
     function drawSprite(img, x, y, flip, scale) {
       scale = (scale || 1) / (img.hd || 1); cx.save(); if (flip) { cx.translate(Math.round(x + img.width * scale), Math.round(y)); cx.scale(-1, 1); cx.drawImage(img, 0, 0, img.width * scale, img.height * scale); }
@@ -1016,6 +1017,18 @@
         }
         lines.push('The bugs drop clean data: ' + Object.keys(got).map(function (k) { return got[k] > 1 ? got[k] + ' ' + k + 's' : 'a ' + k; }).join(' and ') + '.');
       }
+      // now and then a bug was carrying a piece of gear: only gear from its own level band, only gear Vee doesn't have yet
+      (function () {
+        var top = Math.max.apply(null, B.foes.map(function (f) { return f.foe.lv || 1; })), hard = B.foes.some(function (f) { return /^Hardened /.test(f.foe.name); });
+        var pool = (WD.dropGear || []).filter(function (d) { return top >= d[1] && top <= d[2] && GEAR[d[0]] && !save.bag[d[0]]; });
+        if (!pool.length) return;
+        save.dgPity = (save.dgPity || 0) + 1;
+        var chance = .07 + (hard ? .06 : 0) + n * .005 + gs('drop') * .5 + save.dgPity * .007;   // roughly one piece every eight to ten fights, and never a long dry spell
+        if (Math.random() >= chance) return;
+        var pickG = pool[Math.floor(Math.random() * pool.length)][0], it2 = GEAR[pickG]; save.bag[pickG] = 1; save.dgPity = 0;
+        var st2 = [it2.atk ? 'ATK +' + it2.atk : '', it2.def ? 'DEF +' + it2.def : '', it2.hp ? 'HP +' + it2.hp : '', it2.crit ? 'crit +' + Math.round(it2.crit * 100) + '%' : '', it2.xp ? 'XP +' + Math.round(it2.xp * 100) + '%' : ''].filter(Boolean).join(', ');
+        lines.push('One of them was carrying something: ' + it2.name + ' (' + { weapon: 'weapon', armor: 'armor', acc: 'accessory' }[it2.slot] + ', ' + st2 + '). Equip it from the menu.'); sfx('crit');
+      })();
       lines = lines.concat(gainXp(xp));
       if (save.lvl < 100) lines.push('Next level in ' + (xpNeed() - save.xp) + ' XP.');
       store(); B.phase = 'done'; cmdBox.classList.remove('on'); hud.classList.remove('on'); closePrompt();
