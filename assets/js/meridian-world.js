@@ -103,7 +103,7 @@
     })(),
     blds: [
       { x: 12, y: 1, w: 10, h: 6, kind: 'ledger', door: 5, sign: 'LEDGER HALL', rise: 2 },
-      { x: 1, y: 12, w: 3, h: 2, kind: 'stall', seed: 1 }, { x: 5, y: 12, w: 3, h: 2, kind: 'stall', seed: 2 },
+      { x: 1, y: 12, w: 3, h: 2, kind: 'stall', seed: 1, door: 1, sign: 'LOST AND FOUND' }, { x: 5, y: 12, w: 3, h: 2, kind: 'stall', seed: 2 },
       { x: 1, y: 16, w: 3, h: 2, kind: 'stall', seed: 3 }, { x: 5, y: 16, w: 3, h: 2, kind: 'stall', seed: 4 },
       { x: 29, y: 1, w: 5, h: 6, kind: 'tower', door: 2, seed: 9, rise: 3 },
       { x: 29, y: 13, w: 5, h: 5, kind: 'tower', seed: 13, rise: 2 },
@@ -1622,6 +1622,55 @@
   (function () {
     var j0 = JOURNAL;
     JOURNAL = function (G) { var f = G.f, j = j0(G); if (G.save.seen.registry) j.push((f.nova ? '[x]' : '[ ]') + ' Give Nova a name the city can see'); return j; };
+  })();
+
+  /* LOST AND FOUND: eleven months of things people left behind, and a man who sorts them anyway */
+  A.commons.npcs.push({ id: 'bertrand', p: { hair: 'bald', body: 'apron', skin: '#7a4a30', top: '#5a5a62', gray: 1, glasses: 1 }, x: 8, y: 12, name: 'Bertrand', look: 'echo', h: 14, hair: 6, solid: 1 });
+  var LOSTFOUND = [
+    { id: 'lf1', lv: 3, name: 'Sorting', steps: [
+      { t: 'Make a folder called claimed, for things somebody still wants.', ex: ['mkdir claimed'] },
+      { t: 'kite.txt has a name on it: Lio. Move it into claimed.', ex: ['mv kite.txt claimed', 'mv kite.txt claimed/', 'mv kite.txt claimed/kite.txt', 'mv kite.txt ./claimed/'] },
+      { t: 'Make an empty file called tag.txt, for the labels.', ex: ['touch tag.txt'] }],
+      after: ['The kite, a hand-sewn diamond with a long ribbon tail, goes into the claimed box. Lio should know.'] },
+    { id: 'lf2', lv: 6, name: 'Labels', steps: [
+      { t: 'Write the line kite: Lio into tag.txt, replacing whatever is there.', ex: ['echo "kite: Lio" > tag.txt', "echo 'kite: Lio' > tag.txt", 'echo kite: Lio > tag.txt'] },
+      { t: 'Add a second line, scarf: unknown, without erasing the first.', ex: ['echo "scarf: unknown" >> tag.txt', "echo 'scarf: unknown' >> tag.txt", 'echo scarf: unknown >> tag.txt'] },
+      { t: 'Read just the first two lines of found.txt, the oldest finds.', ex: ['head -n 2 found.txt', 'head -2 found.txt', 'head -n2 found.txt'] }],
+      after: ['Two labels, in Bertrand’s good handwriting and Vee’s good typing. The scarf stays unknown. Bertrand says that’s allowed.'] },
+    { id: 'lf3', lv: 9, name: 'The count', steps: [
+      { t: 'How many things are in found.txt? Count its lines.', ex: ['wc -l found.txt', 'cat found.txt | wc -l'] },
+      { t: 'Show each kind of thing once, sorted.', ex: ['sort found.txt | uniq', 'sort -u found.txt', 'sort found.txt | uniq -c'] },
+      { t: 'Done here. Step back out of the folder.', ex: ['cd ..'] }],
+      after: ['4,118 things. 212 kinds. Umbrellas, mostly. People always leave umbrellas, even when they’re leaving everything.'] }
+  ];
+  TALK.bertrand = function (G) {
+    var f = G.f, done = LOSTFOUND.filter(function (t) { return f[t.id]; }).length, nxt = LOSTFOUND.filter(function (t) { return !f[t.id]; })[0];
+    if (!f.bertrand) { f.bertrand = 1; return G.say('Bertrand', ['Lost and Found. Eleven months of it. Everything people put down for a second and never came back for, because they were getting on the Lift.',
+      'Nobody comes to claim anything. I sort it anyway. If you stop sorting, it stops being lost and found and starts being a pile.', 'My files are a mess, though. I was a sorter, not a typist. Would you help? I have little jobs. Easy ones first.']); }
+    if (!nxt) return G.say('Bertrand', f.tuesday ? ['Somebody came in yesterday. Tuesday. Looking for an umbrella. Can you believe it? An actual claim.', 'It wasn’t theirs. I gave it to them anyway. That’s the job, now.'] : ['Everything sorted, labeled and counted. 4,118 things. I know where every one of them is.', 'That’s the closest anybody in this city gets to being in charge of something.']);
+    if (G.save.lvl < nxt.lv) return G.say('Bertrand', ['The next job’s fiddly. Come back when you know a few more commands. Level ' + nxt.lv + ' or so.', 'Jobs done: ' + done + ' of 3.']);
+    G.say('Bertrand', ['Next job: ' + nxt.name + '. Jobs done: ' + done + ' of 3.'], [{ label: 'Do it', fn: function () {
+      G.puzzle('LOST AND FOUND', nxt.steps, function () {
+        f[nxt.id] = 1; G.give(nxt.id === 'lf3' ? 'kb' : 'byte', 2); G.xp(40 + nxt.lv * 12);
+        var more = nxt.id === 'lf3' ? ['Bertrand wraps the unknown scarf around Vee’s neck. “Unclaimed for eleven months. That makes it yours. Lost and found rules.”'] : [];
+        G.say('Bertrand', nxt.after.concat(more, ['Vee receives 2 ' + (nxt.id === 'lf3' ? 'kilobytes' : 'bytes') + ' and ' + (40 + nxt.lv * 12) + ' XP.']));
+      });
+    } }, { label: 'Later', fn: null }]);
+  };
+  DOORS['commons:stall'] = function (G, b) {
+    if (b.sign !== 'LOST AND FOUND') return;
+    G.say('Lost and Found', ['Shelves of things people meant to come back for. A pram. A trombone. Three hundred umbrellas.', G.f.kite ? 'A box marked CLAIMED. Empty again, but the good kind of empty: the kite went home.' : G.f.lf1 ? 'A box marked CLAIMED. It has one kite in it.' : 'A box marked CLAIMED. It’s empty.']);
+  };
+  GEAR.scarf = { slot: 'acc', name: 'Unknown Scarf', hp: 15, crit: .02, desc: 'Unclaimed for eleven months, which makes it yours. Lost and found rules. It smells faintly of someone else’s winter.' };
+  GEAR_FROM.push(['scarf', function (G) { return !!G.f.lf3; }, '(The Unknown Scarf: accessory.)']);
+  (function () {
+    var lio0 = TALK.lio;
+    TALK.lio = function (G) {
+      if (G.f.lf1 && !G.f.kite) { G.f.kite = 1; G.xp(30); return G.say('Lio', ['My kite! That’s my kite. Mama made it out of her blue shirt.', 'I thought it went Upstream. I thought everything went Upstream.', 'I’m going to fly it from the bench. Then Mama can see it from up there, if she looks. Vee gains 30 XP.']); }
+      return lio0(G);
+    };
+    var j0 = JOURNAL;
+    JOURNAL = function (G) { var f = G.f, j = j0(G); if (f.bertrand) j.push('Lost and Found: ' + LOSTFOUND.filter(function (t) { return f[t.id]; }).length + ' of 3 jobs' + (f.lf1 && !f.kite ? ' (Lio’s kite is in the claimed box)' : '')); return j; };
   })();
 
   /* a room of Vee's own: the nameplate fills in once Vee is a resident */
