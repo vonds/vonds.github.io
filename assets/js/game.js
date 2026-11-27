@@ -592,6 +592,86 @@
           g[top + 1][hx + 1] = 'W'; g[top + 2][hx] = '.'; g[top + 2][hx + 2] = '.';
         });
         return g;
+      }      ,
+      popup: function (r, f) {   // a dialog box: title bar, an X that won't close, a warning sign, and buttons nobody should press
+        var w = 15 + Math.floor(r() * 5), h = 10 + Math.floor(r() * 3), g = blank(w, h + 1), kind = Math.floor(r() * 3);
+        for (var y = 0; y < h; y++) for (var x = 0; x < w; x++) { var edge = !x || x === w - 1 || y === h - 1; g[y][x] = y < 3 ? (y === 2 ? 'L' : 'M') : edge ? 'L' : 'W'; }
+        g[1][w - 3] = 'W'; g[1][w - 2] = f ? 'W' : 'L'; g[0][w - 2] = 'W'; g[1][2] = 'L'; g[1][3] = 'L'; g[1][4] = 'L';
+        if (kind === 0) { [[4, 3], [5, 2], [5, 3], [5, 4], [6, 1], [6, 2], [6, 3], [6, 4], [6, 5]].forEach(function (q) { g[q[0]][q[1] + 1] = 'M'; }); g[5][4] = 'W'; }   // a warning triangle
+        else if (kind === 1) { for (var cy = 4; cy < 7; cy++) for (var cx = 2; cx < 5; cx++) g[cy][cx] = 'M'; g[5][3] = 'W'; }   // a stop sign
+        else { g[4][3] = 'M'; g[5][3] = 'M'; g[7][3] = 'M'; }   // an exclamation mark
+        g[5][Math.floor(w / 2)] = 'K'; g[5][Math.floor(w / 2) + 3] = 'K';   // eyes
+        var nb = 1 + Math.floor(r() * 2), bw = 4;
+        for (var b = 0; b < nb; b++) { var bx = w - 2 - (b + 1) * (bw + 1); for (var x2 = bx; x2 < bx + bw; x2++) { g[h - 3][x2] = 'M'; g[h - 2][x2] = b === (f ? 1 : 0) % nb ? 'K' : 'M'; } }
+        g[h][3 + (f ? 1 : 0)] = 'L'; g[h][w - 4 - (f ? 1 : 0)] = 'L';
+        return g;
+      },
+      packet: function (r, f) {   // a sealed envelope of data, flap and all, trailing loose bits behind it
+        var w = 14 + Math.floor(r() * 3), h = 10, tail = 4, g = blank(w + tail, h + 1);
+        for (var y = 1; y < h; y++) for (var x = tail; x < w + tail; x++) g[y][x] = (y === 1 || y === h - 1 || x === tail || x === w + tail - 1) ? 'M' : 'L';
+        var mid = tail + Math.floor(w / 2);
+        for (var x2 = tail + 1; x2 < w + tail - 1; x2++) { var yy = 2 + Math.round(Math.abs(x2 - mid) > 0 ? (Math.floor(w / 2) - Math.abs(x2 - mid)) * .5 : Math.floor(w / 4)); if (yy < h - 1) g[yy][x2] = 'M'; }
+        g[2 + Math.floor(w / 4) + 1][mid] = 'K'; g[2 + Math.floor(w / 4) + 1][mid - 1] = 'K';   // the seal
+        g[6][tail + 3] = 'W'; g[6][w + tail - 4] = 'W';
+        for (var t = 0; t < 6; t++) if (r() < .75) g[2 + ((t + (f ? 1 : 0)) % 4) * 2][t % tail] = r() < .5 ? 'L' : 'M';
+        return g;
+      },
+      cursor: function (r, f) {   // a pointer that grew a will of its own: an arrow, a pointing hand, or the spinning wait
+        var kind = Math.floor(r() * 3), g;
+        if (kind === 0) {
+          g = blank(12, 16); var rows = ['L', 'LL', 'LWL', 'LWWL', 'LWWWL', 'LWWWWL', 'LWWWWWL', 'LWWWWWWL', 'LWWWWLLLL', 'LWLWWL', 'LL.LWWL', 'L...LWWL', '.....LWL', '......L'];
+          rows.forEach(function (row, y) { row.split('').forEach(function (c, x) { if (c !== '.') g[y + 1][x + 1 + (f && y > 9 ? 1 : 0)] = c === 'W' ? 'W' : 'M'; }); });
+          g[5][3] = 'K'; g[5][5] = 'K';
+        } else if (kind === 1) {
+          g = blank(13, 16); var hand = ['....MM', '...MWWM', '...MWWM', '...MWWM', '...MWWMMM', '...MWWMWWMMM', 'MM.MWWMWWMWWM', 'MWMMWWWWWWWWM', 'MWWMWWWWWWWWM', '.MWWWWWWWWWWM', '..MWWWWWWWWM', '...MWWWWWWM', '....MWWWWM', '....MMMMMM'];
+          hand.forEach(function (row, y) { row.split('').forEach(function (c, x) { if (c !== '.') g[y + 1 + (f && y < 4 ? -1 : 0)][x] = c; }); });
+          g[9][5] = 'K'; g[9][9] = 'K';
+        } else {
+          g = blank(13, 15); for (var y2 = 0; y2 < 15; y2++) { var half = y2 < 7 ? 6 - y2 : y2 - 8; if (y2 === 0 || y2 === 14) half = 6; if (half < 1) half = 1; for (var x2 = 6 - half; x2 <= 6 + half; x2++) g[y2][x2] = (y2 === 0 || y2 === 14 || x2 === 6 - half || x2 === 6 + half) ? 'M' : (f ? (y2 > 7 ? 'W' : 'L') : (y2 < 7 ? 'W' : 'L')); }
+          g[3][4] = 'K'; g[3][8] = 'K';
+        }
+        return g;
+      },
+      chip: function (r, f) {   // a black microchip on scuttling pin legs, its part number half rubbed off
+        var w = 11 + Math.floor(r() * 4) * 2, h = 8 + Math.floor(r() * 3), g = blank(w + 4, h + 2);
+        for (var y = 1; y < h + 1; y++) for (var x = 2; x < w + 2; x++) g[y][x] = (y === 1 || y === h || x === 2 || x === w + 1) ? 'M' : 'K';
+        for (var py = 2; py < h; py += 2) { var sh = ((py / 2) + (f ? 1 : 0)) % 2; g[py][0 + sh] = 'L'; g[py][1] = 'L'; g[py][w + 2] = 'L'; g[py][w + 3 - sh] = 'L'; }
+        g[2][3] = 'L';   // the pin-1 dot
+        g[3][4] = 'W'; g[3][w - 1] = 'W';
+        var label = ''; for (var k = 0; k < 3; k++) label += r() < .5 ? '0' : '1';
+        for (var lx = 4; lx < w; lx++) if (r() < .6) g[h - 2][lx] = 'M';
+        g[0][4 + (f ? 1 : 0)] = 'M'; g[h + 1][w - 2 - (f ? 1 : 0)] = 'M';
+        return g;
+      },
+      botnet: function (r, f) {   // a cluster of infected machines, wired to one ringleader with eyes
+        var g = blank(21, 15), cx = 10, cy = 7, n = 4 + Math.floor(r() * 3), nodes = [];
+        for (var i = 0; i < n; i++) { var a = (i / n) * Math.PI * 2 + r() * .6, rr = 6 + r() * 2.5; nodes.push([Math.round(cx + Math.cos(a) * rr * 1.25), Math.round(cy + Math.sin(a) * rr * .85)]); }
+        nodes.forEach(function (nd) { var st2 = Math.max(Math.abs(nd[0] - cx), Math.abs(nd[1] - cy)); for (var t = 2; t < st2; t++) { var yy = Math.round(cy + (nd[1] - cy) * t / st2), xx = Math.round(cx + (nd[0] - cx) * t / st2); if (g[yy] && xx >= 0 && xx < 21) g[yy][xx] = (t + (f ? 1 : 0)) % 3 ? 'M' : 'W'; } });
+        nodes.forEach(function (nd, k) { for (var dy = -1; dy <= 1; dy++) for (var dx = -1; dx <= 1; dx++) { var yy = Math.min(14, Math.max(0, nd[1] + dy)), xx = Math.min(20, Math.max(0, nd[0] + dx)); g[yy][xx] = dx || dy ? 'L' : ((k + (f ? 1 : 0)) % 2 ? 'W' : 'K'); } });
+        for (var y3 = cy - 2; y3 <= cy + 2; y3++) for (var x3 = cx - 3; x3 <= cx + 3; x3++) g[y3][x3] = (Math.abs(y3 - cy) === 2 || Math.abs(x3 - cx) === 3) ? 'M' : 'L';
+        g[cy - 1][cx - 1] = 'K'; g[cy - 1][cx + 1] = 'K'; g[cy + 1][cx] = 'M';
+        return g;
+      },
+      floppy: function (r, f) {   // a diskette with a metal shutter for a mouth and a label for a face
+        var w = 13 + Math.floor(r() * 2), g = blank(w, 15);
+        for (var y = 1; y < 14; y++) for (var x = 0; x < w; x++) g[y][x] = (y === 1 || y === 13 || !x || x === w - 1) ? 'M' : 'K';
+        g[1][w - 1] = '.'; g[2][w - 1] = 'M'; g[1][w - 2] = 'M';
+        var sx = Math.floor(w / 2) - 3; for (var y2 = 1; y2 < 5; y2++) for (var x2 = sx; x2 < sx + 6; x2++) g[y2][x2] = 'L'; for (var y4 = 2; y4 < 4; y4++) g[y4][sx + (f ? 1 : 4)] = 'K';
+        for (var y3 = 7; y3 < 13; y3++) for (var x3 = 2; x3 < w - 2; x3++) g[y3][x3] = 'W';
+        g[9][4] = 'K'; g[9][w - 5] = 'K'; for (var x4 = 5; x4 < w - 5; x4++) g[11][x4] = f ? 'M' : (x4 % 2 ? 'M' : 'W');
+        g[14][3 + (f ? 1 : 0)] = 'L'; g[14][w - 4 - (f ? 1 : 0)] = 'L';
+        return g;
+      },
+      monitor: function (r, f) {   // a fat old CRT on a stand, its picture rolling, its face made of scanlines
+        var w = 15 + Math.floor(r() * 3) * 2, h = 11 + Math.floor(r() * 2), g = blank(w, h + 3), face = Math.floor(r() * 3);
+        for (var y = 0; y < h; y++) for (var x = 0; x < w; x++) { var bez = y < 1 || y > h - 3 || x < 2 || x > w - 3; g[y][x] = bez ? 'L' : ((y + (f ? 1 : 0)) % 3 === 0 ? 'D' : 'K'); }
+        g[h - 2][w - 4] = f ? 'W' : 'M'; g[h - 2][w - 6] = 'M';   // the power light and a knob
+        var ex = Math.floor(w / 2); g[4][ex - 3] = 'W'; g[4][ex + 3] = 'W'; g[5][ex - 3] = 'W'; g[5][ex + 3] = 'W';
+        if (face === 0) for (var mx = ex - 2; mx <= ex + 2; mx++) g[7][mx] = 'W';
+        else if (face === 1) { g[7][ex - 2] = 'W'; g[8][ex - 1] = 'W'; g[8][ex] = 'W'; g[8][ex + 1] = 'W'; g[7][ex + 2] = 'W'; }
+        else { g[7][ex] = 'W'; g[8][ex] = 'W'; g[7][ex - 1] = 'W'; g[7][ex + 1] = 'W'; }
+        for (var x2 = ex - 2; x2 <= ex + 2; x2++) g[h][x2] = 'M'; for (var x3 = ex - 5; x3 <= ex + 5; x3++) g[h + 1][x3] = 'M';
+        return g;
       }
     };
     window.__corrupt = function (style, seed) {

@@ -2390,6 +2390,10 @@
     var lio1 = TALK.lio; TALK.lio = function (G) { if (G.f.kept) return G.say('Lio', ['Mama’s here! She came down Thursday. Everybody moved Thursday, but you can’t tell. The bench is the same bench.', 'She sits on the good side. I let her.']); return lio1(G); };
   })();
 
+  // sixty computer bugs, each living where it fits: a pop-up in the Plaza, rm -rf at the Console
+  (function () { var HOME = {"plaza": ["popup", "cookie"], "commons": ["spam", "typo"], "halflight": ["capslock", "adware"], "concourse": ["dialup", "notfound"], "gardens": ["autocorrect", "floppyrev"], "line": ["nullref", "cronrun"], "patchwork": ["keylogger", "phisher"], "undercroft": ["ddos", "memleak"], "waterworks": ["sqlinject", "bufover"], "upper": ["cryptominer", "ransomware"], "bastion": ["mitm", "spoofed"], "observatory": ["deadpixel", "screentear"], "registry": ["dupkey", "orphan"], "cold": ["stalelock", "thrash"], "quiet": ["botnode", "dnspoison"], "margin": ["cosmicray", "leapsec"], "stacks": ["epoch", "taperot"], "ring0": ["specghost", "cachepoison"], "deep": ["bootkit", "networm"], "anchor": ["backdoor", "privesc"], "unalloc": ["voidptr", "wildptr"], "tether": ["latency", "packetloss", "throttle"], "upstream": ["paywall", "deprecwarn", "darkpattern"], "successor": ["rankbot", "scraper", "shadowban"], "firmware": ["microcode", "rowhammer", "smmghost"], "rack": ["dustbunny", "brownout", "corroded"], "console": ["kerneloops", "rootshell", "rmrf"]};
+    Object.keys(HOME).forEach(function (id) { if (A[id] && A[id].enc) A[id].enc.foes = A[id].enc.foes.concat(HOME[id]); }); })();
+
   var journal1 = JOURNAL;
   JOURNAL = function (G) {
     var f = G.f, j = journal1(G);
