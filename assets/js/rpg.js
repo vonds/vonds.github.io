@@ -148,8 +148,8 @@
     /* ---------- what the world can do, for the dialogue ---------- */
     var afterTalk = [];
     function gainXp(n) {
-      var lines = []; save.xp += n;
-      while (save.xp >= xpNeed()) {
+      var lines = []; if (save.lvl >= 100) { save.xp = 0; store(); return ['Vee is at level 100. There is nothing left to learn from bugs. Only from people.']; } save.xp += n;
+      while (save.lvl < 100 && save.xp >= xpNeed()) {
         save.xp -= xpNeed(); save.lvl++; save.hp = maxHp(); setTimeout(function () { sfx('lvl'); }, 700);
         save.pts = (save.pts || 0) + 3;
         lines.push('LEVEL UP. Vee is now level ' + save.lvl + '. Max HP ' + maxHp() + '. +3 stat points to spend: open the menu, then Level Up.');
@@ -282,7 +282,7 @@
       if (v === 'home' || v === 'map' || v === 'close') {
         h = '<div class="mn-card"><div class="mn-portrait"></div><div><b class="mn-name">Vee</b> <span class="mn-dim">Level ' + save.lvl + '</span>' +
           '<div class="mn-row"><span>HP</span>' + bar(save.hp, maxHp()) + '<em>' + save.hp + ' / ' + maxHp() + '</em></div>' +
-          '<div class="mn-row"><span>XP</span>' + bar(save.xp, xpNeed()) + '<em>' + (xpNeed() - save.xp) + ' to next</em></div></div></div>' +
+          '<div class="mn-row"><span>XP</span>' + bar(save.xp, xpNeed()) + '<em>' + (save.lvl >= 100 ? 'MAX LEVEL' : (xpNeed() - save.xp) + ' to next') + '</em></div></div></div>' +
           '<div class="mn-stats"><div><span>ATK</span><b>' + atk() + '</b></div><div><span>DEF</span><b>' + def() + '</b></div><div><span>CRIT</span><b>' + pct(critC()) + '</b></div><div><span>CMDS</span><b>' + save.known.length + '</b></div></div>' +
           (save.pts ? '<p class="mn-note">' + save.pts + ' stat points to spend: choose Level Up.</p>' : '') + '<p class="mn-dim">' + AREA.name + ' · Bugs here: level ' + (AREA.lv || 1) + (AREA.lvMax && AREA.lvMax !== AREA.lv ? '–' + AREA.lvMax : '') + ' · Landmarks ' + lights() + ' of 6 · Logs ' + WD.logOrder.filter(function (k) { return F[k]; }).length + ' of 10</p>' +
           '<p class="mn-dim">' + GEAR[save.eq.weapon].name + ' · ' + GEAR[save.eq.armor].name + ' · ' + GEAR[save.eq.acc].name + '</p>';
@@ -631,7 +631,16 @@
       ['underflow', 'Integer Underflow', 'serpent', 37, 72, 16, 23, 29, 'drain', 'subtracts past zero', 'Zero minus one is four billion. Habit: drains HP.'],
       ['ghostcommit', 'Ghost Commit', 'invader', 38, 64, 16, 24, 29, 'pierce', 'rewrites Vee’s history', 'A change nobody remembers making, signed by nobody. Habit: pierces armor.'],
       ['deadcode', 'Dead Code', 'glitch', 39, 96, 14, 20, 30, 'wind', 'runs anyway', 'Unreachable, they said. It was reached. Habit: winds up.'],
-      ['regexhydra', 'Regex Hydra', 'hydra', 40, 88, 16, 24, 31, 'split', 'matches more than it should', '.*.*.* and growing. Habit: splits, and every head is greedy.']
+      ['regexhydra', 'Regex Hydra', 'hydra', 40, 88, 16, 24, 31, 'split', 'matches more than it should', '.*.*.* and growing. Habit: splits, and every head is greedy.'],
+      // below the software: the machine itself is wearing out
+      ['bitrot', 'Bit Rot', 'binary', 41, 92, 17, 25, 33, 'drain', 'fades a bit of Vee to zero', 'Nobody touched the data. Time did. Habit: drains HP.'],
+      ['eccfault', 'ECC Fault', 'bracket', 42, 98, 17, 26, 33, 'pierce', 'corrects Vee into something else', 'Error-correcting memory, out of corrections. Habit: pierces armor.'],
+      ['thermal', 'Thermal Runaway', 'glitch', 43, 86, 19, 28, 34, 'wind', 'runs hotter every turn', 'Hotter makes it slower makes it hotter. Habit: winds up.'],
+      ['badblock', 'Bad Block', 'binary', 44, 120, 15, 22, 34, '', 'refuses to be read', 'A square of disk that will never hold anything again. Very hard to move.'],
+      ['irqstorm', 'IRQ Storm', 'invader', 45, 80, 18, 27, 35, 'twice', 'interrupts Vee mid-command', 'Every device shouting at once. Habit: hits twice.'],
+      ['firmrot', 'Firmware Wraith', 'serpent', 46, 96, 19, 28, 35, 'drain', 'rewrites the code beneath Vee', 'The first code the machine runs, and the last anyone updated. Habit: drains HP.'],
+      ['fanfail', 'Fan Failure', 'hydra', 47, 90, 18, 27, 36, 'split', 'stops, and the heat comes', 'One fan stops, the others spin harder, then they stop too. Habit: splits.'],
+      ['eol', 'End-of-Life Notice', 'invader', 48, 104, 20, 30, 37, 'pierce', 'informs Vee he is no longer supported', 'Printed on paper. Taped to the rack. Habit: pierces armor.']
     ];
     CORRUPT.forEach(function (c) {
       FOES[c[0]] = { name: c[1], hp: c[4], atk: [c[5], c[6]], move: c[9], xp: c[7], trait: c[8], corrupt: 1 };
@@ -714,7 +723,7 @@
         var kind = bossDef ? bossDef.kind : (i === 0 && save.lvl >= 5 && Math.random() < .035 ? 'heisenbug' : kinds[Math.floor(Math.random() * kinds.length)]), base0 = FOES[kind], slot = bossDef ? [34, 120] : SLOTS[i];
         var lv = (AREA.lv || 1) + Math.floor(Math.random() * ((AREA.lvMax || AREA.lv || 1) - (AREA.lv || 1) + 1)), elite = !bossDef && lv >= 4 && Math.random() < .12;
         if (elite) lv += 2;
-        var hm = 1 + .22 * (lv - 1), am = 1 + .16 * (lv - 1), xm = 1 + .3 * (lv - 1);
+        var hm = 1 + .22 * (lv - 1), am = 1 + .16 * (lv - 1), xm = 1 + .3 * (lv - 1) + Math.pow(Math.max(0, lv - 50), 2) * .12;   // the endgame pays better, so the climb to 100 is a climb and not a grind
         var f = bossDef ? { name: bossDef.name, lv: bossDef.lv || AREA.lvMax || AREA.lv || save.lvl, hp: Math.round(bossDef.hp * 1.4), atk: [Math.round(bossDef.atk[0] * 1.15), Math.round(bossDef.atk[1] * 1.15)], move: bossDef.move, xp: bossDef.xp, boss: true } :
           { name: (elite ? 'Hardened ' : '') + base0.name, lv: lv, hp: Math.round(base0.hp * hm * (elite ? 1.4 : 1)), atk: [Math.round(base0.atk[0] * am), Math.round(base0.atk[1] * am)], move: base0.move, xp: Math.round(base0.xp * xm * (elite ? 1.6 : 1)) };
         if (bossDef) sc = bossDef.sc;
@@ -930,7 +939,7 @@
         save.items[drop.id] = (save.items[drop.id] || 0) + 1; lines.push('The bug drops clean data: a ' + drop.name.toLowerCase() + '.');
       }
       lines = lines.concat(gainXp(xp));
-      lines.push('Next level in ' + (xpNeed() - save.xp) + ' XP.');
+      if (save.lvl < 100) lines.push('Next level in ' + (xpNeed() - save.xp) + ' XP.');
       store(); B.phase = 'done'; cmdBox.classList.remove('on'); hud.classList.remove('on'); closePrompt();
       setTimeout(function () { say('', lines, null, function () { endBattle(); if (onWin) setTimeout(onWin, 80); }); }, 600);
     }
@@ -1006,7 +1015,7 @@
       cx.fillStyle = '#050507'; cx.fillRect(0, 0, W, H);
       cx.strokeStyle = 'rgba(200,200,214,.08)'; for (var gx = 0; gx < W; gx += 16) { cx.beginPath(); cx.moveTo(gx + .5, 0); cx.lineTo(gx + .5, H); cx.stroke(); } for (var gy = 0; gy < H; gy += 16) { cx.beginPath(); cx.moveTo(0, gy + .5); cx.lineTo(W, gy + .5); cx.stroke(); }
       function pos(id) { var p = WD.atlas[id]; return [30 + p[0] * 50, 16 + p[1] * 34]; }
-      var LABEL = { plaza: 'PLAZA', commons: 'COMMONS', halflight: 'HALFLIGHT', gardens: 'GLASSHOUSE', undercroft: 'UNDERCROFT', bastion: 'BASTION', quiet: 'THE QUIET', terminal: 'TERMINAL', line: 'THE LINE', patchwork: 'PATCHWORK', upper: 'UPPER RING', cold: 'COLD STORE', concourse: 'CONCOURSE', infirmary: 'INFIRMARY', margin: 'MARGIN', stacks: 'STACKS', ring0: 'RING 0', waterworks: 'WATERWORKS', registry: 'REGISTRY', observatory: 'OBSERVATORY', deep: 'THE DEEP', anchor: 'ANCHOR', unalloc: 'UNALLOCATED' , tether: 'TETHER', upstream: 'UPSTREAM', successor: 'SUCCESSOR' };
+      var LABEL = { plaza: 'PLAZA', commons: 'COMMONS', halflight: 'HALFLIGHT', gardens: 'GLASSHOUSE', undercroft: 'UNDERCROFT', bastion: 'BASTION', quiet: 'THE QUIET', terminal: 'TERMINAL', line: 'THE LINE', patchwork: 'PATCHWORK', upper: 'UPPER RING', cold: 'COLD STORE', concourse: 'CONCOURSE', infirmary: 'INFIRMARY', margin: 'MARGIN', stacks: 'STACKS', ring0: 'RING 0', waterworks: 'WATERWORKS', registry: 'REGISTRY', observatory: 'OBSERVATORY', deep: 'THE DEEP', anchor: 'ANCHOR', unalloc: 'UNALLOCATED' , tether: 'TETHER', upstream: 'UPSTREAM', successor: 'SUCCESSOR', firmware: 'RING -1', rack: 'THE RACK', console: 'CONSOLE' };
       cx.strokeStyle = 'rgba(220,220,236,.45)'; WD.links.forEach(function (l) { var a = pos(l[0]), b = pos(l[1]); cx.beginPath(); cx.moveTo(a[0] + .5, a[1] + .5); cx.lineTo(b[0] + .5, b[1] + .5); cx.stroke(); });
       var anchorAt = { plaza: ['spire', 'archive'], commons: ['ledger'], gardens: ['wagon'], undercroft: ['exit0'], bastion: ['keep'] };
       Object.keys(WD.atlas).forEach(function (id) {

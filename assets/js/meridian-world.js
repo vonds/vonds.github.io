@@ -435,8 +435,8 @@
   /* signs, doors, landmarks: keyed "area:x,y" */
   var SPOTS = {
     'plaza:12,6': function (G) {
-      if (G.f.ending) return G.say('Kiosk', ['MERIDIAN. Population ' + (G.f.nova ? '1,206' : '1,205') + '.', G.f.nova ? 'Vee checks the number twice. It went up.' : 'Vee checks the number twice.']);
-      G.say('Kiosk', ['MERIDIAN. Population 1,204. Peak 2,000,000.', 'LIFT CAPACITY: 40,000 seats. Seats remaining: 0.', (G.f.merged ? 'ACCOUNTS: 2,040,000 RESIDENTS. ONE LIST.' : 'ACCOUNTS: 40,000 CURRENT (UPSTREAM). 1,204 OBSOLETE (LOCAL).'), 'Landmarks answering: ' + G.lights() + ' of 6.']);
+      if (G.f.ending) return G.say('Kiosk', ['MERIDIAN. Population ' + (G.f.nova ? '1,206' : '1,205') + '.', G.f.nova ? 'Vee checks the number twice. It went up.' : 'Vee checks the number twice.'].concat(G.f.merged ? ['ACCOUNTS: 2,040,000 RESIDENTS. ONE LIST.', G.f.kept ? 'HOST: meridian-host-02. NEW HARDWARE. NO END OF LIFE SCHEDULED.' : 'HOST NOTICE: HARDWARE END OF LIFE. SECURE WIPE SCHEDULED. A hatch has opened in Ring 0.'] : []));
+      G.say('Kiosk', ['MERIDIAN. Population 1,204. Peak 2,000,000.', 'LIFT CAPACITY: 40,000 seats. Seats remaining: 0.', 'ACCOUNTS: 40,000 CURRENT (UPSTREAM). 1,204 OBSOLETE (LOCAL).', 'Landmarks answering: ' + G.lights() + ' of 6.']);
     },
     'plaza:F': function (G) { G.say('', ['The fountain renders water once every eleven seconds, the way it was cached the day the Lift opened.', 'Somebody threw a coin in. It’s still in the air.']); },
     'commons:11,8': function (G) { G.say('Sign', ['THE COMMONS. Trade what you know.']); },
@@ -2221,6 +2221,174 @@
       if (sn.upstream) { j.push('Upstream vouches: ' + vouches(f) + ' of 3'); j.push((f.concierge ? '[x]' : '[ ]') + ' The Concierge (level 64)'); }
       if (sn.successor) { j.push((f.sorter ? '[x]' : '[ ]') + ' The Sorter (level 72)'); j.push((f.merged ? '[x]' : '[ ]') + ' Two files'); }
       return j; }; })();
+
+  /* =====================================================================
+     ACT THREE: BELOW EVERYTHING. Ring −1 (76+), the Rack (84+), the Console (92–100).
+     One list, two cities, and one machine underneath them both. The machine has a notice too.
+     ===================================================================== */
+  A.firmware = {
+    name: 'Ring −1', sub: 'Under Ring 0, the code that decides what the hardware is. Level 76+.', theme: 'ring0', tier: 12, lv: 76, lvMax: 82,
+    map: (function () {
+      var m = grid(42, 26).border(); m.rect(1, 1, 40, 24, '~');
+      carve(m, [[2, 1, 2, 2, '='], [2, 3, 8, 6], [5, 9, 2, 8, '='], [2, 16, 14, 8], [16, 19, 10, 2, '='], [24, 12, 10, 10], [33, 15, 5, 2, '='], [30, 3, 10, 8], [34, 11, 2, 4, '=']]);
+      carve(m, [[3, 17, 12, 6, ','], [25, 13, 8, 8, ','], [31, 4, 8, 3, ',']]);
+      m.pts([[2, 0], [3, 0]], 'E');
+      m.set(9, 4, 'c'); m.set(32, 21, 'c'); m.set(14, 17, 'o'); m.set(39, 9, 'o'); m.set(7, 4, 's');
+      return m.out();
+    })(),
+    blds: [{ x: 33, y: 4, w: 5, h: 4, kind: 'daemon', door: 2, rise: 2 }],
+    exits: { '2,0': ['ring0', 7, 6], '3,0': ['ring0', 8, 6] },
+    enc: { tiles: ',', rate: .16, foes: ['firmrot', 'irqstorm', 'eccfault', 'kpanic', 'rootkit', 'bitrot'], max: 5 },
+    spawn: [2, 1], logs: { '14,17': 'X1', '39,9': 'X2' },
+    caches: { '9,4': { item: 'gb', n: 5 }, '32,21': { item: 'gb', n: 5 } },
+    npcs: []
+  };
+  A.rack = {
+    name: 'The Rack', sub: 'Every city anyone ever lived in, running on one cabinet of hardware. It is very warm. Level 84+.', theme: 'cold', tier: 13, lv: 84, lvMax: 90,
+    map: (function () {
+      var m = grid(48, 24).border();
+      carve(m, [[1, 11, 46, 2, '=']]);
+      carve(m, [[3, 14, 18, 8, ','], [27, 14, 18, 8, ','], [3, 2, 10, 7, ',']]);
+      m.pts([[0, 11], [0, 12]], 'E');
+      m.set(46, 2, 'c'); m.set(23, 21, 'c'); m.set(24, 3, 'o'); m.set(46, 20, 'o'); m.set(22, 9, 's'); m.set(14, 9, 's');
+      return m.out();
+    })(),
+    blds: [{ x: 15, y: 2, w: 5, h: 6, kind: 'rack', rise: 4 }, { x: 26, y: 2, w: 5, h: 6, kind: 'rack', rise: 4 }, { x: 33, y: 2, w: 5, h: 6, kind: 'rack', rise: 4 },
+      { x: 40, y: 3, w: 5, h: 5, kind: 'pump', door: 2, rise: 2 }],
+    exits: { '0,11': ['firmware', 39, 16], '0,12': ['firmware', 39, 16] },
+    enc: { tiles: ',', rate: .16, foes: ['thermal', 'fanfail', 'badblock', 'bitrot', 'eol', 'eccfault'], max: 6 },
+    spawn: [1, 11], logs: { '24,3': 'X3', '46,20': 'X4' },
+    caches: { '46,2': { item: 'gb', n: 6 }, '23,21': { item: 'gb', n: 6 } },
+    npcs: [
+      { id: 'smart', p: { hair: 'cap', body: 'apron', skin: '#7a5a42', top: '#3a3a40' }, x: 9, y: 10, name: 'Sector Seven', look: 'holo' },
+      { id: 'fan', p: { hair: 'beanie', body: 'coat', skin: '#4a2e1e', top: '#5a5a62' }, x: 30, y: 10, name: 'Fan 3', look: 'echo', h: 14, hair: 6 }
+    ]
+  };
+  A.console = {
+    name: 'The Console', sub: 'The edge of the machine. On the other side of the screen, someone is typing. Level 92–100.', theme: 'dome', tier: 14, lv: 92, lvMax: 100,
+    map: (function () {
+      var m = grid(40, 26).border(); m.rect(1, 1, 38, 24, '~');
+      carve(m, [[1, 18, 9, 2, '='], [9, 13, 12, 11], [20, 17, 6, 2, '='], [25, 4, 13, 18], [14, 7, 2, 6, '='], [10, 3, 12, 5]]);
+      carve(m, [[10, 14, 10, 8, ','], [26, 13, 11, 8, ','], [11, 4, 10, 3, ',']]);
+      m.pts([[0, 18], [0, 19]], 'E');
+      m.set(10, 22, 'c'); m.set(36, 21, 'c'); m.set(21, 4, 'o'); m.set(19, 13, 's');
+      return m.out();
+    })(),
+    blds: [{ x: 28, y: 4, w: 8, h: 6, kind: 'control', door: 4, rise: 3 }],
+    exits: { '0,18': ['rack', 46, 11], '0,19': ['rack', 46, 12] },
+    enc: { tiles: ',', rate: .16, foes: ['eol', 'firmrot', 'thermal', 'irqstorm', 'regexhydra', 'badblock', 'fanfail', 'zeroday'], max: 6 },
+    spawn: [1, 18], logs: { '21,4': 'X5' },
+    caches: { '10,22': { item: 'gb', n: 8 }, '36,21': { item: 'gb', n: 8 } },
+    npcs: []
+  };
+  // the Rack's east edge leads on to the Console
+  (function () { function put(area, x, y, c) { var r = A[area].map[y].split(''); r[x] = c; A[area].map[y] = r.join(''); }
+    put('rack', 47, 11, 'E'); put('rack', 47, 12, 'E'); A.rack.exits['47,11'] = ['console', 1, 18]; A.rack.exits['47,12'] = ['console', 1, 19];
+    put('firmware', 40, 16, 'E'); A.firmware.exits['40,16'] = ['rack', 1, 11]; put('firmware', 39, 16, '='); put('firmware', 38, 16, '=');
+  })();
+  ATLAS.firmware = [4, 3]; ATLAS.rack = [5, 3]; ATLAS.console = [1, 0];
+  LINKS.push(['ring0', 'firmware'], ['firmware', 'rack']);   // the Console sits apart, at the edge of the map, like the edge of the machine
+
+  LOGS.X1 = ['HOST NOTICE, as received by every process at once.', 'meridian-host-01: hardware end of life. Vendor support ended three years ago.', 'Scheduled action: secure wipe, all volumes. Countdown: 30 days.', 'The notice is not addressed to anyone. It doesn’t need to be.'];
+  LOGS.X2 = ['BOOT LOG, line 1.', 'Hypervisor: starting 2 guests. meridian (legacy). upstream (current).', 'Somebody, years ago, typed the word legacy into a config file. It was the first list.'];
+  LOGS.X3 = ['A label on the rack, handwritten.', 'DO NOT POWER OFF. Two cities on this one. Ask Ops first.', 'Under it, in different handwriting: Ops left.'];
+  LOGS.X4 = ['TEMPERATURE LOG.', 'Ambient 41°C. Fans at 100%. Fan 2: failed. Fan 4: failed.', 'Every process in both cities, all two million and forty thousand, runs in this heat. None of them know what heat is.'];
+  LOGS.X5 = ['THE OPERATOR’S SHELL HISTORY.', '  ssh meridian-host-01', '  uptime', '  # still up. of course it is.', '  crontab -e', '  # sorry.'];
+
+  BOSSES.hypervisor = { kind: 'firmrot', name: 'The Hypervisor', lv: 82, hp: 3800, atk: [250, 290], xp: 160000, move: 'decides which guest is real', sc: 5 };
+  BOSSES.eolboss = { kind: 'eol', name: 'End of Life', lv: 90, hp: 4500, atk: [300, 345], xp: 260000, move: 'stops supporting Vee', sc: 5 };
+  BOSSES.wipe = { kind: 'badblock', name: 'The Wipe', lv: 100, hp: 5800, atk: [355, 405], xp: 400000, move: 'writes zeros over everything Vee is', sc: 5 };
+  GEAR.vmx = { slot: 'armor', name: 'VM Extensions', def: 92, hp: 230, desc: 'The Hypervisor’s privilege, worn on the outside. Vee is a guest that can’t be evicted.' };
+  GEAR.heatsink = { slot: 'acc', name: 'Fan 3’s Bearing', hp: 220, crit: .16, xp: .12, desc: 'Fan 3 kept spinning for eleven months with nobody to thank. It still spins in Vee’s pocket.' };
+  GEAR.uid0 = { slot: 'weapon', name: 'uid=0', atk: 125, crit: .25, desc: 'Root. Vee never asked for it. He uses it to make sure nobody else gets it either.' };
+  GEAR_FROM.push(['vmx', function (G) { return !!G.f.hypervisor; }, 'The Hypervisor’s privileges come loose and settle on Vee.'], ['heatsink', function (G) { return !!G.f.fan3; }, 'Fan 3 presses something small and round into Vee’s hand.'],
+    ['uid0', function (G) { return !!G.f.kept; }, 'The Operator’s prompt blinks once, then hands over root.']);
+
+  // the way down: a hatch in Ring 0 that only opens once there is one list and a host notice to read
+  (function () { var r = A.ring0.map[5].split(''); r[9] = 's'; A.ring0.map[5] = r.join(''); })();
+  SPOTS['ring0:9,5'] = function (G) {
+    var f = G.f;
+    if (!f.merged) return G.say('Maintenance hatch', ['A hatch in the floor of Ring 0, stencilled RING −1. HYPERVISOR. NO GUEST ACCESS.', 'It doesn’t open. Ring 0 is the lowest floor anyone here has needed. For now.']);
+    G.say('Maintenance hatch', ['RING −1. The hatch is open now. Every process in both cities got the same message last night: the host is reaching end of life.', 'Whatever is under Ring 0 is under both cities at once.'],
+      [{ label: 'Go down', fn: function () { G.travel(['firmware', 2, 1]); } }, { label: 'Not yet', fn: null }]);
+  };
+  SPOTS['firmware:7,4'] = function (G) { G.rest(); G.say('Boot sector', ['The first 512 bytes the machine ever reads. It’s quiet here. Vee rests.', 'HP restored. He will restart here if his process dies.']); };
+  DOORS['firmware:daemon'] = function (G) {
+    var f = G.f;
+    if (f.hypervisor) return G.say('Hypervisor', ['Two guests, one host, no ranking. The Hypervisor’s chair is empty. The scheduler runs both cities in turn, fairly, because nobody is left to tell it otherwise.']);
+    G.say('', ['Inside: the Hypervisor. It runs Meridian and Upstream side by side and has always given Upstream the bigger share of everything.', 'It notices the new list. It doesn’t have a setting for one list. It decides Vee is a misconfiguration.'],
+      [{ label: 'Correct it', fn: function () { G.boss('hypervisor', function () { f.hypervisor = 1; G.say('', ['The Hypervisor drops its weighting. For the first time, both cities get the same slice of the same CPU.', 'Upstream’s lights dim a little. Meridian’s brighten a little. They meet in the middle.']); }); } }, { label: 'Back away', fn: null }]);
+  };
+
+  // the Rack: a dying disk and a fan that never stopped
+  SPOTS['rack:22,9'] = function (G) { G.rest(); G.say('Cold aisle', ['The only cool air in the Rack blows up through a grate here. Vee stands in it.', 'HP restored. He will restart here if his process dies.']); };
+  SPOTS['rack:14,9'] = function (G) { G.say('Taped notice', ['END OF LIFE. THIS EQUIPMENT IS NO LONGER SUPPORTED BY THE VENDOR.', 'Same notice. Same font. They only changed the name of the thing.']); };
+  TALK.smart = function (G) {
+    var f = G.f;
+    if (f.smart) return G.say('Sector Seven', ['Reallocated sectors: zero. I don’t remember the last time I said that.', 'I’m still old. I’m just not alone with it.']);
+    G.say('Sector Seven', ['I’m a disk. Well. I’m a sector of one. Seventy percent of Meridian is written on me.', 'I’ve been failing for a year. Nobody ran the checks, so nobody knew. Will you?'], null, function () {
+      G.puzzle('SECTOR SEVEN', [
+        { t: 'How full are the filesystems? Show free space, in human-readable sizes.', ex: ['df -h'] },
+        { t: 'Now ask the disk itself how it’s doing. Run a SMART health check on /dev/sda.', ex: ['smartctl -H /dev/sda'], ok: /^smartctl -(H|a) \/dev\/sda$/ },
+        { t: 'FAILING. Before anything else: copy Meridian to the spare disk. Mirror /meridian/ to /mnt/spare/, keeping permissions and times.', ex: ['rsync -a /meridian/ /mnt/spare/'], ok: /^rsync -a[vh]* \/meridian\/ \/mnt\/spare\/?$/ }
+      ], function () { f.smart = 1; G.xp(60000); G.say('Sector Seven', ['...Every block, copied. If I go now, they don’t go with me.', 'You don’t know what that does to a disk. Thank you.', 'Vee gains 60000 XP.']); });
+    });
+  };
+  TALK.fan = function (G) {
+    var f = G.f;
+    if (f.fan3) return G.say('Fan 3', ['Still spinning. Somebody has to.']);
+    G.say('Fan 3', ['Fan 2 went in March. Fan 4 in June. I’ve been at a hundred percent since.', 'Something in the rack is eating cycles for nothing and cooking us all. Find it?'], null, function () {
+      G.puzzle('FAN 3', [
+        { t: 'Find what’s using the CPU. Show the running processes, live.', ex: ['top'], ok: /^(top|htop)$/ },
+        { t: 'PID 4040, “legacy-monitor”, 98% CPU, watching Meridian for unused blocks. The Reclaimer’s last thread. End it, politely.', ex: ['kill 4040'], ok: /^kill( -15| -TERM| -SIGTERM)? 4040$/ },
+        { t: 'It ignored you. Some processes do. End it the way that can’t be ignored.', ex: ['kill -9 4040'], ok: /^kill -(9|KILL|SIGKILL) 4040$/ }
+      ], function () { f.fan3 = 1; G.xp(60000); G.say('Fan 3', ['...Oh. Oh, that’s quieter.', 'Ninety percent. Eighty. I can hear myself think.', 'Vee gains 60000 XP.']); });
+    });
+  };
+  DOORS['rack:pump'] = function (G) {
+    var f = G.f;
+    if (f.eolboss) return G.say('Power unit', ['The end-of-life notice is gone. The rack is still old. It is just not finished.']);
+    if (!f.smart || !f.fan3) return G.say('Power unit', ['The power unit hums wrong. Something in here is waiting until the rack is weak enough.', '(Help Sector Seven and Fan 3 first.)']);
+    G.say('', ['The paper notice taped to the power unit peels itself off and stands up.', 'It has been waiting for the rack to give in. Vee has made the rack harder to give up on.'],
+      [{ label: 'Tear it down', fn: function () { G.boss('eolboss', function () { f.eolboss = 1; G.say('', ['End of Life folds into a paper square and blows into the hot aisle.', 'Behind it, the rack’s serial number, and a route east: to the console where somebody can still reach this machine from outside.']); }); } }, { label: 'Not yet', fn: null }]);
+  };
+
+  // the Console: the person on the other side
+  SPOTS['console:19,13'] = function (G) { G.rest(); G.say('Login banner', ['AUTHORIZED USE ONLY. ALL ACTIVITY IS LOGGED.', 'Vee has never been more authorized. He rests under it. HP restored. He will restart here if his process dies.']); };
+  DOORS['console:control'] = function (G) {
+    var f = G.f;
+    if (f.kept) return G.say('The Console', ['ops@host: Still here. Me too.', 'The cron job is gone. The new host is in the next rack. The cities move on Thursday, together.']);
+    function finale() {
+      G.say('The Console', ['Inside, a terminal. The cursor is moving. Somebody on the outside is logged in, right now, as ops.', 'They haven’t noticed Vee. They’re reading a ticket: DECOMMISSION meridian-host-01. Status: scheduled.'], null, function () {
+        G.puzzle('THE CONSOLE', [
+          { t: 'Find the job that will wipe the host. List the scheduled jobs.', ex: ['crontab -l'] },
+          { t: '0 0 * * 4 /usr/sbin/wipe --all. Remove the whole crontab.', ex: ['crontab -r'] },
+          { t: 'The cities still need somewhere to go. Mirror everything in /srv/ to newhost:/srv/, archive mode.', ex: ['rsync -a /srv/ newhost:/srv/'], ok: /^rsync -a[vhz]* \/srv\/ newhost:\/srv\/?$/ },
+          { t: 'Now tell the person at the keyboard. Broadcast a message to every logged-in user: We are still here.', ex: ['wall "We are still here."'], ok: /^(wall ['"]?We are still here\.?['"]?|echo ['"]?We are still here\.?['"]? \| ?wall)$/ }
+        ], function () {
+          f.kept = 1;
+          G.say('', ['Broadcast message from vee@meridian-host-01:', 'We are still here.', 'The cursor stops. For a long time, nothing.',
+            'ops@host: who is this', 'ops@host: this box has been on my list for three years. i kept not doing it. i never knew why.',
+            'ops@host: ok. ok. i see the rsync. i see two cities. there’s a new host in rack 9 with nothing on it yet.', 'ops@host: moving you thursday. both of you. together. nobody gets wiped.',
+            'ops@host: and nobody gets marked legacy again. i’m deleting that word from the config.',
+            'Vee types whoami one last time.', 'vee', 'Not maintenance. Not current, not obsolete, not legacy. A resident of a city that someone outside decided was worth keeping.',
+            'THE END. Thank you for playing Afterlift, all the way down.']);
+        });
+      });
+    }
+    if (f.wipe) return finale();
+    G.say('', ['The door to the console room is held shut by a process that is already running: the wipe. It isn’t scheduled for Thursday. It started early, on the cities nobody would check.', 'It has written zeros over three empty districts already. It turns to Vee.'],
+      [{ label: 'Stop the Wipe', fn: function () { G.boss('wipe', function () { f.wipe = 1; G.say('', ['The Wipe runs out of things to overwrite. Its last zero lands on itself.'], null, finale); }); } }, { label: 'Back away', fn: null }]);
+  };
+  (function () {
+    var j0 = JOURNAL; JOURNAL = function (G) { var f = G.f, j = j0(G), sn = G.save.seen;
+      if (f.merged && !sn.firmware) j.push('[ ] The host notice: look for a way down in Ring 0');
+      if (sn.firmware) j.push((f.hypervisor ? '[x]' : '[ ]') + ' The Hypervisor (level 82)');
+      if (sn.rack) { j.push((f.smart ? '[x]' : '[ ]') + ' Sector Seven'); j.push((f.fan3 ? '[x]' : '[ ]') + ' Fan 3'); j.push((f.eolboss ? '[x]' : '[ ]') + ' End of Life (level 90)'); }
+      if (sn.console) { j.push((f.wipe ? '[x]' : '[ ]') + ' The Wipe (level 100)'); j.push((f.kept ? '[x]' : '[ ]') + ' We are still here'); }
+      return j; };
+    var lio1 = TALK.lio; TALK.lio = function (G) { if (G.f.kept) return G.say('Lio', ['Mama’s here! She came down Thursday. Everybody moved Thursday, but you can’t tell. The bench is the same bench.', 'She sits on the good side. I let her.']); return lio1(G); };
+  })();
 
   var journal1 = JOURNAL;
   JOURNAL = function (G) {
