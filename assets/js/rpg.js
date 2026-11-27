@@ -235,7 +235,7 @@
     menuEl.innerHTML = '<div class="mn-side"></div><div class="mn-main"></div>';
     root.querySelector('.rpg-scr').appendChild(menuEl);
     var mnSide = menuEl.querySelector('.mn-side'), mnMain = menuEl.querySelector('.mn-main');
-    var MN = null, VIEWS = [['home', 'Vee'], ['grow', 'Level Up'], ['items', 'Items'], ['cmds', 'Commands'], ['equip', 'Equip'], ['status', 'Status'], ['journal', 'Journal'], ['bestiary', 'Bestiary'], ['map', 'Map'], ['config', 'Config'], ['close', 'Close']];
+    var MN = null, VIEWS = [['home', 'Vee'], ['grow', 'Level Up'], ['items', 'Items'], ['cmds', 'Commands'], ['equip', 'Equip'], ['status', 'Status'], ['journal', 'Journal'], ['bestiary', 'Bestiary'], ['records', 'Records'], ['map', 'Map'], ['config', 'Config'], ['close', 'Close']];
     function openMenu() { MN = { view: 'home', side: 0, focus: 'side', sel: 0, slot: null, confirm: false, detail: -1 }; held = null; areaEl.classList.remove('on'); mode = 'menu'; renderMenu(); menuEl.classList.add('on'); }
     function closeMenu() { MN = null; menuEl.classList.remove('on'); mode = 'map'; store(); }
     function bar(v, m) { return '<i class="mn-bar"><b style="width:' + Math.max(0, Math.min(100, Math.round(v / m * 100))) + '%"></b></i>'; }
@@ -323,6 +323,19 @@
           '<p class="mn-dim">Base ATK ' + save.lvl * 2 + ', gear +' + gs('atk') + ', classes +' + save.school.atk + '. Base DEF ' + Math.floor(save.lvl * .6) + ', gear +' + gs('def') + ', classes +' + save.school.def + '.</p>' +
           '<p class="mn-dim">Bugs cleared ' + (save.wins || 0) + ' · Battles won ' + (save.bw || 0) + ' · Mara’s logs ' + lg + ' of 10 · Board minutes ' + mins + ' of 4 · Postcards ' + pcs + ' of 3</p>' +
           '<h4>Landmarks</h4>' + WD.anchors.map(function (a) { return '<p>' + (isLit(a.id) ? '[x] ' : '[ ] ') + a.name + ' <em class="mn-dim">' + a.project + '</em></p>'; }).join('');
+      } else if (v === 'records') {
+        var bd2 = save.bossDown || {}, bs2 = save.best || {}, nm2 = save.known.filter(mastered).length, logs2 = WD.logOrder.filter(function (k) { return F[k]; }).length, dk = (save.desk && save.desk.done) || 0;
+        var R = [
+          ['Booted', 'Reach level 5', save.lvl >= 5], ['Fluent', 'Know 50 commands', save.known.length >= 50], ['Every page of the manual', 'Know all ' + COMMANDS.length + ' commands', save.known.length >= COMMANDS.length],
+          ['Muscle memory', 'Master 10 commands', nm2 >= 10], ['Second nature', 'Master 40 commands', nm2 >= 40], ['On a roll', 'Reach an exact-answer streak of 10 (best ' + (save.bestStreak || 0) + ')', (save.bestStreak || 0) >= 10],
+          ['Level 1 support', 'Close 8 help desk tickets (' + dk + ')', dk >= 8], ['Senior', 'Close 60 help desk tickets', dk >= 60],
+          ['Root Rush', 'Finish Root Rush in under 60 seconds' + (save.rushBest ? ' (best ' + save.rushBest + 's)' : ''), save.rushBest && save.rushBest <= 60], ['Root Rusher', 'Finish Root Rush in under 40 seconds', save.rushBest && save.rushBest <= 40],
+          ['Field guide', 'Beat every kind of bug (' + Object.keys(FOES).filter(function (k) { return bs2[k]; }).length + ' of ' + Object.keys(FOES).length + ')', Object.keys(FOES).every(function (k) { return bs2[k]; })],
+          ['Named and done', 'Beat every named bug (' + Object.keys(WD.bosses).filter(function (id) { return bd2[WD.bosses[id].name]; }).length + ' of ' + Object.keys(WD.bosses).length + ')', Object.keys(WD.bosses).every(function (id) { return bd2[WD.bosses[id].name]; })],
+          ['Archivist', 'Recover all 10 of Quell’s logs (' + logs2 + ')', logs2 >= 10], ['Landmarks', 'Light all 6 landmarks', lights() >= 6],
+          ['Resident', 'Finish the story', !!F.ending], ['Tuesday', 'Let tomorrow come', !!F.tuesday]
+        ], got = R.filter(function (r) { return r[2]; }).length;
+        h = '<h4>Records · ' + got + ' of ' + R.length + '</h4>' + R.map(function (r) { return '<p' + (r[2] ? '' : ' class="mn-dim"') + '>' + (r[2] ? '[x] ' : '[ ] ') + '<b>' + r[0] + '</b><br><small>' + r[1] + '</small></p>'; }).join('');
       } else if (v === 'bestiary') {
         var bst = save.best || {}, bd = save.bossDown || {}, kinds2 = Object.keys(FOES), seenN = kinds2.filter(function (k) { return bst[k]; }).length;
         h = '<h4>Bestiary · ' + seenN + ' of ' + kinds2.length + ' bugs</h4>' + kinds2.map(function (k) {
@@ -719,7 +732,7 @@
       if (J.right) {
         var wasM = mastered(f.cmd), tag = '';
         p.last = save.bw;
-        if (exact) { p.n++; save.streak++; } else save.streak = 0;
+        if (exact) { p.n++; save.streak++; save.bestStreak = Math.max(save.bestStreak || 0, save.streak); } else save.streak = 0;
         if (!wasM && mastered(f.cmd)) tag = ' Mastered: ' + f.cmd + '.';
         else if (exact && save.streak >= 2) tag = ' Streak x' + save.streak + '.';
         var bonus = (exact ? 2 : 1.5) * (1 + Math.min(.5, Math.max(0, save.streak - 1) * .1)) * (mastered(f.cmd) ? 1.25 : 1);
