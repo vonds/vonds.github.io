@@ -221,6 +221,11 @@
       var t = e.target;
       cur.classList.toggle('hot', !!(t.closest && t.closest(HOT)) && !(t.closest && t.closest('.header .brand')));
       cur.classList.toggle('hide', !!(t.closest && t.closest(TEXT)) || !!doc.querySelector('dialog[open]'));
+      // over Vee's speech boxes and the game windows, draw a solid cursor instead of the inverting one,
+      // so it reads clearly on top of their white text (those boxes ignore the pointer, so test their rects)
+      var solid = !!(t.closest && t.closest('.gm,.rpg,.gpick,.xp-term,.ff4w'));
+      if (!solid) { var bs = doc.querySelectorAll('.gguide.on .gtalk,.vtalk.on'); for (var bi = 0; bi < bs.length && !solid; bi++) { var br = bs[bi].getBoundingClientRect(); solid = mx >= br.left && mx <= br.right && my >= br.top && my <= br.bottom; } }
+      cur.classList.toggle('solid', solid);
       if (!moving) { moving = true; requestAnimationFrame(move); }
     }, { passive: true });
     addEventListener('pointerdown', function () { cur.classList.add('down'); });
