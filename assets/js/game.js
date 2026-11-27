@@ -779,11 +779,12 @@
   if (brand) brand.addEventListener('click', function (e) {
     // in the hero the logo opens the game; further down it still goes home
     if (window.scrollY > window.innerHeight * .5 || document.body.classList.contains('diving')) return;
-    e.preventDefault(); open(0);
+    e.preventDefault(); if (window.VondsPick) window.VondsPick(); else open(0);
   });
   /* ---------- hints that the game exists ---------- */
   window.VondsGame = { open: function () { open(0); } };
-  window.VondsSprite = { frame: frame, look: function () { return LOOK; }, pose: POSE, arm: ARM };
+  window.VondsSprite = { frame: frame, look: function () { return LOOK; }, pose: POSE, arm: ARM,
+    bug: function (kind, f) { var fr = OBMAP[kind]; return obCanvas(fr[f % fr.length], false, 'rpg' + kind + (f % fr.length)); }, bugs: Object.keys(OBMAP) };
   try {
     console.log('%cV O N D S', 'font:600 20px Dosis,system-ui,sans-serif;letter-spacing:.6em;color:#2e2e30');
     console.log('%cHey, fellow builder. The logo up in the hero is a game.\nOr open the terminal with ` and type play.', 'font:13px ui-monospace,Menlo,Consolas,monospace;color:#5a5a60;line-height:1.6');
@@ -905,9 +906,26 @@
     function scale() { R = Math.min(3, window.devicePixelRatio || 1); S = innerWidth < 640 ? 2.4 : 3; cv2.width = Math.round(GW * S * R); cv2.height = Math.round(GH * S * R); cv2.style.width = GW * S + 'px'; cv2.style.height = GH * S + 'px'; }
     // front-facing Vee (for when he turns to the visitor): left half, mirrored
     var FRONT_HALF = [
-      '...........', '.......DDDD', '.....DHHHhH', '....DHHHHHH', '...HHHHHHHH', '..DDHHSSSSS', '..DdHSSSSSS', '..DdHSSESSS', '..DDHSSESSS',
-      '..HHHSSSSSS', '..HH.SSRSSS', '..HH..SSSSE', '..H....SSSS', '..H......SS', '..H..TTTTTT', '..HTTTTTTTT', '..STTTTTTTT', '..STTTTTTTT',
-      '..SSTTTTTTT', '....LLLLLLL', '......PPPP.', '......PPPP.', '......PPPP.', '.....BBBBB.', '...........', '...........'];
+      '...........', '.......DDDD', '.....DHHHHH', '....DHHhHHH', '...DHHHHHHh', '..HDHHHHHHH', '..DDHHSSSSS', '.HDdHHSSSSS', '.HDdHSSSESS',
+      '.HDDHSSSESS', '.HHHHSSSSSS', '.HHHHSRSSSS', '.HHHH.SSSSE', '.HHHH..SSSS', '.......TTTT', '......STTTT', '......STTTT', '......STTTT',
+      '.......TTTT', '.......LLLL', '........PP.', '........PP.', '........PP.', '.......BBB.', '...........', '...........'];
+    // locs: thick, wavy strands that fall past the waist, matching the side view
+    var WAVE = [0, 0, 0, 1, 1, 1];
+    function locsFront(x, pal) {
+      function strand(x0, y, last) { [0, 1].forEach(function (k) { var c = last || k ? 'H' : 'h'; x.fillStyle = pal[c]; x.fillRect(x0 + k, y, 1, 1); x.fillRect(21 - x0 - k, y, 1, 1); }); }
+      for (var y = 10; y <= 20; y++) { x.clearRect(0, y, 6, 1); x.clearRect(16, y, 6, 1); }
+      for (var y1 = 10; y1 <= 20; y1++) strand(WAVE[y1 % 6], y1, y1 === 20);            // outer strand
+      for (var y2 = 10; y2 <= 19; y2++) strand(3 + WAVE[(y2 + 2) % 6], y2, y2 === 19);        // inner strand, beside the arm
+      for (var y3 = 15; y3 <= 17; y3++) { x.fillStyle = pal.S; x.fillRect(6, y3, 1, 1); x.fillRect(15, y3, 1, 1); }   // arms stay in front
+    }
+    function locsBack(x, pal) {
+      for (var y0 = 12; y0 <= 21; y0++) { x.clearRect(3, y0, 16, 1); if (y0 <= 20) { x.fillStyle = 'rgba(236,236,236,.38)'; x.fillRect(3, y0, 16, 1); } }   // the light seams between strands
+      for (var k = 0; k < 5; k++) for (var y = 12; y <= 21 - (k % 2); y++) {
+        var x0 = 3 + k * 3 + WAVE[(y + k * 2) % 6], end = y === 21 - (k % 2);
+        x.fillStyle = pal[end ? 'H' : 'h']; x.fillRect(x0, y, 1, 1); x.fillStyle = pal.H; x.fillRect(x0 + 1, y, 1, 1);
+      }
+      for (var y4 = 20; y4 <= 22; y4++) { x.fillStyle = pal.P; x.fillRect(8, y4, 2, 1); x.fillRect(12, y4, 2, 1); }   // legs show below the hair
+    }
     var frontCache = {};
     function frontImg(light, blink) {
       var key = (light ? 'L' : 'D') + (blink ? 'b' : ''); if (frontCache[key]) return frontCache[key];
@@ -917,6 +935,7 @@
         for (var i = 0; i < 22; i++) { var ch = row.charAt(i); if (ch === '.') continue; if (blink && ch === 'E') ch = 'S'; x.fillStyle = pal[ch] || pal.S; x.fillRect(i, y, 1, 1); }
       });
       if (blink) { x.fillStyle = pal.E; x.fillRect(7, 8, 1, 1); x.fillRect(14, 8, 1, 1); }
+      locsFront(x, pal);
       var d = x.getImageData(0, 0, 22, 26).data, pts = [];
       for (var yy = 0; yy < 26; yy++) for (var xx = 0; xx < 22; xx++) {
         if (d[(yy * 22 + xx) * 4 + 3]) continue;
@@ -954,6 +973,68 @@
       x.fillStyle = light ? 'rgba(20,20,22,.55)' : 'rgba(236,236,236,.38)'; for (var j = 0; j < pts.length; j += 2) x.fillRect(pts[j], pts[j + 1], 1, 1);
       return (pantCache[key] = c);
     }
+    var backCache = {};
+    function backImg(light) {
+      var key = light ? 'L' : 'D'; if (backCache[key]) return backCache[key];
+      var pal = palette(LOOK), c = document.createElement('canvas'); c.width = 22; c.height = 26; var x = c.getContext('2d');
+      FRONT_HALF.forEach(function (half, y) {
+        var row = half + half.split('').reverse().join('');
+        for (var i = 0; i < 22; i++) { var ch = row.charAt(i); if (ch === '.') continue; if (y <= 13 && 'SERK'.indexOf(ch) >= 0) ch = (i + y) % 5 ? 'H' : 'h'; x.fillStyle = pal[ch] || pal.S; x.fillRect(i, y, 1, 1); }
+      });
+      locsBack(x, pal);
+      var d = x.getImageData(0, 0, 22, 26).data, pts = [];
+      for (var yy = 0; yy < 26; yy++) for (var xx = 0; xx < 22; xx++) {
+        if (d[(yy * 22 + xx) * 4 + 3]) continue;
+        if ([[1,0],[-1,0],[0,1],[0,-1]].some(function (o) { var a = xx + o[0], b = yy + o[1]; return a >= 0 && b >= 0 && a < 22 && b < 26 && d[(b * 22 + a) * 4 + 3] > 200; })) pts.push(xx, yy);
+      }
+      x.fillStyle = light ? 'rgba(20,20,22,.55)' : 'rgba(236,236,236,.38)'; for (var j = 0; j < pts.length; j += 2) x.fillRect(pts[j], pts[j + 1], 1, 1);
+      return (backCache[key] = c);
+    }
+
+    // the people of Meridian: built from Vee's own front view, with their own hair, clothes and faces
+    var personCache = {};
+    function personImg(o) {
+      o = o || {}; var key = JSON.stringify(o); if (personCache[key]) return personCache[key];
+      var L = { name: 'npc', skin: o.skin || '#7a4a30', hairc: '#141414', pants: o.pants || '#2b2b30', shoes: o.shoes || '#d8d8dc', top: o.top || '#5a5a62' };
+      if (o.body === 'scrubs') L.pants = L.top;
+      var pal = palette(L); if (o.gray) { pal.H = 'rgb(176,176,182)'; pal.h = 'rgb(206,206,212)'; }
+      var rows = FRONT_HALF.map(function (r) { return r.split(''); }), hair = o.hair || 'short';
+      function set(y, i, ch) { if (y >= 0 && y < 26 && i >= 0 && i < 11) rows[y][i] = ch; }
+      // strip Vee's headphones and locs, keep his face
+      for (var y = 0; y < 14; y++) for (var i = 0; i < 11; i++) { var ch = rows[y][i]; if (ch === 'D' || ch === 'd') ch = 'H'; if (y >= 5 && i <= 4) ch = '.'; rows[y][i] = ch; }
+      for (var y5 = 5; y5 <= 7; y5++) set(y5, 5, 'H');
+      // a natural, rounder hairline instead of the room Vee's locs need
+      set(4, 3, '.'); set(4, 4, '.'); set(3, 4, '.'); set(2, 5, '.'); set(4, 5, 'H');
+      if (hair === 'bald') { for (var b1 = 1; b1 <= 4; b1++) for (var b2 = 0; b2 < 11; b2++) if (rows[b1][b2] === 'H' || rows[b1][b2] === 'h') rows[b1][b2] = (b1 === 1 && b2 < 8) || b2 < 5 ? '.' : 'S'; set(2, 9, 'K'); for (var b3 = 5; b3 <= 7; b3++) set(b3, 5, b3 === 5 ? 'S' : 'H'); set(5, 4, '.'); }
+      if (hair === 'bun') { set(0, 9, 'H'); set(0, 10, 'H'); set(-1, 9, 'H'); }
+      if (hair === 'puffs') { [[1, 3], [1, 4], [2, 2], [2, 3], [2, 4], [3, 2], [3, 3]].forEach(function (q) { set(q[0], q[1], 'H'); }); set(2, 3, 'h'); }
+      if (hair === 'long') for (var l1 = 4; l1 <= 17; l1++) { set(l1, 4, l1 % 3 ? 'H' : 'h'); if (l1 >= 5) set(l1, 3, 'H'); }
+      if (hair === 'cap' || hair === 'beanie') { for (var c1 = 1; c1 <= 4; c1++) for (var c2 = 0; c2 < 11; c2++) if (rows[c1][c2] !== '.') rows[c1][c2] = c1 === 4 && hair === 'beanie' ? 'n' : 'N'; if (hair === 'cap') { for (var c3 = 3; c3 < 11; c3++) set(5, c3, 'N'); set(5, 4, 'n'); } else set(0, 10, 'n'); }
+      if (hair === 'hood') { for (var h1 = 1; h1 <= 14; h1++) { set(h1, 3, 'O'); set(h1, 4, h1 > 2 ? 'O' : '.'); } for (var h2 = 4; h2 < 11; h2++) { set(1, h2, 'O'); set(2, h2, 'O'); } set(3, 5, 'O'); set(3, 6, 'o'); }
+      if (o.phones) { for (var p1 = 7; p1 < 11; p1++) set(1, p1, 'D'); for (var p2 = 5; p2 <= 9; p2++) { set(p2, 3, 'D'); set(p2, 4, p2 === 6 || p2 === 7 ? 'd' : 'D'); } }
+      if (o.glasses) { [[7, 6], [7, 7], [7, 8], [8, 6], [8, 8], [9, 6], [9, 7], [9, 8], [8, 9], [8, 10]].forEach(function (q) { set(q[0], q[1], 'G'); }); }
+      if (o.beard) { for (var bd = 11; bd <= 13; bd++) for (var bx = 6; bx < 11; bx++) if (rows[bd][bx] === 'S' || rows[bd][bx] === 'E' || rows[bd][bx] === 'R') rows[bd][bx] = 'H'; }
+      var body = o.body;
+      if (body === 'apron') for (var a1 = 15; a1 <= 21; a1++) { set(a1, 8, 'W'); set(a1, 9, 'W'); set(a1, 10, 'W'); }
+      if (body === 'coat' || body === 'dress') for (var k1 = 19; k1 <= (body === 'coat' ? 22 : 21); k1++) for (var k2 = body === 'dress' ? 6 : 7; k2 < 11; k2++) set(k1, k2, k1 === 22 ? 'X' : 'T');
+      if (body === 'suit') { set(14, 10, 'W'); set(15, 10, 'W'); set(14, 9, 'W'); set(16, 10, 'X'); }
+      if (body === 'armor') { for (var r1 = 6; r1 < 11; r1++) { set(14, r1, 'A'); set(18, r1, 'A'); } set(15, 6, 'A'); }
+      if (body === 'scrubs') { set(14, 10, 'S'); set(15, 10, 'S'); }
+      var c = document.createElement('canvas'); c.width = 22; c.height = 27; var x = c.getContext('2d');
+      rows.forEach(function (half, yy) {
+        var row = half.join('') + half.slice().reverse().join('');
+        for (var i2 = 0; i2 < 22; i2++) { var ch2 = row.charAt(i2); if (ch2 === '.') continue; x.fillStyle = pal[ch2] || pal.S; x.fillRect(i2, yy + 1, 1, 1); }
+      });
+      if (hair === 'bun') { x.fillStyle = pal.H; x.fillRect(9, 0, 4, 1); }
+      var d = x.getImageData(0, 0, 22, 27).data, pts = [];
+      for (var yy2 = 0; yy2 < 27; yy2++) for (var xx = 0; xx < 22; xx++) {
+        if (d[(yy2 * 22 + xx) * 4 + 3]) continue;
+        if ([[1,0],[-1,0],[0,1],[0,-1]].some(function (q) { var a2 = xx + q[0], b4 = yy2 + q[1]; return a2 >= 0 && b4 >= 0 && a2 < 22 && b4 < 27 && d[(b4 * 22 + a2) * 4 + 3] > 200; })) pts.push(xx, yy2);
+      }
+      x.fillStyle = 'rgba(236,236,236,.38)'; for (var j = 0; j < pts.length; j += 2) x.fillRect(pts[j], pts[j + 1], 1, 1);
+      return (personCache[key] = c);
+    }
+    if (window.VondsSprite) { window.VondsSprite.front = function (blink) { return frontImg(false, blink); }; window.VondsSprite.back = function () { return backImg(false); }; window.VondsSprite.person = personImg; }
     function render(pose, dark) {
       var u = S * R; cx2.setTransform(1, 0, 0, 1, 0, 0); cx2.clearRect(0, 0, cv2.width, cv2.height); cx2.imageSmoothingEnabled = false;
       if (pose === 'pant0' || pose === 'pant1') { cx2.drawImage(pantImg(!dark, pose === 'pant1' ? 1 : 0), OX * u, OY * u, 22 * u, 26 * u); return; }

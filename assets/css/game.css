@@ -147,3 +147,161 @@
 /* Step inside: the box under hanging Vee */
 .vtalk{position:fixed;left:50%;top:0;z-index:2600;pointer-events:none;white-space:nowrap;opacity:0;transform:translate(-50%,6px);transition:opacity .25s ease,transform .35s cubic-bezier(.16,1,.3,1)}
 .vtalk.on{opacity:1;transform:translate(-50%,0)}
+
+/* ---------- shared Final Fantasy IV style window (grayscale) ---------- */
+.ff4w{background:linear-gradient(180deg,#55555c 0%,#2c2c31 42%,#111114 100%);color:#fff;border:3px solid #ececf2;border-radius:8px;
+  box-shadow:0 0 0 2px #11131f,inset 0 0 0 1px #9a9aa2,5px 6px 0 rgba(0,0,0,.28);font:400 10px/2 'Press Start 2P',ui-monospace,monospace;text-shadow:1px 1px 0 rgba(0,0,0,.55)}
+.ff4n{display:block;margin:0 0 6px;font:400 9px/1 'Press Start 2P',monospace;color:#c6c6cc}
+.tw-hide{visibility:hidden}
+
+/* ---------- game menu ---------- */
+.gpick{position:fixed;inset:0;z-index:2147483100;display:none;align-items:center;justify-content:center;background:rgba(6,6,7,0);transition:background .3s ease}
+.gpick.open{display:flex}.gpick.show{background:rgba(6,6,7,.72)}
+.gpick-w{width:min(460px,92vw);padding:18px 20px 16px;opacity:0;transform:translateY(10px) scale(.98);transition:opacity .3s ease,transform .4s cubic-bezier(.16,1,.3,1)}
+.gpick.show .gpick-w{opacity:1;transform:none}
+.gpick-q{margin:0 0 12px;font-size:12px}
+.gpick-o{display:flex;align-items:center;gap:14px;width:100%;margin:0 0 10px;padding:10px 12px;text-align:left;cursor:pointer;appearance:none;color:#fff;
+  background:rgba(0,0,0,.22);border:2px solid transparent;border-radius:6px;font:inherit;text-shadow:inherit;transition:background .2s,border-color .2s}
+.gpick-o canvas{width:44px;height:52px;image-rendering:pixelated;flex:none}
+.gpick-o strong{display:block;font:400 12px/1.6 'Press Start 2P',monospace}
+.gpick-o em{display:block;font-style:normal;font-size:8px;line-height:1.9;color:#c6c6cc}
+.gpick-o.on,.gpick-o:focus-visible{border-color:#ececf2;background:rgba(255,255,255,.1);outline:none}
+.gpick-c{appearance:none;background:none;border:0;color:#c6c6cc;font:400 9px/1 'Press Start 2P',monospace;padding:8px 4px;cursor:pointer}
+.gpick-c:hover{color:#fff}
+
+/* ---------- Signal Quest ---------- */
+.rpg{position:fixed;inset:0;z-index:2147483000;display:none;align-items:center;justify-content:center;flex-direction:column;background:rgba(6,6,7,0);transition:background .4s ease}
+.rpg.open{display:flex}.rpg.show{background:rgba(6,6,7,.9)}
+.rpg-scr{position:relative;width:min(960px,96vw,calc(82vh * 16 / 9));aspect-ratio:16/9;background:#000;overflow:hidden;
+  clip-path:inset(50% 0 50% 0);transition:clip-path .7s cubic-bezier(.77,0,.18,1);box-shadow:0 30px 100px rgba(0,0,0,.6)}
+.rpg.show .rpg-scr{clip-path:inset(0 0 0 0)}
+.rpg-scr canvas{display:block;width:100%;height:100%;image-rendering:pixelated}
+.rpg-msg{position:absolute;left:2.5%;right:2.5%;bottom:3.5%;padding:12px 16px 12px;display:none;cursor:pointer;font-size:clamp(8px,1.25vw,12px)}
+.rpg-msg.on{display:block}
+.rpg-msg p{margin:0;min-height:3.6em}
+.rpg-opts{display:flex;gap:10px;margin-top:6px}
+.rpg-opts button{appearance:none;cursor:pointer;color:#fff;font:inherit;text-shadow:inherit;background:transparent;border:2px solid transparent;border-radius:5px;padding:6px 10px}
+.rpg-opts button.on,.rpg-opts button:hover{border-color:#ececf2;background:rgba(255,255,255,.1)}
+.rpg-more{display:block;width:8px;height:8px;margin:2px 0 0 auto;border-right:2px solid #fff;border-bottom:2px solid #fff;transform:rotate(45deg);animation:rpgMore 1s steps(2) infinite}
+@keyframes rpgMore{50%{opacity:.25}}
+.rpg-title{position:absolute;left:2.5%;right:2.5%;top:4%;padding:9px 14px;text-align:center;font:400 clamp(7px,1.05vw,11px)/1.8 'Press Start 2P',monospace;color:#fff;text-shadow:1px 1px 0 rgba(0,0,0,.6);
+  background:linear-gradient(180deg,#55555c,#111114);border:3px solid #ececf2;border-radius:8px;box-shadow:0 0 0 2px #11131f;opacity:0;transition:opacity .2s}
+.rpg-title.on{opacity:1}
+.rpg-hud{position:absolute;left:2.5%;right:2.5%;bottom:3.5%;height:30%;display:none;gap:2%}
+.rpg-hud.on{display:flex}
+.rpg-foes{flex:0 0 34%;padding:9px 10px;font-size:clamp(7px,1.05vw,11px);display:grid;grid-template-columns:1fr 1fr;align-content:start;gap:2px 6px}
+.rpg-foes .foe{appearance:none;text-align:left;cursor:pointer;color:#fff;font:inherit;text-shadow:inherit;background:transparent;border:2px solid transparent;border-radius:4px;padding:3px 6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rpg-foes .foe.on{border-color:#ececf2;background:rgba(255,255,255,.1)}
+.rpg-party{flex:1;margin-right:32%;padding:12px 14px;font-size:clamp(8px,1.15vw,11px)}
+.rpg-row{flex-wrap:wrap}
+.rpg-cmd .mp{display:block;padding:2px 8px 4px;color:#c6c6cc;font-size:.85em}
+.rpg-row{display:flex;justify-content:space-between;gap:10px}.rpg-row.sm{font-size:.75em;color:#c6c6cc}
+.rpg-row b{font-weight:400}
+.rpg-cmd{position:absolute;right:0;bottom:0;height:100%;width:30%;padding:8px 10px;display:none;flex-direction:column;gap:2px;overflow:auto;font-size:clamp(8px,1.15vw,11px)}
+.rpg-cmd.wide{width:46%}
+.rpg-cmd.on{display:flex}
+.rpg-cmd button{display:flex;justify-content:space-between;gap:10px;appearance:none;cursor:pointer;color:#fff;font:inherit;text-shadow:inherit;text-align:left;background:transparent;border:2px solid transparent;border-radius:4px;padding:3px 8px}
+.rpg-cmd button em{font-style:normal;color:#c6c6cc}
+.rpg-cmd button.on{border-color:#ececf2;background:rgba(255,255,255,.1)}
+.rpg-cmd button:disabled{opacity:.4;cursor:default}
+.rpg-x{position:absolute;right:22px;top:20px;width:44px;height:44px;border:0;background:none;cursor:pointer}
+.rpg-x i{position:absolute;left:10px;right:10px;top:50%;height:1px;background:#e8e8e8}.rpg-x i:first-child{transform:rotate(45deg)}.rpg-x i:last-child{transform:rotate(-45deg)}
+.rpg-x:focus{outline:none}
+.rpg-pad{display:none}
+@media (hover:none),(pointer:coarse),(max-width:760px){
+  .rpg{justify-content:flex-start;padding-top:70px}
+  .rpg-scr{width:100vw}
+  .rpg-msg{font-size:8px;padding:9px 10px}
+  .rpg-hud{height:42%}
+  .rpg-pad{display:grid;grid-template-columns:repeat(3,52px) 1fr 58px 58px;grid-template-rows:repeat(3,44px);gap:4px;width:min(100vw,420px);padding:18px 16px;margin-top:6px}
+  .rpg-pad button{appearance:none;border:2px solid #ececf2;border-radius:8px;background:linear-gradient(180deg,#45454b,#18181b);color:#fff;font:400 12px/1 'Press Start 2P',monospace;touch-action:none}
+  .rpg-pad [data-k=up]{grid-column:2;grid-row:1}.rpg-pad [data-k=left]{grid-column:1;grid-row:2}.rpg-pad [data-k=right]{grid-column:3;grid-row:2}.rpg-pad [data-k=down]{grid-column:2;grid-row:3}
+  .rpg-pad .a{grid-column:6;grid-row:2;border-radius:50%}.rpg-pad .b{grid-column:5;grid-row:3;border-radius:50%}
+}
+/* Meridian: the command prompt Vee attacks with */
+.rpg-term{position:absolute;left:2.5%;right:2.5%;bottom:3.5%;padding:12px 16px;display:none;z-index:3;font-size:clamp(8px,1.15vw,11px)}
+.rpg-term.on{display:block}
+.rpg-term .sc{margin:0 0 8px;color:#e8e8ee}
+.rpg-term .row{display:flex;align-items:center;gap:10px;padding:6px 10px;background:rgba(0,0,0,.45);border:2px solid #8a8a94;border-radius:4px}
+.rpg-term .row span{color:#c6c6cc;white-space:nowrap}
+.rpg-term input{flex:1;min-width:0;background:transparent;border:0;outline:none;color:#fff;font:inherit;caret-color:#fff;text-shadow:inherit}
+.rpg-term .chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.rpg-term .chips button,.rpg-term .act button{appearance:none;cursor:pointer;color:#fff;font:inherit;font-size:.9em;text-shadow:inherit;background:rgba(0,0,0,.25);border:2px solid #6a6a74;border-radius:4px;padding:4px 8px}
+.rpg-term .chips button:hover{border-color:#ececf2}
+.rpg-term .act{display:flex;gap:10px;margin-top:8px}
+.rpg-term .act button[type=submit]{border-color:#ececf2}
+.rpg-term .act .q{border-color:transparent;background:transparent;color:#c6c6cc}
+@media (hover:none),(pointer:coarse),(max-width:760px){.rpg-term{font-size:8px;padding:9px 10px}}
+.rpg-term input,.rpg-term input:focus,.rpg-term input:focus-visible{outline:none!important;box-shadow:none!important;border:0!important;padding:0!important;height:auto!important;background:transparent!important}
+.rpg-term .row span{font:inherit!important;letter-spacing:0!important;text-transform:none!important}
+.rpg-term .row:focus-within{border-color:#ececf2}
+.rpg-x:focus-visible,.rpg-x:focus,.rpg button:focus-visible{outline:none;box-shadow:none}
+.rpg-term .row,.rpg-term .row span,.rpg-term input{font-family:'Press Start 2P',ui-monospace,monospace!important;font-size:1em!important;font-weight:400!important;letter-spacing:0!important;text-transform:none!important;color:#fff}
+.rpg-term .row span{color:#c6c6cc}
+/* Meridian: district title cards, status and puzzle prompts */
+.rpg-area{position:absolute;left:0;right:0;top:14%;text-align:center;pointer-events:none;opacity:0;transform:translateY(-6px);transition:opacity .6s ease,transform .6s ease;font-family:'Press Start 2P',monospace;color:#fff;text-shadow:2px 2px 0 rgba(0,0,0,.75)}
+.rpg-area.on{opacity:1;transform:none}
+.rpg-area b{display:block;font-weight:400;font-size:clamp(11px,2.1vw,22px);letter-spacing:.08em}
+.rpg-area b::after{content:'';display:block;width:min(240px,46%);height:1px;margin:12px auto 10px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.8),transparent)}
+.rpg-area span{display:block;font-size:clamp(6px,.9vw,10px);line-height:1.9;color:#cfcfda;padding:0 8%}
+.rpg-msg p em{font-style:normal;color:#9a9aa8}
+.rpg-term .sc b{font-weight:400;color:#fff;margin-right:6px}
+.rpg-term .sc em{font-style:normal;color:#b8b8c4;display:block;margin-bottom:4px}
+.rpg-foes .foe.boss{grid-column:1/-1;display:flex;flex-direction:column;align-items:stretch;gap:6px;white-space:normal;text-align:left}
+.rpg-foes .foe.boss i{display:block;height:6px;border:1px solid #8a8a94;background:rgba(0,0,0,.5)}
+.rpg-foes .foe.boss i b{display:block;height:100%;background:linear-gradient(90deg,#9a9aa6,#f2f2f6)}
+.rpg-foes .foe.boss em{font-style:normal;font-size:.8em;color:#b8b8c4}
+/* phones: during a battle the menus sit below the scene instead of covering it */
+@media (hover:none),(pointer:coarse),(max-width:760px){
+  .rpg-scr canvas{height:calc(100vw * 9 / 16)}
+  .rpg-scr:has(.rpg-hud.on){aspect-ratio:auto;height:calc(100vw * 9 / 16 + 196px)}
+  .rpg-scr:has(.rpg-hud.on) .rpg-hud{height:178px;bottom:8px}
+  .rpg:has(.rpg-hud.on) .rpg-pad{display:none}
+}
+.rpg-opts{flex-wrap:wrap;row-gap:4px}
+/* Meridian: the game menu */
+.rpg-menu{position:absolute;inset:4%;display:none;grid-template-columns:24% 1fr;gap:0;padding:0;z-index:4;font-size:clamp(7px,1.05vw,11px);overflow:hidden}
+.rpg-menu.on{display:grid}
+.rpg-menu .mn-side{display:flex;flex-direction:column;gap:2px;padding:12px 8px;border-right:2px solid rgba(236,236,242,.5);overflow:auto}
+.rpg-menu button{appearance:none;cursor:pointer;color:#fff;font:inherit;text-shadow:inherit;text-align:left;background:transparent;border:2px solid transparent;border-radius:4px;padding:5px 8px}
+.rpg-menu .mn-side button.cur{background:rgba(255,255,255,.08)}
+.rpg-menu button.on,.rpg-menu button:hover{border-color:#ececf2;background:rgba(255,255,255,.12)}
+.rpg-menu .mn-main{padding:12px 16px;overflow:auto;line-height:1.8}
+.rpg-menu h4{margin:6px 0 6px;font-weight:400;color:#fff;letter-spacing:.06em}
+.rpg-menu p{margin:2px 0}
+.rpg-menu em{font-style:normal;color:#cfcfda}
+.rpg-menu .mn-dim{color:#9a9aa8}
+.rpg-menu .mono{letter-spacing:.02em}
+.rpg-menu .mn-list{display:flex;flex-direction:column;gap:2px}
+.rpg-menu .mn-list button{display:grid;grid-template-columns:1fr auto;gap:2px 10px;align-items:baseline}
+.rpg-menu .mn-list button small{grid-column:1/-1;font-size:.8em;color:#a8a8b4;line-height:1.6}
+.rpg-menu .mn-list button.eq{background:rgba(255,255,255,.06)}
+.rpg-menu .mn-list button.danger span{color:#ffd9d9}
+.rpg-menu .mn-card{display:flex;gap:14px;align-items:center;margin-bottom:8px}
+.rpg-menu .mn-portrait{width:48px;height:56px;flex:none;border:2px solid #ececf2;border-radius:6px;background:#0a0a0e center/contain no-repeat;image-rendering:pixelated}
+.rpg-menu .mn-name{font-weight:400;font-size:1.25em}
+.rpg-menu .mn-row{display:grid;grid-template-columns:2.6em 1fr auto;gap:8px;align-items:center;margin-top:4px}
+.rpg-menu .mn-bar{display:block;height:6px;border:1px solid #8a8a94;background:rgba(0,0,0,.5)}
+.rpg-menu .mn-bar b{display:block;height:100%;background:linear-gradient(90deg,#9a9aa6,#f2f2f6)}
+.rpg-menu .mn-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin:8px 0}
+.rpg-menu .mn-stats div{border:1px solid rgba(236,236,242,.35);border-radius:4px;padding:6px 8px;display:flex;flex-direction:column;gap:2px}
+.rpg-menu .mn-stats span{color:#9a9aa8;font-size:.8em}.rpg-menu .mn-stats b{font-weight:400;font-size:1.2em}
+.rpg-menu .mn-detail{border:1px solid rgba(236,236,242,.4);border-radius:4px;padding:8px 10px;margin-bottom:8px}
+.rpg-menu .mn-note{color:#fff;background:rgba(255,255,255,.08);padding:4px 8px;border-radius:4px}
+@media (hover:none),(pointer:coarse),(max-width:760px){
+  .rpg-menu{inset:2%;grid-template-columns:30% 1fr;font-size:7px}
+  .rpg-menu .mn-side{padding:6px 4px}.rpg-menu .mn-main{padding:8px 8px}
+  .rpg-menu button{padding:4px 5px}
+  .rpg-menu .mn-stats{grid-template-columns:repeat(2,1fr)}
+  .rpg-menu .mn-portrait{width:34px;height:40px}
+}
+.rpg-menu .mn-card>div:last-child{flex:1;min-width:0}
+@media (hover:none),(pointer:coarse),(max-width:760px){
+  .rpg-scr:has(.rpg-menu.on){aspect-ratio:auto;height:min(78vh,calc(100vw * 9 / 16 + 340px))}
+  .rpg:has(.rpg-menu.on) .rpg-pad{display:none}
+  .rpg-menu{font-size:8px}
+}
+.rpg-menu .mn-side button.pts{color:#fff;text-shadow:0 0 6px rgba(255,255,255,.6)}
+.rpg-menu .mn-pts{font-weight:400;font-size:1.4em;color:#fff}
+.rpg-foes .foe em.lv{font-style:normal;color:#9a9aa8;font-size:.8em}
+.rpg-foes .foe em.lv::before{content:'Lv '}
