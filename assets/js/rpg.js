@@ -886,7 +886,8 @@
           })();
         if (bossDef) sc = bossDef.sc;
         var c = pickCmd(), info = cmdInfo(c);
-        foes.push({ kind: kind, foe: f, hp: Math.round(f.hp * (n >= 4 ? .7 : 1)), max: Math.round(f.hp * (n >= 4 ? .7 : 1)), soft: soft, stun: 0, shake: 0, flash: 0, dead: false, fade: 0, sc: sc,
+        var pf = 1 + activeParty().length * (bossDef ? .35 : .3);   // more of you, tougher bugs: companions make fights faster, not trivial
+        foes.push({ kind: kind, foe: f, hp: Math.round(f.hp * (n >= 4 ? .7 : 1) * pf), max: Math.round(f.hp * (n >= 4 ? .7 : 1) * pf), soft: soft, stun: 0, shake: 0, flash: 0, dead: false, fade: 0, sc: sc,
           cmd: c, sc0: info.when[Math.floor(Math.random() * info.when.length)],
           get scenario() { return this.sc0.t; }, fx: slot[0], fy: slot[1], ph: Math.random() * 6, exposed: 0, slow: 0, leak: 0 });
       }
