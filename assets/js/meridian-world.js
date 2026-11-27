@@ -1314,6 +1314,7 @@
   };
   TALK.arlo = function (G) {
     var f = G.f;
+    if (f.upTicket && !f.arloTold) { f.arloTold = 1; G.xp(300); return G.say('Arlo (02:00)', ['He wrote? Up there? About rain?', '...It rained. He always loved the rain. He used to stand in it on purpose, to annoy our mother.', 'Thank you. I don’t need him to know I’m here. I just needed to know he’s still him.', 'Vee gains 300 XP.']); }
     if (f.dedupe) return G.say('Arlo (02:00)', ['Still here. Still 2 a.m. on a Sunday, as far as I’m concerned.', 'I’ve decided that’s not a bad time to be. Everyone you love is asleep and safe and nothing has gone wrong yet.']);
     if (!f.arlo) { f.arlo = 1; return G.say('Arlo (02:00)', ['Hello. I’m Arlo. Well. I’m the 2 a.m. snapshot of Arlo, from the night before he took the Lift.',
       'He’s up there. I’m down here. He doesn’t know I exist. I think about him the way you think about a brother who moved away and stopped writing.',
@@ -1402,7 +1403,7 @@
             G.say('', ['The Scheduler’s hands stop. Its face is a crontab, and the crontab is open. One line, and a cursor blinking after it.'], [
               { label: 'crontab -r: let tomorrow come', fn: function () { f.tuesday = 1; G.xp(1000);
                 G.say('', ['Vee removes the job. The core makes a small sound, like a held breath let go.', 'Midnight comes. For the first time in eleven months, nothing runs.', 'Up in the Concourse, a florist watches her flowers begin, very slowly, to wilt, and laughs out loud.',
-                  'It is Tuesday in Meridian.', 'Vee gains 1000 XP.']); } },
+                  'It is Tuesday in Meridian.', 'Down in the Stacks, the help desk queue chimes once. Something new has come in.', 'Vee gains 1000 XP.']); } },
               { label: 'Leave it running', fn: function () { G.say('', ['Vee closes the crontab without saving. The hands begin to move again: 23:59:59.', 'There will be other nights. The question is asked now. It cannot be un-asked. Come back when you are ready.']); } }]);
   }
   SPOTS['ring0:12,3'] = function (G) { G.say('Plaque', ['RING 0. KERNEL SPACE.', 'Beneath it someone has scratched: everything above this line is a story the kernel tells.']); };
@@ -1447,6 +1448,7 @@
     if (G.save.seen.ring0) {
       j.push('Ring 0 daemons: ' + ((f.d1 ? 1 : 0) + (f.d2 ? 1 : 0) + (f.d3 ? 1 : 0)) + ' of 3');
       j.push((f.zombie ? '[x]' : '[ ]') + ' The Zombie Process'); j.push((f.tuesday ? '[x]' : '[ ]') + ' Tuesday');
+      if (f.tuesday) j.push((f.upTicket ? '[x]' : '[ ]') + ' Ticket #1, from Upstream' + (f.upTicket && !f.arloTold ? ' (tell Arlo)' : ''));
     }
     var tc = ['T1', 'T2', 'T3', 'T4'].filter(function (k) { return f[k]; }).length; if (tc) j.push('Board papers: ' + tc + ' of 4');
     return j;

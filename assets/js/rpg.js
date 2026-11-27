@@ -405,6 +405,19 @@
     function helpdesk(who) {
       if (!save.desk) save.desk = { done: 0, run: 0 };
       var D = save.desk, three = [ticket(), ticket(), ticket()];
+      if (F.tuesday && !F.upTicket) {   // the one ticket that came from the other direction
+        return say(who, ['...That’s strange. A ticket in the queue with no district. The return address is upstream.lift.', 'It’s addressed to whoever changed the schedule.'], [{ label: 'Open ticket #1', fn: function () {
+          openPuzzle('TICKET #1', [
+            { t: 'The ticket asks for a reply over ssh. Try connecting as vee to upstream.lift.', ex: ['ssh vee@upstream.lift'] },
+            { t: 'Permission denied (publickey). You need a key of your own. Generate one.', ex: ['ssh-keygen', 'ssh-keygen -t ed25519', 'ssh-keygen -t rsa'] },
+            { t: 'Key made. Connect again.', ex: ['ssh vee@upstream.lift'] }], function () {
+            F.upTicket = 1; var xp2 = 600; var L = ['Connected. A single message is waiting.', 'FROM: arlo@upstream.lift', '“I don’t know who you are. Something down there changed last night, and the change came up the tether.',
+              'Up here, nobody has noticed it, but I have: every day since we arrived has been a Monday. Perfect weather. Same weather.', 'Last night, for the first time, it rained. Do you know anything about that?”',
+              'Vee reads it twice. Down in the Stacks, a 2 a.m. backup of the same man is waiting for someone to tell him something good.', 'Vee gains ' + xp2 + ' XP.'].concat(gainXp(xp2));
+            store(); say(who, L);
+          });
+        } }, { label: 'Later', fn: null }]);
+      }
       var rank = D.done >= 60 ? 'Senior' : D.done >= 25 ? 'Level 2' : D.done >= 8 ? 'Level 1' : 'Trainee';
       say(who, [D.done ? 'Tickets: ' + D.done + ' closed. Rank: ' + rank + '. Three in the queue.' : 'The queue never stopped. People who stayed still have problems, and they still write in.', 'Pick one. Close it, and the requester sends what they can spare.'],
         three.map(function (T, i) {
