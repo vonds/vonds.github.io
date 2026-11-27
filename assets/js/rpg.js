@@ -376,7 +376,7 @@
           if (!MN.confirm) { MN.confirm = true; return renderMenu(); }
           try { localStorage.removeItem('vonds-quest'); } catch (e) {} location.reload();
         }, 'danger');
-        h += '<!--btns--><p class="mn-dim">Story difficulty: bugs hit softer. Hard: they hit harder, and you earn 20% more XP. Command hints show a few command names to pick from in battle. Turn them off to type from memory. Settings save automatically.</p>';
+        h += '<!--btns--><p class="mn-dim">Story difficulty: bugs hit softer. Hard: they hit harder, and you earn 20% more XP. Command hints show a few command names to pick from in battle. Turn them off to type from memory, for 15% more XP from battles. Settings save automatically.</p>';
       }
       if (MN.note) { h = '<p class="mn-note">' + MN.note + '</p>' + h; MN.note = null; }
       var parts = h.split('<!--btns-->'); mnMain.innerHTML = parts[0];
@@ -864,7 +864,7 @@
       menu('main'); hudOn();
     }
     function win() {
-      var xp = 0, n = B.foes.length, boss = B.boss, onWin = B.onWin; B.foes.forEach(function (f) { xp += f.foe.xp + (boss ? 0 : rnd(0, 3)); }); xp = Math.round(xp * (1 + gs('xp')) * (save.cfg.diff === 2 ? 1.2 : 1));
+      var xp = 0, n = B.foes.length, boss = B.boss, onWin = B.onWin; B.foes.forEach(function (f) { xp += f.foe.xp + (boss ? 0 : rnd(0, 3)); }); xp = Math.round(xp * (1 + gs('xp')) * (save.cfg.diff === 2 ? 1.2 : 1) * (save.cfg.hints ? 1 : 1.15));   // typing from memory earns a little more
       sfx('win'); save.wins += n; save.linux += n; save.bw++;
       if (!save.best) save.best = {}; if (!save.bossDown) save.bossDown = {};
       B.foes.forEach(function (f) { if (f.gone) return; if (f.foe.boss) save.bossDown[f.foe.name] = 1; else save.best[f.kind] = (save.best[f.kind] || 0) + 1; });
