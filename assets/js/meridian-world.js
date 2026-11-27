@@ -58,7 +58,7 @@
 
   /* THE PLAZA */
   A.plaza = {
-    name: 'Meridian Plaza', sub: 'Where the city still remembers its own name.', theme: 'plaza', tier: 1,
+    name: 'Meridian Plaza', sub: 'Where the city still remembers its own name.', theme: 'plaza', tier: 1, lv: 1, lvMax: 3,
     map: (function () {
       var m = grid(32, 20).border();
       m.rect(1, 9, 30, 2, '='); m.rect(15, 1, 2, 18, '=');
@@ -84,14 +84,14 @@
     logs: { '20,5': 'F1' },
     caches: { '29,17': { item: 'byte', n: 2 }, '3,18': { item: 'bit', n: 3 } },
     npcs: [
-      { id: 'wren', x: 19, y: 7, name: 'Wren', look: 'holo' },
-      { id: 'sweeper', x: 9, y: 12, name: 'The Sweeper', look: 'echo', h: 13, hair: 1 }
+      { id: 'wren', p: { hair: 'bun', body: 'suit', skin: '#8d5a3a', top: '#3a3a44' }, x: 19, y: 7, name: 'Wren', look: 'holo' },
+      { id: 'sweeper', p: { hair: 'cap', body: 'apron', skin: '#5a3824', top: '#6a6a58', gray: 1 }, x: 9, y: 12, name: 'The Sweeper', look: 'echo', h: 13, hair: 1 }
     ]
   };
 
   /* THE COMMONS */
   A.commons = {
-    name: 'The Commons', sub: 'Everyone traded here. Some of them still think they are.', theme: 'commons', tier: 1.4,
+    name: 'The Commons', sub: 'Everyone traded here. Some of them still think they are.', theme: 'commons', tier: 1.4, lv: 3, lvMax: 5,
     map: (function () {
       var m = grid(36, 20).border();
       m.rect(1, 9, 34, 2, '='); m.rect(8, 1, 2, 8, '='); m.rect(26, 11, 2, 8, '=');
@@ -115,15 +115,15 @@
     logs: { '3,4': 'F2' },
     caches: { '34,18': { item: 'byte', n: 1 }, '2,18': { item: 'kb', n: 1 } },
     npcs: [
-      { id: 'okoye', x: 19, y: 7, name: 'Okoye', look: 'echo', h: 14, hair: 2, solid: 1 },
-      { id: 'lio', x: 25, y: 8, name: 'Lio', look: 'kid' },
-      { id: 'bram', x: 4, y: 14, name: 'Bram', look: 'echo', h: 13, hair: 0 }
+      { id: 'okoye', p: { hair: 'bun', body: 'suit', glasses: 1, skin: '#3e2416', top: '#24242a' }, x: 19, y: 7, name: 'Okoye', look: 'echo', h: 14, hair: 2, solid: 1 },
+      { id: 'lio', p: { hair: 'puffs', body: 'dress', skin: '#6b3f26', top: '#9a9aa6' }, x: 25, y: 8, name: 'Lio', look: 'kid' },
+      { id: 'bram', p: { hair: 'bald', body: 'apron', skin: '#c49a7a', top: '#5a4a3a', beard: 1 }, x: 4, y: 14, name: 'Bram', look: 'echo', h: 13, hair: 0 }
     ]
   };
 
   /* HALFLIGHT */
   A.halflight = {
-    name: 'Halflight', sub: 'Every window, a view. Every view, included.', theme: 'halflight', tier: 1.8,
+    name: 'Halflight', sub: 'Every window, a view. Every view, included.', theme: 'halflight', tier: 1.8, lv: 5, lvMax: 7,
     map: (function () {
       var m = grid(34, 22).border();
       m.rect(1, 10, 32, 2, '='); m.rect(8, 12, 2, 9, '='); m.rect(26, 1, 2, 9, '=');
@@ -148,16 +148,16 @@
     logs: { '30,12': 'F3', '10,13': 'F4' },
     caches: { '32,20': { item: 'page', n: 1, text: 'A torn page, columns of names and debts: BRAM’S LEDGER, page 212.' }, '1,13': { item: 'kb', n: 1 } },
     npcs: [
-      { id: 'dez', x: 7, y: 9, name: 'Dez', look: 'echo', h: 14, hair: 3 },
-      { id: 'jun', x: 24, y: 12, name: 'Jun', look: 'echo', h: 13, hair: 1, fade: .45 },
-      { id: 'ana', x: 25, y: 12, name: 'Recording', look: 'echo', h: 13, hair: 2, fade: .2, flick: 1 },
-      { id: 'teodor', x: 17, y: 9, name: 'Teodor', look: 'echo', h: 12, hair: 4 }
+      { id: 'dez', p: { hair: 'short', skin: '#7a5034', top: '#3a3a42' }, x: 7, y: 9, name: 'Dez', look: 'echo', h: 14, hair: 3 },
+      { id: 'jun', p: { hair: 'long', skin: '#d0a888', top: '#6a6a74' }, x: 24, y: 12, name: 'Jun', look: 'echo', h: 13, hair: 1, fade: .45 },
+      { id: 'ana', p: { hair: 'long', body: 'dress', skin: '#a77b5a', top: '#c8c8d0' }, x: 25, y: 12, name: 'Recording', look: 'echo', h: 13, hair: 2, fade: .2, flick: 1 },
+      { id: 'teodor', p: { hair: 'bald', body: 'coat', glasses: 1, skin: '#b08060', top: '#4a4a40', gray: 1, beard: 1 }, x: 17, y: 9, name: 'Teodor', look: 'echo', h: 12, hair: 4 }
     ]
   };
 
   /* THE GLASSHOUSE */
   A.gardens = {
-    name: 'The Glasshouse', sub: 'Trees grown from numbers. The numbers are being collected.', theme: 'gardens', tier: 2.2,
+    name: 'The Glasshouse', sub: 'Trees grown from numbers. The numbers are being collected.', theme: 'gardens', tier: 2.2, lv: 7, lvMax: 9,
     map: (function () {
       var m = grid(36, 22).border();
       m.rect(1, 10, 34, 2, '='); m.rect(15, 12, 2, 9, '='); m.rect(30, 2, 2, 8, '=');
@@ -178,13 +178,13 @@
     caches: { '2,19': { item: 'kb', n: 2 }, '27,9': { item: 'mb', n: 1 } },
     wagon: [[7, 9], [27, 2], [31, 16]],
     npcs: [
-      { id: 'tamsin', x: 12, y: 8, name: 'Tamsin', look: 'echo', h: 13, hair: 5, solid: 1 }
+      { id: 'tamsin', p: { hair: 'cap', body: 'apron', skin: '#5a3a24', top: '#4a5448' }, x: 12, y: 8, name: 'Tamsin', look: 'echo', h: 13, hair: 5, solid: 1 }
     ]
   };
 
   /* THE UNDERCROFT */
   A.undercroft = {
-    name: 'The Undercroft', sub: 'Every failure in the city ends up down here eventually.', theme: 'undercroft', tier: 2.8,
+    name: 'The Undercroft', sub: 'Every failure in the city ends up down here eventually.', theme: 'undercroft', tier: 2.8, lv: 10, lvMax: 12,
     map: (function () {
       var m = grid(38, 22).border();
       m.pts([[15, 0], [16, 0]], 'D');
@@ -209,14 +209,14 @@
     logs: { '35,2': 'F6' },
     caches: { '2,19': { item: 'mb', n: 1 }, '36,12': { item: 'kb', n: 2 } },
     npcs: [
-      { id: 'kade', x: 13, y: 19, name: 'Kade', look: 'echo', h: 15, hair: 6, solid: 1 },
+      { id: 'kade', p: { hair: 'cap', body: 'coat', skin: '#3e2618', top: '#8a8a70', beard: 1 }, x: 13, y: 19, name: 'Kade', look: 'echo', h: 15, hair: 6, solid: 1 },
       { id: 'unit7', x: 22, y: 10, name: 'Unit 7', look: 'drone' }
     ]
   };
 
   /* THE BASTION */
   A.bastion = {
-    name: 'The Bastion', sub: 'The last block in Meridian nobody has reclaimed.', theme: 'bastion', tier: 3.4,
+    name: 'The Bastion', sub: 'The last block in Meridian nobody has reclaimed.', theme: 'bastion', tier: 3.4, lv: 14, lvMax: 16,
     map: (function () {
       var m = grid(32, 22).border();
       m.rect(1, 9, 30, 2, '='); m.rect(15, 11, 2, 10, '.');
@@ -237,13 +237,13 @@
     logs: { '29,13': 'F7' },
     caches: { '2,20': { item: 'mb', n: 1 }, '29,20': { item: 'kb', n: 2 } },
     npcs: [
-      { id: 'ash', x: 14, y: 10, name: 'Ash', look: 'warden' }
+      { id: 'ash', p: { hair: 'short', body: 'armor', skin: '#6b4a32', top: '#2a2a30', pants: '#1c1c20' }, x: 14, y: 10, name: 'Ash', look: 'warden' }
     ]
   };
 
   /* THE QUIET */
   A.quiet = {
-    name: 'The Quiet', sub: 'Where the city stopped rendering.', theme: 'quiet', tier: 4,
+    name: 'The Quiet', sub: 'Where the city stopped rendering.', theme: 'quiet', tier: 4, lv: 17, lvMax: 19,
     map: (function () {
       var m = grid(46, 18, '~');
       m.rect(1, 6, 8, 6, '.'); m.pts([[0, 8], [0, 9]], 'E');
@@ -265,13 +265,13 @@
     logs: { '11,13': 'F8', '38,2': 'F9' },
     caches: { '34,14': { item: 'mb', n: 2 }, '2,11': { item: 'gb', n: 1 } },
     npcs: [
-      { id: 'cartographer', x: 19, y: 8, name: 'The Cartographer', look: 'echo', h: 14, hair: 7 }
+      { id: 'cartographer', p: { hair: 'hood', body: 'coat', skin: '#8a6a50', top: '#3a3a36', gray: 1 }, x: 19, y: 8, name: 'The Cartographer', look: 'echo', h: 14, hair: 7 }
     ]
   };
 
   /* THE LIFT TERMINAL */
   A.terminal = {
-    name: 'The Lift Terminal', sub: 'Forty thousand seats. Every one of them sold.', theme: 'terminal', tier: 4.5,
+    name: 'The Lift Terminal', sub: 'Forty thousand seats. Every one of them sold.', theme: 'terminal', tier: 4.5, lv: 18, lvMax: 18,
     map: (function () {
       var m = grid(28, 18).border();
       m.pts([[0, 8], [0, 9]], 'E');
@@ -586,7 +586,7 @@
 
   /* THE LINE: the transit system, stopped the day the Lift opened */
   A.line = {
-    name: 'The Line', sub: 'The trains stopped the day the Lift opened.', theme: 'line', tier: 2.4,
+    name: 'The Line', sub: 'The trains stopped the day the Lift opened.', theme: 'line', tier: 2.4, lv: 8, lvMax: 10,
     map: (function () {
       var m = grid(40, 16).border();
       m.rect(1, 7, 38, 2, '~'); m.rect(19, 7, 2, 2, '=');
@@ -607,14 +607,14 @@
     logs: {},
     caches: { '38,2': { item: 'part', n: 1, text: 'Wedged behind the cache door: a coil of antenna wire, still shielded. Someone was saving it for something.' }, '2,14': { item: 'byte', n: 3 } },
     npcs: [
-      { id: 'halden', x: 24, y: 3, name: 'Halden', look: 'echo', h: 14, hair: 6 },
-      { id: 'mirelle', x: 9, y: 12, name: 'Mirelle', look: 'echo', h: 13, hair: 5 }
+      { id: 'halden', p: { hair: 'cap', body: 'suit', skin: '#9a6a48', top: '#22222a', gray: 1, beard: 1 }, x: 24, y: 3, name: 'Halden', look: 'echo', h: 14, hair: 6 },
+      { id: 'mirelle', p: { hair: 'long', skin: '#4a2c1c', top: '#5a4a5a' }, x: 9, y: 12, name: 'Mirelle', look: 'echo', h: 13, hair: 5 }
     ]
   };
 
   /* THE PATCHWORK: built from what the city threw away */
   A.patchwork = {
-    name: 'The Patchwork', sub: 'Built from what the city threw away. Nothing here is unused.', theme: 'patch', tier: 2.6,
+    name: 'The Patchwork', sub: 'Built from what the city threw away. Nothing here is unused.', theme: 'patch', tier: 2.6, lv: 9, lvMax: 11,
     map: (function () {
       var m = grid(38, 22).border();
       m.pts([[37, 11], [37, 12]], 'E');
@@ -640,18 +640,18 @@
     logs: {},
     caches: { '36,2': { item: 'kb', n: 2 }, '2,20': { item: 'byte', n: 2 } },
     npcs: [
-      { id: 'ofelia', x: 6, y: 6, name: 'Ofelia', look: 'echo', h: 13, hair: 7, solid: 1 },
-      { id: 'juno', x: 33, y: 8, name: 'Juno', look: 'echo', h: 14, hair: 2, solid: 1 },
-      { id: 'marrow', x: 12, y: 8, name: 'Marrow', look: 'echo', h: 12, hair: 4, solid: 1 },
-      { id: 'pip', x: 8, y: 9, name: 'Pip', look: 'kid' },
-      { id: 'sol', x: 11, y: 7, name: 'Sol', look: 'kid' },
-      { id: 'corin', x: 36, y: 17, name: 'Corin', look: 'echo', h: 14, hair: 6, solid: 1 }
+      { id: 'ofelia', p: { hair: 'bun', body: 'apron', glasses: 1, skin: '#c8a888', top: '#5a5048', gray: 1 }, x: 6, y: 6, name: 'Ofelia', look: 'echo', h: 13, hair: 7, solid: 1 },
+      { id: 'juno', p: { hair: 'short', phones: 1, skin: '#5a3a26', top: '#2e2e36' }, x: 33, y: 8, name: 'Juno', look: 'echo', h: 14, hair: 2, solid: 1 },
+      { id: 'marrow', p: { hair: 'bald', body: 'coat', skin: '#4a3020', top: '#4a4038', gray: 1, beard: 1 }, x: 12, y: 8, name: 'Marrow', look: 'echo', h: 12, hair: 4, solid: 1 },
+      { id: 'pip', p: { hair: 'puffs', skin: '#7a4a30', top: '#8a8a96' }, x: 8, y: 9, name: 'Pip', look: 'kid' },
+      { id: 'sol', p: { hair: 'short', skin: '#c8a080', top: '#5a5a66' }, x: 11, y: 7, name: 'Sol', look: 'kid' },
+      { id: 'corin', p: { hair: 'short', body: 'coat', glasses: 1, skin: '#c8a080', top: '#3a3a40' }, x: 36, y: 17, name: 'Corin', look: 'echo', h: 14, hair: 6, solid: 1 }
     ]
   };
 
   /* THE UPPER RING: the owners' district, still pristine */
   A.upper = {
-    name: 'The Upper Ring', sub: 'Nothing here has decayed. Someone up there still looks at it.', theme: 'upper', tier: 3.6,
+    name: 'The Upper Ring', sub: 'Nothing here has decayed. Someone up there still looks at it.', theme: 'upper', tier: 3.6, lv: 13, lvMax: 15,
     map: (function () {
       var m = grid(40, 22).border();
       m.pts([[19, 21], [20, 21]], 'E');
@@ -682,14 +682,14 @@
     logs: { '10,9': 'M1', '29,9': 'M2', '14,20': 'M3' },
     caches: { '37,9': { item: 'part', n: 1, text: 'A satellite feed horn, still in its gift box. The card reads: FOR THE NEW PLACE. It never shipped.' }, '37,4': { item: 'gb', n: 1 } },
     npcs: [
-      { id: 'sterling', x: 18, y: 7, name: 'Sterling', look: 'holo' },
+      { id: 'sterling', p: { hair: 'short', body: 'suit', skin: '#d8b898', top: '#1c1c22', gray: 1 }, x: 18, y: 7, name: 'Sterling', look: 'holo' },
       { id: 'trimmer', x: 26, y: 8, name: 'Groundskeeper', look: 'drone' }
     ]
   };
 
   /* COLD STORAGE: where reclaimed memory waits to be shipped up */
   A.cold = {
-    name: 'Cold Storage', sub: 'Everything the Reclaimer took passes through here.', theme: 'cold', tier: 4.2,
+    name: 'Cold Storage', sub: 'Everything the Reclaimer took passes through here.', theme: 'cold', tier: 4.2, lv: 16, lvMax: 18,
     map: (function () {
       var m = grid(36, 20).border();
       m.set(2, 0, 'D');
@@ -965,7 +965,7 @@
 
   /* CONCOURSE NINE: the long promenade nobody walks */
   A.concourse = {
-    name: 'Concourse Nine', sub: 'Swept every morning. Walked by no one.', theme: 'concourse', tier: 2,
+    name: 'Concourse Nine', sub: 'Swept every morning. Walked by no one.', theme: 'concourse', tier: 2, lv: 6, lvMax: 8,
     map: (function () {
       var m = grid(60, 14).border();
       m.pts([[59, 6], [59, 7]], 'E');
@@ -995,17 +995,17 @@
     logs: { '34,8': 'P1' },
     caches: { '58,2': { item: 'kb', n: 1 }, '1,12': { item: 'byte', n: 3 } },
     npcs: [
-      { id: 'kip', x: 10, y: 5, name: 'Kip', look: 'kid' },
-      { id: 'tallow', x: 14, y: 5, name: 'Tallow', look: 'echo', h: 14, hair: 6, solid: 1 },
-      { id: 'adair', x: 29, y: 5, name: 'Ms. Adair', look: 'echo', h: 13, hair: 3, solid: 1 },
-      { id: 'rosa', x: 45, y: 5, name: 'Rosa', look: 'echo', h: 13, hair: 5 },
-      { id: 'desmond', x: 49, y: 8, name: 'Desmond', look: 'echo', h: 14, hair: 1, solid: 1 }
+      { id: 'kip', p: { hair: 'cap', skin: '#5a3824', top: '#6a6a7a' }, x: 10, y: 5, name: 'Kip', look: 'kid' },
+      { id: 'tallow', p: { hair: 'bald', body: 'apron', skin: '#7a4a30', top: '#3a342e', beard: 1 }, x: 14, y: 5, name: 'Tallow', look: 'echo', h: 14, hair: 6, solid: 1 },
+      { id: 'adair', p: { hair: 'bun', body: 'suit', glasses: 1, skin: '#3a2416', top: '#5a4a48', gray: 1 }, x: 29, y: 5, name: 'Ms. Adair', look: 'echo', h: 13, hair: 3, solid: 1 },
+      { id: 'rosa', p: { hair: 'long', body: 'dress', skin: '#b88a68', top: '#2a2a30' }, x: 45, y: 5, name: 'Rosa', look: 'echo', h: 13, hair: 5 },
+      { id: 'desmond', p: { hair: 'short', body: 'suit', skin: '#e0c0a0', top: '#4a4a54' }, x: 49, y: 8, name: 'Desmond', look: 'echo', h: 14, hair: 1, solid: 1 }
     ]
   };
 
   /* THE INFIRMARY: St. Ada's, where broken processes came to be looked after */
   A.infirmary = {
-    name: 'St. Ada’s Infirmary', sub: 'Where broken processes came to be looked after.', theme: 'clinic', tier: 1,
+    name: 'St. Ada’s Infirmary', sub: 'Where broken processes came to be looked after.', theme: 'clinic', tier: 1, lv: 1, lvMax: 1,
     map: (function () {
       var m = grid(26, 14).border();
       m.pts([[12, 13], [13, 13]], 'E');
@@ -1023,12 +1023,12 @@
     spawn: [12, 12],
     logs: { '23,2': 'P2' },
     caches: { '2,12': { item: 'mb', n: 1 } },
-    npcs: [ { id: 'imani', x: 15, y: 9, name: 'Nurse Imani', look: 'echo', h: 14, hair: 3, solid: 1 } ]
+    npcs: [ { id: 'imani', p: { hair: 'bun', body: 'scrubs', skin: '#5a3824', top: '#9aa4aa' }, x: 15, y: 9, name: 'Nurse Imani', look: 'echo', h: 14, hair: 3, solid: 1 } ]
   };
 
   /* THE MARGIN: where the network ends, not in darkness but in blank */
   A.margin = {
-    name: 'The Margin', sub: 'The network doesn’t end in darkness. It ends in blank.', theme: 'margin', tier: 4.6,
+    name: 'The Margin', sub: 'The network doesn’t end in darkness. It ends in blank.', theme: 'margin', tier: 4.6, lv: 19, lvMax: 22,
     map: (function () {
       var m = grid(44, 18, '~');
       m.rect(34, 6, 9, 6, '.'); m.pts([[43, 8], [43, 9]], 'E'); m.set(42, 8, '.'); m.set(42, 9, '.');
@@ -1046,7 +1046,7 @@
     spawn: [41, 8],
     logs: { '39,15': 'P3' },
     caches: { '7,15': { item: 'gb', n: 1 }, '26,4': { item: 'mb', n: 2 } },
-    npcs: [ { id: 'osei', x: 22, y: 5, name: 'Osei', look: 'echo', h: 14, hair: 6 } ]
+    npcs: [ { id: 'osei', p: { hair: 'hood', body: 'coat', skin: '#2e1c12', top: '#5a5a58' }, x: 22, y: 5, name: 'Osei', look: 'echo', h: 14, hair: 6 } ]
   };
 
   (function () {

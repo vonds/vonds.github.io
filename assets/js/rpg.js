@@ -72,7 +72,7 @@
     if (!save.items) save.items = { bit: 3, byte: 1 };
     if (save.coffee) { save.items.bit = (save.items.bit || 0) + save.coffee; } delete save.coffee;   // older saves
     function store() { try { localStorage.setItem('vonds-quest', JSON.stringify(save)); } catch (e) {} }
-    function maxHp() { var g = 0; if (save.eq && window.MeridianWorld) ['weapon', 'armor', 'acc'].forEach(function (s) { var it = window.MeridianWorld.gear[save.eq[s]]; if (it && it.hp) g += it.hp; }); return 60 + (save.lvl - 1) * 14 + g + ((save.school && save.school.hp) || 0); }
+    function maxHp() { var g = 0; if (save.eq && window.MeridianWorld) ['weapon', 'armor', 'acc'].forEach(function (s) { var it = window.MeridianWorld.gear[save.eq[s]]; if (it && it.hp) g += it.hp; }); return 60 + (save.lvl - 1) * 14 + g + ((save.school && save.school.hp) || 0) + ((save.alloc && save.alloc.hp * 6) || 0); }
     function xpNeed() { return 30 + (save.lvl - 1) * 25; }
     function maxMp() { return 24 + (save.lvl - 1) * 6; }
 
@@ -132,7 +132,7 @@
     var areaEl = document.createElement('div'); areaEl.className = 'rpg-area'; areaEl.innerHTML = '<b></b><span></span>';
     root.querySelector('.rpg-scr').appendChild(areaEl);
     var areaT = 0;
-    function showArea() { areaEl.querySelector('b').textContent = AREA.name; areaEl.querySelector('span').textContent = AREA.sub; areaEl.classList.add('on'); clearTimeout(areaT); areaT = setTimeout(function () { areaEl.classList.remove('on'); }, 3200); }
+    function showArea() { areaEl.querySelector('b').textContent = AREA.name; var lvT = AREA.enc ? ' Bugs: level ' + AREA.lv + (AREA.lvMax && AREA.lvMax !== AREA.lv ? '–' + AREA.lvMax : '') + '.' + (AREA.lv > save.lvl + 2 ? ' DANGER.' : '') : ''; areaEl.querySelector('span').textContent = AREA.sub + lvT; areaEl.classList.add('on'); clearTimeout(areaT); areaT = setTimeout(function () { areaEl.classList.remove('on'); }, 3200); }
     var fade = null;   // { t, to: [id, x, y], done }
     function travel(to) { if (fade) return; fade = { t: 0, to: to, swapped: false }; held = null; }
 
@@ -142,7 +142,8 @@
       var lines = []; save.xp += n;
       while (save.xp >= xpNeed()) {
         save.xp -= xpNeed(); save.lvl++; save.hp = maxHp();
-        lines.push('LEVEL UP. Vee is now level ' + save.lvl + '. Max HP ' + maxHp() + '.');
+        save.pts = (save.pts || 0) + 3;
+        lines.push('LEVEL UP. Vee is now level ' + save.lvl + '. Max HP ' + maxHp() + '. +3 stat points to spend: open the menu, then Level Up.');
         var nc = nextCmd(); if (nc) { save.known.push(nc.cmd); lines.push('New command: ' + nc.cmd + '. ' + nc.learn, 'Bugs can now bring problems that need ' + nc.cmd + '.'); }
       }
       store(); return lines;
@@ -203,9 +204,11 @@
     if (!save.cfg) save.cfg = { text: 1, enc: 0, diff: 1, scan: 1 };
     var GEAR = WD.gear;
     function gs(k) { var t = 0; ['weapon', 'armor', 'acc'].forEach(function (s) { var g = GEAR[save.eq[s]]; if (g && g[k]) t += g[k]; }); return t; }
-    function atk() { return save.lvl * 2 + gs('atk') + save.school.atk; }
-    function def() { return Math.floor(save.lvl * .6) + gs('def') + save.school.def; }
-    function critC() { return .05 + gs('crit'); }
+    if (!save.alloc) { save.alloc = { atk: 0, def: 0, hp: 0, crit: 0 }; save.pts = (save.lvl - 1) * 3; }
+    var GROW = [['atk', 'Power', '+1 ATK', 1], ['def', 'Guard', '+1 DEF', 1], ['hp', 'Vitality', '+6 max HP', 6], ['crit', 'Focus', '+0.5% CRIT', .005]];
+    function atk() { return save.lvl * 2 + gs('atk') + save.school.atk + save.alloc.atk; }
+    function def() { return Math.floor(save.lvl * .6) + gs('def') + save.school.def + save.alloc.def; }
+    function critC() { return Math.min(.5, .05 + gs('crit') + save.alloc.crit * .005); }
     var CFG = { text: [1, 2, 4, 999], textL: ['Slow', 'Normal', 'Fast', 'Instant'], enc: [1, .5, .15], encL: ['Normal', 'Fewer', 'Rare'], diff: [.65, 1, 1.35], diffL: ['Story', 'Normal', 'Hard'], scanL: ['Off', 'On'] };
     function ownsGear(id) { return !!save.bag[id]; }
     function giveGear(id) { save.bag[id] = 1; store(); }
@@ -220,7 +223,7 @@
     menuEl.innerHTML = '<div class="mn-side"></div><div class="mn-main"></div>';
     root.querySelector('.rpg-scr').appendChild(menuEl);
     var mnSide = menuEl.querySelector('.mn-side'), mnMain = menuEl.querySelector('.mn-main');
-    var MN = null, VIEWS = [['home', 'Vee'], ['items', 'Items'], ['cmds', 'Commands'], ['equip', 'Equip'], ['status', 'Status'], ['journal', 'Journal'], ['map', 'Map'], ['config', 'Config'], ['close', 'Close']];
+    var MN = null, VIEWS = [['home', 'Vee'], ['grow', 'Level Up'], ['items', 'Items'], ['cmds', 'Commands'], ['equip', 'Equip'], ['status', 'Status'], ['journal', 'Journal'], ['map', 'Map'], ['config', 'Config'], ['close', 'Close']];
     function openMenu() { MN = { view: 'home', side: 0, focus: 'side', sel: 0, slot: null, confirm: false, detail: -1 }; held = null; areaEl.classList.remove('on'); mode = 'menu'; renderMenu(); menuEl.classList.add('on'); }
     function closeMenu() { MN = null; menuEl.classList.remove('on'); mode = 'map'; store(); }
     function bar(v, m) { return '<i class="mn-bar"><b style="width:' + Math.max(0, Math.min(100, Math.round(v / m * 100))) + '%"></b></i>'; }
@@ -234,8 +237,8 @@
       if (!MN) return;
       mnSide.innerHTML = '';
       VIEWS.forEach(function (v, i) {
-        var b = document.createElement('button'); b.type = 'button'; b.textContent = v[1];
-        b.className = (i === MN.side ? 'cur' : '') + (MN.focus === 'side' && i === MN.side ? ' on' : '');
+        var b = document.createElement('button'); b.type = 'button'; b.textContent = v[1] + (v[0] === 'grow' && save.pts ? ' (' + save.pts + ')' : '');
+        b.className = (v[0] === 'grow' && save.pts ? 'pts ' : '') + (i === MN.side ? 'cur' : '') + (MN.focus === 'side' && i === MN.side ? ' on' : '');
         b.addEventListener('click', function () { MN.side = i; pickSide(); });
         mnSide.appendChild(b);
       });
@@ -246,8 +249,24 @@
           '<div class="mn-row"><span>HP</span>' + bar(save.hp, maxHp()) + '<em>' + save.hp + ' / ' + maxHp() + '</em></div>' +
           '<div class="mn-row"><span>XP</span>' + bar(save.xp, xpNeed()) + '<em>' + (xpNeed() - save.xp) + ' to next</em></div></div></div>' +
           '<div class="mn-stats"><div><span>ATK</span><b>' + atk() + '</b></div><div><span>DEF</span><b>' + def() + '</b></div><div><span>CRIT</span><b>' + pct(critC()) + '</b></div><div><span>CMDS</span><b>' + save.known.length + '</b></div></div>' +
-          '<p class="mn-dim">' + AREA.name + ' · Landmarks ' + lights() + ' of 6 · Logs ' + WD.logOrder.filter(function (k) { return F[k]; }).length + ' of 10</p>' +
+          (save.pts ? '<p class="mn-note">' + save.pts + ' stat points to spend: choose Level Up.</p>' : '') + '<p class="mn-dim">' + AREA.name + ' · Bugs here: level ' + (AREA.lv || 1) + (AREA.lvMax && AREA.lvMax !== AREA.lv ? '–' + AREA.lvMax : '') + ' · Landmarks ' + lights() + ' of 6 · Logs ' + WD.logOrder.filter(function (k) { return F[k]; }).length + ' of 10</p>' +
           '<p class="mn-dim">' + GEAR[save.eq.weapon].name + ' · ' + GEAR[save.eq.armor].name + ' · ' + GEAR[save.eq.acc].name + '</p>';
+      } else if (v === 'grow') {
+        h = '<h4>Level Up</h4><p>' + (save.pts ? '<b class="mn-pts">' + save.pts + '</b> point' + (save.pts > 1 ? 's' : '') + ' to spend.' : 'No points to spend. Vee earns 3 with every level.') + '</p>';
+        GROW.forEach(function (gr) {
+          var now = gr[0] === 'atk' ? 'ATK ' + atk() : gr[0] === 'def' ? 'DEF ' + def() : gr[0] === 'hp' ? 'HP ' + maxHp() : 'CRIT ' + pct(critC());
+          btn('<span>' + gr[1] + ' <em class="mn-dim">' + gr[2] + '</em></span><em>' + now + (save.alloc[gr[0]] ? ' · ' + save.alloc[gr[0]] + ' pts' : '') + '</em>', function () {
+            if (!save.pts) { MN.note = 'No points left. Level up to earn more.'; return renderMenu(); }
+            if (gr[0] === 'crit' && critC() >= .5) { MN.note = 'Focus is maxed out.'; return renderMenu(); }
+            save.pts--; save.alloc[gr[0]]++; if (gr[0] === 'hp') save.hp += 6; store(); renderMenu();
+          });
+        });
+        var spent = save.alloc.atk + save.alloc.def + save.alloc.hp + save.alloc.crit;
+        btn('<span>Reset points</span><em class="mn-dim">' + (spent ? 'Get back ' + spent + ' points' : 'Nothing spent yet') + '</em>', function () {
+          if (!spent) return;
+          var hpBack = save.alloc.hp * 6; save.pts += spent; save.alloc = { atk: 0, def: 0, hp: 0, crit: 0 }; save.hp = Math.max(1, Math.min(save.hp - hpBack, maxHp())); store(); MN.note = 'Points returned. Spend them however you like.'; renderMenu();
+        }, 'danger');
+        h += '<!--btns--><p class="mn-dim">Power hits harder. Guard takes hits better. Vitality adds health. Focus lands more critical hits. Resetting is free, any time.</p>';
       } else if (v === 'items') {
         h = '<h4>Healing data</h4>';
         ITEMS.forEach(function (it) {
@@ -519,8 +538,11 @@
       endTalk();
       for (var i = 0; i < n; i++) {
         var kind = bossDef ? bossDef.kind : kinds[Math.floor(Math.random() * kinds.length)], base0 = FOES[kind], slot = bossDef ? [34, 120] : SLOTS[i];
-        var f = bossDef ? { name: bossDef.name, hp: bossDef.hp, atk: bossDef.atk, move: bossDef.move, xp: bossDef.xp, boss: true } :
-          { name: base0.name, hp: Math.round(base0.hp * (.6 + .4 * tier)), atk: [Math.round(base0.atk[0] * (.7 + .3 * tier)), Math.round(base0.atk[1] * (.7 + .3 * tier))], move: base0.move, xp: Math.round(base0.xp * tier) };
+        var lv = (AREA.lv || 1) + Math.floor(Math.random() * ((AREA.lvMax || AREA.lv || 1) - (AREA.lv || 1) + 1)), elite = !bossDef && lv >= 4 && Math.random() < .12;
+        if (elite) lv += 2;
+        var hm = 1 + .22 * (lv - 1), am = 1 + .16 * (lv - 1), xm = 1 + .3 * (lv - 1);
+        var f = bossDef ? { name: bossDef.name, hp: Math.round(bossDef.hp * 1.4), atk: [Math.round(bossDef.atk[0] * 1.15), Math.round(bossDef.atk[1] * 1.15)], move: bossDef.move, xp: bossDef.xp, boss: true } :
+          { name: (elite ? 'Hardened ' : '') + base0.name, lv: lv, hp: Math.round(base0.hp * hm * (elite ? 1.4 : 1)), atk: [Math.round(base0.atk[0] * am), Math.round(base0.atk[1] * am)], move: base0.move, xp: Math.round(base0.xp * xm * (elite ? 1.6 : 1)) };
         if (bossDef) sc = bossDef.sc;
         var c = save.known[Math.floor(Math.random() * save.known.length)], info = cmdInfo(c);
         foes.push({ kind: kind, foe: f, hp: Math.round(f.hp * (n >= 4 ? .7 : 1)), max: Math.round(f.hp * (n >= 4 ? .7 : 1)), soft: soft, stun: 0, shake: 0, flash: 0, dead: false, fade: 0, sc: sc,
@@ -538,7 +560,7 @@
     }
     function hudOn() {
       hud.classList.add('on');
-      foesBox.innerHTML = '';
+      foesBox.innerHTML = ''; foesBox.style.gridTemplateColumns = living().length <= 3 ? '1fr' : '1fr 1fr';
       B.foes.forEach(function (f, i) {
         if (f.dead) return;
         var e = document.createElement('button'); e.type = 'button'; e.className = 'foe' + (B.phase === 'target' && i === B.target ? ' on' : '') + (f.foe.boss ? ' boss' : '');
@@ -743,6 +765,7 @@
         if (here && Math.floor(tnow * 3) % 2) { cx.strokeStyle = '#ffffff'; cx.strokeRect(p[0] - 23.5, p[1] - 10.5, 47, 21); }
         var nm = seen ? LABEL[id] || id.toUpperCase() : '???';
         ART.text(cx, nm, Math.round(p[0] - ART.textW(nm) / 2), p[1] - 5, seen ? '#ececf4' : '#4a4a56');
+        if (seen && A2.enc) { var lt = 'LV ' + A2.lv; ART.text(cx, lt, Math.round(p[0] + 21 - ART.textW(lt)), p[1] + 3, A2.lv > save.lvl + 2 ? '#ffffff' : '#7a7a86'); }
         (anchorAt[id] || []).forEach(function (a, i) { var on = isLit(a); cx.fillStyle = on ? '#ffffff' : '#3a3a46'; cx.fillRect(p[0] - 4 + i * 6, p[1] + 3, 4, 4); if (on) { cx.fillStyle = 'rgba(255,255,255,.2)'; cx.fillRect(p[0] - 5 + i * 6, p[1] + 2, 6, 6); } });
       });
       ART.text(cx, 'MERIDIAN', 8, 6, '#ffffff', 2);
@@ -765,6 +788,7 @@
         cx.save(); if (f.dead) cx.globalAlpha = f.fade * (B.t % .16 < .08 ? 1 : .3); if (f.flash > .5) cx.filter = 'brightness(3)';
         drawSprite(img, bx, by, true, sc); cx.restore();
         if (!f.dead) { var tags = []; if (f.stun) tags.push('LOCK'); if (f.exposed) tags.push('EXP'); if (f.slow) tags.push('SLOW'); if (f.leak) tags.push('LEAK');
+          if (f.foe.lv) { var lt = 'LV' + f.foe.lv, lw = ART.textW(lt); cx.fillStyle = 'rgba(0,0,0,.55)'; cx.fillRect(Math.round(bx + w / 2 - lw / 2 - 2), Math.round(f.fy + 2), lw + 4, 7); ART.text(cx, lt, Math.round(bx + w / 2 - lw / 2), Math.round(f.fy + 3), f.foe.lv > save.lvl + 2 ? '#ffffff' : '#a8a8b4'); }
           if (tags.length) { cx.font = '5px "Press Start 2P", monospace'; cx.fillStyle = 'rgba(0,0,0,.6)'; cx.fillText(tags.join(' '), bx + 1, by - 2); cx.fillStyle = '#f4f4f6'; cx.fillText(tags.join(' '), bx, by - 3); } }
         if (B.phase === 'target' && B.foes[B.target] === f && Math.floor(B.t * 4) % 2 === 0) {   // a target bracket
           cx.fillStyle = '#ffffff'; var x0 = bx - 3, y0 = by - 3, x1 = bx + w + 2, y1 = f.fy + 2;

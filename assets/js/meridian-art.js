@@ -975,21 +975,31 @@
       px(3, 4 + by, 10, 6, '#2a2a34'); px(3, 4 + by, 10, 1, '#c0c0cc'); px(6, 6 + by, 4, 2, Math.floor(t * 2) % 2 ? '#ffffff' : '#6a6a76'); px(1, 6 + by, 2, 1, '#6a6a76'); px(13, 6 + by, 2, 1, '#6a6a76'); px(7, 10 + by, 2, 2, '#3a3a46');
       return;
     }
-    c.fillStyle = o.look === 'holo' ? 'rgba(220,220,236,.25)' : 'rgba(0,0,0,.35)'; c.beginPath(); c.ellipse(X + 8, Y + 15, 6, 2, 0, 0, 7); c.fill();
-    c.save(); c.globalAlpha = alpha;
-    var skin = '#c8c8d2', cloth = ['#6a6a78', '#8a8a96', '#4a4a58', '#9a9aa8', '#5a5a68', '#7a8078', '#5a5a5a', '#8a7e70'][o.hair || 0];
-    if (o.look === 'holo') { skin = '#e0e0ee'; cloth = '#b0b0c8'; }
-    if (o.look === 'warden') { skin = '#b8b8c4'; cloth = '#3a3a46'; }
-    var hw = o.look === 'kid' ? 5 : 6, hx = 8 - hw / 2;
-    px(hx, top, hw, 5, skin); px(hx, top, hw, 2, o.look === 'warden' ? '#8a8a96' : '#2a2a32');   // head and hair
-    px(hx + 1, top + 3, 1, 1, '#3a3a46'); px(hx + hw - 2, top + 3, 1, 1, '#3a3a46');
-    var bw = o.look === 'kid' ? 6 : 8, bx = 8 - bw / 2, bt = top + 5, bh = hgt - 8;
-    px(bx, bt, bw, bh, cloth); px(bx, bt, 1, bh, 'rgba(255,255,255,.3)');
-    if (o.look === 'warden') { px(bx - 1, bt, bw + 2, 2, '#9a9aa8'); px(bx + 2, bt + 2, bw - 4, 3, '#d0d0dc'); px(bx + bw, bt + 1, 2, bh + 2, '#6a6a76'); }
-    px(bx + 1, bt + bh, 2, 3, '#3a3a46'); px(bx + bw - 3, bt + bh, 2, 3, '#3a3a46');
-    if (o.look === 'echo' || o.look === 'holo' || o.look === 'kid') { c.globalAlpha = 1; c.fillStyle = 'rgba(8,8,12,.45)'; for (var s = top; s < 15; s += 2) c.fillRect(X + bx - 1, Y + s, bw + 2, 1); }
+    c.fillStyle = o.look === 'holo' ? 'rgba(220,220,236,.25)' : 'rgba(0,0,0,.35)'; c.beginPath(); c.ellipse(X + 8, Y + 15, o.look === 'kid' ? 5 : 7, 2.5, 0, 0, 7); c.fill();
+    var SP = window.VondsSprite;
+    if (SP && SP.person) {
+      // a person, drawn like Vee: the same face, body and outline, with their own hair and clothes
+      var img = SP.person(o.p || {}), kid = o.look === 'kid', sc = kid ? .74 : 1, w = 22 * sc, h = 27 * sc;
+      var alpha = o.look === 'warden' || o.solid ? 1 : (o.fade != null ? o.fade : .82);
+      if (o.flick && Math.random() < .08) alpha *= .3;
+      var bob = Math.floor(t * 1.4 + (o.x || 0)) % 6 === 0 ? 1 : 0;   // a breath now and then
+      c.save(); c.imageSmoothingEnabled = false; c.globalAlpha = alpha;
+      c.drawImage(img, Math.round(X + 8 - w / 2), Math.round(Y + 16 - h + bob), Math.round(w), Math.round(h));
+      c.restore();
+      if (o.look === 'holo') {   // a hologram: brighter, scanned, standing on its pad
+        c.fillStyle = 'rgba(230,230,246,' + (.12 + .06 * Math.sin(t * 4)) + ')'; c.fillRect(Math.round(X + 8 - w / 2), Math.round(Y + 16 - h), Math.round(w), Math.round(h));
+        c.fillStyle = 'rgba(8,8,12,.35)'; for (var s = 0; s < h; s += 2) c.fillRect(Math.round(X + 8 - w / 2), Math.round(Y + 16 - h + s), Math.round(w), 1);
+        c.fillStyle = 'rgba(230,230,246,.6)'; c.fillRect(Math.round(X + 1), Math.round(Y + 15), 14, 1);
+      } else if (o.look !== 'warden' && !o.solid) {   // an echo: a resident still playing back, faintly scanned
+        c.fillStyle = 'rgba(8,8,12,.25)'; for (var s2 = (Math.floor(t * 8) % 2); s2 < h; s2 += 3) c.fillRect(Math.round(X + 8 - w / 2), Math.round(Y + 16 - h + s2), Math.round(w), 1);
+      }
+      return;
+    }
+    c.save();
+    var hgt = o.look === 'kid' ? 10 : (o.h || 13), top = 15 - hgt;
+    c.globalAlpha = o.look === 'warden' || o.solid ? 1 : .72;
+    px(5, top, 6, 5, '#c8c8d2'); px(4, top + 5, 8, hgt - 8, '#6a6a78');
     c.restore();
-    if (o.look === 'holo') { c.fillStyle = 'rgba(220,220,236,.18)'; c.fillRect(X + 3, Y + top - 1, 10, hgt + 1); }
   }
   function wagon(c, X, Y, t) {
     var px = function (x, y, w, h, col) { c.fillStyle = col; c.fillRect(Math.round(X + x), Math.round(Y + y), w, h); };
@@ -1000,7 +1010,8 @@
     px(29, -4, 1, 8, '#6a6a76'); var fl = .6 + .4 * Math.sin(t * 6) * Math.sin(t * 2.3);
     px(28, -6, 3, 3, 'rgba(255,255,255,' + fl + ')'); c.fillStyle = 'rgba(255,255,255,' + fl * .1 + ')'; c.beginPath(); c.arc(X + 29.5, Y - 4.5, 9, 0, 7); c.fill();
     // Pell, ink on his hands
-    px(-6, 1, 6, 5, '#c8c8d2'); px(-6, 1, 6, 2, '#2a2a32'); px(-7, 6, 8, 8, '#7a7268'); px(-6, 14, 2, 2, '#3a3a46'); px(-2, 14, 2, 2, '#3a3a46');
+    if (window.VondsSprite && window.VondsSprite.person) { c.save(); c.imageSmoothingEnabled = false; c.drawImage(window.VondsSprite.person({ hair: 'short', body: 'coat', glasses: 1, skin: '#8a5a3c', top: '#4a4238' }), Math.round(X - 15), Math.round(Y - 11)); c.restore(); }
+    else { px(-6, 1, 6, 5, '#c8c8d2'); px(-7, 6, 8, 8, '#7a7268'); }
   }
 
   /* ---------- battle backdrops, by district ---------- */

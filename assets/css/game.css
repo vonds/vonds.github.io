@@ -301,3 +301,7 @@
   .rpg:has(.rpg-menu.on) .rpg-pad{display:none}
   .rpg-menu{font-size:8px}
 }
+.rpg-menu .mn-side button.pts{color:#fff;text-shadow:0 0 6px rgba(255,255,255,.6)}
+.rpg-menu .mn-pts{font-weight:400;font-size:1.4em;color:#fff}
+.rpg-foes .foe em.lv{font-style:normal;color:#9a9aa8;font-size:.8em}
+.rpg-foes .foe em.lv::before{content:'Lv '}
