@@ -1127,6 +1127,8 @@
           log('The ' + foeName(f) + ' splits. Now there are two of it, each with half the HP.'); hudOn(); return setTimeout(next, 800);
         }
         if (f.kind === 'heisenbug' && Math.random() < .45) { f.dead = true; f.fade = 1; f.foe = Object.assign({}, f.foe, { xp: 0 }); f.gone = 1; log('You look straight at the Heisenbug, and it is no longer there. It was never quite there.'); hudOn(); if (!living().length) return setTimeout(win, 600); return setTimeout(next, 650); }
+        if (B.boss && !f.wound && (B.round || 0) % 3 === 2 && !f.charged) { f.wound = 1; f.charged = 1; log('The ' + foeName(f) + ' gathers itself. Its next attack will hit twice as hard. Guard, Bulwark, or stun it.'); return setTimeout(next, 900); }   // bosses telegraph their big hits
+        if ((B.round || 0) % 3 !== 2) f.charged = 0;
         if (tr === 'wind' && !f.wound && Math.random() < .35) { f.wound = 1; log('The ' + foeName(f) + ' holds perfectly still, waiting. Its next hit will land twice as hard. Stun it, or brace.'); return setTimeout(next, 800); }
         var pierce = tr === 'pierce' && Math.random() < .35, wind = f.wound ? 2 : 1; f.wound = 0;
         // who it goes for: whoever is drawing fire (Ash's Audit), otherwise Vee more often than his companions
@@ -1159,7 +1161,7 @@
       })();
     }
     function myTurn() {
-      if (!B) return; B.guard = 0; B.pguard = 0; B.ai = 0; B.actor = null;
+      if (!B) return; B.guard = 0; B.pguard = 0; B.ai = 0; B.actor = null; B.round = (B.round || 0) + 1;
       B.allies.forEach(function (a) { a.guard = 0; Object.keys(a.cd).forEach(function (k) { if (a.cd[k] > 0) a.cd[k]--; }); });
       if (B.taunt > 0) B.taunt--; if (B.blind > 0) B.blind--;
       if (B.regen > 0) { B.regen--; if (save.hp > 0) save.hp = Math.min(maxHp(), save.hp + Math.round(maxHp() * .08)); B.allies.forEach(function (a) { if (!a.down) a.hp = Math.min(a.max, a.hp + Math.round(a.max * .08)); }); }
@@ -1279,6 +1281,10 @@
       }
     }
     function mechDraw(t) {
+      // the real clock reaches Meridian: evenings dim, nights go dark blue-grey, and sometimes it just rains
+      var hr = new Date().getHours(), night = hr >= 21 || hr < 5 ? .26 : hr >= 18 || hr < 7 ? .13 : 0;
+      if (night && AREA.theme !== 'margin') { cx.fillStyle = 'rgba(4,6,14,' + night + ')'; cx.fillRect(0, 0, W, H); }
+      if (LIFE.drizzle) { cx.fillStyle = 'rgba(200,204,216,.22)'; for (var di = 0; di < 40; di++) { var dx2 = (hs(di * 5) * W + t * 30) % W, dy2 = (hs(di * 11) * H + t * 200 * (1 + hs(di) * .4)) % H; cx.fillRect(Math.round(dx2), Math.round(dy2), 1, 3); } }
       if (raining()) { cx.fillStyle = 'rgba(210,214,226,.35)'; for (var i = 0; i < 70; i++) { var rx = (hs(i * 7) * W + t * 40 * (1 + hs(i))) % W, ry = (hs(i * 13) * H + t * 260 * (1 + hs(i) * .5)) % H; cx.fillRect(Math.round(rx), Math.round(ry), 1, 4); } }
       if (AREA.id === 'deep') {   // the Deep is dark: Vee sees a small circle around him, wider with Moth's lamp or Juni's stars
         var r = 62 + (inParty('moth') && activeParty().indexOf('moth') >= 0 ? 34 : 0) + (activeParty().indexOf('juni') >= 0 ? 18 : 0);
@@ -1297,6 +1303,7 @@
       { hair: 'long', skin: '#c89a78', top: '#5a5a62' }, { hair: 'cap', body: 'apron', skin: '#7a4a30', top: '#4a5a62' }, { hair: 'beanie', body: 'coat', skin: '#5a3824', top: '#3a3a44' }, { hair: 'bald', body: 'suit', skin: '#d8b898', top: '#2a2a30' }];
     function lifeLoad() {
       LIFE.walkers = []; LIFE.bark = null; barkEl.classList.remove('on');
+      LIFE.drizzle = ['plaza', 'commons', 'patchwork', 'gardens', 'halflight', 'line', 'upper', 'concourse'].indexOf(AREA.id) >= 0 && Math.random() < .18;
       (AREA.npcs || []).forEach(function (n) { if (n.hx == null) { n.hx = n.x; n.hy = n.y; } n.x = n.hx; n.y = n.hy; n.px = n.x * TS; n.py = n.y * TS; n.wt = 2 + Math.random() * 5; });
       // passers-by: the people still living here, walking the roads. More of them once the district's landmark is lit.
       var roads = []; for (var y = 1; y < MAP.length - 1; y++) for (var x = 1; x < MAP[0].length - 1; x++) if (MAP[y][x] === '=' && MAP[y][x + 1] === '=' && MAP[y][x - 1] === '=') roads.push([x, y]);
