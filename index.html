@@ -626,15 +626,16 @@ body.swap .warp{transition:none!important;opacity:0}
 <link rel="stylesheet" href="assets/css/experience.css"><link rel="stylesheet" href="assets/css/game.css"><script>(function(){var r=document.documentElement;if(!(window.matchMedia&&matchMedia("(prefers-reduced-motion: reduce)").matches)){r.classList.add("xp-intro");setTimeout(function(){r.classList.add("xp-go")},2600);}})();</script>
 <style>
   /* ---------- Hero: editorial portrait ---------- */
-  .hero{background:#c8c8c8 linear-gradient(100deg,#b9b9b9 0%,#cdcdcd 48%,#d3d3d3 100%);justify-content:flex-start;text-align:left;padding:140px 7vw 150px}
-  .hero::before{content:"";position:absolute;inset:-1% 6vw auto auto;height:114%;width:auto;aspect-ratio:1717/2576;z-index:-2;
+  .hero{background:#c8c8c8 linear-gradient(100deg,#b9b9b9 0%,#cdcdcd 48%,#d3d3d3 100%);justify-content:flex-start;align-items:flex-start;text-align:left;
+        min-height:max(100svh,min(128vh,calc(150vw - 300px)));padding:clamp(150px,calc(50vh - 190px),340px) 7vw 150px}
+  .hero::before{content:"";position:absolute;inset:0 4vw auto auto;height:100%;width:auto;aspect-ratio:1717/2576;z-index:-2;
     background:url("assets/images/hero-portrait.jpg") center top/cover no-repeat;transform-origin:50% 24%;
-    -webkit-mask-image:linear-gradient(90deg,transparent 0,#000 16%,#000 84%,transparent 100%);mask-image:linear-gradient(90deg,transparent 0,#000 16%,#000 84%,transparent 100%);
+    -webkit-mask-image:linear-gradient(90deg,transparent 0,#000 7%,#000 93%,transparent 100%);mask-image:linear-gradient(90deg,transparent 0,#000 7%,#000 93%,transparent 100%);
     animation:portraitDrift 34s ease-in-out infinite alternate}
   @keyframes portraitDrift{0%{transform:scale(1)}100%{transform:scale(1.045) translate3d(-.6%,.4%,0)}}
   /* a white veil over everything, then the page white rising from the bottom */
   .hero::after{content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;
-    background:linear-gradient(180deg,rgba(255,255,255,0) 46%,rgba(255,255,255,.5) 68%,rgba(255,255,255,.88) 86%,#fff 100%),linear-gradient(rgba(255,255,255,.34),rgba(255,255,255,.34))}
+    background:linear-gradient(180deg,rgba(255,255,255,0) 72%,rgba(255,255,255,.55) 86%,rgba(255,255,255,.9) 95%,#fff 100%),linear-gradient(rgba(255,255,255,.3),rgba(255,255,255,.3))}
   .hero > div{max-width:min(46vw,640px)}
   .hero .folio{display:flex;align-items:center;gap:18px;margin:0 0 34px;font-size:12px;letter-spacing:6px;color:var(--ink)}
   .hero .folio::after{content:"";width:72px;height:1px;background:var(--ink);opacity:.7}
@@ -644,22 +645,22 @@ body.swap .warp{transition:none!important;opacity:0}
   .hero .buttons{justify-content:flex-start}
   .hero .credit{position:absolute;right:calc(7vw - 34px);top:50%;z-index:1;margin:0;transform:translateY(-50%) rotate(90deg);transform-origin:center;
     font-size:11px;letter-spacing:6px;color:#3a3a3c;white-space:nowrap;opacity:.8}
-  .hero .scroll-cue{left:7vw;right:auto;align-items:flex-start}
+  .hero .scroll-cue{left:7vw;right:auto;align-items:flex-start;bottom:auto;top:calc(100svh - 130px)}
   html.xp-intro .hero .folio,html.xp-intro .hero .credit{opacity:0}
   html.xp-go .hero .folio{opacity:1;transition:opacity 1.4s ease .5s}
   html.xp-go .hero .credit{opacity:.8;transition:opacity 1.6s ease 2.2s}
-  @media (max-width:1100px){.hero::before{right:0}.hero .credit{display:none}.hero > div{max-width:58vw}}
+  @media (max-width:1100px){.hero::before{right:-2vw}.hero .credit{display:none}.hero > div{max-width:58vw}}
   @media (max-width:760px){
-    .hero{align-items:flex-end;justify-content:center;text-align:center;padding:120px 24px 130px;min-height:max(100svh,calc(150vw + 300px))}
-    .hero::before{inset:0;width:auto;height:auto;aspect-ratio:auto;background-position:50% 0;background-size:100% auto;-webkit-mask-image:linear-gradient(180deg,#000 0,#000 86vw,transparent 148vw);mask-image:linear-gradient(180deg,#000 0,#000 86vw,transparent 148vw)}
-    .hero::after{background:linear-gradient(180deg,rgba(255,255,255,0) 30%,rgba(255,255,255,.62) 56%,rgba(255,255,255,.94) 78%,#fff 100%),linear-gradient(rgba(255,255,255,.3),rgba(255,255,255,.3))}
+    .hero{align-items:flex-start;justify-content:center;text-align:center;padding:calc(150vw - 110px) 24px 90px;min-height:100svh}
+    .hero::before{inset:0;width:auto;height:auto;aspect-ratio:auto;background-position:50% 0;background-size:100% auto;-webkit-mask-image:linear-gradient(180deg,#000 0,#000 104vw,transparent 150vw);mask-image:linear-gradient(180deg,#000 0,#000 104vw,transparent 150vw)}
+    .hero::after{background:linear-gradient(180deg,rgba(255,255,255,0) 0,rgba(255,255,255,0) 100vw,rgba(255,255,255,.75) 146vw,#fff 170vw),linear-gradient(rgba(255,255,255,.26),rgba(255,255,255,.26))}
     .hero > div{max-width:none}
     .hero .folio{justify-content:center;margin-bottom:26px}
     .hero .folio::after{display:none}
     .hero h1{font-size:clamp(34px,11vw,48px);margin-left:.6em}
     .hero .rule{margin:30px auto 22px;transform-origin:center}
     .hero .buttons{justify-content:center}
-    .hero .scroll-cue{left:0;right:0;align-items:center}
+    .hero .scroll-cue{display:none}
   }
   @media (prefers-reduced-motion:reduce){.hero::before{animation:none}}
 </style>
