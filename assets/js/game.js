@@ -737,6 +737,59 @@
     if (key) hdCache[key] = cvs;
     return cvs;
   }
+  /* the same 16-bit pass for full-colour sprites (Vee and the people of the city): works on any canvas.
+     Scale2x on the silhouette, then each patch of one colour gets lit from above and shaded below,
+     with a darker edge on the shadow side. The result is twice the size and flagged .hd = 2. */
+  function hdFromCanvas(src) {
+    if (src._hd) return src._hd;
+    var w = src.width, h = src.height, sd = src.getContext('2d').getImageData(0, 0, w, h).data;
+    function px(x, y) { return x < 0 || y < 0 || x >= w || y >= h ? 0 : (sd[(y * w + x) * 4 + 3] >= 200 ? ((sd[(y * w + x) * 4] << 16) | (sd[(y * w + x) * 4 + 1] << 8) | sd[(y * w + x) * 4 + 2]) + 1 : 0); }
+    var W2 = w * 2, H2 = h * 2, g = new Array(W2 * H2);
+    for (var y = 0; y < h; y++) for (var x = 0; x < w; x++) {
+      var P = px(x, y), A = px(x, y - 1), B = px(x + 1, y), C = px(x - 1, y), D = px(x, y + 1);
+      var mP = !!P, mA = !!A, mB = !!B, mC = !!C, mD = !!D;
+      function pick(m1, m2, mo1, mo2, c1, c2) { return (m1 === m2 && m1 !== mo1 && m2 !== mo2 && m1 !== mP) ? (m1 ? c1 : 0) : (mP && m1 && m2 && c1 === c2 && c1 !== P && mo1 && mo2 ? P : P); }
+      g[(y * 2) * W2 + x * 2] = pick(mC, mA, mD, mB, A || C, C);
+      g[(y * 2) * W2 + x * 2 + 1] = pick(mA, mB, mC, mD, B || A, A);
+      g[(y * 2 + 1) * W2 + x * 2] = pick(mD, mC, mB, mA, C || D, D);
+      g[(y * 2 + 1) * W2 + x * 2 + 1] = pick(mB, mD, mA, mC, D || B, B);
+    }
+    function G(x, y) { return x < 0 || y < 0 || x >= W2 || y >= H2 ? 0 : g[y * W2 + x]; }
+    function lumOf(q) { var c = q - 1; return ((c >> 16 & 255) * .3 + (c >> 8 & 255) * .59 + (c & 255) * .11) / 255; }
+    var out = document.createElement('canvas'); out.width = W2; out.height = H2; out.hd = 2;
+    var oc = out.getContext('2d'), img = oc.createImageData(W2, H2), d = img.data;
+    for (var gy = 0; gy < h; gy++) for (var gx = 0; gx < w; gx++) {   // soft glow pixels (alpha below 200) are copied as they are, at double size
+      var si = (gy * w + gx) * 4, al = sd[si + 3]; if (!al || al >= 200) continue;
+      for (var sy = 0; sy < 2; sy++) for (var sx = 0; sx < 2; sx++) { var di = ((gy * 2 + sy) * W2 + gx * 2 + sx) * 4; d[di] = sd[si]; d[di + 1] = sd[si + 1]; d[di + 2] = sd[si + 2]; d[di + 3] = al; }
+    }
+    for (var y2 = 0; y2 < H2; y2++) for (var x2 = 0; x2 < W2; x2++) {
+      var q = G(x2, y2); if (!q) continue;
+      var c = q - 1, r = c >> 16 & 255, gg = c >> 8 & 255, b = c & 255, lum = (r * .3 + gg * .59 + b * .11) / 255;
+      var du = 0, dd = 0; while (du < 6 && G(x2, y2 - du - 1) === q) du++; while (dd < 6 && G(x2, y2 + dd + 1) === q) dd++;
+      var dl = 0, dr = 0; while (dl < 6 && G(x2 - dl - 1, y2) === q) dl++; while (dr < 6 && G(x2 + dr + 1, y2) === q) dr++;
+      var tall = du + dd >= 3, wide = dl + dr >= 3;   // thin details (strands of hair, stripes, eyes) stay flat; only real surfaces get volume
+      var k = 1 + (tall ? Math.max(-.14, Math.min(.12, (dd - du) * .03)) : 0) + (wide ? Math.max(-.05, Math.min(.05, (dr - dl) * .012)) : 0);
+      if (tall && wide && du === 0 && !G(x2, y2 - 1)) k += .1;                    // rim light on top edges
+      var edge = !G(x2 + 1, y2) || !G(x2, y2 + 1), edgeL = !G(x2 - 1, y2) || !G(x2, y2 - 1);
+      if (edge) k *= .7; else if (edgeL) k *= .9;                               // sel-out: darker on the shadow side
+      var up1 = G(x2, y2 - 1), up2 = G(x2, y2 - 2), lft = G(x2 - 1, y2), rgt = G(x2 + 1, y2);
+      if (up1 && up1 !== q && lumOf(up1) < lum - .05) k *= .84;                  // contact shadow under hair, arms and collars
+      else if (up2 && up1 === q && up2 !== q && lumOf(up2) < lum - .05) k *= .93;
+      if (lft && lft !== q) k += lumOf(lft) < lum ? .07 : -.03;                   // each strand and fold gets a lit left side
+      if (rgt && rgt !== q && lumOf(rgt) < lum) k *= .9;                          // and a shaded right side
+      if (lum < .12) k = 1;                                                      // true blacks (outlines, pupils) stay black
+      if (lum < .16 && (x2 % 2 === 0) && (y2 % 2 === 0)) {                        // a dark dot set in a lighter face is an eye: give it a catchlight
+        var sl = px((x2 >> 1) - 1, y2 >> 1), sr = px((x2 >> 1) + 1, y2 >> 1);
+        var su = px(x2 >> 1, (y2 >> 1) - 1), sb = px(x2 >> 1, (y2 >> 1) + 1);
+        var sp0 = px(x2 >> 1, y2 >> 1);
+        if (sl && sr && sl === sr && lumOf(sl) > .34 && !(su === sp0 && sb === sp0) && ((su && lumOf(su) > .34) || (sb && lumOf(sb) > .34))) { r = gg = b = 225; k = 1; }
+      }
+      var add = tall && wide && lum > .12 && du === 0 && dl === 0 && !edge ? 10 : 0, i = (y2 * W2 + x2) * 4;
+      d[i] = Math.min(255, r * k + add); d[i + 1] = Math.min(255, gg * k + add); d[i + 2] = Math.min(255, b * k + add); d[i + 3] = 255;
+    }
+    oc.putImageData(img, 0, 0);
+    src._hd = out; return out;
+  }
   var obCache = {};
   function obCanvas(rows, light, key) {
     if (key && obCache[key]) return obCache[key];
@@ -994,6 +1047,7 @@
   window.VondsGame = { open: function () { open(0); } };
   window.VondsSprite = { frame: frame, look: function () { return LOOK; }, pose: POSE, arm: ARM,
     bug: function (kind, f) { var fr = OBMAP[kind]; return obCanvas(fr[f % fr.length], false, 'rpg' + kind + (f % fr.length)); }, bugs: Object.keys(OBMAP),
+    hd: hdFromCanvas,
     bugHD: function (kind, f) { var fr = OBMAP[kind]; return hdCanvas(fr[f % fr.length], 'hd' + kind + (f % fr.length)); },
     addBug: function (kind, frames) { OBMAP[kind] = frames; } };
   try {

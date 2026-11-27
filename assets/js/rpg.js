@@ -47,14 +47,14 @@
   var Quest = (function () {
     var W = 320, H = 180, TS = 16;
     var root = document.createElement('div'); root.className = 'rpg'; root.setAttribute('role', 'dialog'); root.setAttribute('aria-modal', 'true'); root.setAttribute('aria-label', NAMES.rpg);
-    root.innerHTML = '<div class="rpg-scr"><canvas width="' + W + '" height="' + H + '"></canvas>' +
+    root.innerHTML = '<div class="rpg-scr"><canvas width="' + W * 2 + '" height="' + H * 2 + '"></canvas>' +
       '<div class="ff4w rpg-msg" aria-live="polite"><b class="ff4n"></b><p></p><div class="rpg-opts"></div></div>' +
       '<div class="rpg-hud"><div class="ff4w rpg-foes"></div><div class="ff4w rpg-party"></div><div class="ff4w rpg-cmd"></div></div>' +
       '<div class="rpg-title"></div></div>' +
       '<div class="rpg-pad" aria-hidden="true"><button data-k="up"></button><button data-k="left"></button><button data-k="right"></button><button data-k="down"></button><button class="a" data-k="a">A</button><button class="b" data-k="b">B</button></div>' +
       '<button class="rpg-x" type="button" aria-label="Close ' + NAMES.rpg + '"><i></i><i></i></button>';
     document.body.appendChild(root);
-    var cv = root.querySelector('canvas'), cx = cv.getContext('2d'); cx.imageSmoothingEnabled = false;
+    var cv = root.querySelector('canvas'), cx = cv.getContext('2d'); cx.imageSmoothingEnabled = false; cx.scale(2, 2);   // the canvas has twice the pixels the world is laid out in, so 16-bit sprites can use the half-pixels
     var msg = root.querySelector('.rpg-msg'), msgWho = msg.querySelector('.ff4n'), msgP = msg.querySelector('p'), msgOpts = msg.querySelector('.rpg-opts');
     var hud = root.querySelector('.rpg-hud'), foesBox = root.querySelector('.rpg-foes'), partyBox = root.querySelector('.rpg-party'), cmdBox = root.querySelector('.rpg-cmd'), titleEl = root.querySelector('.rpg-title');
 
@@ -378,7 +378,7 @@
       } else if (v === 'config') {
         h = '<h4>Configuration</h4>';
         function opt(label, k, labels) { btn('<span>' + label + '</span><em>‹ ' + labels[save.cfg[k]] + ' ›</em>', function (dir) { save.cfg[k] = (save.cfg[k] + (dir || 1) + labels.length) % labels.length; store(); renderMenu(); }, 'cfg'); }
-        opt('Text speed', 'text', CFG.textL); opt('Encounters', 'enc', CFG.encL); opt('Difficulty', 'diff', CFG.diffL); opt('Scanlines', 'scan', CFG.scanL); opt('Command hints', 'hints', CFG.scanL); opt('Sound', 'sound', CFG.scanL); if (save.cfg.retro == null) save.cfg.retro = 0; opt('Bug sprites', 'retro', ['16-bit', '8-bit']);
+        opt('Text speed', 'text', CFG.textL); opt('Encounters', 'enc', CFG.encL); opt('Difficulty', 'diff', CFG.diffL); opt('Scanlines', 'scan', CFG.scanL); opt('Command hints', 'hints', CFG.scanL); opt('Sound', 'sound', CFG.scanL); if (save.cfg.retro == null) save.cfg.retro = 0; opt('Sprites', 'retro', ['16-bit', '8-bit']);
         btn(MN.confirm ? '<span>Erase all progress?</span><em>Press again to confirm</em>' : '<span>Erase save</span><em class="mn-dim">Start Afterlift over</em>', function () {
           if (!MN.confirm) { MN.confirm = true; return renderMenu(); }
           try { localStorage.removeItem('vonds-quest'); } catch (e) {} location.reload();
@@ -528,14 +528,17 @@
     }
 
     /* ---------- Vee on the map ---------- */
-    function veeImg() {
+    function hdOn() { return !!(window.__afterliftHD = !!(SP.hd && !(save.cfg && save.cfg.retro))); }
+    function hdv(img) { return hdOn() ? SP.hd(img) : img; }   // Vee in 16-bit: the same frame, redrawn at double resolution
+    function veeImg() { var v = veeImg0(); v.img = hdv(v.img); return v; }
+    function veeImg0() {
       var walk = me.moving ? Math.floor(me.step / 4) % 4 : -1;
       if (me.dir === 'left' || me.dir === 'right') return { img: SP.frame(walk >= 0 ? 'run' + walk : 'idle'), flip: me.dir === 'left' };
       if (me.dir === 'up') return { img: SP.back ? SP.back() : SP.frame('idle'), flip: false, bob: walk % 2 };
       return { img: SP.front ? SP.front(false) : SP.frame('idle'), flip: false, bob: walk % 2 };
     }
     function drawSprite(img, x, y, flip, scale) {
-      scale = scale || 1; cx.save(); if (flip) { cx.translate(Math.round(x + img.width * scale), Math.round(y)); cx.scale(-1, 1); cx.drawImage(img, 0, 0, img.width * scale, img.height * scale); }
+      scale = (scale || 1) / (img.hd || 1); cx.save(); if (flip) { cx.translate(Math.round(x + img.width * scale), Math.round(y)); cx.scale(-1, 1); cx.drawImage(img, 0, 0, img.width * scale, img.height * scale); }
       else cx.drawImage(img, Math.round(x), Math.round(y), img.width * scale, img.height * scale); cx.restore();
     }
 
@@ -1116,11 +1119,11 @@
       order.forEach(function (f) {
         f.shake = Math.max(0, f.shake - dt * 3); f.flash = Math.max(0, f.flash - dt * 4); f.lunge = Math.max(0, (f.lunge || 0) - dt * 3);
         if (f.dead) { f.fade = Math.max(0, f.fade - dt * 1.6); if (f.fade <= 0) return; }
-        var img = (SP.bugHD && !(save.cfg && save.cfg.retro) ? SP.bugHD : SP.bug)(f.kind, Math.floor((B.t + f.ph) * 4)), sc = f.sc / (img.hd || 1), w = img.width * sc, h = img.height * sc;   // 16-bit sprites by default; img.hd says how much finer they're drawn
+        var img = (SP.bugHD && !(save.cfg && save.cfg.retro) ? SP.bugHD : SP.bug)(f.kind, Math.floor((B.t + f.ph) * 4)), sc = f.sc / (img.hd || 1), w = img.width * sc, h = img.height * sc;   // sc here is per drawn pixel; drawSprite takes the per-world-pixel scale   // 16-bit sprites by default; img.hd says how much finer they're drawn
         var bx = f.fx + (f.shake ? Math.sin(B.t * 80) * 3 * f.shake : 0) + f.lunge * 10, by = f.fy - h + (f.kind === 'moth' || f.kind === 'virus' ? -6 + Math.sin(B.t * 3 + f.ph) * 1.5 : 0);
         cx.fillStyle = 'rgba(0,0,0,.35)'; cx.beginPath(); cx.ellipse(f.fx + w / 2, f.fy + 1, w * .42, 3, 0, 0, 7); cx.fill();
         cx.save(); if (f.dead) cx.globalAlpha = f.fade * (B.t % .16 < .08 ? 1 : .3); if (f.flash > .5) cx.filter = 'brightness(3)';
-        drawSprite(img, bx, by, true, sc); cx.restore();
+        drawSprite(img, bx, by, true, f.sc); cx.restore();
         if (!f.dead) { var tags = []; if (f.stun) tags.push('LOCK'); if (f.exposed) tags.push('EXP'); if (f.slow) tags.push('SLOW'); if (f.leak) tags.push('LEAK');
           if (f.foe.lv) { var lt = 'LV' + f.foe.lv, lw = ART.textW(lt); cx.fillStyle = 'rgba(0,0,0,.55)'; cx.fillRect(Math.round(bx + w / 2 - lw / 2 - 2), Math.round(f.fy + 2), lw + 4, 7); ART.text(cx, lt, Math.round(bx + w / 2 - lw / 2), Math.round(f.fy + 3), f.foe.lv > save.lvl + 2 ? '#ffffff' : '#a8a8b4'); }
           if (tags.length) { cx.font = '5px "Press Start 2P", monospace'; cx.fillStyle = 'rgba(0,0,0,.6)'; cx.fillText(tags.join(' '), bx + 1, by - 2); cx.fillStyle = '#f4f4f6'; cx.fillText(tags.join(' '), bx, by - 3); } }
@@ -1137,12 +1140,12 @@
         B.ko = Math.min(1, B.ko + dt * 2.4);
         var spr = SP.frame('fall'), ang = -Math.PI / 2 * B.ko;
         cx.fillStyle = 'rgba(0,0,0,.45)'; cx.beginPath(); cx.ellipse(vx + 12, vfy, 13, 2.5, 0, 0, 7); cx.fill();
-        cx.save(); cx.translate(vx + 22, vfy); cx.rotate(-ang); cx.scale(-1, 1); cx.drawImage(spr, 0, -spr.height); cx.restore();
+        spr = hdv(spr); var shd = spr.hd || 1; cx.save(); cx.translate(vx + 22, vfy); cx.rotate(-ang); cx.scale(-1 / shd, 1 / shd); cx.drawImage(spr, 0, -spr.height); cx.restore();
         drawScan(); return;
       }
       cx.fillStyle = 'rgba(0,0,0,.4)'; cx.beginPath(); cx.ellipse(vx + 11, vfy, 9, 2.5, 0, 0, 7); cx.fill();
       if (B.focus) { cx.strokeStyle = 'rgba(240,240,244,' + (.35 + Math.sin(B.t * 5) * .15) + ')'; cx.lineWidth = 1; cx.strokeRect(vx - 3.5, vfy - 27.5, 29, 30); }
-      drawSprite(SP.frame(pose), vx, vfy - 25, true, 1);
+      drawSprite(hdv(SP.frame(pose)), vx, vfy - 25, true, 1);
       // damage numbers
       cx.font = '8px "Press Start 2P", monospace'; cx.textAlign = 'center';
       B.pops = B.pops.filter(function (p) { p.t += dt; var x = p.x, y = p.y - p.t * 24; cx.fillStyle = 'rgba(0,0,0,.6)'; cx.fillText(p.text, x + 1, y + 1); cx.fillStyle = '#f4f4f6'; cx.fillText(p.text, x, y); return p.t < 1; });

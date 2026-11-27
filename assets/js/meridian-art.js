@@ -979,7 +979,8 @@
     var SP = window.VondsSprite;
     if (SP && SP.person) {
       // a person, drawn like Vee: the same face, body and outline, with their own hair and clothes
-      var img = SP.person(o.p || {}), kid = o.look === 'kid', sc = kid ? .74 : 1, w = 22 * sc, h = 27 * sc;
+      var img = SP.person(o.p || {}); if (SP.hd && window.__afterliftHD) img = SP.hd(img);   // people get the same 16-bit pass as Vee
+      var kid = o.look === 'kid', sc = kid ? .74 : 1, w = 22 * sc, h = 27 * sc;
       var alpha = o.look === 'warden' || o.solid ? 1 : (o.fade != null ? o.fade : .82);
       if (o.flick && Math.random() < .08) alpha *= .3;
       var bob = Math.floor(t * 1.4 + (o.x || 0)) % 6 === 0 ? 1 : 0;   // a breath now and then
