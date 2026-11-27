@@ -108,6 +108,23 @@
       if (b.kind === 'core') return isLit('exit0');
       return true;
     }
+    // the whole city in 16-bit: each painted map layer gets the scenery pass once, the first time it's drawn
+    function drawLayer(which, x, y) {
+      var img = PAINTED[which];
+      if (hdOn() && SP.hdScene) { var k = which + 'HD'; if (!PAINTED[k]) PAINTED[k] = SP.hdScene(img); img = PAINTED[k]; }
+      cx.drawImage(img, x, y, img.width / (img.hd || 1), img.height / (img.hd || 1));
+    }
+    // battle backdrops animate, so the 16-bit version is redrawn a few times a second rather than every frame
+    var BD = { c: null, hd: null, theme: '', t: -1 };
+    function drawBackdrop(theme, tt, hy) {
+      if (!(hdOn() && SP.hdScene)) return ART.backdrop(cx, theme, tt, W, H, hy);
+      if (!BD.c) { BD.c = document.createElement('canvas'); BD.c.width = W; BD.c.height = H; }
+      if (BD.theme !== theme || Math.abs(tt - BD.t) > .16) {
+        var b = BD.c.getContext('2d'); b.setTransform(1, 0, 0, 1, 0, 0); b.clearRect(0, 0, W, H); b.imageSmoothingEnabled = false;
+        ART.backdrop(b, theme, tt, W, H, hy); BD.hd = SP.hdScene(BD.c, BD.hd); BD.theme = theme; BD.t = tt;
+      }
+      cx.drawImage(BD.hd, 0, 0, W, H);
+    }
     function paintCurrent() { var key = AREA.id; if (!painted[key]) painted[key] = ART.paintArea(AREA, MAP, litFor); PAINTED = painted[key]; }
     function repaint() { painted = {}; if (AREA) paintCurrent(); }
     function tile(x, y) { return (MAP[y] || '')[x] || '~'; }
@@ -378,7 +395,7 @@
       } else if (v === 'config') {
         h = '<h4>Configuration</h4>';
         function opt(label, k, labels) { btn('<span>' + label + '</span><em>‹ ' + labels[save.cfg[k]] + ' ›</em>', function (dir) { save.cfg[k] = (save.cfg[k] + (dir || 1) + labels.length) % labels.length; store(); renderMenu(); }, 'cfg'); }
-        opt('Text speed', 'text', CFG.textL); opt('Encounters', 'enc', CFG.encL); opt('Difficulty', 'diff', CFG.diffL); opt('Scanlines', 'scan', CFG.scanL); opt('Command hints', 'hints', CFG.scanL); opt('Sound', 'sound', CFG.scanL); if (save.cfg.retro == null) save.cfg.retro = 0; opt('Sprites', 'retro', ['16-bit', '8-bit']);
+        opt('Text speed', 'text', CFG.textL); opt('Encounters', 'enc', CFG.encL); opt('Difficulty', 'diff', CFG.diffL); opt('Scanlines', 'scan', CFG.scanL); opt('Command hints', 'hints', CFG.scanL); opt('Sound', 'sound', CFG.scanL); if (save.cfg.retro == null) save.cfg.retro = 0; opt('Graphics', 'retro', ['16-bit', '8-bit']);
         btn(MN.confirm ? '<span>Erase all progress?</span><em>Press again to confirm</em>' : '<span>Erase save</span><em class="mn-dim">Start Afterlift over</em>', function () {
           if (!MN.confirm) { MN.confirm = true; return renderMenu(); }
           try { localStorage.removeItem('vonds-quest'); } catch (e) {} location.reload();
@@ -1079,7 +1096,7 @@
       var tnow = performance.now() / 1000;
       if (!me.moving || true) placeCam();
       cx.fillStyle = '#000'; cx.fillRect(0, 0, W, H);
-      cx.drawImage(PAINTED.base, -cam.x, -cam.y - PAINTED.pad);
+      drawLayer('base', -cam.x, -cam.y - PAINTED.pad);
       var st = { lights: PAINTED.lights, readLog: function (x, y) { var id = AREA.logs && AREA.logs[key(x, y)]; return id && F[id]; }, opened: function (x, y) { return save.opened[AREA.id + ':' + key(x, y)]; },
         gateOpen: gateOpen, isLit: isLit, signal: lights() === 6 || !!F.ending, tether: F.ending === 'cut' ? 'cut' : F.ending === 'reverse' ? 'down' : 'up', fpos: PAINTED.fpos, radio: !!F.radio, mara: !!F.mara };
       ART.live(cx, AREA, MAP, tnow, cam, st, 'under');
@@ -1092,7 +1109,7 @@
         drawSprite(v.img, vx, vy, v.flip);
       } });
       list.sort(function (a, b) { return a.y - b.y; }).forEach(function (o) { o.draw(); });
-      cx.drawImage(PAINTED.over, -cam.x, -cam.y - PAINTED.pad);
+      drawLayer('over', -cam.x, -cam.y - PAINTED.pad);
       // behind a tall building, Vee shows through as a ghost so you never lose him
       var vb = PAINTED.rises.some(function (r) { return me.px + 14 > r.x && me.px + 2 < r.x + r.w && me.py > r.y - 4 && me.py < r.y + r.h; });
       if (vb) { var v2 = veeImg(); cx.save(); cx.globalAlpha = .55; drawSprite(v2.img, me.px - 3 - cam.x, me.py - 10 - (v2.bob ? 1 : 0) - cam.y, v2.flip); cx.restore(); }
@@ -1124,7 +1141,7 @@
     }
     function drawBattle(dt) {
       var tt = performance.now() / 1000, hy = 64;
-      ART.backdrop(cx, (B && B.theme) || (AREA && AREA.theme) || 'plaza', tt, W, H, hy);
+      drawBackdrop((B && B.theme) || (AREA && AREA.theme) || 'plaza', tt, hy);
       if (!B) return;
       B.t += dt; B.vx = Math.max(0, B.vx - dt * 2.5); B.hurt = Math.max(0, (B.hurt || 0) - dt * 3); B.cast = Math.max(0, B.cast - dt * 2);
       // the bugs, on the left, turned to face Vee; nearer rows drawn last

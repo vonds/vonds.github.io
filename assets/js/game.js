@@ -790,6 +790,48 @@
     oc.putImageData(img, 0, 0);
     src._hd = out; return out;
   }
+  /* the 16-bit pass for scenery: maps, buildings, battle backdrops. Lighter than the sprite pass so the city
+     doesn't look embossed: Scale2x rounds every diagonal between colours, then each colour edge gets a thin lit
+     top and left, a thin shade bottom and right, and a contact shadow where something darker sits above. */
+  function hdScene(src, out) {
+    var w = src.width, h = src.height, sd = src.getContext('2d').getImageData(0, 0, w, h).data, n = w * h;
+    var col = new Int32Array(n), al = new Uint8Array(n);
+    for (var i = 0; i < n; i++) { al[i] = sd[i * 4 + 3]; col[i] = al[i] ? ((sd[i * 4] << 16) | (sd[i * 4 + 1] << 8) | sd[i * 4 + 2]) + 1 : 0; }
+    var W2 = w * 2, H2 = h * 2, g = new Int32Array(W2 * H2), ga = new Uint8Array(W2 * H2);
+    for (var y = 0; y < h; y++) for (var x = 0; x < w; x++) {
+      var k = y * w + x, P = col[k], A = y ? col[k - w] : P, B = x < w - 1 ? col[k + 1] : P, C = x ? col[k - 1] : P, D = y < h - 1 ? col[k + w] : P;
+      var o = y * 2 * W2 + x * 2, a = al[k];
+      g[o] = (C === A && C !== D && A !== B) ? A : P; g[o + 1] = (A === B && A !== C && B !== D) ? B : P;
+      g[o + W2] = (D === C && D !== B && C !== A) ? C : P; g[o + W2 + 1] = (B === D && B !== A && D !== C) ? D : P;
+      ga[o] = g[o] === P ? a : 255; ga[o + 1] = g[o + 1] === P ? a : 255; ga[o + W2] = g[o + W2] === P ? a : 255; ga[o + W2 + 1] = g[o + W2 + 1] === P ? a : 255;
+      if (!P) { ga[o] = g[o] ? 255 : 0; ga[o + 1] = g[o + 1] ? 255 : 0; ga[o + W2] = g[o + W2] ? 255 : 0; ga[o + W2 + 1] = g[o + W2 + 1] ? 255 : 0; }
+    }
+    function lum(q) { var c = q - 1; return (c >> 16 & 255) * .3 + (c >> 8 & 255) * .59 + (c & 255) * .11; }
+    // run lengths: how far each subpixel is from the top, bottom, left and right of its patch of colour (two scans each way)
+    var N2 = W2 * H2, du = new Uint16Array(N2), dd = new Uint16Array(N2), dl = new Uint16Array(N2), dr = new Uint16Array(N2);
+    for (var j0 = W2; j0 < N2; j0++) if (g[j0] === g[j0 - W2]) du[j0] = du[j0 - W2] + 1;
+    for (var j1 = N2 - W2 - 1; j1 >= 0; j1--) if (g[j1] === g[j1 + W2]) dd[j1] = dd[j1 + W2] + 1;
+    for (var yy = 0; yy < H2; yy++) { var row = yy * W2; for (var xx = 1; xx < W2; xx++) if (g[row + xx] === g[row + xx - 1]) dl[row + xx] = dl[row + xx - 1] + 1; for (var xr = W2 - 2; xr >= 0; xr--) if (g[row + xr] === g[row + xr + 1]) dr[row + xr] = dr[row + xr + 1] + 1; }
+    out = out || document.createElement('canvas'); if (out.width !== W2) out.width = W2; if (out.height !== H2) out.height = H2; out.hd = 2;
+    var oc = out.getContext('2d'), img = oc.createImageData(W2, H2), d = img.data;
+    for (var y2 = 0; y2 < H2; y2++) for (var x2 = 0; x2 < W2; x2++) {
+      var j = y2 * W2 + x2, q = g[j]; if (!q) continue;
+      var c = q - 1, r = c >> 16 & 255, gg = c >> 8 & 255, b = c & 255, L = r * .3 + gg * .59 + b * .11, m = 1, add = 0;
+      var up = y2 ? g[j - W2] : q, dn = y2 < H2 - 1 ? g[j + W2] : q, lf = x2 ? g[j - 1] : q, rt = x2 < W2 - 1 ? g[j + 1] : q;
+      var vt = du[j] + dd[j], ht = dl[j] + dr[j];
+      if (vt >= 6) m *= 1.09 - .18 * (du[j] / vt);                                     // every surface is lit from above: lighter at its top, darker at its foot
+      if (ht >= 6) m *= 1.03 - .06 * (dl[j] / ht);                                     // and a little from the left
+      if (up !== q && up) { if (lum(up) < L - 12) m *= .78; else add += 10; }           // under something darker: contact shadow; otherwise a lit top edge
+      else if (y2 > 1 && up === q && g[j - 2 * W2] !== q && g[j - 2 * W2] && lum(g[j - 2 * W2]) < L - 12) m *= .92;
+      if (dn !== q && dn && lum(dn) < L) m *= .84;                                      // shade along the bottom edge
+      if (lf !== q && lf) add += lum(lf) < L ? 8 : 0;                                    // a lit left edge
+      if (rt !== q && rt && lum(rt) < L) m *= .93;                                       // a shaded right edge
+      if (L > 70 && ((x2 ^ y2) & 1) && up === q && dn === q && lf === q && rt === q) add += (x2 + y2) % 4 === 0 ? 3 : -2;   // a fine ordered dither inside flat colour
+      var i4 = j * 4; d[i4] = Math.max(0, Math.min(255, r * m + add)); d[i4 + 1] = Math.max(0, Math.min(255, gg * m + add)); d[i4 + 2] = Math.max(0, Math.min(255, b * m + add)); d[i4 + 3] = ga[j];
+    }
+    oc.putImageData(img, 0, 0);
+    return out;
+  }
   var obCache = {};
   function obCanvas(rows, light, key) {
     if (key && obCache[key]) return obCache[key];
@@ -1047,7 +1089,7 @@
   window.VondsGame = { open: function () { open(0); } };
   window.VondsSprite = { frame: frame, look: function () { return LOOK; }, pose: POSE, arm: ARM,
     bug: function (kind, f) { var fr = OBMAP[kind]; return obCanvas(fr[f % fr.length], false, 'rpg' + kind + (f % fr.length)); }, bugs: Object.keys(OBMAP),
-    hd: hdFromCanvas,
+    hd: hdFromCanvas, hdScene: hdScene,
     bugHD: function (kind, f) { var fr = OBMAP[kind]; return hdCanvas(fr[f % fr.length], 'hd' + kind + (f % fr.length)); },
     addBug: function (kind, frames) { OBMAP[kind] = frames; } };
   try {
