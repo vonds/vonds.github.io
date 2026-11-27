@@ -970,14 +970,44 @@
     px(X - 1, Y + 24, 34, 6, '#5a5a66'); px(X - 1, Y + 24, 34, 1, '#e0e0ea'); px(X - 1, Y + 29, 34, 1, '#2a2a32'); for (var cz = 0; cz < 34; cz += 4) { px(X - 1 + cz, Y + 22, 2, 2, '#5a5a66'); px(X - 1 + cz, Y + 22, 2, 1, '#c8c8d4'); }
     px(X + 13, Y + 25, 6, 5, '#0a0a0e'); px(X + 13, Y + 25, 6, 1, '#d8d8e0');
   }
-  // the Packet: a hover sled that rides the data sea
-  function packet(c, X, Y, t, dir, moving) {
-    var bob = Math.round(Math.sin(t * 5) * 1), side = dir === 'left' || dir === 'right';
-    function px(x, y, w, h, col) { c.fillStyle = col; c.fillRect(Math.round(X + x), Math.round(Y + y + bob), w, h); }
-    c.fillStyle = 'rgba(200,210,230,' + (.18 + .08 * Math.sin(t * 9)) + ')'; c.beginPath(); c.ellipse(X + 8, Y + 16, 12, 3, 0, 0, 7); c.fill();
-    if (side) { px(-4, 8, 24, 6, '#c8c8d2'); px(-4, 8, 24, 1, '#ffffff'); px(-3, 13, 22, 2, '#4a4a56'); px(dir === 'right' ? 18 : -4, 9, 2, 3, '#ffffff'); px(dir === 'right' ? -6 : 20, 10, 2, 2, Math.floor(t * 20) % 2 ? '#ffffff' : '#9a9aa6'); }
-    else { px(0, 6, 16, 9, '#c8c8d2'); px(0, 6, 16, 1, '#ffffff'); px(1, 14, 14, 2, '#4a4a56'); px(2, 8, 2, 4, '#8a8a96'); px(12, 8, 2, 4, '#8a8a96'); px(7, dir === 'up' ? 15 : 5, 2, 2, Math.floor(t * 20) % 2 ? '#ffffff' : '#9a9aa6'); }
-    if (moving) for (var w = 0; w < 4; w++) { var ph = (t * 3 + w / 4) % 1, a = .5 * (1 - ph); c.fillStyle = 'rgba(230,236,250,' + a + ')'; var off = 6 + ph * 14; if (dir === 'right') c.fillRect(Math.round(X - off), Math.round(Y + 15 + (w % 2) * 2), 3, 1); else if (dir === 'left') c.fillRect(Math.round(X + 16 + off), Math.round(Y + 15 + (w % 2) * 2), 3, 1); else if (dir === 'up') c.fillRect(Math.round(X + 3 + (w % 2) * 9), Math.round(Y + 16 + off * .6), 1, 3); else c.fillRect(Math.round(X + 3 + (w % 2) * 9), Math.round(Y + 4 - off * .6), 1, 3); }
+  // the Packet: a white hover-skiff that rides the data sea on a field of light
+  function packet(c, X, Y, t, dir, moving, layer) {
+    var bob = Math.round(Math.sin(t * 4) * 1), side = dir === 'left' || dir === 'right', fl = Math.floor(t * 24) % 2, pulse = .5 + .5 * Math.sin(t * 6);
+    c.save(); c.translate(Math.round(X + 8), Math.round(Y + bob + 16)); c.scale(1.5, 1.5); c.translate(0, -16);   // half again Vee's width: he rides in it, not on it
+    if (dir === 'left') c.scale(-1, 1);
+    if (layer === 'front') {   // the hull in front of Vee: hides his legs, glass over his chest
+      if (side) { px2(-12, 10, 25, 4, '#d8d8e2'); px2(-12, 10, 25, 1, '#ffffff'); px2(-12, 13, 25, 1, '#8a8a98'); px2(-10, 11, 21, 1, '#2a2a34'); for (var l2 = -9; l2 < 10; l2 += 3) px2(l2, 11, 1, 1, l2 % 2 ? '#ffffff' : '#6a6a78'); px2(4, 4, 6, 6, 'rgba(12,14,22,.55)'); px2(9, 5, 1, 5, 'rgba(12,14,22,.7)'); px2(5, 4, 3, 1, 'rgba(200,214,240,.8)'); }
+      else { px2(-9, 11, 18, 4, '#d8d8e2'); px2(-9, 11, 18, 1, '#ffffff'); px2(-9, 14, 18, 1, '#8a8a98'); if (dir !== 'up') { px2(-6, 6, 12, 5, 'rgba(12,14,22,.45)'); px2(-5, 6, 4, 1, 'rgba(200,214,240,.8)'); px2(-8, 12, 3, 2, '#ffffff'); px2(5, 12, 3, 2, '#ffffff'); } }
+      c.restore(); return;
+    }
+    function px2(x, y, w, h, col) { c.fillStyle = col; c.fillRect(x, y, w, h); }
+    function px(x, y, w, h, col) { c.fillStyle = col; c.fillRect(x, y, w, h); }
+    // the hover field: a glow on the water and rings rippling out from under the hull
+    c.fillStyle = 'rgba(210,224,255,' + (.16 + .1 * pulse) + ')'; c.beginPath(); c.ellipse(0, 18 - bob, side ? 20 : 15, 3.5, 0, 0, 7); c.fill();
+    for (var r = 0; r < 2; r++) { var rp = (t * .9 + r * .5) % 1; c.strokeStyle = 'rgba(230,238,255,' + (.35 * (1 - rp)) + ')'; c.lineWidth = 1; c.beginPath(); c.ellipse(0, 18 - bob, (side ? 14 : 10) + rp * 12, 2 + rp * 2, 0, 0, 7); c.stroke(); }
+    if (side) {   // long and low, nose forward, twin engines at the stern
+      if (moving) for (var w = 0; w < 7; w++) { var ph = (t * 2.6 + w / 7) % 1; px(-20 - ph * 26, 11 + (w % 3) - bob * 0, 3 - Math.floor(ph * 2), 1, 'rgba(236,242,255,' + (.7 * (1 - ph)) + ')'); }
+      px(-17, 14, 30, 2, '#14141a'); px(-15, 16, 24, 1, '#0a0a0e');                                       // keel
+      px(-18, 9, 31, 5, '#d8d8e2'); px(-18, 9, 31, 1, '#ffffff'); px(-18, 13, 31, 1, '#8a8a98');           // hull
+      px(13, 10, 3, 3, '#d8d8e2'); px(16, 11, 2, 2, '#c8c8d4'); px(18, 12, 1, 1, '#9a9aa8'); px(13, 10, 3, 1, '#ffffff');   // the nose
+      px(-6, 10, 1, 3, '#7a7a88'); px(4, 10, 1, 3, '#7a7a88');                                             // panel seams
+      px(-14, 11, 24, 1, '#2a2a34'); for (var l = -13; l < 10; l += 3) px(l, 11, 1, 1, l % 2 ? '#ffffff' : '#6a6a78');   // a running light strip
+      px(-6, 5, 14, 4, '#0c0c12'); px(-4, 4, 10, 1, '#0c0c12'); px(-5, 5, 3, 1, '#9aa4bc'); px(6, 6, 2, 2, '#3a4458');   // canopy glass, catching the light
+      px(-19, 3, 4, 7, '#c8c8d4'); px(-19, 2, 2, 1, '#ffffff'); px(-18, 4, 1, 5, '#ffffff'); px(-16, 5, 1, 3, fl ? '#ffffff' : '#6a6a78');   // tail fin
+      px(-22, 9, 5, 4, '#3a3a46'); px(-22, 9, 5, 1, '#9a9aa8');                                            // engine pods
+      px(-24, 10, 2, 2, '#ffffff'); px(-26 - fl, 10, 2 + fl, 2, 'rgba(236,242,255,' + (.6 + .3 * pulse) + ')'); px(-29 - fl * 2, 10, 3, 2, 'rgba(200,214,255,.3)');   // thrust
+      px(18, 12, 3, 1, 'rgba(255,255,255,' + (.4 + .4 * pulse) + ')');                                      // headlight
+    } else {      // seen from the front or back: a broad hull between two outrigger pods
+      var front = dir !== 'up';
+      if (moving) for (var w2 = 0; w2 < 6; w2++) { var ph2 = (t * 2.6 + w2 / 6) % 1, sx = w2 % 2 ? -10 : 10; px(sx - 1, front ? 4 - ph2 * 14 : 19 + ph2 * 12, 2, 2, 'rgba(236,242,255,' + (.6 * (1 - ph2)) + ')'); }
+      px(-9, 9, 18, 6, '#d8d8e2'); px(-9, 9, 18, 1, '#ffffff'); px(-9, 14, 18, 1, '#8a8a98'); px(-7, 15, 14, 2, '#14141a');   // hull
+      px(-14, 10, 5, 5, '#c8c8d4'); px(9, 10, 5, 5, '#c8c8d4'); px(-14, 10, 5, 1, '#ffffff'); px(9, 10, 5, 1, '#ffffff');       // outrigger pods
+      px(-13, 15, 3, 1, 'rgba(236,242,255,' + (.5 + .4 * pulse) + ')'); px(10, 15, 3, 1, 'rgba(236,242,255,' + (.5 + .4 * pulse) + ')');   // hover pads
+      px(-11, 12, 2, 1, '#2a2a34'); px(9, 12, 2, 1, '#2a2a34'); px(-12, 10, 1, 5, '#6a6a78'); px(11, 10, 1, 5, '#6a6a78');
+      if (front) { px(-5, 5, 10, 4, '#0c0c12'); px(-4, 5, 3, 1, '#9aa4bc'); px(-8, 11, 3, 2, '#ffffff'); px(5, 11, 3, 2, '#ffffff'); px(-1, 12, 2, 1, '#6a6a78'); }   // canopy and headlights
+      else { px(-3, 3, 6, 6, '#c8c8d4'); px(-3, 3, 6, 1, '#ffffff'); px(-1, 4, 2, 4, fl ? '#ffffff' : '#7a7a88'); px(-8, 11, 4, 3, '#3a3a46'); px(4, 11, 4, 3, '#3a3a46'); px(-7, 12, 2, 1 + fl, '#ffffff'); px(5, 12, 2, 1 + fl, '#ffffff'); }   // fin and thrusters
+    }
+    c.restore();
   }
 
   /* ---------- paint a whole district ---------- */

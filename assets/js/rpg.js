@@ -253,8 +253,76 @@
       link: function (url) { window.open(url, '_blank', 'noopener'); },
       note: function (t) { log(t); },
       xp: function (n) { var l = gainXp(n); if (l.length) afterTalk.push.apply(afterTalk, l); },
-      ending: function (kind) { runEnding(kind); }
+      ending: function (kind) { runEnding(kind); },
+      scene: function (steps, done) { scene(steps, function () { endScene(); if (done) done(); }); },
+      pos: function () { return [me.x, me.y]; }, area: function () { return AREA.id; }, party: function () { return activeParty(); }
     };
+    /* ---------- staged scenes: people walk in, turn, react; the camera shakes; the screen flashes ---------- */
+    var SCENE = null, FX = { shake: 0, flash: 0 };
+    function actorOf(id) { if (id === 'vee') return 'vee'; var L = AREA.npcs || []; return L.filter(function (n) { return n.id === 'sc_' + id; })[0] || L.filter(function (n) { return n.id === id && visNpcs().indexOf(n) >= 0; })[0] || null; }
+    function freeNear(x, y, avoid) {
+      var opts = [[0, 1], [1, 0], [-1, 0], [0, -1], [1, 1], [-1, 1], [1, -1], [-1, -1], [0, 2], [2, 0], [-2, 0], [0, -2]];
+      for (var i = 0; i < opts.length; i++) { var nx = x + opts[i][0], ny = y + opts[i][1]; if (!blocked(nx, ny) && !(nx === me.x && ny === me.y) && !(avoid && avoid[nx + ',' + ny])) return [nx, ny]; }
+      return [x, y];
+    }
+    function pathTo(fx, fy, tx, ty, self) {   // shortest walkable route, ignoring the walker itself
+      var seen = {}, q = [[fx, fy, '']]; seen[fx + ',' + fy] = 1;
+      while (q.length) {
+        var p = q.shift(); if (p[0] === tx && p[1] === ty) return p[2];
+        if (p[2].length > 40) continue;
+        [['R', 1, 0], ['L', -1, 0], ['D', 0, 1], ['U', 0, -1]].forEach(function (d) {
+          var nx = p[0] + d[1], ny = p[1] + d[2], k = nx + ',' + ny; if (seen[k]) return; seen[k] = 1;
+          var n2 = npcAt(nx, ny); if (!(nx === tx && ny === ty) && (('TX~pdsocFlGMr'.indexOf(tile(nx, ny)) >= 0) || (n2 && n2 !== self) || (self !== 'vee' && nx === me.x && ny === me.y))) return;
+          q.push([nx, ny, p[2] + d[0]]);
+        });
+      }
+      return '';
+    }
+    function scene(steps, done) {
+      SCENE = { steps: steps, i: 0, done: done }; held = null;
+      (function next() {
+        if (!SCENE) return;
+        if (SCENE.i >= steps.length) { var d = SCENE.done; SCENE = null; return d && d(); }
+        var st = steps[SCENE.i++];
+        if (st.say) return say(st.say[0], st.say[1], st.say[2] || null, next);
+        if (st.actor) {
+          var at = st.at ? [me.x + st.at[0], me.y + st.at[1]] : freeNear(me.x, me.y);
+          if (st.at && (blocked(at[0], at[1]) || (at[0] === me.x && at[1] === me.y))) at = freeNear(at[0], at[1]);
+          var hero = typeof st.hero === 'string' ? (COMP[st.hero] ? COMP[st.hero].look : WD.heroes[st.hero]) : st.hero;
+          var n = { id: 'sc_' + st.actor, hero: hero, p: st.p, x: at[0], y: at[1], hx: at[0], hy: at[1], px: at[0] * TS, py: at[1] * TS, name: st.name || '', look: 'echo', solid: 1, still: 1, dir: st.dir || 'down', spd: 64, scene: 1 };
+          AREA.npcs = (AREA.npcs || []).concat([n]); return setTimeout(next, st.wait || 120);
+        }
+        if (st.walk) {
+          var a = actorOf(st.walk); if (!a) return next();
+          var route = st.path || '';
+          if (st.to) { var tx = st.to[0], ty = st.to[1]; if (st.rel) { tx += me.x; ty += me.y; } route = a === 'vee' ? pathTo(me.x, me.y, tx, ty, 'vee') : pathTo(a.x, a.y, tx, ty, a); }
+          if (st.toVee) { var tgt = freeNear(me.x, me.y); route = pathTo(a.x, a.y, tgt[0], tgt[1], a); }
+          var k = 0;
+          (function stepOne() {
+            if (!SCENE) return;
+            if (k >= route.length) { if (st.face) faceTo(a, st.face); return setTimeout(next, 80); }
+            var c = route.charAt(k++), v = { U: [0, -1], D: [0, 1], L: [-1, 0], R: [1, 0] }[c], dir = { U: 'up', D: 'down', L: 'left', R: 'right' }[c];
+            if (a === 'vee') { me.dir = dir; me.x += v[0]; me.y += v[1]; me.moving = true; }
+            else { a.dir = dir; a.x += v[0]; a.y += v[1]; a.hx = a.x; a.hy = a.y; }
+            (function wait() { if (!SCENE) return; var arrived = a === 'vee' ? !me.moving : (a.px === a.x * TS && a.py === a.y * TS); if (arrived) stepOne(); else setTimeout(wait, 30); })();
+          })();
+          return;
+        }
+        if (st.face) { faceTo(actorOf(st.who || 'vee'), st.face); return setTimeout(next, st.wait || 150); }
+        if (st.remove) { AREA.npcs = (AREA.npcs || []).filter(function (n2) { return n2.id !== 'sc_' + st.remove; }); return setTimeout(next, 100); }
+        if (st.shake) { FX.shake = st.shake; sfx('hurt'); return setTimeout(next, st.wait || 400); }
+        if (st.flash) { FX.flash = st.flash; return setTimeout(next, st.wait || 300); }
+        if (st.wait) return setTimeout(next, st.wait);
+        if (st.fn) { var r = st.fn(G, next); if (r !== 'async') next(); return; }
+        if (st.boss) { var cleanup = function () { AREA.npcs = (AREA.npcs || []).filter(function (n3) { return !n3.scene || st.keep; }); }; return startBattle({ boss: st.boss, onWin: function () { setTimeout(next, 600); } }); }
+        next();
+      })();
+    }
+    function faceTo(a, d) {
+      if (!a) return; if (typeof d === 'string' && d.length > 1 && 'updownleftright'.indexOf(d) < 0) { var b = actorOf(d); if (b) { var bx = b === 'vee' ? me.x : b.x, by = b === 'vee' ? me.y : b.y, ax = a === 'vee' ? me.x : a.x, ay = a === 'vee' ? me.y : a.y; d = Math.abs(bx - ax) >= Math.abs(by - ay) ? (bx > ax ? 'right' : 'left') : (by > ay ? 'down' : 'up'); } }
+      if (a === 'vee') me.dir = d; else { a.dir = d; a.faceLock = d; }
+    }
+    function endScene() { AREA.npcs = (AREA.npcs || []).filter(function (n) { return !n.scene; }); }
     function readLog(id) {
       var first = !F[id]; F[id] = 1; store();
       var n = WD.logOrder.filter(function (k) { return F[k]; }).length, mara = WD.logOrder.indexOf(id) >= 0;
@@ -355,7 +423,7 @@
         else if (MN.slot && COMP[MN.slot]) {
           var cid = MN.slot, C = COMP[cid], on = act.indexOf(cid) >= 0;
           var bw = (save.party.bond || {})[cid] || 0;
-          h = '<div class="mn-card"><div class="mn-portrait" data-hero="' + cid + '"></div><div><h4>' + C.name + ' <span class="mn-dim">' + C.role + ' · Level ' + cLv() + '</span></h4></div></div><p class="mn-dim">' + C.bio + '</p><p class="mn-dim">Fights won together: ' + bw + (bw < 20 ? ' · they open up at ' + (bw < 8 ? 8 : 20) : '') + '</p>' +
+          h = '<div class="mn-card"><div class="mn-portrait" data-hero="' + cid + '"></div><div><h4>' + C.name + ' <span class="mn-dim">' + C.role + ' · Level ' + cLv() + '</span></h4></div></div><p class="mn-dim">' + C.bio + '</p>' + (C.arcHint ? '<p class="mn-dim">Their story: <b>' + C.story + '</b> · ' + (F['arc_' + cid] ? 'settled.' : C.arcHint) + '</p>' : '') + '<p class="mn-dim">Fights won together: ' + bw + (bw < 20 ? ' · they open up at ' + (bw < 8 ? 8 : 20) : '') + '</p>' +
             '<div class="mn-row"><span>HP</span>' + bar(cHp(cid), cMax(cid)) + '<em>' + cHp(cid) + ' / ' + cMax(cid) + '</em></div>' +
             '<div class="mn-stats"><div><span>ATK</span><b>' + cAtk(cid) + '</b></div><div><span>DEF</span><b>' + cDef(cid) + '</b></div></div>' +
             C.skills.map(function (k) { var lk = skillLock(k); return '<p' + (lk ? ' class="mn-dim"' : '') + '><b>' + k.name + '</b> <span class="mn-dim">' + (lk ? lk : 'every ' + k.cd + ' turns') + '</span><br><small>' + k.tip + '</small></p>'; }).join('');
@@ -600,6 +668,7 @@
     /* ---------- interacting ---------- */
     function facing() { var d = { up: [0, -1], down: [0, 1], left: [-1, 0], right: [1, 0] }[me.dir]; return [me.x + d[0], me.y + d[1]]; }
     function interact() {
+      if (SCENE) return;
       var f = facing(), x = f[0], y = f[1], t = tile(x, y), k = key(x, y), n = npcAt(x, y), w = wagonAt(); if (n) LIFE.facing = n;   // whoever Vee talks to turns to look at him
       if (n) {
         var r0 = WD.talk[n.id] ? WD.talk[n.id](G) : null, ap0 = activeParty().filter(function (id) { return id !== n.id; });
@@ -1338,6 +1407,7 @@
       setTimeout(function () { say('', lines, null, function () { endBattle(); if (onWin) setTimeout(onWin, 80); else if (bondNow) setTimeout(function () { say(bondNow[0], bondNow[1]); }, 120); }); }, 600);
     }
     function lose() {
+      if (SCENE) { SCENE = null; endScene(); }
       B.phase = 'done'; B.ko = .001; cmdBox.classList.remove('on'); closePrompt(); sfx('ko');
       log('Vee goes down.'); hudOn();
       var lost = Math.floor(save.xp * .25), where = (WD.areas[save.rest[0]] || {}).name || 'the Plaza', who = groupName(), here = AREA.name;
@@ -1434,8 +1504,8 @@
       visNpcs().forEach(function (n) {
         if (n.hx == null) { n.hx = n.x; n.hy = n.y; n.px = n.x * TS; n.py = n.y * TS; n.wt = 3; }
         var mdx = n.x * TS - n.px, mdy = n.y * TS - n.py; n.moving = !!(mdx || mdy);
-        if (n.moving) { n.dir = Math.abs(mdx) >= Math.abs(mdy) ? (mdx > 0 ? 'right' : 'left') : (mdy > 0 ? 'down' : 'up'); n.wstep = (n.wstep || 0) + dt; } else if (n.dir !== 'down' && (n.wt || 0) < 1.2) n.dir = 'down';   // walks the way it goes, then turns back to face the street
-        n.px += Math.sign(mdx) * Math.min(30 * dt, Math.abs(mdx)); n.py += Math.sign(mdy) * Math.min(30 * dt, Math.abs(mdy));
+        if (n.moving) { n.faceLock = null; n.dir = Math.abs(mdx) >= Math.abs(mdy) ? (mdx > 0 ? 'right' : 'left') : (mdy > 0 ? 'down' : 'up'); n.wstep = (n.wstep || 0) + dt; } else if (n.faceLock) n.dir = n.faceLock; else if (n.dir !== 'down' && (n.wt || 0) < 1.2) n.dir = 'down';   // walks the way it goes, then turns back to face the street
+        n.px += Math.sign(mdx) * Math.min((n.spd || 30) * dt, Math.abs(mdx)); n.py += Math.sign(mdy) * Math.min((n.spd || 30) * dt, Math.abs(mdy));
         if (n.look === 'warden' || n.solid || n.still || n.look === 'drone') return;
         n.wt -= dt; if (n.wt > 0) return; n.wt = 3 + Math.random() * 6;
         var opts = [[n.hx, n.hy], [n.hx + 1, n.hy], [n.hx - 1, n.hy], [n.hx, n.hy + 1]], o = opts[Math.floor(Math.random() * opts.length)];
@@ -1514,9 +1584,10 @@
         ghosts.forEach(function (gh) { gh.t += 1 / 60; var a = Math.max(0, .5 * (1 - gh.t / .32)); if (!a) return; cx.save(); cx.globalAlpha = a; cx.filter = 'brightness(1.8) contrast(.8)'; drawSprite(gh.img, gh.px - 3 - cam.x, gh.py - 10 - (gh.bob ? 1 : 0) - cam.y, gh.flip); cx.restore(); });
         ghosts = ghosts.filter(function (gh) { return gh.t < .32; });
         var v = veeImg(), vx = me.px - 3 - cam.x, vy = me.py - 10 - (v.bob ? 1 : 0) - cam.y;
-        if (me.boat && ART.packet) { ART.packet(cx, me.px - cam.x, me.py - cam.y, tnow, me.dir, me.moving); vy -= 4; }
+        if (me.boat && ART.packet) { ART.packet(cx, me.px - cam.x, me.py - cam.y, tnow, me.dir, me.moving, 'back'); vy -= 9 + Math.round(Math.sin(tnow * 4)); }
         else { cx.fillStyle = 'rgba(0,0,0,.35)'; cx.beginPath(); cx.ellipse(me.px + 8 - cam.x, me.py + 15 - cam.y, 7, 2.5, 0, 0, 7); cx.fill(); }
         drawSprite(v.img, vx, vy, v.flip);
+        if (me.boat && ART.packet) ART.packet(cx, me.px - cam.x, me.py - cam.y, tnow, me.dir, me.moving, 'front');
       } });
       list.sort(function (a, b) { return a.y - b.y; }).forEach(function (o) { o.draw(); });
       barkPlace();
@@ -1630,6 +1701,7 @@
         if (dashing) { ghostT += dt; if (ghostT > .045) { ghostT = 0; var gv = veeImg(); ghosts.push({ img: gv.img, flip: gv.flip, bob: gv.bob, px: me.px, py: me.py, t: 0 }); if (ghosts.length > 8) ghosts.shift(); } }
         if (me.px === tx && me.py === ty) {
           me.moving = false; me.steps++; save.x = me.x; save.y = me.y; if (me.steps % 6 === 0) store();
+          if (SCENE) return;
           var k = key(me.x, me.y), ex = AREA.exits && AREA.exits[k], gt = AREA.gates && AREA.gates[k];
           if (ex && ex[3] && ex[3].site && !save.seen[ex[0]] && !(WD.areas[ex[0]] && WD.areas[ex[0]].open)) { var nm = WD.areas[ex[0]] ? WD.areas[ex[0]].name : ex[0]; say('', [nm.toUpperCase() + '.', 'The gate is sealed from this side. It only opens for processes the district already knows.', 'Vee will have to find his way in from the city first.']); return; }
           if (ex) { if (me.boat) { me.boat = 0; save.boat = 0; } return travel(ex); }
@@ -1642,7 +1714,7 @@
           mechStep();
         }
       }
-      if (!me.moving && held) tryMove(held);
+      if (!me.moving && held && !SCENE) tryMove(held);
     }
     function tryMove(d) {
       me.dir = d; var v = { up: [0, -1], down: [0, 1], left: [-1, 0], right: [1, 0] }[d], nx = me.x + v[0], ny = me.y + v[1];
@@ -1652,7 +1724,7 @@
     function loop(ts) {
       var dt = Math.min(.05, (ts - (last || ts)) / 1000); last = ts;
       update(dt);
-      if (mode === 'map' || mode === 'menu') drawMap(); else if (mode === 'atlas') drawAtlas(); else if (mode === 'swirl') drawSwirl(dt); else drawBattle(dt);
+      if (mode === 'map' || mode === 'menu') { if (FX.shake > 0) { FX.shake = Math.max(0, FX.shake - dt); cx.save(); cx.translate(Math.round((Math.random() - .5) * 6), Math.round((Math.random() - .5) * 4)); drawMap(); cx.restore(); } else drawMap(); if (FX.flash > 0) { FX.flash = Math.max(0, FX.flash - dt); cx.fillStyle = 'rgba(255,255,255,' + Math.min(1, FX.flash * 2.5) + ')'; cx.fillRect(0, 0, W, H); } } else if (mode === 'atlas') drawAtlas(); else if (mode === 'swirl') drawSwirl(dt); else drawBattle(dt);
       raf = requestAnimationFrame(loop);
     }
 
@@ -1721,7 +1793,7 @@
       setTimeout(function () { if (!root.classList.contains('show')) { root.classList.remove('open'); cancelAnimationFrame(raf); } }, 400);
       if (opener && opener.focus) opener.focus({ preventScroll: true });
     }
-    window.__quest = { battle: function (n) { startBattle(n); }, boss: function (id) { startBattle({ boss: id }); }, go: function (id, x, y) { if (!AREA) load(id, x, y); else travel([id, x, y]); }, state: function () { return { mode: mode, B: B, me: me, talking: !!talking, save: save, area: AREA && AREA.id, PZ: PZ, map: MAP }; }, press: press, release: release, advance: advance, interact: function () { interact(); }, face: function (d) { me.dir = d; }, puzzle: function (v) { submitPuzzle(v); } };
+    window.__quest = { battle: function (n) { startBattle(n); }, boss: function (id) { startBattle({ boss: id }); }, go: function (id, x, y) { if (!AREA) load(id, x, y); else travel([id, x, y]); }, state: function () { return { mode: mode, B: B, me: me, talking: !!talking, save: save, area: AREA && AREA.id, PZ: PZ, map: MAP, scene: SCENE && SCENE.i, fade: !!fade, held: held, sceneOn: !!SCENE, actors: (AREA && AREA.npcs || []).filter(function (n) { return n.scene; }).map(function (n) { return [n.id, n.x, n.y, Math.round(n.px), Math.round(n.py)]; }) }; }, press: press, release: release, advance: advance, interact: function () { interact(); }, face: function (d) { me.dir = d; }, puzzle: function (v) { submitPuzzle(v); } };
     return { open: open, close: close };
   })();
 })();
