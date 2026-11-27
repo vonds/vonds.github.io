@@ -241,6 +241,7 @@
 /* Meridian: district title cards, status and puzzle prompts */
 .rpg-area{position:absolute;left:0;right:0;top:14%;text-align:center;pointer-events:none;opacity:0;transform:translateY(-6px);transition:opacity .6s ease,transform .6s ease;font-family:'Press Start 2P',monospace;color:#fff;text-shadow:2px 2px 0 rgba(0,0,0,.75)}
 .rpg-area.on{opacity:1;transform:none}
+.rpg-area:not(.gtitle){padding:12px 0 14px;background:linear-gradient(180deg,transparent,rgba(4,4,6,.55) 22%,rgba(4,4,6,.55) 78%,transparent)}
 .rpg-area.gtitle{top:0;bottom:0;display:flex;flex-direction:column;justify-content:center;background:radial-gradient(ellipse at center,rgba(6,6,9,.92),rgba(6,6,9,.78))}
 .rpg-area.gtitle b{font-size:clamp(20px,4.6vw,48px);letter-spacing:.22em;padding-left:.22em}
 .rpg-area.gtitle span{font-size:clamp(7px,1vw,11px);letter-spacing:.06em}
