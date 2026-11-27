@@ -76,7 +76,9 @@
     idle: { bl: 'down', fl: 'down', ba: 'mid',  fa: 'mid',  bob: 0,  sway: 0 },
     idle2:{ bl: 'down', fl: 'down', ba: 'mid',  fa: 'mid',  bob: -1, sway: 0 },
     point:{ bl: 'down', fl: 'down', ba: 'mid',  fa: 'point', bob: 0, sway: 0 },
-    point2:{ bl: 'down', fl: 'down', ba: 'mid', fa: 'point', bob: -1, sway: 1 }
+    point2:{ bl: 'down', fl: 'down', ba: 'mid', fa: 'point', bob: -1, sway: 1 },
+    kneel: { bl: 'tuck', fl: 'tuck', ba: 'mid',  fa: 'fwd',  bob: 3,  sway: 3 },   // hurt badly: down on one knee, head low
+    kneel2:{ bl: 'tuck', fl: 'tuck', ba: 'mid',  fa: 'fwd',  bob: 2,  sway: 3 }
   };
   // extra pieces used by the ten versions
   var HOODDOWN = { r: 11, rows: ['....OOOOO...........', '...OOOOOOO..........', '...OoOOOOO..........', '....OOOO............'] };
@@ -118,7 +120,7 @@
       var c = p[key].charAt(0) === '#' ? hex(p[key]) : p[key].match(/\d+/g).map(Number);
       var y = (c[0] * .3 + c[1] * .59 + c[2] * .11) / 255, ex = 'SKR'.indexOf(key) >= 0 ? .78 : .55; p[key] = rgb([1, 1, 1].map(function () { return 30 + 225 * Math.pow(y, ex); }));
     }
-    p.H = 'rgb(66,66,70)'; p.h = 'rgb(112,112,118)'; p.E = 'rgb(8,8,8)'; p.W = 'rgb(242,242,242)';
+    p.H = 'rgb(40,40,44)'; p.h = 'rgb(76,76,82)'; p.E = 'rgb(8,8,8)'; p.W = 'rgb(242,242,242)';
     p.D = 'rgb(14,14,16)'; p.d = 'rgb(54,54,58)';   // headphones: black band and cups
     if (L.sil) { for (var s2 in p) p[s2] = 'rgb(10,10,11)'; p.W = 'rgb(242,242,242)'; }
     return p;
@@ -160,7 +162,11 @@
     else if (L.sil) { px(13, 7, 'W'); px(13, 8, 'W'); }
     else { px(13, 7, 'E'); px(13, 8, 'E'); }
     if (!L.hoodUp && !L.pony && !L.noLocs) strand(FRONT, 1);
-    leg(pose.fl, 'P', 'B'); arm(pose.fa, 11, 'A');
+    leg(pose.fl, 'P', 'B');
+    // a dark seam behind the near arm, so it reads as an arm against the shirt and the locs
+    (function () { var cells = ARM[pose.fa], own = {}; cells.forEach(function (cl) { own[cl[0] + ',' + cl[1]] = own[cl[0] + ',' + (cl[1] + 1)] = 1; });
+      cells.forEach(function (cl, i) { if (i === cells.length - 1) return; [0, 1].forEach(function (d) { if (!own[(cl[0] - 1) + ',' + (cl[1] + d)]) px(11 + cl[0] - 1, 15 + cl[1] + d, 'd'); }); }); })();
+    arm(pose.fa, 11, 'A');
     if (L.noOutline) return (cache[key] = cvs);
     var id = c.getImageData(0, 0, 22, 26), d = id.data, out = [];
     for (var y = 0; y < 26; y++) for (var x = 0; x < 22; x++) {
@@ -520,13 +526,312 @@
     bytebug: [[".M............", "..M...DDDDD...", "...MDDLLDLLDD.", "..MMDLDLLLLDLD", ".MWMDLLLDLLLLD", "MMMMDLDLLLDLLD", ".M..DDDDDDDDD.", "...M..M..M..M.", "..M..M..M..M.."], [".M............", "..M...DDDDD...", "...MDDLLDLLDD.", "..MMDLDLLLLDLD", ".MWMDLLLDLLLLD", "MMMMDLDLLLDLLD", ".M..DDDDDDDDD.", "....M..M..M..M", "...M..M..M..M."]],
     centipede: [["M...................", ".M..................", ".MDDDDDDDDDDDDDDDDD.", "MWLLMLLMLLMLLMLLMLLD", "MMLLMLLMLLMLLMLLMLLD", ".M.DDDDDDDDDDDDDDDD.", "..M.M.M.M.M.M.M.M.M."], ["M...................", ".M..................", ".MDDDDDDDDDDDDDDDDD.", "MWLLMLLMLLMLLMLLMLLD", "MMLLMLLMLLMLLMLLMLLD", ".M.DDDDDDDDDDDDDDDD.", ".M.M.M.M.M.M.M.M.M.."]],
     scorpion: [["..........WM...", "...........M...", "............M..", "............M..", "...........ML..", "..........LL...", "MM.....LLLL....", "M.M.DDLLLLLL...", ".MMDLLLLLLLD...", "MMWDLLLLLLD....", "...M.M.M.M....."], [".........WM....", "..........M....", "...........M...", "............M..", "...........ML..", "..........LL...", "MM.....LLLL....", "M.M.DDLLLLLL...", ".MMDLLLLLLLD...", "MMWDLLLLLLD....", "....M.M.M.M...."]]
+    ,heisenbug: [["....W.....W....", ".....M...M.....", "..W..DDDDD..W..", "....DLLWLLD....", "...DLWLLLWLD...", "W..DLLLMLLLD..W", "...DLWLLLWLD...", "....DLLWLLD....", "..W..DDDDD..W..", ".....M...M.....", "....W.....W...."], ["...W.......W...", ".....M...M.....", ".....DDDDD.....", "..W.DLLWLLD.W..", "...DLWLLLWLD...", "...DLLLMLLLD...", "...DLWLLLWLD...", "..W.DLLWLLD.W..", ".....DDDDD.....", ".....M...M.....", "...W.......W..."]]
+    ,forkbomb: [[".......W....", "......M.....", ".....M......", "...DDDDD....", "..DLLLLLD...", ".DLWLLLLLD..", ".DLLLLLLLD..", ".DLLLMLLLD..", "..DLLLLLD...", "...DDDDD...."], ["......W.W...", ".......M....", ".....M......", "...DDDDD....", "..DLLLLLD...", ".DLWLLLLLD..", ".DLLLLLLLD..", ".DLLMLLLLD..", "..DLLLLLD...", "...DDDDD...."]],
+    deadlock: [["..DDDD..DDDD..", ".DLLLLDDLLLLD.", "DLL..DLLD..LLD", "DLW..DLLD..WLD", "DLL..DLLD..LLD", ".DLLLLDDLLLLD.", "..DDDD..DDDD.."], ["..DDDD..DDDD..", ".DLLLLDDLLLLD.", "DLL..DMMD..LLD", "DLW..DMMD..WLD", "DLL..DMMD..LLD", ".DLLLLDDLLLLD.", "..DDDD..DDDD.."]],
+    phantom: [["....DDDDD....", "...DLLLLLD...", "..DLWLLLWLD..", "..DLLLLLLLD..", "..DLLMMMLLD..", "..DLLLLLLLD..", "..DLLLLLLLD..", "..DLDLDLDLD..", "..D.D.D.D.D.."], ["....DDDDD....", "...DLLLLLD...", "..DLWLLLWLD..", "..DLLLLLLLD..", "..DLLLMLLLD..", "..DLLLLLLLD..", "..DLLLLLLLD..", "..LDLDLDLDL..", "...D.D.D.D..."]]
   };
+  /* ---------- corrupted code: thirty more bugs, drawn from seeds instead of by hand ---------- */
+  (function () {
+    var DIG = { 0: ['LLL', 'L.L', 'L.L', 'L.L', 'LLL'], 1: ['.L.', 'LL.', '.L.', '.L.', 'LLL'] };
+    function rng(seed) { var x = seed * 9301 + 49297; return function () { x = (x * 9301 + 49297) % 233280; return x / 233280; }; }
+    function blank(w, h) { var g = []; for (var y = 0; y < h; y++) { g.push([]); for (var x = 0; x < w; x++) g[y].push('.'); } return g; }
+    function outline(g) {   // dark edge around every lit pixel, the way the hand-drawn bugs have one
+      var h = g.length, w = g[0].length, o = g.map(function (r) { return r.slice(); });
+      for (var y = 0; y < h; y++) for (var x = 0; x < w; x++) if (g[y][x] === '.') {
+        for (var dy = -1; dy <= 1; dy++) for (var dx = -1; dx <= 1; dx++) { var c = (g[y + dy] || [])[x + dx]; if (c && c !== '.' && c !== 'D') { o[y][x] = 'D'; dy = 2; break; } }
+      }
+      return o.map(function (r) { return r.join(''); });
+    }
+    function pad(g, w, h) { var G = blank(w, h), ox = Math.floor((w - g[0].length) / 2), oy = Math.floor((h - g.length) / 2); g.forEach(function (r, y) { r.forEach(function (c, x) { G[y + oy][x + ox] = c; }); }); return G; }
+    function digits(g, x0, y0, bits, light) { bits.split('').forEach(function (b, i) { DIG[b].forEach(function (row, y) { row.split('').forEach(function (c, x) { if (c !== '.') g[y0 + y][x0 + i * 4 + x] = light ? 'L' : 'M'; }); }); }); }
+    var STY = {
+      binary: function (r, f) {   // a block of ones and zeros with eyes and little legs, flipping bits as it breathes
+        var cols = 3 + Math.floor(r() * 2), rows = 2, w = cols * 4 + 1, h = rows * 6 + 5, g = blank(w, h), bits = [];
+        for (var k = 0; k < rows; k++) { var b = ''; for (var c = 0; c < cols; c++) b += r() < .5 ? '0' : '1'; bits.push(b); }
+        for (var x = 1; x < w - 1; x++) g[2][x] = 'M';
+        bits.forEach(function (b, k) { if (f) b = b.split('').map(function (d, i) { return (i + k) % 3 === 1 ? (d === '0' ? '1' : '0') : d; }).join(''); digits(g, 1, 3 + k * 6, b, k === 0); });
+        [2, w - 4].forEach(function (ex) { g[0][ex] = 'L'; g[0][ex + 1] = 'L'; g[1][ex] = 'L'; g[1][ex + 1] = f ? 'L' : 'W'; g[1][ex + (f ? 0 : 1)] = 'W'; });
+        for (var lx = 2; lx < w - 1; lx += 3) g[h - 1][lx + ((lx / 3 + (f ? 1 : 0)) % 2)] = 'L';
+        return g;
+      },
+      invader: function (r, f) {   // a symmetric glitch-creature built from a seed
+        var hw = 6, h = 8, g = blank(hw * 2 - 1, h + 1), dens = .45 + r() * .2;
+        for (var y = 0; y < h; y++) for (var x = 0; x < hw; x++) { var on = r() < (y > 1 && y < h - 2 ? dens + .2 : dens) || (x === hw - 1 && y < h - 1); if (on) { var c = r() < .2 ? 'M' : 'L'; g[y][x] = c; g[y][hw * 2 - 2 - x] = c; } }
+        g[3][hw - 3] = 'W'; g[3][hw + 1] = 'W'; g[2][hw - 3] = 'L'; g[2][hw + 1] = 'L';
+        for (var x2 = 0; x2 < hw * 2 - 1; x2 += 2) g[h][x2 + (f ? 1 : 0)] = (x2 / 2) % 2 ? 'M' : '.';
+        return g;
+      },
+      glitch: function (r, f) {   // a torn rectangle of code, its scanlines sliding past each other
+        var w = 12, h = 9, g = blank(w + 4, h);
+        for (var y = 0; y < h; y++) { var off = Math.floor((r() - .5) * 4 + (f ? (y % 2 ? 1 : -1) : 0)); for (var x = 0; x < w; x++) { var xx = x + 2 + off; if (xx >= 0 && xx < w + 4) g[y][xx] = (x + y) % 5 === 0 ? 'M' : 'L'; } }
+        g[3][5] = 'W'; g[3][10] = 'W';
+        return g;
+      },
+      bracket: function (r, f) {   // two curly braces holding something that should never have compiled
+        var g = blank(15, 11), sh = f ? 1 : 0;
+        ['..LL', '.L..', '.L..', 'L...', '.L..', '.L..', '..LL'].forEach(function (row, y) { row.split('').forEach(function (c, x) { if (c !== '.') { g[y + 2][x + sh] = 'L'; g[y + 2][14 - x - sh] = 'L'; } }); });
+        var b = (r() < .5 ? '1' : '0') + (r() < .5 ? '1' : '0'); digits(g, 4, 3, b, true);
+        g[1][6] = 'W'; g[1][8] = 'W';
+        return g;
+      },
+      serpent: function (r, f) {   // a long string of bits, slithering
+        var n = 6 + Math.floor(r() * 3), g = blank(n * 4 + 2, 11);
+        for (var i = 0; i < n; i++) { var yy = 3 + Math.round(Math.sin(i * .9 + (f ? 1.4 : 0)) * 2); DIG[r() < .5 ? 0 : 1].forEach(function (row, y) { row.split('').forEach(function (c, x) { if (c !== '.') g[yy + y][1 + i * 4 + x] = i === 0 ? 'M' : 'L'; }); }); }
+        var hy = 3 + Math.round(Math.sin(f ? 1.4 : 0) * 2); g[hy + 1][2] = 'W';
+        return g;
+      },
+      hydra: function (r, f) {   // one body, three greedy heads on long necks, each wanting the same match
+        var g = blank(19, 13);
+        for (var y = 8; y < 12; y++) for (var x = 4; x < 15; x++) g[y][x] = (x + y) % 4 ? 'L' : 'M';
+        for (var lx = 5; lx < 15; lx += 3) g[12][lx + (f ? 1 : 0)] = 'L';
+        [1, 8, 15].forEach(function (hx, k) {
+          var up = (k + (f ? 1 : 0)) % 2, nx = hx + 1;
+          for (var y = 3 + up; y < 8; y++) g[y][Math.min(Math.max(nx + (y < 6 ? (k - 1) : 0), 1), 17)] = 'M';
+          var top = 1 + up; for (var dy = 0; dy < 3; dy++) for (var dx = 0; dx < 3; dx++) g[top + dy][hx + dx] = 'L';
+          g[top + 1][hx + 1] = 'W'; g[top + 2][hx] = '.'; g[top + 2][hx + 2] = '.';
+        });
+        return g;
+      }      ,
+      popup: function (r, f) {   // a dialog box: title bar, an X that won't close, a warning sign, and buttons nobody should press
+        var w = 15 + Math.floor(r() * 5), h = 10 + Math.floor(r() * 3), g = blank(w, h + 1), kind = Math.floor(r() * 3);
+        for (var y = 0; y < h; y++) for (var x = 0; x < w; x++) { var edge = !x || x === w - 1 || y === h - 1; g[y][x] = y < 3 ? (y === 2 ? 'L' : 'M') : edge ? 'L' : 'W'; }
+        g[1][w - 3] = 'W'; g[1][w - 2] = f ? 'W' : 'L'; g[0][w - 2] = 'W'; g[1][2] = 'L'; g[1][3] = 'L'; g[1][4] = 'L';
+        if (kind === 0) { [[4, 3], [5, 2], [5, 3], [5, 4], [6, 1], [6, 2], [6, 3], [6, 4], [6, 5]].forEach(function (q) { g[q[0]][q[1] + 1] = 'M'; }); g[5][4] = 'W'; }   // a warning triangle
+        else if (kind === 1) { for (var cy = 4; cy < 7; cy++) for (var cx = 2; cx < 5; cx++) g[cy][cx] = 'M'; g[5][3] = 'W'; }   // a stop sign
+        else { g[4][3] = 'M'; g[5][3] = 'M'; g[7][3] = 'M'; }   // an exclamation mark
+        g[5][Math.floor(w / 2)] = 'K'; g[5][Math.floor(w / 2) + 3] = 'K';   // eyes
+        var nb = 1 + Math.floor(r() * 2), bw = 4;
+        for (var b = 0; b < nb; b++) { var bx = w - 2 - (b + 1) * (bw + 1); for (var x2 = bx; x2 < bx + bw; x2++) { g[h - 3][x2] = 'M'; g[h - 2][x2] = b === (f ? 1 : 0) % nb ? 'K' : 'M'; } }
+        g[h][3 + (f ? 1 : 0)] = 'L'; g[h][w - 4 - (f ? 1 : 0)] = 'L';
+        return g;
+      },
+      packet: function (r, f) {   // a sealed envelope of data, flap and all, trailing loose bits behind it
+        var w = 14 + Math.floor(r() * 3), h = 10, tail = 4, g = blank(w + tail, h + 1);
+        for (var y = 1; y < h; y++) for (var x = tail; x < w + tail; x++) g[y][x] = (y === 1 || y === h - 1 || x === tail || x === w + tail - 1) ? 'M' : 'L';
+        var mid = tail + Math.floor(w / 2);
+        for (var x2 = tail + 1; x2 < w + tail - 1; x2++) { var yy = 2 + Math.round(Math.abs(x2 - mid) > 0 ? (Math.floor(w / 2) - Math.abs(x2 - mid)) * .5 : Math.floor(w / 4)); if (yy < h - 1) g[yy][x2] = 'M'; }
+        g[2 + Math.floor(w / 4) + 1][mid] = 'K'; g[2 + Math.floor(w / 4) + 1][mid - 1] = 'K';   // the seal
+        g[6][tail + 3] = 'W'; g[6][w + tail - 4] = 'W';
+        for (var t = 0; t < 6; t++) if (r() < .75) g[2 + ((t + (f ? 1 : 0)) % 4) * 2][t % tail] = r() < .5 ? 'L' : 'M';
+        return g;
+      },
+      cursor: function (r, f) {   // a pointer that grew a will of its own: an arrow, a pointing hand, or the spinning wait
+        var kind = Math.floor(r() * 3), g;
+        if (kind === 0) {
+          g = blank(12, 16); var rows = ['L', 'LL', 'LWL', 'LWWL', 'LWWWL', 'LWWWWL', 'LWWWWWL', 'LWWWWWWL', 'LWWWWLLLL', 'LWLWWL', 'LL.LWWL', 'L...LWWL', '.....LWL', '......L'];
+          rows.forEach(function (row, y) { row.split('').forEach(function (c, x) { if (c !== '.') g[y + 1][x + 1 + (f && y > 9 ? 1 : 0)] = c === 'W' ? 'W' : 'M'; }); });
+          g[5][3] = 'K'; g[5][5] = 'K';
+        } else if (kind === 1) {
+          g = blank(13, 16); var hand = ['....MM', '...MWWM', '...MWWM', '...MWWM', '...MWWMMM', '...MWWMWWMMM', 'MM.MWWMWWMWWM', 'MWMMWWWWWWWWM', 'MWWMWWWWWWWWM', '.MWWWWWWWWWWM', '..MWWWWWWWWM', '...MWWWWWWM', '....MWWWWM', '....MMMMMM'];
+          hand.forEach(function (row, y) { row.split('').forEach(function (c, x) { if (c !== '.') g[y + 1 + (f && y < 4 ? -1 : 0)][x] = c; }); });
+          g[9][5] = 'K'; g[9][9] = 'K';
+        } else {
+          g = blank(13, 15); for (var y2 = 0; y2 < 15; y2++) { var half = y2 < 7 ? 6 - y2 : y2 - 8; if (y2 === 0 || y2 === 14) half = 6; if (half < 1) half = 1; for (var x2 = 6 - half; x2 <= 6 + half; x2++) g[y2][x2] = (y2 === 0 || y2 === 14 || x2 === 6 - half || x2 === 6 + half) ? 'M' : (f ? (y2 > 7 ? 'W' : 'L') : (y2 < 7 ? 'W' : 'L')); }
+          g[3][4] = 'K'; g[3][8] = 'K';
+        }
+        return g;
+      },
+      chip: function (r, f) {   // a black microchip on scuttling pin legs, its part number half rubbed off
+        var w = 11 + Math.floor(r() * 4) * 2, h = 8 + Math.floor(r() * 3), g = blank(w + 4, h + 2);
+        for (var y = 1; y < h + 1; y++) for (var x = 2; x < w + 2; x++) g[y][x] = (y === 1 || y === h || x === 2 || x === w + 1) ? 'M' : 'K';
+        for (var py = 2; py < h; py += 2) { var sh = ((py / 2) + (f ? 1 : 0)) % 2; g[py][0 + sh] = 'L'; g[py][1] = 'L'; g[py][w + 2] = 'L'; g[py][w + 3 - sh] = 'L'; }
+        g[2][3] = 'L';   // the pin-1 dot
+        g[3][4] = 'W'; g[3][w - 1] = 'W';
+        var label = ''; for (var k = 0; k < 3; k++) label += r() < .5 ? '0' : '1';
+        for (var lx = 4; lx < w; lx++) if (r() < .6) g[h - 2][lx] = 'M';
+        g[0][4 + (f ? 1 : 0)] = 'M'; g[h + 1][w - 2 - (f ? 1 : 0)] = 'M';
+        return g;
+      },
+      botnet: function (r, f) {   // a cluster of infected machines, wired to one ringleader with eyes
+        var g = blank(21, 15), cx = 10, cy = 7, n = 4 + Math.floor(r() * 3), nodes = [];
+        for (var i = 0; i < n; i++) { var a = (i / n) * Math.PI * 2 + r() * .6, rr = 6 + r() * 2.5; nodes.push([Math.round(cx + Math.cos(a) * rr * 1.25), Math.round(cy + Math.sin(a) * rr * .85)]); }
+        nodes.forEach(function (nd) { var st2 = Math.max(Math.abs(nd[0] - cx), Math.abs(nd[1] - cy)); for (var t = 2; t < st2; t++) { var yy = Math.round(cy + (nd[1] - cy) * t / st2), xx = Math.round(cx + (nd[0] - cx) * t / st2); if (g[yy] && xx >= 0 && xx < 21) g[yy][xx] = (t + (f ? 1 : 0)) % 3 ? 'M' : 'W'; } });
+        nodes.forEach(function (nd, k) { for (var dy = -1; dy <= 1; dy++) for (var dx = -1; dx <= 1; dx++) { var yy = Math.min(14, Math.max(0, nd[1] + dy)), xx = Math.min(20, Math.max(0, nd[0] + dx)); g[yy][xx] = dx || dy ? 'L' : ((k + (f ? 1 : 0)) % 2 ? 'W' : 'K'); } });
+        for (var y3 = cy - 2; y3 <= cy + 2; y3++) for (var x3 = cx - 3; x3 <= cx + 3; x3++) g[y3][x3] = (Math.abs(y3 - cy) === 2 || Math.abs(x3 - cx) === 3) ? 'M' : 'L';
+        g[cy - 1][cx - 1] = 'K'; g[cy - 1][cx + 1] = 'K'; g[cy + 1][cx] = 'M';
+        return g;
+      },
+      floppy: function (r, f) {   // a diskette with a metal shutter for a mouth and a label for a face
+        var w = 13 + Math.floor(r() * 2), g = blank(w, 15);
+        for (var y = 1; y < 14; y++) for (var x = 0; x < w; x++) g[y][x] = (y === 1 || y === 13 || !x || x === w - 1) ? 'M' : 'K';
+        g[1][w - 1] = '.'; g[2][w - 1] = 'M'; g[1][w - 2] = 'M';
+        var sx = Math.floor(w / 2) - 3; for (var y2 = 1; y2 < 5; y2++) for (var x2 = sx; x2 < sx + 6; x2++) g[y2][x2] = 'L'; for (var y4 = 2; y4 < 4; y4++) g[y4][sx + (f ? 1 : 4)] = 'K';
+        for (var y3 = 7; y3 < 13; y3++) for (var x3 = 2; x3 < w - 2; x3++) g[y3][x3] = 'W';
+        g[9][4] = 'K'; g[9][w - 5] = 'K'; for (var x4 = 5; x4 < w - 5; x4++) g[11][x4] = f ? 'M' : (x4 % 2 ? 'M' : 'W');
+        g[14][3 + (f ? 1 : 0)] = 'L'; g[14][w - 4 - (f ? 1 : 0)] = 'L';
+        return g;
+      },
+      monitor: function (r, f) {   // a fat old CRT on a stand, its picture rolling, its face made of scanlines
+        var w = 15 + Math.floor(r() * 3) * 2, h = 11 + Math.floor(r() * 2), g = blank(w, h + 3), face = Math.floor(r() * 3);
+        for (var y = 0; y < h; y++) for (var x = 0; x < w; x++) { var bez = y < 1 || y > h - 3 || x < 2 || x > w - 3; g[y][x] = bez ? 'L' : ((y + (f ? 1 : 0)) % 3 === 0 ? 'D' : 'K'); }
+        g[h - 2][w - 4] = f ? 'W' : 'M'; g[h - 2][w - 6] = 'M';   // the power light and a knob
+        var ex = Math.floor(w / 2); g[4][ex - 3] = 'W'; g[4][ex + 3] = 'W'; g[5][ex - 3] = 'W'; g[5][ex + 3] = 'W';
+        if (face === 0) for (var mx = ex - 2; mx <= ex + 2; mx++) g[7][mx] = 'W';
+        else if (face === 1) { g[7][ex - 2] = 'W'; g[8][ex - 1] = 'W'; g[8][ex] = 'W'; g[8][ex + 1] = 'W'; g[7][ex + 2] = 'W'; }
+        else { g[7][ex] = 'W'; g[8][ex] = 'W'; g[7][ex - 1] = 'W'; g[7][ex + 1] = 'W'; }
+        for (var x2 = ex - 2; x2 <= ex + 2; x2++) g[h][x2] = 'M'; for (var x3 = ex - 5; x3 <= ex + 5; x3++) g[h + 1][x3] = 'M';
+        return g;
+      }
+    };
+    window.__corrupt = function (style, seed) {
+      var frames = [0, 1].map(function (f) { var r = rng(seed), g = STY[style](r, f); return g; });
+      var w = Math.max(frames[0][0].length, frames[1][0].length) + 2, h = Math.max(frames[0].length, frames[1].length) + 2;
+      return frames.map(function (g) { return outline(pad(g, w, h)); });
+    };
+  })();
   var BUGSPEC = {"beetle": {"vx": 46, "fps": 9, "hover": 0}, "spider": {"vx": 72, "fps": 12, "hover": 0}, "worm": {"vx": 24, "fps": 3, "hover": 0}, "moth": {"vx": 30, "fps": 11, "hover": 3.2}, "virus": {"vx": 0, "fps": 4, "hover": 3}, "bytebug": {"vx": 40, "fps": 9, "hover": 0}, "centipede": {"vx": 30, "fps": 10, "hover": 0}, "scorpion": {"vx": 18, "fps": 5, "hover": 0}};
   var EXITS = ['exit 1', 'exit 2', 'exit 126', 'exit 127', 'exit 130', 'exit 137', 'exit 139', 'exit 255'];
   var BUGS = ["beetle", "spider", "worm", "moth", "virus", "bytebug", "centipede", "scorpion"];
   var POOLS = {}; ['descent','data','firewall','circuit','alley','tunnel','server','glitch','radar','ridge','blacksignal','signal','terminal','skyline','ink'].forEach(function (id) { POOLS[id] = BUGS; });
   function obPal(light) {
     return light ? { W: '#151515', L: '#3a3a3c', M: '#6a6a6c', D: '#a8a49c', K: '#eeebe4' } : { W: '#f4f4f4', L: '#c4c4c8', M: '#808086', D: '#3c3c42', K: '#111113' };
+  }
+  /* the 16-bit pass: the same 8-bit designs, drawn at twice the resolution with a light source.
+     Each cell becomes 2x2: lit from the top left, shaded to the bottom right, a dark sel-out edge,
+     a dithered mid-tone, glints in the eyes, and a soft rim so it reads against a dark arena. */
+  var hdCache = {};
+  function hdCanvas(rows, key) {
+    if (key && hdCache[key]) return hdCache[key];
+    var H = rows.length, W = rows[0].length;
+    function at(x, y) { var r = rows[y]; if (!r || x < 0) return '.'; var q = r.charAt(x); return q === '' ? '.' : q; }
+    // 1. Scale2x: double the grid, rounding off the stair-steps on diagonals instead of just making bigger squares
+    var W2 = W * 2, H2 = H * 2, g = [];
+    for (var y = 0; y < H; y++) for (var x = 0; x < W; x++) {
+      // rounding works on the silhouette only (filled or not), so inner details like digits and eyes stay crisp
+      var P = at(x, y), A = at(x, y - 1), B = at(x + 1, y), C = at(x - 1, y), D = at(x, y + 1);
+      var mP = P !== '.', mA = A !== '.', mB = B !== '.', mC = C !== '.', mD = D !== '.';
+      function pick(n1, n2, m1, m2, mo1, mo2, c1) { return (m1 === m2 && m1 !== mo1 && m2 !== mo2 && m1 !== mP) ? (m1 ? c1 : '.') : P; }
+      var e0 = pick(C, A, mC, mA, mD, mB, mA ? A : C), e1 = pick(A, B, mA, mB, mC, mD, mB ? B : A), e2 = pick(D, C, mD, mC, mB, mA, mC ? C : D), e3 = pick(B, D, mB, mD, mA, mC, mD ? D : B);
+      g[(y * 2) * W2 + x * 2] = e0; g[(y * 2) * W2 + x * 2 + 1] = e1; g[(y * 2 + 1) * W2 + x * 2] = e2; g[(y * 2 + 1) * W2 + x * 2 + 1] = e3;
+    }
+    function G(x, y) { return x < 0 || y < 0 || x >= W2 || y >= H2 ? '.' : g[y * W2 + x]; }
+    var pad = 2, cw = W2 + pad * 2, ch = H2 + pad * 2, cvs = document.createElement('canvas'); cvs.width = cw; cvs.height = ch; cvs.hd = 2;
+    var c = cvs.getContext('2d'), img = c.createImageData(cw, ch), d = img.data, body = [];
+    var TONE = { K: 24, D: 58, M: 130, L: 196, W: 250 };
+    // 2. volume: inside each patch of one tone, lighter toward its top and left, darker toward its bottom and right
+    for (var y2 = 0; y2 < H2; y2++) for (var x2 = 0; x2 < W2; x2++) {
+      var q = G(x2, y2); if (q === '.') continue;
+      var t = TONE[q] || 160;
+      if (q === 'L' || q === 'M') {
+        var du = 0, dd = 0, dl = 0, dr = 0;
+        while (du < 6 && G(x2, y2 - du - 1) === q) du++; while (dd < 6 && G(x2, y2 + dd + 1) === q) dd++;
+        while (dl < 6 && G(x2 - dl - 1, y2) === q) dl++; while (dr < 6 && G(x2 + dr + 1, y2) === q) dr++;
+        t += Math.max(-44, Math.min(36, (dd - du) * 9)) + Math.max(-16, Math.min(14, (dr - dl) * 4));
+        if (du === 0 && G(x2, y2 - 1) === '.') t += 26;        // a bright rim where light hits the top edge
+        if (q === 'M' && (x2 + y2) % 2 && dd < 2) t -= 16;     // dithered shadow at the bottom of mid tones
+        t += (0.5 - y2 / H2) * 30;                             // and the whole sprite is lit from above
+      }
+      if (q === 'W') { var lone = G(x2 - 1, y2) !== 'W' || G(x2 + 1, y2) !== 'W'; if (lone && G(x2 + 1, y2) !== 'W' && G(x2, y2 + 1) !== 'W') t = 170; }   // eyes: a shaded lower corner
+      if (q === 'K') { if (G(x2 - 1, y2) !== 'K' && G(x2, y2 - 1) !== 'K') t = 200; }   // a glint at the top-left of every dark patch
+      if (q === 'D') t = 46 + (0.5 - y2 / H2) * 16;
+      var X = x2 + pad, Y = y2 + pad, k = Y * cw + X, i = k * 4, v = Math.max(6, Math.min(255, Math.round(t)));
+      body[k] = 1; d[i] = v; d[i + 1] = v; d[i + 2] = Math.min(255, v + 7); d[i + 3] = 255;
+    }
+    // 3. a soft rim outside the silhouette, so the dark outline still reads against a dark arena
+    for (var Y2 = 0; Y2 < ch; Y2++) for (var X2 = 0; X2 < cw; X2++) {
+      var k2 = Y2 * cw + X2, j2 = k2 * 4; if (body[k2]) continue;
+      if (body[k2 - 1] || body[k2 + 1] || body[k2 - cw] || body[k2 + cw]) { d[j2] = 232; d[j2 + 1] = 232; d[j2 + 2] = 240; d[j2 + 3] = 62; }
+    }
+    c.putImageData(img, 0, 0);
+    if (key) hdCache[key] = cvs;
+    return cvs;
+  }
+  /* the same 16-bit pass for full-colour sprites (Vee and the people of the city): works on any canvas.
+     Scale2x on the silhouette, then each patch of one colour gets lit from above and shaded below,
+     with a darker edge on the shadow side. The result is twice the size and flagged .hd = 2. */
+  function hdFromCanvas(src) {
+    if (src._hd) return src._hd;
+    var w = src.width, h = src.height, sd = src.getContext('2d').getImageData(0, 0, w, h).data;
+    function px(x, y) { return x < 0 || y < 0 || x >= w || y >= h ? 0 : (sd[(y * w + x) * 4 + 3] >= 200 ? ((sd[(y * w + x) * 4] << 16) | (sd[(y * w + x) * 4 + 1] << 8) | sd[(y * w + x) * 4 + 2]) + 1 : 0); }
+    var W2 = w * 2, H2 = h * 2, g = new Array(W2 * H2);
+    for (var y = 0; y < h; y++) for (var x = 0; x < w; x++) {
+      var P = px(x, y), A = px(x, y - 1), B = px(x + 1, y), C = px(x - 1, y), D = px(x, y + 1);
+      var mP = !!P, mA = !!A, mB = !!B, mC = !!C, mD = !!D;
+      function pick(m1, m2, mo1, mo2, c1, c2) { return (m1 === m2 && m1 !== mo1 && m2 !== mo2 && m1 !== mP) ? (m1 ? c1 : 0) : (mP && m1 && m2 && c1 === c2 && c1 !== P && mo1 && mo2 ? P : P); }
+      g[(y * 2) * W2 + x * 2] = pick(mC, mA, mD, mB, A || C, C);
+      g[(y * 2) * W2 + x * 2 + 1] = pick(mA, mB, mC, mD, B || A, A);
+      g[(y * 2 + 1) * W2 + x * 2] = pick(mD, mC, mB, mA, C || D, D);
+      g[(y * 2 + 1) * W2 + x * 2 + 1] = pick(mB, mD, mA, mC, D || B, B);
+    }
+    function G(x, y) { return x < 0 || y < 0 || x >= W2 || y >= H2 ? 0 : g[y * W2 + x]; }
+    function lumOf(q) { var c = q - 1; return ((c >> 16 & 255) * .3 + (c >> 8 & 255) * .59 + (c & 255) * .11) / 255; }
+    var out = document.createElement('canvas'); out.width = W2; out.height = H2; out.hd = 2;
+    var oc = out.getContext('2d'), img = oc.createImageData(W2, H2), d = img.data;
+    for (var gy = 0; gy < h; gy++) for (var gx = 0; gx < w; gx++) {   // soft glow pixels (alpha below 200) are copied as they are, at double size
+      var si = (gy * w + gx) * 4, al = sd[si + 3]; if (!al || al >= 200) continue;
+      for (var sy = 0; sy < 2; sy++) for (var sx = 0; sx < 2; sx++) { var di = ((gy * 2 + sy) * W2 + gx * 2 + sx) * 4; d[di] = sd[si]; d[di + 1] = sd[si + 1]; d[di + 2] = sd[si + 2]; d[di + 3] = al; }
+    }
+    for (var y2 = 0; y2 < H2; y2++) for (var x2 = 0; x2 < W2; x2++) {
+      var q = G(x2, y2); if (!q) continue;
+      var c = q - 1, r = c >> 16 & 255, gg = c >> 8 & 255, b = c & 255, lum = (r * .3 + gg * .59 + b * .11) / 255;
+      var du = 0, dd = 0; while (du < 6 && G(x2, y2 - du - 1) === q) du++; while (dd < 6 && G(x2, y2 + dd + 1) === q) dd++;
+      var dl = 0, dr = 0; while (dl < 6 && G(x2 - dl - 1, y2) === q) dl++; while (dr < 6 && G(x2 + dr + 1, y2) === q) dr++;
+      var tall = du + dd >= 3, wide = dl + dr >= 3;   // thin details (strands of hair, stripes, eyes) stay flat; only real surfaces get volume
+      var k = 1 + (tall ? Math.max(-.14, Math.min(.12, (dd - du) * .03)) : 0) + (wide ? Math.max(-.05, Math.min(.05, (dr - dl) * .012)) : 0);
+      if (tall && wide && du === 0 && !G(x2, y2 - 1)) k += .1;                    // rim light on top edges
+      var edge = !G(x2 + 1, y2) || !G(x2, y2 + 1), edgeL = !G(x2 - 1, y2) || !G(x2, y2 - 1);
+      if (edge) k *= .7; else if (edgeL) k *= .9;                               // sel-out: darker on the shadow side
+      var up1 = G(x2, y2 - 1), up2 = G(x2, y2 - 2), lft = G(x2 - 1, y2), rgt = G(x2 + 1, y2);
+      if (up1 && up1 !== q && lumOf(up1) < lum - .05) k *= .84;                  // contact shadow under hair, arms and collars
+      else if (up2 && up1 === q && up2 !== q && lumOf(up2) < lum - .05) k *= .93;
+      if (lft && lft !== q) k += lumOf(lft) < lum ? .07 : -.03;                   // each strand and fold gets a lit left side
+      if (rgt && rgt !== q && lumOf(rgt) < lum) k *= .9;                          // and a shaded right side
+      if (lum < .12) k = 1;                                                      // true blacks (outlines, pupils) stay black
+      if (lum < .16 && (x2 % 2 === 0) && (y2 % 2 === 0)) {                        // a dark dot set in a lighter face is an eye: give it a catchlight
+        var sl = px((x2 >> 1) - 1, y2 >> 1), sr = px((x2 >> 1) + 1, y2 >> 1);
+        var su = px(x2 >> 1, (y2 >> 1) - 1), sb = px(x2 >> 1, (y2 >> 1) + 1);
+        var sp0 = px(x2 >> 1, y2 >> 1);
+        if (sl && sr && sl === sr && lumOf(sl) > .34 && !(su === sp0 && sb === sp0) && ((su && lumOf(su) > .34) || (sb && lumOf(sb) > .34))) { r = gg = b = 225; k = 1; }
+      }
+      var add = tall && wide && lum > .12 && du === 0 && dl === 0 && !edge ? 10 : 0, i = (y2 * W2 + x2) * 4;
+      d[i] = Math.min(255, r * k + add); d[i + 1] = Math.min(255, gg * k + add); d[i + 2] = Math.min(255, b * k + add); d[i + 3] = 255;
+    }
+    oc.putImageData(img, 0, 0);
+    src._hd = out; return out;
+  }
+  /* the 16-bit pass for scenery: maps, buildings, battle backdrops. Lighter than the sprite pass so the city
+     doesn't look embossed: Scale2x rounds every diagonal between colours, then each colour edge gets a thin lit
+     top and left, a thin shade bottom and right, and a contact shadow where something darker sits above. */
+  function hdScene(src, out) {
+    var w = src.width, h = src.height, sd = src.getContext('2d').getImageData(0, 0, w, h).data, n = w * h;
+    var col = new Int32Array(n), al = new Uint8Array(n);
+    for (var i = 0; i < n; i++) { al[i] = sd[i * 4 + 3]; col[i] = al[i] ? ((sd[i * 4] << 16) | (sd[i * 4 + 1] << 8) | sd[i * 4 + 2]) + 1 : 0; }
+    var W2 = w * 2, H2 = h * 2, g = new Int32Array(W2 * H2), ga = new Uint8Array(W2 * H2);
+    for (var y = 0; y < h; y++) for (var x = 0; x < w; x++) {
+      var k = y * w + x, P = col[k], A = y ? col[k - w] : P, B = x < w - 1 ? col[k + 1] : P, C = x ? col[k - 1] : P, D = y < h - 1 ? col[k + w] : P;
+      var o = y * 2 * W2 + x * 2, a = al[k];
+      g[o] = (C === A && C !== D && A !== B) ? A : P; g[o + 1] = (A === B && A !== C && B !== D) ? B : P;
+      g[o + W2] = (D === C && D !== B && C !== A) ? C : P; g[o + W2 + 1] = (B === D && B !== A && D !== C) ? D : P;
+      ga[o] = g[o] === P ? a : 255; ga[o + 1] = g[o + 1] === P ? a : 255; ga[o + W2] = g[o + W2] === P ? a : 255; ga[o + W2 + 1] = g[o + W2 + 1] === P ? a : 255;
+      if (!P) { ga[o] = g[o] ? 255 : 0; ga[o + 1] = g[o + 1] ? 255 : 0; ga[o + W2] = g[o + W2] ? 255 : 0; ga[o + W2 + 1] = g[o + W2 + 1] ? 255 : 0; }
+    }
+    function lum(q) { var c = q - 1; return (c >> 16 & 255) * .3 + (c >> 8 & 255) * .59 + (c & 255) * .11; }
+    // run lengths: how far each subpixel is from the top, bottom, left and right of its patch of colour (two scans each way)
+    var N2 = W2 * H2, du = new Uint16Array(N2), dd = new Uint16Array(N2), dl = new Uint16Array(N2), dr = new Uint16Array(N2);
+    for (var j0 = W2; j0 < N2; j0++) if (g[j0] === g[j0 - W2]) du[j0] = du[j0 - W2] + 1;
+    for (var j1 = N2 - W2 - 1; j1 >= 0; j1--) if (g[j1] === g[j1 + W2]) dd[j1] = dd[j1 + W2] + 1;
+    for (var yy = 0; yy < H2; yy++) { var row = yy * W2; for (var xx = 1; xx < W2; xx++) if (g[row + xx] === g[row + xx - 1]) dl[row + xx] = dl[row + xx - 1] + 1; for (var xr = W2 - 2; xr >= 0; xr--) if (g[row + xr] === g[row + xr + 1]) dr[row + xr] = dr[row + xr + 1] + 1; }
+    out = out || document.createElement('canvas'); if (out.width !== W2) out.width = W2; if (out.height !== H2) out.height = H2; out.hd = 2;
+    var oc = out.getContext('2d'), img = oc.createImageData(W2, H2), d = img.data;
+    for (var y2 = 0; y2 < H2; y2++) for (var x2 = 0; x2 < W2; x2++) {
+      var j = y2 * W2 + x2, q = g[j]; if (!q) continue;
+      var c = q - 1, r = c >> 16 & 255, gg = c >> 8 & 255, b = c & 255, L = r * .3 + gg * .59 + b * .11, m = 1, add = 0;
+      var up = y2 ? g[j - W2] : q, dn = y2 < H2 - 1 ? g[j + W2] : q, lf = x2 ? g[j - 1] : q, rt = x2 < W2 - 1 ? g[j + 1] : q;
+      var vt = du[j] + dd[j], ht = dl[j] + dr[j];
+      if (vt >= 6) m *= 1.09 - .18 * (du[j] / vt);                                     // every surface is lit from above: lighter at its top, darker at its foot
+      if (ht >= 6) m *= 1.03 - .06 * (dl[j] / ht);                                     // and a little from the left
+      function diff(n2) { return n2 && n2 !== q && Math.abs(lum(n2) - L) > 7; }        // neighbouring shades of one gradient don't count as an edge
+      if (diff(up)) { if (lum(up) < L - 12) m *= .78; else add += 10; }                 // under something darker: contact shadow; otherwise a lit top edge
+      else if (y2 > 1 && up === q && g[j - 2 * W2] !== q && g[j - 2 * W2] && lum(g[j - 2 * W2]) < L - 12) m *= .92;
+      if (diff(dn) && lum(dn) < L) m *= .84;                                      // shade along the bottom edge
+      if (diff(lf)) add += lum(lf) < L ? 8 : 0;                                    // a lit left edge
+      if (diff(rt) && lum(rt) < L) m *= .93;                                       // a shaded right edge
+      if (L > 70 && ((x2 ^ y2) & 1) && up === q && dn === q && lf === q && rt === q) add += (x2 + y2) % 4 === 0 ? 3 : -2;   // a fine ordered dither inside flat colour
+      var i4 = j * 4; d[i4] = Math.max(0, Math.min(255, r * m + add)); d[i4 + 1] = Math.max(0, Math.min(255, gg * m + add)); d[i4 + 2] = Math.max(0, Math.min(255, b * m + add)); d[i4 + 3] = ga[j];
+    }
+    oc.putImageData(img, 0, 0);
+    return out;
   }
   var obCache = {};
   function obCanvas(rows, light, key) {
@@ -784,7 +1089,10 @@
   /* ---------- hints that the game exists ---------- */
   window.VondsGame = { open: function () { open(0); } };
   window.VondsSprite = { frame: frame, look: function () { return LOOK; }, pose: POSE, arm: ARM,
-    bug: function (kind, f) { var fr = OBMAP[kind]; return obCanvas(fr[f % fr.length], false, 'rpg' + kind + (f % fr.length)); }, bugs: Object.keys(OBMAP) };
+    bug: function (kind, f) { var fr = OBMAP[kind]; return obCanvas(fr[f % fr.length], false, 'rpg' + kind + (f % fr.length)); }, bugs: Object.keys(OBMAP),
+    hd: hdFromCanvas, hdScene: hdScene,
+    bugHD: function (kind, f) { var fr = OBMAP[kind]; return hdCanvas(fr[f % fr.length], 'hd' + kind + (f % fr.length)); },
+    addBug: function (kind, frames) { OBMAP[kind] = frames; } };
   try {
     console.log('%cV O N D S', 'font:600 20px Dosis,system-ui,sans-serif;letter-spacing:.6em;color:#2e2e30');
     console.log('%cHey, fellow builder. The logo up in the hero is a game.\nOr open the terminal with ` and type play.', 'font:13px ui-monospace,Menlo,Consolas,monospace;color:#5a5a60;line-height:1.6');
@@ -911,12 +1219,21 @@
       '.......TTTT', '.......LLLL', '........PP.', '........PP.', '........PP.', '.......BBB.', '...........', '...........'];
     // locs: thick, wavy strands that fall past the waist, matching the side view
     var WAVE = [0, 0, 0, 1, 1, 1];
-    function locsFront(x, pal) {
+    function locsFront(x, pal, step) {
       function strand(x0, y, last) { [0, 1].forEach(function (k) { var c = last || k ? 'H' : 'h'; x.fillStyle = pal[c]; x.fillRect(x0 + k, y, 1, 1); x.fillRect(21 - x0 - k, y, 1, 1); }); }
       for (var y = 10; y <= 20; y++) { x.clearRect(0, y, 6, 1); x.clearRect(16, y, 6, 1); }
       for (var y1 = 10; y1 <= 20; y1++) strand(WAVE[y1 % 6], y1, y1 === 20);            // outer strand
-      for (var y2 = 10; y2 <= 19; y2++) strand(3 + WAVE[(y2 + 2) % 6], y2, y2 === 19);        // inner strand, beside the arm
-      for (var y3 = 15; y3 <= 17; y3++) { x.fillStyle = pal.S; x.fillRect(6, y3, 1, 1); x.fillRect(15, y3, 1, 1); }   // arms stay in front
+      for (var y2 = 10; y2 <= 19; y2++) strand(2 + WAVE[(y2 + 2) % 6], y2, y2 === 19);        // inner strand, behind the arm
+      // arms stay in front of the locs: a dark edge, a light sleeve, a bright hand, so they never read as hair
+      function both(cx0, y, c) { x.fillStyle = c; x.fillRect(cx0, y, 1, 1); x.fillRect(21 - cx0, y, 1, 1); }
+      var tp = x.getImageData(8, 15, 1, 1).data, shirt = 'rgb(' + tp[0] + ',' + tp[1] + ',' + tp[2] + ')', shirtD = 'rgb(' + (tp[0] * .82 | 0) + ',' + (tp[1] * .82 | 0) + ',' + (tp[2] * .82 | 0) + ')', shirtC = 'rgb(' + (tp[0] * .6 | 0) + ',' + (tp[1] * .6 | 0) + ',' + (tp[2] * .6 | 0) + ')';   // sleeves match the shirt
+      for (var y3 = 14; y3 <= 18; y3++) { both(4, y3, 'rgb(14,14,16)'); both(5, y3, y3 <= 16 ? shirtD : pal.R); both(6, y3, y3 <= 16 ? shirt : pal.R); if (y3 <= 16) both(7, y3, shirtC); }
+      both(5, 19, 'rgb(14,14,16)'); both(6, 19, 'rgb(14,14,16)'); both(5, 13, 'rgb(14,14,16)');
+      if (step) {   // arms swing opposite the legs: the hand on the planted-foot side comes forward (up a row), the other trails
+        var fx = step === 1 ? 15 : 5;
+        x.fillStyle = pal.R; x.fillRect(fx, 16, 2, 1); x.fillStyle = 'rgb(14,14,16)'; x.fillRect(fx, 18, 2, 2);
+        var bx = step === 1 ? 5 : 15; x.fillStyle = pal.R; x.fillRect(bx, 19, 2, 1); x.fillStyle = 'rgb(14,14,16)'; x.fillRect(bx, 20, 2, 1);
+      }
     }
     function locsBack(x, pal) {
       for (var y0 = 12; y0 <= 21; y0++) { x.clearRect(3, y0, 16, 1); if (y0 <= 20) { x.fillStyle = 'rgba(236,236,236,.38)'; x.fillRect(3, y0, 16, 1); } }   // the light seams between strands
@@ -926,16 +1243,29 @@
       }
       for (var y4 = 20; y4 <= 22; y4++) { x.fillStyle = pal.P; x.fillRect(8, y4, 2, 1); x.fillRect(12, y4, 2, 1); }   // legs show below the hair
     }
+    // walking, seen from the front or back: one foot lifts and comes forward (a row higher, a pixel wider), the other plants
+    function stepLegs(x, pal, step) {
+      if (!step) return;
+      var lift = step === 1 ? [7, 10] : [11, 14], plant = step === 1 ? [11, 14] : [7, 10], inner = step === 1 ? 8 : 12;
+      x.clearRect(lift[0], 20, 4, 5);
+      x.fillStyle = pal.P; x.fillRect(inner, 20, 2, 1);
+      x.fillStyle = pal.B; x.fillRect(step === 1 ? 7 : 12, 21, 3, 1);              // the lifted shoe, two rows up, its sole showing
+      x.fillStyle = 'rgb(40,40,44)'; x.fillRect(step === 1 ? 7 : 12, 22, 3, 1);
+      x.fillStyle = 'rgba(0,0,0,.4)'; x.fillRect(step === 1 ? 7 : 12, 24, 3, 1);    // its shadow left on the ground
+      x.fillStyle = pal.P; x.fillRect(step === 1 ? 12 : 8, 23, 2, 1);              // the planted leg straightens and takes the weight
+      x.fillStyle = pal.B; x.fillRect(step === 1 ? 12 : 7, 24, 3, 1);
+    }
     var frontCache = {};
-    function frontImg(light, blink) {
-      var key = (light ? 'L' : 'D') + (blink ? 'b' : ''); if (frontCache[key]) return frontCache[key];
+    function frontImg(light, blink, step) {
+      step = step || 0; var key = (light ? 'L' : 'D') + (blink ? 'b' : '') + step; if (frontCache[key]) return frontCache[key];
       var pal = palette(LOOK), c = document.createElement('canvas'); c.width = 22; c.height = 26; var x = c.getContext('2d');
       FRONT_HALF.forEach(function (half, y) {
         var row = half + half.split('').reverse().join('');
         for (var i = 0; i < 22; i++) { var ch = row.charAt(i); if (ch === '.') continue; if (blink && ch === 'E') ch = 'S'; x.fillStyle = pal[ch] || pal.S; x.fillRect(i, y, 1, 1); }
       });
       if (blink) { x.fillStyle = pal.E; x.fillRect(7, 8, 1, 1); x.fillRect(14, 8, 1, 1); }
-      locsFront(x, pal);
+      stepLegs(x, pal, step);
+      locsFront(x, pal, step);
       var d = x.getImageData(0, 0, 22, 26).data, pts = [];
       for (var yy = 0; yy < 26; yy++) for (var xx = 0; xx < 22; xx++) {
         if (d[(yy * 22 + xx) * 4 + 3]) continue;
@@ -974,14 +1304,18 @@
       return (pantCache[key] = c);
     }
     var backCache = {};
-    function backImg(light) {
-      var key = light ? 'L' : 'D'; if (backCache[key]) return backCache[key];
+    function backImg(light, step) {
+      step = step || 0; var key = (light ? 'L' : 'D') + step; if (backCache[key]) return backCache[key];
       var pal = palette(LOOK), c = document.createElement('canvas'); c.width = 22; c.height = 26; var x = c.getContext('2d');
       FRONT_HALF.forEach(function (half, y) {
         var row = half + half.split('').reverse().join('');
         for (var i = 0; i < 22; i++) { var ch = row.charAt(i); if (ch === '.') continue; if (y <= 13 && 'SERK'.indexOf(ch) >= 0) ch = (i + y) % 5 ? 'H' : 'h'; x.fillStyle = pal[ch] || pal.S; x.fillRect(i, y, 1, 1); }
       });
       locsBack(x, pal);
+      if (step) {   // from behind: the lifted foot shows its sole, the hair sways the other way
+        stepLegs(x, pal, step === 1 ? 2 : 1);
+        x.fillStyle = pal.H; var sw = step === 1 ? 2 : 19; for (var ys = 14; ys <= 20; ys++) x.fillRect(sw, ys, 1, 1);
+      }
       var d = x.getImageData(0, 0, 22, 26).data, pts = [];
       for (var yy = 0; yy < 26; yy++) for (var xx = 0; xx < 22; xx++) {
         if (d[(yy * 22 + xx) * 4 + 3]) continue;
@@ -1034,7 +1368,7 @@
       x.fillStyle = 'rgba(236,236,236,.38)'; for (var j = 0; j < pts.length; j += 2) x.fillRect(pts[j], pts[j + 1], 1, 1);
       return (personCache[key] = c);
     }
-    if (window.VondsSprite) { window.VondsSprite.front = function (blink) { return frontImg(false, blink); }; window.VondsSprite.back = function () { return backImg(false); }; window.VondsSprite.person = personImg; }
+    if (window.VondsSprite) { window.VondsSprite.front = function (blink, step) { return frontImg(false, blink, step); }; window.VondsSprite.back = function (step) { return backImg(false, step); }; window.VondsSprite.person = personImg; }
     function render(pose, dark) {
       var u = S * R; cx2.setTransform(1, 0, 0, 1, 0, 0); cx2.clearRect(0, 0, cv2.width, cv2.height); cx2.imageSmoothingEnabled = false;
       if (pose === 'pant0' || pose === 'pant1') { cx2.drawImage(pantImg(!dark, pose === 'pant1' ? 1 : 0), OX * u, OY * u, 22 * u, 26 * u); return; }

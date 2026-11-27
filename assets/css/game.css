@@ -171,7 +171,7 @@
 
 /* ---------- Signal Quest ---------- */
 .rpg{position:fixed;inset:0;z-index:2147483000;display:none;align-items:center;justify-content:center;flex-direction:column;background:rgba(6,6,7,0);transition:background .4s ease}
-.rpg.open{display:flex}.rpg.show{background:rgba(6,6,7,.9)}
+.rpg.open{display:flex}.rpg.show{background:#050507}
 .rpg-scr{position:relative;width:min(960px,96vw,calc(82vh * 16 / 9));aspect-ratio:16/9;background:#000;overflow:hidden;
   clip-path:inset(50% 0 50% 0);transition:clip-path .7s cubic-bezier(.77,0,.18,1);box-shadow:0 30px 100px rgba(0,0,0,.6)}
 .rpg.show .rpg-scr{clip-path:inset(0 0 0 0)}
@@ -241,6 +241,10 @@
 /* Meridian: district title cards, status and puzzle prompts */
 .rpg-area{position:absolute;left:0;right:0;top:14%;text-align:center;pointer-events:none;opacity:0;transform:translateY(-6px);transition:opacity .6s ease,transform .6s ease;font-family:'Press Start 2P',monospace;color:#fff;text-shadow:2px 2px 0 rgba(0,0,0,.75)}
 .rpg-area.on{opacity:1;transform:none}
+.rpg-area:not(.gtitle){padding:12px 0 14px;background:linear-gradient(180deg,transparent,rgba(4,4,6,.55) 22%,rgba(4,4,6,.55) 78%,transparent)}
+.rpg-area.gtitle{top:0;bottom:0;display:flex;flex-direction:column;justify-content:center;background:radial-gradient(ellipse at center,rgba(6,6,9,.92),rgba(6,6,9,.78))}
+.rpg-area.gtitle b{font-size:clamp(20px,4.6vw,48px);letter-spacing:.22em;padding-left:.22em}
+.rpg-area.gtitle span{font-size:clamp(7px,1vw,11px);letter-spacing:.06em}
 .rpg-area b{display:block;font-weight:400;font-size:clamp(11px,2.1vw,22px);letter-spacing:.08em}
 .rpg-area b::after{content:'';display:block;width:min(240px,46%);height:1px;margin:12px auto 10px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.8),transparent)}
 .rpg-area span{display:block;font-size:clamp(6px,.9vw,10px);line-height:1.9;color:#cfcfda;padding:0 8%}
@@ -305,3 +309,35 @@
 .rpg-menu .mn-pts{font-weight:400;font-size:1.4em;color:#fff}
 .rpg-foes .foe em.lv{font-style:normal;color:#9a9aa8;font-size:.8em}
 .rpg-foes .foe em.lv::before{content:'Lv '}
+
+/* Vee in critical condition: the HP readout pulses, like the old games */
+.rpg-hud .crit .rpg-row:first-child b{animation:rpgCrit .5s steps(2) infinite}
+@keyframes rpgCrit{0%{color:#fff}50%{color:#5a5a62}}
+/* knocked out: the screen goes dark and says so */
+.rpg-ko{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;background:#000;opacity:0;pointer-events:none;transition:opacity 1s ease;font-family:'Press Start 2P',monospace;color:#fff;text-align:center;padding:0 8%;z-index:6}
+.rpg-ko.on{opacity:1}
+.rpg-ko b{font-size:clamp(18px,3.6vw,36px);letter-spacing:.16em;font-weight:400}
+.rpg-ko span{font-size:clamp(8px,1.1vw,12px);line-height:1.7;color:#d0d0d8}
+.rpg-ko em{font-style:normal;font-size:clamp(7px,.9vw,10px);color:#8a8a94}
+.rpg-ko i{font-style:normal;font-size:clamp(7px,.95vw,11px);letter-spacing:.12em;color:#9a9aa6;margin-top:-4px}
+.rpg-ko pre{margin:6px 0;min-height:4.6em;max-width:92%;text-align:left;white-space:pre-wrap;font-family:'Press Start 2P',monospace;font-size:clamp(6px,.8vw,9px);line-height:1.9;color:#bdbdc8;border-left:2px solid #555;padding:4px 0 4px 12px}
+/* phones: the game sits in the vertical middle of the screen. Held upright, the screen is 4:3 so the city fills more of it */
+@media (hover:none),(pointer:coarse),(max-width:760px){
+  .rpg{justify-content:center;padding-top:0}
+  .rpg-scr.tall{aspect-ratio:4/3}
+  .rpg-scr.tall canvas{height:calc(100vw * 3 / 4)}
+  .rpg-scr.tall:has(.rpg-hud.on){aspect-ratio:auto;height:calc(100vw * 3 / 4 + 196px)}
+  .rpg-scr.tall:has(.rpg-menu.on){aspect-ratio:auto;height:min(86vh,calc(100vw * 3 / 4 + 300px))}
+}
+/* phones on their side: arrows on the left, A and B on the right, the screen in the middle between them */
+@media (hover:none) and (orientation:landscape),(pointer:coarse) and (orientation:landscape){
+  .rpg{justify-content:center;padding:0}
+  .rpg-scr{width:min(calc(100vw - 300px),calc(100vh * 16 / 9))}
+  .rpg-scr canvas{height:100%}
+  .rpg-scr:has(.rpg-hud.on){aspect-ratio:16/9;height:auto}
+  .rpg-scr:has(.rpg-hud.on) .rpg-hud{height:42%;bottom:0}
+  .rpg-pad,.rpg:has(.rpg-hud.on) .rpg-pad,.rpg:has(.rpg-menu.on) .rpg-pad{display:grid;position:fixed;inset:0;width:auto;margin:0;padding:0 16px;grid-template-columns:44px 44px 44px 1fr 54px 54px;grid-template-rows:1fr 44px 44px 44px 1fr;gap:4px;pointer-events:none;z-index:5}
+  .rpg-pad button{pointer-events:auto}
+  .rpg-pad [data-k=up]{grid-column:2;grid-row:2}.rpg-pad [data-k=left]{grid-column:1;grid-row:3}.rpg-pad [data-k=right]{grid-column:3;grid-row:3}.rpg-pad [data-k=down]{grid-column:2;grid-row:4}
+  .rpg-pad .a{grid-column:6;grid-row:3}.rpg-pad .b{grid-column:5;grid-row:4}
+}
