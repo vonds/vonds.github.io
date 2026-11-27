@@ -329,13 +329,15 @@
   .rpg-scr.tall:has(.rpg-hud.on){aspect-ratio:auto;height:calc(100vw * 3 / 4 + 196px)}
   .rpg-scr.tall:has(.rpg-menu.on){aspect-ratio:auto;height:min(86vh,calc(100vw * 3 / 4 + 300px))}
 }
-/* phones on their side: the screen fills the height, and the pad floats over its edges instead of pushing it off-screen */
+/* phones on their side: arrows on the left, A and B on the right, the screen in the middle between them */
 @media (hover:none) and (orientation:landscape),(pointer:coarse) and (orientation:landscape){
   .rpg{justify-content:center;padding:0}
-  .rpg-scr{width:min(100vw,calc(100vh * 16 / 9))}
+  .rpg-scr{width:min(calc(100vw - 300px),calc(100vh * 16 / 9))}
   .rpg-scr canvas{height:100%}
   .rpg-scr:has(.rpg-hud.on){aspect-ratio:16/9;height:auto}
   .rpg-scr:has(.rpg-hud.on) .rpg-hud{height:42%;bottom:0}
-  .rpg-pad{position:fixed;left:0;right:0;bottom:6px;width:100%;margin:0;padding:0 14px;grid-template-columns:repeat(3,42px) 1fr 50px 50px;grid-template-rows:repeat(3,38px);pointer-events:none;opacity:.6;z-index:5}
+  .rpg-pad,.rpg:has(.rpg-hud.on) .rpg-pad,.rpg:has(.rpg-menu.on) .rpg-pad{display:grid;position:fixed;inset:0;width:auto;margin:0;padding:0 16px;grid-template-columns:44px 44px 44px 1fr 54px 54px;grid-template-rows:1fr 44px 44px 44px 1fr;gap:4px;pointer-events:none;z-index:5}
   .rpg-pad button{pointer-events:auto}
+  .rpg-pad [data-k=up]{grid-column:2;grid-row:2}.rpg-pad [data-k=left]{grid-column:1;grid-row:3}.rpg-pad [data-k=right]{grid-column:3;grid-row:3}.rpg-pad [data-k=down]{grid-column:2;grid-row:4}
+  .rpg-pad .a{grid-column:6;grid-row:3}.rpg-pad .b{grid-column:5;grid-row:4}
 }
