@@ -624,6 +624,45 @@ body.swap .warp{transition:none!important;opacity:0}
 /* v15: alternate sides, card right on even projects */ @media (min-width:701px){.ff .deep[data-scene][data-i="2"],.ff .deep[data-scene][data-i="4"],.ff .deep[data-scene][data-i="6"]{--ox:calc(-1 * min(24vw,calc(50vw - 330px + 280px)))} .ff .deep[data-i="2"] .dtxt,.ff .deep[data-i="4"] .dtxt,.ff .deep[data-i="6"] .dtxt{left:auto!important;right:max(7vw,140px)}} @media (min-width:701px) and (max-width:1280px){.ff .deep[data-scene][data-i="2"],.ff .deep[data-scene][data-i="4"],.ff .deep[data-scene][data-i="6"]{--ox:-19vw}}
 </style>
 <link rel="stylesheet" href="assets/css/experience.css"><link rel="stylesheet" href="assets/css/game.css"><script>(function(){var r=document.documentElement;if(!(window.matchMedia&&matchMedia("(prefers-reduced-motion: reduce)").matches)){r.classList.add("xp-intro");setTimeout(function(){r.classList.add("xp-go")},2600);}})();</script>
+<style>
+  /* ---------- Hero: editorial portrait ---------- */
+  .hero{background:#c8c8c8 linear-gradient(100deg,#b9b9b9 0%,#cdcdcd 48%,#d3d3d3 100%);justify-content:flex-start;text-align:left;padding:140px 7vw 150px}
+  .hero::before{content:"";position:absolute;inset:-1% 6vw auto auto;height:114%;width:auto;aspect-ratio:1717/2576;z-index:-2;
+    background:url("assets/images/hero-portrait.jpg") center top/cover no-repeat;transform-origin:50% 24%;
+    -webkit-mask-image:linear-gradient(90deg,transparent 0,#000 16%,#000 84%,transparent 100%);mask-image:linear-gradient(90deg,transparent 0,#000 16%,#000 84%,transparent 100%);
+    animation:portraitDrift 34s ease-in-out infinite alternate}
+  @keyframes portraitDrift{0%{transform:scale(1)}100%{transform:scale(1.045) translate3d(-.6%,.4%,0)}}
+  /* a white veil over everything, then the page white rising from the bottom */
+  .hero::after{content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;
+    background:linear-gradient(180deg,rgba(255,255,255,0) 46%,rgba(255,255,255,.5) 68%,rgba(255,255,255,.88) 86%,#fff 100%),linear-gradient(rgba(255,255,255,.34),rgba(255,255,255,.34))}
+  .hero > div{max-width:min(46vw,640px)}
+  .hero .folio{display:flex;align-items:center;gap:18px;margin:0 0 34px;font-size:12px;letter-spacing:6px;color:var(--ink)}
+  .hero .folio::after{content:"";width:72px;height:1px;background:var(--ink);opacity:.7}
+  .hero h1{margin:0;white-space:nowrap;font-weight:300;font-size:clamp(44px,5.4vw,82px);line-height:1;color:#1d1d1f}
+  .hero .rule{margin:38px 0 26px;transform-origin:left}
+  .hero .role{letter-spacing:7px}
+  .hero .buttons{justify-content:flex-start}
+  .hero .credit{position:absolute;right:calc(7vw - 34px);top:50%;z-index:1;margin:0;transform:translateY(-50%) rotate(90deg);transform-origin:center;
+    font-size:11px;letter-spacing:6px;color:#3a3a3c;white-space:nowrap;opacity:.8}
+  .hero .scroll-cue{left:7vw;right:auto;align-items:flex-start}
+  html.xp-intro .hero .folio,html.xp-intro .hero .credit{opacity:0}
+  html.xp-go .hero .folio{opacity:1;transition:opacity 1.4s ease .5s}
+  html.xp-go .hero .credit{opacity:.8;transition:opacity 1.6s ease 2.2s}
+  @media (max-width:1100px){.hero::before{right:0}.hero .credit{display:none}.hero > div{max-width:58vw}}
+  @media (max-width:760px){
+    .hero{align-items:flex-end;justify-content:center;text-align:center;padding:120px 24px 130px;min-height:max(100svh,calc(150vw + 300px))}
+    .hero::before{inset:0;width:auto;height:auto;aspect-ratio:auto;background-position:50% 0;background-size:100% auto;-webkit-mask-image:linear-gradient(180deg,#000 0,#000 86vw,transparent 148vw);mask-image:linear-gradient(180deg,#000 0,#000 86vw,transparent 148vw)}
+    .hero::after{background:linear-gradient(180deg,rgba(255,255,255,0) 30%,rgba(255,255,255,.62) 56%,rgba(255,255,255,.94) 78%,#fff 100%),linear-gradient(rgba(255,255,255,.3),rgba(255,255,255,.3))}
+    .hero > div{max-width:none}
+    .hero .folio{justify-content:center;margin-bottom:26px}
+    .hero .folio::after{display:none}
+    .hero h1{font-size:clamp(34px,11vw,48px);margin-left:.6em}
+    .hero .rule{margin:30px auto 22px;transform-origin:center}
+    .hero .buttons{justify-content:center}
+    .hero .scroll-cue{left:0;right:0;align-items:center}
+  }
+  @media (prefers-reduced-motion:reduce){.hero::before{animation:none}}
+</style>
 </head>
 <body>
 
@@ -665,6 +704,7 @@ body.swap .warp{transition:none!important;opacity:0}
   <!-- Hero -->
   <section class="hero">
     <div>
+      <p class="folio alt">Portfolio · 2026</p>
       <h1 class="alt">Vonds</h1>
       <div class="rule"></div>
       <p class="role alt">Software · Systems · Security</p>
@@ -674,6 +714,7 @@ body.swap .warp{transition:none!important;opacity:0}
         <a class="btn line" href="#contact">Start a project</a>
       </div>
     </div>
+    <p class="credit alt" aria-hidden="true">Vonds Auguste</p>
     <a class="scroll-cue alt" href="#about" aria-label="Scroll to About"><span>Scroll</span><i aria-hidden="true"></i></a>
   </section>
 
