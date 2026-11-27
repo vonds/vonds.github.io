@@ -62,19 +62,37 @@
   .header.scrolled .menu-btn span{background:var(--ink)}
 
   /* ---------- Overlay menu ---------- */
-  .overlay{position:fixed;inset:0;z-index:60;background:rgba(38,38,40,.97);display:flex;align-items:center;justify-content:center;opacity:0;visibility:hidden;transition:opacity .4s var(--ease),visibility .4s}
-  .overlay.open{opacity:1;visibility:visible}
-  .overlay nav{display:flex;flex-direction:column;align-items:center;gap:14px}
-  .overlay nav>a{color:#fff;font-size:22px;letter-spacing:8px;padding:6px 0;transform:translateY(10px);opacity:0;transition:color .2s,transform .5s var(--ease),opacity .5s}
-  .overlay.open nav>a{transform:none;opacity:1}
-  .overlay.open nav>a:nth-child(2){transition-delay:.04s}.overlay.open nav>a:nth-child(3){transition-delay:.08s}
-  .overlay.open nav>a:nth-child(5){transition-delay:.12s}.overlay.open nav>a:nth-child(6){transition-delay:.16s}.overlay.open nav>a:nth-child(7){transition-delay:.2s}
-  .overlay nav>a:hover{color:#fff;text-decoration:underline;text-underline-offset:8px}
-  .overlay .sub{display:flex;flex-wrap:wrap;justify-content:center;gap:2px 22px;max-width:560px;margin:-6px 0 8px}
-  .overlay .sub a{font-size:13px;letter-spacing:3px;color:rgba(255,255,255,.8);padding:6px 0}
-  .overlay .sub a:hover{color:#fff}
-  .overlay .close{position:absolute;top:16px;right:20px;width:48px;height:48px;background:none;border:0;color:#fff;font-size:34px;line-height:1;cursor:pointer}
-  .overlay .foot{position:absolute;bottom:28px;color:rgba(255,255,255,.7);font-size:13px;letter-spacing:3px}
+  /* ---------- Menu: quiet, centered, lots of air ---------- */
+  .overlay{position:fixed;inset:0;z-index:60;background:#fafaf9;color:#1d1d1f;display:grid;grid-template-rows:auto 1fr auto;padding:22px clamp(24px,6vw,96px) 34px;
+    overflow-y:auto;overscroll-behavior:contain;opacity:0;visibility:hidden;transition:opacity .5s var(--ease),visibility 0s linear .5s}
+  .overlay.open{opacity:1;visibility:visible;transition:opacity .5s var(--ease),visibility 0s}
+  .overlay a{color:inherit;text-decoration:none}
+  .overlay .top{display:flex;align-items:center;justify-content:space-between;height:52px}
+  .overlay .top img{height:26px;width:auto;display:block}
+  .overlay .close{display:flex;align-items:center;gap:14px;height:48px;margin-right:-8px;padding:0 8px;background:none;border:0;color:#1d1d1f;cursor:pointer;font:500 11px/1 Dosis,sans-serif;letter-spacing:5px;text-transform:uppercase}
+  .overlay .close i{position:relative;width:22px;height:22px;display:block}
+  .overlay .close i::before,.overlay .close i::after{content:"";position:absolute;left:0;top:10px;width:22px;height:1px;background:currentColor;transition:transform .5s var(--ease)}
+  .overlay .close i::before{transform:rotate(45deg)}.overlay .close i::after{transform:rotate(-45deg)}
+  .overlay .close:hover i::before{transform:rotate(135deg)}.overlay .close:hover i::after{transform:rotate(45deg)}
+  .overlay nav{display:flex;align-items:center;justify-content:center}
+  .overlay .primary{list-style:none;margin:0;padding:0;text-align:center}
+  .overlay .primary li{margin:0}
+  .overlay .primary a{position:relative;display:inline-block;padding:clamp(8px,1.4vh,14px) 0 clamp(8px,1.4vh,14px) .34em;font:300 clamp(28px,3.6vw,46px)/1.2 Dosis,sans-serif;letter-spacing:.34em;text-transform:uppercase;
+    opacity:0;transform:translateY(12px);transition:opacity .7s ease,transform .9s cubic-bezier(.16,1,.3,1),color .3s ease}
+  .overlay.open .primary a{opacity:1;transform:none}
+  .overlay.open .primary li:nth-child(2) a{transition-delay:.05s}.overlay.open .primary li:nth-child(3) a{transition-delay:.1s}
+  .overlay.open .primary li:nth-child(4) a{transition-delay:.15s}.overlay.open .primary li:nth-child(5) a{transition-delay:.2s}
+  .overlay .primary a::after{content:"";position:absolute;left:50%;bottom:clamp(4px,.9vh,9px);width:28px;height:1px;margin-left:-14px;background:currentColor;transform:scaleX(0);transition:transform .5s var(--ease)}
+  .overlay .primary a.here::after,.overlay .primary a:hover::after,.overlay .primary a:focus-visible::after{transform:scaleX(1)}
+  .overlay .primary:hover a{color:#a3a3a6}
+  .overlay .primary a:hover,.overlay .primary a:focus-visible{color:#1d1d1f;outline:none}
+  .overlay .bottom{display:flex;justify-content:center;flex-wrap:wrap;gap:8px 34px;font:500 11px/1 Dosis,sans-serif;letter-spacing:4px;text-transform:uppercase;color:#6c6c70;opacity:0;transition:opacity .7s ease}
+  .overlay.open .bottom{opacity:1;transition-delay:.3s}
+  .overlay .bottom a{padding:6px 0;transition:color .3s}
+  .overlay .bottom a:hover{color:#1d1d1f}
+  .overlay .bottom .mail{text-transform:none;letter-spacing:1.5px;font-size:13px}
+  @media (max-width:600px){.overlay .bottom{flex-direction:column;align-items:center;gap:4px}}
+  @media (prefers-reduced-motion:reduce){.overlay,.overlay.open,.overlay .primary a,.overlay .bottom{transition:none;transform:none}.overlay.open .bottom{opacity:1}}
 
   /* ---------- Hero ---------- */
   .hero{position:relative;min-height:100vh;min-height:100svh;display:flex;align-items:center;justify-content:center;text-align:center;padding:130px 24px 110px;
@@ -685,25 +703,25 @@ body.swap .warp{transition:none!important;opacity:0}
   </div>
 </header>
 
-<div class="overlay" id="overlay" aria-hidden="true">
-  <button class="close" id="menuClose" type="button" aria-label="Close menu">&times;</button>
+<div class="overlay" id="overlay" aria-hidden="true" role="dialog" aria-modal="true" aria-label="Menu">
+  <div class="top">
+    <a href="#top" aria-label="Vonds home"><img src="assets/images/logo-dark.svg" alt="Vonds"></a>
+    <button class="close" id="menuClose" type="button" aria-label="Close menu"><span>Close</span><i aria-hidden="true"></i></button>
+  </div>
   <nav aria-label="Main">
-    <a class="alt" href="#top">Home</a>
-    <a class="alt" href="#about">About</a>
-    <a class="alt" href="#portfolio">Portfolio</a>
-    <div class="sub">
-      <a class="alt" href="https://black-signal-demo.netlify.app/">Black Signal</a>
-      <a class="alt" href="https://deeds-demo.netlify.app/">DEEDS</a>
-      <a class="alt" href="https://digital-resource-map-demo.netlify.app/">Digital Resource Map</a>
-      <a class="alt" href="https://thetravelingarchive.com/">The Traveling Archive</a>
-      <a class="alt" href="https://github.com/vonds/sentinel">Sentinel</a>
-      <a class="alt" href="https://github.com/vonds/exit_0">exit_0</a>
-    </div>
-    <a class="alt" href="#services">Services</a>
-    <a class="alt" href="#contact">Contact</a>
-    <a class="alt" href="https://www.linkedin.com/in/vonds/">LinkedIn</a>
+    <ol class="primary">
+      <li><a href="#top" data-sec="top">Home</a></li>
+      <li><a href="#about" data-sec="about">About</a></li>
+      <li><a href="#portfolio" data-sec="portfolio">Portfolio</a></li>
+      <li><a href="#services" data-sec="services">Services</a></li>
+      <li><a href="#contact" data-sec="contact">Contact</a></li>
+    </ol>
   </nav>
-  <div class="foot alt">Vonds &copy; 2026</div>
+  <div class="bottom">
+    <a class="mail" href="mailto:vonds13@gmail.com">vonds13@gmail.com</a>
+    <a href="https://www.linkedin.com/in/vonds/">LinkedIn</a>
+    <a href="https://github.com/vonds">GitHub</a>
+  </div>
 </div>
 
 <main id="top">
@@ -1000,7 +1018,8 @@ body.swap .warp{transition:none!important;opacity:0}
   toTop.addEventListener('click',function(){window.scrollTo({top:0,behavior:'smooth'});});
 
   var overlay=document.getElementById('overlay'), openBtn=document.getElementById('menuOpen'), closeBtn=document.getElementById('menuClose');
-  function setMenu(open){overlay.classList.toggle('open',open);overlay.setAttribute('aria-hidden',open?'false':'true');openBtn.setAttribute('aria-expanded',open?'true':'false');document.body.style.overflow=open?'hidden':'';if(open){closeBtn.focus();}else{openBtn.focus({preventScroll:true});}}
+  function markHere(){var y=innerHeight*.4,cur='top';['about','portfolio','services','contact'].forEach(function(id){var el=document.getElementById(id);if(el&&el.getBoundingClientRect().top<y)cur=id;});overlay.querySelectorAll('.primary a').forEach(function(a){var on=a.getAttribute('data-sec')===cur;a.classList.toggle('here',on);if(on)a.setAttribute('aria-current','location');else a.removeAttribute('aria-current');});}
+  function setMenu(open){if(open)markHere();overlay.classList.toggle('open',open);overlay.setAttribute('aria-hidden',open?'false':'true');openBtn.setAttribute('aria-expanded',open?'true':'false');document.body.style.overflow=open?'hidden':'';if(open){closeBtn.focus();}else{openBtn.focus({preventScroll:true});}}
   openBtn.addEventListener('click',function(){setMenu(true);});
   closeBtn.addEventListener('click',function(){setMenu(false);});
   overlay.querySelectorAll('a').forEach(function(a){a.addEventListener('click',function(){setMenu(false);});});
