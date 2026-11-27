@@ -321,3 +321,21 @@
 .rpg-ko em{font-style:normal;font-size:clamp(7px,.9vw,10px);color:#8a8a94}
 .rpg-ko i{font-style:normal;font-size:clamp(7px,.95vw,11px);letter-spacing:.12em;color:#9a9aa6;margin-top:-4px}
 .rpg-ko pre{margin:6px 0;min-height:4.6em;max-width:92%;text-align:left;white-space:pre-wrap;font-family:'Press Start 2P',monospace;font-size:clamp(6px,.8vw,9px);line-height:1.9;color:#bdbdc8;border-left:2px solid #555;padding:4px 0 4px 12px}
+/* phones: the game sits in the vertical middle of the screen. Held upright, the screen is 4:3 so the city fills more of it */
+@media (hover:none),(pointer:coarse),(max-width:760px){
+  .rpg{justify-content:center;padding-top:0}
+  .rpg-scr.tall{aspect-ratio:4/3}
+  .rpg-scr.tall canvas{height:calc(100vw * 3 / 4)}
+  .rpg-scr.tall:has(.rpg-hud.on){aspect-ratio:auto;height:calc(100vw * 3 / 4 + 196px)}
+  .rpg-scr.tall:has(.rpg-menu.on){aspect-ratio:auto;height:min(86vh,calc(100vw * 3 / 4 + 300px))}
+}
+/* phones on their side: the screen fills the height, and the pad floats over its edges instead of pushing it off-screen */
+@media (hover:none) and (orientation:landscape),(pointer:coarse) and (orientation:landscape){
+  .rpg{justify-content:center;padding:0}
+  .rpg-scr{width:min(100vw,calc(100vh * 16 / 9))}
+  .rpg-scr canvas{height:100%}
+  .rpg-scr:has(.rpg-hud.on){aspect-ratio:16/9;height:auto}
+  .rpg-scr:has(.rpg-hud.on) .rpg-hud{height:42%;bottom:0}
+  .rpg-pad{position:fixed;left:0;right:0;bottom:6px;width:100%;margin:0;padding:0 14px;grid-template-columns:repeat(3,42px) 1fr 50px 50px;grid-template-rows:repeat(3,38px);pointer-events:none;opacity:.6;z-index:5}
+  .rpg-pad button{pointer-events:auto}
+}

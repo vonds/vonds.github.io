@@ -45,9 +45,11 @@
 
   /* ======================= Meridian ======================= */
   var Quest = (function () {
-    var W = 320, H = 180, TS = 16;
+    // on a phone held upright the screen is taller (4:3 instead of 16:9), so the city fills more of it; battles sit in the middle
+    var TALL = !!(window.matchMedia && window.matchMedia('(max-width: 760px) and (orientation: portrait)').matches);
+    var W = 320, H = TALL ? 240 : 180, TS = 16, BOFF = Math.round((H - 180) / 2);
     var root = document.createElement('div'); root.className = 'rpg'; root.setAttribute('role', 'dialog'); root.setAttribute('aria-modal', 'true'); root.setAttribute('aria-label', NAMES.rpg);
-    root.innerHTML = '<div class="rpg-scr"><canvas width="' + W * 2 + '" height="' + H * 2 + '"></canvas>' +
+    root.innerHTML = '<div class="rpg-scr' + (TALL ? ' tall' : '') + '"><canvas width="' + W * 2 + '" height="' + H * 2 + '"></canvas>' +
       '<div class="ff4w rpg-msg" aria-live="polite"><b class="ff4n"></b><p></p><div class="rpg-opts"></div></div>' +
       '<div class="rpg-hud"><div class="ff4w rpg-foes"></div><div class="ff4w rpg-party"></div><div class="ff4w rpg-cmd"></div></div>' +
       '<div class="rpg-title"></div></div>' +
@@ -1140,9 +1142,10 @@
       drawScan();
     }
     function drawBattle(dt) {
-      var tt = performance.now() / 1000, hy = 64;
+      var tt = performance.now() / 1000, hy = 64 + BOFF;
       drawBackdrop((B && B.theme) || (AREA && AREA.theme) || 'plaza', tt, hy);
       if (!B) return;
+      cx.save(); cx.translate(0, BOFF);
       B.t += dt; B.vx = Math.max(0, B.vx - dt * 2.5); B.hurt = Math.max(0, (B.hurt || 0) - dt * 3); B.cast = Math.max(0, B.cast - dt * 2);
       // the bugs, on the left, turned to face Vee; nearer rows drawn last
       var order = B.foes.slice().sort(function (p, q) { return p.fy - q.fy; });
@@ -1171,7 +1174,7 @@
         var spr = SP.frame('fall'), ang = -Math.PI / 2 * B.ko;
         cx.fillStyle = 'rgba(0,0,0,.45)'; cx.beginPath(); cx.ellipse(vx + 12, vfy, 13, 2.5, 0, 0, 7); cx.fill();
         spr = hdv(spr); var shd = spr.hd || 1; cx.save(); cx.translate(vx + 22, vfy); cx.rotate(-ang); cx.scale(-1 / shd, 1 / shd); cx.drawImage(spr, 0, -spr.height); cx.restore();
-        drawScan(); return;
+        cx.restore(); drawScan(); return;
       }
       cx.fillStyle = 'rgba(0,0,0,.4)'; cx.beginPath(); cx.ellipse(vx + 11, vfy, 9, 2.5, 0, 0, 7); cx.fill();
       if (B.focus) { cx.strokeStyle = 'rgba(240,240,244,' + (.35 + Math.sin(B.t * 5) * .15) + ')'; cx.lineWidth = 1; cx.strokeRect(vx - 3.5, vfy - 27.5, 29, 30); }
@@ -1180,7 +1183,7 @@
       cx.font = '8px "Press Start 2P", monospace'; cx.textAlign = 'center';
       B.pops = B.pops.filter(function (p) { p.t += dt; var x = p.x, y = p.y - p.t * 24; cx.fillStyle = 'rgba(0,0,0,.6)'; cx.fillText(p.text, x + 1, y + 1); cx.fillStyle = '#f4f4f6'; cx.fillText(p.text, x, y); return p.t < 1; });
       cx.textAlign = 'left';
-      drawScan();
+      cx.restore(); drawScan();
     }
     function drawSwirl(dt) {
       swirlT += dt; drawMap();
