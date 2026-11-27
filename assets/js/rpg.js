@@ -149,7 +149,7 @@
     function gainXp(n) {
       var lines = []; save.xp += n;
       while (save.xp >= xpNeed()) {
-        save.xp -= xpNeed(); save.lvl++; save.hp = maxHp();
+        save.xp -= xpNeed(); save.lvl++; save.hp = maxHp(); setTimeout(function () { sfx('lvl'); }, 700);
         save.pts = (save.pts || 0) + 3;
         lines.push('LEVEL UP. Vee is now level ' + save.lvl + '. Max HP ' + maxHp() + '. +3 stat points to spend: open the menu, then Level Up.');
         var got = [];
@@ -223,6 +223,21 @@
     function def() { return Math.floor(save.lvl * .6) + gs('def') + save.school.def + save.alloc.def; }
     function critC() { return Math.min(.5, .05 + gs('crit') + save.alloc.crit * .005); }
     var CFG = { text: [1, 2, 4, 999], textL: ['Slow', 'Normal', 'Fast', 'Instant'], enc: [1, .5, .15], encL: ['Normal', 'Fewer', 'Rare'], diff: [.65, 1, 1.35], diffL: ['Story', 'Normal', 'Hard'], scanL: ['Off', 'On'] };
+    if (save.cfg.sound == null) save.cfg.sound = 1;
+    /* ---------- a few small sounds, synthesized; off with one setting ---------- */
+    var AC = null;
+    function sfx(kind) {
+      if (!save.cfg.sound) return;
+      try {
+        AC = AC || new (window.AudioContext || window.webkitAudioContext)(); if (AC.state === 'suspended') AC.resume();
+        var seq = { move: [[660, .03]], ok: [[880, .05], [1320, .07]], err: [[180, .09], [140, .1]], hit: [[300, .04], [180, .05]], crit: [[520, .04], [780, .04], [1040, .06]],
+          hurt: [[120, .08]], enc: [[220, .06], [330, .06], [440, .06], [660, .1]], lvl: [[523, .08], [659, .08], [784, .08], [1047, .16]], win: [[392, .07], [523, .07], [659, .12]] }[kind];
+        if (!seq) return;
+        var t = AC.currentTime;
+        seq.forEach(function (n) { var o = AC.createOscillator(), g = AC.createGain(); o.type = kind === 'hurt' || kind === 'err' ? 'sawtooth' : 'square'; o.frequency.value = n[0];
+          g.gain.setValueAtTime(.0001, t); g.gain.exponentialRampToValueAtTime(.035, t + .008); g.gain.exponentialRampToValueAtTime(.0001, t + n[1]); o.connect(g); g.connect(AC.destination); o.start(t); o.stop(t + n[1] + .02); t += n[1] * .9; });
+      } catch (e) {}
+    }
     function ownsGear(id) { return !!save.bag[id]; }
     function giveGear(id) { save.bag[id] = 1; store(); }
     function syncGear(quiet) {
@@ -350,7 +365,7 @@
       } else if (v === 'config') {
         h = '<h4>Configuration</h4>';
         function opt(label, k, labels) { btn('<span>' + label + '</span><em>‹ ' + labels[save.cfg[k]] + ' ›</em>', function (dir) { save.cfg[k] = (save.cfg[k] + (dir || 1) + labels.length) % labels.length; store(); renderMenu(); }, 'cfg'); }
-        opt('Text speed', 'text', CFG.textL); opt('Encounters', 'enc', CFG.encL); opt('Difficulty', 'diff', CFG.diffL); opt('Scanlines', 'scan', CFG.scanL); opt('Command hints', 'hints', CFG.scanL);
+        opt('Text speed', 'text', CFG.textL); opt('Encounters', 'enc', CFG.encL); opt('Difficulty', 'diff', CFG.diffL); opt('Scanlines', 'scan', CFG.scanL); opt('Command hints', 'hints', CFG.scanL); opt('Sound', 'sound', CFG.scanL);
         btn(MN.confirm ? '<span>Erase all progress?</span><em>Press again to confirm</em>' : '<span>Erase save</span><em class="mn-dim">Start Afterlift over</em>', function () {
           if (!MN.confirm) { MN.confirm = true; return renderMenu(); }
           try { localStorage.removeItem('vonds-quest'); } catch (e) {} location.reload();
@@ -379,7 +394,7 @@
       renderMenu(); if (MN.btns && MN.btns.length) { MN.focus = 'main'; renderMenu(); }
     }
     function menuKey(k) {
-      if (!MN) return;
+      if (!MN) return; if (k === 'up' || k === 'down') sfx('move');
       if (MN.focus === 'side') {
         if (k === 'up') MN.side = (MN.side + VIEWS.length - 1) % VIEWS.length;
         else if (k === 'down') MN.side = (MN.side + 1) % VIEWS.length;
@@ -459,7 +474,8 @@
     function submitPuzzle(raw) {
       var s = PZ.steps[PZ.i], line = norm(raw || '').replace(/^sudo /, '');
       var ok = s.ex.some(function (e) { return norm(e).replace(/^sudo /, '') === line; }) || (s.ok && s.ok.test(line));
-      if (!ok) return showPuzzle('Not quite. One way: ' + s.ex[0] + '. Try it.');
+      if (!ok) { sfx('err'); return showPuzzle('Not quite. One way: ' + s.ex[0] + '. Try it.'); }
+      sfx('ok');
       PZ.i++;
       if (PZ.i < PZ.steps.length) return showPuzzle('exit 0.');
       var d = PZ.done; PZ = null; closePrompt(); if (d) d();
@@ -635,7 +651,7 @@
     function rnd(a, b) { return a + Math.floor(Math.random() * (b - a + 1)); }
     function living() { return B.foes.filter(function (f) { return !f.dead; }); }
     function startBattle(force) {
-      var opt = typeof force === 'object' ? force : {}, bossDef = opt.boss ? WD.bosses[opt.boss] : null; if (typeof force === 'object') force = 0;
+      sfx('enc'); var opt = typeof force === 'object' ? force : {}, bossDef = opt.boss ? WD.bosses[opt.boss] : null; if (typeof force === 'object') force = 0;
       var enc = AREA.enc || WD.areas.plaza.enc, tier = AREA.tier || 1, kinds = enc.foes || Object.keys(FOES), r = Math.random(), n = force || (r < .3 ? 1 : r < .55 ? 2 : r < .75 ? 3 : r < .87 ? 4 : r < .95 ? 5 : 6);
       if (!force) n = Math.min(n, enc.max || 6); if (bossDef) n = 1;
       // up to three across; a back row for groups of four or more. Bigger groups hit softer and break faster.
@@ -708,7 +724,7 @@
     function log(text, quiet) { titleEl.textContent = text; titleEl.classList.add('on'); clearTimeout(logT); if (!quiet) logT = setTimeout(function () { titleEl.classList.remove('on'); }, 2600); }
     function pop(text, x, y) { B.pops.push({ text: text, x: x, y: y, t: 0 }); }
     function hitFoe(f, n) {
-      var crit = B.focus || Math.random() < critC(); if (crit) { n *= 2; B.focus = false; }
+      var crit = B.focus || Math.random() < critC(); if (crit) { n *= 2; B.focus = false; } sfx(crit ? 'crit' : 'hit');
       if (f.exposed) n *= 1.5;
       n = Math.max(1, Math.round(n)); f.hp = Math.max(0, f.hp - n); f.shake = 1; f.flash = 1; pop(String(n), f.fx + 16, f.fy - 34);
       if (f.hp <= 0) { f.dead = true; f.fade = 1; }
@@ -782,7 +798,7 @@
         log(msg2 + extra); B.vx = 1;
         if (!f.dead && !B.boss) setProblem(f);   // solved: it brings a new problem
       } else {
-        save.streak = 0; p.last = save.bw;
+        save.streak = 0; p.last = save.bw; sfx('err');
         log((typed ? '$ ' + typed + '. Not quite. ' : 'Nothing typed. ') + 'This one called for: ' + f.sc0.ex[0] + '. Half power.' + hitFoe(f, base() * .5));
       }
       after();
@@ -822,7 +838,7 @@
         if (f.kind === 'deadlock' && !f.wound && Math.random() < .35) { f.wound = 1; log('The deadlock holds perfectly still, waiting. Its next hit will land twice as hard. Stun it, or brace.'); return setTimeout(next, 800); }
         var pierce = f.kind === 'phantom' && Math.random() < .35, wind = f.wound ? 2 : 1; f.wound = 0;
         var n = Math.max(1, Math.round(rnd(f.foe.atk[0], f.foe.atk[1]) * wind * f.soft * (f.slow > 0 ? .5 : 1) * (B.guard ? .5 : 1) * CFG.diff[save.cfg.diff] * 100 / (100 + (pierce ? 0 : def()) * 2.5))); if (f.slow > 0) f.slow--;
-        save.hp = Math.max(0, save.hp - n); pop(String(n), 258, 70); B.hurt = 1; f.lunge = 1;
+        save.hp = Math.max(0, save.hp - n); pop(String(n), 258, 70); B.hurt = 1; f.lunge = 1; sfx('hurt');
         log('The ' + foeName(f) + ' ' + (pierce ? 'reads straight through Vee’s armor' : f.foe.move) + '. ' + n + ' damage.' + (wind > 1 ? ' It had been waiting for that.' : '')); hudOn();
         if (save.hp <= 0 && gs('revive') && !B.revived) { B.revived = 1; save.hp = Math.round(maxHp() * .3); setTimeout(function () { log('The Watchdog Timer catches Vee mid-fall and restarts him. ' + save.hp + ' HP.'); }, 500); }
         if (save.hp <= 0) return setTimeout(lose, 900);
@@ -836,7 +852,7 @@
     }
     function win() {
       var xp = 0, n = B.foes.length, boss = B.boss, onWin = B.onWin; B.foes.forEach(function (f) { xp += f.foe.xp + (boss ? 0 : rnd(0, 3)); }); xp = Math.round(xp * (1 + gs('xp')) * (save.cfg.diff === 2 ? 1.2 : 1));
-      save.wins += n; save.linux += n; save.bw++;
+      sfx('win'); save.wins += n; save.linux += n; save.bw++;
       if (!save.best) save.best = {}; if (!save.bossDown) save.bossDown = {};
       B.foes.forEach(function (f) { if (f.gone) return; if (f.foe.boss) save.bossDown[f.foe.name] = 1; else save.best[f.kind] = (save.best[f.kind] || 0) + 1; });
       var caught = B.foes.some(function (f) { return f.kind === 'heisenbug' && !f.gone; });
