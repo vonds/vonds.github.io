@@ -922,7 +922,7 @@
       cx.fillStyle = '#050507'; cx.fillRect(0, 0, W, H);
       cx.strokeStyle = 'rgba(200,200,214,.08)'; for (var gx = 0; gx < W; gx += 16) { cx.beginPath(); cx.moveTo(gx + .5, 0); cx.lineTo(gx + .5, H); cx.stroke(); } for (var gy = 0; gy < H; gy += 16) { cx.beginPath(); cx.moveTo(0, gy + .5); cx.lineTo(W, gy + .5); cx.stroke(); }
       function pos(id) { var p = WD.atlas[id]; return [30 + p[0] * 50, 16 + p[1] * 34]; }
-      var LABEL = { plaza: 'PLAZA', commons: 'COMMONS', halflight: 'HALFLIGHT', gardens: 'GLASSHOUSE', undercroft: 'UNDERCROFT', bastion: 'BASTION', quiet: 'THE QUIET', terminal: 'TERMINAL', line: 'THE LINE', patchwork: 'PATCHWORK', upper: 'UPPER RING', cold: 'COLD STORE', concourse: 'CONCOURSE', infirmary: 'ST. ADA’S', margin: 'MARGIN', stacks: 'STACKS', ring0: 'RING 0', waterworks: 'WATERWORKS', registry: 'REGISTRY' };
+      var LABEL = { plaza: 'PLAZA', commons: 'COMMONS', halflight: 'HALFLIGHT', gardens: 'GLASSHOUSE', undercroft: 'UNDERCROFT', bastion: 'BASTION', quiet: 'THE QUIET', terminal: 'TERMINAL', line: 'THE LINE', patchwork: 'PATCHWORK', upper: 'UPPER RING', cold: 'COLD STORE', concourse: 'CONCOURSE', infirmary: 'INFIRMARY', margin: 'MARGIN', stacks: 'STACKS', ring0: 'RING 0', waterworks: 'WATERWORKS', registry: 'REGISTRY' };
       cx.strokeStyle = 'rgba(220,220,236,.45)'; WD.links.forEach(function (l) { var a = pos(l[0]), b = pos(l[1]); cx.beginPath(); cx.moveTo(a[0] + .5, a[1] + .5); cx.lineTo(b[0] + .5, b[1] + .5); cx.stroke(); });
       var anchorAt = { plaza: ['spire', 'archive'], commons: ['ledger'], gardens: ['wagon'], undercroft: ['exit0'], bastion: ['keep'] };
       Object.keys(WD.atlas).forEach(function (id) {
@@ -934,8 +934,8 @@
         if (seen && A2.enc) { var lt = 'LV ' + A2.lv; ART.text(cx, lt, Math.round(p[0] + 21 - ART.textW(lt)), p[1] + 3, A2.lv > save.lvl + 2 ? '#ffffff' : '#7a7a86'); }
         (anchorAt[id] || []).forEach(function (a, i) { var on = isLit(a); cx.fillStyle = on ? '#ffffff' : '#3a3a46'; cx.fillRect(p[0] - 4 + i * 6, p[1] + 3, 4, 4); if (on) { cx.fillStyle = 'rgba(255,255,255,.2)'; cx.fillRect(p[0] - 5 + i * 6, p[1] + 2, 6, 6); } });
       });
-      ART.text(cx, 'MERIDIAN', 8, 6, '#ffffff', 2);
-      ART.text(cx, 'LANDMARKS ' + lights() + ' OF 6', 8, H - 22, '#c0c0cc'); ART.text(cx, 'PRESS ANY KEY', 8, H - 12, Math.floor(tnow * 2) % 2 ? '#ffffff' : '#6a6a76');
+      ART.text(cx, 'MERIDIAN', W - 8 - ART.textW('MERIDIAN', 2), 6, '#ffffff', 2);   // top right is the one corner the city never reached
+      var lmT = 'LANDMARKS ' + lights() + ' OF 6'; ART.text(cx, lmT, W - 8 - ART.textW(lmT), 22, '#c0c0cc'); ART.text(cx, 'PRESS ANY KEY', W - 8 - ART.textW('PRESS ANY KEY'), 32, Math.floor(tnow * 2) % 2 ? '#ffffff' : '#6a6a76');
       drawScan();
     }
     function drawBattle(dt) {
