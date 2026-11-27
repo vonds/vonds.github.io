@@ -293,7 +293,7 @@
         h += '<!--btns--><h4>Key items</h4>' + (keys.length ? keys.map(function (k) { return '<p>' + ({ part: 'Radio part', page: 'Bram’s ledger page' }[k] || k) + ' <em class="mn-dim">x' + save.keys[k] + '</em></p>'; }).join('') : '<p class="mn-dim">None.</p>');
       } else if (v === 'cmds') {
         var nm = save.known.filter(mastered).length, nextN = Math.min(COMMANDS.length, cmdsAt(save.lvl + 1)) - save.known.length;
-        h = '<h4>Commands ' + save.known.length + ' of ' + COMMANDS.length + ' · Mastered ' + nm + '</h4><p class="mn-dim">Type a command exactly as the problem asks, five times, to master it (+25% power). Exact answers in a row build a streak' + (save.streak > 1 ? ', now x' + save.streak : '') + '.' + (nextN > 0 ? ' Next level teaches ' + nextN + ' more.' : '') + '</p>';
+        h = '<h4>Commands ' + save.known.length + ' of ' + COMMANDS.length + ' · Mastered ' + nm + '</h4><p class="mn-dim">Type a command exactly as the problem asks, five times, to master it (+25% power). Exact answers in a row build a streak. Type man and a command at any prompt to read its page' + (save.streak > 1 ? ', now x' + save.streak : '') + '.' + (nextN > 0 ? ' Next level teaches ' + nextN + ' more.' : '') + '</p>';
         COMMANDS.forEach(function (c, i) {
           var known = save.known.indexOf(c.cmd) >= 0, pn = known ? prac(c.cmd).n : 0, fresh = known && save.learnedAt[c.cmd] === save.lvl && save.lvl > 1;
           if (!known && i > save.known.length + 9) return;
@@ -425,7 +425,7 @@
     function openPuzzle(title, steps, done) { PZ = { title: title, steps: steps, i: 0, done: done }; areaEl.classList.remove('on'); showPuzzle(); }
     function showPuzzle(note) {
       var s = PZ.steps[PZ.i]; held = null;
-      termBox.querySelector('.sc').innerHTML = '<b>' + PZ.title + '</b> ' + (note ? '<em>' + note + '</em> ' : '') + s.t;
+      termBox.querySelector('.sc').removeAttribute('data-base'); termBox.querySelector('.sc').innerHTML = '<b>' + PZ.title + '</b> ' + (note ? '<em>' + note + '</em> ' : '') + s.t;
       fillChips(s.ex[0]);
       termIn.value = ''; termBox.classList.add('on'); setTimeout(function () { termIn.focus(); }, 30);
     }
@@ -692,14 +692,23 @@
     }
     // the command prompt
     var termBox = document.createElement('form'); termBox.className = 'ff4w rpg-term'; termBox.setAttribute('autocomplete', 'off');
-    termBox.innerHTML = '<p class="sc"></p><label class="row"><span>vee@meridian:~$</span><input type="text" spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Type a command"></label><div class="chips"></div><div class="act"><button type="submit">Enter</button><button type="button" class="q">Back</button></div>';
+    termBox.innerHTML = '<p class="sc"></p><label class="row"><span>vee@meridian:~$</span><input type="text" spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Type a command" placeholder="man ls for help"></label><div class="chips"></div><div class="act"><button type="submit">Enter</button><button type="button" class="q">Back</button></div>';
     root.querySelector('.rpg-scr').appendChild(termBox);
     var termIn = termBox.querySelector('input');
     termBox.querySelector('.q').addEventListener('click', function () { if (PZ) cancelPuzzle(); else cancelTarget(); });
-    termBox.addEventListener('submit', function (e) { e.preventDefault(); if (PZ) submitPuzzle(termIn.value); else if (B && B.phase === 'type') submitCmd(termIn.value); });
+    // `man ls` or `ls --help` at any prompt: read the page without spending the turn
+    function manPage(raw) {
+      var line = norm(raw || ''), m = line.match(/^man\s+(\S+)$/) || line.match(/^(\S+)\s+--help$/) || line.match(/^help\s+(\S+)$/);
+      if (!m) return false;
+      var w = m[1].toLowerCase(), hits = COMMANDS.filter(function (c) { return save.known.indexOf(c.cmd) >= 0 && (c.k === w || c.cmd === w || c.cmd.split(' ')[0] === w); });
+      var sc = termBox.querySelector('.sc'), base = sc.getAttribute('data-base'); if (base == null) { base = sc.innerHTML; sc.setAttribute('data-base', base); }
+      sc.innerHTML = base + '<br><em>' + (hits.length ? hits.slice(0, 3).map(function (c) { return 'man ' + c.cmd + ': ' + c.learn; }).join('<br>') : 'No manual entry for ' + w.replace(/[<>&]/g, '') + '. Not a command Vee knows yet.') + '</em>';
+      termIn.value = ''; termIn.focus(); return true;
+    }
+    termBox.addEventListener('submit', function (e) { e.preventDefault(); if (manPage(termIn.value)) return; termBox.querySelector('.sc').removeAttribute('data-base'); if (PZ) submitPuzzle(termIn.value); else if (B && B.phase === 'type') submitCmd(termIn.value); });
     function openPrompt(ti) {
       var f = B.foes[ti]; B.phase = 'type'; titleEl.classList.remove('on');
-      termBox.querySelector('.sc').textContent = f.foe.name + ': ' + f.scenario;
+      termBox.querySelector('.sc').removeAttribute('data-base'); termBox.querySelector('.sc').textContent = f.foe.name + ': ' + f.scenario;
       fillChips(f.sc0.ex[0]);
       termIn.value = ''; termBox.classList.add('on'); setTimeout(function () { termIn.focus(); }, 30);
     }
