@@ -556,7 +556,8 @@
       scorpion: { name: 'Scorpion',  hp: 52, atk: [7, 11], move: 'stings with a segfault', xp: 16 },
       phantom:  { name: 'Phantom read', hp: 44, atk: [8, 13], move: 'reads memory it should never have seen', xp: 18 },
       deadlock: { name: 'Deadlock',  hp: 62, atk: [6, 10], move: 'waits for Vee to go first, forever', xp: 18 },
-      forkbomb: { name: 'Fork bomb', hp: 38, atk: [9, 14], move: 'forks itself until there is no room left', xp: 19 }
+      forkbomb: { name: 'Fork bomb', hp: 38, atk: [9, 14], move: 'forks itself until there is no room left', xp: 19 },
+      heisenbug: { name: 'Heisenbug', hp: 30, atk: [2, 4], move: 'changes the moment Vee looks at it', xp: 90, rare: 1 }
     };
     var LORE = {
       beetle: 'Chews through cables. Mostly harmless alone. Never alone.', spider: 'Spins race conditions: two threads, one resource, nobody waiting their turn.',
@@ -564,7 +565,8 @@
       virus: 'Needs a host. Meridian is full of empty hosts now.', bytebug: 'Flips one bit. One bit is enough to turn yes into no.',
       centipede: 'Opens memory leaks. Takes a little more every turn and never gives it back.', scorpion: 'Stings with a segfault: reaching for memory that was never its to touch.',
       phantom: 'A read that returns data from a moment that already ended. Habit: sometimes ignores armor.', deadlock: 'Two locks, each waiting for the other to let go. Habit: winds up, then hits twice as hard. Stun it first.',
-      forkbomb: 'One process that becomes two, then four, then every slot in the table. Habit: splits in half. Finish it fast.'
+      forkbomb: 'One process that becomes two, then four, then every slot in the table. Habit: splits in half. Finish it fast.',
+      heisenbug: 'Rare. A bug that changes or vanishes the moment someone tries to study it. Habit: slips away if you take too long. Worth a great deal if you catch it.'
     };
     // Vee's attacks are real commands. The curriculum lives in meridian-commands.js: five to start, then three to five more each level.
     var HITS = { multi2: 'Two clean hits.', multi3: 'Three quick hits.', focus: 'Bearings found. Your next hit lands double.', heal: 'Vee recovers HP.',
@@ -630,7 +632,7 @@
       var sc = n <= 2 ? 3 : 2, foes = [], soft = [1, 1, .8, .62, .5, .42, .36][n];
       endTalk();
       for (var i = 0; i < n; i++) {
-        var kind = bossDef ? bossDef.kind : kinds[Math.floor(Math.random() * kinds.length)], base0 = FOES[kind], slot = bossDef ? [34, 120] : SLOTS[i];
+        var kind = bossDef ? bossDef.kind : (i === 0 && save.lvl >= 5 && Math.random() < .035 ? 'heisenbug' : kinds[Math.floor(Math.random() * kinds.length)]), base0 = FOES[kind], slot = bossDef ? [34, 120] : SLOTS[i];
         var lv = (AREA.lv || 1) + Math.floor(Math.random() * ((AREA.lvMax || AREA.lv || 1) - (AREA.lv || 1) + 1)), elite = !bossDef && lv >= 4 && Math.random() < .12;
         if (elite) lv += 2;
         var hm = 1 + .22 * (lv - 1), am = 1 + .16 * (lv - 1), xm = 1 + .3 * (lv - 1);
@@ -805,6 +807,7 @@
           var lv2 = living(), lay = LAYOUT[lv2.length]; lv2.forEach(function (o, k) { o.fx = lay[k][0]; o.fy = lay[k][1]; if (lv2.length > 2) o.sc = 2; });
           log('The fork bomb forks. Now there are two of it, each with half the HP.'); hudOn(); return setTimeout(next, 800);
         }
+        if (f.kind === 'heisenbug' && Math.random() < .45) { f.dead = true; f.fade = 1; f.foe = Object.assign({}, f.foe, { xp: 0 }); f.gone = 1; log('You look straight at the Heisenbug, and it is no longer there. It was never quite there.'); hudOn(); if (!living().length) return setTimeout(win, 600); return setTimeout(next, 650); }
         if (f.kind === 'deadlock' && !f.wound && Math.random() < .35) { f.wound = 1; log('The deadlock holds perfectly still, waiting. Its next hit will land twice as hard. Stun it, or brace.'); return setTimeout(next, 800); }
         var pierce = f.kind === 'phantom' && Math.random() < .35, wind = f.wound ? 2 : 1; f.wound = 0;
         var n = Math.max(1, Math.round(rnd(f.foe.atk[0], f.foe.atk[1]) * wind * f.soft * (f.slow > 0 ? .5 : 1) * (B.guard ? .5 : 1) * CFG.diff[save.cfg.diff] * 100 / (100 + (pierce ? 0 : def()) * 2.5))); if (f.slow > 0) f.slow--;
@@ -824,9 +827,12 @@
       var xp = 0, n = B.foes.length, boss = B.boss, onWin = B.onWin; B.foes.forEach(function (f) { xp += f.foe.xp + (boss ? 0 : rnd(0, 3)); }); xp = Math.round(xp * (1 + gs('xp')) * (save.cfg.diff === 2 ? 1.2 : 1));
       save.wins += n; save.linux += n; save.bw++;
       if (!save.best) save.best = {}; if (!save.bossDown) save.bossDown = {};
-      B.foes.forEach(function (f) { if (f.foe.boss) save.bossDown[f.foe.name] = 1; else save.best[f.kind] = (save.best[f.kind] || 0) + 1; });
-      var lines = [boss ? boss.name + ' is gone.' + (xp ? ' Vee gains ' + xp + ' XP.' : '') : 'The rot clears. Vee gains ' + xp + ' XP.'];
+      B.foes.forEach(function (f) { if (f.gone) return; if (f.foe.boss) save.bossDown[f.foe.name] = 1; else save.best[f.kind] = (save.best[f.kind] || 0) + 1; });
+      var caught = B.foes.some(function (f) { return f.kind === 'heisenbug' && !f.gone; });
+      var allGone = B.foes.every(function (f) { return f.gone; });
+      var lines = [allGone ? 'The Heisenbug got away. Nothing to show for it but the feeling that something was there.' : boss ? boss.name + ' is gone.' + (xp ? ' Vee gains ' + xp + ' XP.' : '') : 'The rot clears. Vee gains ' + xp + ' XP.'];
       if (!boss && AREA.id === 'commons' && F.deeds && (F.commonsWins || 0) < 3) { F.commonsWins = (F.commonsWins || 0) + 1; lines.push('Deed: fairground cleared, ' + F.commonsWins + ' of 3.'); }
+      if (caught) { save.items.gb = (save.items.gb || 0) + 1; lines.push('Vee caught a Heisenbug. It leaves behind a gigabyte, still warm.'); }
       if (Math.random() < .35 + n * .07 + gs('drop')) {   // bigger finds as Vee levels up
         var r2 = Math.random() * (40 + save.lvl * 6), tier = r2 < 40 ? 0 : r2 < 60 ? 1 : r2 < 75 ? 2 : r2 < 85 ? 3 : 4;
         tier = Math.min(tier, Math.floor(save.lvl / 3) + 1); var drop = ITEMS[tier];
