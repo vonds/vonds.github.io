@@ -421,6 +421,13 @@
     function helpdesk(who) {
       if (!save.desk) save.desk = { done: 0, run: 0 };
       var D = save.desk, three = [ticket(), ticket(), ticket()];
+      if (F.tuesday && !F.upTicket && F.ending === 'cut') {   // no tether, no reply: it arrives the old way
+        return say(who, ['Something came in that isn’t a ticket. A postcard, through the dead drop in the Concourse. The last one there will ever be.'], [{ label: 'Read it', fn: function () {
+          F.upTicket = 1; var xp3 = 600, L3 = ['POSTCARD FROM UPSTREAM. From: Arlo.', '“The tether went quiet, and the next morning it rained up here. First time since we arrived. Every day before that was a Monday.', 'I don’t know who did it. I don’t know if anyone is still down there to read this. If you are: thank you. It was a good rain.”',
+            'There is no way to reply. Vee keeps the card anyway. Down in the Stacks, a 2 a.m. backup of the same man might want to hear about it.', 'Vee gains ' + xp3 + ' XP.'].concat(gainXp(xp3));
+          store(); say(who, L3);
+        } }, { label: 'Later', fn: null }]);
+      }
       if (F.tuesday && !F.upTicket) {   // the one ticket that came from the other direction
         return say(who, ['...That’s strange. A ticket in the queue with no district. The return address is upstream.lift.', 'It’s addressed to whoever changed the schedule.'], [{ label: 'Open ticket #1', fn: function () {
           openPuzzle('TICKET #1', [
