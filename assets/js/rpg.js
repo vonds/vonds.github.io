@@ -1339,7 +1339,7 @@
       if (LIFE.barkT <= 0) {
         LIFE.barkT = 7 + Math.random() * 8;
         var who = [];
-        activeParty().forEach(function (id, j) { who.push({ text: COMP[id].barks[Math.floor(Math.random() * COMP[id].barks.length)], name: COMP[id].name, at: function () { var b2 = (j + 1) * 14, pt = trail.length > b2 ? trail[trail.length - 1 - b2] : [me.px, me.py]; return [pt[0], pt[1]]; } }); });
+        activeParty().forEach(function (id, j) { who.push({ text: COMP[id].barks[Math.floor(Math.random() * COMP[id].barks.length)], name: COMP[id].name, at: function () { return [me.px, me.py]; } }); });   // companions travel with Vee unseen; their remarks float over him
         LIFE.walkers.forEach(function (w) { if (Math.abs(w.px - me.px) < 90 && Math.abs(w.py - me.py) < 70) who.push({ text: BARKS[Math.floor(Math.random() * BARKS.length)], at: function () { return [w.px, w.py]; } }); });
         if (who.length) { LIFE.bark = who[Math.floor(Math.random() * who.length)]; LIFE.bark.t = 3.4; barkEl.textContent = (LIFE.bark.name ? LIFE.bark.name + ': ' : '') + LIFE.bark.text; }
       }
@@ -1390,17 +1390,6 @@
       var list = visNpcs().map(function (n) { var nx = n.px != null ? n.px : n.x * TS, ny = n.py != null ? n.py : n.y * TS; return { y: ny / TS, draw: function () { ART.person(cx, nx - cam.x, ny - cam.y, n, tnow); } }; });
       lifeDraw(list);
       var w = wagonAt(); if (w) list.push({ y: w[1], draw: function () { ART.wagon(cx, w[0] * TS - cam.x, w[1] * TS - cam.y, tnow); } });
-      // companions walk a few steps behind, in Vee's footsteps
-      activeParty().forEach(function (id, j) {
-        var back = (j + 1) * 14, pt = trail.length > back ? trail[trail.length - 1 - back] : [me.px + (j + 1) * 0, me.py - (j + 1) * 0, me.dir];
-        if (trail.length <= back) pt = [me.px - (me.dir === 'right' ? 16 : me.dir === 'left' ? -16 : 0) * (j + 1), me.py - (me.dir === 'down' ? 16 : me.dir === 'up' ? -16 : 0) * (j + 1), me.dir];
-        list.push({ y: pt[1] / TS, draw: function () {
-          var walk2 = me.moving ? Math.floor(me.step / 4 + j * 2) % 4 : -1, d2 = pt[2] || 'down', L2 = COMP[id].look, st2 = walk2 < 0 ? 0 : [1, 0, 2, 0][walk2];
-          var img = hdv(d2 === 'left' || d2 === 'right' ? SP.hero(L2, 'side', walk2 < 0 ? 'idle' : 'run' + walk2) : SP.hero(L2, d2 === 'up' ? 'back' : 'front', st2)), bob = walk2 >= 0 && walk2 % 2 ? 1 : 0;
-          cx.fillStyle = 'rgba(0,0,0,.3)'; cx.beginPath(); cx.ellipse(pt[0] + 8 - cam.x, pt[1] + 15 - cam.y, 6, 2, 0, 0, 7); cx.fill();
-          drawSprite(img, pt[0] - 3 - cam.x, pt[1] - 10 - bob - cam.y, d2 === 'left');
-        } });
-      });
       list.push({ y: me.py / TS + .01, draw: function () {
         // afterimages: where Vee was a moment ago, fading, in whichever direction he was running
         ghosts.forEach(function (gh) { gh.t += 1 / 60; var a = Math.max(0, .5 * (1 - gh.t / .32)); if (!a) return; cx.save(); cx.globalAlpha = a; cx.filter = 'brightness(1.8) contrast(.8)'; drawSprite(gh.img, gh.px - 3 - cam.x, gh.py - 10 - (gh.bob ? 1 : 0) - cam.y, gh.flip); cx.restore(); });
