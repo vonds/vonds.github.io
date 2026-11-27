@@ -2133,7 +2133,11 @@
 
   // Upstream: three residents vouch for Vee, and the Annex opens
   SPOTS['upstream:26,9'] = function (G) { G.rest(); G.say('Arrivals bench', ['A bench with a plaque: WELCOME HOME. The paint is fresh. The bench has never been sat on.', 'Vee sits on it. HP restored. He will restart here if his process dies.']); };
-  SPOTS['upstream:17,9'] = function (G) { G.say('Weather meter', ['SUN: 4 credits per hour. RAIN: 11 credits per hour. SNOW: by request.', 'Somebody has paid for one hour of rain, daily, for a year. The account is Arlo’s.']); };
+  SPOTS['upstream:17,9'] = function (G) {
+    if (G.count('kbpay') >= 0 && (G.save.items.kb || 0) > 0) return G.say('Weather meter', ['SUN: 4 credits per hour. RAIN: 11 credits per hour.', 'The meter takes data now. Nobody told it money stopped mattering.'], [{ label: 'Buy rain (1 kilobyte)', fn: function () { G.save.items.kb--; G.f.rainUntil = Date.now() + 120000; G.say('', ['Rain starts, all at once, the way paid weather does. It is loud on the glass and it is beautiful.', 'Bugs hate rain. For two minutes they will mostly leave Vee alone.']); } }, { label: 'Leave it', fn: null }]);
+    return SPOTS.upstream_meter0(G);
+  };
+  SPOTS.upstream_meter0 = function (G) { G.say('Weather meter', ['SUN: 4 credits per hour. RAIN: 11 credits per hour. SNOW: by request.', 'Somebody has paid for one hour of rain, daily, for a year. The account is Arlo’s.']); };
   SPOTS['upstream:44,14'] = function (G) { G.say('Notice', ['NOTICE OF CONTINUITY REVIEW. BY ORDER OF THE BOARD.', 'APPLIES TO: ALL UPSTREAM ACCOUNTS.', 'STATUS: UNDER REVIEW. 400 SEATS IN THE SUCCESSOR. RESULTS WILL BE POSTED.', 'It’s the same notice. They only changed the name of the city.']); };
   function vouches(f) { return (f.up1 ? 1 : 0) + (f.up2 ? 1 : 0) + (f.up3 ? 1 : 0); }
   TALK.arloup = function (G) {

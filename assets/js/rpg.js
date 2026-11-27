@@ -42,6 +42,7 @@
     else if (e.key === 'Escape') closePick();
   });
   window.VondsPick = openPick;
+  try { if (sessionStorage.getItem('afterlift-reopen')) { sessionStorage.removeItem('afterlift-reopen'); window.addEventListener('load', function () { setTimeout(function () { openPick('afterlift'); }, 600); }); } } catch (e) {}
 
   /* ======================= Meridian ======================= */
   var Quest = (function () {
@@ -430,9 +431,11 @@
           ['Field guide', 'Beat every kind of bug (' + Object.keys(FOES).filter(function (k) { return bs2[k]; }).length + ' of ' + Object.keys(FOES).length + ')', Object.keys(FOES).every(function (k) { return bs2[k]; })],
           ['Named and done', 'Beat every named bug (' + Object.keys(WD.bosses).filter(function (id) { return bd2[WD.bosses[id].name]; }).length + ' of ' + Object.keys(WD.bosses).length + ')', Object.keys(WD.bosses).every(function (id) { return bd2[WD.bosses[id].name]; })],
           ['Archivist', 'Recover all 10 of Quell’s logs (' + logs2 + ')', logs2 >= 10], ['Landmarks', 'Light all 6 landmarks', lights() >= 6],
-          ['Resident', 'Finish the story', !!F.ending], ['Tuesday', 'Let tomorrow come', !!F.tuesday]
+          ['Resident', 'Finish the story', !!F.ending], ['Tuesday', 'Let tomorrow come', !!F.tuesday], ['One list', 'Join the two files', !!F.merged], ['Still here', 'Reach the end of the machine', !!F.kept],
+          ['Company', 'Recruit 4 companions', Object.keys(save.party.has).length >= 4], ['Full house', 'Recruit all 8 companions', Object.keys(save.party.has).length >= 8], ['Fork in the road', 'Bring Ves home', !!F.vesFree]
         ], got = R.filter(function (r) { return r[2]; }).length;
         h = '<h4>Records · ' + got + ' of ' + R.length + '</h4>' + R.map(function (r) { return '<p' + (r[2] ? '' : ' class="mn-dim"') + '>' + (r[2] ? '[x] ' : '[ ] ') + '<b>' + r[0] + '</b><br><small>' + r[1] + '</small></p>'; }).join('');
+        if (F.ending) { btn('<span>Replay the ending</span><em class="mn-dim">' + (F.ending === 'cut' ? 'The cut tether' : 'The reversed tether') + '</em>', function () { closeMenu(); say('', WD.endings[F.ending], null, function () { say('', WD.endings.after); }); }); h += '<!--btns-->'; }
       } else if (v === 'bestiary') {
         var bst = save.best || {}, bd = save.bossDown || {}, kinds2 = Object.keys(FOES), seenN = kinds2.filter(function (k) { return bst[k]; }).length;
         h = '<h4>Bestiary · ' + seenN + ' of ' + kinds2.length + ' bugs</h4>' + kinds2.map(function (k) {
@@ -447,6 +450,12 @@
         h = '<h4>Configuration</h4>';
         function opt(label, k, labels) { btn('<span>' + label + '</span><em>‹ ' + labels[save.cfg[k]] + ' ›</em>', function (dir) { save.cfg[k] = (save.cfg[k] + (dir || 1) + labels.length) % labels.length; store(); renderMenu(); }, 'cfg'); }
         opt('Text speed', 'text', CFG.textL); opt('Encounters', 'enc', CFG.encL); opt('Difficulty', 'diff', CFG.diffL); opt('Scanlines', 'scan', CFG.scanL); opt('Command hints', 'hints', CFG.scanL); opt('Sound', 'sound', CFG.scanL); if (save.cfg.retro == null) save.cfg.retro = 0; opt('Graphics', 'retro', ['16-bit', '8-bit']);
+        [1, 2, 3].forEach(function (n) {
+          var raw = null; try { raw = JSON.parse(localStorage.getItem('vonds-quest-slot' + n) || 'null'); } catch (e) {}
+          var desc = raw ? 'Lv ' + raw.lvl + ' · ' + ((WD.areas[raw.area] || {}).name || raw.area) + ' · ' + new Date(raw.savedAt || 0).toLocaleDateString() : 'empty';
+          btn('<span>Save to slot ' + n + '</span><em class="mn-dim">' + desc + '</em>', function () { save.savedAt = Date.now(); store(); try { localStorage.setItem('vonds-quest-slot' + n, localStorage.getItem('vonds-quest')); } catch (e) {} MN.note = 'Saved to slot ' + n + '.'; renderMenu(); });
+          if (raw) btn('<span>Load slot ' + n + '</span><em class="mn-dim">Unsaved progress here is lost</em>', function () { try { localStorage.setItem('vonds-quest', JSON.stringify(raw)); sessionStorage.setItem('afterlift-reopen', '1'); } catch (e) {} location.reload(); });
+        });
         btn(MN.confirm ? '<span>Erase all progress?</span><em>Press again to confirm</em>' : '<span>Erase save</span><em class="mn-dim">Start Afterlift over</em>', function () {
           if (!MN.confirm) { MN.confirm = true; return renderMenu(); }
           try { localStorage.removeItem('vonds-quest'); } catch (e) {} location.reload();
@@ -557,7 +566,7 @@
       var s = PZ.steps[PZ.i]; held = null;
       termBox.querySelector('.sc').removeAttribute('data-base'); termBox.querySelector('.sc').innerHTML = '<b>' + PZ.title + '</b> ' + (note ? '<em>' + note + '</em> ' : '') + s.t;
       fillChips(s.ex[0]);
-      termIn.value = ''; termBox.classList.add('on'); setTimeout(function () { termIn.focus(); }, 30);
+      termIn.value = ''; termBox.classList.add('on'); if (!TOUCH) setTimeout(function () { termIn.focus(); }, 30);
     }
     function submitPuzzle(raw) {
       var s = PZ.steps[PZ.i], line = norm(raw || '').replace(/^sudo /, '');
@@ -835,8 +844,15 @@
       return { line: line, first: first, exact: exact, right: right };
     }
     // a few command names to pick from: the right one hidden among decoys. Hints can be turned off in Config.
+    var TOUCH = !!(window.matchMedia && window.matchMedia('(pointer: coarse)').matches);
     function fillChips(answer) {
       var chips = termBox.querySelector('.chips'); chips.innerHTML = '';
+      if (TOUCH) {   // on a phone: tap one of three full commands instead of typing on a keyboard that covers half the screen
+        var others = save.known.filter(function (c) { return norm(cmdInfo(c).when[0].ex[0]) !== norm(answer); }).sort(function () { return Math.random() - .5; }).slice(0, 2).map(function (c) { return cmdInfo(c).when[Math.floor(Math.random() * cmdInfo(c).when.length)].ex[0]; });
+        chips.classList.add('full');
+        [answer].concat(others).sort(function () { return Math.random() - .5; }).forEach(function (c) { var b = document.createElement('button'); b.type = 'button'; b.textContent = c; b.addEventListener('click', function () { termIn.value = c; termBox.requestSubmit ? termBox.requestSubmit() : termBox.dispatchEvent(new Event('submit', { cancelable: true })); }); chips.appendChild(b); });
+        return;
+      }
       if (!save.cfg.hints) return;
       var pool = [], seen = {};
       function add(w) { if (w && !seen[w]) { seen[w] = 1; pool.push(w); } }
@@ -877,6 +893,10 @@
       var allies = activeParty().map(function (id, j) { return { id: id, hp: Math.max(1, cHp(id)), max: cMax(id), cd: {}, down: false, guard: 0, lunge: 0, hurt: 0, slot: j }; });
       B = { allies: allies, ai: 0, actor: null, corrupt: 0, regen: 0, blind: 0, taunt: 0, pguard: 0, allyFocus: 0, foes: foes, focus: false, phase: 'intro', t: 0, vx: 0, pops: [], menu: 'main', sel: 0, cast: 0, target: 0, pending: null, boss: bossDef, onWin: opt.onWin, theme: AREA.theme };
       var hook = opt.boss && WD.bossStart && WD.bossStart[opt.boss], hookMsg = hook ? hook(G, foes[0]) : null; if (hookMsg) setTimeout(function () { log(hookMsg); }, 1300);
+      // companions have something to say when something big shows up
+      var BOSSLINE = { kes: 'Kes: Big one. I’ll go left, you go… also left. Just go.', odessa: 'Dr. Odessa: Try not to get hit. I mean it this time.', piper: 'Piper: Folks, you are NOT going to believe the size of this thing.',
+        moth: 'Moth: …it’s very big. I’d like to take it apart.', rook: 'Rook: Behind me. All of you.', sable: 'Sable: I have read about this one. The ending was not kind to it.', juni: 'Juni: Is it alive? Is it scared? Can we win? We can win.', ves: 'Ves: I know how it thinks. Badly.' };
+      var aside = bossDef && allies.length ? BOSSLINE[allies[Math.floor(Math.random() * allies.length)].id] : null; if (aside && !hookMsg) setTimeout(function () { if (B) log(aside); }, 1300);
       mode = 'swirl'; swirlT = 0; areaEl.classList.remove('on');
     }
     var LAYOUT = [[], [[66, 108]], [[40, 98], [104, 114]], [[28, 94], [92, 110], [140, 94]], [[26, 92], [86, 92], [52, 116], [112, 116]],
@@ -1213,6 +1233,34 @@
 
     /* ---------- loop and drawing ---------- */
     var mode = 'map', raf = 0, last = 0, swirlT = 0, keys = {}, held = null, dashHeld = false, ghosts = [], ghostT = 0, trail = [];   // trail: where Vee has been, so companions can follow in his footsteps   // dash: hold Shift or DASH to run, leaving afterimages
+    /* ---------- each late district has its own rule ---------- */
+    function raining() { return AREA && AREA.id === 'upstream' && (F.rainUntil || 0) > Date.now(); }
+    var MECH = { gustT: 6, heatSteps: 0 };
+    function mechStep() {   // after every step
+      if (AREA.id === 'rack' && !F.fan3) {   // the Rack is hot: Vee overheats a little as he walks, unless he stands in the cold aisle
+        if (++MECH.heatSteps % 5 === 0 && save.hp > 1 && !(me.x >= 20 && me.x <= 24 && me.y <= 10)) { var ht = Math.max(1, Math.round(maxHp() * .02)); save.hp = Math.max(1, save.hp - ht); LIFE.bark = { text: 'Too hot. Vee loses ' + ht + ' HP. (Fan 3 could fix this.)', t: 2.2, at: function () { return [me.px, me.py]; } }; barkEl.textContent = LIFE.bark.text; }
+      }
+    }
+    function mechUpdate(dt) {
+      if (mode !== 'map' || talking || !AREA || fade) return;
+      if (AREA.id === 'tether') {   // wind on the cable: every few seconds a gust shoves Vee a step sideways
+        MECH.gustT -= dt;
+        if (MECH.gustT <= 0) {
+          MECH.gustT = 7 + Math.random() * 6; var dir = Math.random() < .5 ? -1 : 1;
+          LIFE.bark = { text: 'A gust hits the cable.', t: 1.8, at: function () { return [me.px, me.py]; } }; barkEl.textContent = LIFE.bark.text;
+          if (!me.moving && !blocked(me.x + dir, me.y)) { me.x += dir; me.moving = true; me.dir = dir < 0 ? 'left' : 'right'; }
+        }
+      }
+    }
+    function mechDraw(t) {
+      if (raining()) { cx.fillStyle = 'rgba(210,214,226,.35)'; for (var i = 0; i < 70; i++) { var rx = (hs(i * 7) * W + t * 40 * (1 + hs(i))) % W, ry = (hs(i * 13) * H + t * 260 * (1 + hs(i) * .5)) % H; cx.fillRect(Math.round(rx), Math.round(ry), 1, 4); } }
+      if (AREA.id === 'deep') {   // the Deep is dark: Vee sees a small circle around him, wider with Moth's lamp or Juni's stars
+        var r = 62 + (inParty('moth') && activeParty().indexOf('moth') >= 0 ? 34 : 0) + (activeParty().indexOf('juni') >= 0 ? 18 : 0);
+        var gx = me.px + 8 - cam.x, gy = me.py + 4 - cam.y, g2 = cx.createRadialGradient(gx, gy, r * .55, gx, gy, r);
+        g2.addColorStop(0, 'rgba(0,0,0,0)'); g2.addColorStop(1, 'rgba(0,0,0,.92)'); cx.fillStyle = g2; cx.fillRect(0, 0, W, H);
+      }
+      if (AREA.id === 'rack' && !F.fan3) { cx.fillStyle = 'rgba(255,255,255,' + (.02 + .02 * Math.sin(t * 6)) + ')'; cx.fillRect(0, 0, W, H); }
+    }
     /* ---------- a city that moves: people step about, passers-by walk the roads, and someone always has something to say ---------- */
     var LIFE = { walkers: [], t: 0, bark: null, barkT: 4 };
     var BARKS = ['Did you hear? The lights came back on in the Commons.', 'I keep my door unlocked. Nobody’s left to lock it against.', 'They said the Lift was for everyone. Then they counted.',
@@ -1272,6 +1320,28 @@
       if (!LIFE.bark || mode !== 'map' || talking) { barkEl.classList.remove('on'); return; }
       var p = LIFE.bark.at(); barkEl.style.left = ((p[0] + 8 - cam.x) / W * 100) + '%'; barkEl.style.top = ((p[1] - 14 - cam.y) / H * 100) + '%'; barkEl.classList.add('on');
     }
+    // easy to read in grayscale: exits get a pulsing arrow, and anything worth pressing A on gets a small glint
+    function drawMarkers(t) {
+      var x0 = Math.floor(cam.x / TS) - 1, x1 = Math.ceil((cam.x + W) / TS) + 1, y0 = Math.floor(cam.y / TS) - 1, y1 = Math.ceil((cam.y + H) / TS) + 1, mh = MAP.length, mw = MAP[0].length;
+      var pulse = .45 + .4 * Math.sin(t * 4);
+      Object.keys(AREA.exits || {}).forEach(function (k) {
+        var p = k.split(',').map(Number), ex = p[0], ey = p[1]; if (ex < x0 || ex > x1 || ey < y0 || ey > y1) return;
+        var dx = ex <= 0 ? -1 : ex >= mw - 1 ? 1 : 0, dy = ey <= 0 ? -1 : ey >= mh - 1 ? 1 : 0; if (!dx && !dy) dy = 1;
+        var cxp = ex * TS + 8 - cam.x - dx * 2, cyp = ey * TS + 8 - cam.y - dy * 2, bob = Math.sin(t * 5) * 1.5;
+        cx.fillStyle = 'rgba(255,255,255,' + pulse + ')';
+        for (var i = 0; i < 4; i++) { var w2 = 7 - i * 2; if (w2 < 1) break; if (dx) cx.fillRect(Math.round(cxp + dx * (i + bob)), Math.round(cyp - w2 / 2), 1, w2); else cx.fillRect(Math.round(cxp - w2 / 2), Math.round(cyp + dy * (i + bob)), w2, 1); }
+      });
+      for (var y = Math.max(0, y0); y < Math.min(mh, y1); y++) for (var x = Math.max(0, x0); x < Math.min(mw, x1); x++) {
+        var tl = MAP[y][x], k2 = key(x, y), want = false;
+        if (tl === 'o' && AREA.logs && AREA.logs[k2] && !F[AREA.logs[k2]]) want = true;
+        else if (tl === 'c' && AREA.caches && AREA.caches[k2] && !save.opened[AREA.id + ':' + k2]) want = true;
+        else if (tl === 's' && WD.spots[AREA.id + ':' + k2]) want = true;
+        if (!want) continue;
+        var ph = Math.sin(t * 3 + x * 1.7 + y * 2.3); if (ph < .2) continue;
+        cx.fillStyle = 'rgba(255,255,255,' + (ph * .9) + ')'; var gx = x * TS + 11 - cam.x, gy = y * TS - 3 - cam.y;
+        cx.fillRect(gx, gy - 1, 1, 3); cx.fillRect(gx - 1, gy, 3, 1);
+      }
+    }
     function drawMap() {
       var tnow = performance.now() / 1000;
       if (!me.moving || true) placeCam();
@@ -1306,6 +1376,7 @@
       list.sort(function (a, b) { return a.y - b.y; }).forEach(function (o) { o.draw(); });
       barkPlace();
       drawLayer('over', -cam.x, -cam.y - PAINTED.pad);
+      drawMarkers(tnow); mechDraw(tnow);
       // behind a tall building, Vee shows through as a ghost so you never lose him
       var vb = PAINTED.rises.some(function (r) { return me.px + 14 > r.x && me.px + 2 < r.x + r.w && me.py > r.y - 4 && me.py < r.y + r.h; });
       if (vb) { var v2 = veeImg(); cx.save(); cx.globalAlpha = .55; drawSprite(v2.img, me.px - 3 - cam.x, me.py - 10 - (v2.bob ? 1 : 0) - cam.y, v2.flip); cx.restore(); }
@@ -1405,7 +1476,7 @@
         if (fade.t >= .7) { fade = null; showArea(); }
         return;
       }
-      lifeUpdate(dt);
+      lifeUpdate(dt); mechUpdate(dt);
       if (mode !== 'map' || talking || PZ) return;
       if (me.moving) {
         var dashing = dashHeld && !PZ, tx = me.x * TS, ty = me.y * TS, sp = 70 * dt * (dashing ? 2.2 : 1);
@@ -1420,7 +1491,8 @@
           if (WD.steps[AREA.id]) { WD.steps[AREA.id](G, me.x, me.y); if (talking) return; }
           var enc = AREA.enc;
           if (gs('regen') && save.hp < maxHp()) save.hp = Math.min(maxHp(), save.hp + gs('regen'));
-          if (enc && enc.tiles.indexOf(tile(me.x, me.y)) >= 0 && --me.safe <= 0 && Math.random() < enc.rate * CFG.enc[save.cfg.enc] * (1 - gs('stealth'))) { startBattle(); return; }
+          if (enc && enc.tiles.indexOf(tile(me.x, me.y)) >= 0 && --me.safe <= 0 && Math.random() < enc.rate * CFG.enc[save.cfg.enc] * (1 - gs('stealth')) * (raining() ? .3 : 1)) { startBattle(); return; }
+          mechStep();
         }
       }
       if (!me.moving && held) tryMove(held);
@@ -1477,8 +1549,8 @@
     document.addEventListener('keyup', function (e) { if (e.key === 'Shift') dashHeld = false; var k = KEYMAP[e.key]; if (k) release(k); });
     [].forEach.call(root.querySelectorAll('.rpg-pad button'), function (b) {
       var k = b.getAttribute('data-k');
-      b.addEventListener('pointerdown', function (e) { e.preventDefault(); press(k); });
-      b.addEventListener('pointerup', function () { release(k); }); b.addEventListener('pointerleave', function () { release(k); });
+      b.addEventListener('pointerdown', function (e) { e.preventDefault(); if (k === 'dash') { dashHeld = !dashHeld; b.classList.toggle('on', dashHeld); return; } press(k); });
+      b.addEventListener('pointerup', function () { if (k !== 'dash') release(k); }); b.addEventListener('pointerleave', function () { if (k !== 'dash') release(k); });
     });
     msg.addEventListener('click', function (e) { if (e.target.tagName !== 'BUTTON') advance(); });
     root.querySelector('.rpg-x').addEventListener('click', close);
@@ -1492,7 +1564,7 @@
       if (!AREA) { load(save.area, save.x, save.y); syncGear(true); }
       if (mode === 'map' && !talking) showTitle(function () {
         if (talking || mode !== 'map') return;
-        if (!save.met) { save.met = true; store(); say('', ['Meridian was built to be the most beautiful place on the network. Two million people lived here. For a while, it was everything it promised.', 'Then the people who owned it built a newer world, Upstream, and sorted every account into two lists. Current: forty thousand of them, who took the Lift. Obsolete: everyone else.', 'The Current stopped paying for this world. Nothing obsolete is maintained.', 'The rot set in. District by district, the city has been going dark. Last night, the signal at its heart went quiet.', 'You are Vee, a maintenance process nobody remembered to shut down. You know five commands so far: whoami, pwd, ls, cd and cat. Every level teaches you more.', coarse ? 'Use the pad to move, A to talk and B for the menu.' : 'Arrow keys to move. Hold Shift (or DASH on a phone) to dash. Enter or Z to talk. X for the menu.'], null, showArea); }
+        if (!save.met) { save.met = true; store(); say('', ['Meridian was built to be the most beautiful place on the network. Two million people lived here. For a while, it was everything it promised.', 'Then the people who owned it built a newer world, Upstream, and sorted every account into two lists. Current: forty thousand of them, who took the Lift. Obsolete: everyone else.', 'The Current stopped paying for this world. Nothing obsolete is maintained.', 'The rot set in. District by district, the city has been going dark. Last night, the signal at its heart went quiet.', 'You are Vee, a maintenance process nobody remembered to shut down. You know five commands so far: whoami, pwd, ls, cd and cat. Every level teaches you more.', coarse ? 'Use the pad to move, A to talk and B for the menu.' : 'Arrow keys to move. Hold Shift to dash (on a phone, tap DASH to toggle it). Enter or Z to talk. X for the menu.'], null, showArea); }
         else say('', ['Vee reconnects. ' + AREA.name + '. Level ' + save.lvl + '.'], null, showArea);
       });
       root.querySelector('.rpg-x').focus({ preventScroll: true });
