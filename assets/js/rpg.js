@@ -946,12 +946,13 @@
       var list = which === 'ally' ? [{ label: 'Attack', tip: C0.name + ' attacks one bug.', fn: function () { chooseTarget('ally:attack'); } }].concat(C0.skills.map(function (k, j) {
           var cd = A0.cd[k.id] || 0; return { label: k.name, right: cd ? cd + 't' : '', off: cd > 0, tip: k.tip + (cd ? ' Ready in ' + cd + (cd === 1 ? ' turn.' : ' turns.') : ''), fn: function () { if (k.target) chooseTarget('ally:skill:' + j); else allyAct('ally:skill:' + j, B.foes.indexOf(living()[0])); } };
         })).concat([{ label: 'Guard', tip: C0.name + ' braces and takes half damage this round.', fn: function () { allyAct('ally:guard', 0); } }])
+        : which === 'itemTarget' ? [{ label: 'Vee', right: save.hp + '/' + maxHp(), off: save.hp <= 0, tip: 'Give the data to Vee.', fn: function () { item(B.itemPick); } }].concat(B.allies.map(function (a) { return { label: COMP[a.id].name, right: a.down ? 'DOWN' : a.hp + '/' + a.max, off: a.down, tip: 'Give the data to ' + COMP[a.id].name + '.', fn: function () { item(B.itemPick, a); } }; })).concat([{ label: 'Back', tip: '', fn: function () { menu('items'); } }])
         : which === 'main' ? [
           { label: 'Fight', tip: 'A plain attack at Vee’s regular strength.', fn: function () { chooseTarget('fight'); } },
           { label: 'Shell', tip: (save.wins || 0) < 3 ? 'Try this first. Each bug brings a problem; type the command that solves it for a much stronger attack.' : 'Open a shell and type the command that solves a bug’s problem. Right: a bonus attack. Wrong: half power.', fn: function () { chooseTarget('cmd'); } },
           { label: 'Item', tip: 'Bits, bytes and bigger: data that restores HP.', fn: function () { menu('items'); } },
           B.boss ? { label: 'Run', off: true, tip: 'There is no running from this one.', fn: runAway } : { label: 'Run', tip: 'Slip away into the dark.', fn: runAway }]
-        : ITEMS.filter(function (it) { return save.items[it.id] > 0; }).map(function (it) { return { label: (innerWidth < 640 && it.short) || it.name, right: 'x' + save.items[it.id], tip: it.tip, fn: function () { item(it.id); } }; })
+        : ITEMS.filter(function (it) { return save.items[it.id] > 0; }).map(function (it) { return { label: (innerWidth < 640 && it.short) || it.name, right: 'x' + save.items[it.id], tip: it.tip, fn: function () { if (B.allies.some(function (a) { return !a.down; })) { B.itemPick = it.id; menu('itemTarget'); } else item(it.id); } }; })
             .concat([{ label: 'Back', tip: ITEMS.some(function (it) { return save.items[it.id] > 0; }) ? '' : 'No data left. Bugs sometimes drop some.', fn: function () { menu('main'); } }]);
       cmdBox.classList.remove('wide');   // keep Vee's HP in view while choosing an item
       list.forEach(function (o, j) {
@@ -1096,10 +1097,11 @@
       else if (fx === 'execute') { if (f.hp < f.max * .3 && !f.foe.boss) { f.hp = 0; f.dead = true; f.fade = 1; pop('KILL', f.fx + 16, f.fy - 34); msg2 += ' The ' + foeName(f) + ' ends.'; } else ex = allyHit(a, f, base2 * 1.4); }
       log(msg2 + ex); afterAlly();
     }
-    function item(which) {
+    function item(which, ally) {
       B.phase = 'anim'; cmdBox.classList.remove('on');
       var it = ITEMS.filter(function (x) { return x.id === which; })[0];
-      if (it && save.items[which] > 0) { save.items[which]--; var h = Math.min(maxHp() - save.hp, healOf(it)); save.hp += h; pop('+' + h, 258, 70); log('Vee absorbs a ' + it.name.toLowerCase() + ' of clean data. +' + h + ' HP.'); store(); }
+      if (ally && it && save.items[which] > 0) { save.items[which]--; var pct0 = { bit: .06, byte: .14, kb: .28, mb: .55, gb: 1 }[it.id] || .1, ha = Math.min(ally.max - ally.hp, Math.max(it.heal, Math.round(ally.max * pct0))); ally.hp += ha; var ap3 = allyPos(ally); pop('+' + ha, ap3[0] + 10, ap3[1] - 30); log('Vee passes a ' + it.name.toLowerCase() + ' to ' + COMP[ally.id].name + '. +' + ha + ' HP.'); store(); }
+      else if (it && save.items[which] > 0) { save.items[which]--; var h = Math.min(maxHp() - save.hp, healOf(it)); save.hp += h; pop('+' + h, 258, 70); log('Vee absorbs a ' + it.name.toLowerCase() + ' of clean data. +' + h + ' HP.'); store(); }
       hudOn(); setTimeout(nextAlly, 700);
     }
     function runAway() {
