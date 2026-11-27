@@ -63,14 +63,20 @@
     try { var sv = JSON.parse(localStorage.getItem('vonds-quest') || 'null'); if (sv) for (var k0 in sv) save[k0] = sv[k0]; } catch (e) {}
     // healing items: data, in growing sizes
     var ITEMS = [
-      { id: 'bit', name: 'Bit', heal: 15, tip: 'The smallest unit of data. Restores 15 HP.' },
-      { id: 'byte', name: 'Byte', heal: 35, tip: 'Eight bits. Restores 35 HP.' },
-      { id: 'kb', short: 'KB', name: 'Kilobyte', heal: 70, tip: 'A thousand bytes. Restores 70 HP.' },
-      { id: 'mb', short: 'MB', name: 'Megabyte', heal: 140, tip: 'A million bytes. Restores 140 HP.' },
+      { id: 'bit', name: 'Bit', heal: 15, tip: 'The smallest unit of data. Restores 15 HP or 6% of max HP, whichever is more.' },
+      { id: 'byte', name: 'Byte', heal: 35, tip: 'Eight bits. Restores 35 HP or 14% of max HP.' },
+      { id: 'kb', short: 'KB', name: 'Kilobyte', heal: 70, tip: 'A thousand bytes. Restores 70 HP or 28% of max HP.' },
+      { id: 'mb', short: 'MB', name: 'Megabyte', heal: 140, tip: 'A million bytes. Restores 140 HP or 55% of max HP.' },
       { id: 'gb', short: 'GB', name: 'Gigabyte', heal: 9999, tip: 'A billion bytes. Restores all HP.' }
     ];
     if (!save.items) save.items = { bit: 3, byte: 1 };
     if (save.coffee) { save.items.bit = (save.items.bit || 0) + save.coffee; } delete save.coffee;   // older saves
+    // data heals a share of Vee's HP as well as a flat amount, so a megabyte still matters at level 90
+    function healOf(it) { var pct = { bit: .06, byte: .14, kb: .28, mb: .55, gb: 1 }[it.id] || 0; return Math.max(it.heal, Math.round(maxHp() * pct)); }
+    // how hard a bug of level L hits: enough that a single bug of Vee's own level takes about 10 hits to drop him early on and about 30 once he has real gear (bugs come in groups),
+    // allowing for the HP and defence Vee is expected to have by then. So level, not species, decides how dangerous a bug is.
+    function lvAtk(L) { var eDef = L * (.6 + .6 * Math.min(1, L / 40)); return (60 + 14 * (L - 1) + 2.2 * L) / (10 + Math.min(12, L * .4)) * (100 + 2.5 * eDef) / 100; }
+    function clamp(v, a, b) { return Math.max(a, Math.min(b, v)); }
     function store() { try { localStorage.setItem('vonds-quest', JSON.stringify(save)); } catch (e) {} }
     function maxHp() { var g = 0; if (save.eq && window.MeridianWorld) ['weapon', 'armor', 'acc'].forEach(function (s) { var it = window.MeridianWorld.gear[save.eq[s]]; if (it && it.hp) g += it.hp; }); return 60 + (save.lvl - 1) * 14 + g + ((save.school && save.school.hp) || 0) + ((save.alloc && save.alloc.hp * 6) || 0); }
     function xpNeed() { var over = Math.max(0, save.lvl - 15); return 30 + (save.lvl - 1) * 25 + over * over * 12; }   // gentle early, steeper past the main story
@@ -308,7 +314,7 @@
           var n = save.items[it.id] || 0; if (!n) return;
           btn('<span>' + it.name + '</span><em>x' + n + '</em><small>' + it.tip + '</small>', function () {
             if (save.hp >= maxHp()) { MN.note = 'HP is already full.'; return renderMenu(); }
-            save.items[it.id]--; var hh = Math.min(maxHp() - save.hp, it.heal); save.hp += hh; MN.note = 'Vee absorbs a ' + it.name.toLowerCase() + '. +' + hh + ' HP.'; store(); renderMenu();
+            save.items[it.id]--; var hh = Math.min(maxHp() - save.hp, healOf(it)); save.hp += hh; MN.note = 'Vee absorbs a ' + it.name.toLowerCase() + '. +' + hh + ' HP.'; store(); renderMenu();
           });
         });
         var keys = Object.keys(save.keys).filter(function (k) { return save.keys[k] > 0; });
@@ -372,7 +378,7 @@
       } else if (v === 'config') {
         h = '<h4>Configuration</h4>';
         function opt(label, k, labels) { btn('<span>' + label + '</span><em>‹ ' + labels[save.cfg[k]] + ' ›</em>', function (dir) { save.cfg[k] = (save.cfg[k] + (dir || 1) + labels.length) % labels.length; store(); renderMenu(); }, 'cfg'); }
-        opt('Text speed', 'text', CFG.textL); opt('Encounters', 'enc', CFG.encL); opt('Difficulty', 'diff', CFG.diffL); opt('Scanlines', 'scan', CFG.scanL); opt('Command hints', 'hints', CFG.scanL); opt('Sound', 'sound', CFG.scanL);
+        opt('Text speed', 'text', CFG.textL); opt('Encounters', 'enc', CFG.encL); opt('Difficulty', 'diff', CFG.diffL); opt('Scanlines', 'scan', CFG.scanL); opt('Command hints', 'hints', CFG.scanL); opt('Sound', 'sound', CFG.scanL); if (save.cfg.retro == null) save.cfg.retro = 0; opt('Bug sprites', 'retro', ['16-bit', '8-bit']);
         btn(MN.confirm ? '<span>Erase all progress?</span><em>Press again to confirm</em>' : '<span>Erase save</span><em class="mn-dim">Start Afterlift over</em>', function () {
           if (!MN.confirm) { MN.confirm = true; return renderMenu(); }
           try { localStorage.removeItem('vonds-quest'); } catch (e) {} location.reload();
@@ -784,9 +790,12 @@
         var kind = bossDef ? bossDef.kind : (i === 0 && save.lvl >= 5 && Math.random() < .035 ? 'heisenbug' : kinds[Math.floor(Math.random() * kinds.length)]), base0 = FOES[kind], slot = bossDef ? [34, 120] : SLOTS[i];
         var lv = (AREA.lv || 1) + Math.floor(Math.random() * ((AREA.lvMax || AREA.lv || 1) - (AREA.lv || 1) + 1)), elite = !bossDef && lv >= 4 && Math.random() < .12;
         if (elite) lv += 2;
-        var hm = 1 + .22 * (lv - 1), am = 1 + .16 * (lv - 1), xm = 1 + .3 * (lv - 1) + Math.pow(Math.max(0, lv - 50), 2) * .12;   // the endgame pays better, so the climb to 100 is a climb and not a grind
+        var hm = 1 + .22 * (lv - 1), am = lvAtk(lv) / 7.5, xm = 1 + .3 * (lv - 1) + Math.pow(Math.max(0, lv - 50), 2) * .12;   // the endgame pays better, so the climb to 100 is a climb and not a grind
         var f = bossDef ? { name: bossDef.name, lv: bossDef.lv || AREA.lvMax || AREA.lv || save.lvl, hp: Math.round(bossDef.hp * 1.4), atk: [Math.round(bossDef.atk[0] * 1.15), Math.round(bossDef.atk[1] * 1.15)], move: bossDef.move, xp: bossDef.xp, boss: true } :
-          { name: (elite ? 'Hardened ' : '') + base0.name, lv: lv, hp: Math.round(base0.hp * hm * (elite ? 1.4 : 1)), atk: [Math.round(base0.atk[0] * am), Math.round(base0.atk[1] * am)], move: base0.move, xp: Math.round(base0.xp * xm * (elite ? 1.6 : 1)) };
+          (function () {   // a bug's level sets its strength; its kind only nudges it (tougher, harder-hitting, worth more) within a third either way
+            var kh = clamp(base0.hp / 40, .7, 1.45), ka = clamp((base0.atk[0] + base0.atk[1]) / 2 / 7.5, .75, 1.35), kx = base0.rare ? 7.5 : clamp(base0.xp / 12, .8, 1.5), mid = 7.5 * ka * am;
+            return { name: (elite ? 'Hardened ' : '') + base0.name, lv: lv, hp: Math.round(40 * kh * hm * (elite ? 1.4 : 1)), atk: [Math.max(1, Math.round(mid * .8)), Math.max(2, Math.round(mid * 1.2))], move: base0.move, xp: Math.round(12 * kx * xm * (elite ? 1.6 : 1)) };
+          })();
         if (bossDef) sc = bossDef.sc;
         var c = pickCmd(), info = cmdInfo(c);
         foes.push({ kind: kind, foe: f, hp: Math.round(f.hp * (n >= 4 ? .7 : 1)), max: Math.round(f.hp * (n >= 4 ? .7 : 1)), soft: soft, stun: 0, shake: 0, flash: 0, dead: false, fade: 0, sc: sc,
@@ -938,7 +947,7 @@
     function item(which) {
       B.phase = 'anim'; cmdBox.classList.remove('on');
       var it = ITEMS.filter(function (x) { return x.id === which; })[0];
-      if (it && save.items[which] > 0) { save.items[which]--; var h = Math.min(maxHp() - save.hp, it.heal); save.hp += h; pop('+' + h, 258, 70); log('Vee absorbs a ' + it.name.toLowerCase() + ' of clean data. +' + h + ' HP.'); store(); }
+      if (it && save.items[which] > 0) { save.items[which]--; var h = Math.min(maxHp() - save.hp, healOf(it)); save.hp += h; pop('+' + h, 258, 70); log('Vee absorbs a ' + it.name.toLowerCase() + ' of clean data. +' + h + ' HP.'); store(); }
       hudOn(); setTimeout(foesTurn, 700);
     }
     function runAway() {
@@ -994,10 +1003,15 @@
       var lines = [allGone ? 'The Heisenbug got away. Nothing to show for it but the feeling that something was there.' : boss ? boss.name + ' is gone.' + (xp ? ' Vee gains ' + xp + ' XP.' : '') : 'The rot clears. Vee gains ' + xp + ' XP.'];
       if (!boss && AREA.id === 'commons' && F.deeds && (F.commonsWins || 0) < 3) { F.commonsWins = (F.commonsWins || 0) + 1; lines.push('Deed: fairground cleared, ' + F.commonsWins + ' of 3.'); }
       if (caught) { save.items.gb = (save.items.gb || 0) + 1; lines.push('Vee caught a Heisenbug. It leaves behind a gigabyte, still warm.'); }
-      if (Math.random() < .35 + n * .07 + gs('drop')) {   // bigger finds as Vee levels up
-        var r2 = Math.random() * (40 + save.lvl * 6), tier = r2 < 40 ? 0 : r2 < 60 ? 1 : r2 < 75 ? 2 : r2 < 85 ? 3 : 4;
-        tier = Math.min(tier, Math.floor(save.lvl / 3) + 1); var drop = ITEMS[tier];
-        save.items[drop.id] = (save.items[drop.id] || 0) + 1; lines.push('The bug drops clean data: a ' + drop.name.toLowerCase() + '.');
+      if (Math.random() < .35 + n * .07 + gs('drop')) {   // drops match the bugs: low-level rot leaves bits, high-level rot leaves megabytes and gigabytes
+        var topLv = Math.max.apply(null, B.foes.map(function (f) { return f.foe.lv || 1; }));
+        var tier0 = topLv < 8 ? 0 : topLv < 20 ? 1 : topLv < 40 ? 2 : 3, howMany = 1 + (topLv >= 30 ? 1 : 0) + (topLv >= 70 ? 1 : 0), got = {};
+        for (var dq = 0; dq < howMany; dq++) {
+          var tier = tier0 + (Math.random() < .25 ? 1 : 0) - (tier0 && Math.random() < .2 ? 1 : 0);
+          if (topLv >= 70 && Math.random() < .35) tier = 4;
+          tier = Math.max(0, Math.min(4, tier)); var drop = ITEMS[tier]; save.items[drop.id] = (save.items[drop.id] || 0) + 1; got[drop.name.toLowerCase()] = (got[drop.name.toLowerCase()] || 0) + 1;
+        }
+        lines.push('The bugs drop clean data: ' + Object.keys(got).map(function (k) { return got[k] > 1 ? got[k] + ' ' + k + 's' : 'a ' + k; }).join(' and ') + '.');
       }
       lines = lines.concat(gainXp(xp));
       if (save.lvl < 100) lines.push('Next level in ' + (xpNeed() - save.xp) + ' XP.');
@@ -1102,7 +1116,7 @@
       order.forEach(function (f) {
         f.shake = Math.max(0, f.shake - dt * 3); f.flash = Math.max(0, f.flash - dt * 4); f.lunge = Math.max(0, (f.lunge || 0) - dt * 3);
         if (f.dead) { f.fade = Math.max(0, f.fade - dt * 1.6); if (f.fade <= 0) return; }
-        var img = SP.bug(f.kind, Math.floor((B.t + f.ph) * 4)), sc = f.sc, w = img.width * sc, h = img.height * sc;
+        var img = (SP.bugHD && !(save.cfg && save.cfg.retro) ? SP.bugHD : SP.bug)(f.kind, Math.floor((B.t + f.ph) * 4)), sc = f.sc / (img.hd || 1), w = img.width * sc, h = img.height * sc;   // 16-bit sprites by default; img.hd says how much finer they're drawn
         var bx = f.fx + (f.shake ? Math.sin(B.t * 80) * 3 * f.shake : 0) + f.lunge * 10, by = f.fy - h + (f.kind === 'moth' || f.kind === 'virus' ? -6 + Math.sin(B.t * 3 + f.ph) * 1.5 : 0);
         cx.fillStyle = 'rgba(0,0,0,.35)'; cx.beginPath(); cx.ellipse(f.fx + w / 2, f.fy + 1, w * .42, 3, 0, 0, 7); cx.fill();
         cx.save(); if (f.dead) cx.globalAlpha = f.fade * (B.t % .16 < .08 ? 1 : .3); if (f.flash > .5) cx.filter = 'brightness(3)';

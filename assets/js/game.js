@@ -687,6 +687,56 @@
   function obPal(light) {
     return light ? { W: '#151515', L: '#3a3a3c', M: '#6a6a6c', D: '#a8a49c', K: '#eeebe4' } : { W: '#f4f4f4', L: '#c4c4c8', M: '#808086', D: '#3c3c42', K: '#111113' };
   }
+  /* the 16-bit pass: the same 8-bit designs, drawn at twice the resolution with a light source.
+     Each cell becomes 2x2: lit from the top left, shaded to the bottom right, a dark sel-out edge,
+     a dithered mid-tone, glints in the eyes, and a soft rim so it reads against a dark arena. */
+  var hdCache = {};
+  function hdCanvas(rows, key) {
+    if (key && hdCache[key]) return hdCache[key];
+    var H = rows.length, W = rows[0].length;
+    function at(x, y) { var r = rows[y]; if (!r || x < 0) return '.'; var q = r.charAt(x); return q === '' ? '.' : q; }
+    // 1. Scale2x: double the grid, rounding off the stair-steps on diagonals instead of just making bigger squares
+    var W2 = W * 2, H2 = H * 2, g = [];
+    for (var y = 0; y < H; y++) for (var x = 0; x < W; x++) {
+      // rounding works on the silhouette only (filled or not), so inner details like digits and eyes stay crisp
+      var P = at(x, y), A = at(x, y - 1), B = at(x + 1, y), C = at(x - 1, y), D = at(x, y + 1);
+      var mP = P !== '.', mA = A !== '.', mB = B !== '.', mC = C !== '.', mD = D !== '.';
+      function pick(n1, n2, m1, m2, mo1, mo2, c1) { return (m1 === m2 && m1 !== mo1 && m2 !== mo2 && m1 !== mP) ? (m1 ? c1 : '.') : P; }
+      var e0 = pick(C, A, mC, mA, mD, mB, mA ? A : C), e1 = pick(A, B, mA, mB, mC, mD, mB ? B : A), e2 = pick(D, C, mD, mC, mB, mA, mC ? C : D), e3 = pick(B, D, mB, mD, mA, mC, mD ? D : B);
+      g[(y * 2) * W2 + x * 2] = e0; g[(y * 2) * W2 + x * 2 + 1] = e1; g[(y * 2 + 1) * W2 + x * 2] = e2; g[(y * 2 + 1) * W2 + x * 2 + 1] = e3;
+    }
+    function G(x, y) { return x < 0 || y < 0 || x >= W2 || y >= H2 ? '.' : g[y * W2 + x]; }
+    var pad = 2, cw = W2 + pad * 2, ch = H2 + pad * 2, cvs = document.createElement('canvas'); cvs.width = cw; cvs.height = ch; cvs.hd = 2;
+    var c = cvs.getContext('2d'), img = c.createImageData(cw, ch), d = img.data, body = [];
+    var TONE = { K: 24, D: 58, M: 130, L: 196, W: 250 };
+    // 2. volume: inside each patch of one tone, lighter toward its top and left, darker toward its bottom and right
+    for (var y2 = 0; y2 < H2; y2++) for (var x2 = 0; x2 < W2; x2++) {
+      var q = G(x2, y2); if (q === '.') continue;
+      var t = TONE[q] || 160;
+      if (q === 'L' || q === 'M') {
+        var du = 0, dd = 0, dl = 0, dr = 0;
+        while (du < 6 && G(x2, y2 - du - 1) === q) du++; while (dd < 6 && G(x2, y2 + dd + 1) === q) dd++;
+        while (dl < 6 && G(x2 - dl - 1, y2) === q) dl++; while (dr < 6 && G(x2 + dr + 1, y2) === q) dr++;
+        t += Math.max(-44, Math.min(36, (dd - du) * 9)) + Math.max(-16, Math.min(14, (dr - dl) * 4));
+        if (du === 0 && G(x2, y2 - 1) === '.') t += 26;        // a bright rim where light hits the top edge
+        if (q === 'M' && (x2 + y2) % 2 && dd < 2) t -= 16;     // dithered shadow at the bottom of mid tones
+        t += (0.5 - y2 / H2) * 30;                             // and the whole sprite is lit from above
+      }
+      if (q === 'W') { var lone = G(x2 - 1, y2) !== 'W' || G(x2 + 1, y2) !== 'W'; if (lone && G(x2 + 1, y2) !== 'W' && G(x2, y2 + 1) !== 'W') t = 170; }   // eyes: a shaded lower corner
+      if (q === 'K') { if (G(x2 - 1, y2) !== 'K' && G(x2, y2 - 1) !== 'K') t = 200; }   // a glint at the top-left of every dark patch
+      if (q === 'D') t = 46 + (0.5 - y2 / H2) * 16;
+      var X = x2 + pad, Y = y2 + pad, k = Y * cw + X, i = k * 4, v = Math.max(6, Math.min(255, Math.round(t)));
+      body[k] = 1; d[i] = v; d[i + 1] = v; d[i + 2] = Math.min(255, v + 7); d[i + 3] = 255;
+    }
+    // 3. a soft rim outside the silhouette, so the dark outline still reads against a dark arena
+    for (var Y2 = 0; Y2 < ch; Y2++) for (var X2 = 0; X2 < cw; X2++) {
+      var k2 = Y2 * cw + X2, j2 = k2 * 4; if (body[k2]) continue;
+      if (body[k2 - 1] || body[k2 + 1] || body[k2 - cw] || body[k2 + cw]) { d[j2] = 232; d[j2 + 1] = 232; d[j2 + 2] = 240; d[j2 + 3] = 62; }
+    }
+    c.putImageData(img, 0, 0);
+    if (key) hdCache[key] = cvs;
+    return cvs;
+  }
   var obCache = {};
   function obCanvas(rows, light, key) {
     if (key && obCache[key]) return obCache[key];
@@ -944,6 +994,7 @@
   window.VondsGame = { open: function () { open(0); } };
   window.VondsSprite = { frame: frame, look: function () { return LOOK; }, pose: POSE, arm: ARM,
     bug: function (kind, f) { var fr = OBMAP[kind]; return obCanvas(fr[f % fr.length], false, 'rpg' + kind + (f % fr.length)); }, bugs: Object.keys(OBMAP),
+    bugHD: function (kind, f) { var fr = OBMAP[kind]; return hdCanvas(fr[f % fr.length], 'hd' + kind + (f % fr.length)); },
     addBug: function (kind, frames) { OBMAP[kind] = frames; } };
   try {
     console.log('%cV O N D S', 'font:600 20px Dosis,system-ui,sans-serif;letter-spacing:.6em;color:#2e2e30');
