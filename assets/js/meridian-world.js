@@ -1104,6 +1104,8 @@
     var f = G.f, open = CLASSES.filter(function (c) { return !f[c.id] && (!c.need || c.need(G)); });
     var intro = !f.adair ? ['Come in, come in. Class started eleven months ago, but I’m flexible.', 'I taught adults who’d been told they were too old to start. Most of them were wrong about that.', 'Some of them took the Lift with what I taught them. That’s fine. That’s what teaching is.'] : [];
     f.adair = 1;
+    var later = CLASSES.filter(function (c) { return !f[c.id] && c.need && !c.need(G); });
+    if (!open.length && later.length) return G.say('Ms. Adair', intro.concat((later[0].id === 'c5' ? ['You’ve taken every class I can teach. I have one more written. It’s called Tomorrow.', 'I can’t teach it yet. Not until there is one.'] : ['You’ve taken every class you’re ready for. The next one, ' + later[0].name + ', needs a little more behind you.', 'Go and fix things. Come back with questions. That’s the whole method.'])));
     if (!open.length) return G.say('Ms. Adair', intro.concat(['You’ve taken every class I have. I’m going to have to write new ones. I haven’t written anything new in a year.', 'Thank you for that.']));
     G.say('Ms. Adair', intro.concat(['Which class tonight?']), open.map(function (c) {
       var reward = c.stat === 'hp' ? '+' + c.amt + ' max HP' : '+' + c.amt + ' ' + c.stat.toUpperCase();
@@ -1408,6 +1410,28 @@
   }
   SPOTS['ring0:12,3'] = function (G) { G.say('Plaque', ['RING 0. KERNEL SPACE.', 'Beneath it someone has scratched: everything above this line is a story the kernel tells.']); };
 
+  CLASSES.push(
+    { id: 'c6', name: 'Text Kung Fu', stat: 'atk', amt: 3, need: function (G) { return G.save.lvl >= 13; }, steps: [
+      { t: 'Text Kung Fu, question 1. Print only the first column of users.csv. The columns are separated by commas.', ex: ['cut -d, -f1 users.csv', 'cut -d , -f 1 users.csv', "cut -d',' -f1 users.csv", 'cut -d "," -f 1 users.csv', "awk -F, '{print $1}' users.csv"] },
+      { t: 'Question 2. Sort names.txt and squash repeated lines.', ex: ['sort names.txt | uniq', 'sort -u names.txt'] },
+      { t: 'Question 3. In notes.txt, replace every cat with dog, and print the result.', ex: ["sed 's/cat/dog/g' notes.txt", 'sed "s/cat/dog/g" notes.txt'] },
+      { t: 'Question 4. Print the third word of every line in log.txt.', ex: ["awk '{print $3}' log.txt", 'awk "{print $3}" log.txt'] }] },
+    { id: 'c7', name: 'Services', stat: 'hp', amt: 30, need: function (G) { return G.save.lvl >= 16; }, steps: [
+      { t: 'Services, question 1. Is the web server running? Check the status of nginx.', ex: ['systemctl status nginx', 'sudo systemctl status nginx'] },
+      { t: 'Question 2. It crashed. Start it again.', ex: ['systemctl start nginx', 'sudo systemctl start nginx', 'systemctl restart nginx', 'sudo systemctl restart nginx'] },
+      { t: 'Question 3. Make sure it comes back after a reboot.', ex: ['systemctl enable nginx', 'sudo systemctl enable nginx'] },
+      { t: 'Question 4. Read its logs to see why it crashed.', ex: ['journalctl -u nginx', 'sudo journalctl -u nginx'] }] },
+    { id: 'c8', name: 'Networks II', stat: 'def', amt: 4, need: function (G) { return G.save.lvl >= 18; }, steps: [
+      { t: 'Networks II, question 1. Look up the address for library.meridian.', ex: ['dig library.meridian', 'nslookup library.meridian', 'host library.meridian'] },
+      { t: 'Question 2. Show every hop between you and library.meridian.', ex: ['traceroute library.meridian', 'tracepath library.meridian'] },
+      { t: 'Question 3. Fetch the page at http://library.meridian and print it.', ex: ['curl http://library.meridian', 'curl library.meridian'] },
+      { t: 'Question 4. Download http://library.meridian/catalog.zip to a file.', ex: ['wget http://library.meridian/catalog.zip', 'curl -O http://library.meridian/catalog.zip'] }] },
+    { id: 'c9', name: 'Keys and Locks', stat: 'def', amt: 4, need: function (G) { return G.save.lvl >= 21; }, steps: [
+      { t: 'Keys and Locks, question 1. Make yourself an SSH key pair.', ex: ['ssh-keygen', 'ssh-keygen -t ed25519', 'ssh-keygen -t rsa'] },
+      { t: 'Question 2. Lock down the private key, ~/.ssh/id_ed25519, so only you can read or write it.', ex: ['chmod 600 ~/.ssh/id_ed25519'] },
+      { t: 'Question 3. Who are you, and which groups are you in?', ex: ['id', 'groups'] },
+      { t: 'Question 4. Copy the folder site/ to the server school.local, as vee, into ~/site, keeping everything intact.', ex: ['rsync -a site/ vee@school.local:~/site', 'rsync -av site/ vee@school.local:~/site', 'rsync -a site vee@school.local:~', 'scp -r site vee@school.local:~'] }] }
+  );
   CLASSES.push({ id: 'c5', name: 'Tomorrow', stat: 'atk', amt: 4, need: function (G) { return !!G.f.tuesday; }, steps: [
     { t: 'Tomorrow, question 1. Open your own crontab to edit it.', ex: ['crontab -e'] },
     { t: 'Question 2. Write the line that runs /home/vee/backup.sh every day at 2 a.m.', ex: ['0 2 * * * /home/vee/backup.sh'] },
