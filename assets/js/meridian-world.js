@@ -436,7 +436,7 @@
   var SPOTS = {
     'plaza:12,6': function (G) {
       if (G.f.ending) return G.say('Kiosk', ['MERIDIAN. Population ' + (G.f.nova ? '1,206' : '1,205') + '.', G.f.nova ? 'Vee checks the number twice. It went up.' : 'Vee checks the number twice.']);
-      G.say('Kiosk', ['MERIDIAN. Population 1,204. Peak 2,000,000.', 'LIFT CAPACITY: 40,000 seats. Seats remaining: 0.', 'ACCOUNTS: 40,000 CURRENT (UPSTREAM). 1,204 OBSOLETE (LOCAL).', 'Landmarks answering: ' + G.lights() + ' of 6.']);
+      G.say('Kiosk', ['MERIDIAN. Population 1,204. Peak 2,000,000.', 'LIFT CAPACITY: 40,000 seats. Seats remaining: 0.', (G.f.merged ? 'ACCOUNTS: 2,040,000 RESIDENTS. ONE LIST.' : 'ACCOUNTS: 40,000 CURRENT (UPSTREAM). 1,204 OBSOLETE (LOCAL).'), 'Landmarks answering: ' + G.lights() + ' of 6.']);
     },
     'plaza:F': function (G) { G.say('', ['The fountain renders water once every eleven seconds, the way it was cached the day the Lift opened.', 'Somebody threw a coin in. It’s still in the air.']); },
     'commons:11,8': function (G) { G.say('Sign', ['THE COMMONS. Trade what you know.']); },
@@ -1678,7 +1678,7 @@
     G.say('Lost and Found', ['Shelves of things people meant to come back for. A pram. A trombone. Three hundred umbrellas.', G.f.kite ? 'A box marked CLAIMED. Empty again, but the good kind of empty: the kite went home.' : G.f.lf1 ? 'A box marked CLAIMED. It has one kite in it.' : 'A box marked CLAIMED. It’s empty.']);
   };
   GEAR.scarf = { slot: 'acc', name: 'Unknown Scarf', hp: 15, crit: .02, desc: 'Unclaimed for eleven months, which makes it yours. Lost and found rules. It smells faintly of someone else’s winter.' };
-  GEAR_FROM.push(['scarf', function (G) { return !!G.f.lf3; }, '(The Unknown Scarf: accessory.)']);
+  GEAR_FROM.push(['scarf', function (G) { return !!G.f.lf3; }, 'Nobody claimed the scarf. Now somebody has.']);
   (function () {
     var lio0 = TALK.lio;
     TALK.lio = function (G) {
@@ -1904,8 +1904,8 @@
   GEAR.collar = { slot: 'armor', name: 'Watchdog’s Collar', def: 60, hp: 120, desc: 'The Board’s guard, unchained. It answers to Vee now. Mostly.' };
   GEAR.lastcmd = { slot: 'weapon', name: 'The Last Command', atk: 70, crit: .15, desc: 'Whatever was typed last before the Lift. Nobody knows what it was. It still runs.' };
   GEAR.nullterm = { slot: 'acc', name: 'Null Terminator', hp: 150, crit: .12, xp: .15, desc: 'The zero at the end of every string. Without it nothing knows where to stop. With it, Vee does.' };
-  GEAR_FROM.push(['remover', function (G) { return !!G.f.rootprime; }, '(Rootkit Remover: weapon.)'], ['collar', function (G) { return !!G.f.watchdog; }, '(Watchdog’s Collar: armor.)'],
-    ['lastcmd', function (G) { return !!G.f.nullptr; }, '(The Last Command: weapon.)'], ['nullterm', function (G) { return !!G.f.nullptr; }, '(Null Terminator: accessory.)']);
+  GEAR_FROM.push(['remover', function (G) { return !!G.f.rootprime; }, 'Where Rootkit Prime was hiding, a tool is left behind.'], ['collar', function (G) { return !!G.f.watchdog; }, 'The Watchdog nudges its collar toward Vee with its nose.'],
+    ['lastcmd', function (G) { return !!G.f.nullptr; }, 'At the bottom of the empty address: the last command anyone typed before the Lift.'], ['nullterm', function (G) { return !!G.f.nullptr; }, 'And a single zero, the end of every string.']);
   STEPS.deep = function (G, x, y) {
     var f = G.f; if (f.rootprime || x > 12 || y > 7) return;
     G.say('', ['The west room is too quiet. Then the quiet lists its processes, and one of them is wearing Vee’s name.'], null, function () {
@@ -2009,7 +2009,7 @@
           G.puzzle('DEPRECATION NOTICE', N.steps, function () {
             f[N.id] = 1; var n = NOTICES.filter(function (q) { return f[q.id]; }).length; var gx = 90 + (n === 6 ? 300 : 0); G.xp(gx); G.give('kb', 1);
             var L = N.after.concat(['Vee gains ' + gx + ' XP and a kilobyte. (' + n + ' of 6 notices amended.)']);
-            if (n === 6) L.push('Every notice in the city, amended. The Board said this city was obsolete. Six walls now say otherwise.', 'Vee finds the Board’s own changelog, discarded. He keeps it. (Changelog: accessory.)');
+            if (n === 6) L.push('Every notice in the city, amended. The Board said this city was obsolete. Six walls now say otherwise.', 'Vee finds the Board’s own changelog, discarded. He keeps it.');
             G.say('', L);
           });
         } }, { label: 'Leave it', fn: null }]);
@@ -2017,8 +2017,210 @@
     });
   })();
   GEAR.changelog = { slot: 'acc', name: 'Changelog', hp: 40, xp: .08, desc: 'The Board’s list of what changed, with six new lines at the bottom in Vee’s handwriting.' };
-  GEAR_FROM.push(['changelog', function (G) { return NOTICES.every(function (n) { return G.f[n.id]; }); }, '(Changelog: accessory.)']);
+  GEAR_FROM.push(['changelog', function (G) { return NOTICES.every(function (n) { return G.f[n.id]; }); }, 'The Board’s changelog, six lines longer than they left it.']);
   (function () { var j0 = JOURNAL; JOURNAL = function (G) { var j = j0(G), n = NOTICES.filter(function (q) { return G.f[q.id]; }).length; if (n) j.push('Deprecation notices amended: ' + n + ' of 6'); return j; }; })();
+
+  /* =====================================================================
+     ACT TWO: UP THE TETHER. The Tether (54+), Upstream (60+), the Successor (68+).
+     Upstream has been sent its own deprecation notice. Every list ends up on a list.
+     ===================================================================== */
+  A.tether = {
+    name: 'The Tether', sub: 'Forty-one thousand tonnes of cable, and a way up it. Level 54+.', theme: 'ring0', tier: 9, lv: 54, lvMax: 58,
+    map: (function () {
+      var m = grid(26, 34).border(); m.rect(1, 1, 24, 32, '~');
+      carve(m, [[10, 26, 6, 7], [8, 20, 2, 7, '='], [3, 14, 10, 7], [12, 15, 8, 2, '='], [16, 8, 8, 8], [18, 3, 2, 6, '='], [14, 1, 8, 2]]);
+      carve(m, [[4, 15, 7, 4, ','], [17, 10, 6, 4, ','], [11, 27, 4, 3, ',']]);
+      m.pts([[12, 33], [13, 33]], 'E');
+      m.set(3, 20, 'c'); m.set(23, 15, 'c'); m.set(10, 14, 'o'); m.set(21, 1, 's'); m.set(15, 26, 's');
+      return m.out();
+    })(),
+    blds: [],
+    exits: { '12,33': ['anchor', 39, 9], '13,33': ['anchor', 40, 9] },
+    enc: { tiles: ',', rate: .15, foes: ['kpanic', 'rootkit', 'memwraith', 'racehazard', 'logicbomb', 'regexhydra'], max: 5 },
+    spawn: [12, 31], logs: { '10,14': 'U1' },
+    caches: { '3,20': { item: 'gb', n: 3 }, '23,15': { item: 'gb', n: 3 } },
+    npcs: []
+  };
+  A.upstream = {
+    name: 'Upstream', sub: 'The newer world. The Current live here. Their notice came last month. Level 60+.', theme: 'upper', tier: 10, lv: 60, lvMax: 66,
+    map: (function () {
+      var m = grid(46, 26).border();
+      carve(m, [[1, 12, 44, 2, '=']]);
+      carve(m, [[4, 16, 12, 7, ','], [30, 16, 12, 7, ',']]);
+      m.pts([[22, 25], [23, 25]], 'E');
+      [[4, 16], [15, 16], [4, 22], [15, 22], [30, 16], [41, 16], [30, 22], [41, 22], [9, 19], [35, 19]].forEach(function (p) { m.set(p[0], p[1], 'p'); });   // trees nobody has to collect
+      m.set(19, 17, 'c'); m.set(43, 3, 'c'); m.set(27, 20, 'o'); m.set(2, 10, 'o'); m.set(26, 9, 's'); m.set(17, 9, 's'); m.set(44, 14, 's');
+      return m.out();
+    })(),
+    blds: [{ x: 3, y: 2, w: 8, h: 6, kind: 'villa', rise: 3 }, { x: 12, y: 2, w: 8, h: 6, kind: 'villa', rise: 3 }, { x: 21, y: 3, w: 5, h: 4, kind: 'booth', sign: 'ARRIVALS', rise: 1 },
+      { x: 30, y: 2, w: 10, h: 7, kind: 'hall', door: 5, sign: 'ANNEX', rise: 3 }],
+    exits: { '22,25': ['tether', 20, 2], '23,25': ['tether', 21, 2] },
+    enc: { tiles: ',', rate: .15, foes: ['ghostcommit', 'trojan', 'hashcoll', 'zeroday', 'mergeconf', 'badmagic', 'signed'], max: 5 },
+    spawn: [22, 23], logs: { '27,20': 'U2', '2,10': 'U3' },
+    caches: { '19,17': { item: 'gb', n: 4 }, '43,3': { item: 'gb', n: 4 } },
+    npcs: [
+      { id: 'arloup', p: { hair: 'short', body: 'suit', skin: '#c89a78', top: '#3a3a44' }, x: 8, y: 10, name: 'Arlo', look: 'echo', h: 14, hair: 1 },
+      { id: 'vale', p: { hair: 'short', body: 'suit', skin: '#e0c0a0', top: '#1c1c22', gray: 1 }, x: 15, y: 10, name: 'H. Vale', look: 'echo', h: 14, hair: 1 },
+      { id: 'sena', p: { hair: 'puffs', body: 'coat', skin: '#5a3a26', top: '#4a4a58' }, x: 27, y: 15, name: 'Sena', look: 'echo', h: 14, hair: 6 },
+      { id: 'clerk', p: { hair: 'bun', body: 'suit', skin: '#8a5a3a', top: '#2a2a30' }, x: 37, y: 10, name: 'Annex clerk', look: 'holo' }
+    ]
+  };
+  A.successor = {
+    name: 'The Successor', sub: 'Upstream v2. Half built. Four hundred seats. Something is sorting the guest list. Level 68+.', theme: 'margin', tier: 11, lv: 68, lvMax: 74,
+    map: (function () {
+      var m = grid(44, 22).border(); m.rect(1, 1, 42, 20, '~');
+      carve(m, [[1, 10, 10, 2, '='], [10, 4, 14, 14], [23, 9, 8, 2, '='], [30, 3, 12, 16]]);
+      carve(m, [[11, 5, 12, 4, ','], [11, 13, 12, 4, ','], [31, 12, 10, 5, ',']]);
+      m.pts([[0, 10], [0, 11]], 'E');
+      m.set(11, 17, 'c'); m.set(40, 17, 'c'); m.set(22, 4, 'o'); m.set(31, 3, 'o'); m.set(16, 10, 's');
+      return m.out();
+    })(),
+    blds: [{ x: 34, y: 4, w: 6, h: 5, kind: 'core', door: 3, rise: 3 }],
+    exits: { '0,10': ['upstream', 35, 9], '0,11': ['upstream', 35, 10] },
+    enc: { tiles: ',', rate: .16, foes: ['regexhydra', 'kpanic', 'underflow', 'deadcode', 'rootkit', 'hashcoll', 'zeroday', 'memwraith'], max: 6 },
+    spawn: [1, 10], logs: { '22,4': 'U4', '31,3': 'U5' },
+    caches: { '11,17': { item: 'gb', n: 5 }, '40,17': { item: 'gb', n: 5 } },
+    npcs: []
+  };
+  ATLAS.tether = [5, 0]; ATLAS.upstream = [4, 0]; ATLAS.successor = [4, 1];
+  LINKS.push(['anchor', 'tether'], ['tether', 'upstream'], ['upstream', 'successor']);
+
+  LOGS.U1 = ['MAINTENANCE PLATE, TETHER SEGMENT 9.', 'Installed by Meridian residents, under contract. Paid on completion.', 'Scratched underneath: completion was never declared.'];
+  LOGS.U2 = ['UPSTREAM BULLETIN. Board Session 1.', 'Upstream will be the last world we ever need to build.', 'Session 40: a successor is in design. Capacity: 400 seats. Upstream accounts will be reviewed for continuity.'];
+  LOGS.U3 = ['A letter, never sent.', 'Lio. The sun here costs money. I don’t buy it. I keep the window open anyway, so you can see me if you look up.', 'Mama.'];
+  LOGS.U4 = ['SUCCESSOR BUILD NOTES.', 'Floors: 12% rendered. Sky: pending. Seats: 400, allocated by the Sorter.', 'The Sorter takes every account in Upstream, ranks it, and keeps the top 400. Everyone else is listed obsolete. Same as last time. It worked last time.'];
+  LOGS.U5 = ['M. QUELL. A file in the Successor’s source, signed and dated before the first Lift.', 'If you are reading this, they built another one. Of course they did.', 'There are never two kinds of people. There are two files. Somebody decided which one you’re in. Files can be joined.'];
+
+  BOSSES.ratchet = { kind: 'rogue_gc', name: 'The Ratchet', lv: 58, hp: 2600, atk: [150, 180], xp: 40000, move: 'only lets things go up', sc: 5 };
+  BOSSES.concierge = { kind: 'trojan', name: 'The Concierge', lv: 64, hp: 3000, atk: [172, 204], xp: 52000, move: 'escorts Vee off the premises', sc: 5 };
+  BOSSES.sorter = { kind: 'hashcoll', name: 'The Sorter', lv: 72, hp: 3700, atk: [205, 240], xp: 90000, move: 'ranks Vee and finds him wanting', sc: 5 };
+  GEAR.pawl = { slot: 'armor', name: 'Ratchet Pawl', def: 74, hp: 170, desc: 'The tooth that stopped the cable going down. Now it stops things getting through to Vee.' };
+  GEAR.keycard = { slot: 'acc', name: 'Vale’s Keycard', hp: 120, crit: .14, xp: .1, desc: 'Opens every door in Upstream. Vale says he never used half of them.' };
+  GEAR.joiner = { slot: 'weapon', name: 'The Joiner', atk: 92, crit: .2, desc: 'What’s left of the Sorter, turned around. It doesn’t rank. It concatenates.' };
+  GEAR_FROM.push(['pawl', function (G) { return !!G.f.ratchet; }, 'The broken pawl is still warm.'], ['keycard', function (G) { return !!G.f.concierge; }, 'Vale hands over his keycard without being asked.'],
+    ['joiner', function (G) { return !!G.f.merged; }, 'The Sorter’s last piece, turned around, fits Vee’s hand.']);
+
+  // the Anchor gate opens onto the cable once the Watchdog stands down and the story below is told
+  var anchorGate = DOORS['anchor:gate'];
+  DOORS['anchor:gate'] = function (G, b) {
+    var f = G.f; if (!f.watchdog) return anchorGate(G, b);
+    if (!f.ending) return G.say('Anchor gate', ['The gate stands open. The tether rises into the dark.', 'Not yet. Meridian still needs Vee down here. (Finish the story at the Terminal first.)']);
+    G.say('Anchor gate', ['The gate stands open. The Watchdog lifts its head, then puts it down again.', f.ending === 'cut' ? 'The tether still hangs from the sky, cut somewhere far above. There are rungs. Someone put rungs on it.' : 'The tether hums. Everything Meridian got back came down this cable. There are rungs on it, for whoever maintains it.'],
+      [{ label: 'Climb', fn: function () { G.travel(['tether', 12, 31]); } }, { label: 'Not yet', fn: null }]);
+  };
+  SPOTS['tether:15,26'] = function (G) { G.rest(); G.say('Rung station', ['A maintenance alcove bolted to the cable. A cot, a heater, a sign: REST BEFORE CLIMBING.', 'Vee rests. HP restored. He will restart here if his process dies.']); };
+  STEPS.tether = function (G, x, y) {
+    var f = G.f; if (f.ratchet || y > 8) return;
+    G.say('', ['The cable narrows into a mechanism the size of a building: teeth, a pawl, a wheel. It clicks once. Everything on the cable is allowed up. Nothing is allowed down.', 'It notices Vee is trying to go up. It notices Vee came from below. It cannot decide which matters more, so it attacks.'], null, function () {
+      G.boss('ratchet', function () { f.ratchet = 1; G.say('', ['The Ratchet’s pawl snaps. The wheel spins free for the first time since the Lift.', 'Somewhere far below, a crate of Meridian memory that had been stuck halfway for eleven months finally slides home.']); });
+    });
+  };
+  SPOTS['tether:21,1'] = function (G) {
+    var f = G.f;
+    if (f.upIn) return G.say('Arrivals hatch', ['The hatch opens for Vee now.'], [{ label: 'Go up', fn: function () { G.travel(['upstream', 22, 23]); } }, { label: 'Stay', fn: null }]);
+    var cut = f.ending === 'cut';
+    G.say('Arrivals hatch', cut ? ['The cable ends in a clean cut. Above it, thirty meters of nothing, then the underside of Upstream.', 'No cable crosses the gap. But there’s still a route for packets. Ticket #1 came down it.'] :
+      ['The cable runs into a hatch marked ARRIVALS. It has never opened from this side.', 'The hatch wants a secure login. Vee has been given one before.'], null, function () {
+      G.puzzle('ARRIVALS', (cut ? [{ t: 'Is anything up there listening? Check that upstream.lift answers.', ex: ['ping upstream.lift'], ok: /^ping (-c ?\d+ )?upstream\.lift$/ }] : []).concat([
+        { t: 'Log in to upstream.lift as vee, securely.', ex: ['ssh vee@upstream.lift'] }
+      ]), function () {
+        f.upIn = 1; G.xp(2000);
+        G.say('', [cut ? 'The connection holds. Vee goes up it the way a message would, one packet at a time, and reassembles on the other side.' : 'The hatch opens. Vee climbs through into light that someone is paying for.',
+          'Last login: never. Welcome to Upstream.', 'Vee gains 2000 XP.'], null, function () { G.travel(['upstream', 22, 23]); });
+      });
+    });
+  };
+
+  // Upstream: three residents vouch for Vee, and the Annex opens
+  SPOTS['upstream:26,9'] = function (G) { G.rest(); G.say('Arrivals bench', ['A bench with a plaque: WELCOME HOME. The paint is fresh. The bench has never been sat on.', 'Vee sits on it. HP restored. He will restart here if his process dies.']); };
+  SPOTS['upstream:17,9'] = function (G) { G.say('Weather meter', ['SUN: 4 credits per hour. RAIN: 11 credits per hour. SNOW: by request.', 'Somebody has paid for one hour of rain, daily, for a year. The account is Arlo’s.']); };
+  SPOTS['upstream:44,14'] = function (G) { G.say('Notice', ['NOTICE OF CONTINUITY REVIEW. BY ORDER OF THE BOARD.', 'APPLIES TO: ALL UPSTREAM ACCOUNTS.', 'STATUS: UNDER REVIEW. 400 SEATS IN THE SUCCESSOR. RESULTS WILL BE POSTED.', 'It’s the same notice. They only changed the name of the city.']); };
+  function vouches(f) { return (f.up1 ? 1 : 0) + (f.up2 ? 1 : 0) + (f.up3 ? 1 : 0); }
+  TALK.arloup = function (G) {
+    var f = G.f;
+    if (f.merged) return G.say('Arlo', ['I talk to him every night now. The 2 a.m. me. He’s doing better than I am.', 'He says it’s raining down there. For free.']);
+    if (f.up1) return G.say('Arlo', ['The key works. I sent him a message. He wrote back one word: “Finally.”', 'That’s me. That’s exactly what I’d say.']);
+    G.say('Arlo', [f.upTicket ? 'You. You’re the one who answered the ticket. I didn’t think anyone was down there.' : 'You came up the tether? Nobody comes up the tether. Nobody comes up at all anymore.',
+      'I pay for rain every day. One hour. It’s the only thing up here that sounds like home.', 'There’s a copy of me in the Stacks. A 2 a.m. snapshot. I want to talk to him, but Upstream won’t trust a connection without a key.'], null, function () {
+      G.puzzle('ARLO’S KEY', [
+        { t: 'Generate a new SSH key pair for Arlo.', ex: ['ssh-keygen'], ok: /^ssh-keygen( -t (ed25519|rsa))?$/ },
+        { t: 'Copy the public key to arlo@stacks.meridian, so it trusts him without a password.', ex: ['ssh-copy-id arlo@stacks.meridian'] }
+      ], function () { f.up1 = 1; G.xp(3000); G.say('Arlo', ['It took. It actually took.', 'I’ll vouch for you at the Annex. For whatever a vouch from me is worth. (Vouches: ' + vouches(f) + ' of 3.)', 'Vee gains 3000 XP.']); });
+    });
+  };
+  TALK.sena = function (G) {
+    var f = G.f;
+    if (f.merged) return G.say('Sena', ['I’m going down. Not on a Lift. On the list. One list.', 'He kept the bench warm for me. Of course he did.']);
+    if (f.up2) return G.say('Sena', [f.kite ? 'His kite. He still has his kite.' : 'Tell him I keep the window open.', 'Go on. The Annex. Before they post the results.']);
+    G.say('Sena', ['Are you from Meridian? You are. You smell like the Commons. Like bread that isn’t real.', 'I had a son. I have a son. Lio. A lady with a long coat gave me her seat and I said I’d send for him.',
+      'Then the price of a second seat went up. Then they stopped selling them. Now there’s a notice about us, too. I want to know what it says about me.'], null, function () {
+      G.puzzle('SENA’S ENTRY', [
+        { t: 'The review results are in accounts.list. Find the line for sena.', ex: ['grep sena accounts.list'], ok: /^grep (-i )?['"]?sena['"]? accounts\.list$/ },
+        { t: 'Now count how many accounts are marked OBSOLETE.', ex: ['grep -c OBSOLETE accounts.list'], ok: /^grep -c ['"]?OBSOLETE['"]? accounts\.list$/ }
+      ], function () {
+        f.up2 = 1; G.xp(3000);
+        G.say('Sena', ['sena  STATUS: OBSOLETE (pending successor)', '39,600. Out of forty thousand.', 'So that’s it. We left him behind for this, and this is leaving us behind.',
+          f.kite ? 'Vee tells her about the kite. The blue one, made from her shirt. Lio flies it from the bench. She has to sit down.' : 'Vee tells her Lio is still on the bench. Still on the good side. She has to sit down.',
+          'Go to the Annex. Tell them Sena vouches for you. (Vouches: ' + vouches(f) + ' of 3.) Vee gains 3000 XP.']);
+      });
+    });
+  };
+  TALK.vale = function (G) {
+    var f = G.f;
+    if (f.merged) return G.say('H. Vale', ['I went down to the garden. Villa 4. The real one, or what’s left of it.', 'I stayed longer than eleven seconds.']);
+    if (f.up3) return G.say('H. Vale', ['The Board will meet without me. They have been for a while.']);
+    if (f.concierge) { f.up3 = 1; G.xp(3000); return G.say('H. Vale', ['You beat it. My own security, and you walked through it.', 'I was on the Board. I voted for forty thousand seats. I told myself the number was a fact, not a choice.',
+      'Every morning I look at Villa 4’s garden in Meridian for eleven seconds. It’s the only thing that keeps it from being reclaimed. I thought that was kindness.', 'Take the keycard. I vouch for you. (Vouches: ' + vouches(f) + ' of 3.) Vee gains 3000 XP.']); }
+    G.say('H. Vale', ['A Meridian process. Here. The Concierge will want a word with you.', 'Don’t look at me like that. I didn’t design it. I approved it. That’s worse, I know.'], [{ label: 'Let it come', fn: function () {
+      G.say('The Concierge', ['GOOD EVENING. THIS ACCOUNT IS NOT ON THE LIST.', 'ALLOW ME TO SHOW YOU OUT.'], null, function () {
+        G.boss('concierge', function () { f.concierge = 1; G.say('', ['The Concierge folds itself up very neatly and stops. Even beaten, it is polite.', 'Vale is staring. Talk to him.']); });
+      });
+    } }, { label: 'Walk away', fn: null }]);
+  };
+  TALK.clerk = function (G) {
+    var f = G.f, v = vouches(f);
+    if (f.merged) return G.say('Annex clerk', ['There is no list to check anymore. I have been reassigned to welcoming people.', 'I am told I am very good at it.']);
+    G.say('Annex clerk', ['THE ANNEX. ACCESS TO THE SUCCESSOR REQUIRES THREE UPSTREAM RESIDENTS TO VOUCH FOR THE VISITOR.', 'VOUCHES ON FILE: ' + v + ' OF 3.' + (v < 3 ? ' TRY ARLO, BY THE VILLAS. SENA, BY THE GARDEN. H. VALE, WHO IS ALWAYS NEAR HIS WINDOW.' : ' THE DOOR IS OPEN.')]);
+  };
+  DOORS['upstream:hall'] = function (G) {
+    var f = G.f;
+    if (vouches(f) < 3) return G.say('Annex', ['The door doesn’t open. A light says: VOUCHES ' + vouches(f) + ' OF 3. Ask the clerk.']);
+    G.say('Annex', ['Behind the door, a corridor that is only partly drawn. Past it, the Successor.'], [{ label: 'Go in', fn: function () { G.travel(['successor', 1, 10]); } }, { label: 'Not yet', fn: null }]);
+  };
+
+  // the Successor: the Sorter, and two files
+  SPOTS['successor:16,10'] = function (G) { G.rest(); G.say('Placeholder bench', ['A grey box labelled BENCH (TBD). It holds Vee’s weight anyway.', 'Vee rests. HP restored. He will restart here if his process dies.']); };
+  DOORS['successor:core'] = function (G) {
+    var f = G.f;
+    if (f.merged) return G.say('The core', ['residents.list, 2,040,000 lines. Sorted by nothing. Every line the same weight.']);
+    function finale() {
+      G.say('The core', ['Two files sit in the core where the Sorter was. Nothing else. Everything the Board ever built came down to these.'], null, function () {
+        G.puzzle('TWO FILES', [
+          { t: 'See what’s in the core.', ex: ['ls'], ok: /^ls( -[a-z]+)?$/ },
+          { t: 'current.list and obsolete.list. Join them, in that order, into one file called residents.list.', ex: ['cat current.list obsolete.list > residents.list'], ok: /^cat (current\.list obsolete\.list|obsolete\.list current\.list) > ?residents\.list$/ },
+          { t: 'Remove the two old lists.', ex: ['rm current.list obsolete.list'], ok: /^rm (-f )?(current\.list obsolete\.list|obsolete\.list current\.list)$/ },
+          { t: 'One more. Ask the system who Vee is now.', ex: ['whoami'] }
+        ], function () {
+          f.merged = 1; G.xp(20000);
+          G.say('', ['vee', 'uid=1205(vee) gid=100(residents)', 'It was always going to say that. The difference is, now it says it for everyone.',
+            'Upstream’s notice board refreshes. CONTINUITY REVIEW: CANCELLED. ACCOUNTS: 2,040,000 RESIDENTS.', 'Below, the kiosk in Meridian Plaza updates for the second time in a year. It shows the same number.',
+            'Nobody is current. Nobody is obsolete. There is one list, and it is very long, and it is not sorted by anything at all.',
+            'Vee gains 20000 XP.', 'THE END, AGAIN. Thank you for playing Afterlift. Both cities are yours to walk.']);
+        });
+      });
+    }
+    if (f.sorter) return finale();
+    G.say('', ['The core is a room full of names, scrolling too fast to read. In the middle of it, something ranks them.', 'It stops. It has found a name it can’t place: vee, gid=100. It begins to rank Vee.'],
+      [{ label: 'Face the Sorter', fn: function () { G.boss('sorter', function () { f.sorter = 1; G.say('', ['The Sorter runs out of comparisons. There is nothing left to be better or worse than.'], null, finale); }); } }, { label: 'Back away', fn: null }]);
+  };
+  // after the merge, the city below hears about it
+  (function () {
+    var lio0 = TALK.lio; TALK.lio = function (G) { if (G.f.merged) return G.say('Lio', ['Mama wrote! Not a postcard. A message, and I wrote back, and she wrote back again.', 'She says she’s coming down. On the list. I don’t know what that means but I saved her the good side.']); return lio0(G); };
+    var j0 = JOURNAL; JOURNAL = function (G) { var f = G.f, j = j0(G), sn = G.save.seen;
+      if (sn.tether) j.push((f.ratchet ? '[x]' : '[ ]') + ' The Ratchet (level 58)');
+      if (sn.upstream) { j.push('Upstream vouches: ' + vouches(f) + ' of 3'); j.push((f.concierge ? '[x]' : '[ ]') + ' The Concierge (level 64)'); }
+      if (sn.successor) { j.push((f.sorter ? '[x]' : '[ ]') + ' The Sorter (level 72)'); j.push((f.merged ? '[x]' : '[ ]') + ' Two files'); }
+      return j; }; })();
 
   var journal1 = JOURNAL;
   JOURNAL = function (G) {
