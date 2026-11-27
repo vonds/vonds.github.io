@@ -1438,6 +1438,104 @@
     { t: 'Question 2. Write the line that runs /home/vee/backup.sh every day at 2 a.m.', ex: ['0 2 * * * /home/vee/backup.sh'] },
     { t: 'Question 3. List the timers systemd is keeping.', ex: ['systemctl list-timers', 'systemctl list-timers --all'] },
     { t: 'Question 4. And now, the important one. What day is it? Ask the system.', ex: ['date', 'date +%A', 'date "+%A"'] }] });
+  /* THE WATERWORKS: the cooling plant under the Line. Every server in Meridian runs hot. */
+  A.waterworks = {
+    name: 'The Waterworks', sub: 'Every server in the city runs hot. Something has to carry the heat away.', theme: 'water', tier: 3, lv: 11, lvMax: 13,
+    map: (function () {
+      var m = grid(36, 22).border();
+      m.pts([[12, 0], [13, 0]], 'E');
+      m.rect(1, 8, 34, 2, '~'); m.rect(12, 8, 2, 2, '='); m.rect(30, 8, 2, 2, '=');
+      m.rect(1, 15, 34, 2, '~'); m.rect(6, 15, 2, 2, '='); m.rect(24, 15, 2, 2, '=');
+      m.rect(2, 11, 8, 2, ','); m.rect(24, 11, 9, 2, ','); m.rect(12, 18, 10, 2, ',');
+      m.pts([[8, 7], [20, 7], [27, 7], [15, 12], [31, 13]], 'l');
+      m.set(10, 3, 's'); m.set(34, 6, 'o'); m.set(2, 20, 'o'); m.set(2, 6, 'c'); m.set(33, 20, 'c');
+      return m.out();
+    })(),
+    blds: [
+      { x: 2, y: 2, w: 5, h: 4, kind: 'pump', door: 2, seed: 1, sign: 'PUMP 1', rise: 1 },
+      { x: 15, y: 2, w: 5, h: 4, kind: 'pump', door: 2, seed: 2, sign: 'PUMP 2', rise: 1 },
+      { x: 21, y: 2, w: 5, h: 4, kind: 'pump', door: 2, seed: 3, sign: 'PUMP 3', rise: 1 },
+      { x: 28, y: 1, w: 6, h: 5, kind: 'tank', rise: 3 },
+      { x: 3, y: 18, w: 6, h: 3, kind: 'control', door: 3, doorTop: 1, sign: 'CONTROL' }
+    ],
+    exits: { '12,0': ['line', 12, 14], '13,0': ['line', 13, 14] },
+    enc: { tiles: ',', rate: .14, foes: ['worm', 'bytebug', 'beetle', 'centipede', 'spider'], max: 5 },
+    spawn: [12, 1],
+    logs: { '34,6': 'W1', '2,20': 'W2' },
+    caches: { '2,6': { item: 'kb', n: 2 }, '33,20': { item: 'mb', n: 1 } },
+    npcs: [
+      { id: 'marisol', p: { hair: 'bun', body: 'coat', skin: '#8a5a3c', top: '#4a5a62' }, x: 9, y: 13, name: 'Marisol', look: 'echo', h: 14, hair: 3, solid: 1 },
+      { id: 'dov', p: { hair: 'cap', skin: '#c89a78', top: '#5a5a66' }, x: 18, y: 14, name: 'Dov', look: 'kid' }
+    ]
+  };
+  (function () {
+    var r = A.line.map[15].split(''); r[12] = 'E'; r[13] = 'E'; A.line.map[15] = r.join('');
+    A.line.exits['12,15'] = ['waterworks', 12, 1]; A.line.exits['13,15'] = ['waterworks', 13, 1];
+  })();
+  ATLAS.waterworks = [1, 4]; LINKS.push(['line', 'waterworks']);
+  LOGS.W1 = ['OPERATOR’S SHIFT LOG. M. Ruiz.', 'Day 1 after the Lift. The automatic controller was a cloud service. It went Upstream with everyone else.', 'The pumps don’t know that. They just keep waiting to be told what to do. So I tell them. Every hour.'];
+  LOGS.W2 = ['OPERATOR’S SHIFT LOG. M. Ruiz.', 'Day 300-something. I sleep in fifty-minute pieces now.', 'If the pumps stop, the servers cook. If the servers cook, the city goes dark all at once instead of one street at a time. I am the only thing standing between Meridian and a very fast ending.', 'I would like to be replaced by a script. It would be the kindest thing anyone could do for me.'];
+  BOSSES.overflow = { kind: 'worm', name: 'Buffer Overflow', hp: 900, atk: [17, 23], xp: 600, move: 'writes past the end of the tank', sc: 4 };
+  GEAR.gauge = { slot: 'acc', name: 'Pressure Gauge', hp: 25, crit: .04, desc: 'Marisol’s, from Pump 1. It reads how close things are to bursting. Usually Vee.' };
+  GEAR_FROM.push(['gauge', function (G) { return !!G.f.overflow; }, 'Marisol unscrews the gauge from Pump 1 and hands it over. “Better on you than on a wall.”']);
+
+  var PUMPS = {
+    'PUMP 1': { flag: 'p1', who: 'Pump 1 is humming, but nothing is moving. Its controller process is stuck.', steps: [
+      { t: 'Find the pump process. List every process and keep only lines with pump.', ex: ['ps aux | grep pump', 'ps -ef | grep pump', 'ps aux|grep pump', 'pgrep pump', 'pgrep -a pump'] },
+      { t: 'pump1, PID 3120, state D: stuck waiting on a disk that left Upstream. Asking won’t work. End it.', ex: ['kill -9 3120', 'kill -KILL 3120', 'sudo kill -9 3120'] }],
+      after: ['The wheel shudders, then turns. Water moves. Somewhere above, a rack of servers drops two degrees.'] },
+    'PUMP 2': { flag: 'p2', who: 'Pump 2 won’t start. It says it can’t write its log.', steps: [
+      { t: 'Check how full the disks are, human-readable.', ex: ['df -h', 'df'] },
+      { t: '/var is at 100%. How big is /var/log/pump?', ex: ['du -sh /var/log/pump', 'du -sh /var/log/pump/', 'du -h /var/log/pump', 'du -hs /var/log/pump'] },
+      { t: 'Eleven months of logs nobody read. Remove the old folder inside it, and everything in it.', ex: ['rm -r /var/log/pump/old', 'rm -rf /var/log/pump/old', 'sudo rm -r /var/log/pump/old', 'sudo rm -rf /var/log/pump/old'] }],
+      after: ['Space frees up. Pump 2 writes one line, PUMP 2 STARTED, and gets to work.'] },
+    'PUMP 3': { flag: 'p3', who: 'Pump 3 has a restart script Marisol wrote herself. It has never been allowed to run.', steps: [
+      { t: 'Look at the script’s permissions: list restart.sh in long form.', ex: ['ls -l restart.sh', 'ls -la restart.sh', 'ls -al restart.sh'] },
+      { t: '-rw-r--r--. Nobody can run it. Make it executable.', ex: ['chmod +x restart.sh', 'chmod u+x restart.sh', 'chmod 755 restart.sh', 'chmod 744 restart.sh'] },
+      { t: 'Now run it.', ex: ['./restart.sh', 'bash restart.sh', 'sh restart.sh'] }],
+      after: ['restart.sh: watching pumps. If any stops, I will start it again. You can sleep now.', 'The script was written eleven months ago. It has been waiting all this time for permission.'] }
+  };
+  DOORS['waterworks:pump'] = function (G, b) {
+    var f = G.f, P2 = PUMPS[b.sign];
+    if (!P2) return;
+    if (f[P2.flag]) return G.say(b.sign, ['Running. The wheel turns on its own, which is the whole point.']);
+    G.say(b.sign, [P2.who], [{ label: 'Open its console', fn: function () { G.puzzle(b.sign, P2.steps, function () { f[P2.flag] = 1; G.xp(150); G.say(b.sign, P2.after.concat(['Vee gains 150 XP.'])); }); } }, { label: 'Leave it', fn: null }]);
+  };
+  DOORS['waterworks:control'] = function (G) {
+    var f = G.f;
+    if (f.overflow) { G.rest(); return G.say('Control room', ['Every screen green. A cot in the corner, unslept in for once, because Marisol went home to sleep in a real bed.', 'Vee sits in her chair for a minute. HP restored.']); }
+    G.say('Control room', ['Banks of screens, most of them dark. A cot in the corner. A coffee mug full of pens, because the coffee ran out in month two.', 'A sticky note on the main screen: CHECK PUMPS. CHECK PUMPS. CHECK PUMPS.']);
+  };
+  TALK.marisol = function (G) {
+    var f = G.f, n = (f.p1 ? 1 : 0) + (f.p2 ? 1 : 0) + (f.p3 ? 1 : 0);
+    if (f.overflow) return G.say('Marisol', f.tuesday ? ['Tuesday. I slept through the whole night and woke up on a day that hadn’t happened yet.', 'Do you know how many years that takes off you? I feel thirty-eight. I am forty-one. Close enough.'] :
+      ['I slept nine hours. In a row. I didn’t know you were allowed to do that.', 'The script checks the pumps now. Every minute, all night. It doesn’t get tired. I’m a little jealous. Mostly I’m grateful.']);
+    if (!f.marisol) { f.marisol = 1; return G.say('Marisol', ['Don’t touch the blue valve. Don’t touch any valve. Sorry. Hello.', 'This is the Waterworks. Every server in Meridian runs hot. The water carries the heat away. If it stops, the city cooks in about forty minutes.',
+      'The controller that ran all this was a cloud service. It took the Lift. Since then, the controller is me. I restart the pumps by hand, every hour. I have done it about eight thousand times.',
+      'Three pumps, three problems I can’t fix with a wrench. You have commands. Please. I would like to sleep.']); }
+    if (n < 3) return G.say('Marisol', ['Pumps running on their own: ' + n + ' of 3.', n === 2 ? 'One more. I can feel my eyes closing already.' : 'Pump 1 is stuck. Pump 2 says it’s full. Pump 3 has my script. Any order.']);
+    G.say('Marisol', ['All three. Running. Without me.', '...Wait. Do you hear that? The reservoir. Something is writing into it past the top.'], null, function () {
+      G.say('', ['The reservoir’s sight glass overflows. Something long and pale slides over the rim, still writing, long after the tank was full.'], null, function () {
+        G.boss('overflow', function () { f.overflow = 1; G.say('Marisol', ['Buffer overflow. Of course. Everything was writing as fast as it could, and nobody was checking the size.', 'Now the script checks. Thank you. I’m going home. I have a home. I’d nearly forgotten.']); });
+      });
+    });
+  };
+  TALK.dov = function (G) {
+    var f = G.f;
+    if (!f.dov) { f.dov = 1; G.give('byte', 2); return G.say('Dov', ['I’m fishing. For bits. They fall off the servers upstairs and wash down here.', 'Mom says it’s pointless. Mom runs the pumps. She thinks everything that isn’t pumps is pointless.', 'Here. I caught two bytes. You can have them. Vee receives 2 bytes.']); }
+    if (f.overflow) return G.say('Dov', ['Mom came home last night. She made dinner. It was burnt. It was the best thing I ever ate.']);
+    G.say('Dov', ['Mom hasn’t been home since the Lift. She sleeps in the control room.', 'If the pumps could run themselves, she could come home. That’s what I’d fish for, if you could catch that.']);
+  };
+  SPOTS['waterworks:10,3'] = function (G) { G.say('Sign', ['MERIDIAN WATERWORKS. Cooling for 2,000,000 residents.', 'Under it, a newer sign, handwritten: NOW COOLING FOR WHOEVER IS LEFT. STILL WORTH IT.']); };
+  (function () {
+    var j0 = JOURNAL;
+    JOURNAL = function (G) {
+      var f = G.f, j = j0(G);
+      if (G.save.seen.waterworks) { j.push('The Waterworks: ' + ((f.p1 ? 1 : 0) + (f.p2 ? 1 : 0) + (f.p3 ? 1 : 0)) + ' of 3 pumps automated'); j.push((f.overflow ? '[x]' : '[ ]') + ' Let Marisol sleep'); }
+      return j;
+    };
+  })();
+
   /* a room of Vee's own: the nameplate fills in once Vee is a resident */
   DOORS['plaza:home'] = function (G) {
     var f = G.f, s = G.save;

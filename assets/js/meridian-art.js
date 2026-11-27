@@ -1202,5 +1202,84 @@
     for (var q = 0; q < 9; q++) { var z = (q + (t * .25) % 1) / 9, yz = Math.floor(hy + (H - hy) * z * z) + .5; cx.strokeStyle = 'rgba(255,255,255,' + (.03 + z * .16) + ')'; cx.beginPath(); cx.moveTo(0, yz); cx.lineTo(W, yz); cx.stroke(); }
   };
 
+  /* =================== THE WATERWORKS: the cooling plant under the Line =================== */
+  THEMES.water = { g0: '#0d1012', g1: '#151a1d', dot: '#24292d', road: '#1a1f22', edge: '#b8c4cc' };
+  var floorX4 = floorX, roadX4 = roadX, fieldX4 = fieldX, voidX4 = voidX, wallX4 = wallX;
+  floorX = function (px, theme, X, Y, x, y, tile) {
+    if (theme === 'water') {   // steel grating over the dark
+      px(X, Y, TS, TS, '#14181b'); for (var g = 1; g < TS; g += 3) { px(X + g, Y, 1, TS, '#0a0c0e'); px(X, Y + g, TS, 1, '#0a0c0e'); }
+      px(X, Y, TS, 1, '#2a3136'); if (hs(x * 9 + y * 5) > .85) px(X + 5, Y + 6, 4, 3, 'rgba(120,150,160,.12)');
+      return true;
+    }
+    return floorX4(px, theme, X, Y, x, y, tile);
+  };
+  roadX = function (px, theme, X, Y, x, y, tile) {
+    if (theme === 'water') { px(X, Y, TS, TS, '#20272b'); px(X + 1, Y, 1, TS, '#c8d4dc'); px(X + TS - 2, Y, 1, TS, '#c8d4dc'); for (var r = 2; r < TS; r += 4) px(X + 2, Y + r, TS - 4, 1, '#2e373c'); return true; }   // a catwalk over the channel
+    return roadX4(px, theme, X, Y, x, y, tile);
+  };
+  fieldX = function (px, theme, X, Y, x, y) {
+    if (theme === 'water') { px(X, Y, TS, TS, '#14181b'); px(X + 2, Y + 4, 11, 6, '#0b1418'); px(X + 3, Y + 5, 6, 1, 'rgba(200,220,230,.35)'); px(X + 4, Y + 8, 7, 1, 'rgba(200,220,230,.15)'); return true; }   // puddles from the leaks
+    return fieldX4(px, theme, X, Y, x, y);
+  };
+  voidX = function (px, theme, X, Y, x, y, tile) {
+    if (theme === 'water') {   // the cooling channel
+      px(X, Y, TS, TS, '#071014'); for (var w = 2; w < TS; w += 4) px(X + ((x + w) % 5), Y + w, 9, 1, 'rgba(150,190,205,' + (.08 + hs(x * 3 + w + y) * .14) + ')');
+      if (tile(x, y - 1) !== '~') { px(X, Y, TS, 3, '#3a4247'); px(X, Y, TS, 1, '#c8d4dc'); }
+      if (tile(x, y + 1) !== '~') px(X, Y + TS - 2, TS, 2, '#2a3136');
+      return true;
+    }
+    return voidX4(px, theme, X, Y, x, y, tile);
+  };
+  wallX = function (px, theme, X, Y, x, y, tile) {
+    if (theme === 'water') { px(X, Y, TS, TS, '#0c0f11'); px(X, Y + 3, TS, 8, '#2a3136'); px(X, Y + 3, TS, 1, '#8a98a2'); px(X, Y + 10, TS, 1, '#151a1d'); if (x % 4 === 0) { px(X + 5, Y + 1, 4, 12, '#3a4247'); px(X + 5, Y + 1, 4, 1, '#b8c4cc'); } return true; }   // pipe runs
+    return wallX4(px, theme, X, Y, x, y, tile);
+  };
+  var paintSky4 = paintSky;
+  paintSky = function (g, theme, w, pad) { return paintSky4(g, theme === 'water' ? 'undercroft' : theme, w, pad); };
+
+  // a pump house: a great wheel, a pressure gauge, and a door Marisol has opened ten thousand times
+  function pump(g, W, Ht, Hf, b, lights) {
+    var px = P(g), top = Ht - Hf;
+    px(0, top, W, Hf, '#12171a'); px(0, top, W, 1, '#b8c4cc'); px(0, top, 1, Hf, '#6a7880');
+    px(0, top - 6 > 0 ? top - 6 : 0, W, 6, '#1a2024'); px(0, top - 6 > 0 ? top - 6 : 0, W, 1, '#8a98a2');
+    var cx0 = 16, cy0 = top + 16; g.strokeStyle = '#c8d4dc'; g.beginPath(); g.arc(cx0, cy0, 10, 0, 7); g.stroke();
+    for (var s2 = 0; s2 < 6; s2++) { var a = s2 / 6 * Math.PI * 2; g.beginPath(); g.moveTo(cx0, cy0); g.lineTo(cx0 + Math.cos(a) * 10, cy0 + Math.sin(a) * 10); g.stroke(); }
+    px(W - 22, top + 6, 14, 14, '#0a0d0f'); g.strokeStyle = '#8a98a2'; g.beginPath(); g.arc(W - 15, top + 13, 6, 0, 7); g.stroke();
+    if (b.sign) { var tw2 = textW(b.sign); px(W - tw2 - 7, Ht - 12, tw2 + 4, 8, '#e8eef2'); text(g, b.sign, W - tw2 - 5, Ht - 10, '#0a0d0f'); }
+    if (b.door != null) { var dx = b.door * TS + 3; px(dx, Ht - 14, 10, 14, '#050607'); px(dx, Ht - 14, 10, 1, '#c8d4dc'); }
+    lights.push({ x: W - 16, y: top + 10, kind: 'monitor', ph: b.seed || 1 }); lights.push({ x: cx0 - 6, y: cy0 - 1, kind: 'clock' });
+  }
+  // the reservoir tank, its sight glass showing how full the city runs
+  function tank(g, W, Ht, Hf, b, lights) {
+    var px = P(g);
+    px(4, 6, W - 8, Ht - 8, '#141a1d'); px(4, 6, 1, Ht - 8, '#b8c4cc'); px(W - 5, 6, 1, Ht - 8, '#2a3136');
+    g.fillStyle = '#1a2024'; g.beginPath(); g.ellipse(W / 2, 6, W / 2 - 4, 5, 0, 0, 7); g.fill(); g.strokeStyle = '#c8d4dc'; g.beginPath(); g.ellipse(W / 2, 6, W / 2 - 4, 5, 0, 0, 7); g.stroke();
+    for (var r = 14; r < Ht - 4; r += 10) px(4, r, W - 8, 1, '#2a3136');
+    px(W / 2 - 3, 14, 6, Ht - 24, '#05080a'); px(W / 2 - 3, 14 + Math.floor((Ht - 24) * .35), 6, Math.floor((Ht - 24) * .65), 'rgba(140,180,196,.45)');
+    text(g, 'RESERVOIR', Math.round(W / 2 - textW('RESERVOIR') / 2), Ht - 10, '#c8d4dc');
+    lights.push({ x: W / 2 - 3, y: 14, w: 6, h: Ht - 24, kind: 'board' });
+  }
+  // the control room: a long window of screens, mostly asleep
+  function control(g, W, Ht, Hf, b, lights) {
+    var px = P(g);
+    px(0, 2, W, Ht - 2, '#101417'); px(0, 2, W, 1, '#c8d4dc');
+    px(3, 6, W - 6, Ht - 14, '#05080a'); for (var sx = 5; sx < W - 8; sx += 10) { px(sx, 8, 8, 6, hs(sx) > .5 ? '#c8d8e0' : '#1a2228'); }
+    text(g, b.sign || 'CONTROL', 5, Ht - 7, '#e8eef2');
+    if (b.door != null) { var dx = b.door * TS + 3; px(dx, 0, 10, 4, '#050607'); px(dx, 4, 10, 1, '#ffffff'); }
+    lights.push({ x: 5, y: 8, w: W - 12, h: 6, kind: 'screen' });
+  }
+  PAINT.pump = pump; PAINT.tank = tank; PAINT.control = control;
+  var backdrop4 = backdrop;
+  backdrop = function (cx, theme, t, W, H, hy) {
+    if (theme !== 'water') return backdrop4(cx, theme, t, W, H, hy);
+    var px = P(cx);
+    cx.fillStyle = '#05080a'; cx.fillRect(0, 0, W, hy);
+    for (var p2 = 0; p2 < 4; p2++) { var py = 8 + p2 * 13; px(0, py, W, 5, '#1a2024'); px(0, py, W, 1, '#6a7880'); for (var f = 20 + p2 * 7; f < W; f += 60) px(f, py - 1, 4, 7, '#2a3136'); }
+    for (var tk = 0; tk < 4; tk++) { var tx = 20 + tk * 82; px(tx, hy - 34, 40, 34, '#11161a'); px(tx, hy - 34, 40, 1, '#8a98a2'); px(tx + 18, hy - 28, 4, 22, 'rgba(140,180,196,.3)'); }
+    var fg = cx.createLinearGradient(0, hy, 0, H); fg.addColorStop(0, '#0e1a1f'); fg.addColorStop(1, '#03070a'); cx.fillStyle = fg; cx.fillRect(0, hy, W, H - hy);
+    px(0, hy, W, 1, 'rgba(200,220,230,.55)');
+    for (var q = 0; q < 10; q++) { var z = (q + (t * .3) % 1) / 10, yz = Math.floor(hy + (H - hy) * z * z) + .5; cx.strokeStyle = 'rgba(150,190,205,' + (.04 + z * .18) + ')'; cx.beginPath(); cx.moveTo(0, yz + Math.sin(t + q) * 1.5); cx.lineTo(W, yz - Math.sin(t + q) * 1.5); cx.stroke(); }
+  };
+
   window.MeridianArt = { TS: TS, paintArea: paintArea, live: live, person: person, wagon: wagon, backdrop: backdrop, text: text, textW: textW, hs: hs };
 })();
