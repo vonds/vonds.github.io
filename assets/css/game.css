@@ -171,7 +171,7 @@
 
 /* ---------- Signal Quest ---------- */
 .rpg{position:fixed;inset:0;z-index:2147483000;display:none;align-items:center;justify-content:center;flex-direction:column;background:rgba(6,6,7,0);transition:background .4s ease}
-.rpg.open{display:flex}.rpg.show{background:rgba(6,6,7,.9)}
+.rpg.open{display:flex}.rpg.show{background:#050507}
 .rpg-scr{position:relative;width:min(960px,96vw,calc(82vh * 16 / 9));aspect-ratio:16/9;background:#000;overflow:hidden;
   clip-path:inset(50% 0 50% 0);transition:clip-path .7s cubic-bezier(.77,0,.18,1);box-shadow:0 30px 100px rgba(0,0,0,.6)}
 .rpg.show .rpg-scr{clip-path:inset(0 0 0 0)}
