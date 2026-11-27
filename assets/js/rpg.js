@@ -537,8 +537,8 @@
       worm: 'Copies itself across the network. Every copy thinks it is the original.', moth: 'Named for the first bug ever found: a real moth, stuck in a relay, taped into a logbook.',
       virus: 'Needs a host. Meridian is full of empty hosts now.', bytebug: 'Flips one bit. One bit is enough to turn yes into no.',
       centipede: 'Opens memory leaks. Takes a little more every turn and never gives it back.', scorpion: 'Stings with a segfault: reaching for memory that was never its to touch.',
-      phantom: 'A read that returns data from a moment that already ended. In a city of backups, there are a lot of those.', deadlock: 'Two locks, each waiting for the other to let go. Neither ever will. It has made peace with that.',
-      forkbomb: 'One process that becomes two, then four, then every slot in the table. It is not malicious. It just never learned to stop.'
+      phantom: 'A read that returns data from a moment that already ended. Habit: sometimes ignores armor.', deadlock: 'Two locks, each waiting for the other to let go. Habit: winds up, then hits twice as hard. Stun it first.',
+      forkbomb: 'One process that becomes two, then four, then every slot in the table. Habit: splits in half. Finish it fast.'
     };
     // Vee's attacks are real commands. The curriculum lives in meridian-commands.js: five to start, then three to five more each level.
     var HITS = { multi2: 'Two clean hits.', multi3: 'Three quick hits.', focus: 'Bearings found. Your next hit lands double.', heal: 'Vee recovers HP.',
@@ -600,8 +600,7 @@
       var enc = AREA.enc || WD.areas.plaza.enc, tier = AREA.tier || 1, kinds = enc.foes || Object.keys(FOES), r = Math.random(), n = force || (r < .3 ? 1 : r < .55 ? 2 : r < .75 ? 3 : r < .87 ? 4 : r < .95 ? 5 : 6);
       if (!force) n = Math.min(n, enc.max || 6); if (bossDef) n = 1;
       // up to three across; a back row for groups of four or more. Bigger groups hit softer and break faster.
-      var SLOTS = [[], [[66, 108]], [[40, 98], [104, 114]], [[28, 94], [92, 110], [140, 94]], [[26, 92], [86, 92], [52, 116], [112, 116]],
-        [[18, 90], [74, 90], [130, 90], [44, 116], [102, 116]], [[14, 90], [66, 90], [118, 90], [34, 116], [86, 116], [138, 116]]][n];
+      var SLOTS = LAYOUT[n];
       var sc = n <= 2 ? 3 : 2, foes = [], soft = [1, 1, .8, .62, .5, .42, .36][n];
       endTalk();
       for (var i = 0; i < n; i++) {
@@ -621,6 +620,8 @@
       var hook = opt.boss && WD.bossStart && WD.bossStart[opt.boss], hookMsg = hook ? hook(G, foes[0]) : null; if (hookMsg) setTimeout(function () { log(hookMsg); }, 1300);
       mode = 'swirl'; swirlT = 0; areaEl.classList.remove('on');
     }
+    var LAYOUT = [[], [[66, 108]], [[40, 98], [104, 114]], [[28, 94], [92, 110], [140, 94]], [[26, 92], [86, 92], [52, 116], [112, 116]],
+      [[18, 90], [74, 90], [130, 90], [44, 116], [102, 116]], [[14, 90], [66, 90], [118, 90], [34, 116], [86, 116], [138, 116]]];
     function foeName(f) { return f.foe.name.toLowerCase(); }
     function groupName() {
       var counts = {}; living().forEach(function (f) { counts[f.foe.name] = (counts[f.foe.name] || 0) + 1; });
@@ -762,9 +763,18 @@
         if (f.leak > 0) { f.leak--; var lk = 6 + save.lvl; f.hp = Math.max(0, f.hp - lk); pop(String(lk), f.fx + 16, f.fy - 34); if (f.hp <= 0) { f.dead = true; f.fade = 1; hudOn(); if (!living().length) return setTimeout(win, 600); return setTimeout(next, 500); } }
         if (f.exposed > 0) f.exposed--;
         if (f.stun > 0) { f.stun--; log('The ' + foeName(f) + ' strains against its permissions.'); return setTimeout(next, 650); }
-        var n = Math.max(1, Math.round(rnd(f.foe.atk[0], f.foe.atk[1]) * f.soft * (f.slow > 0 ? .5 : 1) * (B.guard ? .5 : 1) * CFG.diff[save.cfg.diff] * 100 / (100 + def() * 2.5))); if (f.slow > 0) f.slow--;
+        // some bugs have habits: a fork bomb copies itself, a deadlock winds up, a phantom read goes straight through armor
+        if (f.kind === 'forkbomb' && !B.boss && living().length < 6 && Math.random() < .3) {
+          var kid = { kind: f.kind, foe: f.foe, hp: Math.max(1, Math.round(f.hp / 2)), max: f.max, soft: f.soft, stun: 0, shake: 0, flash: 1, dead: false, fade: 0, sc: 2, fx: 0, fy: 0, ph: Math.random() * 6, exposed: 0, slow: 0, leak: 0 };
+          setProblem(kid); Object.defineProperty(kid, 'scenario', { get: function () { return this.sc0.t; } }); B.foes.push(kid); f.hp = Math.max(1, Math.round(f.hp / 2));
+          var lv2 = living(), lay = LAYOUT[lv2.length]; lv2.forEach(function (o, k) { o.fx = lay[k][0]; o.fy = lay[k][1]; if (lv2.length > 2) o.sc = 2; });
+          log('The fork bomb forks. Now there are two of it, each with half the HP.'); hudOn(); return setTimeout(next, 800);
+        }
+        if (f.kind === 'deadlock' && !f.wound && Math.random() < .35) { f.wound = 1; log('The deadlock holds perfectly still, waiting. Its next hit will land twice as hard. Stun it, or brace.'); return setTimeout(next, 800); }
+        var pierce = f.kind === 'phantom' && Math.random() < .35, wind = f.wound ? 2 : 1; f.wound = 0;
+        var n = Math.max(1, Math.round(rnd(f.foe.atk[0], f.foe.atk[1]) * wind * f.soft * (f.slow > 0 ? .5 : 1) * (B.guard ? .5 : 1) * CFG.diff[save.cfg.diff] * 100 / (100 + (pierce ? 0 : def()) * 2.5))); if (f.slow > 0) f.slow--;
         save.hp = Math.max(0, save.hp - n); pop(String(n), 258, 70); B.hurt = 1; f.lunge = 1;
-        log('The ' + foeName(f) + ' ' + f.foe.move + '. ' + n + ' damage.'); hudOn();
+        log('The ' + foeName(f) + ' ' + (pierce ? 'reads straight through Vee’s armor' : f.foe.move) + '. ' + n + ' damage.' + (wind > 1 ? ' It had been waiting for that.' : '')); hudOn();
         if (save.hp <= 0 && gs('revive') && !B.revived) { B.revived = 1; save.hp = Math.round(maxHp() * .3); setTimeout(function () { log('The Watchdog Timer catches Vee mid-fall and restarts him. ' + save.hp + ' HP.'); }, 500); }
         if (save.hp <= 0) return setTimeout(lose, 900);
         setTimeout(next, 800);
