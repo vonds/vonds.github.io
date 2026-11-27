@@ -344,3 +344,19 @@
 /* the DASH button sits above A and B */
 .rpg-pad .d{grid-column:5/7;grid-row:1;border-radius:8px;font-size:9px!important;letter-spacing:.1em}
 @media (hover:none) and (orientation:landscape),(pointer:coarse) and (orientation:landscape){ .rpg-pad .d{grid-column:5/7;grid-row:2} }
+/* companions in the party box: whose turn it is, and who is down */
+.rpg-party .rpg-row.turn span:first-child{color:#fff;text-shadow:0 0 6px rgba(255,255,255,.7)}
+.rpg-party .rpg-row.turn span:first-child::before{content:'> ';}
+.rpg-party .rpg-row.down{opacity:.45}
+.rpg-party.team .rpg-row{margin-bottom:4px}
+.rpg-party.team .rpg-row.sm{display:none}
+.rpg-cmd[data-who]::before{content:attr(data-who);position:absolute;top:5px;right:10px;font-size:.75em;color:#8a8a96;letter-spacing:.08em;pointer-events:none}
+/* someone nearby says something: a small bubble over their head */
+.rpg-bark{position:absolute;z-index:2;transform:translate(-50%,-100%);max-width:46%;padding:5px 8px;background:rgba(10,10,14,.88);border:1px solid rgba(236,236,242,.75);border-radius:6px;color:#ececf2;font:400 clamp(6px,.75vw,8px)/1.6 'Press Start 2P',monospace;opacity:0;transition:opacity .25s;pointer-events:none;text-align:center}
+.rpg-bark.on{opacity:1}
+.rpg-bark::after{content:'';position:absolute;left:50%;bottom:-5px;width:8px;height:8px;margin-left:-4px;background:rgba(10,10,14,.88);border-right:1px solid rgba(236,236,242,.75);border-bottom:1px solid rgba(236,236,242,.75);transform:rotate(45deg)}
+/* phones: full commands to tap, a DASH toggle that stays lit, slightly bigger text */
+.rpg-term .chips.full{display:flex;flex-direction:column;gap:6px}
+.rpg-term .chips.full button{text-align:left;padding:8px 10px;font-size:9px;white-space:normal}
+.rpg-pad .d.on{background:linear-gradient(180deg,#e8e8ee,#a8a8b0);color:#111}
+@media (hover:none),(pointer:coarse),(max-width:760px){ .rpg-msg{font-size:9px} .rpg-term{font-size:9px} .rpg-cmd button,.rpg-foes button,.rpg-party{font-size:9px} }

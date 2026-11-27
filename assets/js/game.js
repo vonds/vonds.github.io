@@ -122,6 +122,8 @@
     }
     p.H = 'rgb(40,40,44)'; p.h = 'rgb(76,76,82)'; p.E = 'rgb(8,8,8)'; p.W = 'rgb(242,242,242)';
     p.D = 'rgb(14,14,16)'; p.d = 'rgb(54,54,58)';   // headphones: black band and cups
+    if (L.hairLight) { p.H = 'rgb(200,200,206)'; p.h = 'rgb(232,232,238)'; }
+    if (L.phonesLight) { p.D = 'rgb(226,226,232)'; p.d = 'rgb(160,160,168)'; }
     if (L.sil) { for (var s2 in p) p[s2] = 'rgb(10,10,11)'; p.W = 'rgb(242,242,242)'; }
     return p;
   }
@@ -145,6 +147,7 @@
     }
     function arm(type, sx, ch) { var cells = ARM[type]; cells.forEach(function (cl, i) { var hand = i === cells.length - 1, cc = hand || (L.sleeves === 'short' && i >= 2) ? 'S' : ch; px(sx + cl[0], 15 + cl[1], cc); if (!hand) px(sx + cl[0], 16 + cl[1], cc); }); }
     function leg(type, ch, shoe) { var l = LEG[type]; l[0].forEach(function (cl) { px(cl[0], cl[1], ch); }); l[1].forEach(function (cl) { px(cl[0], cl[1], shoe); }); }
+    if (L.pre) L.pre(px, pose);
     if (L.pack) map(PACK);
     if (!L.pony && !L.noLocs) STRANDS.forEach(function (st, i) { strand(st, i); });
     arm(pose.ba, 9, 'a'); leg(pose.bl, 'Q', 'b');
@@ -162,6 +165,7 @@
     else if (L.sil) { px(13, 7, 'W'); px(13, 8, 'W'); }
     else { px(13, 7, 'E'); px(13, 8, 'E'); }
     if (!L.hoodUp && !L.pony && !L.noLocs) strand(FRONT, 1);
+    if (L.extra) L.extra(px, pose, HEAD);
     leg(pose.fl, 'P', 'B');
     // a dark seam behind the near arm, so it reads as an arm against the shirt and the locs
     (function () { var cells = ARM[pose.fa], own = {}; cells.forEach(function (cl) { own[cl[0] + ',' + cl[1]] = own[cl[0] + ',' + (cl[1] + 1)] = 1; });
@@ -1368,7 +1372,110 @@
       x.fillStyle = 'rgba(236,236,236,.38)'; for (var j = 0; j < pts.length; j += 2) x.fillRect(pts[j], pts[j + 1], 1, 1);
       return (personCache[key] = c);
     }
-    if (window.VondsSprite) { window.VondsSprite.front = function (blink, step) { return frontImg(false, blink, step); }; window.VondsSprite.back = function (step) { return backImg(false, step); }; window.VondsSprite.person = personImg; }
+    /* ---------- heroes: companions and rivals, drawn the way Vee is (front, back and side), each with their own silhouette ---------- */
+    var heroCache = {};
+    function heroLook(sp, suffix) {
+      return { name: 'hero-' + sp.id + (suffix || ''), skin: sp.skin, hairc: '#141414', top: sp.top, pants: sp.pants || '#2b2b30', shoes: sp.shoes || '#d8d8dc', hairLight: sp.hairLight, phonesLight: sp.acc && sp.acc.phonesLight };
+    }
+    function heroGrid(sp, back) {
+      var g = [], hair = sp.hair, a = sp.acc || {};
+      FRONT_HALF.forEach(function (half) { var row = (half + half.split('').reverse().join('')).split(''); g.push(row); });
+      while (g.length < 26) g.push('......................'.split(''));
+      function set(x, y, ch) { if (y >= 0 && y < 26 && x >= 0 && x < 22) g[y][x] = ch; }
+      function get(x, y) { return y >= 0 && y < 26 && x >= 0 && x < 22 ? g[y][x] : '.'; }
+      function both(x, y, ch) { set(x, y, ch); set(21 - x, y, ch); }
+      if (hair !== 'locs') {   // take off Vee's locs and headphones; keep the head
+        for (var y = 0; y < 14; y++) for (var x = 0; x < 22; x++) { var ch = g[y][x]; if (ch === 'D' || ch === 'd') ch = 'H'; if (y >= 5 && (x <= 4 || x >= 17)) ch = '.'; g[y][x] = ch; }
+        for (var y5 = 5; y5 <= 7; y5++) both(5, y5, 'H');
+        both(3, 4, '.'); both(4, 4, '.'); both(4, 3, '.'); both(5, 2, '.'); both(5, 4, 'H');
+      }
+      var face = function (ch) { return 'SERK'.indexOf(ch) >= 0; };
+      if (hair !== 'locs' && hair !== 'hood' && hair !== 'long') {   // a rounder head with ears, now that no hair hides the corners
+        both(5, 13, '.'); both(6, 13, get(6, 13) === '.' ? '.' : 'S'); both(5, 12, '.'); both(5, 6, get(5, 6) === 'H' ? 'H' : '.');
+        if (!back) { both(4, 8, 'K'); both(4, 9, 'K'); } else { both(4, 8, 'S'); both(4, 9, 'S'); }
+      }
+      if (back) for (var yb = 0; yb < 14; yb++) for (var xb = 0; xb < 22; xb++) if (face(g[yb][xb])) g[yb][xb] = (hair === 'buzz' || hair === 'mohawk') ? (yb < 4 ? 'h' : 'S') : hair === 'hood' ? 'O' : ((xb + yb) % 4 ? 'H' : 'h');
+      if (hair === 'buzz' || hair === 'mohawk') {
+        for (var y1 = 0; y1 < 6; y1++) for (var x1 = 0; x1 < 22; x1++) if (g[y1][x1] === 'H' || g[y1][x1] === 'h') g[y1][x1] = y1 < 2 ? '.' : (back ? 'h' : 'h');
+        for (var y2 = 4; y2 <= 7; y2++) both(5, y2, 'S');
+        if (hair === 'mohawk') {
+          for (var y9 = 2; y9 <= 5; y9++) for (var x9 = 5; x9 <= 16; x9++) if (g[y9][x9] === 'h') set(x9, y9, (x9 + y9) % 2 ? 'S' : 'K');   // shaved sides
+          for (var y3 = 0; y3 <= 5; y3++) for (var x3 = 9; x3 <= 12; x3++) set(x3, y3, (x3 === 9 || x3 === 12) && y3 < 1 ? '.' : x3 === 10 && y3 < 4 ? 'h' : 'H');   // a tall crest, lit down the middle
+        }
+      }
+      if (hair === 'afro') for (var y4 = 0; y4 <= 9; y4++) for (var x4 = 1; x4 <= 20; x4++) {
+        var dx = (x4 - 10.5) / 9.6, dy = (y4 - 4.4) / 5.6; if (dx * dx + dy * dy <= 1 && (back || !face(g[y4][x4]))) set(x4, y4, (x4 * 3 + y4 * 5) % 7 ? 'H' : 'h');
+      }
+      if (hair === 'slick') { for (var x5 = 6; x5 <= 15; x5++) set(x5, 4, x5 < 11 ? 'H' : get(x5, 4)); set(8, 2, 'h'); set(9, 2, 'h'); set(10, 3, 'h'); both(5, 8, 'H'); }
+      if (hair === 'long') for (var y6 = 4; y6 <= 17; y6++) { both(3, y6, y6 % 3 ? 'H' : 'h'); both(4, y6, 'H'); if (back) for (var x6 = 5; x6 <= 16; x6++) if (y6 >= 13) set(x6, y6, (x6 + y6) % 3 ? 'H' : 'h'); }
+      if (hair === 'pony') { if (back) for (var y7 = 4; y7 <= 15; y7++) { set(10, y7, y7 % 2 ? 'H' : 'h'); set(11, y7, 'H'); } else for (var y8 = 3; y8 <= 13; y8++) { set(19, y8 + 1, y8 % 2 ? 'H' : 'h'); set(18, y8, 'H'); } set(back ? 10 : 18, 3, 'W'); }
+      if (hair === 'hood') { for (var h1 = 1; h1 <= 14; h1++) { both(3, h1, 'O'); both(4, h1, h1 > 2 ? 'O' : '.'); } for (var h2 = 4; h2 <= 17; h2++) { set(h2, 1, 'O'); set(h2, 2, 'O'); } both(5, 3, 'O'); both(6, 3, 'o'); }
+      if (hair === 'beanie') for (var c1 = 0; c1 <= 4; c1++) for (var c2 = 0; c2 < 22; c2++) if (g[c1][c2] !== '.' && !face(g[c1][c2]) || (c1 >= 1 && c2 >= 5 && c2 <= 16)) set(c2, c1, c1 === 4 ? 'n' : 'N');
+      // what they wear
+      if (a.cape) for (var k1 = 13; k1 <= 23; k1++) { both(2, k1, k1 === 23 ? 'X' : 'x'); both(3, k1, 'X'); if (back) for (var k2 = 4; k2 <= 17; k2++) set(k2, k1, k1 === 23 ? 'X' : ((k2 + k1) % 5 ? 'X' : 'x')); }
+      if (a.coat) for (var m1 = 19; m1 <= 21; m1++) for (var m2 = 6; m2 <= 15; m2++) set(m2, m1, m1 === 21 ? 'X' : (m2 === 10 || m2 === 11) && !back ? 'x' : 'T');
+      if (a.pauldrons) { for (var q1 = 2; q1 <= 7; q1++) { both(q1, 13, 'W'); both(q1, 14, 'A'); if (q1 > 2) both(q1, 15, 'a'); } }
+      if (a.scarf) { for (var s1 = 6; s1 <= 15; s1++) { set(s1, 13, 'X'); set(s1, 14, s1 % 2 ? 'X' : 'x'); } if (!back) { set(13, 15, 'X'); set(13, 16, 'x'); set(14, 17, 'X'); } }
+      if (a.belt) { for (var b1 = 7; b1 <= 14; b1++) set(b1, 19, 'D'); if (!back) { set(10, 19, 'G'); set(11, 19, 'G'); } }
+      if (!back) {
+        if (a.visor) for (var v1 = 6; v1 <= 15; v1++) { set(v1, 8, 'G'); set(v1, 9, v1 === 7 || v1 === 14 ? 'W' : 'G'); }
+        if (a.goggles) { for (var g1 = 6; g1 <= 15; g1++) set(g1, 3, 'D'); set(7, 4, 'G'); set(8, 4, 'G'); set(13, 4, 'G'); set(14, 4, 'G'); }
+        if (a.glasses) [[7, 6], [7, 7], [7, 8], [8, 6], [8, 8], [9, 6], [9, 7], [9, 8]].forEach(function (q) { set(q[1], q[0], 'G'); set(21 - q[1], q[0], 'G'); });
+        if (a.mic) { set(5, 9, 'D'); set(6, 10, 'D'); set(7, 10, 'G'); }
+        if (a.scar) { set(14, 8, 'K'); set(15, 9, 'K'); set(14, 10, 'K'); }
+        if (a.armband) { set(4, 16, 'W'); set(5, 16, 'W'); set(6, 16, 'W'); }
+      } else if (a.goggles) for (var g2 = 6; g2 <= 15; g2++) set(g2, 3, 'D');
+      if (a.phones) { for (var p1 = 6; p1 <= 15; p1++) set(p1, 1, 'D'); for (var p2 = 5; p2 <= 9; p2++) { both(3, p2, 'D'); both(4, p2, p2 === 6 || p2 === 7 ? 'd' : 'D'); } }
+      return g;
+    }
+    function heroPaint(sp, g, back, step) {
+      var L = heroLook(sp, back ? 'B' : 'F'), pal = palette(L), c = document.createElement('canvas'); c.width = 22; c.height = 26; var x = c.getContext('2d');
+      g.forEach(function (row, y) { row.forEach(function (ch, i) { if (ch === '.') return; x.fillStyle = pal[ch] || pal.S; x.fillRect(i, y, 1, 1); }); });
+      if (sp.hair === 'locs') { if (back) locsBack(x, pal); else locsFront(x, pal, step); }
+      else {   // arms: a dark edge, a sleeve, a hand, swinging opposite the legs
+        var tp = x.getImageData(10, 16, 1, 1).data, sh = 'rgb(' + tp[0] + ',' + tp[1] + ',' + tp[2] + ')', shD = 'rgb(' + (tp[0] * .8 | 0) + ',' + (tp[1] * .8 | 0) + ',' + (tp[2] * .8 | 0) + ')', E2 = 'rgb(14,14,16)';
+        [[4, 5, 6, 1], [17, 16, 15, -1]].forEach(function (A, side) {
+          var swing = step ? ((step === 1) === (side === 1) ? -1 : 1) : 0;
+          for (var y3 = 14; y3 <= 18 + Math.max(0, swing); y3++) { var hand = y3 >= 17 + swing; x.fillStyle = E2; x.fillRect(A[0], y3, 1, 1); x.fillStyle = hand ? (back ? shD : pal.R) : shD; x.fillRect(A[1], y3, 1, 1); x.fillStyle = hand ? (back ? shD : pal.R) : sh; x.fillRect(A[2], y3, 1, 1); }
+          x.fillStyle = E2; x.fillRect(A[1], 19 + Math.max(0, swing), 2, 1);
+        });
+      }
+      if (step) stepLegs(x, pal, back ? (step === 1 ? 2 : 1) : step);
+      var d = x.getImageData(0, 0, 22, 26).data, pts = [];
+      for (var yy = 0; yy < 26; yy++) for (var xx = 0; xx < 22; xx++) {
+        if (d[(yy * 22 + xx) * 4 + 3]) continue;
+        if ([[1,0],[-1,0],[0,1],[0,-1]].some(function (o) { var a2 = xx + o[0], b2 = yy + o[1]; return a2 >= 0 && b2 >= 0 && a2 < 22 && b2 < 26 && d[(b2 * 22 + a2) * 4 + 3] > 200; })) pts.push(xx, yy);
+      }
+      x.fillStyle = 'rgba(236,236,236,.38)'; for (var j = 0; j < pts.length; j += 2) x.fillRect(pts[j], pts[j + 1], 1, 1);
+      return c;
+    }
+    function heroSideLook(sp) {
+      var a = sp.acc || {}, hair = sp.hair, L = heroLook(sp, 'S');
+      L.noLocs = !(hair === 'locs' || hair === 'long'); L.pony = hair === 'pony'; L.hoodUp = hair === 'hood'; L.beanie = hair === 'beanie';
+      L.scarf = !!a.scarf; L.pack = !!a.pack; L.phones = !!a.phones; L.round = !!a.glasses;
+      L.pre = function (px, pose) {
+        if (hair === 'afro') for (var y = 0; y <= 9; y++) for (var x = 1; x <= 13; x++) { var dx = (x - 7.5) / 6.8, dy = (y - 4) / 5.2; if (dx * dx + dy * dy <= 1) px(x, y, (x * 3 + y * 5) % 7 ? 'H' : 'h'); }
+        if (a.cape) for (var y2 = 12; y2 <= 23; y2++) for (var x2 = 3 - Math.round((y2 - 12) * pose.sway * .15); x2 <= 8; x2++) px(x2, y2, x2 === 8 || y2 === 23 ? 'X' : (x2 + y2) % 5 ? 'X' : 'x');
+      };
+      L.extra = function (px, pose, HEAD0) {
+        if (hair === 'buzz' || hair === 'mohawk' || hair === 'slick') HEAD0.rows.forEach(function (row, i) { for (var x = 0; x < 20; x++) if (row.charAt(x) === 'H') { var top = hair === 'slick' ? i <= 4 : i <= 2; px(x, HEAD0.r + i, top ? (hair === 'slick' && i === 2 ? 'h' : 'h') : (x <= 4 ? 'K' : 'S')); } });
+        if (hair === 'mohawk') for (var y = -1; y <= 3; y++) for (var x2 = 6; x2 <= 11; x2++) if (y >= 0 || (x2 >= 7 && x2 <= 10)) px(x2, y, (x2 + y) % 3 ? 'H' : 'h');
+        if (a.visor) { for (var v = 11; v <= 16; v++) px(v, 7, 'G'); px(14, 8, 'W'); px(15, 8, 'G'); }
+        if (a.goggles) { for (var g2 = 9; g2 <= 14; g2++) px(g2, 3, 'D'); px(13, 4, 'G'); px(14, 4, 'G'); }
+        if (a.scar) { px(14, 9, 'K'); px(15, 10, 'K'); }
+        if (a.mic) { px(14, 10, 'D'); px(15, 10, 'D'); px(16, 10, 'G'); }
+        if (a.pauldrons) { for (var q = 7; q <= 13; q++) px(q, 13, 'W'); for (var q2 = 7; q2 <= 12; q2++) px(q2, 14, 'A'); }
+        if (a.coat) for (var y3 = 19; y3 <= 21; y3++) for (var x3 = 7; x3 <= 12; x3++) px(x3, y3, y3 === 21 ? 'X' : 'T');
+        if (a.belt) for (var b = 7; b <= 13; b++) px(b, 18, 'D');
+      };
+      return L;
+    }
+    function heroImg(sp, view, arg) {
+      var k = sp.id + view + (arg || 0); if (heroCache[k]) return heroCache[k];
+      var c = view === 'side' ? frame(arg || 'idle', heroSideLook(sp)) : heroPaint(sp, heroGrid(sp, view === 'back'), view === 'back', arg || 0);
+      return (heroCache[k] = c);
+    }
+    if (window.VondsSprite) { window.VondsSprite.front = function (blink, step) { return frontImg(false, blink, step); }; window.VondsSprite.back = function (step) { return backImg(false, step); }; window.VondsSprite.person = personImg; window.VondsSprite.hero = heroImg; }
     function render(pose, dark) {
       var u = S * R; cx2.setTransform(1, 0, 0, 1, 0, 0); cx2.clearRect(0, 0, cv2.width, cv2.height); cx2.imageSmoothingEnabled = false;
       if (pose === 'pant0' || pose === 'pant1') { cx2.drawImage(pantImg(!dark, pose === 'pant1' ? 1 : 0), OX * u, OY * u, 22 * u, 26 * u); return; }
