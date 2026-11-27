@@ -627,14 +627,14 @@ body.swap .warp{transition:none!important;opacity:0}
 <style>
   /* ---------- Hero: the full portrait, full bleed, under a white veil ---------- */
   /* desktop: the whole portrait, scaled so head to chest fills the first screen, its wall carried out to both edges */
-  .hero{--off:clamp(60px,calc(50vh - 360px),180px);--ph:max(128vh,880px);
+  .hero{--off:0px;--ph:max(112vh,760px);--pt:calc(50svh - 100px);
         background:linear-gradient(90deg,rgba(0,0,0,.07),rgba(0,0,0,0) 40%,rgba(255,255,255,.1)),linear-gradient(180deg,#b3b3b3 0,#a4a4a4 calc(var(--off) + var(--ph) * .35),#8f8f8f calc(var(--off) + var(--ph) * .7));
         justify-content:center;align-items:flex-start;text-align:center;
-        min-height:max(100svh,calc(var(--off) + var(--ph) * .96));padding:clamp(120px,calc(var(--off) + 40px),200px) 7vw 150px}
+        min-height:max(100svh,calc(var(--off) + var(--ph) * .96));padding:var(--pt) 7vw 150px}
   .hero::before{content:"";position:absolute;top:var(--off);left:50%;height:var(--ph);aspect-ratio:1717/2576;z-index:-2;margin-left:calc(var(--ph) * -.3333);
     background:url("assets/images/hero-portrait-2.jpg") 50% 0/100% 100% no-repeat;transform-origin:50% 22%;
-    -webkit-mask-image:linear-gradient(180deg,transparent 0,#000 8%),linear-gradient(90deg,transparent 0,#000 14%,#000 86%,transparent 100%);-webkit-mask-composite:source-in;
-    mask-image:linear-gradient(180deg,transparent 0,#000 8%),linear-gradient(90deg,transparent 0,#000 14%,#000 86%,transparent 100%);mask-composite:intersect;
+    -webkit-mask-image:linear-gradient(180deg,#000 0,#000 100%),linear-gradient(90deg,transparent 0,#000 14%,#000 86%,transparent 100%);-webkit-mask-composite:source-in;
+    mask-image:linear-gradient(180deg,#000 0,#000 100%),linear-gradient(90deg,transparent 0,#000 14%,#000 86%,transparent 100%);mask-composite:intersect;
     animation:portraitDrift 34s ease-in-out infinite alternate}
   @keyframes portraitDrift{0%{transform:scale(1)}100%{transform:scale(1.035)}}
   /* one white veil over the whole photo, and the page white rising out of the bottom */
@@ -648,7 +648,7 @@ body.swap .warp{transition:none!important;opacity:0}
   .hero .role{letter-spacing:7px;color:#1f1f21}
   .hero .buttons{justify-content:center}
   /* desktop: the name above the head, the buttons down on the chest, the face left clear */
-  @media (min-width:761px){.hero .buttons{position:absolute;left:0;right:0;margin:0;top:calc(100svh - 160px - clamp(120px,calc(var(--off) + 40px),200px))}}
+  @media (min-width:761px){.hero .buttons{position:absolute;left:0;right:0;margin:0;top:calc(100svh - 150px - var(--pt))}}
   .hero .credit{position:absolute;right:4vw;top:50vh;z-index:1;margin:0;transform:translate(50%,-50%) rotate(90deg);
     font-size:11px;letter-spacing:6px;color:#2e2e30;white-space:nowrap}
   .hero .scroll-cue{display:none}
