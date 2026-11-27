@@ -2639,6 +2639,25 @@
   };
 
 
+  /* more people in the far districts: the city doesn't stop being lived in just because it gets dangerous */
+  var LATE = [
+    ['deep', 26, 3, 'diver', 'Tarn', { hair: 'beanie', body: 'coat', skin: '#4a2e1e', top: '#3a3a40' }, ['I come down here to listen. The Deep hums in a key nobody up top remembers.', 'Your lamp’s too bright. The bugs down here follow light. So do I, I suppose.']],
+    ['deep', 30, 17, 'echo2', 'A recording', { hair: 'long', skin: '#c89a78', top: '#5a5a62' }, ['…if anyone finds this, the Deep was a server farm before it was a basement. We used to be proud of it.', '(The recording loops. Someone has listened to it so many times the audio is worn.)']],
+    ['anchor', 18, 9, 'warden2', 'Hale', { hair: 'short', body: 'armor', skin: '#6b4a32', top: '#2a2a30' }, ['The Watchdog and I have an arrangement. It barks, I bring it data. Nobody else visits.', 'It isn’t angry, you know. It’s lonely. It was built to guard a door nobody uses.']],
+    ['anchor', 15, 12, 'cart2', 'Mira', { hair: 'bun', body: 'coat', skin: '#8d5a3a', top: '#4a4a52' }, ['I map the Anchor every morning. It moves a little every night, like it’s pulling against something.', 'Upstream, probably. Everything here pulls toward Upstream.']],
+    ['tether', 8, 19, 'climber', 'Oyelaran', { hair: 'cap', body: 'coat', skin: '#3e2618', top: '#2e2e36' }, ['Every rung on this cable, a Meridian worker bolted on. Paid on completion. Completion was never declared.', 'I climb a little higher every week. I’m not going anywhere. I just like the view of home.']],
+    ['successor', 12, 9, 'builder', 'Unit 7', { hair: 'bald', body: 'apron', skin: '#a8a8b0', top: '#5a5a62' }, ['RENDERING FLOOR 12 OF 400. ESTIMATED COMPLETION: NEVER, AT CURRENT BUDGET.', 'I WAS TOLD THE NEW WORLD WOULD BE PERFECT. I HAVE BEEN BUILDING IT FOR A YEAR. IT IS MOSTLY GREY BOXES.']],
+    ['firmware', 4, 6, 'bootgh', 'The First Process', { hair: 'long', skin: '#d8d8dc', top: '#e0e0e4', gray: 1 }, ['PID 0. I ran before anything else. I will run after.', 'I have watched both cities boot ten thousand times. They always look so surprised to exist.']],
+    ['rack', 5, 10, 'techgh', 'Night-shift tech (echo)', { hair: 'hood', skin: '#7a4a30', top: '#3a3a40' }, ['(A faint echo of whoever last worked this rack.) “Ticket closed. Ticket closed. Ticket closed.”', '“If anyone reads this: fan 3 is the good one. Be nice to fan 3.”']],
+    ['console', 26, 12, 'cursor', 'A blinking cursor', { hair: 'bald', skin: '#f2f2f2', top: '#f2f2f2' }, ['_', 'It blinks at you. You get the feeling it has been waiting a long time for someone to type something kind.']],
+    ['upstream', 24, 20, 'nanny', 'Corin’s sister', { hair: 'bun', body: 'suit', skin: '#d8b898', top: '#3a3a44' }, ['My brother stayed in Meridian. Corin. He wouldn’t take the seat.', 'Tell him I said he was right. Tell him I didn’t say it nicely.']]
+  ];
+  LATE.forEach(function (n) {
+    if (!A[n[0]]) return;
+    A[n[0]].npcs.push({ id: 'late_' + n[3], p: n[5], x: n[1], y: n[2], name: n[4], look: n[3].indexOf('gh') > 0 || n[3] === 'echo2' ? 'echo' : undefined });
+    TALK['late_' + n[3]] = function (G) { var f = G.f, k = 'lt_' + n[3]; f[k] = (f[k] || 0) + 1; G.say(n[4], f[k] % 2 ? n[6] : n[6].slice().reverse()); };
+  });
+
   var journal1 = JOURNAL;
   JOURNAL = function (G) {
     var f = G.f, j = journal1(G);
