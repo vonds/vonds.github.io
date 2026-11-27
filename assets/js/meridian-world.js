@@ -1105,14 +1105,15 @@
     var intro = !f.adair ? ['Come in, come in. Class started eleven months ago, but I’m flexible.', 'I taught adults who’d been told they were too old to start. Most of them were wrong about that.', 'Some of them took the Lift with what I taught them. That’s fine. That’s what teaching is.'] : [];
     f.adair = 1;
     var later = CLASSES.filter(function (c) { return !f[c.id] && c.need && !c.need(G); });
-    if (!open.length && later.length) return G.say('Ms. Adair', intro.concat((later[0].id === 'c5' ? ['You’ve taken every class I can teach. I have one more written. It’s called Tomorrow.', 'I can’t teach it yet. Not until there is one.'] : ['You’ve taken every class you’re ready for. The next one, ' + later[0].name + ', needs a little more behind you.', 'Go and fix things. Come back with questions. That’s the whole method.'])));
-    if (!open.length) return G.say('Ms. Adair', intro.concat(['You’ve taken every class I have. I’m going to have to write new ones. I haven’t written anything new in a year.', 'Thank you for that.']));
+    var review = [{ label: 'Review: my five weakest commands', fn: function () { G.drillWeak('Ms. Adair'); } }, { label: 'Goodnight', fn: null }];
+    if (!open.length && later.length) return G.say('Ms. Adair', intro.concat((later[0].id === 'c5' ? ['You’ve taken every class I can teach. I have one more written. It’s called Tomorrow.', 'I can’t teach it yet. Not until there is one.'] : ['You’ve taken every class you’re ready for. The next one, ' + later[0].name + ', needs a little more behind you.', 'Go and fix things. Come back with questions. That’s the whole method.'])), review);
+    if (!open.length) return G.say('Ms. Adair', intro.concat(['You’ve taken every class I have. I’m going to have to write new ones. I haven’t written anything new in a year.', 'Thank you for that.']), review);
     G.say('Ms. Adair', intro.concat(['Which class tonight?']), open.map(function (c) {
       var reward = c.stat === 'hp' ? '+' + c.amt + ' max HP' : '+' + c.amt + ' ' + c.stat.toUpperCase();
       return { label: c.name + ' (' + reward + ')', fn: function () {
         G.puzzle(c.name.toUpperCase(), c.steps, function () { f[c.id] = 1; G.school(c.stat, c.amt); G.say('Ms. Adair', ['Very good. You can’t un-know that now. Nobody can reclaim it.', 'Vee gains ' + reward + ', permanently.']); });
       } };
-    }).concat([{ label: 'Not tonight', fn: null }]));
+    }).concat([{ label: 'Review: my five weakest commands', fn: function () { G.drillWeak('Ms. Adair'); } }, { label: 'Not tonight', fn: null }]));
   };
   TALK.rosa = function (G) { G.say('Rosa', ['The sale starts Monday. I’m dressing the windows for it.', 'It has been Monday for eleven months. The windows have never looked better.']); };
   TALK.desmond = function (G) {
