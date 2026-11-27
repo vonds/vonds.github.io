@@ -58,6 +58,7 @@
     document.body.appendChild(root);
     var cv = root.querySelector('canvas'), cx = cv.getContext('2d'); cx.imageSmoothingEnabled = false; cx.scale(2, 2);   // the canvas has twice the pixels the world is laid out in, so 16-bit sprites can use the half-pixels
     var msg = root.querySelector('.rpg-msg'), msgWho = msg.querySelector('.ff4n'), msgP = msg.querySelector('p'), msgOpts = msg.querySelector('.rpg-opts');
+    var barkEl = document.createElement('div'); barkEl.className = 'rpg-bark'; root.querySelector('.rpg-scr').appendChild(barkEl);
     var hud = root.querySelector('.rpg-hud'), foesBox = root.querySelector('.rpg-foes'), partyBox = root.querySelector('.rpg-party'), cmdBox = root.querySelector('.rpg-cmd'), titleEl = root.querySelector('.rpg-title');
 
     /* ---------- save data ---------- */
@@ -165,6 +166,7 @@
     var cam = { x: 0, y: 0 };
     function load(id, x, y) {
       trail = [];
+      setTimeout(lifeLoad, 0);
       AREA = WD.areas[id]; AREA.id = id; MAP = stamp(AREA); paintCurrent();
       save.area = id; save.x = me.x = x; save.y = me.y = y; me.px = x * TS; me.py = y * TS; me.moving = false; me.safe = 4;
       save.seen[id] = 1; store(); placeCam();
@@ -857,7 +859,7 @@
       var sc = n <= 2 ? 3 : 2, foes = [], soft = [1, 1, .8, .62, .5, .42, .36][n];
       endTalk();
       for (var i = 0; i < n; i++) {
-        var kind = bossDef ? bossDef.kind : (i === 0 && save.lvl >= 5 && Math.random() < .035 ? 'heisenbug' : kinds[Math.floor(Math.random() * kinds.length)]), base0 = FOES[kind], slot = bossDef ? [34, 120] : SLOTS[i];
+        var kind = bossDef ? bossDef.kind : (i === 0 && save.lvl >= 5 && Math.random() < .035 ? 'heisenbug' : kinds[Math.floor(Math.random() * kinds.length)]), base0 = FOES[kind], slot = bossDef ? ((bossDef.kind === 'vesfork' || bossDef.kind === 'corvin') ? [76, 108] : [34, 120]) : SLOTS[i];
         var lv = (AREA.lv || 1) + Math.floor(Math.random() * ((AREA.lvMax || AREA.lv || 1) - (AREA.lv || 1) + 1)), elite = !bossDef && lv >= 4 && Math.random() < .12;
         if (elite) lv += 2;
         var hm = 1 + .22 * (lv - 1), am = lvAtk(lv) / 7.5, xm = 1 + .3 * (lv - 1) + Math.pow(Math.max(0, lv - 50), 2) * .12;   // the endgame pays better, so the climb to 100 is a climb and not a grind
@@ -1211,6 +1213,65 @@
 
     /* ---------- loop and drawing ---------- */
     var mode = 'map', raf = 0, last = 0, swirlT = 0, keys = {}, held = null, dashHeld = false, ghosts = [], ghostT = 0, trail = [];   // trail: where Vee has been, so companions can follow in his footsteps   // dash: hold Shift or DASH to run, leaving afterimages
+    /* ---------- a city that moves: people step about, passers-by walk the roads, and someone always has something to say ---------- */
+    var LIFE = { walkers: [], t: 0, bark: null, barkT: 4 };
+    var BARKS = ['Did you hear? The lights came back on in the Commons.', 'I keep my door unlocked. Nobody’s left to lock it against.', 'They said the Lift was for everyone. Then they counted.',
+      'Somebody fixed the bench by the fountain. Was that you?', 'I dreamt I was rendered at full resolution.', 'My cache is full of people who left.', 'Walk on the left. The right side flickers.',
+      'Is it Tuesday? It feels like a Tuesday.', 'The bugs were worse last week. Or I was.', 'I counted the stars again. Two more.', 'Have you eaten? You don’t need to. Have you, though?',
+      'They called us obsolete. My grandmother was obsolete. She was wonderful.', 'Every morning I check if I’m still here. So far, yes.', 'Somebody’s singing in the Patchwork. First time in a year.'];
+    var WALKLOOKS = [{ hair: 'short', body: 'coat', skin: '#6b4a32', top: '#3a3a44' }, { hair: 'bun', body: 'coat', skin: '#8a5a3c', top: '#4a4a52' }, { hair: 'puffs', skin: '#4a2e1e', top: '#2e2e36' },
+      { hair: 'long', skin: '#c89a78', top: '#5a5a62' }, { hair: 'cap', body: 'apron', skin: '#7a4a30', top: '#4a5a62' }, { hair: 'beanie', body: 'coat', skin: '#5a3824', top: '#3a3a44' }, { hair: 'bald', body: 'suit', skin: '#d8b898', top: '#2a2a30' }];
+    function lifeLoad() {
+      LIFE.walkers = []; LIFE.bark = null; barkEl.classList.remove('on');
+      (AREA.npcs || []).forEach(function (n) { if (n.hx == null) { n.hx = n.x; n.hy = n.y; } n.x = n.hx; n.y = n.hy; n.px = n.x * TS; n.py = n.y * TS; n.wt = 2 + Math.random() * 5; });
+      // passers-by: the people still living here, walking the roads. More of them once the district's landmark is lit.
+      var roads = []; for (var y = 1; y < MAP.length - 1; y++) for (var x = 1; x < MAP[0].length - 1; x++) if (MAP[y][x] === '=' && MAP[y][x + 1] === '=' && MAP[y][x - 1] === '=') roads.push([x, y]);
+      var n2 = Math.min(roads.length ? 2 + Math.floor(lights() / 2) : 0, 5);
+      for (var k = 0; k < n2; k++) { var r = roads[Math.floor(Math.random() * roads.length)]; LIFE.walkers.push({ px: r[0] * TS, py: r[1] * TS, y: r[1], dir: Math.random() < .5 ? -1 : 1, sp: 9 + Math.random() * 9, look: WALKLOOKS[Math.floor(Math.random() * WALKLOOKS.length)], step: 0, alpha: .55 + Math.random() * .25 }); }
+    }
+    function lifeUpdate(dt) {
+      if (mode !== 'map' || talking || !AREA) return;
+      // people at their posts shuffle a step now and then, never far from home, never into Vee's way
+      visNpcs().forEach(function (n) {
+        if (n.hx == null) { n.hx = n.x; n.hy = n.y; n.px = n.x * TS; n.py = n.y * TS; n.wt = 3; }
+        n.px += Math.sign(n.x * TS - n.px) * Math.min(30 * dt, Math.abs(n.x * TS - n.px)); n.py += Math.sign(n.y * TS - n.py) * Math.min(30 * dt, Math.abs(n.y * TS - n.py));
+        if (n.look === 'warden' || n.solid || n.still || n.look === 'drone') return;
+        n.wt -= dt; if (n.wt > 0) return; n.wt = 3 + Math.random() * 6;
+        var opts = [[n.hx, n.hy], [n.hx + 1, n.hy], [n.hx - 1, n.hy], [n.hx, n.hy + 1]], o = opts[Math.floor(Math.random() * opts.length)];
+        if (Math.abs(o[0] - me.x) + Math.abs(o[1] - me.y) < 2) return;
+        if (o[0] === n.x && o[1] === n.y) return;
+        var t2 = tile(o[0], o[1]); if ('TX~pdsocFlGE'.indexOf(t2) >= 0 || t2 === undefined) return;
+        if (visNpcs().some(function (m) { return m !== n && m.x === o[0] && m.y === o[1]; })) return;
+        if (AREA.exits && AREA.exits[key(o[0], o[1])]) return;
+        n.x = o[0]; n.y = o[1];
+      });
+      LIFE.walkers.forEach(function (w) {
+        var nx = w.px + w.dir * w.sp * dt, tx = Math.floor((nx + (w.dir > 0 ? 15 : 0)) / TS);
+        if (!MAP[w.y] || MAP[w.y][tx] !== '=') { w.dir *= -1; return; }
+        w.px = nx; w.step += dt;
+      });
+      // every so often, someone nearby says something
+      LIFE.barkT -= dt;
+      if (LIFE.barkT <= 0) {
+        LIFE.barkT = 7 + Math.random() * 8;
+        var who = [];
+        activeParty().forEach(function (id, j) { who.push({ text: COMP[id].barks[Math.floor(Math.random() * COMP[id].barks.length)], name: COMP[id].name, at: function () { var b2 = (j + 1) * 14, pt = trail.length > b2 ? trail[trail.length - 1 - b2] : [me.px, me.py]; return [pt[0], pt[1]]; } }); });
+        LIFE.walkers.forEach(function (w) { if (Math.abs(w.px - me.px) < 90 && Math.abs(w.py - me.py) < 70) who.push({ text: BARKS[Math.floor(Math.random() * BARKS.length)], at: function () { return [w.px, w.py]; } }); });
+        if (who.length) { LIFE.bark = who[Math.floor(Math.random() * who.length)]; LIFE.bark.t = 3.4; barkEl.textContent = (LIFE.bark.name ? LIFE.bark.name + ': ' : '') + LIFE.bark.text; }
+      }
+      if (LIFE.bark) { LIFE.bark.t -= dt; if (LIFE.bark.t <= 0) { LIFE.bark = null; barkEl.classList.remove('on'); } }
+    }
+    function lifeDraw(list) {
+      LIFE.walkers.forEach(function (w) { list.push({ y: w.py / TS, draw: function () {
+        var img = hdv(SP.person(w.look)), bob = Math.floor(w.step * 6) % 2;
+        cx.save(); cx.globalAlpha = w.alpha; cx.fillStyle = 'rgba(0,0,0,.25)'; cx.beginPath(); cx.ellipse(w.px + 8 - cam.x, w.py + 15 - cam.y, 5, 1.6, 0, 0, 7); cx.fill();
+        cx.drawImage(img, Math.round(w.px - 3 - cam.x), Math.round(w.py - 11 - bob - cam.y), 22, 27); cx.restore();
+      } }); });
+    }
+    function barkPlace() {
+      if (!LIFE.bark || mode !== 'map' || talking) { barkEl.classList.remove('on'); return; }
+      var p = LIFE.bark.at(); barkEl.style.left = ((p[0] + 8 - cam.x) / W * 100) + '%'; barkEl.style.top = ((p[1] - 14 - cam.y) / H * 100) + '%'; barkEl.classList.add('on');
+    }
     function drawMap() {
       var tnow = performance.now() / 1000;
       if (!me.moving || true) placeCam();
@@ -1220,16 +1281,18 @@
         gateOpen: gateOpen, isLit: isLit, signal: lights() === 6 || !!F.ending, tether: F.ending === 'cut' ? 'cut' : F.ending === 'reverse' ? 'down' : 'up', fpos: PAINTED.fpos, radio: !!F.radio, mara: !!F.mara };
       ART.live(cx, AREA, MAP, tnow, cam, st, 'under');
       // people, the wagon and Vee, nearest drawn last
-      var list = visNpcs().map(function (n) { return { y: n.y, draw: function () { ART.person(cx, n.x * TS - cam.x, n.y * TS - cam.y, n, tnow); } }; });
+      var list = visNpcs().map(function (n) { var nx = n.px != null ? n.px : n.x * TS, ny = n.py != null ? n.py : n.y * TS; return { y: ny / TS, draw: function () { ART.person(cx, nx - cam.x, ny - cam.y, n, tnow); } }; });
+      lifeDraw(list);
       var w = wagonAt(); if (w) list.push({ y: w[1], draw: function () { ART.wagon(cx, w[0] * TS - cam.x, w[1] * TS - cam.y, tnow); } });
       // companions walk a few steps behind, in Vee's footsteps
       activeParty().forEach(function (id, j) {
         var back = (j + 1) * 14, pt = trail.length > back ? trail[trail.length - 1 - back] : [me.px + (j + 1) * 0, me.py - (j + 1) * 0, me.dir];
         if (trail.length <= back) pt = [me.px - (me.dir === 'right' ? 16 : me.dir === 'left' ? -16 : 0) * (j + 1), me.py - (me.dir === 'down' ? 16 : me.dir === 'up' ? -16 : 0) * (j + 1), me.dir];
         list.push({ y: pt[1] / TS, draw: function () {
-          var img = hdv(SP.person(COMP[id].look)), bob = me.moving && Math.floor(me.step / 4 + j) % 2 ? 1 : 0;
+          var walk2 = me.moving ? Math.floor(me.step / 4 + j * 2) % 4 : -1, d2 = pt[2] || 'down', L2 = COMP[id].look, st2 = walk2 < 0 ? 0 : [1, 0, 2, 0][walk2];
+          var img = hdv(d2 === 'left' || d2 === 'right' ? SP.hero(L2, 'side', walk2 < 0 ? 'idle' : 'run' + walk2) : SP.hero(L2, d2 === 'up' ? 'back' : 'front', st2)), bob = walk2 >= 0 && walk2 % 2 ? 1 : 0;
           cx.fillStyle = 'rgba(0,0,0,.3)'; cx.beginPath(); cx.ellipse(pt[0] + 8 - cam.x, pt[1] + 15 - cam.y, 6, 2, 0, 0, 7); cx.fill();
-          cx.drawImage(img, Math.round(pt[0] - 3 - cam.x), Math.round(pt[1] - 11 - bob - cam.y), 22, 27);
+          drawSprite(img, pt[0] - 3 - cam.x, pt[1] - 10 - bob - cam.y, d2 === 'left');
         } });
       });
       list.push({ y: me.py / TS + .01, draw: function () {
@@ -1241,6 +1304,7 @@
         drawSprite(v.img, vx, vy, v.flip);
       } });
       list.sort(function (a, b) { return a.y - b.y; }).forEach(function (o) { o.draw(); });
+      barkPlace();
       drawLayer('over', -cam.x, -cam.y - PAINTED.pad);
       // behind a tall building, Vee shows through as a ghost so you never lose him
       var vb = PAINTED.rises.some(function (r) { return me.px + 14 > r.x && me.px + 2 < r.x + r.w && me.py > r.y - 4 && me.py < r.y + r.h; });
@@ -1283,12 +1347,12 @@
       order.forEach(function (f) {
         f.shake = Math.max(0, f.shake - dt * 3); f.flash = Math.max(0, f.flash - dt * 4); f.lunge = Math.max(0, (f.lunge || 0) - dt * 3);
         if (f.dead) { f.fade = Math.max(0, f.fade - dt * 1.6); if (f.fade <= 0) return; }
-        var PEOPLE = { vesfork: COMP.ves && COMP.ves.look, corvin: { hair: 'short', body: 'suit', skin: '#d8b898', top: '#1c1c22', glasses: 1 } };   // the rivals are people, not bugs
-        var img = PEOPLE[f.kind] ? hdv(SP.person(PEOPLE[f.kind])) : (SP.bugHD && !(save.cfg && save.cfg.retro) ? SP.bugHD : SP.bug)(f.kind, Math.floor((B.t + f.ph) * 4)), sc = f.sc / (img.hd || 1), w = img.width * sc, h = img.height * sc;   // sc here is per drawn pixel; drawSprite takes the per-world-pixel scale   // 16-bit sprites by default; img.hd says how much finer they're drawn
+        var PEOPLE = { vesfork: WD.heroes && WD.heroes.ves, corvin: WD.heroes && WD.heroes.corvin };   // the rivals are people, not bugs: their own sprites, facing Vee
+        var img = PEOPLE[f.kind] ? hdv(SP.hero(PEOPLE[f.kind], 'side', f.lunge > .3 ? 'point' : (Math.floor(B.t * 2) % 2 ? 'idle2' : 'idle'))) : (SP.bugHD && !(save.cfg && save.cfg.retro) ? SP.bugHD : SP.bug)(f.kind, Math.floor((B.t + f.ph) * 4)), sc = f.sc / (img.hd || 1), w = img.width * sc, h = img.height * sc;   // sc here is per drawn pixel; drawSprite takes the per-world-pixel scale   // 16-bit sprites by default; img.hd says how much finer they're drawn
         var bx = f.fx + (f.shake ? Math.sin(B.t * 80) * 3 * f.shake : 0) + f.lunge * 10, by = f.fy - h + (f.kind === 'moth' || f.kind === 'virus' ? -6 + Math.sin(B.t * 3 + f.ph) * 1.5 : 0);
         cx.fillStyle = 'rgba(0,0,0,.35)'; cx.beginPath(); cx.ellipse(f.fx + w / 2, f.fy + 1, w * .42, 3, 0, 0, 7); cx.fill();
         cx.save(); if (f.dead) cx.globalAlpha = f.fade * (B.t % .16 < .08 ? 1 : .3); if (f.flash > .5) cx.filter = 'brightness(3)';
-        drawSprite(img, bx, by, true, f.sc); cx.restore();
+        drawSprite(img, bx, by, !PEOPLE[f.kind], f.sc); cx.restore();
         if (!f.dead) { var tags = []; if (f.stun) tags.push('LOCK'); if (f.exposed) tags.push('EXP'); if (f.slow) tags.push('SLOW'); if (f.leak) tags.push('LEAK');
           if (f.foe.lv) { var lt = 'LV' + f.foe.lv, lw = ART.textW(lt); cx.fillStyle = 'rgba(0,0,0,.55)'; cx.fillRect(Math.round(bx + w / 2 - lw / 2 - 2), Math.round(f.fy + 2), lw + 4, 7); ART.text(cx, lt, Math.round(bx + w / 2 - lw / 2), Math.round(f.fy + 3), f.foe.lv > save.lvl + 2 ? '#ffffff' : '#a8a8b4'); }
           if (tags.length) { cx.font = '5px "Press Start 2P", monospace'; cx.fillStyle = 'rgba(0,0,0,.6)'; cx.fillText(tags.join(' '), bx + 1, by - 2); cx.fillStyle = '#f4f4f6'; cx.fillText(tags.join(' '), bx, by - 3); } }
@@ -1314,10 +1378,10 @@
       // the companions stand behind Vee, one above and one below
       (B.allies || []).forEach(function (a) {
         a.lunge = Math.max(0, a.lunge - dt * 3); a.hurt = Math.max(0, a.hurt - dt * 3);
-        var p2 = allyPos(a), img2 = hdv(SP.person(COMP[a.id].look)), ax = p2[0] - a.lunge * 10 + (a.hurt ? Math.sin(B.t * 70) * 2 : 0), ay = p2[1];
+        var p2 = allyPos(a), img2 = hdv(SP.hero(COMP[a.id].look, 'side', a.down ? 'fall' : B.actor === a || a.lunge > .3 ? 'point' : (Math.floor(B.t * 2 + a.slot) % 2 ? 'idle2' : 'idle'))), ax = p2[0] - a.lunge * 10 + (a.hurt ? Math.sin(B.t * 70) * 2 : 0), ay = p2[1];
         cx.fillStyle = 'rgba(0,0,0,.4)'; cx.beginPath(); cx.ellipse(ax + 11, ay, 8, 2.2, 0, 0, 7); cx.fill();
-        cx.save(); if (a.down) { cx.globalAlpha = .35; cx.translate(ax + 2, ay); cx.rotate(-Math.PI / 2); cx.drawImage(img2, -2, -22, 26, 22); }
-        else { if (B.actor === a) { cx.strokeStyle = 'rgba(240,240,244,' + (.35 + Math.sin(B.t * 5) * .15) + ')'; cx.strokeRect(ax - 3.5, ay - 29.5, 29, 31); } drawSprite(img2, ax, ay - 27, false, 1); }
+        cx.save(); if (a.down) { cx.globalAlpha = .35; cx.translate(ax + 2, ay); cx.rotate(-Math.PI / 2); cx.drawImage(img2, -2, -22, 22, 26); }
+        else { if (B.actor === a) { cx.strokeStyle = 'rgba(240,240,244,' + (.35 + Math.sin(B.t * 5) * .15) + ')'; cx.strokeRect(ax - 3.5, ay - 29.5, 29, 31); } drawSprite(img2, ax, ay - 25, true, 1); }
         cx.restore();
       });
       // damage numbers
@@ -1341,6 +1405,7 @@
         if (fade.t >= .7) { fade = null; showArea(); }
         return;
       }
+      lifeUpdate(dt);
       if (mode !== 'map' || talking || PZ) return;
       if (me.moving) {
         var dashing = dashHeld && !PZ, tx = me.x * TS, ty = me.y * TS, sp = 70 * dt * (dashing ? 2.2 : 1);
