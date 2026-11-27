@@ -700,7 +700,7 @@
       B.menu = which; B.sel = 0; cmdBox.innerHTML = '';
       var list = which === 'main' ? [
           { label: 'Fight', tip: 'A plain attack at Vee’s regular strength.', fn: function () { chooseTarget('fight'); } },
-          { label: 'Shell', tip: 'Open a shell and type the command that solves a bug’s problem. Right: a bonus attack. Wrong: half power.', fn: function () { chooseTarget('cmd'); } },
+          { label: 'Shell', tip: (save.wins || 0) < 3 ? 'Try this first. Each bug brings a problem; type the command that solves it for a much stronger attack.' : 'Open a shell and type the command that solves a bug’s problem. Right: a bonus attack. Wrong: half power.', fn: function () { chooseTarget('cmd'); } },
           { label: 'Item', tip: 'Bits, bytes and bigger: data that restores HP.', fn: function () { menu('items'); } },
           B.boss ? { label: 'Run', off: true, tip: 'There is no running from this one.', fn: runAway } : { label: 'Run', tip: 'Slip away into the dark.', fn: runAway }]
         : ITEMS.filter(function (it) { return save.items[it.id] > 0; }).map(function (it) { return { label: (innerWidth < 640 && it.short) || it.name, right: 'x' + save.items[it.id], tip: it.tip, fn: function () { item(it.id); } }; })
@@ -713,7 +713,7 @@
         b.addEventListener('mouseenter', function () { setSel(j); });
         cmdBox.appendChild(b);
       });
-      B.list = list; cmdBox.classList.add('on'); setSel(0);
+      B.list = list; cmdBox.classList.add('on'); setSel(which === 'main' && (save.wins || 0) < 3 ? 1 : 0);   // new players start on Shell: it's the heart of the game
     }
     function setSel(j) {
       if (!B || !B.list) return; B.sel = (j + B.list.length) % B.list.length;
