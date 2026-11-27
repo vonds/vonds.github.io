@@ -1433,6 +1433,21 @@
       { t: 'Question 3. Who are you, and which groups are you in?', ex: ['id', 'groups'] },
       { t: 'Question 4. Copy the folder site/ to the server school.local, as vee, into ~/site, keeping everything intact.', ex: ['rsync -a site/ vee@school.local:~/site', 'rsync -av site/ vee@school.local:~/site', 'rsync -a site vee@school.local:~', 'scp -r site vee@school.local:~'] }] }
   );
+  CLASSES.push(
+    { id: 'c10', name: 'Shell Habits', stat: 'hp', amt: 30, need: function (G) { return G.save.lvl >= 20; }, steps: [
+      { t: 'Shell Habits, question 1. What did you type earlier? Show your command history.', ex: ['history', 'history | tail'] },
+      { t: 'Question 2. Read the manual page for ls.', ex: ['man ls'] },
+      { t: 'Question 3. Which machine are you on? Print its name.', ex: ['hostname', 'uname -n'] },
+      { t: 'Question 4. Show this machine’s network addresses.', ex: ['ip a', 'ip addr', 'ip address', 'ip addr show', 'ifconfig'] },
+      { t: 'Question 5. List the environment variables your shell is carrying.', ex: ['env', 'printenv'] }] },
+    { id: 'c11', name: 'Editors and Detectives', stat: 'atk', amt: 4, need: function (G) { return G.save.lvl >= 24; }, steps: [
+      { t: 'Editors, question 1. Make the folder path projects/site/css in one go, parents and all.', ex: ['mkdir -p projects/site/css'] },
+      { t: 'Question 2. Open notes.txt in nano, the friendly editor.', ex: ['nano notes.txt'] },
+      { t: 'Question 3. Now open it in vim. Then, in vim, what do you type to save and quit?', ex: [':wq', ':x', 'ZZ'] },
+      { t: 'Question 4. Page through the long file manual.txt without opening an editor.', ex: ['less manual.txt', 'more manual.txt'] },
+      { t: 'Question 5. Something is holding app.log open. Find out what.', ex: ['lsof app.log', 'sudo lsof app.log', 'fuser app.log'] },
+      { t: 'Question 6. Watch what is using the CPU, live.', ex: ['top', 'htop'] }] }
+  );
   CLASSES.push({ id: 'c5', name: 'Tomorrow', stat: 'atk', amt: 4, need: function (G) { return !!G.f.tuesday; }, steps: [
     { t: 'Tomorrow, question 1. Open your own crontab to edit it.', ex: ['crontab -e'] },
     { t: 'Question 2. Write the line that runs /home/vee/backup.sh every day at 2 a.m.', ex: ['0 2 * * * /home/vee/backup.sh'] },
