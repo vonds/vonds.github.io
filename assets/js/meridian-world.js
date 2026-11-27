@@ -1673,6 +1673,69 @@
     JOURNAL = function (G) { var f = G.f, j = j0(G); if (f.bertrand) j.push('Lost and Found: ' + LOSTFOUND.filter(function (t) { return f[t.id]; }).length + ' of 3 jobs' + (f.lf1 && !f.kite ? ' (Lio’s kite is in the claimed box)' : '')); return j; };
   })();
 
+  /* late errands that use the rarer tools: a survey of the edge, a proper catalogue, a broadcast that outlives the shift */
+  GEAR.reel = { slot: 'weapon', name: 'Tape Reel', atk: 36, crit: .06, desc: 'Half a mile of magnetic tape on a steel hub. Hollis says it holds a whole winter of somebody’s Tuesdays.' };
+  GEAR.mic = { slot: 'acc', name: 'Juno’s Microphone', hp: 50, xp: .05, desc: 'The spare. The good one is on the air. +50 max HP, and people listen when you talk.' };
+  GEAR_FROM.push(['reel', function (G) { return !!G.f.catalog; }, 'Hollis hands over a Tape Reel. “Archivists don’t fight. Archivists outlast.”'], ['mic', function (G) { return !!G.f.bcast; }, 'Juno gives Vee her spare microphone.']);
+  (function () {
+    var osei0 = TALK.osei;
+    TALK.osei = function (G) {
+      var f = G.f;
+      if (G.save.lvl >= 19 && !f.survey && f.osei2) return G.say('Osei', ['The survey. Are you ready?'], [{ label: 'Survey the edge', fn: function () {
+        G.puzzle('SURVEY', [
+          { t: 'List the block devices. Every disk Meridian stands on.', ex: ['lsblk', 'lsblk -f', 'sudo lsblk'] },
+          { t: 'There’s one nobody mounted: sdb1, the Margin’s own disk. Mount it at /mnt/edge.', ex: ['mount /dev/sdb1 /mnt/edge', 'sudo mount /dev/sdb1 /mnt/edge'] },
+          { t: 'Read the last kernel messages. What did the kernel notice when it arrived?', ex: ['dmesg | tail', 'sudo dmesg | tail', 'dmesg | tail -n 20', 'dmesg'] },
+          { t: 'And memory. How much does the city have left, human-readable?', ex: ['free -h', 'free -m', 'free'] }], function () {
+          f.survey = 1; G.xp(700);
+          G.say('Osei', ['sdb1: mounted. Kernel: new floor detected, 2,048 blocks, unallocated.', 'Unallocated. Not blank. Not nothing. Just nothing yet.', 'I’ve spent a year measuring where home ends. Turns out there’s room for it to keep going. Vee gains 700 XP.']);
+        });
+      } }, { label: 'Not yet', fn: null }]);
+      if (G.save.lvl >= 19 && !f.survey && !f.osei2) { f.osei2 = 1; return G.say('Osei', ['You’re getting good at this. Good enough to help me with a real survey.', 'The edge has a disk of its own. Nobody ever looked at it. I think it might not be as empty as the Board said.', 'Talk to me again when you’re ready.']); }
+      return osei0(G);
+    };
+    var hollis0 = TALK.hollis;
+    TALK.hollis = function (G) {
+      var f = G.f;
+      if (f.rootkey && !f.catalog && G.save.lvl >= 23) return G.say('Hollis', ['The Deduplicator is gone, but it was right about one thing. We have a lot of copies. Let’s do it properly: links, not erasures.'], [{ label: 'Catalogue the tapes', fn: function () {
+        G.puzzle('CATALOGUE', [
+          { t: 'Two of Arlo’s nightly files. Show what changed between arlo_0201.txt and arlo_0202.txt.', ex: ['diff arlo_0201.txt arlo_0202.txt'] },
+          { t: 'Make a symbolic link called latest that points to arlo_0202.txt, instead of another copy.', ex: ['ln -s arlo_0202.txt latest'] },
+          { t: 'Remove every .tmp file under the current folder, using find to do the removing.', ex: ['find . -name "*.tmp" -exec rm {} \;', "find . -name '*.tmp' -exec rm {} \;", 'find . -name "*.tmp" -exec rm {} +', "find . -name '*.tmp' -exec rm {} +", 'find . -name "*.tmp" -delete', "find . -name '*.tmp' -delete"] },
+          { t: 'Compress every .log file find can see, by piping the names to gzip.', ex: ['find . -name "*.log" | xargs gzip', "find . -name '*.log' | xargs gzip"] },
+          { t: 'List the folder, and save that list to catalog.txt while still showing it on screen.', ex: ['ls | tee catalog.txt', 'ls -l | tee catalog.txt'] }], function () {
+          f.catalog = 1; G.xp(800);
+          G.say('Hollis', ['A catalogue. A real one. Every copy accounted for, nothing erased, the latest one linked.', 'That’s the difference between hoarding and keeping. Vee gains 800 XP.']);
+        });
+      } }, { label: 'Later', fn: null }]);
+      return hollis0(G);
+    };
+    var juno0 = TALK.juno;
+    TALK.juno = function (G) {
+      var f = G.f;
+      if (f.tuesday && f.radio && f.tue_juno && !f.bcast) return G.say('Juno', ['The Tuesday edition went out live. But I can’t stay up every night forever. Can you set the broadcast to run on its own, even after I log off?'], [{ label: 'Set it up', fn: function () {
+        G.puzzle('RADIO MERIDIAN', [
+          { t: 'Is the encoder installed? Ask where ffmpeg lives.', ex: ['which ffmpeg', 'command -v ffmpeg'] },
+          { t: 'Nothing. Install it with the package manager.', ex: ['sudo apt install ffmpeg', 'apt install ffmpeg', 'sudo apt-get install ffmpeg', 'apt-get install ffmpeg', 'sudo apt install -y ffmpeg'] },
+          { t: 'Set an environment variable STATION to RadioMeridian, so the script can see it.', ex: ['export STATION=RadioMeridian', 'export STATION="RadioMeridian"', "export STATION='RadioMeridian'"] },
+          { t: 'Start ./broadcast.sh so it keeps running after Juno logs out, in the background.', ex: ['nohup ./broadcast.sh &', 'nohup ./broadcast.sh > /dev/null &', 'nohup ./broadcast.sh 2>&1 &'] },
+          { t: 'Last thing. Make a shortcut, onair, that runs ./broadcast.sh.', ex: ['alias onair="./broadcast.sh"', "alias onair='./broadcast.sh'", 'alias onair=./broadcast.sh'] }], function () {
+          f.bcast = 1; G.xp(650);
+          G.say('Juno', ['It’s running. Without me. I could go to bed. I could go for a walk. I could... listen to my own show.', 'I’ve never heard it. Not once. I was always the one talking. Vee gains 650 XP.']);
+        });
+      } }, { label: 'Later', fn: null }]);
+      return juno0(G);
+    };
+    var j0 = JOURNAL;
+    JOURNAL = function (G) {
+      var f = G.f, j = j0(G);
+      if (f.osei2) j.push((f.survey ? '[x]' : '[ ]') + ' Survey the edge with Osei');
+      if (f.rootkey && G.save.lvl >= 23) j.push((f.catalog ? '[x]' : '[ ]') + ' Catalogue the tapes with Hollis');
+      if (f.tuesday && f.radio) j.push((f.bcast ? '[x]' : '[ ]') + ' Let Radio Meridian run on its own');
+      return j;
+    };
+  })();
+
   /* a room of Vee's own: the nameplate fills in once Vee is a resident */
   DOORS['plaza:home'] = function (G) {
     var f = G.f, s = G.save;
