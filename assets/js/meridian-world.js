@@ -2435,6 +2435,189 @@
   };
   Object.keys(DG).forEach(function (k) { GEAR[k] = DG[k]; });
 
+  /* =====================================================================
+     COMPANIONS. Eight people who will walk with Vee. Each joins once their own trouble is settled,
+     fights at Vee's level, and has two skills on cooldowns. Two can be in the party at once.
+     ===================================================================== */
+  var COMPANIONS = {
+    wren:    { name: 'Wren', role: 'Scout', look: { hair: 'bun', body: 'suit', skin: '#8d5a3a', top: '#3a3a44' }, hp: .85, atk: 1, def: .8,
+      bio: 'Knows every alley in Meridian, and which ones still lead somewhere.',
+      skills: [{ id: 'ping', name: 'Ping', cd: 3, fx: 'expose_all', tip: 'Wren pings every bug at once. All of them take 50% more damage for two turns.' },
+               { id: 'dtap', name: 'Double Tap', cd: 2, fx: 'multi2', target: 1, tip: 'Two quick strikes at one bug.' }],
+      barks: ['This way. Probably.', 'I mapped this street once. It’s moved.', 'You walk like someone who’s going somewhere. Good.'],
+      join: function (G) { return !!G.f.metWren && (G.save.wins || 0) >= 2; },
+      pitch: ['You’re going to keep doing this, aren’t you. Walking into the dark districts on your own.', 'Then I’m coming. Somebody has to know where the exits are.'] },
+    imani:   { name: 'Imani', role: 'Medic', look: { hair: 'bun', body: 'scrubs', skin: '#5a3824', top: '#9aa4aa' }, hp: .9, atk: .7, def: .9,
+      bio: 'Kept three patients alive for eleven months on a ward nobody funded.',
+      skills: [{ id: 'triage', name: 'Triage', cd: 3, fx: 'heal_party', tip: 'Heals everyone in the party by 30% of their max HP.' },
+               { id: 'restart', name: 'Restart', cd: 4, fx: 'revive', tip: 'Brings a downed ally back with 40% HP.' }],
+      barks: ['Drink some water. I know you don’t need to. Drink it anyway.', 'Hold still. That’s a bad crack.', 'My patients are awake. I can leave for a bit.'],
+      join: function (G) { return !!G.f.triage; },
+      pitch: ['My three are awake and talking and complaining about the food. They don’t need me every minute any more.', 'You do. You come back in pieces. Let me come with you.'] },
+    juno:    { name: 'Juno', role: 'Signal', look: { hair: 'short', phones: 1, skin: '#5a3a26', top: '#2e2e36' }, hp: .8, atk: .9, def: .7,
+      bio: 'Ran the only radio station left in the Patchwork. Still broadcasts to anyone listening.',
+      skills: [{ id: 'cast', name: 'Broadcast', cd: 3, fx: 'buff_crit', tip: 'Everyone’s next hit is a critical.' },
+               { id: 'static', name: 'Static', cd: 2, fx: 'stun', target: 1, tip: 'Floods one bug with noise. It loses its next turn.' }],
+      barks: ['Testing. Testing. Still on the air.', 'Every place has a frequency. This one is sad.', 'Say something for the listeners, Vee.'],
+      join: function (G) { return !!G.f.radio; },
+      pitch: ['The station runs itself now. I set it to loop. Nobody will notice I’m gone, which is a little insulting.', 'Take me with you. I want to hear the rest of the city.'] },
+    marisol: { name: 'Marisol', role: 'Engineer', look: { hair: 'bun', body: 'coat', skin: '#8a5a3c', top: '#4a5a62' }, hp: 1, atk: .95, def: 1,
+      bio: 'Kept the Waterworks running with a wrench and a refusal to be told no.',
+      skills: [{ id: 'flush', name: 'Flush', cd: 3, fx: 'all', tip: 'Opens every valve. Hits all bugs.' },
+               { id: 'valve', name: 'Valve', cd: 3, fx: 'slow_all', tip: 'Cuts their pressure. All bugs hit for half for three turns.' }],
+      barks: ['Hear that? That’s a pipe that wants to be fixed.', 'Everything leaks. The trick is where.', 'You hold the light. I’ll hold the wrench.'],
+      join: function (G) { return !!G.f.overflow; },
+      pitch: ['Pressure’s stable. The pumps don’t need me standing over them. Honestly they never did.', 'I’d like to fix something bigger than a pipe. I hear you’re fixing a city.'] },
+    ash:     { name: 'Ash', role: 'Sentinel', look: { hair: 'short', body: 'armor', skin: '#6b4a32', top: '#2a2a30', pants: '#1c1c20' }, hp: 1.35, atk: .9, def: 1.45,
+      bio: 'Guarded the Keep’s gate alone, every shift, since the Lift.',
+      skills: [{ id: 'wall', name: 'Firewall', cd: 3, fx: 'guard_party', tip: 'Everyone takes half damage until Vee’s next turn.' },
+               { id: 'audit', name: 'Audit', cd: 3, fx: 'taunt', tip: 'Ash draws every attack for two turns, and braces for them.' }],
+      barks: ['Stay behind me.', 'Gate’s open now. I can finally walk through it.', 'I counted the bugs. Then I stopped counting.'],
+      join: function (G) { return G.lit('keep'); },
+      pitch: ['The gate holds itself now. That was the point of the Keep.', 'So I’m off shift. For the first time in eleven months. Mind if I spend it watching your back?'] },
+    hollis:  { name: 'Hollis', role: 'Archivist', look: { hair: 'bald', body: 'coat', glasses: 1, skin: '#6a4a34', top: '#5a5248', beard: 1, gray: 1 }, hp: .8, atk: 1.15, def: .75,
+      bio: 'Catalogued every book in the Stacks, including the ones that never existed.',
+      skills: [{ id: 'index', name: 'Index', cd: 2, fx: 'heavy_expose', target: 1, tip: 'Looks the bug up and hits it where the index says. Heavy damage, and it stays exposed.' },
+               { id: 'recall', name: 'Recall', cd: 3, fx: 'recall', tip: 'Reminds Vee who he is. Heals him 40% and clears corruption.' }],
+      barks: ['There’s a book about this street. It’s wrong.', 'I’ve read about fights like this. They were shorter.', 'Mind the footnotes.'],
+      join: function (G) { return !!G.f.catalog; },
+      pitch: ['The catalogue is finished. Every shelf. I didn’t expect to feel this lost about it.', 'Perhaps I should go and see some of what I’ve been cataloguing. With you, if you’ll have an old man.'] },
+    teller:  { name: 'Dr. Teller', role: 'Astronomer', look: { hair: 'long', body: 'coat', glasses: 1, skin: '#c89a78', top: '#2a2a36', gray: 1 }, hp: .85, atk: 1, def: .85,
+      bio: 'Taught the Observatory’s sky to move again, star by star.',
+      skills: [{ id: 'stars', name: 'Starfield', cd: 4, fx: 'blind_all', tip: 'Fills the air with stars. Bugs miss half their attacks for two turns.' },
+               { id: 'redshift', name: 'Redshift', cd: 2, fx: 'heavy_slow', target: 1, tip: 'A heavy hit that leaves the bug slowed.' }],
+      barks: ['Look up. Every time. It costs nothing.', 'The sky in this district is wrong by two degrees.', 'I miss weather. I miss being surprised.'],
+      join: function (G) { return !!G.f.newsky; },
+      pitch: ['The stars move on their own now. They don’t need me to push them.', 'I’ve spent a career looking up. I’d like to look around for a while.'] },
+    arloup:  { name: 'Arlo', role: 'Forecaster', look: { hair: 'short', body: 'suit', skin: '#c89a78', top: '#3a3a44' }, hp: .95, atk: 1.05, def: .9,
+      bio: 'Paid for one hour of rain every day, so Upstream would sound like home.',
+      skills: [{ id: 'rain', name: 'Rain', cd: 4, fx: 'regen', tip: 'Rain on the whole party. Everyone heals a little each turn for three turns.' },
+               { id: 'twoam', name: '2 A.M.', cd: 3, fx: 'multi3', target: 1, tip: 'Three hits, the way you think at two in the morning: fast and not quite right.' }],
+      barks: ['It’s raining somewhere. I paid for it.', 'The 2 a.m. me says hello.', 'Upstream never felt like this. Like it was mine.'],
+      join: function (G) { return !!G.f.up1; },
+      pitch: ['You came all the way up here. The least I can do is walk back down with you.', 'And I want to meet him. The me in the Stacks. Properly.'] },
+    ves:     { name: 'Ves', role: 'Fork', look: { hair: 'long', body: 'suit', skin: '#7a4a30', top: '#d8d8dc', pants: '#2b2b30' }, hp: 1.05, atk: 1.2, def: 1,
+      bio: 'A copy of Vee the Board made to finish reclaiming the city. Then they scheduled the wipe for Ves too.',
+      skills: [{ id: 'fork', name: 'Fork', cd: 3, fx: 'fork', tip: 'Ves splits for a moment and hits every bug twice.' },
+               { id: 'kill9', name: 'kill -9', cd: 3, fx: 'execute', target: 1, tip: 'Ends a weakened bug outright (under 30% HP). Otherwise, a heavy hit.' }],
+      barks: ['I was built to do this better than you. I’m starting to think “better” was the wrong word.', 'Same face. Different list.', 'Left foot, right foot. You taught me that.'],
+      join: function (G) { return !!G.f.vesFree; }, pitch: null }
+  };
+
+  /* =====================================================================
+     THE OPPOSITION.
+     Corvin Vane, the Board's Continuity Officer: stayed behind on the Board's payroll to make sure Meridian
+     stays decommissioned. Speaks through holograms and notices until Vee reaches the Annex.
+     Ves: a fork of Vee that Corvin made to finish the reclaiming properly. Fights Vee four times. The last time,
+     Ves finds Corvin's wipe schedule, and Ves's own name is on it.
+     ===================================================================== */
+  BOSSES.ves1 = { kind: 'vesfork', name: 'Ves', lv: 11, hp: 800, atk: [15, 21], xp: 700, move: 'answers every move Vee makes, a little faster', sc: 1 };
+  BOSSES.ves2 = { kind: 'vesfork', name: 'Ves', lv: 23, hp: 2000, atk: [26, 34], xp: 2400, move: 'mirrors Vee and gets there first', sc: 1 };
+  BOSSES.ves3 = { kind: 'vesfork', name: 'Ves', lv: 33, hp: 2400, atk: [60, 75], xp: 8000, move: 'runs Vee’s own commands back at him', sc: 1 };
+  BOSSES.corvin = { kind: 'corvin', name: 'Corvin Vane', lv: 67, hp: 3300, atk: [185, 215], xp: 70000, move: 'files Vee under OBSOLETE', sc: 1 };
+  BOSSES.ves4 = { kind: 'vesfork', name: 'Ves', lv: 80, hp: 3700, atk: [240, 280], xp: 150000, move: 'fights like someone with nothing left to lose', sc: 1 };
+  function corvinSays(G, lines, done) { G.say('Corvin Vane', lines, null, done); }
+
+  // 1. the first notice: once Vee lights a landmark, Corvin notices
+  var plazaSteps0 = STEPS.plaza;
+  STEPS.plaza = function (G, x, y) {
+    if (plazaSteps0) plazaSteps0(G, x, y);
+    var f = G.f; if (f.cv1 || !G.lit('spire')) return;
+    f.cv1 = 1;
+    G.say('', ['The Plaza kiosk flickers. For a moment, the screen shows a face instead of a population count: a man in a good suit, in an office with a window full of someone else’s sky.'], null, function () {
+      corvinSays(G, ['Maintenance process 1205. I’m Corvin Vane. Continuity Officer for the Board.', 'You lit a landmark. That draws power, and power draws attention, and attention is my job.',
+        'This city was decommissioned by a vote. Seven to one. Everything after that is just the lights taking a while to go out.', 'Please stop helping them get used to the light. It makes the end crueler.'], function () {
+        G.say('', ['The face is gone. The kiosk says MERIDIAN. POPULATION 1,204. It has never been so obviously a choice.']);
+      });
+    });
+  };
+
+  // 2. the first duel: in the Patchwork, someone with Vee's face
+  STEPS.patchwork = function (G, x, y) {
+    var f = G.f; if (f.ves1 || G.save.lvl < 8) return;
+    f.ves1 = 1;
+    G.say('', ['Someone is standing in the middle of the street. Same height as Vee. Same locs. Same headphones, but white. Same face, without the habit of smiling.'], null, function () {
+      G.say('Ves', ['Process 1205. I’m 1205-b. The Board calls me Ves.', 'Corvin built me from your last backup, with the sentiment taken out. I reclaim what you keep fixing.', 'It’s nothing personal. I don’t have personal.'], [{ label: 'Fight', fn: function () {
+        G.boss('ves1', function () { G.say('Ves', ['…You’re slower than me. You still won. That isn’t in my notes.', 'I’ll update them.'], null, function () { G.say('', ['Ves walks away without hurrying. Behind them, a patch of the Patchwork that had gone grey starts to fill back in.']); }); });
+      } }]);
+    });
+  };
+  // 3. the second: in the Stacks, Ves is reclaiming books
+  var stacksSteps0 = STEPS.stacks;
+  STEPS.stacks = function (G, x, y) {
+    if (stacksSteps0) stacksSteps0(G, x, y);
+    var f = G.f; if (!f.ves1 || f.ves2 || G.save.lvl < 20) return;
+    f.ves2 = 1;
+    G.say('', ['Between two shelves, Ves is running a finger along the spines. Each book they touch goes blank.'], null, function () {
+      G.say('Ves', ['A book nobody has opened in a year is a file nobody has accessed in a year. The rule is very clear.', 'You keep making exceptions. I don’t understand exceptions. Show me one.'], [{ label: 'Fight', fn: function () {
+        G.boss('ves2', function () { G.say('Ves', ['You fight for the books like they can feel it.', 'They can’t. …Can they?', 'Don’t answer. I have to go and report.']); });
+      } }]);
+    });
+  };
+  // 4. the third: in the Deep, Ves asks the question
+  var deepSteps0 = STEPS.deep;
+  STEPS.deep = function (G, x, y) {
+    var f = G.f;
+    if (f.ves2 && !f.ves3 && G.save.lvl >= 28 && y > 10) {
+      f.ves3 = 1;
+      return G.say('Ves', ['I read your logs. All of them. The ones about the bench, and the kite, and the nurse with three patients.', 'Corvin says you are a malfunction that learned to look like kindness.', 'I want to see if he’s right. Hit me with everything.'], [{ label: 'Fight', fn: function () {
+        G.boss('ves3', function () { G.say('Ves', ['He isn’t right. Is he.', 'I don’t know what I am if he isn’t right.', 'Don’t follow me.']); });
+      } }]);
+    }
+    if (deepSteps0) deepSteps0(G, x, y);
+  };
+  // 5. Corvin himself, at the door to the Successor
+  var annex0 = DOORS['upstream:hall'];
+  DOORS['upstream:hall'] = function (G, b) {
+    var f = G.f;
+    if (vouches(f) < 3 || f.corvinDown) return annex0(G, b);
+    G.say('', ['The Annex door opens on a corridor, and Corvin Vane, in person this time. Not a hologram. He looks tired, the way people look when a job has gone on years past its end date.'], null, function () {
+      corvinSays(G, ['Three vouches. I didn’t think anyone up here would put their name next to yours.', 'Let me explain what’s through that door. A world with four hundred seats. We ran the numbers. Four hundred is what the hardware can carry well.',
+        'Somebody always has to be on the other list. I just make sure it’s done tidily.', 'You are not tidy, 1205.'], function () {
+        G.say('', ['He steps aside to reveal what he’s wearing under the suit: the Continuity Suite, a frame of Board-grade security that has never lost an argument.'], [{ label: 'Fight', fn: function () {
+          G.boss('corvin', function () {
+            f.corvinDown = 1;
+            corvinSays(G, ['…Tidy. I was always so tidy.', 'Go on. The Sorter is in the core. I wrote it. It does exactly what I told it to.', 'That was the problem with all of it, wasn’t it.'], function () { annex0(G, b); });
+          });
+        } }, { label: 'Not yet', fn: null }]);
+      });
+    });
+  };
+  // 6. the last duel: in Ring −1, Ves finds the wipe schedule
+  var fwDaemon0 = DOORS['firmware:daemon'];
+  STEPS.firmware = function (G, x, y) {
+    var f = G.f; if (!f.ves3 || f.vesFree || y < 12) return;
+    if (f.ves4) return;
+    f.ves4 = 1;
+    G.say('Ves', ['You’re here. Of course you’re here.', 'Corvin sent me down to make sure the wipe runs on schedule. One last job.', 'Fight me. I need to be sure I can still do what I was made for.'], [{ label: 'Fight', fn: function () {
+      G.boss('ves4', function () {
+        G.say('Ves', ['…I looked at the schedule while you were catching your breath.', 'wipe --all. All volumes. Both cities. Every process.', 'Every process. 1205-b is a process.', 'He was going to wipe me with the rest. He never even put me on the other list. I was never on any list.'], null, function () {
+          G.say('Ves', ['You walk left foot, right foot. I copied that from your backup. I thought it was a bug.', 'Let me walk with you. Not because I’m better. Because I want to see what you see.'], [{ label: 'Walk together', fn: function () { f.vesFree = 1; G.recruit('ves'); } }]);
+        });
+      });
+    } }]);
+  };
+  // 7. a coda for the Console: Corvin's account, closed
+  var cons0 = DOORS['console:control'];
+  DOORS['console:control'] = function (G, b) {
+    var f = G.f;
+    if (f.kept && !f.cvEnd) { f.cvEnd = 1; return G.say('The Console', ['ops@host: one more thing. the account that scheduled the wipe early: c.vane.', 'ops@host: he left a note in the job. it says “sorry. it was tidier this way.”', 'ops@host: i disabled the account. i didn’t delete it. he can have a city too. same list as everyone.']); }
+    return cons0(G, b);
+  };
+
+  // recruiting: once a companion's own trouble is settled, talking to them offers the choice
+  Object.keys(COMPANIONS).forEach(function (id) {
+    var C = COMPANIONS[id]; if (!C.pitch || !TALK[id]) return;
+    var orig = TALK[id];
+    TALK[id] = function (G, n) {
+      if (G.inParty && G.inParty(id)) return orig(G, n);
+      if (!C.join(G)) return orig(G, n);
+      var f = G.f;
+      if (!f['pitch_' + id]) { f['pitch_' + id] = 1; return G.say(C.name, C.pitch, [{ label: 'Come with me', fn: function () { G.recruit(id); } }, { label: 'Not yet', fn: null }]); }
+      G.say(C.name, ['Still room for one more?'], [{ label: 'Come with me', fn: function () { G.recruit(id); } }, { label: 'Talk', fn: function () { orig(G, n); } }, { label: 'Not now', fn: null }]);
+    };
+  });
+
   var journal1 = JOURNAL;
   JOURNAL = function (G) {
     var f = G.f, j = journal1(G);
@@ -2452,5 +2635,5 @@
     return j;
   };
 
-  window.MeridianWorld = { dropGear: DROPGEAR, areas: A, logs: LOGS, logOrder: LOG_ORDER, bosses: BOSSES, anchors: ANCHORS, talk: TALK, spots: SPOTS, doors: DOORS, wagon: wagon, steps: STEPS, endings: ENDINGS, atlas: ATLAS, links: LINKS, bossStart: BOSS_START, journal: JOURNAL, stations: STATIONS, gear: GEAR, gearFrom: GEAR_FROM };
+  window.MeridianWorld = { companions: COMPANIONS, dropGear: DROPGEAR, areas: A, logs: LOGS, logOrder: LOG_ORDER, bosses: BOSSES, anchors: ANCHORS, talk: TALK, spots: SPOTS, doors: DOORS, wagon: wagon, steps: STEPS, endings: ENDINGS, atlas: ATLAS, links: LINKS, bossStart: BOSS_START, journal: JOURNAL, stations: STATIONS, gear: GEAR, gearFrom: GEAR_FROM };
 })();

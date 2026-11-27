@@ -344,3 +344,10 @@
 /* the DASH button sits above A and B */
 .rpg-pad .d{grid-column:5/7;grid-row:1;border-radius:8px;font-size:9px!important;letter-spacing:.1em}
 @media (hover:none) and (orientation:landscape),(pointer:coarse) and (orientation:landscape){ .rpg-pad .d{grid-column:5/7;grid-row:2} }
+/* companions in the party box: whose turn it is, and who is down */
+.rpg-party .rpg-row.turn span:first-child{color:#fff;text-shadow:0 0 6px rgba(255,255,255,.7)}
+.rpg-party .rpg-row.turn span:first-child::before{content:'\25B8 ';}
+.rpg-party .rpg-row.down{opacity:.45}
+.rpg-party.team .rpg-row{margin-bottom:4px}
+.rpg-party.team .rpg-row.sm{display:none}
+.rpg-cmd[data-who]::before{content:attr(data-who);display:block;font-size:.8em;color:#9a9aa6;margin:0 0 6px 2px;letter-spacing:.08em}
