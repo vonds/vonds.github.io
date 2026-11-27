@@ -309,3 +309,15 @@
 .rpg-menu .mn-pts{font-weight:400;font-size:1.4em;color:#fff}
 .rpg-foes .foe em.lv{font-style:normal;color:#9a9aa8;font-size:.8em}
 .rpg-foes .foe em.lv::before{content:'Lv '}
+
+/* Vee in critical condition: the HP readout pulses, like the old games */
+.rpg-hud .crit .rpg-row:first-child b{animation:rpgCrit .5s steps(2) infinite}
+@keyframes rpgCrit{0%{color:#fff}50%{color:#5a5a62}}
+/* knocked out: the screen goes dark and says so */
+.rpg-ko{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;background:#000;opacity:0;pointer-events:none;transition:opacity 1s ease;font-family:'Press Start 2P',monospace;color:#fff;text-align:center;padding:0 8%;z-index:6}
+.rpg-ko.on{opacity:1}
+.rpg-ko b{font-size:clamp(18px,3.6vw,36px);letter-spacing:.16em;font-weight:400}
+.rpg-ko span{font-size:clamp(8px,1.1vw,12px);line-height:1.7;color:#d0d0d8}
+.rpg-ko em{font-style:normal;font-size:clamp(7px,.9vw,10px);color:#8a8a94}
+.rpg-ko i{font-style:normal;font-size:clamp(7px,.95vw,11px);letter-spacing:.12em;color:#9a9aa6;margin-top:-4px}
+.rpg-ko pre{margin:6px 0;min-height:4.6em;max-width:92%;text-align:left;white-space:pre-wrap;font-family:'Press Start 2P',monospace;font-size:clamp(6px,.8vw,9px);line-height:1.9;color:#bdbdc8;border-left:2px solid #555;padding:4px 0 4px 12px}

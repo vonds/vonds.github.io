@@ -30,7 +30,7 @@
     F7: ['LOG 0222. M. Quell.', 'Asked Ash to hold the east blocks as long as Sentinel can.', 'Ash said, “Hold them for who?” I said, “For whoever’s still here.” Ash said, “Then I’m holding them for you.”'],
     F8: ['LOG 0230. M. Quell.', 'My ticket came. They want me Upstream, designing the next one.', 'I gave it to a woman in the Commons with a little girl. One ticket, one seat. She cried and promised she’d send for her daughter.', 'They always promise that.'],
     F9: ['LOG 0236. M. Quell.', 'The Quiet reached the east wall tonight. I can hear the Lift from my window now.', 'It sounds like breathing.'],
-    F10: ['LOG 0241. M. Quell.', 'If you’re reading this, I’ve been marked unused. That’s their word for it.', 'Vee. The first thing I taught you was whoami. You think the answer is “maintenance.”', 'Look again when this is over. I didn’t build you to keep the city running. I built you to live in it.']
+    F10: ['LOG 0241. M. Quell.', 'If you’re reading this, I’ve been marked obsolete. That’s their word for it.', 'Vee. The first thing I taught you was whoami. You think the answer is “maintenance.”', 'Look again when this is over. I didn’t build you to keep the city running. I built you to live in it.']
   };
   var LOG_ORDER = ['F1', 'F2', 'F3', 'F4', 'F5', 'F6', 'F7', 'F8', 'F9', 'F10'];
 
@@ -260,7 +260,7 @@
       { x: 21, y: 3, w: 3, h: 3, kind: 'ruin', seed: 3, rise: 2 }, { x: 32, y: 10, w: 3, h: 3, kind: 'ruin', seed: 8, rise: 3 }, { x: 4, y: 6, w: 3, h: 2, kind: 'ruin', seed: 5, rise: 1 }
     ],
     exits: { '0,8': ['bastion', 30, 9], '0,9': ['bastion', 30, 10], '45,8': ['terminal', 1, 8], '45,9': ['terminal', 1, 9] },
-    enc: { tiles: '.', rate: .1, foes: ['virus', 'scorpion', 'centipede', 'moth', 'spider', 'worm', 'beetle', 'bytebug'], max: 6 },
+    enc: { tiles: '.', rate: .1, foes: ['virus', 'scorpion', 'centipede', 'moth', 'spider', 'worm', 'beetle', 'bytebug', 'deadcode'], max: 6 },
     spawn: [2, 8],
     logs: { '11,13': 'F8', '38,2': 'F9' },
     caches: { '34,14': { item: 'mb', n: 2 }, '2,11': { item: 'gb', n: 1 } },
@@ -436,7 +436,7 @@
   var SPOTS = {
     'plaza:12,6': function (G) {
       if (G.f.ending) return G.say('Kiosk', ['MERIDIAN. Population ' + (G.f.nova ? '1,206' : '1,205') + '.', G.f.nova ? 'Vee checks the number twice. It went up.' : 'Vee checks the number twice.']);
-      G.say('Kiosk', ['MERIDIAN. Population 1,204. Peak 2,000,000.', 'LIFT CAPACITY: 40,000 seats. Seats remaining: 0.', 'Landmarks answering: ' + G.lights() + ' of 6.']);
+      G.say('Kiosk', ['MERIDIAN. Population 1,204. Peak 2,000,000.', 'LIFT CAPACITY: 40,000 seats. Seats remaining: 0.', 'ACCOUNTS: 40,000 CURRENT (UPSTREAM). 1,204 OBSOLETE (LOCAL).', 'Landmarks answering: ' + G.lights() + ' of 6.']);
     },
     'plaza:F': function (G) { G.say('', ['The fountain renders water once every eleven seconds, the way it was cached the day the Lift opened.', 'Somebody threw a coin in. It’s still in the air.']); },
     'commons:11,8': function (G) { G.say('Sign', ['THE COMMONS. Trade what you know.']); },
@@ -563,7 +563,7 @@
     terminal: function (G, x, y) {
       if (G.f.reclaimed || x < 8) return;
       G.say('', ['A shape stands at the foot of the tether. It is as tall as a tower and made entirely of tally marks.'], null, function () {
-        G.say('The Reclaimer', ['UNUSED PROCESS DETECTED.', 'NO TICKETED ACCOUNT HAS ACCESSED YOU IN THIRTY DAYS.', 'YOUR MEMORY HAS BEEN ALLOCATED UPSTREAM. PLEASE HOLD STILL.'], null, function () {
+        G.say('The Reclaimer', ['OBSOLETE PROCESS DETECTED.', 'NO TICKETED ACCOUNT HAS ACCESSED YOU IN THIRTY DAYS.', 'YOUR MEMORY HAS BEEN ALLOCATED UPSTREAM. PLEASE HOLD STILL.'], null, function () {
           G.boss('reclaimer', function () {
             G.f.reclaimed = 1;
             G.say('', ['The Reclaimer comes apart. The list it carried falls open across the platform.', 'Two million names. Every one marked UNUSED.', 'The tether console flickers on.']);
@@ -677,7 +677,7 @@
     exits: { '19,21': ['gardens', 8, 1], '20,21': ['gardens', 9, 1] },
     gates: { '19,6': { need: function (G) { return !!G.f.guestPass; }, shut: ['A gate of white steel. A small plaque: RESIDENTS ONLY. A smaller one: THANK YOU FOR YOUR PATIENCE.'] },
              '20,6': { need: function (G) { return !!G.f.guestPass; }, shut: ['A gate of white steel. A small plaque: RESIDENTS ONLY. A smaller one: THANK YOU FOR YOUR PATIENCE.'] } },
-    enc: { tiles: ',', rate: .15, foes: ['virus', 'scorpion', 'spider', 'moth'], max: 6 },
+    enc: { tiles: ',', rate: .15, foes: ['virus', 'scorpion', 'spider', 'moth', 'signed'], max: 6 },
     spawn: [19, 19],
     logs: { '10,9': 'M1', '29,9': 'M2', '14,20': 'M3' },
     caches: { '37,9': { item: 'part', n: 1, text: 'A satellite feed horn, still in its gift box. The card reads: FOR THE NEW PLACE. It never shipped.' }, '37,4': { item: 'gb', n: 1 } },
@@ -705,7 +705,7 @@
       { x: 26, y: 15, w: 6, h: 3, kind: 'vault', door: 3, sign: 'M QUELL' }
     ],
     exits: { '2,0': ['undercroft', 36, 20] },
-    enc: { tiles: ',', rate: .18, foes: ['virus', 'scorpion', 'centipede', 'worm', 'moth'], max: 6 },
+    enc: { tiles: ',', rate: .18, foes: ['virus', 'scorpion', 'centipede', 'worm', 'moth', 'bitflip'], max: 6 },
     spawn: [2, 1],
     logs: { '17,2': 'C1' },
     caches: { '34,1': { item: 'mb', n: 2 }, '33,18': { item: 'gb', n: 1 } },
@@ -748,7 +748,7 @@
 
   /* new logs: the Board's minutes, and the spec that started it */
   LOGS.M1 = ['BOARD MINUTES. Session 41.', 'Motion: develop Upstream as the successor platform to Meridian.', 'Passed, 8 to 0.'];
-  LOGS.M2 = ['BOARD MINUTES. Session 52.', 'Motion: set Lift capacity at 40,000.', 'Discussion: capacity could be raised at cost. The Chair notes the cost would “fall on the wrong people.”', 'Passed, 7 to 1. Dissenting: M. Quell.'];
+  LOGS.M2 = ['BOARD MINUTES. Session 52.', 'Motion: set Lift capacity at 40,000.', 'Discussion: capacity could be raised at cost. The Chair notes the cost would “fall on the wrong people.”', 'Passed, 7 to 1. Dissenting: M. Quell.', 'Motion: accounts without a seat to be listed as Obsolete. Support for Obsolete accounts to end at departure.', 'Passed without discussion.'];
   LOGS.M3 = ['BOARD MINUTES. Session 57.', 'Motion: authorize the Reclaimer.', 'Discussion: none recorded.', 'Passed, 7 to 1. Dissenting: M. Quell. Note: Ms. Quell’s seat is reassigned, effective immediately.'];
   LOGS.M4 = ['BOARD MINUTES. Session 58. Final session held in Meridian.', 'Motion: thank the residents for their patience.', 'Passed, 7 to 0.', 'Note: the motion was not communicated to residents.'];
   LOGS.C1 = ['LIFT SPEC 4.2.1. Author: C. Abara.', 'RECLAIMER eligibility: block.last_access_by(ticketed) > 30 days.', 'Note to self: ask legal whether “unused” needs a definition.', 'Ticket #8812. Status: closed. Resolution: won’t fix.'];
@@ -1042,7 +1042,7 @@
     })(),
     blds: [ { x: 24, y: 11, w: 3, h: 2, kind: 'ruin', seed: 11, rise: 2 } ],
     exits: { '43,8': ['patchwork', 1, 11], '43,9': ['patchwork', 1, 12] },
-    enc: { tiles: '.', rate: .1, foes: ['virus', 'scorpion', 'centipede', 'moth', 'spider', 'phantom'], max: 6 },
+    enc: { tiles: '.', rate: .1, foes: ['virus', 'scorpion', 'centipede', 'moth', 'spider', 'phantom', 'dangling', 'infloop'], max: 6 },
     spawn: [41, 8],
     logs: { '39,15': 'P3' },
     caches: { '7,15': { item: 'gb', n: 1 }, '26,4': { item: 'mb', n: 2 } },
@@ -1215,7 +1215,7 @@
     exits: { '19,0': ['cold', 17, 18], '20,0': ['cold', 18, 18] },
     gates: { '39,10': { to: ['ring0', 1, 9], need: function (G) { return !!G.f.rootkey; }, shut: ['A steel door set flush into the shelving. Stencilled: RING 0. AUTHORIZED PROCESSES ONLY.', 'There is no handle. There is a keyhole shaped like a #.'] },
              '39,11': { to: ['ring0', 1, 10], need: function (G) { return !!G.f.rootkey; }, shut: ['The door into Ring 0 is locked. The keyhole is shaped like a #.'] } },
-    enc: { tiles: ',', rate: .13, foes: ['moth', 'phantom', 'worm', 'deadlock', 'centipede', 'phantom'], max: 6 },
+    enc: { tiles: ',', rate: .13, foes: ['moth', 'phantom', 'worm', 'deadlock', 'centipede', 'phantom', 'memwraith', 'ghostcommit'], max: 6 },
     spawn: [19, 2],
     logs: { '2,2': 'T1', '37,20': 'T2' },
     caches: { '16,20': { item: 'gb', n: 1 }, '37,2': { item: 'mb', n: 3 } },
@@ -1245,7 +1245,7 @@
       { x: 34, y: 5, w: 8, h: 6, kind: 'core', door: 4, sign: '0 0 * * *', rise: 3 }
     ],
     exits: { '0,9': ['stacks', 38, 10], '0,10': ['stacks', 38, 11] },
-    enc: { tiles: ',', rate: .14, foes: ['forkbomb', 'deadlock', 'phantom', 'scorpion', 'forkbomb', 'virus'], max: 6 },
+    enc: { tiles: ',', rate: .14, foes: ['forkbomb', 'deadlock', 'phantom', 'scorpion', 'forkbomb', 'virus', 'kpanic', 'racehazard'], max: 6 },
     spawn: [1, 9],
     logs: { '42,18': 'T3', '13,17': 'T4' },
     caches: { '1,18': { item: 'gb', n: 2 }, '42,1': { item: 'mb', n: 3 } },
@@ -1475,7 +1475,7 @@
       { x: 3, y: 18, w: 6, h: 3, kind: 'control', door: 3, doorTop: 1, sign: 'CONTROL' }
     ],
     exits: { '12,0': ['line', 12, 14], '13,0': ['line', 13, 14] },
-    enc: { tiles: ',', rate: .14, foes: ['worm', 'bytebug', 'beetle', 'centipede', 'spider'], max: 5 },
+    enc: { tiles: ',', rate: .14, foes: ['worm', 'bytebug', 'beetle', 'centipede', 'spider', 'nullbyte', 'offbyone'], max: 5 },
     spawn: [12, 1],
     logs: { '34,6': 'W1', '2,20': 'W2' },
     caches: { '2,6': { item: 'kb', n: 2 }, '33,20': { item: 'mb', n: 1 } },
@@ -1571,7 +1571,7 @@
       { x: 27, y: 12, w: 5, h: 4, kind: 'drawers', seed: 2, door: 2, sign: 'M TO Z', rise: 2 }
     ],
     exits: { '8,19': ['bastion', 8, 1], '9,19': ['bastion', 9, 1] },
-    enc: { tiles: ',', rate: .14, foes: ['spider', 'scorpion', 'bytebug', 'virus', 'beetle'], max: 5 },
+    enc: { tiles: ',', rate: .14, foes: ['spider', 'scorpion', 'bytebug', 'virus', 'beetle', 'checksum', 'parity'], max: 5 },
     spawn: [8, 18],
     logs: { '31,1': 'R1', '2,17': 'R2' },
     caches: { '31,17': { item: 'mb', n: 2 }, '1,1': { item: 'kb', n: 3 } },
@@ -1769,7 +1769,7 @@
       { x: 3, y: 3, w: 2, h: 2, kind: 'desk', seed: 3 }, { x: 6, y: 3, w: 2, h: 2, kind: 'desk', seed: 4 }
     ],
     exits: { '0,10': ['upper', 38, 10], '0,11': ['upper', 38, 11] },
-    enc: { tiles: ',', rate: .13, foes: ['moth', 'bytebug', 'spider', 'virus', 'scorpion'], max: 5 },
+    enc: { tiles: ',', rate: .13, foes: ['moth', 'bytebug', 'spider', 'virus', 'scorpion', 'nanshade', 'endian'], max: 5 },
     spawn: [1, 10],
     logs: { '27,3': 'O1', '2,16': 'O2' },
     caches: { '1,1': { item: 'kb', n: 2 }, '28,16': { item: 'mb', n: 2 } },
@@ -1824,6 +1824,111 @@
   DOORS['observatory:desk'] = function (G) { G.say('', ['Star charts, by hand, hundreds of pages. Every star numbered.', G.f.newsky ? 'A new page on top, mostly blank. Heading: TONIGHT. Under it, one entry: Star 1. New.' : 'The last page ends at 11,204. Under it: THAT’S ALL OF THEM. Then, smaller: I wish it wasn’t.']); };
   SPOTS['observatory:8,9'] = function (G) { G.say('Plaque', ['MERIDIAN OBSERVATORY. Open every night.', 'Below, scratched in: THE SKY IS A JPEG. COME LOOK ANYWAY.']); };
   (function () { var j0 = JOURNAL; JOURNAL = function (G) { var f = G.f, j = j0(G); if (G.save.seen.observatory) j.push((f.newsky ? '[x]' : '[ ]') + ' Give Meridian a sky of its own'); return j; }; })();
+
+  /* =====================================================================
+     HIGH-LEVEL DISTRICTS: places the bugs never left. Levels 30 to 50.
+     Nothing stops Vee walking in early. Plenty will stop him walking out.
+     ===================================================================== */
+  function carve(m, rects) { rects.forEach(function (r) { m.rect(r[0], r[1], r[2], r[3], r[4] || '.'); }); }
+  A.deep = {
+    name: 'The Deep Undercroft', sub: 'Below the maintenance tunnels. The bugs down here have been evolving for a year. Level 30+.', theme: 'undercroft', tier: 6, lv: 30, lvMax: 34,
+    map: (function () {
+      var m = grid(40, 24).border(); m.rect(1, 1, 38, 22, '~');
+      carve(m, [[30, 3, 9, 2, '='], [22, 2, 10, 7], [26, 9, 2, 6, '='], [8, 14, 24, 7], [4, 4, 2, 11, '='], [4, 14, 5, 2, '='], [2, 2, 11, 6]]);
+      carve(m, [[23, 4, 8, 4, ','], [10, 15, 20, 5, ','], [7, 3, 5, 4, ',']]);
+      m.pts([[39, 3], [39, 4]], 'E');
+      m.set(30, 8, 'c'); m.set(9, 20, 'c'); m.set(29, 15, 'c'); m.set(3, 7, 'o'); m.set(24, 8, 's');
+      return m.out();
+    })(),
+    blds: [{ x: 15, y: 14, w: 4, h: 3, kind: 'rack', rise: 2 }],
+    exits: { '39,3': ['undercroft', 1, 17], '39,4': ['undercroft', 1, 18] },
+    enc: { tiles: ',.', rate: .16, foes: ['stacksmash', 'logicbomb', 'rootkit', 'trojan', 'badpacket', 'badsector', 'signed', 'zeroday'], max: 5 },
+    spawn: [38, 3], logs: { '3,7': 'H1' },
+    caches: { '30,8': { item: 'gb', n: 2 }, '9,20': { item: 'gb', n: 2 }, '29,15': { item: 'mb', n: 6 } },
+    npcs: []
+  };
+  A.anchor = {
+    name: 'The Anchor', sub: 'Where the tether is bolted to the city. The Board left a guard dog. Level 36+.', theme: 'terminal', tier: 7, lv: 36, lvMax: 42,
+    map: (function () {
+      var m = grid(44, 20).border(); m.rect(1, 1, 42, 18, '~');
+      carve(m, [[1, 8, 14, 2, '='], [14, 3, 16, 14], [29, 9, 10, 2, '='], [36, 4, 7, 12]]);
+      carve(m, [[15, 4, 6, 4, ','], [23, 12, 6, 4, ','], [37, 12, 5, 3, ','], [15, 13, 6, 3, ',']]);
+      m.pts([[0, 8], [0, 9]], 'E');
+      m.set(42, 5, 'c'); m.set(15, 16, 'c'); m.set(28, 4, 'o'); m.set(16, 9, 's');
+      return m.out();
+    })(),
+    blds: [{ x: 19, y: 3, w: 6, h: 5, kind: 'tether', rise: 4 }, { x: 37, y: 4, w: 5, h: 4, kind: 'gate', door: 2, rise: 2 }],
+    exits: { '0,8': ['terminal', 26, 8], '0,9': ['terminal', 26, 9] },
+    enc: { tiles: ',.', rate: .16, foes: ['rogue_gc', 'spaghetti', 'mergeconf', 'syntaxerr', 'badmagic', 'hashcoll', 'bitflip'], max: 5 },
+    spawn: [1, 8], logs: { '28,4': 'H2' },
+    caches: { '42,5': { item: 'gb', n: 3 }, '15,16': { item: 'gb', n: 2 } },
+    npcs: []
+  };
+  A.unalloc = {
+    name: 'The Unallocated', sub: 'Beyond the edge of the Margin: floor nobody has used yet. Something lives in it. Level 44+.', theme: 'margin', tier: 8, lv: 44, lvMax: 50,
+    map: (function () {
+      var m = grid(42, 20).border(); m.rect(1, 1, 40, 18, ',');
+      carve(m, [[1, 9, 40, 2, '='], [20, 1, 2, 18, '='], [6, 3, 5, 3, '~'], [31, 14, 6, 3, '~'], [30, 3, 4, 2, '~'], [8, 14, 4, 3, '~']]);
+      m.pts([[41, 9], [41, 10]], 'E');
+      m.set(2, 2, 'c'); m.set(39, 18, 'c'); m.set(2, 17, 'o'); m.set(24, 8, 's');
+      return m.out();
+    })(),
+    blds: [{ x: 13, y: 5, w: 4, h: 3, kind: 'ruin', door: 1, rise: 1 }],
+    exits: { '41,9': ['margin', 6, 12], '41,10': ['margin', 6, 12] },
+    enc: { tiles: ',', rate: .12, foes: ['underflow', 'deadcode', 'regexhydra', 'kpanic', 'ghostcommit', 'zeroday', 'racehazard'], max: 6 },
+    spawn: [40, 9], logs: { '2,17': 'H3' },
+    caches: { '2,2': { item: 'gb', n: 3 }, '39,18': { item: 'gb', n: 3 } },
+    npcs: []
+  };
+  (function () {
+    function put(area, x, y, c) { var r = A[area].map[y].split(''); r[x] = c; A[area].map[y] = r.join(''); }
+    put('undercroft', 0, 17, 'E'); put('undercroft', 0, 18, 'E'); A.undercroft.exits['0,17'] = ['deep', 38, 3]; A.undercroft.exits['0,18'] = ['deep', 38, 4];
+    put('undercroft', 2, 16, 's');
+    put('terminal', 27, 8, 'E'); put('terminal', 27, 9, 'E'); A.terminal.exits['27,8'] = ['anchor', 1, 8]; A.terminal.exits['27,9'] = ['anchor', 1, 9];
+    put('margin', 5, 12, 'G'); A.margin.gates = A.margin.gates || {};
+    A.margin.gates['5,12'] = { to: ['unalloc', 40, 9], need: function (G) { return !!G.f.survey; }, shut: ['Beyond the last tile: blank. Osei’s chalk line runs along the edge.', 'The disk under the Margin has not been surveyed. There is nothing to step onto yet.'] };
+  })();
+  ATLAS.deep = [3, 3]; ATLAS.anchor = [5, 1]; ATLAS.unalloc = [5, 4];
+  LINKS.push(['undercroft', 'deep'], ['terminal', 'anchor']);   // the Unallocated has no road to it on any map
+  SPOTS['undercroft:2,16'] = function (G) { G.say('Warning sign', ['DEEP MAINTENANCE. AUTHORIZED PROCESSES ONLY.', 'BUGS BEYOND THIS POINT: LEVEL 30 AND UP.', 'Under it, scratched in: they will not stop to explain themselves.']); };
+  SPOTS['deep:24,8'] = function (G) { G.say('Scrawl', ['Spray paint on the wall: THE ROOTKIT IS IN THE WEST ROOM. DON’T.']); };
+  SPOTS['anchor:16,9'] = function (G) { G.say('Stencil', ['ANCHOR POINT. TETHER LOAD: 41,000 TONNES. TETHER STATUS: ' + (G.f.ending === 'cut' ? 'SEVERED.' : 'NOMINAL.'), 'Below, a newer stencil: GUARDED BY ORDER OF THE BOARD.']); };
+  SPOTS['unalloc:24,8'] = function (G) { G.say('Chalk mark', ['Osei’s handwriting: 2,048 BLOCKS. UNALLOCATED. SOMETHING ALREADY LIVES HERE.', 'An arrow points at the ruin to the west.']); };
+  LOGS.H1 = ['MAINTENANCE TICKET #1, never closed.', 'Deep tunnels show bug populations with no known source. Bugs here are mutating faster than patches ship.', 'Recommendation: seal the stairs. Status: stairs not sealed. Nobody had the budget for a door.'];
+  LOGS.H2 = ['BOARD ORDER, ANCHOR SECURITY.', 'A watchdog process is to guard the tether anchor at all times. It is to treat any legacy resident as an intrusion.', 'It is not to be shut down. It is not to be reasoned with. It does not need to be fed.'];
+  LOGS.H3 = ['Unsigned. Typed on nothing, saved to nowhere.', 'Every system has an address that points at nothing. Most programs know never to follow it.', 'Down here, it followed itself.'];
+  BOSSES.rootprime = { kind: 'rootkit', name: 'Rootkit Prime', lv: 36, hp: 1500, atk: [78, 95], xp: 9000, move: 'hides inside Vee’s own process list', sc: 5 };
+  BOSSES.watchdog = { kind: 'kpanic', name: 'The Board’s Watchdog', lv: 45, hp: 2000, atk: [108, 130], xp: 16000, move: 'treats Vee as an intrusion', sc: 5 };
+  BOSSES.nullptr = { kind: 'regexhydra', name: 'Null Pointer', lv: 52, hp: 2700, atk: [138, 165], xp: 30000, move: 'dereferences Vee', sc: 5 };
+  GEAR.remover = { slot: 'weapon', name: 'Rootkit Remover', atk: 52, crit: .1, desc: 'From Rootkit Prime. It finds what is hiding and drags it into the light.' };
+  GEAR.collar = { slot: 'armor', name: 'Watchdog’s Collar', def: 60, hp: 120, desc: 'The Board’s guard, unchained. It answers to Vee now. Mostly.' };
+  GEAR.lastcmd = { slot: 'weapon', name: 'The Last Command', atk: 70, crit: .15, desc: 'Whatever was typed last before the Lift. Nobody knows what it was. It still runs.' };
+  GEAR.nullterm = { slot: 'acc', name: 'Null Terminator', hp: 150, crit: .12, xp: .15, desc: 'The zero at the end of every string. Without it nothing knows where to stop. With it, Vee does.' };
+  GEAR_FROM.push(['remover', function (G) { return !!G.f.rootprime; }, '(Rootkit Remover: weapon.)'], ['collar', function (G) { return !!G.f.watchdog; }, '(Watchdog’s Collar: armor.)'],
+    ['lastcmd', function (G) { return !!G.f.nullptr; }, '(The Last Command: weapon.)'], ['nullterm', function (G) { return !!G.f.nullptr; }, '(Null Terminator: accessory.)']);
+  STEPS.deep = function (G, x, y) {
+    var f = G.f; if (f.rootprime || x > 12 || y > 7) return;
+    G.say('', ['The west room is too quiet. Then the quiet lists its processes, and one of them is wearing Vee’s name.'], null, function () {
+      G.boss('rootprime', function () { f.rootprime = 1; G.say('', ['Rootkit Prime unhooks from the system, one hidden process at a time, and is gone. The tunnels breathe out.']); });
+    });
+  };
+  DOORS['anchor:gate'] = function (G) {
+    var f = G.f;
+    if (f.watchdog) return G.say('Anchor gate', ['The gate stands open. Beyond it, the tether rises into a dark that is not sky. Nothing guards it now but height.']);
+    G.say('The Board’s Watchdog', ['INTRUSION.', 'LEGACY RESIDENT DETECTED AT ANCHOR POINT. RESPONSE: TOTAL.'], [{ label: 'Stand your ground', fn: function () {
+      G.boss('watchdog', function () { f.watchdog = 1; G.say('', ['The Watchdog sits down. It has never been told it could. It looks at Vee for a long moment, then lies down across the gate, off duty for the first time.']); });
+    } }, { label: 'Back away', fn: null }]);
+  };
+  DOORS['unalloc:ruin'] = function (G) {
+    var f = G.f;
+    if (f.nullptr) return G.say('The ruin', ['Nothing at the address now. Just floor, waiting to be used for something.']);
+    G.say('', ['A doorway in a ruin that was never built. Inside it, an address that points at nothing, and something living at it.'], [{ label: 'Follow the pointer', fn: function () {
+      G.boss('nullptr', function () { f.nullptr = 1; G.xp(5000); G.say('', ['Segmentation fault. Then nothing, and the nothing stays.', 'Vee has gone further into the city than anyone, and come back. The Unallocated is just floor now. Somebody will build on it.', 'Vee gains 5000 XP.']); });
+    } }, { label: 'Not today', fn: null }]);
+  };
+  (function () { var j0 = JOURNAL; JOURNAL = function (G) { var f = G.f, j = j0(G), sn = G.save.seen;
+    if (sn.deep) j.push((f.rootprime ? '[x]' : '[ ]') + ' Rootkit Prime (level 36)'); if (sn.anchor) j.push((f.watchdog ? '[x]' : '[ ]') + ' The Board’s Watchdog (level 45)'); if (sn.unalloc) j.push((f.nullptr ? '[x]' : '[ ]') + ' Null Pointer (level 52)');
+    return j; }; })();
 
   /* a room of Vee's own: the nameplate fills in once Vee is a resident */
   DOORS['plaza:home'] = function (G) {

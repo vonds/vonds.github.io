@@ -76,7 +76,9 @@
     idle: { bl: 'down', fl: 'down', ba: 'mid',  fa: 'mid',  bob: 0,  sway: 0 },
     idle2:{ bl: 'down', fl: 'down', ba: 'mid',  fa: 'mid',  bob: -1, sway: 0 },
     point:{ bl: 'down', fl: 'down', ba: 'mid',  fa: 'point', bob: 0, sway: 0 },
-    point2:{ bl: 'down', fl: 'down', ba: 'mid', fa: 'point', bob: -1, sway: 1 }
+    point2:{ bl: 'down', fl: 'down', ba: 'mid', fa: 'point', bob: -1, sway: 1 },
+    kneel: { bl: 'tuck', fl: 'tuck', ba: 'mid',  fa: 'fwd',  bob: 3,  sway: 3 },   // hurt badly: down on one knee, head low
+    kneel2:{ bl: 'tuck', fl: 'tuck', ba: 'mid',  fa: 'fwd',  bob: 2,  sway: 3 }
   };
   // extra pieces used by the ten versions
   var HOODDOWN = { r: 11, rows: ['....OOOOO...........', '...OOOOOOO..........', '...OoOOOOO..........', '....OOOO............'] };
@@ -118,7 +120,7 @@
       var c = p[key].charAt(0) === '#' ? hex(p[key]) : p[key].match(/\d+/g).map(Number);
       var y = (c[0] * .3 + c[1] * .59 + c[2] * .11) / 255, ex = 'SKR'.indexOf(key) >= 0 ? .78 : .55; p[key] = rgb([1, 1, 1].map(function () { return 30 + 225 * Math.pow(y, ex); }));
     }
-    p.H = 'rgb(66,66,70)'; p.h = 'rgb(112,112,118)'; p.E = 'rgb(8,8,8)'; p.W = 'rgb(242,242,242)';
+    p.H = 'rgb(40,40,44)'; p.h = 'rgb(76,76,82)'; p.E = 'rgb(8,8,8)'; p.W = 'rgb(242,242,242)';
     p.D = 'rgb(14,14,16)'; p.d = 'rgb(54,54,58)';   // headphones: black band and cups
     if (L.sil) { for (var s2 in p) p[s2] = 'rgb(10,10,11)'; p.W = 'rgb(242,242,242)'; }
     return p;
@@ -160,7 +162,11 @@
     else if (L.sil) { px(13, 7, 'W'); px(13, 8, 'W'); }
     else { px(13, 7, 'E'); px(13, 8, 'E'); }
     if (!L.hoodUp && !L.pony && !L.noLocs) strand(FRONT, 1);
-    leg(pose.fl, 'P', 'B'); arm(pose.fa, 11, 'A');
+    leg(pose.fl, 'P', 'B');
+    // a dark seam behind the near arm, so it reads as an arm against the shirt and the locs
+    (function () { var cells = ARM[pose.fa], own = {}; cells.forEach(function (cl) { own[cl[0] + ',' + cl[1]] = own[cl[0] + ',' + (cl[1] + 1)] = 1; });
+      cells.forEach(function (cl, i) { if (i === cells.length - 1) return; [0, 1].forEach(function (d) { if (!own[(cl[0] - 1) + ',' + (cl[1] + d)]) px(11 + cl[0] - 1, 15 + cl[1] + d, 'd'); }); }); })();
+    arm(pose.fa, 11, 'A');
     if (L.noOutline) return (cache[key] = cvs);
     var id = c.getImageData(0, 0, 22, 26), d = id.data, out = [];
     for (var y = 0; y < 26; y++) for (var x = 0; x < 22; x++) {
@@ -525,6 +531,75 @@
     deadlock: [["..DDDD..DDDD..", ".DLLLLDDLLLLD.", "DLL..DLLD..LLD", "DLW..DLLD..WLD", "DLL..DLLD..LLD", ".DLLLLDDLLLLD.", "..DDDD..DDDD.."], ["..DDDD..DDDD..", ".DLLLLDDLLLLD.", "DLL..DMMD..LLD", "DLW..DMMD..WLD", "DLL..DMMD..LLD", ".DLLLLDDLLLLD.", "..DDDD..DDDD.."]],
     phantom: [["....DDDDD....", "...DLLLLLD...", "..DLWLLLWLD..", "..DLLLLLLLD..", "..DLLMMMLLD..", "..DLLLLLLLD..", "..DLLLLLLLD..", "..DLDLDLDLD..", "..D.D.D.D.D.."], ["....DDDDD....", "...DLLLLLD...", "..DLWLLLWLD..", "..DLLLLLLLD..", "..DLLLMLLLD..", "..DLLLLLLLD..", "..DLLLLLLLD..", "..LDLDLDLDL..", "...D.D.D.D..."]]
   };
+  /* ---------- corrupted code: thirty more bugs, drawn from seeds instead of by hand ---------- */
+  (function () {
+    var DIG = { 0: ['LLL', 'L.L', 'L.L', 'L.L', 'LLL'], 1: ['.L.', 'LL.', '.L.', '.L.', 'LLL'] };
+    function rng(seed) { var x = seed * 9301 + 49297; return function () { x = (x * 9301 + 49297) % 233280; return x / 233280; }; }
+    function blank(w, h) { var g = []; for (var y = 0; y < h; y++) { g.push([]); for (var x = 0; x < w; x++) g[y].push('.'); } return g; }
+    function outline(g) {   // dark edge around every lit pixel, the way the hand-drawn bugs have one
+      var h = g.length, w = g[0].length, o = g.map(function (r) { return r.slice(); });
+      for (var y = 0; y < h; y++) for (var x = 0; x < w; x++) if (g[y][x] === '.') {
+        for (var dy = -1; dy <= 1; dy++) for (var dx = -1; dx <= 1; dx++) { var c = (g[y + dy] || [])[x + dx]; if (c && c !== '.' && c !== 'D') { o[y][x] = 'D'; dy = 2; break; } }
+      }
+      return o.map(function (r) { return r.join(''); });
+    }
+    function pad(g, w, h) { var G = blank(w, h), ox = Math.floor((w - g[0].length) / 2), oy = Math.floor((h - g.length) / 2); g.forEach(function (r, y) { r.forEach(function (c, x) { G[y + oy][x + ox] = c; }); }); return G; }
+    function digits(g, x0, y0, bits, light) { bits.split('').forEach(function (b, i) { DIG[b].forEach(function (row, y) { row.split('').forEach(function (c, x) { if (c !== '.') g[y0 + y][x0 + i * 4 + x] = light ? 'L' : 'M'; }); }); }); }
+    var STY = {
+      binary: function (r, f) {   // a block of ones and zeros with eyes and little legs, flipping bits as it breathes
+        var cols = 3 + Math.floor(r() * 2), rows = 2, w = cols * 4 + 1, h = rows * 6 + 5, g = blank(w, h), bits = [];
+        for (var k = 0; k < rows; k++) { var b = ''; for (var c = 0; c < cols; c++) b += r() < .5 ? '0' : '1'; bits.push(b); }
+        for (var x = 1; x < w - 1; x++) g[2][x] = 'M';
+        bits.forEach(function (b, k) { if (f) b = b.split('').map(function (d, i) { return (i + k) % 3 === 1 ? (d === '0' ? '1' : '0') : d; }).join(''); digits(g, 1, 3 + k * 6, b, k === 0); });
+        [2, w - 4].forEach(function (ex) { g[0][ex] = 'L'; g[0][ex + 1] = 'L'; g[1][ex] = 'L'; g[1][ex + 1] = f ? 'L' : 'W'; g[1][ex + (f ? 0 : 1)] = 'W'; });
+        for (var lx = 2; lx < w - 1; lx += 3) g[h - 1][lx + ((lx / 3 + (f ? 1 : 0)) % 2)] = 'L';
+        return g;
+      },
+      invader: function (r, f) {   // a symmetric glitch-creature built from a seed
+        var hw = 6, h = 8, g = blank(hw * 2 - 1, h + 1), dens = .45 + r() * .2;
+        for (var y = 0; y < h; y++) for (var x = 0; x < hw; x++) { var on = r() < (y > 1 && y < h - 2 ? dens + .2 : dens) || (x === hw - 1 && y < h - 1); if (on) { var c = r() < .2 ? 'M' : 'L'; g[y][x] = c; g[y][hw * 2 - 2 - x] = c; } }
+        g[3][hw - 3] = 'W'; g[3][hw + 1] = 'W'; g[2][hw - 3] = 'L'; g[2][hw + 1] = 'L';
+        for (var x2 = 0; x2 < hw * 2 - 1; x2 += 2) g[h][x2 + (f ? 1 : 0)] = (x2 / 2) % 2 ? 'M' : '.';
+        return g;
+      },
+      glitch: function (r, f) {   // a torn rectangle of code, its scanlines sliding past each other
+        var w = 12, h = 9, g = blank(w + 4, h);
+        for (var y = 0; y < h; y++) { var off = Math.floor((r() - .5) * 4 + (f ? (y % 2 ? 1 : -1) : 0)); for (var x = 0; x < w; x++) { var xx = x + 2 + off; if (xx >= 0 && xx < w + 4) g[y][xx] = (x + y) % 5 === 0 ? 'M' : 'L'; } }
+        g[3][5] = 'W'; g[3][10] = 'W';
+        return g;
+      },
+      bracket: function (r, f) {   // two curly braces holding something that should never have compiled
+        var g = blank(15, 11), sh = f ? 1 : 0;
+        ['..LL', '.L..', '.L..', 'L...', '.L..', '.L..', '..LL'].forEach(function (row, y) { row.split('').forEach(function (c, x) { if (c !== '.') { g[y + 2][x + sh] = 'L'; g[y + 2][14 - x - sh] = 'L'; } }); });
+        var b = (r() < .5 ? '1' : '0') + (r() < .5 ? '1' : '0'); digits(g, 4, 3, b, true);
+        g[1][6] = 'W'; g[1][8] = 'W';
+        return g;
+      },
+      serpent: function (r, f) {   // a long string of bits, slithering
+        var n = 6 + Math.floor(r() * 3), g = blank(n * 4 + 2, 11);
+        for (var i = 0; i < n; i++) { var yy = 3 + Math.round(Math.sin(i * .9 + (f ? 1.4 : 0)) * 2); DIG[r() < .5 ? 0 : 1].forEach(function (row, y) { row.split('').forEach(function (c, x) { if (c !== '.') g[yy + y][1 + i * 4 + x] = i === 0 ? 'M' : 'L'; }); }); }
+        var hy = 3 + Math.round(Math.sin(f ? 1.4 : 0) * 2); g[hy + 1][2] = 'W';
+        return g;
+      },
+      hydra: function (r, f) {   // one body, three greedy heads on long necks, each wanting the same match
+        var g = blank(19, 13);
+        for (var y = 8; y < 12; y++) for (var x = 4; x < 15; x++) g[y][x] = (x + y) % 4 ? 'L' : 'M';
+        for (var lx = 5; lx < 15; lx += 3) g[12][lx + (f ? 1 : 0)] = 'L';
+        [1, 8, 15].forEach(function (hx, k) {
+          var up = (k + (f ? 1 : 0)) % 2, nx = hx + 1;
+          for (var y = 3 + up; y < 8; y++) g[y][Math.min(Math.max(nx + (y < 6 ? (k - 1) : 0), 1), 17)] = 'M';
+          var top = 1 + up; for (var dy = 0; dy < 3; dy++) for (var dx = 0; dx < 3; dx++) g[top + dy][hx + dx] = 'L';
+          g[top + 1][hx + 1] = 'W'; g[top + 2][hx] = '.'; g[top + 2][hx + 2] = '.';
+        });
+        return g;
+      }
+    };
+    window.__corrupt = function (style, seed) {
+      var frames = [0, 1].map(function (f) { var r = rng(seed), g = STY[style](r, f); return g; });
+      var w = Math.max(frames[0][0].length, frames[1][0].length) + 2, h = Math.max(frames[0].length, frames[1].length) + 2;
+      return frames.map(function (g) { return outline(pad(g, w, h)); });
+    };
+  })();
   var BUGSPEC = {"beetle": {"vx": 46, "fps": 9, "hover": 0}, "spider": {"vx": 72, "fps": 12, "hover": 0}, "worm": {"vx": 24, "fps": 3, "hover": 0}, "moth": {"vx": 30, "fps": 11, "hover": 3.2}, "virus": {"vx": 0, "fps": 4, "hover": 3}, "bytebug": {"vx": 40, "fps": 9, "hover": 0}, "centipede": {"vx": 30, "fps": 10, "hover": 0}, "scorpion": {"vx": 18, "fps": 5, "hover": 0}};
   var EXITS = ['exit 1', 'exit 2', 'exit 126', 'exit 127', 'exit 130', 'exit 137', 'exit 139', 'exit 255'];
   var BUGS = ["beetle", "spider", "worm", "moth", "virus", "bytebug", "centipede", "scorpion"];
@@ -788,7 +863,8 @@
   /* ---------- hints that the game exists ---------- */
   window.VondsGame = { open: function () { open(0); } };
   window.VondsSprite = { frame: frame, look: function () { return LOOK; }, pose: POSE, arm: ARM,
-    bug: function (kind, f) { var fr = OBMAP[kind]; return obCanvas(fr[f % fr.length], false, 'rpg' + kind + (f % fr.length)); }, bugs: Object.keys(OBMAP) };
+    bug: function (kind, f) { var fr = OBMAP[kind]; return obCanvas(fr[f % fr.length], false, 'rpg' + kind + (f % fr.length)); }, bugs: Object.keys(OBMAP),
+    addBug: function (kind, frames) { OBMAP[kind] = frames; } };
   try {
     console.log('%cV O N D S', 'font:600 20px Dosis,system-ui,sans-serif;letter-spacing:.6em;color:#2e2e30');
     console.log('%cHey, fellow builder. The logo up in the hero is a game.\nOr open the terminal with ` and type play.', 'font:13px ui-monospace,Menlo,Consolas,monospace;color:#5a5a60;line-height:1.6');
@@ -919,8 +995,12 @@
       function strand(x0, y, last) { [0, 1].forEach(function (k) { var c = last || k ? 'H' : 'h'; x.fillStyle = pal[c]; x.fillRect(x0 + k, y, 1, 1); x.fillRect(21 - x0 - k, y, 1, 1); }); }
       for (var y = 10; y <= 20; y++) { x.clearRect(0, y, 6, 1); x.clearRect(16, y, 6, 1); }
       for (var y1 = 10; y1 <= 20; y1++) strand(WAVE[y1 % 6], y1, y1 === 20);            // outer strand
-      for (var y2 = 10; y2 <= 19; y2++) strand(3 + WAVE[(y2 + 2) % 6], y2, y2 === 19);        // inner strand, beside the arm
-      for (var y3 = 15; y3 <= 17; y3++) { x.fillStyle = pal.S; x.fillRect(6, y3, 1, 1); x.fillRect(15, y3, 1, 1); }   // arms stay in front
+      for (var y2 = 10; y2 <= 19; y2++) strand(2 + WAVE[(y2 + 2) % 6], y2, y2 === 19);        // inner strand, behind the arm
+      // arms stay in front of the locs: a dark edge, a light sleeve, a bright hand, so they never read as hair
+      function both(cx0, y, c) { x.fillStyle = c; x.fillRect(cx0, y, 1, 1); x.fillRect(21 - cx0, y, 1, 1); }
+      var tp = x.getImageData(8, 15, 1, 1).data, shirt = 'rgb(' + tp[0] + ',' + tp[1] + ',' + tp[2] + ')', shirtD = 'rgb(' + (tp[0] * .82 | 0) + ',' + (tp[1] * .82 | 0) + ',' + (tp[2] * .82 | 0) + ')', shirtC = 'rgb(' + (tp[0] * .6 | 0) + ',' + (tp[1] * .6 | 0) + ',' + (tp[2] * .6 | 0) + ')';   // sleeves match the shirt
+      for (var y3 = 14; y3 <= 18; y3++) { both(4, y3, 'rgb(14,14,16)'); both(5, y3, y3 <= 16 ? shirtD : pal.R); both(6, y3, y3 <= 16 ? shirt : pal.R); if (y3 <= 16) both(7, y3, shirtC); }
+      both(5, 19, 'rgb(14,14,16)'); both(6, 19, 'rgb(14,14,16)'); both(5, 13, 'rgb(14,14,16)');
     }
     function locsBack(x, pal) {
       for (var y0 = 12; y0 <= 21; y0++) { x.clearRect(3, y0, 16, 1); if (y0 <= 20) { x.fillStyle = 'rgba(236,236,236,.38)'; x.fillRect(3, y0, 16, 1); } }   // the light seams between strands

@@ -11,7 +11,7 @@
   var pick = document.createElement('div'); pick.className = 'gpick'; pick.setAttribute('role', 'dialog'); pick.setAttribute('aria-modal', 'true'); pick.setAttribute('aria-label', 'Choose a game');
   pick.innerHTML = '<div class="ff4w gpick-w"><b class="ff4n">Vee</b><p class="gpick-q">Pick a game.</p>' +
     '<button type="button" class="gpick-o" data-g="runner"><canvas width="44" height="52"></canvas><span><strong>' + NAMES.runner + '</strong><em>An endless runner. Clear the bugs. Stay online.</em></span></button>' +
-    '<button type="button" class="gpick-o" data-g="rpg"><canvas width="44" height="52"></canvas><span><strong>' + NAMES.rpg + '</strong><em>An RPG about Meridian, the city the rich left behind.</em></span></button>' +
+    '<button type="button" class="gpick-o" data-g="rpg"><canvas width="44" height="52"></canvas><span><strong>' + NAMES.rpg + '</strong><em>An RPG about Meridian, the city that was marked obsolete.</em></span></button>' +
     '<button type="button" class="gpick-c">Not now</button></div>';
   document.body.appendChild(pick);
   var opts = [].slice.call(pick.querySelectorAll('.gpick-o')), sel = 0, pickFrom = null;
@@ -131,6 +131,7 @@
     }
     var areaEl = document.createElement('div'); areaEl.className = 'rpg-area'; areaEl.innerHTML = '<b></b><span></span>';
     root.querySelector('.rpg-scr').appendChild(areaEl);
+    var koEl = document.createElement('div'); koEl.className = 'rpg-ko'; koEl.innerHTML = '<b>PROCESS TERMINATED</b><i></i><pre></pre><span></span><em></em>'; root.querySelector('.rpg-scr').appendChild(koEl);
     var areaT = 0;
     function showArea() { areaEl.querySelector('b').textContent = AREA.name; var lvT = AREA.enc ? ' Bugs: level ' + AREA.lv + (AREA.lvMax && AREA.lvMax !== AREA.lv ? '–' + AREA.lvMax : '') + '.' + (AREA.lv > save.lvl + 2 ? ' DANGER.' : '') : ''; areaEl.querySelector('span').textContent = AREA.sub + lvT; areaEl.classList.add('on'); clearTimeout(areaT); areaT = setTimeout(function () { areaEl.classList.remove('on'); }, 3200); }
     var titled = false;   // the title card, once per visit
@@ -237,10 +238,10 @@
       try {
         AC = AC || new (window.AudioContext || window.webkitAudioContext)(); if (AC.state === 'suspended') AC.resume();
         var seq = { move: [[660, .03]], ok: [[880, .05], [1320, .07]], err: [[180, .09], [140, .1]], hit: [[300, .04], [180, .05]], crit: [[520, .04], [780, .04], [1040, .06]],
-          hurt: [[120, .08]], enc: [[220, .06], [330, .06], [440, .06], [660, .1]], lvl: [[523, .08], [659, .08], [784, .08], [1047, .16]], win: [[392, .07], [523, .07], [659, .12]] }[kind];
+          hurt: [[120, .08]], ko: [[392, .16], [330, .16], [262, .18], [196, .4]], enc: [[220, .06], [330, .06], [440, .06], [660, .1]], lvl: [[523, .08], [659, .08], [784, .08], [1047, .16]], win: [[392, .07], [523, .07], [659, .12]] }[kind];
         if (!seq) return;
         var t = AC.currentTime;
-        seq.forEach(function (n) { var o = AC.createOscillator(), g = AC.createGain(); o.type = kind === 'hurt' || kind === 'err' ? 'sawtooth' : 'square'; o.frequency.value = n[0];
+        seq.forEach(function (n) { var o = AC.createOscillator(), g = AC.createGain(); o.type = kind === 'hurt' || kind === 'err' ? 'sawtooth' : kind === 'ko' ? 'triangle' : 'square'; o.frequency.value = n[0];
           g.gain.setValueAtTime(.0001, t); g.gain.exponentialRampToValueAtTime(.035, t + .008); g.gain.exponentialRampToValueAtTime(.0001, t + n[1]); o.connect(g); g.connect(AC.destination); o.start(t); o.stop(t + n[1] + .02); t += n[1] * .9; });
       } catch (e) {}
     }
@@ -599,6 +600,43 @@
       forkbomb: { name: 'Fork bomb', hp: 38, atk: [9, 14], move: 'forks itself until there is no room left', xp: 19 },
       heisenbug: { name: 'Heisenbug', hp: 30, atk: [2, 4], move: 'changes the moment Vee looks at it', xp: 90, rare: 1 }
     };
+    /* thirty more: corrupted code and binary sequences. [name, style, seed, hp, atk lo, atk hi, xp, trait, move, lore] */
+    var CORRUPT = [
+      ['nullbyte', 'Null Byte', 'binary', 11, 36, 6, 10, 16, '', 'terminates Vee’s sentence early', 'A zero where a letter should be. Everything after it is ignored.'],
+      ['offbyone', 'Off-by-One', 'invader', 12, 40, 7, 11, 17, 'twice', 'reaches one step too far', 'Always one past the end. Habit: hits twice, lightly.'],
+      ['bitflip', 'Bitflip Swarm', 'binary', 13, 30, 8, 12, 17, 'split', 'flips a bit in Vee’s memory', 'A cloud of flipped bits. Habit: splits like a fork bomb.'],
+      ['parity', 'Parity Ghost', 'glitch', 14, 46, 7, 11, 18, 'pierce', 'disagrees with Vee’s checksum', 'An odd number where there should be an even one. Habit: ignores armor sometimes.'],
+      ['endian', 'Endian Twin', 'bracket', 15, 50, 7, 12, 18, 'twice', 'reads Vee backwards', 'Same bytes, wrong order. Habit: hits twice.'],
+      ['signed', 'Signed Wraith', 'invader', 16, 54, 8, 13, 19, 'drain', 'wraps Vee’s numbers negative', 'Counted up past the maximum and came out the other side. Habit: drains HP to heal itself.'],
+      ['checksum', 'Checksum Hound', 'invader', 17, 58, 9, 13, 19, '', 'hunts for the byte that doesn’t add up', 'It knows something changed. It will not stop sniffing until it finds what.'],
+      ['nanshade', 'NaN Shade', 'glitch', 18, 44, 9, 14, 20, 'pierce', 'divides Vee by zero', 'Not a number. Not anything. Habit: passes through armor.'],
+      ['infloop', 'Infinite Loop', 'serpent', 19, 70, 7, 11, 21, 'wind', 'goes around again', 'while (true). It has been going around since the Lift. Habit: winds up a double hit.'],
+      ['racehazard', 'Race Hazard', 'invader', 20, 52, 10, 15, 21, 'twice', 'gets there first', 'Two writers, one value, no lock. Habit: always acts twice.'],
+      ['stacksmash', 'Stack Smasher', 'glitch', 21, 64, 11, 16, 22, 'wind', 'overwrites Vee’s return address', 'Writes past the buffer into the part that says where to go next. Habit: winds up.'],
+      ['dangling', 'Dangling Pointer', 'serpent', 22, 48, 11, 16, 22, 'pierce', 'points at memory that is gone', 'Still points at the address of something that was freed a year ago. Habit: pierces armor.'],
+      ['memwraith', 'Memory Wraith', 'glitch', 23, 60, 10, 15, 23, 'drain', 'eats a page of Vee’s memory', 'A leak with a shape. Habit: drains HP.'],
+      ['zeroday', 'Zero Day', 'bracket', 24, 66, 12, 18, 24, 'pierce', 'uses a hole nobody has patched', 'Unknown until it is used. Habit: pierces armor.'],
+      ['logicbomb', 'Logic Bomb', 'binary', 25, 44, 15, 22, 24, 'wind', 'waits for the date it was set to', 'Dormant until a condition is met. Habit: holds still, then hits very hard.'],
+      ['rootkit', 'Rootkit', 'invader', 26, 72, 12, 18, 25, 'drain', 'hides inside Vee’s own process list', 'You cannot see it in ps. That is the point. Habit: drains HP.'],
+      ['trojan', 'Trojan Header', 'bracket', 27, 68, 13, 19, 25, 'pierce', 'arrives looking like a gift', 'A file that says it is a picture. It is not a picture. Habit: pierces armor.'],
+      ['badpacket', 'Malformed Packet', 'glitch', 28, 40, 12, 17, 24, 'split', 'fragments against Vee', 'Too long, too short, both at once. Habit: splits apart.'],
+      ['badsector', 'Corrupt Sector', 'binary', 29, 80, 11, 16, 25, '', 'reads back as static', 'A patch of disk that returns different data every time you ask.'],
+      ['rogue_gc', 'Rogue Collector', 'invader', 30, 74, 13, 19, 26, 'drain', 'decides Vee is garbage', 'A garbage collector that lost its list of what is still in use. Habit: drains HP.'],
+      ['spaghetti', 'Spaghetti Code', 'serpent', 31, 82, 12, 18, 26, 'twice', 'tangles Vee in goto statements', 'Nobody knows what it does. It does it anyway. Habit: hits twice.'],
+      ['mergeconf', 'Merge Conflict', 'bracket', 32, 70, 14, 20, 27, 'split', 'refuses to choose between two Vees', '<<<<<<< HEAD. Habit: splits in two.'],
+      ['syntaxerr', 'Syntax Error', 'bracket', 33, 56, 14, 21, 26, 'pierce', 'expects a semicolon', 'Unexpected token. Habit: pierces armor.'],
+      ['kpanic', 'Kernel Panic', 'glitch', 34, 90, 15, 22, 29, 'wind', 'halts everything at once', 'The last resort of a kernel that has run out of ideas. Habit: winds up a huge hit.'],
+      ['badmagic', 'Bad Magic Number', 'binary', 35, 76, 15, 21, 28, '', 'insists Vee is the wrong format', '0xDEADBEEF where 0xCAFEBABE should be.'],
+      ['hashcoll', 'Hash Collision', 'binary', 36, 78, 14, 21, 28, 'twice', 'claims to be Vee', 'Different data, same fingerprint. Habit: hits twice.'],
+      ['underflow', 'Integer Underflow', 'serpent', 37, 72, 16, 23, 29, 'drain', 'subtracts past zero', 'Zero minus one is four billion. Habit: drains HP.'],
+      ['ghostcommit', 'Ghost Commit', 'invader', 38, 64, 16, 24, 29, 'pierce', 'rewrites Vee’s history', 'A change nobody remembers making, signed by nobody. Habit: pierces armor.'],
+      ['deadcode', 'Dead Code', 'glitch', 39, 96, 14, 20, 30, 'wind', 'runs anyway', 'Unreachable, they said. It was reached. Habit: winds up.'],
+      ['regexhydra', 'Regex Hydra', 'hydra', 40, 88, 16, 24, 31, 'split', 'matches more than it should', '.*.*.* and growing. Habit: splits, and every head is greedy.']
+    ];
+    CORRUPT.forEach(function (c) {
+      FOES[c[0]] = { name: c[1], hp: c[4], atk: [c[5], c[6]], move: c[9], xp: c[7], trait: c[8], corrupt: 1 };
+      if (window.VondsSprite && window.__corrupt) window.VondsSprite.addBug(c[0], window.__corrupt(c[2], c[3]));
+    });
     var LORE = {
       beetle: 'Chews through cables. Mostly harmless alone. Never alone.', spider: 'Spins race conditions: two threads, one resource, nobody waiting their turn.',
       worm: 'Copies itself across the network. Every copy thinks it is the original.', moth: 'Named for the first bug ever found: a real moth, stuck in a relay, taped into a logbook.',
@@ -608,6 +646,7 @@
       forkbomb: 'One process that becomes two, then four, then every slot in the table. Habit: splits in half. Finish it fast.',
       heisenbug: 'Rare. A bug that changes or vanishes the moment someone tries to study it. Habit: slips away if you take too long. Worth a great deal if you catch it.'
     };
+    CORRUPT.forEach(function (c) { LORE[c[0]] = c[10]; });
     // Vee's attacks are real commands. The curriculum lives in meridian-commands.js: five to start, then three to five more each level.
     var HITS = { multi2: 'Two clean hits.', multi3: 'Three quick hits.', focus: 'Bearings found. Your next hit lands double.', heal: 'Vee recovers HP.',
       expose: 'Weak spot marked. Extra damage for 3 turns.', guard: 'Incoming damage is halved this round.', stun: 'Locked. It cannot act for 2 turns.',
@@ -676,7 +715,7 @@
         var lv = (AREA.lv || 1) + Math.floor(Math.random() * ((AREA.lvMax || AREA.lv || 1) - (AREA.lv || 1) + 1)), elite = !bossDef && lv >= 4 && Math.random() < .12;
         if (elite) lv += 2;
         var hm = 1 + .22 * (lv - 1), am = 1 + .16 * (lv - 1), xm = 1 + .3 * (lv - 1);
-        var f = bossDef ? { name: bossDef.name, hp: Math.round(bossDef.hp * 1.4), atk: [Math.round(bossDef.atk[0] * 1.15), Math.round(bossDef.atk[1] * 1.15)], move: bossDef.move, xp: bossDef.xp, boss: true } :
+        var f = bossDef ? { name: bossDef.name, lv: bossDef.lv || AREA.lvMax || AREA.lv || save.lvl, hp: Math.round(bossDef.hp * 1.4), atk: [Math.round(bossDef.atk[0] * 1.15), Math.round(bossDef.atk[1] * 1.15)], move: bossDef.move, xp: bossDef.xp, boss: true } :
           { name: (elite ? 'Hardened ' : '') + base0.name, lv: lv, hp: Math.round(base0.hp * hm * (elite ? 1.4 : 1)), atk: [Math.round(base0.atk[0] * am), Math.round(base0.atk[1] * am)], move: base0.move, xp: Math.round(base0.xp * xm * (elite ? 1.6 : 1)) };
         if (bossDef) sc = bossDef.sc;
         var c = pickCmd(), info = cmdInfo(c);
@@ -693,7 +732,7 @@
     function foeName(f) { return f.foe.name.toLowerCase(); }
     function groupName() {
       var counts = {}; living().forEach(function (f) { counts[f.foe.name] = (counts[f.foe.name] || 0) + 1; });
-      return Object.keys(counts).map(function (k) { return counts[k] > 1 ? counts[k] + ' ' + k.toLowerCase() + 's' : 'a ' + k.toLowerCase(); }).join(', ');
+      return Object.keys(counts).map(function (k) { return counts[k] > 1 ? counts[k] + ' ' + k.toLowerCase() + 's' : 'a ' + k.toLowerCase(); }).reduce(function (s, n, i, a) { return !i ? n : s + (i === a.length - 1 ? (a.length > 2 ? ', and ' : ' and ') : ', ') + n; }, '');
     }
     function hudOn() {
       hud.classList.add('on');
@@ -707,6 +746,7 @@
         e.addEventListener('mouseenter', function () { if (B && B.phase === 'target') { B.target = i; showScenario(); hudOn(); } });
         foesBox.appendChild(e);
       });
+      partyBox.classList.toggle('crit', save.hp > 0 && save.hp <= maxHp() * .25);
       partyBox.innerHTML = '<div class="rpg-row"><span>Vee</span><span>HP <b>' + save.hp + '</b>/' + maxHp() + '</span></div><div class="rpg-row sm"><span>Lv ' + save.lvl + '</span><span>' + save.known.length + (save.known.length === 1 ? ' command' : ' commands') + '</span><span>' + (B.focus ? 'Weak spot marked' : save.streak > 1 ? 'Streak x' + save.streak : '') + '</span></div>';
     }
     function menu(which) {
@@ -736,7 +776,15 @@
     var logT = 0;
     function log(text, quiet) { titleEl.textContent = text; titleEl.classList.add('on'); clearTimeout(logT); if (!quiet) logT = setTimeout(function () { titleEl.classList.remove('on'); }, 2600); }
     function pop(text, x, y) { B.pops.push({ text: text, x: x, y: y, t: 0 }); }
+    /* level decides how a fight goes: a bug above Vee's level has thicker armor (less damage taken), hits harder, dodges, and acts faster */
+    function gapOf(f) { return ((f && f.foe && f.foe.lv) || save.lvl) - save.lvl; }
+    function armorOf(f) { var g = gapOf(f); return g > 0 ? Math.max(.2, 1 / (1 + g * .14)) : Math.min(1.5, 1 - g * .04); }
+    function forceOf(f) { var g = gapOf(f); return g > 0 ? 1 + g * .14 : Math.max(.45, 1 + g * .05); }
+    function speedOf(f) { var g = gapOf(f); return g >= 3 ? Math.min(.6, (g - 2) * .12) : 0; }
     function hitFoe(f, n) {
+      var g = gapOf(f);
+      if (g > 0 && Math.random() < Math.min(.35, g * .035)) { pop('MISS', f.fx + 16, f.fy - 34); f.shake = .4; return ' It dodges.'; }
+      n *= armorOf(f);
       var crit = B.focus || Math.random() < critC(); if (crit) { n *= 2; B.focus = false; } sfx(crit ? 'crit' : 'hit');
       if (f.exposed) n *= 1.5;
       n = Math.max(1, Math.round(n)); f.hp = Math.max(0, f.hp - n); f.shake = 1; f.flash = 1; pop(String(n), f.fx + 16, f.fy - 34);
@@ -841,18 +889,21 @@
         if (f.exposed > 0) f.exposed--;
         if (f.stun > 0) { f.stun--; log('The ' + foeName(f) + ' strains against its permissions.'); return setTimeout(next, 650); }
         // some bugs have habits: a fork bomb copies itself, a deadlock winds up, a phantom read goes straight through armor
-        if (f.kind === 'forkbomb' && !B.boss && living().length < 6 && Math.random() < .3) {
+        var tr = (FOES[f.kind] || {}).trait || { forkbomb: 'split', deadlock: 'wind', phantom: 'pierce' }[f.kind] || '';
+        if (tr === 'split' && !B.boss && living().length < 6 && Math.random() < .3) {
           var kid = { kind: f.kind, foe: f.foe, hp: Math.max(1, Math.round(f.hp / 2)), max: f.max, soft: f.soft, stun: 0, shake: 0, flash: 1, dead: false, fade: 0, sc: 2, fx: 0, fy: 0, ph: Math.random() * 6, exposed: 0, slow: 0, leak: 0 };
           setProblem(kid); Object.defineProperty(kid, 'scenario', { get: function () { return this.sc0.t; } }); B.foes.push(kid); f.hp = Math.max(1, Math.round(f.hp / 2));
           var lv2 = living(), lay = LAYOUT[lv2.length]; lv2.forEach(function (o, k) { o.fx = lay[k][0]; o.fy = lay[k][1]; if (lv2.length > 2) o.sc = 2; });
-          log('The fork bomb forks. Now there are two of it, each with half the HP.'); hudOn(); return setTimeout(next, 800);
+          log('The ' + foeName(f) + ' splits. Now there are two of it, each with half the HP.'); hudOn(); return setTimeout(next, 800);
         }
         if (f.kind === 'heisenbug' && Math.random() < .45) { f.dead = true; f.fade = 1; f.foe = Object.assign({}, f.foe, { xp: 0 }); f.gone = 1; log('You look straight at the Heisenbug, and it is no longer there. It was never quite there.'); hudOn(); if (!living().length) return setTimeout(win, 600); return setTimeout(next, 650); }
-        if (f.kind === 'deadlock' && !f.wound && Math.random() < .35) { f.wound = 1; log('The deadlock holds perfectly still, waiting. Its next hit will land twice as hard. Stun it, or brace.'); return setTimeout(next, 800); }
-        var pierce = f.kind === 'phantom' && Math.random() < .35, wind = f.wound ? 2 : 1; f.wound = 0;
-        var n = Math.max(1, Math.round(rnd(f.foe.atk[0], f.foe.atk[1]) * wind * f.soft * (f.slow > 0 ? .5 : 1) * (B.guard ? .5 : 1) * CFG.diff[save.cfg.diff] * 100 / (100 + (pierce ? 0 : def()) * 2.5))); if (f.slow > 0) f.slow--;
-        save.hp = Math.max(0, save.hp - n); pop(String(n), 258, 70); B.hurt = 1; f.lunge = 1; sfx('hurt');
-        log('The ' + foeName(f) + ' ' + (pierce ? 'reads straight through Vee’s armor' : f.foe.move) + '. ' + n + ' damage.' + (wind > 1 ? ' It had been waiting for that.' : '')); hudOn();
+        if (tr === 'wind' && !f.wound && Math.random() < .35) { f.wound = 1; log('The ' + foeName(f) + ' holds perfectly still, waiting. Its next hit will land twice as hard. Stun it, or brace.'); return setTimeout(next, 800); }
+        var pierce = tr === 'pierce' && Math.random() < .35, wind = f.wound ? 2 : 1; f.wound = 0;
+        var roll = function () { return Math.max(1, Math.round(rnd(f.foe.atk[0], f.foe.atk[1]) * wind * forceOf(f) * f.soft * (f.slow > 0 ? .5 : 1) * (B.guard ? .5 : 1) * CFG.diff[save.cfg.diff] * 100 / (100 + (pierce ? 0 : def()) * 2.5))); };
+        var n = roll(), again = save.hp - n > 0 && (tr === 'twice' || Math.random() < speedOf(f)) ? Math.round(roll() * (tr === 'twice' ? .6 : 1)) : 0; if (f.slow > 0) f.slow--;
+        var drank = tr === 'drain' ? Math.min(f.max - f.hp, Math.round((n + again) * .5)) : 0; if (drank > 0) f.hp += drank;
+        save.hp = Math.max(0, save.hp - n - again); pop(String(n + again), 258, 70); B.hurt = 1; f.lunge = 1; sfx('hurt');
+        log('The ' + foeName(f) + ' ' + (pierce ? 'reads straight through Vee’s armor' : f.foe.move) + '. ' + n + ' damage.' + (wind > 1 ? ' It had been waiting for that.' : '') + (again ? (tr === 'twice' ? ' And again: ' + again + '.' : ' It is faster than Vee: it strikes again for ' + again + '.') : '') + (drank > 0 ? ' It drinks ' + drank + ' HP from the wound.' : '')); hudOn();
         if (save.hp <= 0 && gs('revive') && !B.revived) { B.revived = 1; save.hp = Math.round(maxHp() * .3); setTimeout(function () { log('The Watchdog Timer catches Vee mid-fall and restarts him. ' + save.hp + ' HP.'); }, 500); }
         if (save.hp <= 0) return setTimeout(lose, 900);
         setTimeout(next, 800);
@@ -884,8 +935,41 @@
       setTimeout(function () { say('', lines, null, function () { endBattle(); if (onWin) setTimeout(onWin, 80); }); }, 600);
     }
     function lose() {
-      B.phase = 'done'; cmdBox.classList.remove('on'); hud.classList.remove('on'); closePrompt();
-      say('', ['Vee’s process halts.', 'Somewhere, a watchdog notices. He restarts at the last place that mended him.'], null, function () { save.hp = maxHp(); store(); endBattle(); me.dir = 'down'; load(save.rest[0], save.rest[1], save.rest[2]); showArea(); });
+      B.phase = 'done'; B.ko = .001; cmdBox.classList.remove('on'); closePrompt(); sfx('ko');
+      log('Vee goes down.'); hudOn();
+      var lost = Math.floor(save.xp * .25), where = (WD.areas[save.rest[0]] || {}).name || 'the Plaza', who = groupName(), here = AREA.name;
+      save.xp -= lost; save.streak = 0; save.deaths = (save.deaths || 0) + 1;
+      // how he died decides the signal: bugs that drain eat his memory (the OOM killer, signal 9); everything else corrupts it (segfault, signal 11)
+      var oom = living().some(function (f) { return (FOES[f.kind] || {}).trait === 'drain'; }), restarts = save.deaths;
+      var sig = oom ? 'SIGKILL · signal 9 · out of memory' : 'SIGSEGV · signal 11 · segmentation fault';
+      var con = oom ? ['[' + (4000 + restarts * 37) + '.551] Out of memory: Killed process 1 (vee)', '[' + (4000 + restarts * 37) + '.552] oom_reaper: reaped process 1 (vee)'] :
+        ['[' + (4000 + restarts * 37) + '.551] vee[1]: segfault at 0x0000dead error 6', '[' + (4000 + restarts * 37) + '.552] Segmentation fault (core dumped)'];
+      var why = oom ? 'The bugs in ' + here + ' (' + who + ') drained Vee’s memory until there was none left, and the kernel killed his process to save the rest of the system.' :
+        'The bugs in ' + here + ' (' + who + ') corrupted Vee’s memory. He tried to read an address that wasn’t his anymore, and the kernel stopped him.';
+      function typeOut(el, lines, done) { el.textContent = ''; var i = 0; (function next() { if (i >= lines.length) return done && done(); el.textContent += (i ? '\n' : '') + lines[i++]; sfx('hit'); setTimeout(next, 420); })(); }
+      setTimeout(function () {   // the fall finishes, then the lights go
+        koEl.querySelector('b').textContent = 'PROCESS TERMINATED'; koEl.querySelector('i').textContent = sig;
+        koEl.querySelector('span').textContent = why;
+        koEl.querySelector('em').textContent = lost ? 'Core dumped. ' + lost + ' XP of progress lost.' : 'Core dumped. Nothing lost but pride.';
+        koEl.classList.remove('up'); koEl.classList.add('on');
+        typeOut(koEl.querySelector('pre'), con);
+        setTimeout(function () {   // systemd notices and brings him back
+          koEl.querySelector('b').textContent = 'RESTARTING'; koEl.querySelector('i').textContent = 'vee.service · Restart=always';
+          koEl.querySelector('span').textContent = ''; koEl.querySelector('em').textContent = '';
+          typeOut(koEl.querySelector('pre'), ['vee.service: Main process exited, code=' + (oom ? 'killed, status=9/KILL' : 'dumped, status=11/SEGV'),
+            'vee.service: Scheduled restart job, restart counter is at ' + restarts + '.', 'Stopped vee.service.', 'Started vee.service - Meridian maintenance process.', 'Restoring from last checkpoint: ' + where + '.'], function () {
+            setTimeout(function () {
+              hud.classList.remove('on'); titleEl.classList.remove('on');
+              save.hp = maxHp(); store(); endBattle(); me.dir = 'down'; load(save.rest[0], save.rest[1], save.rest[2]);
+              setTimeout(function () {
+                koEl.classList.remove('on');
+                say('', ['PROCESS RESTARTED at ' + where + '.', 'The city’s watchdog saw Vee’s process die and started it again from his last checkpoint, the last place that mended him. Memory clean. HP fully restored.',
+                  'Tip: the map shows each district’s bug levels. Bugs above Vee’s level hit harder, act faster and shrug off damage.'], null, showArea);
+              }, 900);
+            }, 900);
+          });
+        }, 4400);
+      }, 1300);
     }
     function endBattle() { store(); B = null; closePrompt(); hud.classList.remove('on'); cmdBox.classList.remove('on'); titleEl.classList.remove('on'); mode = 'map'; me.safe = 5; }
 
@@ -922,7 +1006,7 @@
       cx.fillStyle = '#050507'; cx.fillRect(0, 0, W, H);
       cx.strokeStyle = 'rgba(200,200,214,.08)'; for (var gx = 0; gx < W; gx += 16) { cx.beginPath(); cx.moveTo(gx + .5, 0); cx.lineTo(gx + .5, H); cx.stroke(); } for (var gy = 0; gy < H; gy += 16) { cx.beginPath(); cx.moveTo(0, gy + .5); cx.lineTo(W, gy + .5); cx.stroke(); }
       function pos(id) { var p = WD.atlas[id]; return [30 + p[0] * 50, 16 + p[1] * 34]; }
-      var LABEL = { plaza: 'PLAZA', commons: 'COMMONS', halflight: 'HALFLIGHT', gardens: 'GLASSHOUSE', undercroft: 'UNDERCROFT', bastion: 'BASTION', quiet: 'THE QUIET', terminal: 'TERMINAL', line: 'THE LINE', patchwork: 'PATCHWORK', upper: 'UPPER RING', cold: 'COLD STORE', concourse: 'CONCOURSE', infirmary: 'INFIRMARY', margin: 'MARGIN', stacks: 'STACKS', ring0: 'RING 0', waterworks: 'WATERWORKS', registry: 'REGISTRY', observatory: 'OBSERVATORY' };
+      var LABEL = { plaza: 'PLAZA', commons: 'COMMONS', halflight: 'HALFLIGHT', gardens: 'GLASSHOUSE', undercroft: 'UNDERCROFT', bastion: 'BASTION', quiet: 'THE QUIET', terminal: 'TERMINAL', line: 'THE LINE', patchwork: 'PATCHWORK', upper: 'UPPER RING', cold: 'COLD STORE', concourse: 'CONCOURSE', infirmary: 'INFIRMARY', margin: 'MARGIN', stacks: 'STACKS', ring0: 'RING 0', waterworks: 'WATERWORKS', registry: 'REGISTRY', observatory: 'OBSERVATORY', deep: 'THE DEEP', anchor: 'ANCHOR', unalloc: 'UNALLOCATED' };
       cx.strokeStyle = 'rgba(220,220,236,.45)'; WD.links.forEach(function (l) { var a = pos(l[0]), b = pos(l[1]); cx.beginPath(); cx.moveTo(a[0] + .5, a[1] + .5); cx.lineTo(b[0] + .5, b[1] + .5); cx.stroke(); });
       var anchorAt = { plaza: ['spire', 'archive'], commons: ['ledger'], gardens: ['wagon'], undercroft: ['exit0'], bastion: ['keep'] };
       Object.keys(WD.atlas).forEach(function (id) {
@@ -963,7 +1047,15 @@
         }
       });
       // Vee, on the right, facing left: smaller than the bugs
-      var pose = B.cast > .3 ? 'point' : (B.hurt > .3 ? 'fall' : 'idle'), vx = 250 - B.vx * 34 + (B.hurt ? Math.sin(B.t * 70) * 2 : 0), vfy = 104;
+      var crit = save.hp > 0 && save.hp <= maxHp() * .25;
+      var pose = B.cast > .3 ? 'point' : (B.hurt > .3 ? 'fall' : crit ? (Math.floor(B.t * 2.2) % 2 ? 'kneel2' : 'kneel') : 'idle'), vx = 250 - B.vx * 34 + (B.hurt ? Math.sin(B.t * 70) * 2 : 0), vfy = 104;
+      if (B.ko) {   // knocked out: he topples and lies still
+        B.ko = Math.min(1, B.ko + dt * 2.4);
+        var spr = SP.frame('fall'), ang = -Math.PI / 2 * B.ko;
+        cx.fillStyle = 'rgba(0,0,0,.45)'; cx.beginPath(); cx.ellipse(vx + 12, vfy, 13, 2.5, 0, 0, 7); cx.fill();
+        cx.save(); cx.translate(vx + 22, vfy); cx.rotate(-ang); cx.scale(-1, 1); cx.drawImage(spr, 0, -spr.height); cx.restore();
+        drawScan(); return;
+      }
       cx.fillStyle = 'rgba(0,0,0,.4)'; cx.beginPath(); cx.ellipse(vx + 11, vfy, 9, 2.5, 0, 0, 7); cx.fill();
       if (B.focus) { cx.strokeStyle = 'rgba(240,240,244,' + (.35 + Math.sin(B.t * 5) * .15) + ')'; cx.lineWidth = 1; cx.strokeRect(vx - 3.5, vfy - 27.5, 29, 30); }
       drawSprite(SP.frame(pose), vx, vfy - 25, true, 1);
@@ -979,7 +1071,7 @@
       cx.fillStyle = '#0a0a0c';
       for (var i = 0; i < n; i++) { var h = H / n; cx.fillRect(i % 2 ? W - W * p : 0, i * h, W * p, h + 1); }
       if (swirlT > .5 && swirlT < .62) { cx.fillStyle = 'rgba(255,255,255,.7)'; cx.fillRect(0, 0, W, H); }
-      if (swirlT > .8) { mode = 'battle'; B.phase = 'intro'; hudOn(); log('The rot takes shape: ' + groupName() + '.'); setTimeout(myTurn, 1100); }
+      if (swirlT > .8) { mode = 'battle'; B.phase = 'intro'; hudOn(); var topGap = Math.max.apply(null, B.foes.map(gapOf)); log('The rot takes shape: ' + groupName() + '.' + (topGap >= 8 ? ' These bugs are far above Vee’s level. Running is not cowardice.' : topGap >= 4 ? ' These bugs outclass Vee. Careful.' : '')); setTimeout(myTurn, 1100); }
     }
     function update(dt) {
       if (fade) {
@@ -1070,7 +1162,7 @@
       if (!AREA) { load(save.area, save.x, save.y); syncGear(true); }
       if (mode === 'map' && !talking) showTitle(function () {
         if (talking || mode !== 'map') return;
-        if (!save.met) { save.met = true; store(); say('', ['Meridian was built to be the most beautiful place on the network. Two million people lived here. For a while, it was everything it promised.', 'Then the people who owned it built a newer world, Upstream, and took the Lift. Forty thousand seats. They stopped paying for this one.', 'Nothing broken was ever fixed again. The rot set in. District by district, the city has been going dark. Last night, the signal at its heart went quiet.', 'You are Vee, a maintenance process nobody remembered to shut down. You know five commands so far: whoami, pwd, ls, cd and cat. Every level teaches you more.', coarse ? 'Use the pad to move, A to talk and B for the menu.' : 'Arrow keys to move. Enter or Z to talk. X for the menu.'], null, showArea); }
+        if (!save.met) { save.met = true; store(); say('', ['Meridian was built to be the most beautiful place on the network. Two million people lived here. For a while, it was everything it promised.', 'Then the people who owned it built a newer world, Upstream, and sorted every account into two lists. Current: forty thousand of them, who took the Lift. Obsolete: everyone else.', 'The Current stopped paying for this world. Nothing obsolete is maintained.', 'The rot set in. District by district, the city has been going dark. Last night, the signal at its heart went quiet.', 'You are Vee, a maintenance process nobody remembered to shut down. You know five commands so far: whoami, pwd, ls, cd and cat. Every level teaches you more.', coarse ? 'Use the pad to move, A to talk and B for the menu.' : 'Arrow keys to move. Enter or Z to talk. X for the menu.'], null, showArea); }
         else say('', ['Vee reconnects. ' + AREA.name + '. Level ' + save.lvl + '.'], null, showArea);
       });
       root.querySelector('.rpg-x').focus({ preventScroll: true });
