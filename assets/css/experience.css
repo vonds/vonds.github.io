@@ -56,7 +56,7 @@ html.xp-go .hero .scroll-cue{opacity:1;transform:none;transition:opacity 1.2s ea
 html.xp-cur,html.xp-cur *{cursor:none!important}
 html.xp-cur input,html.xp-cur textarea,html.xp-cur select,html.xp-cur [contenteditable]{cursor:text!important}
 html.xp-cur select{cursor:pointer!important}
-.xp-cursor{position:fixed;left:0;top:0;z-index:2600;pointer-events:none;mix-blend-mode:difference;opacity:0;transition:opacity .25s ease}
+.xp-cursor{position:fixed;left:0;top:0;z-index:2147483647;pointer-events:none;mix-blend-mode:difference;opacity:0;transition:opacity .25s ease}
 .xp-cursor.on{opacity:1}
 .xp-cursor .m{position:absolute;left:-9px;top:-8px;width:18px;height:17px;transition:transform .35s cubic-bezier(.16,1,.3,1)}
 .xp-cursor .m svg{display:block;width:100%;height:100%}
