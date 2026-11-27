@@ -341,7 +341,8 @@
         if (!ids.length) h = '<h4>Party</h4><p class="mn-dim">Vee walks alone for now. People who’ve had their own troubles settled may offer to come along: talk to them again.</p>';
         else if (MN.slot && COMP[MN.slot]) {
           var cid = MN.slot, C = COMP[cid], on = act.indexOf(cid) >= 0;
-          h = '<h4>' + C.name + ' <span class="mn-dim">' + C.role + ' · Level ' + cLv() + '</span></h4><p class="mn-dim">' + C.bio + '</p>' +
+          var bw = (save.party.bond || {})[cid] || 0;
+          h = '<h4>' + C.name + ' <span class="mn-dim">' + C.role + ' · Level ' + cLv() + '</span></h4><p class="mn-dim">' + C.bio + '</p><p class="mn-dim">Fights won together: ' + bw + (bw < 20 ? ' · they open up at ' + (bw < 8 ? 8 : 20) : '') + '</p>' +
             '<div class="mn-row"><span>HP</span>' + bar(cHp(cid), cMax(cid)) + '<em>' + cHp(cid) + ' / ' + cMax(cid) + '</em></div>' +
             '<div class="mn-stats"><div><span>ATK</span><b>' + cAtk(cid) + '</b></div><div><span>DEF</span><b>' + cDef(cid) + '</b></div></div>' +
             C.skills.map(function (k) { return '<p><b>' + k.name + '</b> <span class="mn-dim">every ' + k.cd + ' turns</span><br><small>' + k.tip + '</small></p>'; }).join('');
@@ -1154,6 +1155,15 @@
       if (B.boss) B.foes.forEach(setProblem);   // a boss brings a new problem every turn
       menu('main'); hudOn();
     }
+    function bondCheck() {   // shared wins slowly turn companions into friends: at 8 and 20, one of them opens up
+      if (!B || !B.allies.length) return null;
+      save.party.bond = save.party.bond || {}; var out = null;
+      B.allies.forEach(function (a) {
+        var c = COMP[a.id], n = save.party.bond[a.id] = (save.party.bond[a.id] || 0) + 1;
+        if (c.bond && (n === 8 || n === 20) && !out) out = [c.name, c.bond[n === 8 ? 0 : 1]];
+      });
+      return out;
+    }
     function win() {
       if (save.hp <= 0) save.hp = Math.max(1, Math.round(maxHp() * .1));
       var xp = 0, n = B.foes.length, boss = B.boss, onWin = B.onWin; B.foes.forEach(function (f) { xp += f.foe.xp + (boss ? 0 : rnd(0, 3)); }); xp = Math.round(xp * (1 + gs('xp')) * (save.cfg.diff === 2 ? 1.2 : 1) * (save.cfg.hints ? 1 : 1.15));   // typing from memory earns a little more
@@ -1190,7 +1200,8 @@
       lines = lines.concat(gainXp(xp));
       if (save.lvl < 100) lines.push('Next level in ' + (xpNeed() - save.xp) + ' XP.');
       store(); B.phase = 'done'; cmdBox.classList.remove('on'); hud.classList.remove('on'); closePrompt();
-      setTimeout(function () { say('', lines, null, function () { endBattle(); if (onWin) setTimeout(onWin, 80); }); }, 600);
+      var bondNow = bondCheck();
+      setTimeout(function () { say('', lines, null, function () { endBattle(); if (onWin) setTimeout(onWin, 80); else if (bondNow) setTimeout(function () { say(bondNow[0], bondNow[1]); }, 120); }); }, 600);
     }
     function lose() {
       B.phase = 'done'; B.ko = .001; cmdBox.classList.remove('on'); closePrompt(); sfx('ko');

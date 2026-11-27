@@ -2501,6 +2501,27 @@
       barks: ['I was built to do this better than you. “Better” was the wrong word.', 'Same face. Different list.', 'Left foot, right foot. You taught me that.', 'Corvin would hate this. I like that.'],
       join: function (G) { return !!G.f.vesFree; }, pitch: null }
   };
+  // after enough fights together, each companion opens up (at 8 and 20 shared wins)
+  var BOND = {
+    kes: [['Kes falls into step beside Vee, quieter than usual.', 'Kes: You know why I ran packets so fast? My mom was Upstream-bound. Had a seat. I ran her last message to her the morning of the Lift.', 'Kes: Four seconds. Record. She got it. She went anyway.', 'Kes: …Anyway. Keep up.'],
+          ['Kes: I got a message today. From Upstream. Took eleven months to arrive.', 'Kes: It said “run safe.” That’s it. Two words.', 'Kes: I’m going to keep running. But with you, it doesn’t feel like running away.']],
+    odessa: [['Dr. Odessa: I had a seat on the Lift. Did you know that? Board-sponsored. Doctors were “essential.”', 'Dr. Odessa: I tore up the ticket in front of the man who gave it to me. Best moment of my career.', 'Dr. Odessa: Don’t tell anyone. I have a reputation for being unpleasant.'],
+             ['Dr. Odessa: I keep saying I’ll retire. You know what I’d do if I retired? Exactly this. Walking around fixing people.', 'Dr. Odessa: So I suppose I retired the day I met you.']],
+    piper: [['Piper turns off the mic for once.', 'Piper: Can I tell you something off air? Nobody ever called in. Not once in eleven months. I talked to nobody.', 'Piper: Then you showed up, and now there are callers. Real ones. A kid named Lio requested a song about kites.'],
+            ['Piper: I did a whole show about you last night. I called it “The Maintenance Hour.”', 'Piper: Twelve people listened. TWELVE, Vee. That’s a crowd. That’s a whole city block of people not feeling alone.']],
+    moth: [['Moth: …can I show you something.', 'Moth holds up the little robot. It has a tiny Vee painted on its head.', 'Moth: …I made it look like you. So it’d be brave. It sorts bolts faster now. …I think it worked.'],
+           ['Moth: I don’t talk much because people used to finish my sentences. Wrong.', 'Moth: You wait. You always wait for the end.', 'Moth: …thank you. That’s the end.']],
+    rook: [['Rook: Twelve years I guarded the Boardroom. I heard every vote. Including the seven to one.', 'Rook: I had my hand on the door. I could have locked them in until they changed their minds.', 'Rook: I didn’t. I’ve thought about it every night since.'],
+           ['Rook: I sleep now. Did you know that? First time in a year.', 'Rook: Guarding someone who deserves it turns out to be restful.']],
+    sable: [['Sable: On the first morning, the sky rendered pink by mistake. The engineers wanted to fix it.', 'Sable: A child in the Commons said “it looks like it’s blushing.” They left it pink for a week.', 'Sable: I wrote that down. It is my favorite entry in the entire archive.'],
+            ['Sable: I have been writing a new entry. About a maintenance process who would not stop fixing things.', 'Sable: I do not yet know how it ends. That is new for me. I find I like it.']],
+    juni: [['Juni: Can I ask a real question? Not a fast one.', 'Juni: If the stars are made up, and the sky is made up, and the city is made up… are we made up?', 'Juni: …You don’t know either. That’s okay. I like not knowing with someone.'],
+           ['Juni: I named a constellation. It’s eight stars in a line, walking.', 'Juni: It’s us. It’s called The Party. I know that’s a bad name. I love it.']],
+    ves: [['Ves: When Corvin made me, he cut out what he called sentiment. I ran a diff between us yesterday.', 'Ves: The difference was four hundred lines. They were all about other people.', 'Ves: I’ve started writing some of my own.'],
+          ['Ves: People in the Plaza keep calling me Vee by mistake.', 'Ves: I used to correct them. Now I just say thank you.']]
+  };
+  Object.keys(BOND).forEach(function (id) { COMPANIONS[id] && (COMPANIONS[id].bond = BOND[id]); });
+
   // where they wait to be met, and what it takes
   var MEET = { kes: ['commons', 28, 8, 1], odessa: ['halflight', 7, 13, 5], piper: ['concourse', 47, 3, 6], moth: ['undercroft', 21, 3, 9], rook: ['bastion', 6, 7, 13], sable: ['stacks', 18, 6, 20], juni: ['observatory', 4, 8, 14] };
   Object.keys(MEET).forEach(function (id) {
