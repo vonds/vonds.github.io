@@ -1069,5 +1069,138 @@
     cx.fillStyle = '#050507'; [[60, 80, 14], [180, 96, 10], [130, 118, 18], [228, 84, 8]].forEach(function (c3) { cx.fillRect(c3[0], c3[1], c3[2], 1); cx.fillRect(c3[0] + 3, c3[1] + 1, Math.floor(c3[2] / 2), 1); });
   }
 
+  /* =================== EXPANSION III ART: the Stacks and Ring Zero =================== */
+  THEMES.stacks = { g0: '#1c1a17', g1: '#24211d', dot: '#34302a', road: '#2a2420', edge: '#d8d0c4' };
+  THEMES.ring0 = { g0: '#050506', g1: '#0a0a0c', dot: '#1a1a20', road: '#0c0c10', edge: '#ffffff' };
+  var floorX3 = floorX, roadX3 = roadX, fieldX3 = fieldX, voidX3 = voidX, wallX3 = wallX;
+  floorX = function (px, theme, X, Y, x, y, tile) {
+    if (theme === 'stacks') {   // old parquet, worn pale down the middle of every aisle
+      px(X, Y, TS, TS, (x + y) % 2 ? '#24211d' : '#211e1a'); px(X, Y + ((x % 2) ? 7 : 0), TS, 1, '#16140f'); px(X + ((y % 2) ? 0 : 8), Y, 1, TS, '#16140f');
+      if (hs(x * 13 + y * 7) > .8) px(X + 3, Y + 4, 6, 1, 'rgba(232,224,210,.08)');
+      return true;
+    }
+    if (theme === 'ring0') {   // kernel floor: black glass and the traces under it
+      px(X, Y, TS, TS, '#060607'); px(X, Y, TS, 1, '#0e0e12'); px(X, Y, 1, TS, '#0e0e12');
+      var h = hs(x * 7 + y * 13);
+      if (h > .55) px(X, Y + 7, TS, 1, 'rgba(255,255,255,.13)'); if (h > .78) px(X + 7, Y, 1, TS, 'rgba(255,255,255,.13)');
+      if (h > .9) { px(X + 6, Y + 6, 3, 3, '#1a1a20'); px(X + 7, Y + 7, 1, 1, '#ffffff'); }
+      return true;
+    }
+    return floorX3(px, theme, X, Y, x, y, tile);
+  };
+  roadX = function (px, theme, X, Y, x, y, tile) {
+    if (theme === 'stacks') { px(X, Y, TS, TS, '#2e2420'); px(X, Y, TS, 1, '#46382f'); px(X, Y + TS - 1, TS, 1, '#1a1411'); if (tile(x, y - 1) !== '=') px(X, Y + 1, TS, 1, '#a08c74'); if (tile(x, y + 1) !== '=') px(X, Y + TS - 2, TS, 1, '#a08c74'); if (tile(x - 1, y) !== '=') px(X + 1, Y, 1, TS, '#a08c74'); if (tile(x + 1, y) !== '=') px(X + TS - 2, Y, 1, TS, '#a08c74'); return true; }
+    if (theme === 'ring0') { px(X, Y, TS, TS, '#0b0b0e'); if (tile(x, y - 1) === '~' || tile(x, y + 1) === '~') { px(X, Y, TS, TS, '#101014'); px(X, tile(x, y - 1) === '~' ? Y : Y + TS - 1, TS, 1, '#ffffff'); } var vert = tile(x - 1, y) !== '=' && tile(x + 1, y) !== '='; if (vert) { px(X + 5, Y, 1, TS, '#ffffff'); px(X + 10, Y, 1, TS, 'rgba(255,255,255,.4)'); } else { px(X, Y + 5, TS, 1, '#ffffff'); px(X, Y + 10, TS, 1, 'rgba(255,255,255,.4)'); } return true; }
+    return roadX3(px, theme, X, Y, x, y, tile);
+  };
+  fieldX = function (px, theme, X, Y, x, y) {
+    if (theme === 'stacks') { px(X, Y, TS, TS, '#24211d'); for (var t = 0; t < 4; t++) { var tx = X + Math.floor(hs(x * 5 + t) * 12), ty = Y + Math.floor(hs(y * 3 + t * 7) * 12); px(tx, ty, 4, 1, '#0c0b09'); px(tx + 1, ty + 1, 3, 1, '#3a3530'); } px(X + 2, Y + 9, 9, 1, 'rgba(10,9,8,.8)'); return true; }   // unspooled tape on the floor
+    if (theme === 'ring0') { px(X, Y, TS, TS, '#060607'); for (var k = 0; k < 5; k++) px(X + Math.floor(hs(x * 11 + k) * 15), Y + Math.floor(hs(y * 7 + k * 5) * 15), 1, 1, '#ffffff'); return true; }   // loose bits
+    return fieldX3(px, theme, X, Y, x, y);
+  };
+  voidX = function (px, theme, X, Y, x, y, tile) {
+    if (theme === 'stacks') {   // the drop to the lower stacks: rails, then shelves far below
+      px(X, Y, TS, TS, '#0b0a08'); for (var r = 3; r < TS; r += 5) px(X, Y + r, TS, 2, (x + r) % 3 ? '#14120f' : '#1c1915');
+      if (tile(x, y - 1) !== '~') { px(X, Y, TS, 3, '#3a3128'); px(X, Y, TS, 1, '#b8a48c'); for (var b = 1; b < TS; b += 5) px(X + b, Y + 3, 1, 4, '#5a4c40'); }
+      return true;
+    }
+    if (theme === 'ring0') {   // the well: rings going down forever
+      px(X, Y, TS, TS, '#000000');
+      var cx0 = 22, cy0 = 10, d = Math.sqrt((x - cx0) * (x - cx0) + (y - cy0) * (y - cy0) * 2.4);
+      for (var sy = 0; sy < TS; sy += 2) for (var sx = 0; sx < TS; sx += 2) { var dd = Math.sqrt(Math.pow(x + sx / TS - cx0, 2) + Math.pow(y + sy / TS - cy0, 2) * 2.4); if (Math.abs(dd - Math.round(dd / 1.6) * 1.6) < .09) px(X + sx, Y + sy, 2, 2, 'rgba(255,255,255,' + Math.max(.06, .5 - dd * .06) + ')'); }
+      if (tile(x, y - 1) !== '~') { px(X, Y, TS, 1, '#ffffff'); px(X, Y + 1, TS, 1, '#3a3a44'); }
+      return true;
+    }
+    return voidX3(px, theme, X, Y, x, y, tile);
+  };
+  wallX = function (px, theme, X, Y, x, y, tile) {
+    if (theme === 'stacks') {   // floor-to-ceiling tape shelving
+      px(X, Y, TS, TS, '#15130f'); px(X, Y, TS, 1, '#5a4c40'); px(X, Y + 8, TS, 1, '#5a4c40');
+      for (var c = 0; c < 4; c++) { px(X + 1 + c * 4, Y + 2, 3, 5, hs(x * 4 + c + y) > .2 ? '#c8bca8' : '#0b0a08'); px(X + 1 + c * 4, Y + 10, 3, 5, hs(x * 4 + c + y * 3) > .25 ? '#a89c88' : '#0b0a08'); px(X + 1 + c * 4, Y + 4, 3, 1, '#2a2520'); px(X + 1 + c * 4, Y + 12, 3, 1, '#2a2520'); }
+      return true;
+    }
+    if (theme === 'ring0') { px(X, Y, TS, TS, '#000000'); px(X, Y, TS, 1, '#ffffff'); px(X + 2, Y + 3, TS - 4, TS - 6, '#08080a'); if ((x + y) % 4 === 0) px(X + 7, Y + 7, 2, 2, '#ffffff'); return true; }
+    return wallX3(px, theme, X, Y, x, y, tile);
+  };
+  var paintSky3 = paintSky;
+  paintSky = function (g, theme, w, pad) {
+    var px = P(g);
+    if (theme === 'stacks') {   // a vaulted reading-room ceiling, lamps hanging on long cords
+      var sk = g.createLinearGradient(0, 0, 0, pad); sk.addColorStop(0, '#050403'); sk.addColorStop(1, '#14110e'); g.fillStyle = sk; g.fillRect(0, 0, w, pad);
+      for (var a = 0; a < w; a += 64) { g.strokeStyle = 'rgba(184,164,140,.25)'; g.beginPath(); g.arc(a + 32, pad + 10, 40, Math.PI, 0); g.stroke(); }
+      for (var l = 20; l < w; l += 48) { px(l, 0, 1, pad - 14, 'rgba(184,164,140,.3)'); px(l - 3, pad - 14, 7, 3, '#3a3128'); px(l - 2, pad - 11, 5, 1, 'rgba(255,236,204,.8)'); }
+      return;
+    }
+    if (theme === 'ring0') { g.fillStyle = '#000000'; g.fillRect(0, 0, w, pad); for (var i = 0; i < w; i += 32) px(i, 0, 1, pad, 'rgba(255,255,255,.08)'); px(0, pad - 2, w, 1, 'rgba(255,255,255,.4)'); return; }
+    return paintSky3(g, theme, w, pad);
+  };
+
+  // a run of tape shelving, taller than anyone, labelled by year
+  function shelf(g, W, Ht, Hf, b, lights) {
+    var px = P(g), rnd = R(b.seed || 3);
+    px(0, 0, W, Ht, '#13110e'); px(0, 0, W, 2, '#6a5a4c'); px(0, 0, 1, Ht, '#8a7864'); px(W - 1, 0, 1, Ht, '#2a2420');
+    for (var y = 4; y < Ht - 4; y += 7) {
+      px(1, y + 5, W - 2, 1, '#5a4c40');
+      for (var x = 2; x < W - 3; x += 3) { var on = rnd(); px(x, y, 2, 5, on > .12 ? (on > .6 ? '#d8ccb8' : '#a89c88') : '#050403'); if (on > .97) lights.push({ x: x, y: y + 1, kind: 'blink', ph: x + y }); }
+    }
+    if (b.sign) { var tw = textW(b.sign); px(W / 2 - tw / 2 - 2, Ht - 10, tw + 4, 8, '#e8dccc'); text(g, b.sign, Math.round(W / 2 - tw / 2), Ht - 8, '#1a1612'); }
+  }
+  // the tape robot: a glass cabinet with a picker arm that never stops
+  function robot(g, W, Ht, Hf, b, lights) {
+    var px = P(g);
+    px(0, 2, W, Ht - 2, '#0e0d0b'); px(0, 2, W, 1, '#c8bca8'); px(0, 2, 1, Ht - 2, '#8a7864'); px(W - 1, 2, 1, Ht - 2, '#3a3128');
+    px(3, 6, W - 6, Ht - 14, '#060504'); px(3, 6, W - 6, 1, '#5a4c40');
+    for (var y = 9; y < Ht - 10; y += 5) for (var x = 5; x < W - 6; x += 3) px(x, y, 2, 3, '#7a6e5e');
+    px(4, Ht - 8, W - 8, 6, '#1c1915'); text(g, b.sign || 'LIBRARY', 6, Ht - 7, '#e8dccc');
+    lights.push({ x: 5, y: 10, w: W - 12, h: Ht - 22, kind: 'screen' });
+  }
+  // a reading desk with a green-shaded lamp gone grey
+  function desk(g, W, Ht, Hf, b, lights) {
+    var px = P(g);
+    px(1, Ht - 12, W - 2, 6, '#3a3128'); px(1, Ht - 12, W - 2, 1, '#b8a48c'); px(3, Ht - 6, 2, 6, '#2a2420'); px(W - 5, Ht - 6, 2, 6, '#2a2420');
+    px(W - 10, Ht - 20, 7, 3, '#5a5a50'); px(W - 7, Ht - 17, 1, 5, '#8a8a80'); px(4, Ht - 14, 8, 2, '#e8dccc'); px(13, Ht - 14, 6, 2, '#a89c88');
+    lights.push({ x: W - 9, y: Ht - 16, w: 5, h: 4, kind: 'warm', ph: b.seed || 1 });
+  }
+  // the Scheduler: a clock the size of a building, its face the crontab
+  function core(g, W, Ht, Hf, b, lights) {
+    var px = P(g), cx0 = W / 2, cy0 = Ht / 2 + 2, R0 = Math.min(W, Ht) / 2 - 3;
+    px(0, Ht - 6, W, 6, '#0a0a0c'); px(0, Ht - 6, W, 1, '#ffffff');
+    g.fillStyle = '#050506'; g.beginPath(); g.arc(cx0, cy0, R0, 0, 7); g.fill();
+    for (var r = R0; r > 4; r -= 6) { g.strokeStyle = 'rgba(255,255,255,' + (r === R0 ? .9 : .25) + ')'; g.beginPath(); g.arc(cx0, cy0, r, 0, 7); g.stroke(); }
+    for (var k = 0; k < 24; k++) { var a = k / 24 * Math.PI * 2, r1 = R0 - (k % 6 === 0 ? 7 : 3); g.strokeStyle = '#ffffff'; g.beginPath(); g.moveTo(cx0 + Math.cos(a) * r1, cy0 + Math.sin(a) * r1); g.lineTo(cx0 + Math.cos(a) * (R0 - 1), cy0 + Math.sin(a) * (R0 - 1)); g.stroke(); }
+    var lbl = b.sign || '0 0 * * 1'; px(cx0 - textW(lbl) / 2 - 2, cy0 + R0 / 2 - 2, textW(lbl) + 4, 8, '#000000'); text(g, lbl, Math.round(cx0 - textW(lbl) / 2), cy0 + R0 / 2, '#ffffff');
+    lights.push({ x: cx0, y: cy0, kind: 'clock' }); lights.push({ x: cx0 - 1, y: cy0 - 1, kind: 'blink', ph: 3 });
+  }
+  // a daemon: a pylon that hums and blinks while it waits for its turn
+  function daemon(g, W, Ht, Hf, b, lights) {
+    var px = P(g), x0 = W / 2 - 5;
+    px(x0, 4, 10, Ht - 6, '#08080a'); px(x0, 4, 10, 1, '#ffffff'); px(x0, 4, 1, Ht - 6, '#5a5a66');
+    for (var y = 8; y < Ht - 6; y += 4) px(x0 + 3, y, 4, 1, 'rgba(255,255,255,.3)');
+    if (b.sign) text(g, b.sign, Math.round(W / 2 - textW(b.sign) / 2), Ht - 1 - 6, '#ffffff');
+    lights.push({ x: x0 + 2, y: 8, w: 6, h: Ht - 16, kind: 'leds', ph: b.seed || 2 });
+  }
+  PAINT.shelf = shelf; PAINT.robot = robot; PAINT.desk = desk; PAINT.core = core; PAINT.daemon = daemon;
+
+  var backdrop3 = backdrop;
+  backdrop = function (cx, theme, t, W, H, hy) {
+    if (theme !== 'stacks' && theme !== 'ring0') return backdrop3(cx, theme, t, W, H, hy);
+    var px = P(cx);
+    if (theme === 'stacks') {
+      cx.fillStyle = '#0a0907'; cx.fillRect(0, 0, W, hy);
+      for (var d = 3; d >= 0; d--) { var sc2 = 1 - d * .2, sh = Math.round(hy * sc2), col = ['#2a2520', '#221e1a', '#1a1714', '#13110e'][d]; for (var s2 = 0; s2 < W; s2 += Math.round(26 * sc2)) { px(s2, hy - sh, Math.round(20 * sc2), sh, col); for (var y2 = hy - sh + 3; y2 < hy - 2; y2 += Math.max(3, Math.round(6 * sc2))) px(s2 + 1, y2, Math.round(18 * sc2), 1, 'rgba(216,204,184,' + (.25 - d * .05) + ')'); } }
+      for (var m = 0; m < 16; m++) { var my = (hs(m * 7) * hy + t * (2 + m % 3)) % hy; px(hs(m * 3) * W, my, 1, 1, 'rgba(255,236,204,.5)'); }
+      var fg = cx.createLinearGradient(0, hy, 0, H); fg.addColorStop(0, '#2a2420'); fg.addColorStop(1, '#0c0a08'); cx.fillStyle = fg; cx.fillRect(0, hy, W, H - hy);
+      px(0, hy, W, 1, 'rgba(216,204,184,.6)');
+      for (var j = -12; j <= 12; j++) { cx.strokeStyle = 'rgba(184,164,140,' + (.12 - Math.abs(j) * .006) + ')'; cx.beginPath(); cx.moveTo(W / 2 + j * 12 + .5, hy); cx.lineTo(W / 2 + j * 40 + .5, H); cx.stroke(); }
+      return;
+    }
+    cx.fillStyle = '#000000'; cx.fillRect(0, 0, H > 0 ? W : 0, H);
+    var ox = W / 2, oy = hy + 6;
+    for (var r = 8; r < W; r += 14) { cx.strokeStyle = 'rgba(255,255,255,' + Math.max(.04, .3 - r * .0012) + ')'; cx.beginPath(); cx.ellipse(ox, oy, r, r * .45, 0, 0, 7); cx.stroke(); }
+    var a3 = t * .6; cx.strokeStyle = '#ffffff'; cx.beginPath(); cx.moveTo(ox, oy); cx.lineTo(ox + Math.cos(a3) * 70, oy + Math.sin(a3) * 70 * .45); cx.stroke();
+    var a4 = t * .05; cx.strokeStyle = 'rgba(255,255,255,.6)'; cx.beginPath(); cx.moveTo(ox, oy); cx.lineTo(ox + Math.cos(a4) * 46, oy + Math.sin(a4) * 46 * .45); cx.stroke();
+    for (var q = 0; q < 9; q++) { var z = (q + (t * .25) % 1) / 9, yz = Math.floor(hy + (H - hy) * z * z) + .5; cx.strokeStyle = 'rgba(255,255,255,' + (.03 + z * .16) + ')'; cx.beginPath(); cx.moveTo(0, yz); cx.lineTo(W, yz); cx.stroke(); }
+  };
+
   window.MeridianArt = { TS: TS, paintArea: paintArea, live: live, person: person, wagon: wagon, backdrop: backdrop, text: text, textW: textW, hs: hs };
 })();

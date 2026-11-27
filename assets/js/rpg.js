@@ -73,7 +73,7 @@
     if (save.coffee) { save.items.bit = (save.items.bit || 0) + save.coffee; } delete save.coffee;   // older saves
     function store() { try { localStorage.setItem('vonds-quest', JSON.stringify(save)); } catch (e) {} }
     function maxHp() { var g = 0; if (save.eq && window.MeridianWorld) ['weapon', 'armor', 'acc'].forEach(function (s) { var it = window.MeridianWorld.gear[save.eq[s]]; if (it && it.hp) g += it.hp; }); return 60 + (save.lvl - 1) * 14 + g + ((save.school && save.school.hp) || 0) + ((save.alloc && save.alloc.hp * 6) || 0); }
-    function xpNeed() { return 30 + (save.lvl - 1) * 25; }
+    function xpNeed() { var over = Math.max(0, save.lvl - 15); return 30 + (save.lvl - 1) * 25 + over * over * 12; }   // gentle early, steeper past the main story
     function maxMp() { return 24 + (save.lvl - 1) * 6; }
 
     /* ---------- the world ---------- */
@@ -170,6 +170,7 @@
       travel: function (to) { travel(to); },
       ownsGear: function (id) { return ownsGear(id); }, giveGear: function (id) { giveGear(id); },
       school: function (k, n) { save.school[k] += n; if (k === 'hp') save.hp += n; store(); },
+      helpdesk: function (who) { helpdesk(who || 'Ines'); },
       arcade: function () { close(); setTimeout(function () { if (window.VondsPick) window.VondsPick('uptime'); }, 450); },
       readLog: function (id) { readLog(id); },
       logCount: function () { return WD.logOrder.filter(function (k) { return F[k]; }).length; },
@@ -233,7 +234,7 @@
     menuEl.innerHTML = '<div class="mn-side"></div><div class="mn-main"></div>';
     root.querySelector('.rpg-scr').appendChild(menuEl);
     var mnSide = menuEl.querySelector('.mn-side'), mnMain = menuEl.querySelector('.mn-main');
-    var MN = null, VIEWS = [['home', 'Vee'], ['grow', 'Level Up'], ['items', 'Items'], ['cmds', 'Commands'], ['equip', 'Equip'], ['status', 'Status'], ['journal', 'Journal'], ['map', 'Map'], ['config', 'Config'], ['close', 'Close']];
+    var MN = null, VIEWS = [['home', 'Vee'], ['grow', 'Level Up'], ['items', 'Items'], ['cmds', 'Commands'], ['equip', 'Equip'], ['status', 'Status'], ['journal', 'Journal'], ['bestiary', 'Bestiary'], ['map', 'Map'], ['config', 'Config'], ['close', 'Close']];
     function openMenu() { MN = { view: 'home', side: 0, focus: 'side', sel: 0, slot: null, confirm: false, detail: -1 }; held = null; areaEl.classList.remove('on'); mode = 'menu'; renderMenu(); menuEl.classList.add('on'); }
     function closeMenu() { MN = null; menuEl.classList.remove('on'); mode = 'map'; store(); }
     function bar(v, m) { return '<i class="mn-bar"><b style="width:' + Math.max(0, Math.min(100, Math.round(v / m * 100))) + '%"></b></i>'; }
@@ -321,6 +322,13 @@
           '<p class="mn-dim">Base ATK ' + save.lvl * 2 + ', gear +' + gs('atk') + ', classes +' + save.school.atk + '. Base DEF ' + Math.floor(save.lvl * .6) + ', gear +' + gs('def') + ', classes +' + save.school.def + '.</p>' +
           '<p class="mn-dim">Bugs cleared ' + (save.wins || 0) + ' · Battles won ' + (save.bw || 0) + ' · Mara’s logs ' + lg + ' of 10 · Board minutes ' + mins + ' of 4 · Postcards ' + pcs + ' of 3</p>' +
           '<h4>Landmarks</h4>' + WD.anchors.map(function (a) { return '<p>' + (isLit(a.id) ? '[x] ' : '[ ] ') + a.name + ' <em class="mn-dim">' + a.project + '</em></p>'; }).join('');
+      } else if (v === 'bestiary') {
+        var bst = save.best || {}, bd = save.bossDown || {}, kinds2 = Object.keys(FOES), seenN = kinds2.filter(function (k) { return bst[k]; }).length;
+        h = '<h4>Bestiary · ' + seenN + ' of ' + kinds2.length + ' bugs</h4>' + kinds2.map(function (k) {
+          return bst[k] ? '<p><b>' + FOES[k].name + '</b> <span class="mn-dim">× ' + bst[k] + '</span><br><small>' + LORE[k] + '</small></p>' : '<p class="mn-dim">??? <small>Not met yet.</small></p>';
+        }).join('');
+        var bn = Object.keys(WD.bosses).map(function (id) { return WD.bosses[id].name; }), bdown = bn.filter(function (n2) { return bd[n2]; });
+        h += '<h4>Named bugs · ' + bdown.length + ' of ' + bn.length + '</h4>' + (bdown.length ? '<p>' + bdown.join(' · ') + '</p>' : '<p class="mn-dim">None yet.</p>');
       } else if (v === 'journal') {
         var jr = WD.journal ? WD.journal(G) : [];
         h = '<h4>Journal</h4>' + (jr.length ? jr.map(function (x) { return '<p>' + x + '</p>'; }).join('') : '<p class="mn-dim">Nothing yet. Talk to people. Everybody here wants something, and most of it is reasonable.</p>');
@@ -375,6 +383,29 @@
 
     /* ---------- typed puzzles on the map (the Proving Rooms, Ash's audit) ---------- */
     var PZ = null;
+    /* ---------- the help desk: tickets drawn from the commands Vee knows, for practice outside a fight ---------- */
+    function ticket() {
+      var c = pickCmd(), info = cmdInfo(c), sc = info.when[Math.floor(Math.random() * info.when.length)];
+      return { c: c, info: info, sc: sc, step: { t: sc.t, ex: sc.ex, ok: { test: function (line) { var J = judge(info, sc, line); if (J.right) { var p = prac(c); p.last = save.bw; if (J.exact) p.n++; } return J.right; } } } };
+    }
+    function helpdesk(who) {
+      if (!save.desk) save.desk = { done: 0, run: 0 };
+      var D = save.desk, three = [ticket(), ticket(), ticket()];
+      var rank = D.done >= 60 ? 'Senior' : D.done >= 25 ? 'Level 2' : D.done >= 8 ? 'Level 1' : 'Trainee';
+      say(who, [D.done ? 'Tickets: ' + D.done + ' closed. Rank: ' + rank + '. Three in the queue.' : 'The queue never stopped. People who stayed still have problems, and they still write in.', 'Pick one. Close it, and the requester sends what they can spare.'],
+        three.map(function (T, i) {
+          return { label: '#' + (4100 + D.done * 3 + i) + ' ' + T.c, fn: function () {
+            openPuzzle('TICKET', [T.step], function () {
+              D.done++; D.run++; var xp = Math.round((10 + save.lvl * 6) * (1 + Math.min(.5, (D.run - 1) * .1))), tier = Math.min(4, Math.floor(save.lvl / 5) + (D.run % 5 === 0 ? 1 : 0)), it = ITEMS[Math.min(3, tier)];
+              save.items[it.id] = (save.items[it.id] || 0) + 1;
+              var lines = ['Ticket closed. The requester writes back: “It works. Thank you. Whoever you are.”', 'Vee gains ' + xp + ' XP and a ' + it.name.toLowerCase() + '.' + (D.run > 1 ? ' Desk streak x' + D.run + '.' : '')].concat(gainXp(xp));
+              if (D.done === 8 || D.done === 25 || D.done === 60) lines.push('Promoted: ' + (D.done === 60 ? 'Senior' : D.done === 25 ? 'Level 2' : 'Level 1') + ' support. ' + (D.done === 60 ? 'Nobody else is left to promote you. You did it anyway.' : 'The badge is just text. It still feels like something.'));
+              if (D.done === 25 && !ownsGear('headset')) { giveGear('headset'); lines.push(who + ' hands Vee a headset. “Desk issue. Hear the problem before it’s a fire.”'); }
+              store(); say(who, lines);
+            });
+          } };
+        }).concat([{ label: 'Later', fn: function () { D.run = 0; store(); } }]));
+    }
     function openPuzzle(title, steps, done) { PZ = { title: title, steps: steps, i: 0, done: done }; areaEl.classList.remove('on'); showPuzzle(); }
     function showPuzzle(note) {
       var s = PZ.steps[PZ.i]; held = null;
@@ -481,6 +512,12 @@
       bytebug:  { name: 'Byte bug',  hp: 32, atk: [5, 8],  move: 'flips a bit', xp: 10 },
       centipede:{ name: 'Centipede', hp: 46, atk: [5, 9],  move: 'opens a memory leak', xp: 14 },
       scorpion: { name: 'Scorpion',  hp: 52, atk: [7, 11], move: 'stings with a segfault', xp: 16 }
+    };
+    var LORE = {
+      beetle: 'Chews through cables. Mostly harmless alone. Never alone.', spider: 'Spins race conditions: two threads, one resource, nobody waiting their turn.',
+      worm: 'Copies itself across the network. Every copy thinks it is the original.', moth: 'Named for the first bug ever found: a real moth, stuck in a relay, taped into a logbook.',
+      virus: 'Needs a host. Meridian is full of empty hosts now.', bytebug: 'Flips one bit. One bit is enough to turn yes into no.',
+      centipede: 'Opens memory leaks. Takes a little more every turn and never gives it back.', scorpion: 'Stings with a segfault: reaching for memory that was never its to touch.'
     };
     // Vee's attacks are real commands. The curriculum lives in meridian-commands.js: five to start, then three to five more each level.
     var HITS = { multi2: 'Two clean hits.', multi3: 'Three quick hits.', focus: 'Bearings found. Your next hit lands double.', heal: 'Vee recovers HP.',
@@ -720,6 +757,8 @@
     function win() {
       var xp = 0, n = B.foes.length, boss = B.boss, onWin = B.onWin; B.foes.forEach(function (f) { xp += f.foe.xp + (boss ? 0 : rnd(0, 3)); }); xp = Math.round(xp * (1 + gs('xp')) * (save.cfg.diff === 2 ? 1.2 : 1));
       save.wins += n; save.linux += n; save.bw++;
+      if (!save.best) save.best = {}; if (!save.bossDown) save.bossDown = {};
+      B.foes.forEach(function (f) { if (f.foe.boss) save.bossDown[f.foe.name] = 1; else save.best[f.kind] = (save.best[f.kind] || 0) + 1; });
       var lines = [boss ? boss.name + ' is gone.' + (xp ? ' Vee gains ' + xp + ' XP.' : '') : 'The rot clears. Vee gains ' + xp + ' XP.'];
       if (!boss && AREA.id === 'commons' && F.deeds && (F.commonsWins || 0) < 3) { F.commonsWins = (F.commonsWins || 0) + 1; lines.push('Deed: fairground cleared, ' + F.commonsWins + ' of 3.'); }
       if (Math.random() < .35 + n * .07 + gs('drop')) {   // bigger finds as Vee levels up
@@ -771,7 +810,7 @@
       cx.fillStyle = '#050507'; cx.fillRect(0, 0, W, H);
       cx.strokeStyle = 'rgba(200,200,214,.08)'; for (var gx = 0; gx < W; gx += 16) { cx.beginPath(); cx.moveTo(gx + .5, 0); cx.lineTo(gx + .5, H); cx.stroke(); } for (var gy = 0; gy < H; gy += 16) { cx.beginPath(); cx.moveTo(0, gy + .5); cx.lineTo(W, gy + .5); cx.stroke(); }
       function pos(id) { var p = WD.atlas[id]; return [30 + p[0] * 50, 16 + p[1] * 34]; }
-      var LABEL = { plaza: 'PLAZA', commons: 'COMMONS', halflight: 'HALFLIGHT', gardens: 'GLASSHOUSE', undercroft: 'UNDERCROFT', bastion: 'BASTION', quiet: 'THE QUIET', terminal: 'TERMINAL', line: 'THE LINE', patchwork: 'PATCHWORK', upper: 'UPPER RING', cold: 'COLD STORE' };
+      var LABEL = { plaza: 'PLAZA', commons: 'COMMONS', halflight: 'HALFLIGHT', gardens: 'GLASSHOUSE', undercroft: 'UNDERCROFT', bastion: 'BASTION', quiet: 'THE QUIET', terminal: 'TERMINAL', line: 'THE LINE', patchwork: 'PATCHWORK', upper: 'UPPER RING', cold: 'COLD STORE', concourse: 'CONCOURSE', infirmary: 'ST. ADA’S', margin: 'MARGIN', stacks: 'STACKS', ring0: 'RING 0' };
       cx.strokeStyle = 'rgba(220,220,236,.45)'; WD.links.forEach(function (l) { var a = pos(l[0]), b = pos(l[1]); cx.beginPath(); cx.moveTo(a[0] + .5, a[1] + .5); cx.lineTo(b[0] + .5, b[1] + .5); cx.stroke(); });
       var anchorAt = { plaza: ['spire', 'archive'], commons: ['ledger'], gardens: ['wagon'], undercroft: ['exit0'], bastion: ['keep'] };
       Object.keys(WD.atlas).forEach(function (id) {

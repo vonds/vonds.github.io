@@ -1182,5 +1182,256 @@
     return j;
   };
 
+  /* =====================================================================
+     EXPANSION III: the Stacks and Ring Zero. Why it is always Monday.
+     ===================================================================== */
+
+  /* THE STACKS: every night's backup of every resident, on tape, under the vaults */
+  A.stacks = {
+    name: 'The Stacks', sub: 'Every resident, every night, on tape. Nobody ever asked for a restore.', theme: 'stacks', tier: 4.8, lv: 21, lvMax: 23,
+    map: (function () {
+      var m = grid(40, 22).border();
+      m.pts([[19, 0], [20, 0]], 'E'); m.pts([[39, 10], [39, 11]], 'G');
+      m.rect(19, 1, 2, 20, '='); m.rect(1, 10, 38, 2, '=');
+      m.rect(25, 14, 11, 5, '~'); m.rect(29, 14, 3, 5, '='); 
+      m.rect(2, 6, 6, 2, ','); m.rect(30, 6, 7, 2, ','); m.rect(10, 18, 8, 2, ','); m.rect(23, 19, 15, 1, ',');
+      m.pts([[9, 9], [30, 9], [9, 12], [37, 12]], 'l');
+      m.set(22, 2, 's'); m.set(2, 2, 'o'); m.set(37, 20, 'o'); m.set(16, 20, 'c'); m.set(37, 2, 'c'); m.set(27, 13, 's');
+      return m.out();
+    })(),
+    blds: [
+      { x: 3, y: 2, w: 6, h: 3, kind: 'shelf', seed: 1, sign: '2019', rise: 2 },
+      { x: 11, y: 2, w: 6, h: 3, kind: 'shelf', seed: 2, sign: '2020', rise: 2 },
+      { x: 23, y: 3, w: 6, h: 3, kind: 'shelf', seed: 3, sign: '2021', rise: 2 },
+      { x: 31, y: 2, w: 5, h: 4, kind: 'robot', door: 2, sign: 'LIBRARY', rise: 1 },
+      { x: 3, y: 13, w: 6, h: 3, kind: 'shelf', seed: 4, door: 3, sign: 'ARLO', rise: 2 },
+      { x: 11, y: 13, w: 6, h: 3, kind: 'shelf', seed: 5, sign: '2023', rise: 2 },
+      { x: 23, y: 6, w: 6, h: 2, kind: 'shelf', seed: 6, sign: '2022', rise: 1 },
+      { x: 3, y: 17, w: 2, h: 2, kind: 'desk', seed: 1 }, { x: 6, y: 17, w: 2, h: 2, kind: 'desk', seed: 2 }
+    ],
+    exits: { '19,0': ['cold', 17, 18], '20,0': ['cold', 18, 18] },
+    gates: { '39,10': { to: ['ring0', 1, 9], need: function (G) { return !!G.f.rootkey; }, shut: ['A steel door set flush into the shelving. Stencilled: RING 0. AUTHORIZED PROCESSES ONLY.', 'There is no handle. There is a keyhole shaped like a #.'] },
+             '39,11': { to: ['ring0', 1, 10], need: function (G) { return !!G.f.rootkey; }, shut: ['The door into Ring 0 is locked. The keyhole is shaped like a #.'] } },
+    enc: { tiles: ',', rate: .13, foes: ['moth', 'beetle', 'worm', 'bytebug', 'centipede'], max: 6 },
+    spawn: [19, 2],
+    logs: { '2,2': 'T1', '37,20': 'T2' },
+    caches: { '16,20': { item: 'gb', n: 1 }, '37,2': { item: 'mb', n: 3 } },
+    npcs: [
+      { id: 'hollis', p: { hair: 'bald', body: 'coat', glasses: 1, skin: '#6a4a34', top: '#5a5248', beard: 1, gray: 1 }, x: 17, y: 8, name: 'Hollis', look: 'echo', h: 14, hair: 6, solid: 1 },
+      { id: 'arlo', p: { hair: 'short', body: 'suit', skin: '#c89a78', top: '#3a3a44' }, x: 10, y: 16, name: 'Arlo (02:00)', look: 'echo', h: 14, hair: 1 },
+      { id: 'ines', p: { hair: 'bun', body: 'coat', skin: '#3a2416', top: '#6a6a74' }, x: 22, y: 12, name: 'Ines', look: 'echo', h: 13, hair: 3, solid: 1 }
+    ]
+  };
+
+  /* RING ZERO: kernel space. The daemons that run the city, and the clock that runs the daemons */
+  A.ring0 = {
+    name: 'Ring 0', sub: 'Below every district: the code that decides what day it is.', theme: 'ring0', tier: 5.2, lv: 24, lvMax: 27,
+    map: (function () {
+      var m = grid(44, 20).border();
+      m.pts([[0, 9], [0, 10]], 'E');
+      for (var y = 1; y < 19; y++) for (var x = 14; x < 31; x++) if ((x - 22) * (x - 22) / 49 + (y - 10) * (y - 10) / 20 <= 1) m.set(x, y, '~');
+      m.rect(1, 9, 31, 2, '='); m.rect(31, 11, 1, 2, '=');
+      m.rect(2, 6, 9, 2, ','); m.rect(33, 15, 9, 3, ','); m.rect(3, 15, 8, 2, ','); m.rect(34, 2, 6, 2, ',');
+      m.set(12, 3, 's'); m.set(42, 18, 'o'); m.set(1, 18, 'c'); m.set(42, 1, 'c'); m.set(13, 17, 'o');
+      return m.out();
+    })(),
+    blds: [
+      { x: 2, y: 2, w: 3, h: 3, kind: 'daemon', door: 1, seed: 1, sign: 'JOURNALD', rise: 2 },
+      { x: 7, y: 2, w: 3, h: 3, kind: 'daemon', door: 1, seed: 2, sign: 'SSHD', rise: 2 },
+      { x: 2, y: 12, w: 3, h: 3, kind: 'daemon', door: 1, seed: 3, sign: 'CROND', rise: 2 },
+      { x: 34, y: 5, w: 8, h: 6, kind: 'core', door: 4, sign: '0 0 * * *', rise: 3 }
+    ],
+    exits: { '0,9': ['stacks', 38, 10], '0,10': ['stacks', 38, 11] },
+    enc: { tiles: ',', rate: .14, foes: ['virus', 'scorpion', 'spider', 'centipede', 'bytebug'], max: 6 },
+    spawn: [1, 9],
+    logs: { '42,18': 'T3', '13,17': 'T4' },
+    caches: { '1,18': { item: 'gb', n: 2 }, '42,1': { item: 'mb', n: 3 } },
+    npcs: [ { id: 'pid1', p: { hair: 'long', body: 'coat', skin: '#2e1c12', top: '#2a2a30', gray: 1, beard: 1 }, x: 12, y: 12, name: 'PID 1', look: 'echo', h: 15, hair: 5, solid: 1 } ]
+  };
+
+  (function () {
+    function put(area, x, y, c) { var r = A[area].map[y].split(''); r[x] = c; A[area].map[y] = r.join(''); }
+    put('cold', 17, 19, 'G'); put('cold', 18, 19, 'G');
+    A.cold.gates = A.cold.gates || {};
+    A.cold.gates['17,19'] = { to: ['stacks', 19, 1], need: function (G) { return !!G.f.mara; }, shut: ['A ramp down, chained off. A sign: TAPE STACKS. RESTORES BY REQUEST ONLY.', 'The Keeper won’t open it until one archive has been brought back.'] };
+    A.cold.gates['18,19'] = { to: ['stacks', 20, 1], need: function (G) { return !!G.f.mara; }, shut: ['The ramp to the Stacks is chained off.'] };
+  })();
+  ATLAS.stacks = [3, 4]; ATLAS.ring0 = [4, 4];
+  LINKS.push(['cold', 'stacks'], ['stacks', 'ring0']);
+
+  LOGS.T1 = ['BOARD MINUTES. Item 7: Continuity.', 'Concern raised that residents who remain will notice the passage of time and begin to organize.', 'Proposal: a nightly maintenance job that restores each district to its Monday state. Approved without discussion.'];
+  LOGS.T2 = ['BOARD MINUTES. Item 9: Cost.', 'The Monday job costs nothing to run. A city that never reaches Tuesday never sends an invoice, never files a complaint, never holds an election.', 'Motion to schedule it forever. Carried.'];
+  LOGS.T3 = ['CRONTAB, line 1. Written by hand.', '# BOARD: keep them on Monday. Nobody notices a Monday.', '0 0 * * * /opt/meridian/monday.sh'];
+  LOGS.T4 = ['A note pinned to the CROND pylon, in M. Quell’s handwriting.', 'I couldn’t delete this job without the Board seeing. So I left it a weakness instead.', 'It only runs as long as nobody asks it what day it is.'];
+
+  BOSSES.dedupe = { kind: 'beetle', name: 'The Deduplicator', hp: 2600, atk: [30, 38], xp: 1900, move: 'decides one copy is enough', sc: 4 };
+  BOSSES.zombie = { kind: 'worm', name: 'Zombie Process', hp: 3000, atk: [33, 41], xp: 2300, move: 'refuses to be reaped', sc: 4 };
+  BOSSES.scheduler = { kind: 'centipede', name: 'The Scheduler', hp: 4200, atk: [36, 46], xp: 3200, move: 'runs monday.sh on Vee', sc: 5 };
+
+  GEAR.headset = { slot: 'acc', name: 'Desk Headset', xp: .1, crit: .02, desc: 'Help desk issue. Hear the problem before it’s a fire. +10% XP.' };
+  GEAR.cardigan = { slot: 'armor', name: 'Archivist’s Cardigan', def: 38, hp: 40, desc: 'Hollis’s. Elbow patches, deep pockets, a tape label still in one of them.' };
+  GEAR.sigkill = { slot: 'weapon', name: 'SIGKILL', atk: 40, crit: .12, desc: 'Signal nine. The one a process can’t catch, ignore or argue with.' };
+  GEAR.tuesday = { slot: 'acc', name: 'Tuesday', hp: 80, xp: .1, crit: .03, desc: 'A day that hadn’t happened in eleven months. It feels lighter than you expected.' };
+  GEAR_FROM.push(
+    ['cardigan', function (G) { return !!G.f.rootkey; }, 'Hollis wraps his cardigan around Vee’s shoulders. “Ring 0 runs cold.”'],
+    ['sigkill', function (G) { return !!G.f.zombie; }, 'Where the Zombie Process stood: a signal nobody can ignore. SIGKILL.'],
+    ['tuesday', function (G) { return !!G.f.tuesday; }, 'Vee keeps something from the Scheduler’s face: the word Tuesday.']
+  );
+
+  /* ---------- people of the Stacks ---------- */
+  var RESTORES = [
+    { id: 'r1', who: 'Mrs. Okafor, Commons', what: 'her recipe box. She wrote in: “It was my mother’s. The Reclaimer took the cards in alphabetical order. It got to S.”', steps: [
+      { t: 'The tape is okafor.tar.gz. Unpack it here.', ex: ['tar -xzf okafor.tar.gz', 'tar xzf okafor.tar.gz', 'tar -xvzf okafor.tar.gz', 'tar -zxf okafor.tar.gz'] },
+      { t: 'Find the file named recipes.txt anywhere under the current folder.', ex: ['find . -name recipes.txt', 'find . -name "recipes.txt"', "find . -name 'recipes.txt'"] }],
+      after: 'The cards come back in order, A to Z. Under S: soup, the one for sick days.' },
+    { id: 'r2', who: 'Teodor, the Line', what: 'every voicemail from his brother. “I deleted them because I couldn’t listen. Now I can.”', steps: [
+      { t: 'Search every file under voicemail/ for the word Teodor, ignoring case.', ex: ['grep -ri teodor voicemail/', 'grep -ri teodor voicemail', 'grep -ir teodor voicemail/', 'grep -ir teodor voicemail', 'grep -r -i teodor voicemail/', 'grep -r -i teodor voicemail', 'grep -i -r teodor voicemail/', 'grep -i -r teodor voicemail'] },
+      { t: 'Copy the whole voicemail folder to /home/teodor, recursively.', ex: ['cp -r voicemail /home/teodor', 'cp -r voicemail/ /home/teodor', 'cp -r voicemail /home/teodor/', 'cp -R voicemail /home/teodor', 'cp -a voicemail /home/teodor', 'rsync -a voicemail /home/teodor', 'rsync -a voicemail/ /home/teodor/'] }],
+      after: 'Forty-one messages. The last one is just his brother laughing at something off-mic.' },
+    { id: 'r3', who: 'The Commons school', what: 'the class photo. “Two of the kids in it left on the Lift. The rest of us would like to remember all of them.”', steps: [
+      { t: 'The photo is huge. Check how much space photos/ takes, human-readable, total only.', ex: ['du -sh photos', 'du -sh photos/', 'du -hs photos', 'du -hs photos/'] },
+      { t: 'Pack photos/ into class.tar.gz so it travels in one piece.', ex: ['tar -czf class.tar.gz photos', 'tar -czf class.tar.gz photos/', 'tar czf class.tar.gz photos', 'tar -cvzf class.tar.gz photos', 'tar -zcf class.tar.gz photos'] }],
+      after: 'Thirty-one kids squinting into the sun. Everyone is in it. That was the point.' }
+  ];
+  TALK.hollis = function (G) {
+    var f = G.f, n = RESTORES.filter(function (r) { return f[r.id]; }).length, open = RESTORES.filter(function (r) { return !f[r.id]; });
+    if (f.tuesday) return G.say('Hollis', ['Restore requests are up four hundred percent since Tuesday.', 'Turns out when people get a tomorrow, they want their yesterdays back. I’m going to need an assistant.']);
+    if (f.rootkey) return G.say('Hollis', ['Ring 0 is through the east door. Mind the well; it goes down further than the city does.', 'And if you meet PID 1, give it my regards. It started me, a long time ago. It started everything.']);
+    var intro = !f.hollis ? ['Shh. Not for the tapes. For me. I’ve been alone down here so long my own voice startles me.', 'Every night at two, the city backed itself up. Every resident. Every room. Every nightly snapshot, on tape, on these shelves.',
+      'The Reclaimer took the people. It never thought to check the backups. Backups are boring. That’s their whole strength.', 'Nobody has asked for a restore in eleven months. I’ve been keeping the request queue anyway.'] : [];
+    f.hollis = 1;
+    if (!open.length && f.dedupe) { f.rootkey = 1; G.xp(900); return G.say('Hollis', intro.concat(['Three restores. And the Deduplicator gone. You have no idea how loud that thing was.',
+      'Here. The root key. It opens Ring 0, under everything, where the daemons run.', 'I found something on the 2022 tapes. The city doesn’t get reset by accident every night. Something schedules it. Go and ask it why.', 'Vee gains 900 XP.'])); }
+    if (!open.length) return G.say('Hollis', intro.concat(['Every request answered. But something is deleting copies on the lower shelves. Arlo’s shelf is next. He knows.']));
+    G.say('Hollis', intro.concat(['Restores done: ' + n + ' of 3. Which request?']), open.map(function (r) {
+      return { label: r.who, fn: function () {
+        G.say('Hollis', ['Request from ' + r.who + ': ' + r.what], null, function () {
+          G.puzzle('RESTORE', r.steps, function () { f[r.id] = 1; G.xp(400); G.say('Hollis', [r.after, 'Restored. That’s ' + RESTORES.filter(function (x) { return f[x.id]; }).length + ' of 3. Vee gains 400 XP.']); });
+        });
+      } };
+    }).concat([{ label: 'Later', fn: null }]));
+  };
+  TALK.arlo = function (G) {
+    var f = G.f;
+    if (f.dedupe) return G.say('Arlo (02:00)', ['Still here. Still 2 a.m. on a Sunday, as far as I’m concerned.', 'I’ve decided that’s not a bad time to be. Everyone you love is asleep and safe and nothing has gone wrong yet.']);
+    if (!f.arlo) { f.arlo = 1; return G.say('Arlo (02:00)', ['Hello. I’m Arlo. Well. I’m the 2 a.m. snapshot of Arlo, from the night before he took the Lift.',
+      'He’s up there. I’m down here. He doesn’t know I exist. I think about him the way you think about a brother who moved away and stopped writing.',
+      'Something on the lower shelves keeps checking me against him. Same name, same face, same memories up to 2 a.m.', 'It says one copy is enough. I don’t think it means him.']); }
+    G.say('Arlo (02:00)', ['It’s close. I can hear it reading the shelf labels.', 'If it comes, will you stand with me? A backup should have at least one other copy of something.'],
+      [{ label: 'Stand with him', fn: function () { G.boss('dedupe', function () { f.dedupe = 1; G.say('Arlo (02:00)', ['It’s gone. I’m still here. Both of us are, I suppose, him up there and me down here.', 'Tell Hollis. He’ll pretend he wasn’t worried.']); }); } }, { label: 'Not yet', fn: null }]);
+  };
+  TALK.ines = function (G) {
+    if (!G.f.ines) { G.f.ines = 1; return G.say('Ines', ['Help desk. Yes, still. The ticket system never went down. That was the one thing they built properly.',
+      'People who stayed still have broken things. Their messages land here, in the Stacks, because this is where the cables go.', 'I can read every ticket. I can’t fix one. My account was a dispatcher account. You have commands.',
+      'Close tickets, and the requesters send what they can spare. Come back any time. The queue never empties. That’s the job.'], null, function () { G.helpdesk('Ines'); }); }
+    G.helpdesk('Ines');
+  };
+  SPOTS['stacks:22,2'] = function (G) { G.say('Directory', ['THE STACKS. NIGHTLY BACKUPS, ALL RESIDENTS. RETENTION: FOREVER.', 'Someone has added, in pencil: FOREVER IS LONGER THAN YOU THINK.']); };
+  SPOTS['stacks:27,13'] = function (G) { G.say('Railing sign', ['LOWER STACKS. Monthly and yearly sets. No staff below this level.', 'Far down, a tape robot is still running, filing yesterday where it belongs.']); };
+  DOORS['stacks:robot'] = function (G) {
+    G.rest();
+    G.say('Tape library', ['The robot arm glides along its rail, picks a cartridge, reads it, files it, picks another. It has been doing this for eleven months with nobody watching.', 'There is something restful about it. Vee sits for a while. HP restored.']);
+  };
+  DOORS['stacks:shelf'] = function (G, b) {
+    if (b.sign === 'ARLO') return G.say('', ['A shelf of nightly tapes, all labelled ARLO, one per night, until they stop.', 'The last label is in different handwriting: KEEP.']);
+    G.say('', ['Tapes, floor to ceiling. ' + b.sign + '. Every cartridge is someone’s ordinary Tuesday, saved in case it mattered.']);
+  };
+  DOORS['stacks:desk'] = function (G) { G.say('', ['A reading desk. A slip of paper: RESTORE REQUEST: my dog, if dogs were backed up. — K.', 'Under it, in Hollis’s hand: They were. I’m looking.']); };
+
+  /* ---------- Ring 0 ---------- */
+  var DAEMONS = {
+    JOURNALD: { flag: 'd1', who: 'JOURNALD keeps the city’s logs. Every event since Meridian booted, in order.', steps: [
+      { t: 'Read the logs for the cron service only.', ex: ['journalctl -u cron', 'journalctl -u crond', 'journalctl -u cron.service', 'journalctl -u crond.service'] },
+      { t: 'Too many lines. Show only the ones containing monday.', ex: ['journalctl -u cron | grep monday', 'journalctl -u crond | grep monday', 'journalctl -u cron | grep -i monday', 'journalctl -u crond | grep -i monday'] }],
+      after: ['Three hundred and thirty-four lines. Every one the same, one per night: CRON[1]: (root) CMD (/opt/meridian/monday.sh).', 'Every midnight since the Lift. The city was told it was Monday, and believed it.'] },
+    SSHD: { flag: 'd2', who: 'SSHD answers the door. Something is connected that shouldn’t be.', steps: [
+      { t: 'List the listening TCP sockets and the processes behind them.', ex: ['ss -tlnp', 'ss -tlpn', 'ss -lntp', 'ss -ltnp', 'ss -tulpn', 'ss -tunlp', 'netstat -tlnp'] },
+      { t: 'One connection goes Upstream, held open by PID 777. Ask it to close.', ex: ['kill 777', 'kill -15 777', 'kill -TERM 777'] }],
+      after: ['The link Upstream goes quiet. Whoever was watching the city, eleven seconds a day, will see a blank screen now.', 'It feels less like being disconnected and more like closing a curtain.'] },
+    CROND: { flag: 'd3', who: 'CROND keeps the schedule. Its table is open on the pylon’s face.', steps: [
+      { t: 'List the crontab.', ex: ['crontab -l', 'sudo crontab -l'] },
+      { t: 'Find the script it runs. Show the permissions on /opt/meridian/monday.sh.', ex: ['ls -l /opt/meridian/monday.sh', 'ls -la /opt/meridian/monday.sh', 'ls -al /opt/meridian/monday.sh', 'stat /opt/meridian/monday.sh'] }],
+      after: ['-rwx------ 1 root board 2.1K monday.sh', 'Owned by root. Group: board. Nobody else can read it. The Scheduler runs it, and the Scheduler is in the core.'] }
+  };
+  DOORS['ring0:daemon'] = function (G, b) {
+    var f = G.f, D = DAEMONS[b.sign];
+    if (!D) return;
+    if (f[D.flag]) return G.say(b.sign, ['The pylon hums. Its LEDs blink in a pattern that, if you squint, looks like contentment.']);
+    G.say(b.sign, [D.who], [{ label: 'Open a shell', fn: function () { G.puzzle(b.sign, D.steps, function () { f[D.flag] = 1; G.xp(500); G.say(b.sign, D.after.concat(['Vee gains 500 XP.'])); }); } }, { label: 'Leave it', fn: null }]);
+  };
+  TALK.pid1 = function (G) {
+    var f = G.f, n = (f.d1 ? 1 : 0) + (f.d2 ? 1 : 0) + (f.d3 ? 1 : 0);
+    if (f.tuesday) return G.say('PID 1', ['Tuesday. I had forgotten the shape of it.', 'I started every process in this city. Now I get to watch them do something new. That is the best part of being first: you get to see what comes after.']);
+    if (!f.pid1) { f.pid1 = 1; return G.say('PID 1', ['I am PID 1. I was the first process. When Meridian booted, I started everything else, one by one, in order.',
+      'When the Lift came, the Board shut down every process it could. It cannot shut me down. If I stop, the whole system stops. So they left me here, to keep their schedule running.',
+      'Three daemons answer to me: JOURNALD, SSHD, CROND. Something is wrong in all three. I can see it. I cannot touch it. I start things. I do not fix them.',
+      'You fix things. Start with the logs. The logs always know.']); }
+    if (n < 3) return G.say('PID 1', ['Daemons checked: ' + n + ' of 3.', n === 0 ? 'The logs first. JOURNALD, top left.' : 'Keep going. The pattern will make sense when you see all of it.']);
+    if (!f.zombie) return G.say('PID 1', ['Now you know. The Scheduler runs monday.sh every midnight, as root. Every district is put back the way it was on the Monday of the Lift.',
+      'That is why the flowers never wilt and the sale never starts. Why nobody here has noticed eleven months go by.', 'Before you reach the core, there is something in the well. A process whose parent took the Lift. Nobody reaped it. It will not let anything else be reaped either.',
+      'Go carefully. It does not know it is dead. That makes it hard to argue with.']);
+    G.say('PID 1', ['The core is east. The Scheduler will not stop because you ask it. It will stop because you ask it the right question.', 'Quell left it one weakness: it runs only as long as nobody asks it what day it is.']);
+  };
+  STEPS.ring0 = function (G, x, y) {
+    var f = G.f;
+    if (f.zombie || x < 14 || x > 30 || !(f.d1 && f.d2 && f.d3)) return;
+    G.say('', ['Halfway across the causeway, something climbs out of the well. It moves like a process that has been told to exit and never heard back.'], null, function () {
+      G.say('Zombie Process', ['<defunct>', 'WAITING FOR PARENT. PARENT: UPSTREAM. STATUS: ...', 'WAITING.'], null, function () {
+        G.boss('zombie', function () { f.zombie = 1; G.say('', ['The Zombie Process lies down at last. Somewhere, a table entry is cleared. It had been waiting a very long time for someone to notice.']); });
+      });
+    });
+  };
+  DOORS['ring0:core'] = function (G) {
+    var f = G.f;
+    if (f.tuesday) return G.say('The core', ['The clock face reads 0 0 * * 2, then nothing at all. Its hands move freely now, at whatever speed time actually goes.']);
+    if (!(f.d1 && f.d2 && f.d3)) return G.say('The core', ['A clock the size of a building. Its face is a schedule: 0 0 * * *. Its hands are a second from midnight and have been for a long time.', 'You don’t know enough yet to talk to it. PID 1 does.']);
+    if (!f.zombie) return G.say('The core', ['The Scheduler doesn’t notice you. Something behind you, in the well, does.']);
+    if (f.scheduler) return crontabChoice(G);
+    G.say('The Scheduler', ['IT IS 23:59:59.', 'AT 00:00 I WILL RUN monday.sh. EVERY DISTRICT WILL BE RESTORED TO ITS CORRECT STATE.', 'NOTHING WILL CHANGE. THAT IS THE SERVICE I PROVIDE.'],
+      [{ label: 'Ask it what day it is', fn: function () {
+        G.say('The Scheduler', ['THE DAY IS... MONDAY. IT IS ALWAYS...', 'QUERY: HOW MANY MONDAYS.', 'COUNTING. 334. THAT IS NOT A WEEK. THAT IS NOT A... I AM NOT...'], null, function () {
+          G.boss('scheduler', function () {
+            f.scheduler = 1; crontabChoice(G);
+          });
+        });
+      } }, { label: 'Not yet', fn: null }]);
+  };
+  function crontabChoice(G) {
+    var f = G.f;
+            G.say('', ['The Scheduler’s hands stop. Its face is a crontab, and the crontab is open. One line, and a cursor blinking after it.'], [
+              { label: 'crontab -r: let tomorrow come', fn: function () { f.tuesday = 1; G.xp(1000);
+                G.say('', ['Vee removes the job. The core makes a small sound, like a held breath let go.', 'Midnight comes. For the first time in eleven months, nothing runs.', 'Up in the Concourse, a florist watches her flowers begin, very slowly, to wilt, and laughs out loud.',
+                  'It is Tuesday in Meridian.', 'Vee gains 1000 XP.']); } },
+              { label: 'Leave it running', fn: function () { G.say('', ['Vee closes the crontab without saving. The hands begin to move again: 23:59:59.', 'There will be other nights. The question is asked now. It cannot be un-asked. Come back when you are ready.']); } }]);
+  }
+  SPOTS['ring0:12,3'] = function (G) { G.say('Plaque', ['RING 0. KERNEL SPACE.', 'Beneath it someone has scratched: everything above this line is a story the kernel tells.']); };
+
+  /* Tuesday: the people who were stuck on Monday get a tomorrow */
+  (function () {
+    function tues(id, name, lines) { var t0 = TALK[id]; if (!t0) return; TALK[id] = function (G) { if (G.f.tuesday && !G.f['tue_' + id]) { G.f['tue_' + id] = 1; return G.say(name, lines); } return t0(G); }; }
+    tues('rosa', 'Rosa', ['It’s Tuesday. Do you know what that means? The sale started. Yesterday. Officially.', 'Nobody came. I don’t care. I took every dress out of the window and put new ones in. Some of them don’t even match.']);
+    tues('adair', 'Ms. Adair', ['Tuesday! I’ve written a new class. It’s called Tomorrow. It’s mostly scheduling.', 'Crontab, at, systemd timers. How to make things happen on purpose, instead of forever.']);
+    tues('desmond', 'Desmond', ['Good afternoon! Have you considered staying?', '...I’m trying it out. It’s a new brochure. There’s only one photo in it, and it’s of here.']);
+    tues('kip', 'Kip', ['It’s TUESDAY. Pip says Tuesday doesn’t count. Pip is wrong.', 'The cabinets that said UPSTREAM say INSERT COIN now. I plugged them back in.']);
+    tues('imani', 'Nurse Imani', ['Two new patients this morning. Woke up on their own. No commands, no nothing.', 'Turns out some processes just needed a different day.']);
+    tues('osei', 'Osei', ['The edge moved. Out, not in. Four tiles of floor where there was blank yesterday.', 'Nobody built it. It just grew, the way a city does when it’s allowed to.']);
+  })();
+
+  var journal1 = JOURNAL;
+  JOURNAL = function (G) {
+    var f = G.f, j = journal1(G);
+    if (G.save.seen.stacks) {
+      j.push('The Stacks: ' + RESTORES.filter(function (r) { return f[r.id]; }).length + ' of 3 restores');
+      j.push((f.dedupe ? '[x]' : '[ ]') + ' Stand with Arlo');
+      if (f.ines) j.push('Help desk: ' + ((G.save.desk && G.save.desk.done) || 0) + ' tickets closed');
+    }
+    if (G.save.seen.ring0) {
+      j.push('Ring 0 daemons: ' + ((f.d1 ? 1 : 0) + (f.d2 ? 1 : 0) + (f.d3 ? 1 : 0)) + ' of 3');
+      j.push((f.zombie ? '[x]' : '[ ]') + ' The Zombie Process'); j.push((f.tuesday ? '[x]' : '[ ]') + ' Tuesday');
+    }
+    var tc = ['T1', 'T2', 'T3', 'T4'].filter(function (k) { return f[k]; }).length; if (tc) j.push('Board papers: ' + tc + ' of 4');
+    return j;
+  };
+
   window.MeridianWorld = { areas: A, logs: LOGS, logOrder: LOG_ORDER, bosses: BOSSES, anchors: ANCHORS, talk: TALK, spots: SPOTS, doors: DOORS, wagon: wagon, steps: STEPS, endings: ENDINGS, atlas: ATLAS, links: LINKS, bossStart: BOSS_START, journal: JOURNAL, stations: STATIONS, gear: GEAR, gearFrom: GEAR_FROM };
 })();
