@@ -358,7 +358,7 @@
         '  about             jump to the About section\n' +
         '  contact           how to reach me\n' +
         '  step-inside       take the descent\n' +
-        '  play              play a hidden game (uptime or meridian)\n' +
+        '  play              play a hidden game (uptime or afterlift)\n' +
         '  clear             clear the screen\n' +
         '  exit              close the terminal');
     },

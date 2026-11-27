@@ -5,13 +5,13 @@
   if (!SP) return;
   var reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
   var coarse = window.matchMedia && matchMedia('(hover: none), (pointer: coarse)').matches;
-  var NAMES = { runner: 'Uptime', rpg: 'Meridian' };
+  var NAMES = { runner: 'Uptime', rpg: 'Afterlift' };
 
   /* ======================= the game menu ======================= */
   var pick = document.createElement('div'); pick.className = 'gpick'; pick.setAttribute('role', 'dialog'); pick.setAttribute('aria-modal', 'true'); pick.setAttribute('aria-label', 'Choose a game');
   pick.innerHTML = '<div class="ff4w gpick-w"><b class="ff4n">Vee</b><p class="gpick-q">Pick a game.</p>' +
     '<button type="button" class="gpick-o" data-g="runner"><canvas width="44" height="52"></canvas><span><strong>' + NAMES.runner + '</strong><em>An endless runner. Clear the bugs. Stay online.</em></span></button>' +
-    '<button type="button" class="gpick-o" data-g="rpg"><canvas width="44" height="52"></canvas><span><strong>' + NAMES.rpg + '</strong><em>An RPG about the city the rich left behind.</em></span></button>' +
+    '<button type="button" class="gpick-o" data-g="rpg"><canvas width="44" height="52"></canvas><span><strong>' + NAMES.rpg + '</strong><em>An RPG about Meridian, the city the rich left behind.</em></span></button>' +
     '<button type="button" class="gpick-c">Not now</button></div>';
   document.body.appendChild(pick);
   var opts = [].slice.call(pick.querySelectorAll('.gpick-o')), sel = 0, pickFrom = null;
@@ -24,7 +24,7 @@
   function markSel(i) { sel = (i + opts.length) % opts.length; opts.forEach(function (o, j) { o.classList.toggle('on', j === sel); }); }
   function openPick(which) {
     if (which === 'uptime' || which === 'runner') return choose('runner');
-    if (which === 'quest' || which === 'rpg' || which === 'meridian') return choose('rpg');
+    if (which === 'quest' || which === 'rpg' || which === 'meridian' || which === 'afterlift') return choose('rpg');
     pickFrom = document.activeElement; pick.classList.add('open'); markSel(0);
     requestAnimationFrame(function () { pick.classList.add('show'); opts[0].focus({ preventScroll: true }); });
   }
@@ -133,6 +133,14 @@
     root.querySelector('.rpg-scr').appendChild(areaEl);
     var areaT = 0;
     function showArea() { areaEl.querySelector('b').textContent = AREA.name; var lvT = AREA.enc ? ' Bugs: level ' + AREA.lv + (AREA.lvMax && AREA.lvMax !== AREA.lv ? '–' + AREA.lvMax : '') + '.' + (AREA.lv > save.lvl + 2 ? ' DANGER.' : '') : ''; areaEl.querySelector('span').textContent = AREA.sub + lvT; areaEl.classList.add('on'); clearTimeout(areaT); areaT = setTimeout(function () { areaEl.classList.remove('on'); }, 3200); }
+    var titled = false;   // the title card, once per visit
+    function showTitle(cb) {
+      if (titled) return cb();
+      titled = true; areaEl.classList.add('gtitle'); areaEl.querySelector('b').textContent = 'AFTERLIFT';
+      areaEl.querySelector('span').textContent = 'What stays running after everyone leaves.';
+      areaEl.classList.add('on'); clearTimeout(areaT);
+      areaT = setTimeout(function () { areaEl.classList.remove('on'); setTimeout(function () { areaEl.classList.remove('gtitle'); cb(); }, 650); }, 2600);
+    }
     var fade = null;   // { t, to: [id, x, y], done }
     function travel(to) { if (fade) return; fade = { t: 0, to: to, swapped: false }; held = null; }
 
@@ -320,7 +328,7 @@
         h = '<h4>Configuration</h4>';
         function opt(label, k, labels) { btn('<span>' + label + '</span><em>‹ ' + labels[save.cfg[k]] + ' ›</em>', function (dir) { save.cfg[k] = (save.cfg[k] + (dir || 1) + labels.length) % labels.length; store(); renderMenu(); }, 'cfg'); }
         opt('Text speed', 'text', CFG.textL); opt('Encounters', 'enc', CFG.encL); opt('Difficulty', 'diff', CFG.diffL); opt('Scanlines', 'scan', CFG.scanL); opt('Command hints', 'hints', CFG.scanL);
-        btn(MN.confirm ? '<span>Erase all progress?</span><em>Press again to confirm</em>' : '<span>Erase save</span><em class="mn-dim">Start Meridian over</em>', function () {
+        btn(MN.confirm ? '<span>Erase all progress?</span><em>Press again to confirm</em>' : '<span>Erase save</span><em class="mn-dim">Start Afterlift over</em>', function () {
           if (!MN.confirm) { MN.confirm = true; return renderMenu(); }
           try { localStorage.removeItem('vonds-quest'); } catch (e) {} location.reload();
         }, 'danger');
@@ -909,10 +917,11 @@
       requestAnimationFrame(function () { root.classList.add('show'); });
       cancelAnimationFrame(raf); last = 0; raf = requestAnimationFrame(loop);
       if (!AREA) { load(save.area, save.x, save.y); syncGear(true); }
-      if (mode === 'map' && !talking) {
+      if (mode === 'map' && !talking) showTitle(function () {
+        if (talking || mode !== 'map') return;
         if (!save.met) { save.met = true; store(); say('', ['Meridian was built to be the most beautiful place on the network. Two million people lived here. For a while, it was everything it promised.', 'Then the people who owned it built a newer world, Upstream, and took the Lift. Forty thousand seats. They stopped paying for this one.', 'Nothing broken was ever fixed again. The rot set in. District by district, the city has been going dark. Last night, the signal at its heart went quiet.', 'You are Vee, a maintenance process nobody remembered to shut down. You know five commands so far: whoami, pwd, ls, cd and cat. Every level teaches you more.', coarse ? 'Use the pad to move, A to talk and B for the menu.' : 'Arrow keys to move. Enter or Z to talk. X for the menu.'], null, showArea); }
         else say('', ['Vee reconnects. ' + AREA.name + '. Level ' + save.lvl + '.'], null, showArea);
-      }
+      });
       root.querySelector('.rpg-x').focus({ preventScroll: true });
     }
     function close() {
