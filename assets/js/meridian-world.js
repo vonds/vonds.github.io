@@ -1443,10 +1443,11 @@
     { id: 'c11', name: 'Editors and Detectives', stat: 'atk', amt: 4, need: function (G) { return G.save.lvl >= 24; }, steps: [
       { t: 'Editors, question 1. Make the folder path projects/site/css in one go, parents and all.', ex: ['mkdir -p projects/site/css'] },
       { t: 'Question 2. Open notes.txt in nano, the friendly editor.', ex: ['nano notes.txt'] },
-      { t: 'Question 3. Now open it in vim. Then, in vim, what do you type to save and quit?', ex: [':wq', ':x', 'ZZ'] },
-      { t: 'Question 4. Page through the long file manual.txt without opening an editor.', ex: ['less manual.txt', 'more manual.txt'] },
-      { t: 'Question 5. Something is holding app.log open. Find out what.', ex: ['lsof app.log', 'sudo lsof app.log', 'fuser app.log'] },
-      { t: 'Question 6. Watch what is using the CPU, live.', ex: ['top', 'htop'] }] }
+      { t: 'Question 3. Now open it in vim, the powerful one.', ex: ['vim notes.txt', 'vi notes.txt'] },
+      { t: 'You’re in vim. Everyone gets stuck here once. Save and quit.', ex: [':wq', ':x', 'ZZ'] },
+      { t: 'Question 5. Page through the long file manual.txt without opening an editor.', ex: ['less manual.txt', 'more manual.txt'] },
+      { t: 'Question 6. Something is holding app.log open. Find out what.', ex: ['lsof app.log', 'sudo lsof app.log', 'fuser app.log'] },
+      { t: 'Question 7. Watch what is using the CPU, live.', ex: ['top', 'htop'] }] }
   );
   CLASSES.push({ id: 'c5', name: 'Tomorrow', stat: 'atk', amt: 4, need: function (G) { return !!G.f.tuesday; }, steps: [
     { t: 'Tomorrow, question 1. Open your own crontab to edit it.', ex: ['crontab -e'] },
