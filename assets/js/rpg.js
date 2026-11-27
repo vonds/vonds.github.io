@@ -171,6 +171,7 @@
       ownsGear: function (id) { return ownsGear(id); }, giveGear: function (id) { giveGear(id); },
       school: function (k, n) { save.school[k] += n; if (k === 'hp') save.hp += n; store(); },
       helpdesk: function (who) { helpdesk(who || 'Ines'); },
+      rush: function () { rush(); },
       arcade: function () { close(); setTimeout(function () { if (window.VondsPick) window.VondsPick('uptime'); }, 450); },
       readLog: function (id) { readLog(id); },
       logCount: function () { return WD.logOrder.filter(function (k) { return F[k]; }).length; },
@@ -405,6 +406,21 @@
             });
           } };
         }).concat([{ label: 'Later', fn: function () { D.run = 0; store(); } }]));
+    }
+    /* ---------- Root Rush: eight problems against the clock, at the Concourse arcade ---------- */
+    function rush() {
+      var T = [], seen = {}, guard = 0;
+      while (T.length < 8 && guard++ < 60) { var tk = ticket(); if (seen[tk.c] && guard < 40) continue; seen[tk.c] = 1; T.push(tk); }
+      var t0 = Date.now(), best = save.rushBest || 0;
+      T[0].step.t = 'Clock is running. ' + T[0].step.t;
+      openPuzzle('ROOT RUSH', T.map(function (x) { return x.step; }), function () {
+        var secs = Math.round((Date.now() - t0) / 1000), first = !best, rec = !best || secs < best;
+        if (rec) save.rushBest = secs; store();
+        var lines = ['ROOT RUSH. Eight problems in ' + secs + ' seconds.' + (rec ? (first ? ' A first score for the cabinet.' : ' New record. The old one was ' + best + '.') : ' Record: ' + best + ' seconds.')];
+        var xp = Math.max(20, Math.round((save.lvl * 10) * Math.min(2, 90 / Math.max(20, secs)))); lines = lines.concat(['Vee gains ' + xp + ' XP.']).concat(gainXp(xp));
+        if (secs <= 60 && !ownsGear('stopwatch')) { giveGear('stopwatch'); lines.push('The cabinet dispenses a prize: a Stopwatch. Under a minute. Kip will want to know how.'); }
+        store(); say('Arcade', lines);
+      });
     }
     function openPuzzle(title, steps, done) { PZ = { title: title, steps: steps, i: 0, done: done }; areaEl.classList.remove('on'); showPuzzle(); }
     function showPuzzle(note) {

@@ -1133,8 +1133,8 @@
   };
 
   DOORS['concourse:arcade'] = function (G) {
-    G.say('Arcade', ['Rows of dark cabinets. Only one is lit: UPTIME. An endless runner. Clear the bugs. Stay online.', 'The high-score table: PIP 9999 (PIP INSISTS). WREN 1200. VEE ---.'],
-      [{ label: 'Play Uptime', fn: function () { G.arcade(); } }, { label: 'Not now', fn: null }]);
+    G.say('Arcade', ['Rows of dark cabinets. Two are lit: UPTIME, an endless runner, and in the corner, ROOT RUSH.', 'The high-score table: PIP 9999 (PIP INSISTS). WREN 1200. VEE ---.'],
+      [{ label: 'Play Uptime', fn: function () { G.arcade(); } }, { label: 'Play Root Rush' + (G.save.rushBest ? ' (best ' + G.save.rushBest + 's)' : ''), fn: function () { G.say('Root Rush', ['ROOT RUSH: eight problems, one clock, no mercy.', 'Type fast. Type right. Under sixty seconds wins a prize.'], null, function () { G.rush(); }); } }, { label: 'Not now', fn: null }]);
   };
   DOORS['concourse:forge'] = function (G) { TALK.tallow(G); };
   DOORS['concourse:school'] = function (G) { TALK.adair(G); };
@@ -1268,6 +1268,7 @@
   BOSSES.zombie = { kind: 'worm', name: 'Zombie Process', hp: 3000, atk: [33, 41], xp: 2300, move: 'refuses to be reaped', sc: 4 };
   BOSSES.scheduler = { kind: 'centipede', name: 'The Scheduler', hp: 4200, atk: [36, 46], xp: 3200, move: 'runs monday.sh on Vee', sc: 5 };
 
+  GEAR.stopwatch = { slot: 'acc', name: 'Stopwatch', crit: .06, desc: 'Root Rush prize, under sixty seconds. Time gets slower when you’re fast. +6% crit.' };
   GEAR.headset = { slot: 'acc', name: 'Desk Headset', xp: .1, crit: .02, desc: 'Help desk issue. Hear the problem before it’s a fire. +10% XP.' };
   GEAR.cardigan = { slot: 'armor', name: 'Archivist’s Cardigan', def: 38, hp: 40, desc: 'Hollis’s. Elbow patches, deep pockets, a tape label still in one of them.' };
   GEAR.sigkill = { slot: 'weapon', name: 'SIGKILL', atk: 40, crit: .12, desc: 'Signal nine. The one a process can’t catch, ignore or argue with.' };
