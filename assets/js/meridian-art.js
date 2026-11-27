@@ -979,13 +979,15 @@
     var SP = window.VondsSprite;
     if (SP && SP.person) {
       // a person, drawn like Vee: the same face, body and outline, with their own hair and clothes
-      var img = o.hero && SP.hero ? SP.hero(o.hero, 'front', 0) : SP.person(o.p || {}); if (SP.hd && window.__afterliftHD) img = SP.hd(img);   // people get the same 16-bit pass as Vee; heroes have their own sprites
+      var wk = o.__walk || (SP.walk ? SP.walk(o.hero || SP.personHero(o.p), o.dir || 'down', -1) : { img: SP.person(o.p || {}) });   // everyone has a front, back and side, like Vee
+      var img = wk.img; if (SP.hd && window.__afterliftHD) img = SP.hd(img);   // and the same 16-bit pass
       var kid = o.look === 'kid', sc = kid ? .74 : 1, w = 22 * sc, h = 27 * sc;
       var alpha = o.look === 'warden' || o.solid ? 1 : (o.fade != null ? o.fade : .82);
       if (o.flick && Math.random() < .08) alpha *= .3;
-      var bob = Math.floor(t * 1.4 + (o.x || 0)) % 6 === 0 ? 1 : 0;   // a breath now and then
+      var bob = wk.bob != null && o.__walk && o.__walk.moving ? -wk.bob : Math.floor(t * 1.4 + (o.x || 0)) % 6 === 0 ? 1 : 0;   // a step's bounce, or a breath now and then
       c.save(); c.imageSmoothingEnabled = false; c.globalAlpha = alpha;
-      c.drawImage(img, Math.round(X + 8 - w / 2), Math.round(Y + 16 - h + bob), Math.round(w), Math.round(h));
+      if (wk.flip) { c.translate(Math.round(X + 8 + w / 2), 0); c.scale(-1, 1); c.drawImage(img, 0, Math.round(Y + 16 - h + bob), Math.round(w), Math.round(h)); }
+      else c.drawImage(img, Math.round(X + 8 - w / 2), Math.round(Y + 16 - h + bob), Math.round(w), Math.round(h));
       c.restore();
       if (o.look === 'holo') {   // a hologram: brighter, scanned, standing on its pad
         c.fillStyle = 'rgba(230,230,246,' + (.12 + .06 * Math.sin(t * 4)) + ')'; c.fillRect(Math.round(X + 8 - w / 2), Math.round(Y + 16 - h), Math.round(w), Math.round(h));

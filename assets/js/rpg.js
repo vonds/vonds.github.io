@@ -584,7 +584,7 @@
     /* ---------- interacting ---------- */
     function facing() { var d = { up: [0, -1], down: [0, 1], left: [-1, 0], right: [1, 0] }[me.dir]; return [me.x + d[0], me.y + d[1]]; }
     function interact() {
-      var f = facing(), x = f[0], y = f[1], t = tile(x, y), k = key(x, y), n = npcAt(x, y), w = wagonAt();
+      var f = facing(), x = f[0], y = f[1], t = tile(x, y), k = key(x, y), n = npcAt(x, y), w = wagonAt(); if (n) LIFE.facing = n;   // whoever Vee talks to turns to look at him
       if (n) {
         var r0 = WD.talk[n.id] ? WD.talk[n.id](G) : null, ap0 = activeParty().filter(function (id) { return id !== n.id; });
         if (ap0.length && !COMP[n.id] && Math.random() < .3) {   // the people Vee walks with have opinions about the people he talks to
@@ -1318,7 +1318,9 @@
       // people at their posts shuffle a step now and then, never far from home, never into Vee's way
       visNpcs().forEach(function (n) {
         if (n.hx == null) { n.hx = n.x; n.hy = n.y; n.px = n.x * TS; n.py = n.y * TS; n.wt = 3; }
-        n.px += Math.sign(n.x * TS - n.px) * Math.min(30 * dt, Math.abs(n.x * TS - n.px)); n.py += Math.sign(n.y * TS - n.py) * Math.min(30 * dt, Math.abs(n.y * TS - n.py));
+        var mdx = n.x * TS - n.px, mdy = n.y * TS - n.py; n.moving = !!(mdx || mdy);
+        if (n.moving) { n.dir = Math.abs(mdx) >= Math.abs(mdy) ? (mdx > 0 ? 'right' : 'left') : (mdy > 0 ? 'down' : 'up'); n.wstep = (n.wstep || 0) + dt; } else if (n.dir !== 'down' && (n.wt || 0) < 1.2) n.dir = 'down';   // walks the way it goes, then turns back to face the street
+        n.px += Math.sign(mdx) * Math.min(30 * dt, Math.abs(mdx)); n.py += Math.sign(mdy) * Math.min(30 * dt, Math.abs(mdy));
         if (n.look === 'warden' || n.solid || n.still || n.look === 'drone') return;
         n.wt -= dt; if (n.wt > 0) return; n.wt = 3 + Math.random() * 6;
         var opts = [[n.hx, n.hy], [n.hx + 1, n.hy], [n.hx - 1, n.hy], [n.hx, n.hy + 1]], o = opts[Math.floor(Math.random() * opts.length)];
@@ -1347,9 +1349,9 @@
     }
     function lifeDraw(list) {
       LIFE.walkers.forEach(function (w) { list.push({ y: w.py / TS, draw: function () {
-        var img = hdv(SP.person(w.look)), bob = Math.floor(w.step * 6) % 2;
-        cx.save(); cx.globalAlpha = w.alpha; cx.fillStyle = 'rgba(0,0,0,.25)'; cx.beginPath(); cx.ellipse(w.px + 8 - cam.x, w.py + 15 - cam.y, 5, 1.6, 0, 0, 7); cx.fill();
-        cx.drawImage(img, Math.round(w.px - 3 - cam.x), Math.round(w.py - 11 - bob - cam.y), 22, 27); cx.restore();
+        var wk = SP.walk ? SP.walk(SP.personHero(w.look), w.dir > 0 ? 'right' : 'left', Math.floor(w.step * 8) % 4) : { img: SP.person(w.look) }, img = hdv(wk.img);   // passers-by walk like Vee: side-on, a full run cycle
+        cx.save(); cx.globalAlpha = w.alpha; cx.fillStyle = 'rgba(0,0,0,.25)'; cx.beginPath(); cx.ellipse(w.px + 8 - cam.x, w.py + 15 - cam.y, 5, 1.6, 0, 0, 7); cx.fill(); cx.restore();
+        cx.save(); cx.globalAlpha = w.alpha; drawSprite(img, w.px - 3 - cam.x, w.py - 11 - cam.y, wk.flip, 1); cx.restore();
       } }); });
     }
     function barkPlace() {
@@ -1387,7 +1389,9 @@
         gateOpen: gateOpen, isLit: isLit, signal: lights() === 6 || !!F.ending, tether: F.ending === 'cut' ? 'cut' : F.ending === 'reverse' ? 'down' : 'up', fpos: PAINTED.fpos, radio: !!F.radio, mara: !!F.mara };
       ART.live(cx, AREA, MAP, tnow, cam, st, 'under');
       // people, the wagon and Vee, nearest drawn last
-      var list = visNpcs().map(function (n) { var nx = n.px != null ? n.px : n.x * TS, ny = n.py != null ? n.py : n.y * TS; return { y: ny / TS, draw: function () { ART.person(cx, nx - cam.x, ny - cam.y, n, tnow); } }; });
+      var list = visNpcs().map(function (n) { var nx = n.px != null ? n.px : n.x * TS, ny = n.py != null ? n.py : n.y * TS; return { y: ny / TS, draw: function () {
+        if (SP.walk && n.look !== 'drone') { var sp = n.hero || SP.personHero(n.p), d = n.dir || 'down'; if (talking && LIFE.facing === n) d = me.y < n.y ? 'up' : me.y > n.y ? 'down' : me.x < n.x ? 'left' : 'right'; n.__walk = SP.walk(sp, d, n.moving ? Math.floor((n.wstep || 0) * 8) % 4 : -1); n.__walk.moving = n.moving; }
+        ART.person(cx, nx - cam.x, ny - cam.y, n, tnow); } }; });
       lifeDraw(list);
       var w = wagonAt(); if (w) list.push({ y: w[1], draw: function () { ART.wagon(cx, w[0] * TS - cam.x, w[1] * TS - cam.y, tnow); } });
       list.push({ y: me.py / TS + .01, draw: function () {
@@ -1443,7 +1447,7 @@
       order.forEach(function (f) {
         f.shake = Math.max(0, f.shake - dt * 3); f.flash = Math.max(0, f.flash - dt * 4); f.lunge = Math.max(0, (f.lunge || 0) - dt * 3);
         if (f.dead) { f.fade = Math.max(0, f.fade - dt * 1.6); if (f.fade <= 0) return; }
-        var PEOPLE = { vesfork: WD.heroes && WD.heroes.ves, corvin: WD.heroes && WD.heroes.corvin }; if (WD.heroes && WD.heroes[f.kind] && !PEOPLE[f.kind]) PEOPLE[f.kind] = WD.heroes[f.kind];   // the rivals are people, not bugs: their own sprites, facing Vee
+        var PEOPLE = { vesfork: WD.heroes && WD.heroes.ves, corvin: WD.heroes && (WD.heroes.corvin_suit || WD.heroes.corvin) }; /* Corvin fights in the Continuity Suite */ if (WD.heroes && WD.heroes[f.kind] && !PEOPLE[f.kind]) PEOPLE[f.kind] = WD.heroes[f.kind];   // the rivals are people, not bugs: their own sprites, facing Vee
         var img = PEOPLE[f.kind] ? hdv(SP.hero(PEOPLE[f.kind], 'side', f.lunge > .3 ? 'point' : (Math.floor(B.t * 2) % 2 ? 'idle2' : 'idle'))) : (SP.bugHD && !(save.cfg && save.cfg.retro) ? SP.bugHD : SP.bug)(f.kind, Math.floor((B.t + f.ph) * 4)), sc = f.sc / (img.hd || 1), w = img.width * sc, h = img.height * sc;   // sc here is per drawn pixel; drawSprite takes the per-world-pixel scale   // 16-bit sprites by default; img.hd says how much finer they're drawn
         var bx = f.fx + (f.shake ? Math.sin(B.t * 80) * 3 * f.shake : 0) + f.lunge * 10, by = f.fy - h + (f.kind === 'moth' || f.kind === 'virus' ? -6 + Math.sin(B.t * 3 + f.ph) * 1.5 : 0);
         cx.fillStyle = 'rgba(0,0,0,.35)'; cx.beginPath(); cx.ellipse(f.fx + w / 2, f.fy + 1, w * .42, 3, 0, 0, 7); cx.fill();
