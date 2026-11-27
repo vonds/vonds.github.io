@@ -584,7 +584,21 @@
     function facing() { var d = { up: [0, -1], down: [0, 1], left: [-1, 0], right: [1, 0] }[me.dir]; return [me.x + d[0], me.y + d[1]]; }
     function interact() {
       var f = facing(), x = f[0], y = f[1], t = tile(x, y), k = key(x, y), n = npcAt(x, y), w = wagonAt();
-      if (n) return WD.talk[n.id] ? WD.talk[n.id](G) : null;
+      if (n) {
+        var r0 = WD.talk[n.id] ? WD.talk[n.id](G) : null, ap0 = activeParty().filter(function (id) { return id !== n.id; });
+        if (ap0.length && !COMP[n.id] && Math.random() < .3) {   // the people Vee walks with have opinions about the people he talks to
+          var REACT = { kes: ['Kes: They talk slow. I like them anyway.', 'Kes: I delivered to them once. Good tipper.', 'Kes: You’re too nice to people. Keep doing it.'],
+            odessa: ['Dr. Odessa: That one needs to sleep more.', 'Dr. Odessa: I’ve treated them. They complained the whole time. Healthy sign.', 'Dr. Odessa: Kind. Tired. Like everyone here.'],
+            piper: ['Piper: Ooh, they’re going on the show.', 'Piper: Great voice. Terrible taste in music, probably.', 'Piper: Folks, that was a real conversation. Rare stuff.'],
+            moth: ['Moth: …their coat has a loose thread. I’ll fix it later.', 'Moth: …nice.', 'Moth: …they didn’t finish my sentences. Good person.'],
+            rook: ['Rook: Trustworthy. I can tell.', 'Rook: I used to check their badge every morning. They always said thank you.', 'Rook: Watch their left hand. Habit. Never mind. They’re fine.'],
+            sable: ['Sable: I have an entry on them. It is longer than they would expect.', 'Sable: Their grandmother planted the first tree on this street.', 'Sable: Every person here is an archive. That one is a good one.'],
+            juni: ['Juni: Do you think they like stars? I should ask. I’m going to ask.', 'Juni: They have a nice face. Faces are made up too. Theirs is made up well.', 'Juni: I have four questions for them. Is that too many? It’s too many.'],
+            ves: ['Ves: They looked at me like I was you. I didn’t correct them.', 'Ves: I had them on a reclaim list once. I’m glad I never got to it.', 'Ves: People here are generous. Corvin never mentioned that.'] };
+          var who0 = ap0[Math.floor(Math.random() * ap0.length)], ln0 = REACT[who0]; if (ln0) afterTalk.push(ln0[Math.floor(Math.random() * ln0.length)]);
+        }
+        return r0;
+      }
       if (w && y === w[1] && (x === w[0] || x === w[0] + 1)) return WD.wagon(G);
       if (t === 'd') {
         var b = (AREA.blds || []).filter(function (b2) { return b2.door != null && b2.x + b2.door === x && (b2.doorTop ? b2.y : b2.y + b2.h - 1) === y; })[0];
