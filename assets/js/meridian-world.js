@@ -74,7 +74,7 @@
       { x: 22, y: 1, w: 7, h: 6, kind: 'archive', door: 3, sign: 'ARCHIVE', rise: 2 },
       { x: 2, y: 12, w: 4, h: 5, kind: 'tower', door: 1, seed: 3, rise: 3 },
       { x: 26, y: 12, w: 4, h: 5, kind: 'tower', door: 2, seed: 7, rise: 3 },
-      { x: 9, y: 1, w: 4, h: 4, kind: 'home', seed: 11, rise: 1 },
+      { x: 9, y: 1, w: 4, h: 4, kind: 'home', seed: 11, rise: 1, door: 2 },
       { x: 18, y: 1, w: 3, h: 3, kind: 'home', seed: 5, rise: 1 }
     ],
     exits: { '0,9': ['commons', 34, 9], '0,10': ['commons', 34, 10], '15,0': ['gardens', 15, 20], '16,0': ['gardens', 16, 20], '15,19': ['undercroft', 15, 1], '16,19': ['undercroft', 16, 1] },
@@ -1437,6 +1437,23 @@
     { t: 'Question 2. Write the line that runs /home/vee/backup.sh every day at 2 a.m.', ex: ['0 2 * * * /home/vee/backup.sh'] },
     { t: 'Question 3. List the timers systemd is keeping.', ex: ['systemctl list-timers', 'systemctl list-timers --all'] },
     { t: 'Question 4. And now, the important one. What day is it? Ask the system.', ex: ['date', 'date +%A', 'date "+%A"'] }] });
+  /* a room of Vee's own: the nameplate fills in once Vee is a resident */
+  DOORS['plaza:home'] = function (G) {
+    var f = G.f, s = G.save;
+    if (!(f.ending || f.tuesday)) return G.say('', ['A small apartment above the Plaza. The door is locked. The nameplate is blank.', 'It has been blank since the Lift. Nobody moved in. Nobody was left to.']);
+    if (!f.home) { f.home = 1; G.rest(); return G.say('', ['The nameplate has a name on it now, in Wren’s careful handwriting: VEE.', 'The door is unlocked. Inside: a chair, a window over the Plaza, a bed that has never been slept in.', 'On the table, a note. “Residents need somewhere to come back to. — W.”', 'Vee sits down. For the first time, he isn’t on shift. HP restored.']); }
+    G.rest();
+    var lines = ['Home. The window looks out over the Plaza. ' + (f.tuesday ? 'Down below, someone is setting up a market stall. It wasn’t there yesterday.' : 'The fountain renders once every eleven seconds. Vee has started counting along.')];
+    var wall = [];
+    if (s.rushBest) wall.push('a Root Rush score card: ' + s.rushBest + ' seconds');
+    if (s.desk && s.desk.done) wall.push(s.desk.done + ' thank-you notes from help desk tickets');
+    var bugs = Object.keys(s.best || {}).length; if (bugs) wall.push('sketches of ' + bugs + ' kinds of bug');
+    if (f.upTicket) wall.push('a postcard from Upstream, about rain');
+    if (f.firstbug) wall.push('the empty page from the first logbook');
+    if (wall.length) lines.push('On the wall: ' + wall.join('; ') + '.');
+    lines.push('Vee rests. HP restored.');
+    G.say('', lines);
+  };
   /* Tuesday: the people who were stuck on Monday get a tomorrow */
   (function () {
     function tues(id, name, lines) { var t0 = TALK[id]; if (!t0) return; TALK[id] = function (G) { if (G.f.tuesday && !G.f['tue_' + id]) { G.f['tue_' + id] = 1; return G.say(name, lines); } return t0(G); }; }
