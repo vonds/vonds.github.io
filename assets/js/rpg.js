@@ -154,6 +154,7 @@
         lines.push('LEVEL UP. Vee is now level ' + save.lvl + '. Max HP ' + maxHp() + '. +3 stat points to spend: open the menu, then Level Up.');
         var got = [];
         while (save.known.length < Math.min(COMMANDS.length, cmdsAt(save.lvl)) && nextCmd()) { var nc = nextCmd(); save.known.push(nc.cmd); save.learnedAt[nc.cmd] = save.lvl; got.push(nc); }
+        if (got.length) save.drill = (save.drill || []).concat(got.map(function (c) { return c.cmd; }));
         if (got.length) lines.push('New commands: ' + got.map(function (c) { return c.cmd; }).join(', ') + '.', got.map(function (c) { return '<span class="mono">' + c.cmd + '</span>: ' + c.learn; }).join('<br>'), 'Bugs will bring problems that need them. Read them under Commands in the menu.');
       }
       store(); return lines;
@@ -537,7 +538,17 @@
       if (!last) { talking.i++; showLine(); return; }
       var d = talking.done; endTalk(); if (d) d();
     }
-    function endTalk() { talking = null; msg.classList.remove('on'); if (mode === 'map' && typeof syncGear === 'function' && GEAR) syncGear(); if (afterTalk.length && mode === 'map') { var q = afterTalk.splice(0); setTimeout(function () { say('', q); }, 60); } }
+    function endTalk() { talking = null; msg.classList.remove('on'); if (mode === 'map' && typeof syncGear === 'function' && GEAR) syncGear(); if (afterTalk.length && mode === 'map') { var q = afterTalk.splice(0); setTimeout(function () { say('', q); }, 60); return; } if (mode === 'map' && save.drill && save.drill.length && !PZ) setTimeout(offerDrill, 80); }
+    // fresh commands: one practice problem each, right after learning them
+    function offerDrill() {
+      if (talking || PZ || mode !== 'map' || !save.drill || !save.drill.length) return;
+      var list = save.drill.filter(function (c) { return cmdInfo(c); }); save.drill = []; store();
+      if (!list.length) return;
+      say('Vee', ['New commands: ' + list.join(', ') + '. Practice them now? One problem each.'], [{ label: 'Practice', fn: function () {
+        var steps = list.map(function (c) { var info = cmdInfo(c), sc = info.when[Math.floor(Math.random() * info.when.length)]; return { t: '(' + c + ') ' + sc.t, ex: sc.ex, ok: { test: function (line) { var J = judge(info, sc, line); if (J.right) { var p = prac(c); p.last = save.bw; if (J.exact) p.n++; } return J.right; } } }; });
+        openPuzzle('PRACTICE', steps, function () { var xp = 6 * list.length * save.lvl; say('Vee', ['Practiced. Fresh commands stick better the first time.', 'Vee gains ' + xp + ' XP.'].concat(gainXp(xp))); });
+      } }, { label: 'Later', fn: null }]);
+    }
     function choiceMove(d) {
       if (!talking || !talking.choices || talking.i !== talking.lines.length - 1) return;
       talking.sel = (talking.sel + d + talking.choices.length) % talking.choices.length;
