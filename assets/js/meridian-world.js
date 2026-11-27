@@ -1971,6 +1971,55 @@
     tues('osei', 'Osei', ['The edge moved. Out, not in. Four tiles of floor where there was blank yesterday.', 'Nobody built it. It just grew, the way a city does when it’s allowed to.']);
   })();
 
+  /* DEPRECATION NOTICES: the Board posted one in every district the day the Lift left. Vee can amend them. */
+  var NOTICES = [
+    { at: 'plaza:23,7', id: 'n1', who: 'All residents, Meridian Plaza', steps: [
+      { t: 'The notice is a text file. Read notice.txt first.', ex: ['cat notice.txt'], ok: /^(cat|less|more) notice\.txt$/ },
+      { t: 'It says STATUS: OBSOLETE. Use sed to swap OBSOLETE for CURRENT, editing notice.txt in place.', ex: ['sed -i \'s/OBSOLETE/CURRENT/\' notice.txt'], ok: /^sed -i ['"]?s\/OBSOLETE\/CURRENT\/g?['"]? notice\.txt$/ }
+    ], after: ['STATUS: CURRENT.', 'It isn’t true yet. Neither was the first version.'] },
+    { at: 'commons:14,7', id: 'n2', who: 'Market stalls 1 to 300, the Commons', steps: [
+      { t: 'The notice lists every stall, one per line, in stalls.txt. Count the lines that contain OBSOLETE.', ex: ['grep -c OBSOLETE stalls.txt'], ok: /^grep -c ['"]?OBSOLETE['"]? stalls\.txt$/ },
+      { t: '300. Every stall. Now replace OBSOLETE with OPEN on every line of stalls.txt, in place.', ex: ['sed -i \'s/OBSOLETE/OPEN/g\' stalls.txt'], ok: /^sed -i ['"]?s\/OBSOLETE\/OPEN\/g?['"]? stalls\.txt$/ }
+    ], after: ['300 stalls, OPEN.', 'A stallholder reads it over Vee’s shoulder and laughs for the first time in a long while.'] },
+    { at: 'halflight:13,8', id: 'n3', who: 'Halflight towers, all floors', steps: [
+      { t: 'There are two copies: notice.txt and the original, notice.bak. Show what the Board changed between them.', ex: ['diff notice.bak notice.txt'], ok: /^diff (notice\.bak notice\.txt|notice\.txt notice\.bak)$/ }
+    ], after: ['< STATUS: RESIDENT', '> STATUS: OBSOLETE', 'One word. That was the whole difference. Vee copies the original back over it.'] },
+    { at: 'line:4,9', id: 'n4', who: 'Platform staff, the Line', steps: [
+      { t: 'The Reclaimer takes files nobody has touched in thirty days. Check when platform.log was last modified, in a long listing.', ex: ['ls -l platform.log'], ok: /^ls -(l|la|al|lh) platform\.log$/ },
+      { t: 'Eleven months. Update its timestamps to now, without changing a word inside it.', ex: ['touch platform.log'] }
+    ], after: ['platform.log: modified just now.', 'To the Reclaimer, the Line has been used today. That’s one less thing it can take.'] },
+    { at: 'patchwork:24,6', id: 'n5', who: 'Unregistered structures, the Patchwork', steps: [
+      { t: 'Make a directory called archive, to keep the notice as evidence.', ex: ['mkdir archive'] },
+      { t: 'Move notice.txt into archive.', ex: ['mv notice.txt archive/'], ok: /^mv notice\.txt archive\/?$/ }
+    ], after: ['The wall is bare. The notice is kept, not destroyed. Somebody should remember the Board said this.'] },
+    { at: 'concourse:13,5', id: 'n6', who: 'Concourse Nine, all 214 shops', steps: [
+      { t: 'Write a new status file. Put the word CURRENT into status.txt, overwriting what’s there.', ex: ['echo CURRENT > status.txt'], ok: /^echo ['"]?CURRENT['"]? > ?status\.txt$/ },
+      { t: 'Now add a second line to status.txt, without erasing the first: MAINTAINED BY VEE.', ex: ['echo "MAINTAINED BY VEE" >> status.txt'], ok: /^echo ['"]?MAINTAINED BY VEE['"]? >> ?status\.txt$/ }
+    ], after: ['CURRENT', 'MAINTAINED BY VEE', 'Under the sign, the old swept-clean floor. It looks less like waiting now.'] }
+  ];
+  (function () {
+    function put(area, x, y, c) { var r = A[area].map[y].split(''); r[x] = c; A[area].map[y] = r.join(''); }
+    NOTICES.forEach(function (N) {
+      var a = N.at.split(':'), xy = a[1].split(',').map(Number); put(a[0], xy[0], xy[1], 's');
+      SPOTS[N.at] = function (G) {
+        var f = G.f, done = NOTICES.filter(function (n) { return f[n.id]; }).length;
+        if (f[N.id]) return G.say('Amended notice', N.after.concat(['(' + done + ' of 6 notices amended.)']));
+        G.say('Deprecation notice', ['NOTICE OF DEPRECATION. BY ORDER OF THE BOARD.', 'APPLIES TO: ' + N.who.toUpperCase() + '.', 'STATUS: OBSOLETE. SUPPORT ENDS AT DEPARTURE. NO FURTHER UPDATES WILL BE ISSUED.',
+          'It’s a file, like everything here. Files can be edited.'], [{ label: 'Amend it', fn: function () {
+          G.puzzle('DEPRECATION NOTICE', N.steps, function () {
+            f[N.id] = 1; var n = NOTICES.filter(function (q) { return f[q.id]; }).length; var gx = 90 + (n === 6 ? 300 : 0); G.xp(gx); G.give('kb', 1);
+            var L = N.after.concat(['Vee gains ' + gx + ' XP and a kilobyte. (' + n + ' of 6 notices amended.)']);
+            if (n === 6) L.push('Every notice in the city, amended. The Board said this city was obsolete. Six walls now say otherwise.', 'Vee finds the Board’s own changelog, discarded. He keeps it. (Changelog: accessory.)');
+            G.say('', L);
+          });
+        } }, { label: 'Leave it', fn: null }]);
+      };
+    });
+  })();
+  GEAR.changelog = { slot: 'acc', name: 'Changelog', hp: 40, xp: .08, desc: 'The Board’s list of what changed, with six new lines at the bottom in Vee’s handwriting.' };
+  GEAR_FROM.push(['changelog', function (G) { return NOTICES.every(function (n) { return G.f[n.id]; }); }, '(Changelog: accessory.)']);
+  (function () { var j0 = JOURNAL; JOURNAL = function (G) { var j = j0(G), n = NOTICES.filter(function (q) { return G.f[q.id]; }).length; if (n) j.push('Deprecation notices amended: ' + n + ' of 6'); return j; }; })();
+
   var journal1 = JOURNAL;
   JOURNAL = function (G) {
     var f = G.f, j = journal1(G);
