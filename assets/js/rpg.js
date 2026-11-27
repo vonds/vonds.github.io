@@ -53,7 +53,7 @@
       '<div class="ff4w rpg-msg" aria-live="polite"><b class="ff4n"></b><p></p><div class="rpg-opts"></div></div>' +
       '<div class="rpg-hud"><div class="ff4w rpg-foes"></div><div class="ff4w rpg-party"></div><div class="ff4w rpg-cmd"></div></div>' +
       '<div class="rpg-title"></div></div>' +
-      '<div class="rpg-pad" aria-hidden="true"><button data-k="up"></button><button data-k="left"></button><button data-k="right"></button><button data-k="down"></button><button class="a" data-k="a">A</button><button class="b" data-k="b">B</button></div>' +
+      '<div class="rpg-pad" aria-hidden="true"><button data-k="up"></button><button data-k="left"></button><button data-k="right"></button><button data-k="down"></button><button class="a" data-k="a">A</button><button class="b" data-k="b">B</button><button class="d" data-k="dash">DASH</button></div>' +
       '<button class="rpg-x" type="button" aria-label="Close ' + NAMES.rpg + '"><i></i><i></i></button>';
     document.body.appendChild(root);
     var cv = root.querySelector('canvas'), cx = cv.getContext('2d'); cx.imageSmoothingEnabled = false; cx.scale(2, 2);   // the canvas has twice the pixels the world is laid out in, so 16-bit sprites can use the half-pixels
@@ -1093,7 +1093,7 @@
     function endBattle() { store(); B = null; closePrompt(); hud.classList.remove('on'); cmdBox.classList.remove('on'); titleEl.classList.remove('on'); mode = 'map'; me.safe = 5; }
 
     /* ---------- loop and drawing ---------- */
-    var mode = 'map', raf = 0, last = 0, swirlT = 0, keys = {}, held = null;
+    var mode = 'map', raf = 0, last = 0, swirlT = 0, keys = {}, held = null, dashHeld = false, ghosts = [], ghostT = 0;   // dash: hold Shift or DASH to run, leaving afterimages
     function drawMap() {
       var tnow = performance.now() / 1000;
       if (!me.moving || true) placeCam();
@@ -1106,6 +1106,9 @@
       var list = (AREA.npcs || []).map(function (n) { return { y: n.y, draw: function () { ART.person(cx, n.x * TS - cam.x, n.y * TS - cam.y, n, tnow); } }; });
       var w = wagonAt(); if (w) list.push({ y: w[1], draw: function () { ART.wagon(cx, w[0] * TS - cam.x, w[1] * TS - cam.y, tnow); } });
       list.push({ y: me.py / TS + .01, draw: function () {
+        // afterimages: where Vee was a moment ago, fading, in whichever direction he was running
+        ghosts.forEach(function (gh) { gh.t += 1 / 60; var a = Math.max(0, .5 * (1 - gh.t / .32)); if (!a) return; cx.save(); cx.globalAlpha = a; cx.filter = 'brightness(1.8) contrast(.8)'; drawSprite(gh.img, gh.px - 3 - cam.x, gh.py - 10 - (gh.bob ? 1 : 0) - cam.y, gh.flip); cx.restore(); });
+        ghosts = ghosts.filter(function (gh) { return gh.t < .32; });
         var v = veeImg(), vx = me.px - 3 - cam.x, vy = me.py - 10 - (v.bob ? 1 : 0) - cam.y;
         cx.fillStyle = 'rgba(0,0,0,.35)'; cx.beginPath(); cx.ellipse(me.px + 8 - cam.x, me.py + 15 - cam.y, 7, 2.5, 0, 0, 7); cx.fill();
         drawSprite(v.img, vx, vy, v.flip);
@@ -1202,8 +1205,9 @@
       }
       if (mode !== 'map' || talking || PZ) return;
       if (me.moving) {
-        var tx = me.x * TS, ty = me.y * TS, sp = 70 * dt;
-        me.px += Math.sign(tx - me.px) * Math.min(sp, Math.abs(tx - me.px)); me.py += Math.sign(ty - me.py) * Math.min(sp, Math.abs(ty - me.py)); me.step++;
+        var dashing = dashHeld && !PZ, tx = me.x * TS, ty = me.y * TS, sp = 70 * dt * (dashing ? 2.2 : 1);
+        me.px += Math.sign(tx - me.px) * Math.min(sp, Math.abs(tx - me.px)); me.py += Math.sign(ty - me.py) * Math.min(sp, Math.abs(ty - me.py)); me.step += dashing ? 2 : 1;
+        if (dashing) { ghostT += dt; if (ghostT > .045) { ghostT = 0; var gv = veeImg(); ghosts.push({ img: gv.img, flip: gv.flip, bob: gv.bob, px: me.px, py: me.py, t: 0 }); if (ghosts.length > 8) ghosts.shift(); } }
         if (me.px === tx && me.py === ty) {
           me.moving = false; me.steps++; save.x = me.x; save.y = me.y; if (me.steps % 6 === 0) store();
           var k = key(me.x, me.y), ex = AREA.exits && AREA.exits[k], gt = AREA.gates && AREA.gates[k];
@@ -1233,6 +1237,7 @@
     var KEYMAP = { ArrowUp: 'up', ArrowDown: 'down', ArrowLeft: 'left', ArrowRight: 'right', w: 'up', s: 'down', a: 'left', d: 'right', W: 'up', S: 'down', A: 'left', D: 'right' };
     function press(k) {
       if (!root.classList.contains('open')) return;
+      if (k === 'dash') { dashHeld = true; return; }
       if (talking) {
         if (k === 'a') advance(); else if (k === 'left' || k === 'up') choiceMove(-1); else if (k === 'right' || k === 'down') choiceMove(1);
         return;
@@ -1254,9 +1259,10 @@
       if (fade || PZ) return;
       if (mode === 'map') { if (k === 'a') interact(); else if (k === 'b') openMenu(); else held = k; }
     }
-    function release(k) { if (held === k) held = null; }
+    function release(k) { if (k === 'dash') { dashHeld = false; return; } if (held === k) held = null; }
     document.addEventListener('keydown', function (e) {
       if (!root.classList.contains('open')) return;
+      if (e.key === 'Shift') { dashHeld = true; return; }
       if (PZ) { if (e.key === 'Escape') { e.preventDefault(); cancelPuzzle(); } e.stopPropagation(); return; }
       if (B && B.phase === 'type') { if (e.key === 'Escape') { e.preventDefault(); cancelTarget(); } e.stopPropagation(); return; }
       if (e.key === 'Escape' && mode === 'menu') { e.preventDefault(); menuKey('b'); return; }
@@ -1264,7 +1270,7 @@
       var k = KEYMAP[e.key] || (e.key === 'Enter' || e.key === ' ' || e.key === 'z' || e.key === 'Z' ? 'a' : e.key === 'x' || e.key === 'X' || e.key === 'Backspace' ? 'b' : null);
       if (!k) return; e.preventDefault(); if (!e.repeat || KEYMAP[e.key]) press(k);
     });
-    document.addEventListener('keyup', function (e) { var k = KEYMAP[e.key]; if (k) release(k); });
+    document.addEventListener('keyup', function (e) { if (e.key === 'Shift') dashHeld = false; var k = KEYMAP[e.key]; if (k) release(k); });
     [].forEach.call(root.querySelectorAll('.rpg-pad button'), function (b) {
       var k = b.getAttribute('data-k');
       b.addEventListener('pointerdown', function (e) { e.preventDefault(); press(k); });
@@ -1282,7 +1288,7 @@
       if (!AREA) { load(save.area, save.x, save.y); syncGear(true); }
       if (mode === 'map' && !talking) showTitle(function () {
         if (talking || mode !== 'map') return;
-        if (!save.met) { save.met = true; store(); say('', ['Meridian was built to be the most beautiful place on the network. Two million people lived here. For a while, it was everything it promised.', 'Then the people who owned it built a newer world, Upstream, and sorted every account into two lists. Current: forty thousand of them, who took the Lift. Obsolete: everyone else.', 'The Current stopped paying for this world. Nothing obsolete is maintained.', 'The rot set in. District by district, the city has been going dark. Last night, the signal at its heart went quiet.', 'You are Vee, a maintenance process nobody remembered to shut down. You know five commands so far: whoami, pwd, ls, cd and cat. Every level teaches you more.', coarse ? 'Use the pad to move, A to talk and B for the menu.' : 'Arrow keys to move. Enter or Z to talk. X for the menu.'], null, showArea); }
+        if (!save.met) { save.met = true; store(); say('', ['Meridian was built to be the most beautiful place on the network. Two million people lived here. For a while, it was everything it promised.', 'Then the people who owned it built a newer world, Upstream, and sorted every account into two lists. Current: forty thousand of them, who took the Lift. Obsolete: everyone else.', 'The Current stopped paying for this world. Nothing obsolete is maintained.', 'The rot set in. District by district, the city has been going dark. Last night, the signal at its heart went quiet.', 'You are Vee, a maintenance process nobody remembered to shut down. You know five commands so far: whoami, pwd, ls, cd and cat. Every level teaches you more.', coarse ? 'Use the pad to move, A to talk and B for the menu.' : 'Arrow keys to move. Hold Shift (or DASH on a phone) to dash. Enter or Z to talk. X for the menu.'], null, showArea); }
         else say('', ['Vee reconnects. ' + AREA.name + '. Level ' + save.lvl + '.'], null, showArea);
       });
       root.querySelector('.rpg-x').focus({ preventScroll: true });
