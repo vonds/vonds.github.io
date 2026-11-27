@@ -71,8 +71,10 @@
       { id: 'byte', name: 'Byte', heal: 35, tip: 'Eight bits. Restores 35 HP or 14% of max HP.' },
       { id: 'kb', short: 'KB', name: 'Kilobyte', heal: 70, tip: 'A thousand bytes. Restores 70 HP or 28% of max HP.' },
       { id: 'mb', short: 'MB', name: 'Megabyte', heal: 140, tip: 'A million bytes. Restores 140 HP or 55% of max HP.' },
-      { id: 'gb', short: 'GB', name: 'Gigabyte', heal: 9999, tip: 'A billion bytes. Restores all HP.' }
+      { id: 'gb', short: 'GB', name: 'Gigabyte', heal: 9999, tip: 'A billion bytes. Restores all HP.' },
+      { id: 'av', short: 'AV', name: 'Antivirus', heal: 0, cure: 1, tip: 'Scrubs one process clean: cures poison, silence, slow, daze and weakness.' }
     ];
+    if (save.items && save.items.av == null) save.items.av = 2;
     if (!save.items) save.items = { bit: 3, byte: 1 };
     if (!save.party) save.party = { has: {}, active: [], hp: {} };   // companions: who has joined, who's walking with Vee (two at most), their HP
     if (save.coffee) { save.items.bit = (save.items.bit || 0) + save.coffee; } delete save.coffee;   // older saves
@@ -356,17 +358,19 @@
           h = '<div class="mn-card"><div class="mn-portrait" data-hero="' + cid + '"></div><div><h4>' + C.name + ' <span class="mn-dim">' + C.role + ' · Level ' + cLv() + '</span></h4></div></div><p class="mn-dim">' + C.bio + '</p><p class="mn-dim">Fights won together: ' + bw + (bw < 20 ? ' · they open up at ' + (bw < 8 ? 8 : 20) : '') + '</p>' +
             '<div class="mn-row"><span>HP</span>' + bar(cHp(cid), cMax(cid)) + '<em>' + cHp(cid) + ' / ' + cMax(cid) + '</em></div>' +
             '<div class="mn-stats"><div><span>ATK</span><b>' + cAtk(cid) + '</b></div><div><span>DEF</span><b>' + cDef(cid) + '</b></div></div>' +
-            C.skills.map(function (k) { return '<p><b>' + k.name + '</b> <span class="mn-dim">every ' + k.cd + ' turns</span><br><small>' + k.tip + '</small></p>'; }).join('');
+            C.skills.map(function (k) { var lk = skillLock(k); return '<p' + (lk ? ' class="mn-dim"' : '') + '><b>' + k.name + '</b> <span class="mn-dim">' + (lk ? lk : 'every ' + k.cd + ' turns') + '</span><br><small>' + k.tip + '</small></p>'; }).join('');
           btn('<span>' + (on ? 'Send to standby' : 'Bring into the party') + '</span><em class="mn-dim">' + act.length + ' of 2 in the party</em>', function () {
             if (on) save.party.active = act.filter(function (x) { return x !== cid; });
             else if (act.length >= 2) { MN.note = 'The party is full. Send someone to standby first.'; return renderMenu(); }
             else save.party.active = act.concat([cid]);
             store(); renderMenu();
           });
+          btn('<span>Row: ' + (save.rows && save.rows[cid] === 'back' ? 'Back' : 'Front') + '</span><em class="mn-dim">Back row: takes a third less, plain attacks hit softer</em>', function () { save.rows = save.rows || {}; save.rows[cid] = save.rows[cid] === 'back' ? 'front' : 'back'; store(); renderMenu(); });
           if (WD.talk[cid]) btn('<span>Talk</span><em class="mn-dim">Hear what ' + C.name + ' has to say</em>', function () { closeMenu(); WD.talk[cid](G); });
           btn('<span>Back</span>', function () { MN.slot = null; MN.sel = 0; renderMenu(); });
         } else {
           h = '<h4>Party · ' + act.length + ' of 2</h4>';
+          btn('<span>Vee <em class="mn-dim">Row: ' + (save.rows && save.rows.vee === 'back' ? 'Back' : 'Front') + '</em></span><em class="mn-dim">Switch row</em>', function () { save.rows = save.rows || {}; save.rows.vee = save.rows.vee === 'back' ? 'front' : 'back'; store(); renderMenu(); });
           ids.forEach(function (cid) {
             var on = act.indexOf(cid) >= 0;
             btn('<span>' + COMP[cid].name + ' <em class="mn-dim">' + COMP[cid].role + '</em></span><em>' + (on ? 'IN PARTY · ' : 'standby · ') + cHp(cid) + '/' + cMax(cid) + '</em>', function () { MN.slot = cid; MN.sel = 0; renderMenu(); });
@@ -394,6 +398,7 @@
         ITEMS.forEach(function (it) {
           var n = save.items[it.id] || 0; if (!n) return;
           btn('<span>' + it.name + '</span><em>x' + n + '</em><small>' + it.tip + '</small>', function () {
+            if (it.cure) { MN.note = 'Antivirus only matters in a fight. Statuses wear off when a battle ends.'; return renderMenu(); }
             if (save.hp >= maxHp()) { MN.note = 'HP is already full.'; return renderMenu(); }
             save.items[it.id]--; var hh = Math.min(maxHp() - save.hp, healOf(it)); save.hp += hh; MN.note = 'Vee absorbs a ' + it.name.toLowerCase() + '. +' + hh + ' HP.'; store(); renderMenu();
           });
@@ -927,7 +932,8 @@
           get scenario() { return this.sc0.t; }, fx: slot[0], fy: slot[1], ph: Math.random() * 6, exposed: 0, slow: 0, leak: 0 });
       }
       var allies = activeParty().map(function (id, j) { return { id: id, hp: Math.max(1, cHp(id)), max: cMax(id), cd: {}, down: false, guard: 0, lunge: 0, hurt: 0, slot: j }; });
-      B = { allies: allies, ai: 0, actor: null, corrupt: 0, regen: 0, blind: 0, taunt: 0, pguard: 0, allyFocus: 0, foes: foes, focus: false, phase: 'intro', t: 0, vx: 0, pops: [], menu: 'main', sel: 0, cast: 0, target: 0, pending: null, boss: bossDef, onWin: opt.onWin, theme: AREA.theme };
+      B = { allies: allies, ai: 0, actor: null, corrupt: 0, regen: 0, blind: 0, taunt: 0, pguard: 0, allyFocus: 0, foes: foes, focus: false, phase: 'intro', t: 0, vx: 0, pops: [], menu: 'main', sel: 0, cast: 0, target: 0, pending: null, boss: bossDef, bossId: opt.boss || null, onWin: opt.onWin, theme: AREA.theme, vs: {}, src: 'shell' };
+      B.allies.forEach(function (a) { a.st = {}; });
       var hook = opt.boss && WD.bossStart && WD.bossStart[opt.boss], hookMsg = hook ? hook(G, foes[0]) : null; if (hookMsg) setTimeout(function () { log(hookMsg); }, 1300);
       // companions have something to say when something big shows up
       var BOSSLINE = { kes: 'Kes: Big one. I’ll go left, you go… also left. Just go.', odessa: 'Dr. Odessa: Try not to get hit. I mean it this time.', piper: 'Piper: Folks, you are NOT going to believe the size of this thing.',
@@ -955,20 +961,20 @@
         foesBox.appendChild(e);
       });
       partyBox.classList.toggle('crit', save.hp > 0 && save.hp <= maxHp() * .25);
-      var allyRows = (B.allies || []).map(function (a) { return '<div class="rpg-row' + (a.down ? ' down' : '') + (B.actor === a ? ' turn' : '') + '"><span>' + COMP[a.id].name + '</span><span>' + (a.down ? 'DOWN' : 'HP <b>' + a.hp + '</b>/' + a.max) + '</span></div>'; }).join('');
+      var allyRows = (B.allies || []).map(function (a) { return '<div class="rpg-row' + (a.down ? ' down' : '') + (B.actor === a ? ' turn' : '') + '"><span>' + COMP[a.id].name + (back(a.id) ? ' <i class="st">BK</i>' : '') + stTags(a.st) + '</span><span>' + (a.down ? 'DOWN' : 'HP <b>' + a.hp + '</b>/' + a.max) + '</span></div>'; }).join('');
       partyBox.classList.toggle('team', !!(B.allies && B.allies.length));
-      partyBox.innerHTML = (B.corrupt ? '<div class="rpg-row sm"><span>CORRUPTED ' + B.corrupt + '</span></div>' : '') + '<div class="rpg-row' + (save.hp <= 0 ? ' down' : '') + (B.phase === 'menu' && !B.actor ? ' turn' : '') + '"><span>Vee</span><span>HP <b>' + save.hp + '</b>/' + maxHp() + '</span></div><div class="rpg-row sm"><span>Lv ' + save.lvl + '</span><span>' + save.known.length + (save.known.length === 1 ? ' command' : ' commands') + '</span><span>' + (B.focus ? 'Weak spot marked' : save.streak > 1 ? 'Streak x' + save.streak : '') + '</span></div>' + allyRows;
+      partyBox.innerHTML = (B.corrupt ? '<div class="rpg-row sm"><span>CORRUPTED ' + B.corrupt + '</span></div>' : '') + '<div class="rpg-row' + (save.hp <= 0 ? ' down' : '') + (B.phase === 'menu' && !B.actor ? ' turn' : '') + '"><span>Vee' + (back('vee') ? ' <i class="st">BK</i>' : '') + stTags(B.vs) + '</span><span>HP <b>' + save.hp + '</b>/' + maxHp() + '</span></div><div class="rpg-row sm"><span>Lv ' + save.lvl + '</span><span>' + save.known.length + (save.known.length === 1 ? ' command' : ' commands') + '</span><span>' + (B.focus ? 'Weak spot marked' : save.streak > 1 ? 'Streak x' + save.streak : '') + '</span></div>' + allyRows;
     }
     function menu(which) {
       B.menu = which; B.sel = 0; cmdBox.innerHTML = '';
       var A0 = B.actor, C0 = A0 && COMP[A0.id];
       var list = which === 'ally' ? [{ label: 'Attack', tip: C0.name + ' attacks one bug.', fn: function () { chooseTarget('ally:attack'); } }].concat(C0.skills.map(function (k, j) {
-          var cd = A0.cd[k.id] || 0; return { label: k.name, right: cd ? cd + 't' : '', off: cd > 0, tip: k.tip + (cd ? ' Ready in ' + cd + (cd === 1 ? ' turn.' : ' turns.') : ''), fn: function () { if (k.target) chooseTarget('ally:skill:' + j); else allyAct('ally:skill:' + j, B.foes.indexOf(living()[0])); } };
+          var cd = A0.cd[k.id] || 0, silent = A0.st && A0.st.sil > 0, lock = skillLock(k); return { label: k.name, right: lock ? 'LOCK' : silent ? 'SIL' : cd ? cd + 't' : '', off: cd > 0 || silent || !!lock, tip: (lock ? lock + ' ' : '') + (silent ? 'Silenced. ' : '') + k.tip + (cd ? ' Ready in ' + cd + (cd === 1 ? ' turn.' : ' turns.') : ''), fn: function () { if (k.target) chooseTarget('ally:skill:' + j); else allyAct('ally:skill:' + j, B.foes.indexOf(living()[0])); } };
         })).concat([{ label: 'Guard', tip: C0.name + ' braces and takes half damage this round.', fn: function () { allyAct('ally:guard', 0); } }])
         : which === 'itemTarget' ? [{ label: 'Vee', right: save.hp + '/' + maxHp(), off: save.hp <= 0, tip: 'Give the data to Vee.', fn: function () { item(B.itemPick); } }].concat(B.allies.map(function (a) { return { label: COMP[a.id].name, right: a.down ? 'DOWN' : a.hp + '/' + a.max, off: a.down, tip: 'Give the data to ' + COMP[a.id].name + '.', fn: function () { item(B.itemPick, a); } }; })).concat([{ label: 'Back', tip: '', fn: function () { menu('items'); } }])
         : which === 'main' ? [
           { label: 'Fight', tip: 'A plain attack at Vee’s regular strength.', fn: function () { chooseTarget('fight'); } },
-          { label: 'Shell', tip: (save.wins || 0) < 3 ? 'Try this first. Each bug brings a problem; type the command that solves it for a much stronger attack.' : 'Open a shell and type the command that solves a bug’s problem. Right: a bonus attack. Wrong: half power.', fn: function () { chooseTarget('cmd'); } },
+          { label: 'Shell', off: B.vs.sil > 0, right: B.vs.sil > 0 ? 'SIL' : '', tip: B.vs.sil > 0 ? 'Silenced: the shell won’t open. Use an Antivirus, or wait it out.' : (save.wins || 0) < 3 ? 'Try this first. Each bug brings a problem; type the command that solves it for a much stronger attack.' : 'Open a shell and type the command that solves a bug’s problem. Right: a bonus attack. Wrong: half power.', fn: function () { chooseTarget('cmd'); } },
           { label: 'Item', tip: 'Bits, bytes and bigger: data that restores HP.', fn: function () { menu('items'); } },
           B.boss ? { label: 'Run', off: true, tip: 'There is no running from this one.', fn: runAway } : { label: 'Run', tip: 'Slip away into the dark.', fn: runAway }]
         : ITEMS.filter(function (it) { return save.items[it.id] > 0; }).map(function (it) { return { label: (innerWidth < 640 && it.short) || it.name, right: 'x' + save.items[it.id], tip: it.tip, fn: function () { if (B.allies.some(function (a) { return !a.down; })) { B.itemPick = it.id; menu('itemTarget'); } else item(it.id); } }; })
@@ -1000,13 +1006,64 @@
       var g = gapOf(f);
       if (g > 0 && Math.random() < Math.min(.35, g * .035)) { pop('MISS', f.fx + 16, f.fy - 34); f.shake = .4; return ' It dodges.'; }
       n *= armorOf(f);
+      var who = B.actor || 'vee', so = stOf(who) || {}, src = B.src || 'shell';
+      if (so.weak > 0) n *= .5;
+      if (src === 'fight' && back(B.actor ? B.actor.id : 'vee')) n *= .6;   // plain attacks from the back row are softer
+      if (f.fw > 0 && src === 'fight') { n *= .12; B.fwNote = 1; }
       var crit = B.focus || Math.random() < critC(); if (crit) { n *= 2; B.focus = false; } sfx(crit ? 'crit' : 'hit');
       if (f.exposed) n *= 1.5;
       n = Math.max(1, Math.round(n)); f.hp = Math.max(0, f.hp - n); f.shake = 1; f.flash = 1; pop(String(n), f.fx + 16, f.fy - 34);
       if (f.hp <= 0) { f.dead = true; f.fade = 1; }
-      return crit ? ' Critical.' : '';
+      var tail = (crit ? ' Critical.' : '') + (B.fwNote ? ' The firewall eats most of it.' : ''); B.fwNote = 0;
+      if (f.counter && src === 'fight' && !f.dead) {   // it was waiting for exactly that
+        var cd2 = Math.max(1, Math.round(rnd(f.foe.atk[0], f.foe.atk[1]) * 1.2 * 100 / (100 + (B.actor ? cDef(B.actor.id) : def()) * 2.5)));
+        if (B.actor) { B.actor.hp = Math.max(0, B.actor.hp - cd2); B.actor.hurt = 1; if (B.actor.hp <= 0) B.actor.down = true; var cp = allyPos(B.actor); pop(String(cd2), cp[0] + 10, cp[1] - 30); }
+        else { save.hp = Math.max(save.hp > 1 ? 1 : 0, save.hp - cd2); B.hurt = 1; pop(String(cd2), 258, 70); }
+        f.lunge = 1; tail += ' COUNTER: it strikes back for ' + cd2 + '.';
+      }
+      return tail + bossThresholds(f);
     }
     function base() { return rnd(9, 14) + atk(); }
+    /* ---------- status effects, rows and boss mechanics ---------- */
+    var ST = { psn: 'POISON', sil: 'SILENCE', slow: 'SLOW', haste: 'HASTE', daze: 'DAZE', weak: 'WEAK' };
+    var ST_SAY = { psn: 'is poisoned: a little HP leaks out every turn', sil: 'is silenced: no Shell commands, no skills', slow: 'is slowed: only acts every other round', haste: 'is hasted: two actions a round', daze: 'is dazed and loses a turn', weak: 'is weakened: hits land for half' };
+    function stOf(who) { return who === 'vee' ? B.vs : who.st; }
+    function stName(who) { return who === 'vee' ? 'Vee' : COMP[who.id].name; }
+    function inflict(who, k, n, quiet) { var o = stOf(who); if (!o) return ''; if (k !== 'haste' && gs('stealth') > .25 && Math.random() < .3) return ''; o[k] = Math.max(o[k] || 0, n); return quiet ? '' : ' ' + stName(who) + ' ' + ST_SAY[k] + '.'; }
+    function stTags(o) { return Object.keys(o || {}).filter(function (k) { return o[k] > 0; }).map(function (k) { return ' <i class="st st-' + k + '">' + ST[k].slice(0, 3) + '</i>'; }).join(''); }
+    function rowOf(id) { return (save.rows && save.rows[id]) || 'front'; }
+    function back(id) { return rowOf(id) === 'back'; }
+    // what a boss does besides hit hard. counter: punishes plain attacks in its stance. firewall: only Shell answers get through. phase: meaner at half HP. summon: calls bugs in. status: what its hits leave behind.
+    var BOSS_MECH = {
+      eraser: { status: ['weak'] }, moth: { status: ['daze'], summon: ['moth', 'moth'] }, panic: { counter: 3, status: ['daze'] }, rootkit: { firewall: 1, status: ['psn'] },
+      reclaimer: { phase: 1, counter: 3, status: ['weak', 'slow'] }, quorum: { summon: ['virus', 'virus'], status: ['sil'] }, bitrot: { status: ['psn', 'weak'], phase: 1 },
+      firstbug: { firewall: 1, summon: ['moth', 'moth'], phase: 1 }, dedupe: { counter: 3, status: ['sil'] }, zombie: { phase: 1, status: ['psn'] }, scheduler: { counter: 2, status: ['slow'], phase: 1 },
+      overflow: { status: ['psn'], firewall: 1 }, gatekeeper: { firewall: 1, counter: 4 }, pixel: { status: ['daze'] }, rootprime: { firewall: 1, phase: 1, status: ['psn', 'sil'] },
+      watchdog: { counter: 2, phase: 1, status: ['slow'] }, nullptr: { summon: ['regexhydra', 'regexhydra'], status: ['sil', 'daze'], phase: 1 }, ratchet: { counter: 3, status: ['weak'] },
+      concierge: { status: ['sil', 'psn'], firewall: 1 }, sorter: { phase: 1, counter: 3, status: ['slow'] }, hypervisor: { firewall: 1, summon: ['firmrot', 'firmrot'], phase: 1 },
+      eolboss: { counter: 2, status: ['slow', 'weak'], phase: 1 }, wipe: { firewall: 1, phase: 1, status: ['psn', 'sil', 'daze'] },
+      ves1: { counter: 3 }, ves2: { counter: 3, status: ['sil'] }, ves3: { counter: 2, phase: 1, status: ['sil'] }, ves4: { counter: 2, phase: 1, firewall: 1, status: ['sil', 'weak'] }, corvin: { firewall: 1, phase: 1, summon: ['trojan', 'trojan'], status: ['weak', 'sil'] },
+      crew_pell: { status: ['weak'] }, crew_dray: { counter: 3 }, crew_null: { status: ['sil'], firewall: 1 }, crew_lux: { counter: 3, status: ['daze'] }, crew_gauge: { summon: ['bytebug', 'bytebug'], status: ['slow'] },
+      crew_acknak: { counter: 2, status: ['daze'] }, crew_morrow: { status: ['sil', 'psn'], phase: 1 }, crew_kessler: { firewall: 1, counter: 3, phase: 1 }, crew_halcyon: { phase: 1, status: ['weak', 'slow'], summon: ['trojan', 'trojan'] }, crew_root: { firewall: 1, counter: 2, phase: 1, status: ['psn', 'sil', 'daze'] }
+    };
+    function skillLock(k) { if (k.lv && save.lvl < k.lv) return 'Unlocks at level ' + k.lv + '.'; if (k.arc && !F[k.arc]) return 'Unlocks when their story is settled.'; return ''; }
+    function mechOf(f) { var m = f && f.foe && f.foe.boss && B.bossId ? BOSS_MECH[B.bossId] || (WD.bossMech && WD.bossMech[B.bossId]) : null; return m || null; }
+    function addFoe(kind, nearF) {
+      if (!FOES[kind] || living().length >= 5) return;
+      var lvl = (nearF && nearF.foe.lv) ? Math.max(1, nearF.foe.lv - 2) : save.lvl, base0 = FOES[kind], hm = 1 + .22 * (lvl - 1);
+      var kid = { kind: kind, foe: { name: base0.name, lv: lvl, hp: Math.round(base0.hp * hm), atk: [Math.round(base0.atk[0] * lvAtk(lvl) / 7.5), Math.round(base0.atk[1] * lvAtk(lvl) / 7.5)], move: base0.move, xp: Math.round(base0.xp * (1 + .3 * (lvl - 1))) }, hp: 0, max: 0, soft: .8, stun: 0, shake: 0, flash: 1, dead: false, fade: 0, sc: 2, fx: 0, fy: 0, ph: Math.random() * 6, exposed: 0, slow: 0, leak: 0 };
+      kid.hp = kid.max = kid.foe.hp; setProblem(kid); Object.defineProperty(kid, 'scenario', { get: function () { return this.sc0.t; } }); B.foes.push(kid);
+      var lv2 = living(), lay = LAYOUT[lv2.length]; lv2.forEach(function (o, k) { if (o.foe.boss) return; o.fx = lay[k][0]; o.fy = lay[k][1]; if (lv2.length > 2) o.sc = 2; });
+    }
+    // after any hit on a boss: phases, summons and firewalls trip at HP thresholds
+    function bossThresholds(f) {
+      var m = mechOf(f); if (!m || f.dead) return '';
+      var r = f.hp / f.max, out = '';
+      if (m.phase && !f.ph2 && r <= .5) { f.ph2 = 1; f.foe = Object.assign({}, f.foe, { atk: [Math.round(f.foe.atk[0] * 1.3), Math.round(f.foe.atk[1] * 1.3)] }); f.flash = 1; out += ' The ' + foeName(f) + ' changes. Something underneath comes loose. It hits harder now.'; }
+      if (m.summon && !f.summoned && r <= .6) { f.summoned = 1; m.summon.forEach(function (k) { addFoe(k, f); }); out += ' It calls for help. More bugs answer.'; }
+      if (m.firewall && ((!f.fw1 && r <= .75) || (!f.fw2 && r <= .35))) { if (r <= .35) f.fw2 = 1; f.fw1 = 1; f.fw = 2; out += ' FIREWALL UP: for two rounds, plain attacks barely scratch it. Shell answers and skills get through.'; }
+      return out;
+    }
     // pick a bug; hovering shows the problem it carries
     function showScenario() { var f = B.foes[B.target]; if (f) log(f.foe.name + ': ' + f.scenario, true); }
     function chooseTarget(kind) {
@@ -1017,7 +1074,7 @@
     function confirmTarget() { var kind = B.pending; B.pending = null; if (kind.indexOf('ally:') === 0) return allyAct(kind, B.target); if (kind === 'fight') doFight(B.target); else openPrompt(B.target); }
     function cancelTarget() { B.pending = null; closePrompt(); B.phase = 'menu'; menu(B.actor ? 'ally' : 'main'); hudOn(); }
     function doFight(ti) {
-      var f = B.foes[ti]; B.phase = 'anim'; B.vx = 1;
+      var f = B.foes[ti]; B.phase = 'anim'; B.vx = 1; B.src = 'fight';
       log('Vee strikes the ' + foeName(f) + '.' + hitFoe(f, base()));
       after();
     }
@@ -1045,6 +1102,7 @@
     }
     function closePrompt() { termBox.classList.remove('on'); termIn.blur(); }
     function submitCmd(raw) {
+      if (B) B.src = 'shell';
       var f = B.foes[B.target], info = cmdInfo(f.cmd), J = judge(info, f.sc0, raw), typed = J.first, exact = J.exact, p = prac(f.cmd);
       closePrompt(); B.phase = 'anim'; B.cast = 1;
       if (J.right) {
@@ -1079,20 +1137,29 @@
       }
       after();
     }
-    function after() { hudOn(); setTimeout(!living().length ? win : nextAlly, 900); }
+    function after() {
+      hudOn(); B.src = 'shell';
+      if (living().length && B.vs.haste > 0 && !B.hasted && save.hp > 0) { B.hasted = 1; return setTimeout(function () { if (!B) return; B.phase = 'menu'; menu('main'); hudOn(); log('HASTE: Vee moves again before anyone else can.', true); }, 900); }
+      setTimeout(!living().length ? win : nextAlly, 900);
+    }
     // each companion still standing takes a turn after Vee: attack, one of two skills, or guard
     function nextAlly() {
       if (!B) return;
       if (!living().length) return win();
       while (B.ai < B.allies.length && B.allies[B.ai].down) B.ai++;
       if (B.ai >= B.allies.length) { B.actor = null; return foesTurn(); }
-      B.actor = B.allies[B.ai]; B.phase = 'menu'; menu('ally'); hudOn();
+      B.actor = B.allies[B.ai];
+      var ast = B.actor.st || {};
+      if (ast.daze > 0) { ast.daze--; log(COMP[B.actor.id].name + ' is dazed and can’t act.'); return afterAlly(); }
+      if (ast.slow > 0 && (B.round || 0) % 2) { log(COMP[B.actor.id].name + ' is slowed and misses this round.'); return afterAlly(); }
+      B.phase = 'menu'; menu('ally'); hudOn();
     }
     function afterAlly() { if (!B) return; B.ai++; B.actor = null; hudOn(); setTimeout(!living().length ? win : nextAlly, 800); }
     function allyHit(a, f, n) { var keep = B.focus; B.focus = B.allyFocus > 0; if (B.allyFocus > 0) B.allyFocus--; var r = hitFoe(f, n); B.focus = keep; return r; }
     function allyAct(kind, ti) {
       var a = B.actor, C = COMP[a.id], f = B.foes[ti], nm = C.name, base2 = rnd(9, 14) + cAtk(a.id), parts = kind.split(':');
       B.phase = 'anim'; cmdBox.classList.remove('on'); a.lunge = 1;
+      B.src = parts[1] === 'attack' ? 'fight' : 'skill';
       if (parts[1] === 'attack') { log(nm + ' strikes the ' + foeName(f) + '.' + allyHit(a, f, base2)); return afterAlly(); }
       if (parts[1] === 'guard') { a.guard = 1; log(nm + ' braces.'); return afterAlly(); }
       var k = C.skills[+parts[2]]; a.cd[k.id] = k.cd + 1; var msg2 = nm + ': ' + k.name + '.', fx = k.fx, ex = '';
@@ -1114,11 +1181,26 @@
       else if (fx === 'heavy_slow') { ex = allyHit(a, f, base2 * 1.5); if (!f.dead) f.slow = 2; }
       else if (fx === 'regen') { B.regen = 3; msg2 += ' Rain falls on the party.'; }
       else if (fx === 'execute') { if (f.hp < f.max * .3 && !f.foe.boss) { f.hp = 0; f.dead = true; f.fade = 1; pop('KILL', f.fx + 16, f.fy - 34); msg2 += ' The ' + foeName(f) + ' ends.'; } else ex = allyHit(a, f, base2 * 1.4); }
+      else if (fx === 'haste_party') { inflict('vee', 'haste', 3, 1); msg2 += ' Vee is hasted: two actions a round for three rounds.'; }
+      else if (fx === 'cure_all') { Object.keys(B.vs).forEach(function (k2) { if (k2 !== 'haste') B.vs[k2] = 0; }); B.corrupt = 0; B.allies.forEach(function (o) { if (o.st) Object.keys(o.st).forEach(function (k2) { if (k2 !== 'haste') o.st[k2] = 0; }); if (!o.down) o.hp = Math.min(o.max, o.hp + Math.round(o.max * .15)); }); if (save.hp > 0) save.hp = Math.min(maxHp(), save.hp + Math.round(maxHp() * .15)); msg2 += ' Every status on the party is scrubbed, and everyone heals a little.'; }
+      else if (fx === 'stun_all') { living().forEach(function (g) { if (!g.foe.boss) g.stun = 1; else { g.wound = 0; g.charged = 0; g.counter = 0; } }); msg2 += ' Every bug reels. Bosses lose whatever they were winding up.'; }
+      else if (fx === 'poison_foe') { f.leak = 5; ex = allyHit(a, f, base2 * .8); msg2 += ' The ' + foeName(f) + ' starts leaking HP every turn.'; }
+      else if (fx === 'break_fw') { f.fw = 0; f.counter = 0; f.exposed = 3; ex = allyHit(a, f, base2 * 1.2); msg2 += ' Its defenses come apart: no firewall, no counter, exposed.'; }
+      else if (fx === 'aegis') { B.aegis = 3; msg2 += ' The party takes half damage for three rounds.'; }
+      else if (fx === 'stand') { B.taunt = 3; B.tauntBy = a; a.guard = 1; a.hp = Math.min(a.max, a.hp + Math.round(a.max * .5)); msg2 += ' ' + nm + ' plants, heals, and dares them all.'; }
+      else if (fx === 'encore') { inflict('vee', 'haste', 3, 1); B.focus = true; B.allyFocus = B.allies.length; msg2 += ' Haste and a critical for everyone. The crowd goes wild.'; }
+      else if (fx === 'mass_revive') { if (save.hp <= 0) save.hp = Math.round(maxHp() * .6); else save.hp = Math.min(maxHp(), save.hp + Math.round(maxHp() * .6)); B.allies.forEach(function (o) { if (o.down) { o.down = false; o.hp = Math.round(o.max * .6); } else o.hp = Math.min(o.max, o.hp + Math.round(o.max * .6)); }); msg2 += ' Everyone is back up, and whole.'; }
+      else if (fx === 'nova') { living().forEach(function (g) { allyHit(a, g, base2 * 2.2); }); msg2 += ' Light fills the whole field.'; }
+      else if (fx === 'nebula') { B.blind = 3; living().forEach(function (g) { g.leak = Math.max(g.leak || 0, 3); }); msg2 += ' The bugs are lost in a cloud of stars, and it burns.'; }
+      else if (fx === 'drain_hit') { ex = allyHit(a, f, base2 * 1.6); var dh = Math.round(maxHp() * .2); if (save.hp > 0) { save.hp = Math.min(maxHp(), save.hp + dh); pop('+' + dh, 258, 70); } msg2 += ' Ves pulls the stolen cycles back to Vee.'; }
+      else if (fx === 'graceful') { if (f.hp < f.max * .4) { var gd = f.foe.boss ? Math.round(f.max * .2) : f.hp; f.hp = Math.max(0, f.hp - gd); pop(String(gd), f.fx + 16, f.fy - 34); if (f.hp <= 0) { f.dead = true; f.fade = 1; } msg2 += ' SIGTERM: asked politely, and it listens.'; } else ex = allyHit(a, f, base2 * 1.5); }
+      else if (fx === 'last_mile') { for (var lm = 0; lm < 3; lm++) { var tg2 = f.dead ? living()[0] : f; if (tg2) { tg2.exposed = 2; ex += allyHit(a, tg2, base2 * .8); } } }
       log(msg2 + ex); afterAlly();
     }
     function item(which, ally) {
       B.phase = 'anim'; cmdBox.classList.remove('on');
       var it = ITEMS.filter(function (x) { return x.id === which; })[0];
+      if (it && it.cure && save.items[which] > 0) { save.items[which]--; var tgt = ally || 'vee', o2 = stOf(tgt); Object.keys(o2).forEach(function (k) { if (k !== 'haste') o2[k] = 0; }); log(stName(tgt) + ' runs the antivirus. Clean.'); store(); hudOn(); return setTimeout(nextAlly, 700); }
       if (ally && it && save.items[which] > 0) { save.items[which]--; var pct0 = { bit: .06, byte: .14, kb: .28, mb: .55, gb: 1 }[it.id] || .1, ha = Math.min(ally.max - ally.hp, Math.max(it.heal, Math.round(ally.max * pct0))); ally.hp += ha; var ap3 = allyPos(ally); pop('+' + ha, ap3[0] + 10, ap3[1] - 30); log('Vee passes a ' + it.name.toLowerCase() + ' to ' + COMP[ally.id].name + '. +' + ha + ' HP.'); store(); }
       else if (it && save.items[which] > 0) { save.items[which]--; var h = Math.min(maxHp() - save.hp, healOf(it)); save.hp += h; pop('+' + h, 258, 70); log('Vee absorbs a ' + it.name.toLowerCase() + ' of clean data. +' + h + ' HP.'); store(); }
       hudOn(); setTimeout(nextAlly, 700);
@@ -1149,6 +1231,8 @@
           log('The ' + foeName(f) + ' splits. Now there are two of it, each with half the HP.'); hudOn(); return setTimeout(next, 800);
         }
         if (f.kind === 'heisenbug' && Math.random() < .45) { f.dead = true; f.fade = 1; f.foe = Object.assign({}, f.foe, { xp: 0 }); f.gone = 1; log('You look straight at the Heisenbug, and it is no longer there. It was never quite there.'); hudOn(); if (!living().length) return setTimeout(win, 600); return setTimeout(next, 650); }
+        var mm = mechOf(f);
+        if (mm && mm.counter && !f.wound && (B.round || 0) % mm.counter === 1 && !f.counter) { f.counter = 1; log('The ' + foeName(f) + ' drops into a counter stance. Plain attacks will be punished this round. Shell, skills, items, or guard.'); return setTimeout(next, 1000); }
         if (B.boss && !f.wound && (B.round || 0) % 3 === 2 && !f.charged) { f.wound = 1; f.charged = 1; log('The ' + foeName(f) + ' gathers itself. Its next attack will hit twice as hard. Guard, Bulwark, or stun it.'); return setTimeout(next, 900); }   // bosses telegraph their big hits
         if ((B.round || 0) % 3 !== 2) f.charged = 0;
         if (tr === 'wind' && !f.wound && Math.random() < .35) { f.wound = 1; log('The ' + foeName(f) + ' holds perfectly still, waiting. Its next hit will land twice as hard. Stun it, or brace.'); return setTimeout(next, 800); }
@@ -1158,14 +1242,16 @@
         if (B.taunt > 0 && B.tauntBy && !B.tauntBy.down) T = B.tauntBy;
         else if (alive2.length && (save.hp <= 0 || Math.random() < alive2.length / (alive2.length + 2))) T = alive2[Math.floor(Math.random() * alive2.length)];
         if (B.blind > 0 && Math.random() < .5) { if (f.slow > 0) f.slow--; f.lunge = 1; log('The ' + foeName(f) + ' swings at nothing. The stars are in its eyes.'); return setTimeout(next, 700); }
-        var tDef = T ? cDef(T.id) : def(), tGuard = T ? (T.guard ? .5 : 1) : (B.guard ? .5 : 1);
+        var tDef = T ? cDef(T.id) : def(), tGuard = (T ? (T.guard ? .5 : 1) : (B.guard ? .5 : 1)) * (back(T ? T.id : 'vee') ? .65 : 1) * (B.aegis > 0 ? .5 : 1);
+        var stPool = mm ? mm.status : (f.foe.lv >= 6 && !f.foe.boss ? [['psn', 'sil', 'slow', 'daze', 'weak'][Math.floor(hs(f.kind.length * 7 + f.kind.charCodeAt(0)) * 5)]] : null), stChance = mm ? .3 : .1, stHit = '';
+        if (stPool && Math.random() < stChance) stHit = inflict(T || 'vee', stPool[Math.floor(Math.random() * stPool.length)], 3);
         var roll = function () { return Math.max(1, Math.round(rnd(f.foe.atk[0], f.foe.atk[1]) * wind * forceOf(f) * f.soft * (f.slow > 0 ? .5 : 1) * tGuard * (B.pguard ? .5 : 1) * (1 + B.allies.length * .15) * CFG.diff[save.cfg.diff] * 100 / (100 + (pierce ? 0 : tDef) * 2.5))); };
         if (T) {
           var n2 = roll(); if (f.slow > 0) f.slow--;
           var drank2 = tr === 'drain' ? Math.min(f.max - f.hp, Math.round(n2 * .5)) : 0; if (drank2 > 0) f.hp += drank2;
           T.hp = Math.max(0, T.hp - n2); T.hurt = 1; f.lunge = 1; sfx('hurt'); var ap = allyPos(T); pop(String(n2), ap[0] + 10, ap[1] - 30);
           var nm2 = COMP[T.id].name; if (T.hp <= 0) T.down = true;
-          log('The ' + foeName(f) + ' ' + (pierce ? 'reads straight through ' + nm2 + '’s guard' : f.foe.move.replace(/\bVee\b/g, nm2).replace(/\bhim\b/g, 'them').replace(/\bhis\b/g, 'their')) + '. ' + n2 + ' damage to ' + nm2 + '.' + (T.down ? ' ' + nm2 + ' goes down.' : '') + (drank2 > 0 ? ' It drinks ' + drank2 + ' HP.' : ''));
+          log('The ' + foeName(f) + ' ' + (pierce ? 'reads straight through ' + nm2 + '’s guard' : f.foe.move.replace(/\bVee\b/g, nm2).replace(/\bhim\b/g, 'them').replace(/\bhis\b/g, 'their')) + '. ' + n2 + ' damage to ' + nm2 + '.' + (T.down ? ' ' + nm2 + ' goes down.' : '') + stHit + (drank2 > 0 ? ' It drinks ' + drank2 + ' HP.' : ''));
           hudOn(); if (save.hp <= 0 && !B.allies.some(function (a) { return !a.down; })) return setTimeout(lose, 900);
           return setTimeout(next, 800);
         }
@@ -1173,7 +1259,7 @@
         var drank = tr === 'drain' ? Math.min(f.max - f.hp, Math.round((n + again) * .5)) : 0; if (drank > 0) f.hp += drank;
         if (tr === 'drain' && !B.corrupt && Math.random() < .5) B.corrupt = 3;   // draining bugs leave corruption behind
         save.hp = Math.max(0, save.hp - n - again); pop(String(n + again), 258, 70); B.hurt = 1; f.lunge = 1; sfx('hurt');
-        log('The ' + foeName(f) + ' ' + (pierce ? 'reads straight through Vee’s armor' : f.foe.move) + '. ' + n + ' damage.' + (wind > 1 ? ' It had been waiting for that.' : '') + (again ? (tr === 'twice' ? ' And again: ' + again + '.' : ' It is faster than Vee: it strikes again for ' + again + '.') : '') + (drank > 0 ? ' It drinks ' + drank + ' HP from the wound.' : '')); hudOn();
+        log('The ' + foeName(f) + ' ' + (pierce ? 'reads straight through Vee’s armor' : f.foe.move) + '. ' + n + ' damage.' + stHit + (wind > 1 ? ' It had been waiting for that.' : '') + (again ? (tr === 'twice' ? ' And again: ' + again + '.' : ' It is faster than Vee: it strikes again for ' + again + '.') : '') + (drank > 0 ? ' It drinks ' + drank + ' HP from the wound.' : '')); hudOn();
         if (B.corrupt === 3 && tr === 'drain') log(titleEl.textContent + ' Vee is corrupted: he’ll lose a little HP each turn.', true);
         if (save.hp <= 0 && gs('revive') && !B.revived) { B.revived = 1; save.hp = Math.round(maxHp() * .3); setTimeout(function () { log('The Watchdog Timer catches Vee mid-fall and restarts him. ' + save.hp + ' HP.'); }, 500); }
         if (save.hp <= 0 && !B.allies.some(function (a) { return !a.down; })) return setTimeout(lose, 900);
@@ -1185,9 +1271,19 @@
     function myTurn() {
       if (!B) return; B.guard = 0; B.pguard = 0; B.ai = 0; B.actor = null; B.round = (B.round || 0) + 1;
       B.allies.forEach(function (a) { a.guard = 0; Object.keys(a.cd).forEach(function (k) { if (a.cd[k] > 0) a.cd[k]--; }); });
-      if (B.taunt > 0) B.taunt--; if (B.blind > 0) B.blind--;
+      if (B.taunt > 0) B.taunt--; if (B.blind > 0) B.blind--; if (B.aegis > 0) B.aegis--;
       if (B.regen > 0) { B.regen--; if (save.hp > 0) save.hp = Math.min(maxHp(), save.hp + Math.round(maxHp() * .08)); B.allies.forEach(function (a) { if (!a.down) a.hp = Math.min(a.max, a.hp + Math.round(a.max * .08)); }); }
       if (B.corrupt > 0 && save.hp > 1) { B.corrupt--; var cr = Math.min(save.hp - 1, Math.max(1, Math.round(maxHp() * .04))); save.hp -= cr; pop(String(cr), 258, 70); log('Corruption eats ' + cr + ' HP.', true); }
+      B.hasted = 0;
+      // statuses tick: poison leaks, everything else wears off
+      var tickMsg = '';
+      if (B.vs.psn > 0 && save.hp > 1) { var pd = Math.min(save.hp - 1, Math.max(2, Math.round(maxHp() * .06))); save.hp -= pd; pop(String(pd), 258, 70); tickMsg += ' Poison: Vee loses ' + pd + ' HP.'; }
+      B.allies.forEach(function (a) { if (a.st && a.st.psn > 0 && !a.down) { var pa = Math.max(2, Math.round(a.max * .06)); a.hp = Math.max(1, a.hp - pa); tickMsg += ' ' + COMP[a.id].name + ' loses ' + pa + ' to poison.'; } if (a.st) Object.keys(a.st).forEach(function (k) { if (k !== 'daze' && a.st[k] > 0) a.st[k]--; }); });
+      var dazed = B.vs.daze > 0, slowed = B.vs.slow > 0 && B.round % 2 === 0;
+      Object.keys(B.vs).forEach(function (k) { if (B.vs[k] > 0) B.vs[k]--; });
+      B.foes.forEach(function (f) { if (f.fw > 0) f.fw--; f.counter = 0; });
+      if (tickMsg) log(tickMsg.trim(), true);
+      if (save.hp > 0 && (dazed || slowed)) { hudOn(); log(dazed ? 'Vee is dazed. He loses his turn.' : 'Vee is slowed. He loses this round.'); return setTimeout(nextAlly, 900); }
       if (save.hp <= 0) { hudOn(); log('Vee is down. The party fights on.'); return setTimeout(nextAlly, 700); }
       B.phase = 'menu';
       if (B.boss) B.foes.forEach(setProblem);   // a boss brings a new problem every turn
@@ -1455,7 +1551,7 @@
       var lmT = 'LANDMARKS ' + lights() + ' OF 6'; ART.text(cx, lmT, W - 8 - ART.textW(lmT), 22, '#c0c0cc'); ART.text(cx, 'PRESS ANY KEY', W - 8 - ART.textW('PRESS ANY KEY'), 32, Math.floor(tnow * 2) % 2 ? '#ffffff' : '#6a6a76');
       drawScan();
     }
-    function allyPos(a) { var vx0 = 250 - (B ? B.vx : 0) * 34; return a.slot === 0 ? [vx0 + 30, 104 - 20] : [vx0 + 30, 104 + 18]; }
+    function allyPos(a) { var vx0 = 250 - (B ? B.vx : 0) * 34 + (back(a.id) ? 14 : 0); return a.slot === 0 ? [vx0 + 30, 104 - 20] : [vx0 + 30, 104 + 18]; }
     function drawBattle(dt) {
       var tt = performance.now() / 1000, hy = 64 + BOFF;
       drawBackdrop((B && B.theme) || (AREA && AREA.theme) || 'plaza', tt, hy);
@@ -1484,7 +1580,7 @@
       });
       // Vee, on the right, facing left: smaller than the bugs
       var crit = save.hp > 0 && save.hp <= maxHp() * .25;
-      var pose = B.cast > .3 ? 'point' : (B.hurt > .3 ? 'fall' : crit ? (Math.floor(B.t * 2.2) % 2 ? 'kneel2' : 'kneel') : 'idle'), vx = 250 - B.vx * 34 + (B.hurt ? Math.sin(B.t * 70) * 2 : 0), vfy = 104;
+      var pose = B.cast > .3 ? 'point' : (B.hurt > .3 ? 'fall' : crit ? (Math.floor(B.t * 2.2) % 2 ? 'kneel2' : 'kneel') : 'idle'), vx = 250 - B.vx * 34 + (back('vee') ? 14 : 0) + (B.hurt ? Math.sin(B.t * 70) * 2 : 0), vfy = 104;
       if (B.ko) {   // knocked out: he topples and lies still
         B.ko = Math.min(1, B.ko + dt * 2.4);
         var spr = SP.frame('fall'), ang = -Math.PI / 2 * B.ko;
