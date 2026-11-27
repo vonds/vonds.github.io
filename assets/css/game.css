@@ -259,3 +259,45 @@
   .rpg:has(.rpg-hud.on) .rpg-pad{display:none}
 }
 .rpg-opts{flex-wrap:wrap;row-gap:4px}
+/* Meridian: the game menu */
+.rpg-menu{position:absolute;inset:4%;display:none;grid-template-columns:24% 1fr;gap:0;padding:0;z-index:4;font-size:clamp(7px,1.05vw,11px);overflow:hidden}
+.rpg-menu.on{display:grid}
+.rpg-menu .mn-side{display:flex;flex-direction:column;gap:2px;padding:12px 8px;border-right:2px solid rgba(236,236,242,.5);overflow:auto}
+.rpg-menu button{appearance:none;cursor:pointer;color:#fff;font:inherit;text-shadow:inherit;text-align:left;background:transparent;border:2px solid transparent;border-radius:4px;padding:5px 8px}
+.rpg-menu .mn-side button.cur{background:rgba(255,255,255,.08)}
+.rpg-menu button.on,.rpg-menu button:hover{border-color:#ececf2;background:rgba(255,255,255,.12)}
+.rpg-menu .mn-main{padding:12px 16px;overflow:auto;line-height:1.8}
+.rpg-menu h4{margin:6px 0 6px;font-weight:400;color:#fff;letter-spacing:.06em}
+.rpg-menu p{margin:2px 0}
+.rpg-menu em{font-style:normal;color:#cfcfda}
+.rpg-menu .mn-dim{color:#9a9aa8}
+.rpg-menu .mono{letter-spacing:.02em}
+.rpg-menu .mn-list{display:flex;flex-direction:column;gap:2px}
+.rpg-menu .mn-list button{display:grid;grid-template-columns:1fr auto;gap:2px 10px;align-items:baseline}
+.rpg-menu .mn-list button small{grid-column:1/-1;font-size:.8em;color:#a8a8b4;line-height:1.6}
+.rpg-menu .mn-list button.eq{background:rgba(255,255,255,.06)}
+.rpg-menu .mn-list button.danger span{color:#ffd9d9}
+.rpg-menu .mn-card{display:flex;gap:14px;align-items:center;margin-bottom:8px}
+.rpg-menu .mn-portrait{width:48px;height:56px;flex:none;border:2px solid #ececf2;border-radius:6px;background:#0a0a0e center/contain no-repeat;image-rendering:pixelated}
+.rpg-menu .mn-name{font-weight:400;font-size:1.25em}
+.rpg-menu .mn-row{display:grid;grid-template-columns:2.6em 1fr auto;gap:8px;align-items:center;margin-top:4px}
+.rpg-menu .mn-bar{display:block;height:6px;border:1px solid #8a8a94;background:rgba(0,0,0,.5)}
+.rpg-menu .mn-bar b{display:block;height:100%;background:linear-gradient(90deg,#9a9aa6,#f2f2f6)}
+.rpg-menu .mn-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin:8px 0}
+.rpg-menu .mn-stats div{border:1px solid rgba(236,236,242,.35);border-radius:4px;padding:6px 8px;display:flex;flex-direction:column;gap:2px}
+.rpg-menu .mn-stats span{color:#9a9aa8;font-size:.8em}.rpg-menu .mn-stats b{font-weight:400;font-size:1.2em}
+.rpg-menu .mn-detail{border:1px solid rgba(236,236,242,.4);border-radius:4px;padding:8px 10px;margin-bottom:8px}
+.rpg-menu .mn-note{color:#fff;background:rgba(255,255,255,.08);padding:4px 8px;border-radius:4px}
+@media (hover:none),(pointer:coarse),(max-width:760px){
+  .rpg-menu{inset:2%;grid-template-columns:30% 1fr;font-size:7px}
+  .rpg-menu .mn-side{padding:6px 4px}.rpg-menu .mn-main{padding:8px 8px}
+  .rpg-menu button{padding:4px 5px}
+  .rpg-menu .mn-stats{grid-template-columns:repeat(2,1fr)}
+  .rpg-menu .mn-portrait{width:34px;height:40px}
+}
+.rpg-menu .mn-card>div:last-child{flex:1;min-width:0}
+@media (hover:none),(pointer:coarse),(max-width:760px){
+  .rpg-scr:has(.rpg-menu.on){aspect-ratio:auto;height:min(78vh,calc(100vw * 9 / 16 + 340px))}
+  .rpg:has(.rpg-menu.on) .rpg-pad{display:none}
+  .rpg-menu{font-size:8px}
+}

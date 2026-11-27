@@ -72,7 +72,7 @@
     if (!save.items) save.items = { bit: 3, byte: 1 };
     if (save.coffee) { save.items.bit = (save.items.bit || 0) + save.coffee; } delete save.coffee;   // older saves
     function store() { try { localStorage.setItem('vonds-quest', JSON.stringify(save)); } catch (e) {} }
-    function maxHp() { return 60 + (save.lvl - 1) * 14; }
+    function maxHp() { var g = 0; if (save.eq && window.MeridianWorld) ['weapon', 'armor', 'acc'].forEach(function (s) { var it = window.MeridianWorld.gear[save.eq[s]]; if (it && it.hp) g += it.hp; }); return 60 + (save.lvl - 1) * 14 + g + ((save.school && save.school.hp) || 0); }
     function xpNeed() { return 30 + (save.lvl - 1) * 25; }
     function maxMp() { return 24 + (save.lvl - 1) * 6; }
 
@@ -93,7 +93,7 @@
     var AREA = null, MAP = null, PAINTED = null, painted = {};
     function stamp(area) {
       var rows = area.map.map(function (r) { return r.split(''); });
-      (area.blds || []).forEach(function (b) { if (!b.w) return; for (var y = b.y; y < b.y + b.h; y++) for (var x = b.x; x < b.x + b.w; x++) rows[y][x] = 'X'; if (b.door != null) rows[b.y + b.h - 1][b.x + b.door] = 'd'; });
+      (area.blds || []).forEach(function (b) { if (!b.w) return; for (var y = b.y; y < b.y + b.h; y++) for (var x = b.x; x < b.x + b.w; x++) rows[y][x] = 'X'; if (b.door != null) rows[b.doorTop ? b.y : b.y + b.h - 1][b.x + b.door] = 'd'; });
       return rows.map(function (r) { return r.join(''); });
     }
     function litFor(b) {
@@ -157,6 +157,9 @@
       take: function (it, n) { save.keys[it] = Math.max(0, (save.keys[it] || 0) - (n || 1)); store(); },
       count: function (it) { return save.keys[it] || 0; },
       travel: function (to) { travel(to); },
+      ownsGear: function (id) { return ownsGear(id); }, giveGear: function (id) { giveGear(id); },
+      school: function (k, n) { save.school[k] += n; if (k === 'hp') save.hp += n; store(); },
+      arcade: function () { close(); setTimeout(function () { if (window.VondsPick) window.VondsPick('uptime'); }, 450); },
       readLog: function (id) { readLog(id); },
       logCount: function () { return WD.logOrder.filter(function (k) { return F[k]; }).length; },
       has: function (it) { return (save.keys[it] || 0) > 0; },
@@ -193,6 +196,152 @@
       });
     }
 
+    /* ---------- stats, gear and settings ---------- */
+    if (!save.eq) save.eq = { weapon: 'stick', armor: 'jacket', acc: 'phones' };
+    if (!save.bag) save.bag = { stick: 1, jacket: 1, phones: 1 };
+    if (!save.school) save.school = { atk: 0, def: 0, hp: 0 };
+    if (!save.cfg) save.cfg = { text: 1, enc: 0, diff: 1, scan: 1 };
+    var GEAR = WD.gear;
+    function gs(k) { var t = 0; ['weapon', 'armor', 'acc'].forEach(function (s) { var g = GEAR[save.eq[s]]; if (g && g[k]) t += g[k]; }); return t; }
+    function atk() { return save.lvl * 2 + gs('atk') + save.school.atk; }
+    function def() { return Math.floor(save.lvl * .6) + gs('def') + save.school.def; }
+    function critC() { return .05 + gs('crit'); }
+    var CFG = { text: [1, 2, 4, 999], textL: ['Slow', 'Normal', 'Fast', 'Instant'], enc: [1, .5, .15], encL: ['Normal', 'Fewer', 'Rare'], diff: [.65, 1, 1.35], diffL: ['Story', 'Normal', 'Hard'], scanL: ['Off', 'On'] };
+    function ownsGear(id) { return !!save.bag[id]; }
+    function giveGear(id) { save.bag[id] = 1; store(); }
+    function syncGear(quiet) {
+      var got = [];
+      (WD.gearFrom || []).forEach(function (r) { if (!save.bag[r[0]] && r[1](G)) { save.bag[r[0]] = 1; got.push(r[2] + ' (' + GEAR[r[0]].name + ', ' + { weapon: 'weapon', armor: 'armor', acc: 'accessory' }[GEAR[r[0]].slot] + '.)'); } });
+      if (got.length) { store(); if (!quiet) afterTalk.push.apply(afterTalk, got.concat(['Equip new gear from the menu: ' + (coarse ? 'B' : 'X') + ', then Equip.'])); }
+    }
+
+    /* ---------- the menu ---------- */
+    var menuEl = document.createElement('div'); menuEl.className = 'ff4w rpg-menu';
+    menuEl.innerHTML = '<div class="mn-side"></div><div class="mn-main"></div>';
+    root.querySelector('.rpg-scr').appendChild(menuEl);
+    var mnSide = menuEl.querySelector('.mn-side'), mnMain = menuEl.querySelector('.mn-main');
+    var MN = null, VIEWS = [['home', 'Vee'], ['items', 'Items'], ['cmds', 'Commands'], ['equip', 'Equip'], ['status', 'Status'], ['journal', 'Journal'], ['map', 'Map'], ['config', 'Config'], ['close', 'Close']];
+    function openMenu() { MN = { view: 'home', side: 0, focus: 'side', sel: 0, slot: null, confirm: false, detail: -1 }; held = null; areaEl.classList.remove('on'); mode = 'menu'; renderMenu(); menuEl.classList.add('on'); }
+    function closeMenu() { MN = null; menuEl.classList.remove('on'); mode = 'map'; store(); }
+    function bar(v, m) { return '<i class="mn-bar"><b style="width:' + Math.max(0, Math.min(100, Math.round(v / m * 100))) + '%"></b></i>'; }
+    function pct(v) { return Math.round(v * 100) + '%'; }
+    function gearLine(g) {
+      var p = []; if (g.atk) p.push('ATK +' + g.atk); if (g.def) p.push('DEF +' + g.def); if (g.hp) p.push('HP +' + g.hp); if (g.crit) p.push('CRIT +' + pct(g.crit));
+      if (g.xp) p.push('XP +' + pct(g.xp)); if (g.drop) p.push('Drops +' + pct(g.drop)); if (g.stealth) p.push('Encounters −' + pct(g.stealth)); if (g.regen) p.push('Regen'); if (g.revive) p.push('Revive');
+      return p.join(' · ') || 'No bonus';
+    }
+    function renderMenu() {
+      if (!MN) return;
+      mnSide.innerHTML = '';
+      VIEWS.forEach(function (v, i) {
+        var b = document.createElement('button'); b.type = 'button'; b.textContent = v[1];
+        b.className = (i === MN.side ? 'cur' : '') + (MN.focus === 'side' && i === MN.side ? ' on' : '');
+        b.addEventListener('click', function () { MN.side = i; pickSide(); });
+        mnSide.appendChild(b);
+      });
+      var v = VIEWS[MN.side][0], h = '', btns = [];
+      function btn(html, fn, cls) { btns.push({ html: html, fn: fn, cls: cls || '' }); }
+      if (v === 'home' || v === 'map' || v === 'close') {
+        h = '<div class="mn-card"><div class="mn-portrait"></div><div><b class="mn-name">Vee</b> <span class="mn-dim">Level ' + save.lvl + '</span>' +
+          '<div class="mn-row"><span>HP</span>' + bar(save.hp, maxHp()) + '<em>' + save.hp + ' / ' + maxHp() + '</em></div>' +
+          '<div class="mn-row"><span>XP</span>' + bar(save.xp, xpNeed()) + '<em>' + (xpNeed() - save.xp) + ' to next</em></div></div></div>' +
+          '<div class="mn-stats"><div><span>ATK</span><b>' + atk() + '</b></div><div><span>DEF</span><b>' + def() + '</b></div><div><span>CRIT</span><b>' + pct(critC()) + '</b></div><div><span>CMDS</span><b>' + save.known.length + '</b></div></div>' +
+          '<p class="mn-dim">' + AREA.name + ' · Landmarks ' + lights() + ' of 6 · Logs ' + WD.logOrder.filter(function (k) { return F[k]; }).length + ' of 10</p>' +
+          '<p class="mn-dim">' + GEAR[save.eq.weapon].name + ' · ' + GEAR[save.eq.armor].name + ' · ' + GEAR[save.eq.acc].name + '</p>';
+      } else if (v === 'items') {
+        h = '<h4>Healing data</h4>';
+        ITEMS.forEach(function (it) {
+          var n = save.items[it.id] || 0; if (!n) return;
+          btn('<span>' + it.name + '</span><em>x' + n + '</em><small>' + it.tip + '</small>', function () {
+            if (save.hp >= maxHp()) { MN.note = 'HP is already full.'; return renderMenu(); }
+            save.items[it.id]--; var hh = Math.min(maxHp() - save.hp, it.heal); save.hp += hh; MN.note = 'Vee absorbs a ' + it.name.toLowerCase() + '. +' + hh + ' HP.'; store(); renderMenu();
+          });
+        });
+        var keys = Object.keys(save.keys).filter(function (k) { return save.keys[k] > 0; });
+        if (!btns.length) h += '<p class="mn-dim">No healing data. Bugs drop it, and caches hide it.</p>';
+        h += '<!--btns--><h4>Key items</h4>' + (keys.length ? keys.map(function (k) { return '<p>' + ({ part: 'Radio part', page: 'Bram’s ledger page' }[k] || k) + ' <em class="mn-dim">x' + save.keys[k] + '</em></p>'; }).join('') : '<p class="mn-dim">None.</p>');
+      } else if (v === 'cmds') {
+        h = '<h4>Commands ' + save.known.length + ' of ' + COMMANDS.length + '</h4>';
+        COMMANDS.forEach(function (c, i) {
+          var known = save.known.indexOf(c.cmd) >= 0;
+          btn(known ? '<span class="mono">' + c.cmd + '</span><small>' + c.learn + '</small>' : '<span class="mono mn-dim">???</span><small class="mn-dim">Learned at a future level.</small>', function () { MN.detail = known ? i : -1; renderMenu(); });
+        });
+        if (MN.detail >= 0) { var c = COMMANDS[MN.detail], w = c.when[0]; h = '<div class="mn-detail"><b class="mono">' + c.cmd + '</b><p>' + c.learn + '</p><p><em>Shell bonus:</em> ' + c.hit + '</p><p><em>Example:</em> ' + w.t + '<br><span class="mono">$ ' + w.ex[0] + '</span></p></div>' + h; }
+      } else if (v === 'equip') {
+        if (!MN.slot) {
+          h = '<h4>Equipment</h4>';
+          [['weapon', 'Weapon'], ['armor', 'Armor'], ['acc', 'Accessory']].forEach(function (s) {
+            var g = GEAR[save.eq[s[0]]];
+            btn('<span>' + s[1] + '</span><em>' + g.name + '</em><small>' + gearLine(g) + '</small>', function () { MN.slot = s[0]; MN.sel = 0; renderMenu(); });
+          });
+          h += '<!--btns--><p class="mn-dim">ATK ' + atk() + ' · DEF ' + def() + ' · CRIT ' + pct(critC()) + ' · Max HP ' + maxHp() + '</p>';
+        } else {
+          var slot = MN.slot, cur = GEAR[save.eq[slot]];
+          h = '<h4>' + { weapon: 'Weapon', armor: 'Armor', acc: 'Accessory' }[slot] + '</h4>';
+          Object.keys(GEAR).filter(function (id) { return GEAR[id].slot === slot && save.bag[id]; }).forEach(function (id) {
+            var g = GEAR[id], on = save.eq[slot] === id, d = slot === 'weapon' ? (g.atk || 0) - (cur.atk || 0) : slot === 'armor' ? (g.def || 0) - (cur.def || 0) : 0;
+            btn('<span>' + (on ? '▸ ' : '') + g.name + '</span><em>' + (d ? (d > 0 ? '+' : '') + d : '') + '</em><small>' + gearLine(g) + '. ' + g.desc + '</small>', function () { save.eq[slot] = id; if (save.hp > maxHp()) save.hp = maxHp(); store(); MN.slot = null; MN.note = g.name + ' equipped.'; renderMenu(); }, on ? 'eq' : '');
+          });
+          h += '<!--btns--><p class="mn-dim">More gear comes from landmarks, people you help, and Tallow’s forge on Concourse Nine.</p>';
+        }
+      } else if (v === 'status') {
+        var lg = WD.logOrder.filter(function (k) { return F[k]; }).length, mins = ['M1', 'M2', 'M3', 'M4'].filter(function (k) { return F[k]; }).length, pcs = ['P1', 'P2', 'P3'].filter(function (k) { return F[k]; }).length;
+        h = '<h4>Vee</h4><div class="mn-stats"><div><span>LEVEL</span><b>' + save.lvl + '</b></div><div><span>ATK</span><b>' + atk() + '</b></div><div><span>DEF</span><b>' + def() + '</b></div><div><span>CRIT</span><b>' + pct(critC()) + '</b></div></div>' +
+          '<p class="mn-dim">Base ATK ' + save.lvl * 2 + ', gear +' + gs('atk') + ', classes +' + save.school.atk + '. Base DEF ' + Math.floor(save.lvl * .6) + ', gear +' + gs('def') + ', classes +' + save.school.def + '.</p>' +
+          '<p class="mn-dim">Bugs cleared ' + (save.wins || 0) + ' · Battles won ' + (save.bw || 0) + ' · Mara’s logs ' + lg + ' of 10 · Board minutes ' + mins + ' of 4 · Postcards ' + pcs + ' of 3</p>' +
+          '<h4>Landmarks</h4>' + WD.anchors.map(function (a) { return '<p>' + (isLit(a.id) ? '[x] ' : '[ ] ') + a.name + ' <em class="mn-dim">' + a.project + '</em></p>'; }).join('');
+      } else if (v === 'journal') {
+        var jr = WD.journal ? WD.journal(G) : [];
+        h = '<h4>Journal</h4>' + (jr.length ? jr.map(function (x) { return '<p>' + x + '</p>'; }).join('') : '<p class="mn-dim">Nothing yet. Talk to people. Everybody here wants something, and most of it is reasonable.</p>');
+      } else if (v === 'config') {
+        h = '<h4>Configuration</h4>';
+        function opt(label, k, labels) { btn('<span>' + label + '</span><em>‹ ' + labels[save.cfg[k]] + ' ›</em>', function (dir) { save.cfg[k] = (save.cfg[k] + (dir || 1) + labels.length) % labels.length; store(); renderMenu(); }, 'cfg'); }
+        opt('Text speed', 'text', CFG.textL); opt('Encounters', 'enc', CFG.encL); opt('Difficulty', 'diff', CFG.diffL); opt('Scanlines', 'scan', CFG.scanL);
+        btn(MN.confirm ? '<span>Erase all progress?</span><em>Press again to confirm</em>' : '<span>Erase save</span><em class="mn-dim">Start Meridian over</em>', function () {
+          if (!MN.confirm) { MN.confirm = true; return renderMenu(); }
+          try { localStorage.removeItem('vonds-quest'); } catch (e) {} location.reload();
+        }, 'danger');
+        h += '<!--btns--><p class="mn-dim">Story difficulty: bugs hit softer. Hard: they hit harder, and you earn 20% more XP. Settings save automatically.</p>';
+      }
+      if (MN.note) { h = '<p class="mn-note">' + MN.note + '</p>' + h; MN.note = null; }
+      var parts = h.split('<!--btns-->'); mnMain.innerHTML = parts[0];
+      var list = document.createElement('div'); list.className = 'mn-list'; mnMain.appendChild(list);
+      MN.btns = btns;
+      btns.forEach(function (o, i) {
+        var b = document.createElement('button'); b.type = 'button'; b.innerHTML = o.html; b.className = o.cls + (MN.focus === 'main' && i === MN.sel ? ' on' : '');
+        b.addEventListener('click', function () { MN.focus = 'main'; MN.sel = i; o.fn(1); });
+        list.appendChild(b);
+      });
+      if (parts[1]) { var tail = document.createElement('div'); tail.innerHTML = parts[1]; mnMain.appendChild(tail); }
+      var pt = mnMain.querySelector('.mn-portrait'); if (pt && window.VondsSprite) { if (!renderMenu.face) try { renderMenu.face = window.VondsSprite.front(false).toDataURL(); } catch (e) {} if (renderMenu.face) pt.style.backgroundImage = 'url(' + renderMenu.face + ')'; }
+      var on = mnMain.querySelector('.mn-list .on'); if (on && on.scrollIntoView) on.scrollIntoView({ block: 'nearest' });
+      if (MN.focus === 'main' && !btns.length) MN.focus = 'side';
+    }
+    function pickSide() {
+      var v = VIEWS[MN.side][0];
+      if (v === 'close') return closeMenu();
+      if (v === 'map') { closeMenu(); mode = 'atlas'; return; }
+      MN.slot = null; MN.detail = -1; MN.confirm = false; MN.sel = 0;
+      renderMenu(); if (MN.btns && MN.btns.length) { MN.focus = 'main'; renderMenu(); }
+    }
+    function menuKey(k) {
+      if (!MN) return;
+      if (MN.focus === 'side') {
+        if (k === 'up') MN.side = (MN.side + VIEWS.length - 1) % VIEWS.length;
+        else if (k === 'down') MN.side = (MN.side + 1) % VIEWS.length;
+        else if (k === 'a' || k === 'right') return pickSide();
+        else if (k === 'b') return closeMenu();
+        MN.slot = null; MN.detail = -1; MN.confirm = false; return renderMenu();
+      }
+      var n = (MN.btns || []).length;
+      if (k === 'up') MN.sel = (MN.sel + n - 1) % Math.max(1, n);
+      else if (k === 'down') MN.sel = (MN.sel + 1) % Math.max(1, n);
+      else if (k === 'a') { var o = MN.btns[MN.sel]; if (o) o.fn(1); return; }
+      else if ((k === 'left' || k === 'right') && MN.btns[MN.sel] && MN.btns[MN.sel].cls === 'cfg') { MN.btns[MN.sel].fn(k === 'left' ? -1 : 1); return; }
+      else if (k === 'b' || k === 'left') { if (MN.slot) { MN.slot = null; MN.sel = 0; } else if (MN.detail >= 0) MN.detail = -1; else MN.focus = 'side'; }
+      renderMenu();
+    }
+
     /* ---------- typed puzzles on the map (the Proving Rooms, Ash's audit) ---------- */
     var PZ = null;
     function openPuzzle(title, steps, done) { PZ = { title: title, steps: steps, i: 0, done: done }; areaEl.classList.remove('on'); showPuzzle(); }
@@ -220,7 +369,7 @@
       if (n) return WD.talk[n.id] ? WD.talk[n.id](G) : null;
       if (w && y === w[1] && (x === w[0] || x === w[0] + 1)) return WD.wagon(G);
       if (t === 'd') {
-        var b = (AREA.blds || []).filter(function (b2) { return b2.door != null && b2.x + b2.door === x && b2.y + b2.h - 1 === y; })[0];
+        var b = (AREA.blds || []).filter(function (b2) { return b2.door != null && b2.x + b2.door === x && (b2.doorTop ? b2.y : b2.y + b2.h - 1) === y; })[0];
         var h = b && (WD.doors[AREA.id + ':' + b.kind] || WD.doors[AREA.id + ':' + k]);
         return h ? h(G, b) : say('', ['Locked. The door doesn’t recognize you. Doors here only remember who paid.']);
       }
@@ -233,6 +382,7 @@
     }
 
     function drawScan() {
+      if (save.cfg && !save.cfg.scan) return;
       cx.fillStyle = 'rgba(0,0,0,.18)'; for (var y = 0; y < H; y += 2) cx.fillRect(0, y, W, 1);
       var g = cx.createRadialGradient(W / 2, H / 2, H * .35, W / 2, H / 2, W * .65); g.addColorStop(0, 'rgba(0,0,0,0)'); g.addColorStop(1, 'rgba(0,0,0,.5)'); cx.fillStyle = g; cx.fillRect(0, 0, W, H);
     }
@@ -257,7 +407,7 @@
       if (reduce) return;
       var chars = [];
       (function walk(n) { for (var c = n.firstChild; c; c = c.nextSibling) { if (c.nodeType === 3) { var t = c.textContent, sp = document.createElement('span'); c.parentNode.replaceChild(sp, c); for (var i = 0; i < t.length; i++) { var ch = document.createElement('span'); ch.className = 'tw-hide'; ch.textContent = t[i]; sp.appendChild(ch); chars.push(ch); } c = sp; } else walk(c); } })(msgP);
-      var i = 0; tw = setInterval(function () { for (var k = 0; k < 2 && i < chars.length; k++) chars[i++].className = ''; if (i >= chars.length) clearInterval(tw); }, 20);
+      var i = 0; tw = setInterval(function () { for (var k = 0; k < (save.cfg ? [1, 2, 4, 999][save.cfg.text] : 2) && i < chars.length; k++) chars[i++].className = ''; if (i >= chars.length) clearInterval(tw); }, 20);
     }
     function typing() { return !!msgP.querySelector('.tw-hide'); }
     function finishTyping() { clearInterval(tw); [].forEach.call(msgP.querySelectorAll('.tw-hide'), function (s) { s.className = ''; }); }
@@ -284,7 +434,7 @@
       if (!last) { talking.i++; showLine(); return; }
       var d = talking.done; endTalk(); if (d) d();
     }
-    function endTalk() { talking = null; msg.classList.remove('on'); if (afterTalk.length && mode === 'map') { var q = afterTalk.splice(0); setTimeout(function () { say('', q); }, 60); } }
+    function endTalk() { talking = null; msg.classList.remove('on'); if (mode === 'map' && typeof syncGear === 'function' && GEAR) syncGear(); if (afterTalk.length && mode === 'map') { var q = afterTalk.splice(0); setTimeout(function () { say('', q); }, 60); } }
     function choiceMove(d) {
       if (!talking || !talking.choices || talking.i !== talking.lines.length - 1) return;
       talking.sel = (talking.sel + d + talking.choices.length) % talking.choices.length;
@@ -428,13 +578,13 @@
     function log(text, quiet) { titleEl.textContent = text; titleEl.classList.add('on'); clearTimeout(logT); if (!quiet) logT = setTimeout(function () { titleEl.classList.remove('on'); }, 2600); }
     function pop(text, x, y) { B.pops.push({ text: text, x: x, y: y, t: 0 }); }
     function hitFoe(f, n) {
-      var crit = B.focus; if (crit) { n *= 2; B.focus = false; }
+      var crit = B.focus || Math.random() < critC(); if (crit) { n *= 2; B.focus = false; }
       if (f.exposed) n *= 1.5;
       n = Math.max(1, Math.round(n)); f.hp = Math.max(0, f.hp - n); f.shake = 1; f.flash = 1; pop(String(n), f.fx + 16, f.fy - 34);
       if (f.hp <= 0) { f.dead = true; f.fade = 1; }
       return crit ? ' Critical.' : '';
     }
-    function base() { return rnd(9, 14) + save.lvl * 2; }
+    function base() { return rnd(9, 14) + atk(); }
     // pick a bug; hovering shows the problem it carries
     function showScenario() { var f = B.foes[B.target]; if (f) log(f.foe.name + ': ' + f.scenario, true); }
     function chooseTarget(kind) {
@@ -517,9 +667,10 @@
         if (f.leak > 0) { f.leak--; var lk = 6 + save.lvl; f.hp = Math.max(0, f.hp - lk); pop(String(lk), f.fx + 16, f.fy - 34); if (f.hp <= 0) { f.dead = true; f.fade = 1; hudOn(); if (!living().length) return setTimeout(win, 600); return setTimeout(next, 500); } }
         if (f.exposed > 0) f.exposed--;
         if (f.stun > 0) { f.stun--; log('The ' + foeName(f) + ' strains against its permissions.'); return setTimeout(next, 650); }
-        var n = Math.max(1, Math.round(rnd(f.foe.atk[0], f.foe.atk[1]) * f.soft * (f.slow > 0 ? .5 : 1) * (B.guard ? .5 : 1))); if (f.slow > 0) f.slow--;
+        var n = Math.max(1, Math.round(rnd(f.foe.atk[0], f.foe.atk[1]) * f.soft * (f.slow > 0 ? .5 : 1) * (B.guard ? .5 : 1) * CFG.diff[save.cfg.diff] * 100 / (100 + def() * 2.5))); if (f.slow > 0) f.slow--;
         save.hp = Math.max(0, save.hp - n); pop(String(n), 258, 70); B.hurt = 1; f.lunge = 1;
         log('The ' + foeName(f) + ' ' + f.foe.move + '. ' + n + ' damage.'); hudOn();
+        if (save.hp <= 0 && gs('revive') && !B.revived) { B.revived = 1; save.hp = Math.round(maxHp() * .3); setTimeout(function () { log('The Watchdog Timer catches Vee mid-fall and restarts him. ' + save.hp + ' HP.'); }, 500); }
         if (save.hp <= 0) return setTimeout(lose, 900);
         setTimeout(next, 800);
       })();
@@ -530,11 +681,11 @@
       menu('main'); hudOn();
     }
     function win() {
-      var xp = 0, n = B.foes.length, boss = B.boss, onWin = B.onWin; B.foes.forEach(function (f) { xp += f.foe.xp + (boss ? 0 : rnd(0, 3)); });
+      var xp = 0, n = B.foes.length, boss = B.boss, onWin = B.onWin; B.foes.forEach(function (f) { xp += f.foe.xp + (boss ? 0 : rnd(0, 3)); }); xp = Math.round(xp * (1 + gs('xp')) * (save.cfg.diff === 2 ? 1.2 : 1));
       save.wins += n; save.linux += n; save.bw++;
       var lines = [boss ? boss.name + ' is gone.' + (xp ? ' Vee gains ' + xp + ' XP.' : '') : 'The rot clears. Vee gains ' + xp + ' XP.'];
       if (!boss && AREA.id === 'commons' && F.deeds && (F.commonsWins || 0) < 3) { F.commonsWins = (F.commonsWins || 0) + 1; lines.push('Deed: fairground cleared, ' + F.commonsWins + ' of 3.'); }
-      if (Math.random() < .35 + n * .07) {   // bigger finds as Vee levels up
+      if (Math.random() < .35 + n * .07 + gs('drop')) {   // bigger finds as Vee levels up
         var r2 = Math.random() * (40 + save.lvl * 6), tier = r2 < 40 ? 0 : r2 < 60 ? 1 : r2 < 75 ? 2 : r2 < 85 ? 3 : 4;
         tier = Math.min(tier, Math.floor(save.lvl / 3) + 1); var drop = ITEMS[tier];
         save.items[drop.id] = (save.items[drop.id] || 0) + 1; lines.push('The bug drops clean data: a ' + drop.name.toLowerCase() + '.');
@@ -658,7 +809,8 @@
           if (gt && gt.to && gateOpen(me.x, me.y)) return travel(gt.to);
           if (WD.steps[AREA.id]) { WD.steps[AREA.id](G, me.x, me.y); if (talking) return; }
           var enc = AREA.enc;
-          if (enc && enc.tiles.indexOf(tile(me.x, me.y)) >= 0 && --me.safe <= 0 && Math.random() < enc.rate) { startBattle(); return; }
+          if (gs('regen') && save.hp < maxHp()) save.hp = Math.min(maxHp(), save.hp + gs('regen'));
+          if (enc && enc.tiles.indexOf(tile(me.x, me.y)) >= 0 && --me.safe <= 0 && Math.random() < enc.rate * CFG.enc[save.cfg.enc] * (1 - gs('stealth'))) { startBattle(); return; }
         }
       }
       if (!me.moving && held) tryMove(held);
@@ -671,7 +823,7 @@
     function loop(ts) {
       var dt = Math.min(.05, (ts - (last || ts)) / 1000); last = ts;
       update(dt);
-      if (mode === 'map') drawMap(); else if (mode === 'atlas') drawAtlas(); else if (mode === 'swirl') drawSwirl(dt); else drawBattle(dt);
+      if (mode === 'map' || mode === 'menu') drawMap(); else if (mode === 'atlas') drawAtlas(); else if (mode === 'swirl') drawSwirl(dt); else drawBattle(dt);
       raf = requestAnimationFrame(loop);
     }
 
@@ -695,15 +847,17 @@
         else if (k === 'b' && B.menu !== 'main') menu('main');
         return;
       }
+      if (mode === 'menu') return menuKey(k);
       if (mode === 'atlas') { mode = 'map'; return; }
       if (fade || PZ) return;
-      if (mode === 'map') { if (k === 'a') interact(); else if (k === 'b') status(); else held = k; }
+      if (mode === 'map') { if (k === 'a') interact(); else if (k === 'b') openMenu(); else held = k; }
     }
     function release(k) { if (held === k) held = null; }
     document.addEventListener('keydown', function (e) {
       if (!root.classList.contains('open')) return;
       if (PZ) { if (e.key === 'Escape') { e.preventDefault(); cancelPuzzle(); } e.stopPropagation(); return; }
       if (B && B.phase === 'type') { if (e.key === 'Escape') { e.preventDefault(); cancelTarget(); } e.stopPropagation(); return; }
+      if (e.key === 'Escape' && mode === 'menu') { e.preventDefault(); menuKey('b'); return; }
       if (e.key === 'Escape') { if (B && B.phase === 'target') cancelTarget(); else if (B && B.menu && B.menu !== 'main' && B.phase === 'menu') menu('main'); else close(); return; }
       var k = KEYMAP[e.key] || (e.key === 'Enter' || e.key === ' ' || e.key === 'z' || e.key === 'Z' ? 'a' : e.key === 'x' || e.key === 'X' || e.key === 'Backspace' ? 'b' : null);
       if (!k) return; e.preventDefault(); if (!e.repeat || KEYMAP[e.key]) press(k);
@@ -723,9 +877,9 @@
       opener = document.activeElement; root.classList.add('open'); document.body.style.overflow = 'hidden';
       requestAnimationFrame(function () { root.classList.add('show'); });
       cancelAnimationFrame(raf); last = 0; raf = requestAnimationFrame(loop);
-      if (!AREA) load(save.area, save.x, save.y);
+      if (!AREA) { load(save.area, save.x, save.y); syncGear(true); }
       if (mode === 'map' && !talking) {
-        if (!save.met) { save.met = true; store(); say('', ['Meridian was built to be the most beautiful place on the network. Two million people lived here. For a while, it was everything it promised.', 'Then the people who owned it built a newer world, Upstream, and took the Lift. Forty thousand seats. They stopped paying for this one.', 'Nothing broken was ever fixed again. The rot set in. District by district, the city has been going dark. Last night, the signal at its heart went quiet.', 'You are Vee, a maintenance process nobody remembered to shut down. You know one command so far: whoami. You will learn more.', coarse ? 'Use the pad to move, A to talk and B for status.' : 'Arrow keys to move. Enter or Z to talk. X for status.'], null, showArea); }
+        if (!save.met) { save.met = true; store(); say('', ['Meridian was built to be the most beautiful place on the network. Two million people lived here. For a while, it was everything it promised.', 'Then the people who owned it built a newer world, Upstream, and took the Lift. Forty thousand seats. They stopped paying for this one.', 'Nothing broken was ever fixed again. The rot set in. District by district, the city has been going dark. Last night, the signal at its heart went quiet.', 'You are Vee, a maintenance process nobody remembered to shut down. You know one command so far: whoami. You will learn more.', coarse ? 'Use the pad to move, A to talk and B for the menu.' : 'Arrow keys to move. Enter or Z to talk. X for the menu.'], null, showArea); }
         else say('', ['Vee reconnects. ' + AREA.name + '. Level ' + save.lvl + '.'], null, showArea);
       }
       root.querySelector('.rpg-x').focus({ preventScroll: true });

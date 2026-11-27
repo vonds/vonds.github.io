@@ -911,7 +911,7 @@
     return wren0(G);
   };
 
-  var JOURNAL = function (G) {
+  var JOURNAL; JOURNAL = function (G) {
     var f = G.f, j = [];
     if (f.junoMet) j.push((f.radio ? '[x]' : '[ ]') + ' Radio Meridian: ' + (f.radio ? 'on the air' : G.count('part') + ' of 3 parts'));
     if (f.lineOpen) j.push('[x] The Line: running');
@@ -923,5 +923,264 @@
     return j;
   };
 
-  window.MeridianWorld = { areas: A, logs: LOGS, logOrder: LOG_ORDER, bosses: BOSSES, anchors: ANCHORS, talk: TALK, spots: SPOTS, doors: DOORS, wagon: wagon, steps: STEPS, endings: ENDINGS, atlas: ATLAS, links: LINKS, bossStart: BOSS_START, journal: JOURNAL, stations: STATIONS };
+
+  /* =====================================================================
+     EXPANSION II: gear, Concourse Nine, the Infirmary, the Margin
+     ===================================================================== */
+  var GEAR = {
+    stick:      { slot: 'weapon', name: 'Service Stick',      atk: 0,  desc: 'The pointer Vee used to give tours. It was never meant for this.' },
+    cable:      { slot: 'weapon', name: 'Patch Cable',        atk: 5,  desc: 'Braided, shielded, heavier than it looks.' },
+    debugger:   { slot: 'weapon', name: 'Debugger',           atk: 10, crit: .05, desc: 'Stops things mid-step so you can see where they went wrong.' },
+    rootshell:  { slot: 'weapon', name: 'Root Shell',         atk: 16, desc: 'A prompt that ends in #. Use responsibly.' },
+    compiler:   { slot: 'weapon', name: 'Quell’s Compiler',   atk: 24, crit: .08, desc: 'Mara’s own. It turns intentions into things that run.' },
+    killswitch: { slot: 'weapon', name: 'Kill Switch',        atk: 32, crit: .1, desc: 'Taken from the First Bug. It ends anything, including arguments.' },
+    jacket:     { slot: 'armor',  name: 'Maintenance Jacket', def: 0,  desc: 'High-visibility, once. Now just visibility.' },
+    vest:       { slot: 'armor',  name: 'Firewall Vest',      def: 8,  desc: 'Drops anything it doesn’t recognize.' },
+    plate:      { slot: 'armor',  name: 'Billboard Plate',    def: 12, regen: 1, desc: 'Cut from an ad that said LEAVE. Marrow’s work. Mends 1 HP with every step.' },
+    coat:       { slot: 'armor',  name: 'Hardened Coat',      def: 18, desc: 'Ash’s spare. Every seam audited.' },
+    suit:       { slot: 'armor',  name: 'Board Suit',         def: 24, hp: 30, desc: 'Tailored for someone who left. It fits Vee better than it fit him.' },
+    weave:      { slot: 'armor',  name: 'Cold Weave',         def: 32, desc: 'Woven from vault frost. It never quite warms up.' },
+    phones:     { slot: 'acc',    name: 'Headphones',         crit: .03, desc: 'Black, closed-back. The world gets quieter and Vee gets sharper.' },
+    passport:   { slot: 'acc',    name: 'Impact Passport',    xp: .15, desc: 'Every stamp records who helped and who was helped. +15% XP.' },
+    card:       { slot: 'acc',    name: 'Library Card',       drop: .2, desc: 'From the Traveling Archive. Useful things find you more often.' },
+    key:        { slot: 'acc',    name: 'Sentinel Key',       stealth: .4, desc: 'Bugs read you as a hardened host. 40% fewer encounters.' },
+    earpiece:   { slot: 'acc',    name: 'Radio Earpiece',     hp: 40, desc: 'Juno, reading names, all night. You feel less alone. +40 max HP.' },
+    watchdog:   { slot: 'acc',    name: 'Watchdog Timer',     revive: 1, desc: 'If Vee halts, it restarts him once per battle at 30% HP.' }
+  };
+  // gear the story hands you, granted when its flag is set
+  var GEAR_FROM = [
+    ['passport', function (G) { return G.lit('ledger'); }, 'Okoye stamps your Impact Passport.'],
+    ['card', function (G) { return G.lit('wagon'); }, 'Pell presses a Library Card into your hand.'],
+    ['key', function (G) { return G.lit('keep'); }, 'Ash hands over a Sentinel Key.'],
+    ['coat', function (G) { return G.lit('keep'); }, 'Ash adds a Hardened Coat. “You’ll need it more than I will.”'],
+    ['earpiece', function (G) { return !!G.f.radio; }, 'Juno gives you a Radio Earpiece.'],
+    ['plate', function (G) { return !!G.f.radio; }, 'Marrow sends a Billboard Plate, cut from an ad that said LEAVE.'],
+    ['suit', function (G) { return !!G.f.quorum; }, 'In the Boardroom closet: a Board Suit, never worn.'],
+    ['compiler', function (G) { return !!G.f.mara; }, 'Mara left you Quell’s Compiler.'],
+    ['watchdog', function (G) { return !!G.f.triage; }, 'Nurse Imani gives you a Watchdog Timer.'],
+    ['killswitch', function (G) { return !!G.f.firstbug; }, 'From the First Bug’s page: the Kill Switch.']
+  ];
+  var SHOP = [['cable', 'byte', 3], ['vest', 'byte', 4], ['debugger', 'kb', 3], ['rootshell', 'mb', 2], ['weave', 'mb', 3]];
+  var UNIT = { byte: 'B', kb: 'KB', mb: 'MB', gb: 'GB', bit: 'bit' };
+
+  /* CONCOURSE NINE: the long promenade nobody walks */
+  A.concourse = {
+    name: 'Concourse Nine', sub: 'Swept every morning. Walked by no one.', theme: 'concourse', tier: 2,
+    map: (function () {
+      var m = grid(60, 14).border();
+      m.pts([[59, 6], [59, 7]], 'E');
+      m.rect(1, 6, 58, 2, '=');
+      m.rect(1, 5, 3, 4, ','); m.rect(46, 8, 12, 1, ',');
+      m.pts([[8, 5], [18, 5], [25, 5], [40, 5], [51, 5], [56, 5], [12, 8], [28, 8], [42, 8]], 'l');
+      m.set(31, 5, 's'); m.set(34, 8, 'o'); m.set(58, 2, 'c'); m.set(1, 12, 'c'); m.set(22, 5, 's');
+      return m.out();
+    })(),
+    blds: [
+      { x: 3, y: 1, w: 7, h: 4, kind: 'arcade', door: 3, sign: 'ARCADE', rise: 2 },
+      { x: 12, y: 1, w: 8, h: 4, kind: 'forge', door: 4, sign: 'TALLOW AND DAUGHTER', rise: 2 },
+      { x: 23, y: 1, w: 8, h: 4, kind: 'school', door: 4, sign: 'NIGHT SCHOOL', rise: 2 },
+      { x: 34, y: 1, w: 5, h: 4, kind: 'shop', seed: 1, door: 2, sign: 'FLORIST', rise: 1 },
+      { x: 41, y: 1, w: 5, h: 4, kind: 'shop', seed: 2, door: 2, sign: 'TAILOR', rise: 1 },
+      { x: 49, y: 1, w: 6, h: 4, kind: 'shop', seed: 3, sign: 'CAFE', rise: 1 },
+      { x: 6, y: 9, w: 9, h: 4, kind: 'clinic', door: 4, doorTop: 1, sign: 'INFIRMARY' },
+      { x: 18, y: 9, w: 5, h: 4, kind: 'shop', seed: 4, door: 2, doorTop: 1, sign: 'BOOKS' },
+      { x: 26, y: 9, w: 6, h: 4, kind: 'shop', seed: 5, sign: 'CINEMA' },
+      { x: 36, y: 9, w: 5, h: 4, kind: 'shop', seed: 6, door: 2, doorTop: 1, sign: 'TOYS' },
+      { x: 44, y: 9, w: 6, h: 4, kind: 'shop', seed: 7, door: 3, doorTop: 1, sign: 'TRAVEL' },
+      { x: 52, y: 9, w: 5, h: 4, kind: 'shop', seed: 8, door: 2, doorTop: 1, sign: 'BAKERY' }
+    ],
+    exits: { '59,6': ['halflight', 1, 10], '59,7': ['halflight', 1, 11] },
+    enc: { tiles: ',', rate: .14, foes: ['moth', 'bytebug', 'spider', 'virus'], max: 4 },
+    spawn: [57, 6],
+    logs: { '34,8': 'P1' },
+    caches: { '58,2': { item: 'kb', n: 1 }, '1,12': { item: 'byte', n: 3 } },
+    npcs: [
+      { id: 'kip', x: 10, y: 5, name: 'Kip', look: 'kid' },
+      { id: 'tallow', x: 14, y: 5, name: 'Tallow', look: 'echo', h: 14, hair: 6, solid: 1 },
+      { id: 'adair', x: 29, y: 5, name: 'Ms. Adair', look: 'echo', h: 13, hair: 3, solid: 1 },
+      { id: 'rosa', x: 45, y: 5, name: 'Rosa', look: 'echo', h: 13, hair: 5 },
+      { id: 'desmond', x: 49, y: 8, name: 'Desmond', look: 'echo', h: 14, hair: 1, solid: 1 }
+    ]
+  };
+
+  /* THE INFIRMARY: St. Ada's, where broken processes came to be looked after */
+  A.infirmary = {
+    name: 'St. Ada’s Infirmary', sub: 'Where broken processes came to be looked after.', theme: 'clinic', tier: 1,
+    map: (function () {
+      var m = grid(26, 14).border();
+      m.pts([[12, 13], [13, 13]], 'E');
+      m.rect(12, 9, 2, 4, '=');
+      m.set(23, 2, 'o'); m.set(2, 12, 'c');
+      return m.out();
+    })(),
+    blds: [
+      { x: 2, y: 2, w: 2, h: 2, kind: 'bed', door: 0, seed: 1, sign: 'BED 1' }, { x: 6, y: 2, w: 2, h: 2, kind: 'bed', door: 0, seed: 2, sign: 'BED 2' }, { x: 10, y: 2, w: 2, h: 2, kind: 'bed', door: 0, seed: 3, sign: 'BED 3' },
+      { x: 14, y: 2, w: 2, h: 2, kind: 'bed', door: 0, seed: 4, sign: 'EMPTY' }, { x: 18, y: 2, w: 2, h: 2, kind: 'bed', door: 0, seed: 5, sign: 'EMPTY' },
+      { x: 2, y: 6, w: 2, h: 2, kind: 'bed', door: 0, seed: 6, sign: 'EMPTY' }, { x: 20, y: 6, w: 2, h: 2, kind: 'bed', door: 0, seed: 7, sign: 'EMPTY' }
+    ],
+    exits: { '12,13': ['concourse', 10, 8], '13,13': ['concourse', 10, 8] },
+    enc: null,
+    spawn: [12, 12],
+    logs: { '23,2': 'P2' },
+    caches: { '2,12': { item: 'mb', n: 1 } },
+    npcs: [ { id: 'imani', x: 15, y: 9, name: 'Nurse Imani', look: 'echo', h: 14, hair: 3, solid: 1 } ]
+  };
+
+  /* THE MARGIN: where the network ends, not in darkness but in blank */
+  A.margin = {
+    name: 'The Margin', sub: 'The network doesn’t end in darkness. It ends in blank.', theme: 'margin', tier: 4.6,
+    map: (function () {
+      var m = grid(44, 18, '~');
+      m.rect(34, 6, 9, 6, '.'); m.pts([[43, 8], [43, 9]], 'E'); m.set(42, 8, '.'); m.set(42, 9, '.');
+      m.rect(28, 8, 6, 2, '=');
+      m.rect(18, 4, 10, 10, '.'); m.rect(21, 7, 3, 3, '~');
+      m.rect(13, 12, 5, 1, '='); m.rect(6, 10, 7, 6, '.');
+      m.rect(9, 6, 1, 4, '='); m.rect(2, 3, 10, 4, '.');
+      m.rect(36, 13, 5, 3, '.'); m.rect(38, 12, 1, 1, '=');
+      m.set(3, 4, 's'); m.set(39, 15, 'o'); m.set(7, 15, 'c'); m.set(26, 4, 'c');
+      return m.out();
+    })(),
+    blds: [ { x: 24, y: 11, w: 3, h: 2, kind: 'ruin', seed: 11, rise: 2 } ],
+    exits: { '43,8': ['patchwork', 1, 11], '43,9': ['patchwork', 1, 12] },
+    enc: { tiles: '.', rate: .1, foes: ['virus', 'scorpion', 'centipede', 'moth', 'spider'], max: 6 },
+    spawn: [41, 8],
+    logs: { '39,15': 'P3' },
+    caches: { '7,15': { item: 'gb', n: 1 }, '26,4': { item: 'mb', n: 2 } },
+    npcs: [ { id: 'osei', x: 22, y: 5, name: 'Osei', look: 'echo', h: 14, hair: 6 } ]
+  };
+
+  (function () {
+    function put(area, x, y, c) { var r = A[area].map[y].split(''); r[x] = c; A[area].map[y] = r.join(''); }
+    put('halflight', 0, 10, 'E'); put('halflight', 0, 11, 'E');
+    A.halflight.exits['0,10'] = ['concourse', 58, 6]; A.halflight.exits['0,11'] = ['concourse', 58, 7];
+    put('patchwork', 0, 11, 'E'); put('patchwork', 0, 12, 'E');
+    A.patchwork.exits['0,11'] = ['margin', 42, 8]; A.patchwork.exits['0,12'] = ['margin', 42, 9];
+  })();
+  STATIONS.concourse = [31, 5, 'Concourse'];
+  SPOTS['concourse:31,5'] = function (G) { lineMenu(G, 'concourse'); };
+  ATLAS.concourse = [0, 1]; ATLAS.infirmary = [0, 0]; ATLAS.margin = [0, 4];
+  LINKS.push(['halflight', 'concourse'], ['concourse', 'infirmary'], ['patchwork', 'margin']);
+
+  LOGS.P1 = ['POSTCARD FROM UPSTREAM. Never delivered.', 'It’s beautiful here. Everything is new. The sky updates every morning.', 'Nobody knows anybody. Nobody’s been anywhere long enough to.', 'Tell the bakery I miss the bad bread. — D.'];
+  LOGS.P2 = ['POSTCARD FROM UPSTREAM. Never delivered.', 'They charge for weather here. A little for sun, more for rain. Most of us pay for sun.', 'I paid for rain once. Just to hear it on a roof. — R.'];
+  LOGS.P3 = ['POSTCARD FROM UPSTREAM. Never delivered.', 'I keep a photo of the old Plaza on my wall. Eleven seconds a day, I look at it.', 'Is that enough to keep it? Somebody told me that’s how it works. I hope it’s enough. — H. Vale'];
+
+  BOSSES.firstbug = { kind: 'moth', name: 'The First Bug', hp: 2200, atk: [28, 36], xp: 1600, move: 'shorts every relay in the world at once', sc: 5 };
+
+  /* ---------- people of Concourse Nine ---------- */
+  TALK.kip = function (G) { G.say('Kip', ['High score’s mine. Well. It’s Pip’s. Pip says. Pip’s not even here.', 'The UPTIME cabinet still works. The others just show the word UPSTREAM over and over. I unplugged those.']); };
+  TALK.tallow = function (G) {
+    var it = G.save.items;
+    var first = !G.f.tallow; G.f.tallow = 1;
+    G.say('Tallow', (first ? ['Tallow and Daughter. My daughter took the Lift. I kept the name on the sign. Felt rude not to.', 'I make tools. You pay in data. It’s the only currency left that means anything.'] : []).concat(['What’ll it be?']),
+      SHOP.filter(function (s) { return !G.ownsGear(s[0]); }).slice(0, 4).map(function (s) {
+        var g = GEAR[s[0]];
+        return { label: g.name + ' · ' + s[2] + ' ' + UNIT[s[1]], fn: function () {
+          if ((it[s[1]] || 0) < s[2]) return G.say('Tallow', ['That’s ' + s[2] + ' ' + UNIT[s[1]] + '. You’re short. I don’t do credit. Credit is how this whole city got sold.']);
+          it[s[1]] -= s[2]; G.giveGear(s[0]);
+          G.say('Tallow', ['The ' + g.name + '. ' + g.desc, 'Equip it from your menu. It does nothing sitting in a bag. Neither do you.']);
+        } };
+      }).concat([{ label: 'Nothing', fn: null }]));
+  };
+  var CLASSES = [
+    { id: 'c1', name: 'Files 101', stat: 'atk', amt: 2, steps: [
+      { t: 'Files 101, question 1. Where are you? Print the working directory.', ex: ['pwd'] },
+      { t: 'Question 2. List everything here, hidden files too.', ex: ['ls -a', 'ls -la', 'ls -al'] },
+      { t: 'Question 3. Read notes.txt.', ex: ['cat notes.txt'] }] },
+    { id: 'c2', name: 'Permissions', stat: 'def', amt: 3, steps: [
+      { t: 'Permissions, question 1. Make run.sh executable.', ex: ['chmod +x run.sh', 'chmod u+x run.sh', 'chmod 755 run.sh'] },
+      { t: 'Question 2. Make vee the owner of notes.txt.', ex: ['chown vee notes.txt', 'sudo chown vee notes.txt'] },
+      { t: 'Question 3. Set notes.txt so the owner can read and write, and everyone else can only read.', ex: ['chmod 644 notes.txt', 'chmod u=rw,go=r notes.txt'] }] },
+    { id: 'c3', name: 'Processes', stat: 'hp', amt: 25, steps: [
+      { t: 'Processes, question 1. Show every running process.', ex: ['ps aux', 'ps -ef', 'ps -e', 'ps -A'] },
+      { t: 'Question 2. PID 2020 is misbehaving. Ask it to stop.', ex: ['kill 2020', 'kill -15 2020'] },
+      { t: 'Question 3. It won’t. Make it.', ex: ['kill -9 2020', 'kill -KILL 2020'] }] },
+    { id: 'c4', name: 'Networks', stat: 'atk', amt: 3, steps: [
+      { t: 'Networks, question 1. Check that school.local is reachable, three pings only.', ex: ['ping -c 3 school.local', 'ping -c3 school.local'] },
+      { t: 'Question 2. Log in to school.local as vee.', ex: ['ssh vee@school.local'] },
+      { t: 'Question 3. Copy notes.txt to your home folder on school.local.', ex: ['scp notes.txt vee@school.local:~', 'scp notes.txt vee@school.local:', 'scp notes.txt vee@school.local:~/'] }] }
+  ];
+  TALK.adair = function (G) {
+    var f = G.f, open = CLASSES.filter(function (c) { return !f[c.id]; });
+    var intro = !f.adair ? ['Come in, come in. Class started eleven months ago, but I’m flexible.', 'I taught adults who’d been told they were too old to start. Most of them were wrong about that.', 'Some of them took the Lift with what I taught them. That’s fine. That’s what teaching is.'] : [];
+    f.adair = 1;
+    if (!open.length) return G.say('Ms. Adair', intro.concat(['You’ve taken every class I have. I’m going to have to write new ones. I haven’t written anything new in a year.', 'Thank you for that.']));
+    G.say('Ms. Adair', intro.concat(['Which class tonight?']), open.map(function (c) {
+      var reward = c.stat === 'hp' ? '+' + c.amt + ' max HP' : '+' + c.amt + ' ' + c.stat.toUpperCase();
+      return { label: c.name + ' (' + reward + ')', fn: function () {
+        G.puzzle(c.name.toUpperCase(), c.steps, function () { f[c.id] = 1; G.school(c.stat, c.amt); G.say('Ms. Adair', ['Very good. You can’t un-know that now. Nobody can reclaim it.', 'Vee gains ' + reward + ', permanently.']); });
+      } };
+    }).concat([{ label: 'Not tonight', fn: null }]));
+  };
+  TALK.rosa = function (G) { G.say('Rosa', ['The sale starts Monday. I’m dressing the windows for it.', 'It has been Monday for eleven months. The windows have never looked better.']); };
+  TALK.desmond = function (G) {
+    G.say('Desmond', ['Good afternoon! Have you considered leaving?'], [
+      { label: 'Yes', fn: function () { G.say('Desmond', ['Wonderful. The next Lift departs never. Every seat was sold before the brochures were printed.', 'But the brochure is free! People love the brochure. Look at the weather in it.']); } },
+      { label: 'No', fn: function () { G.say('Desmond', ['...No one’s said no before. Everyone who could say yes already did.', 'Would you mind saying it again? Just so I know what it sounds like.']); } }]);
+  };
+  TALK.imani = function (G) {
+    var f = G.f, n = (f.bed1 ? 1 : 0) + (f.bed2 ? 1 : 0) + (f.bed3 ? 1 : 0);
+    G.rest();
+    if (f.triage) return G.say('Nurse Imani', ['Rest a minute. You’re patched. HP restored.', 'Three patients awake on my ward. Do you know how long it’s been since anyone woke up on my ward?']);
+    if (n === 3) { f.triage = 1; return G.say('Nurse Imani', ['All three of them. Awake. Talking. One of them is complaining about the food, which is the best sign there is.', 'Take this. It’s a Watchdog Timer. If you go down, it’ll start you up again. I’d rather you just didn’t go down.']); }
+    G.say('Nurse Imani', ['Shh. Patients.', 'Before the Lift this ward was full of processes that crashed and needed someone to sit with them while they came back. Now it’s three beds and me.',
+      'I can’t fix them. My hands are for holding, not typing. You have the commands. Three beds. ' + n + ' done.', 'And while you’re here, sit down. You’re running hot. HP restored.']);
+  };
+  TALK.osei = function (G) {
+    if (G.f.firstbug) return G.say('Osei', ['It’s gone, then. The first one. I always thought it was holding the edge together.', 'Turns out the edge holds itself. Most things do, if you let them.']);
+    G.say('Osei', ['Careful. Past the floor there’s nothing. Not dark. Blank. Dark is something. Blank is what nobody ever bothered to imagine.',
+      'I’m the last surveyor. I measure where Meridian stops, so people know where home ends.', 'Far west, there’s a logbook on a stand. Something is taped inside it. The oldest thing in the city. Older than the city.', 'Leave it, if you’re smart. Read it, if you’re you.']);
+  };
+
+  DOORS['concourse:arcade'] = function (G) {
+    G.say('Arcade', ['Rows of dark cabinets. Only one is lit: UPTIME. An endless runner. Clear the bugs. Stay online.', 'The high-score table: PIP 9999 (PIP INSISTS). WREN 1200. VEE ---.'],
+      [{ label: 'Play Uptime', fn: function () { G.arcade(); } }, { label: 'Not now', fn: null }]);
+  };
+  DOORS['concourse:forge'] = function (G) { TALK.tallow(G); };
+  DOORS['concourse:school'] = function (G) { TALK.adair(G); };
+  DOORS['concourse:clinic'] = function (G) { G.travel(['infirmary', 12, 12]); };
+  DOORS['concourse:shop'] = function (G, b) {
+    var t = { FLORIST: ['Every flower in the window is in bloom. They’ve been in bloom for eleven months. It’s starting to feel aggressive.'], TAILOR: ['A suit on a mannequin, chalk lines still on it. Someone was getting married.', 'The tag says: COLLECT AFTER THE LIFT.'],
+      BOOKS: ['A sign: TAKE ONE, LEAVE ONE. Every shelf is full. Nobody’s taken one. Nobody’s left one. It’s exactly as it was.'], TOYS: ['In the window, a model of the Lift, with a tiny crowd at the bottom and a tiny crowd at the top.', 'The bottom crowd is much bigger. Somebody painted that very carefully.'],
+      TRAVEL: ['UPSTREAM GETAWAYS. Posters of the newer world: perfect weather, perfect water, nobody in any of the photos.'], BAKERY: ['The smell of bread that was never real. The oven light is still on.'] };
+    G.say('', t[b.sign] || ['Closed.']);
+  };
+  SPOTS['concourse:22,5'] = function (G) { G.say('Directory', ['CONCOURSE NINE. 214 shops. 214 OPEN.', 'Someone has crossed out OPEN and written REMEMBERED.']); };
+  DOORS['infirmary:bed'] = function (G, b) {
+    var f = G.f;
+    var beds = {
+      'BED 1': { flag: 'bed1', who: 'A process stuck repeating the same three seconds, over and over.', steps: [
+        { t: 'Find the looping process. List everything that’s running.', ex: ['ps aux', 'ps -ef', 'ps -e', 'ps -A'] },
+        { t: 'It’s PID 4410. Stop it gently, so it can save its state.', ex: ['kill 4410', 'kill -15 4410', 'kill -TERM 4410'] }],
+        after: ['The process blinks. “...Oh. What day is it?” Nobody has an answer. It laughs anyway.'] },
+      'BED 2': { flag: 'bed2', who: 'A woman who forgets everything every hour. Her log is rotating too fast to keep anything.', steps: [
+        { t: 'Read the end of her log, recall.log.', ex: ['tail recall.log', 'tail -n 10 recall.log', 'tail -f recall.log'] },
+        { t: 'Her memory directory is full. Check disk space, human-readable.', ex: ['df -h', 'df'] },
+        { t: 'Clear the cache folder that’s crowding everything else out.', ex: ['rm -r cache', 'rm -rf cache', 'rm -r cache/', 'rm -rf cache/'] }],
+        after: ['She opens her eyes and says a name. It isn’t yours. It doesn’t need to be. She’s remembered someone.'] },
+      'BED 3': { flag: 'bed3', who: 'A boy who won’t wake up. His files are owned by an account that left on the Lift.', steps: [
+        { t: 'Find out who you are first. Always.', ex: ['whoami'] },
+        { t: 'Give his home folder, /home/teo, back to him. Recursively, everything in it.', ex: ['chown -R teo /home/teo', 'sudo chown -R teo /home/teo'] }],
+        after: ['His files are his again. He wakes up the way kids wake up: all at once, already asking for something.'] }
+    }, P = beds[b.sign];
+    if (!P) return G.say('', ['An empty bed, made with hospital corners. Imani makes them every morning, in case.']);
+    if (f[P.flag]) return G.say('', ['Bed ' + b.sign.slice(-1) + ' is empty now. The sheets are still warm.']);
+    G.say(b.sign, [P.who], null, function () { G.puzzle(b.sign, P.steps, function () { f[P.flag] = 1; G.say('', P.after.concat(['Imani will want to know.'])); }); });
+  };
+  SPOTS['margin:3,4'] = function (G) {
+    if (G.f.firstbug) return G.say('Logbook', ['The page where the moth was taped is empty now. The handwriting is still there.', '“First actual case of bug being found.”']);
+    G.say('Logbook', ['A logbook on a stand at the very edge of the world. Taped to the page: a moth.', 'Beside it, in neat handwriting: “First actual case of bug being found.”', 'It’s older than Meridian. It may be older than networks. The tape is coming loose.'],
+      [{ label: 'Lift the tape', fn: function () { G.boss('firstbug', function () { G.f.firstbug = 1; G.say('', ['The First Bug folds its wings and is, finally, just a moth.', 'Left on the page, where the tape held it: a switch. The oldest kill switch there is.']); }); } }, { label: 'Leave it', fn: null }]);
+  };
+  var journal0 = JOURNAL;
+  JOURNAL = function (G) {
+    var f = G.f, j = journal0(G);
+    if (f.adair) j.push('Night School: ' + CLASSES.filter(function (c) { return f[c.id]; }).length + ' of 4 classes');
+    if (G.save.seen.infirmary) j.push((f.triage ? '[x]' : '[ ]') + ' St. Ada’s: ' + ((f.bed1 ? 1 : 0) + (f.bed2 ? 1 : 0) + (f.bed3 ? 1 : 0)) + ' of 3 patients');
+    if (G.save.seen.margin) j.push((f.firstbug ? '[x]' : '[ ]') + ' The First Bug');
+    var pc = ['P1', 'P2', 'P3'].filter(function (k) { return f[k]; }).length; if (pc) j.push('Postcards from Upstream: ' + pc + ' of 3');
+    return j;
+  };
+
+  window.MeridianWorld = { areas: A, logs: LOGS, logOrder: LOG_ORDER, bosses: BOSSES, anchors: ANCHORS, talk: TALK, spots: SPOTS, doors: DOORS, wagon: wagon, steps: STEPS, endings: ENDINGS, atlas: ATLAS, links: LINKS, bossStart: BOSS_START, journal: JOURNAL, stations: STATIONS, gear: GEAR, gearFrom: GEAR_FROM };
 })();
