@@ -821,11 +821,12 @@
       var vt = du[j] + dd[j], ht = dl[j] + dr[j];
       if (vt >= 6) m *= 1.09 - .18 * (du[j] / vt);                                     // every surface is lit from above: lighter at its top, darker at its foot
       if (ht >= 6) m *= 1.03 - .06 * (dl[j] / ht);                                     // and a little from the left
-      if (up !== q && up) { if (lum(up) < L - 12) m *= .78; else add += 10; }           // under something darker: contact shadow; otherwise a lit top edge
+      function diff(n2) { return n2 && n2 !== q && Math.abs(lum(n2) - L) > 7; }        // neighbouring shades of one gradient don't count as an edge
+      if (diff(up)) { if (lum(up) < L - 12) m *= .78; else add += 10; }                 // under something darker: contact shadow; otherwise a lit top edge
       else if (y2 > 1 && up === q && g[j - 2 * W2] !== q && g[j - 2 * W2] && lum(g[j - 2 * W2]) < L - 12) m *= .92;
-      if (dn !== q && dn && lum(dn) < L) m *= .84;                                      // shade along the bottom edge
-      if (lf !== q && lf) add += lum(lf) < L ? 8 : 0;                                    // a lit left edge
-      if (rt !== q && rt && lum(rt) < L) m *= .93;                                       // a shaded right edge
+      if (diff(dn) && lum(dn) < L) m *= .84;                                      // shade along the bottom edge
+      if (diff(lf)) add += lum(lf) < L ? 8 : 0;                                    // a lit left edge
+      if (diff(rt) && lum(rt) < L) m *= .93;                                       // a shaded right edge
       if (L > 70 && ((x2 ^ y2) & 1) && up === q && dn === q && lf === q && rt === q) add += (x2 + y2) % 4 === 0 ? 3 : -2;   // a fine ordered dither inside flat colour
       var i4 = j * 4; d[i4] = Math.max(0, Math.min(255, r * m + add)); d[i4 + 1] = Math.max(0, Math.min(255, gg * m + add)); d[i4 + 2] = Math.max(0, Math.min(255, b * m + add)); d[i4 + 3] = ga[j];
     }
