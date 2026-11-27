@@ -1410,6 +1410,8 @@
       if (hair === 'long') for (var y6 = 4; y6 <= 17; y6++) { both(3, y6, y6 % 3 ? 'H' : 'h'); both(4, y6, 'H'); if (back) for (var x6 = 5; x6 <= 16; x6++) if (y6 >= 13) set(x6, y6, (x6 + y6) % 3 ? 'H' : 'h'); }
       if (hair === 'pony') { if (back) for (var y7 = 4; y7 <= 15; y7++) { set(10, y7, y7 % 2 ? 'H' : 'h'); set(11, y7, 'H'); } else for (var y8 = 3; y8 <= 13; y8++) { set(19, y8 + 1, y8 % 2 ? 'H' : 'h'); set(18, y8, 'H'); } set(back ? 10 : 18, 3, 'W'); }
       if (hair === 'hood') { for (var h1 = 1; h1 <= 14; h1++) { both(3, h1, 'O'); both(4, h1, h1 > 2 ? 'O' : '.'); } for (var h2 = 4; h2 <= 17; h2++) { set(h2, 1, 'O'); set(h2, 2, 'O'); } both(5, 3, 'O'); both(6, 3, 'o'); }
+      if (hair === 'bun') { for (var u1 = 9; u1 <= 12; u1++) { set(u1, 0, 'H'); set(u1, 1, u1 === 10 ? 'h' : 'H'); } set(10, -1, 'H'); set(8, 1, 'H'); set(13, 1, 'H'); }
+      if (hair === 'cap') { for (var u2 = 5; u2 <= 16; u2++) { set(u2, 1, 'N'); set(u2, 2, 'N'); set(u2, 3, 'N'); set(u2, 4, back ? 'N' : 'n'); } for (var u3 = 3; u3 <= 18; u3++) if (!back) set(u3, 5, 'D'); set(10, 2, 'W'); set(11, 2, 'W'); }
       if (hair === 'beanie') for (var c1 = 0; c1 <= 4; c1++) for (var c2 = 0; c2 < 22; c2++) if (g[c1][c2] !== '.' && !face(g[c1][c2]) || (c1 >= 1 && c2 >= 5 && c2 <= 16)) set(c2, c1, c1 === 4 ? 'n' : 'N');
       // what they wear
       if (a.cape) for (var k1 = 13; k1 <= 23; k1++) { both(2, k1, k1 === 23 ? 'X' : 'x'); both(3, k1, 'X'); if (back) for (var k2 = 4; k2 <= 17; k2++) set(k2, k1, k1 === 23 ? 'X' : ((k2 + k1) % 5 ? 'X' : 'x')); }
@@ -1458,7 +1460,9 @@
         if (a.cape) for (var y2 = 12; y2 <= 23; y2++) for (var x2 = 3 - Math.round((y2 - 12) * pose.sway * .15); x2 <= 8; x2++) px(x2, y2, x2 === 8 || y2 === 23 ? 'X' : (x2 + y2) % 5 ? 'X' : 'x');
       };
       L.extra = function (px, pose, HEAD0) {
-        if (hair === 'buzz' || hair === 'mohawk' || hair === 'slick') HEAD0.rows.forEach(function (row, i) { for (var x = 0; x < 20; x++) if (row.charAt(x) === 'H') { var top = hair === 'slick' ? i <= 4 : i <= 2; px(x, HEAD0.r + i, top ? (hair === 'slick' && i === 2 ? 'h' : 'h') : (x <= 4 ? 'K' : 'S')); } });
+        if (hair === 'buzz' || hair === 'mohawk' || hair === 'slick' || hair === 'cap') HEAD0.rows.forEach(function (row, i) { for (var x = 0; x < 20; x++) if (row.charAt(x) === 'H') { var top = hair === 'slick' ? i <= 4 : i <= 2; px(x, HEAD0.r + i, top ? (hair === 'slick' && i === 2 ? 'h' : 'h') : (x <= 4 ? 'K' : 'S')); } });
+        if (hair === 'bun') for (var bx = 5; bx <= 8; bx++) { px(bx, -1, 'H'); px(bx, 0, 'H'); }
+        if (hair === 'cap') { for (var cx2 = 4; cx2 <= 12; cx2++) { px(cx2, 1, 'N'); px(cx2, 2, 'N'); px(cx2, 3, 'n'); } for (var cb = 10; cb <= 16; cb++) px(cb, 4, 'D'); }
         if (hair === 'mohawk') for (var y = -1; y <= 3; y++) for (var x2 = 6; x2 <= 11; x2++) if (y >= 0 || (x2 >= 7 && x2 <= 10)) px(x2, y, (x2 + y) % 3 ? 'H' : 'h');
         if (a.visor) { for (var v = 11; v <= 16; v++) px(v, 7, 'G'); px(14, 8, 'W'); px(15, 8, 'G'); }
         if (a.goggles) { for (var g2 = 9; g2 <= 14; g2++) px(g2, 3, 'D'); px(13, 4, 'G'); px(14, 4, 'G'); }

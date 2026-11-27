@@ -2658,6 +2658,58 @@
     TALK['late_' + n[3]] = function (G) { var f = G.f, k = 'lt_' + n[3]; f[k] = (f[k] || 0) + 1; G.say(n[4], f[k] % 2 ? n[6] : n[6].slice().reverse()); };
   });
 
+  /* =====================================================================
+     THE CONTINUITY CREW. Ten people Corvin Vane left on the payroll to keep Meridian decommissioned.
+     Each waits somewhere in the city doing the Board's work. Talk to them and they'll fight.
+     ===================================================================== */
+  var CREW_LOOKS = {"pell": {"id": "pell", "hair": "bun", "skin": "#e0c0a0", "top": "#3a3a40", "pants": "#2b2b30", "acc": {"glasses": 1, "coat": 1, "belt": 1}}, "dray": {"id": "dray", "hair": "buzz", "skin": "#5a3824", "top": "#141418", "pants": "#1c1c20", "shoes": "#141418", "acc": {"pauldrons": 1, "visor": 1, "belt": 1}}, "null": {"id": "null", "hair": "hood", "skin": "#e8e8ec", "top": "#f0f0f4", "pants": "#d0d0d6", "shoes": "#f0f0f4", "acc": {"cape": 1}}, "lux": {"id": "lux", "hair": "pony", "hairLight": 1, "skin": "#c89a78", "top": "#e8e8ee", "pants": "#e8e8ee", "acc": {"scarf": 1, "glasses": 1}}, "gauge": {"id": "gauge", "hair": "afro", "hairLight": 1, "skin": "#3e2618", "top": "#4a4a52", "pants": "#2b2b30", "acc": {"goggles": 1, "pack": 1, "mic": 1}}, "acknak": {"id": "acknak", "hair": "mohawk", "skin": "#8a5a3c", "top": "#1c1c22", "pants": "#d8d8dc", "acc": {"phones": 1, "phonesLight": 1, "visor": 1}}, "morrow": {"id": "morrow", "hair": "slick", "skin": "#d8b898", "top": "#2a2a30", "pants": "#2a2a30", "shoes": "#141418", "acc": {"glasses": 1, "coat": 1, "scarf": 1}}, "kessler": {"id": "kessler", "hair": "cap", "hairLight": 1, "skin": "#6b4a32", "top": "#3a3a40", "pants": "#1c1c20", "shoes": "#141418", "acc": {"scar": 1, "coat": 1, "belt": 1, "pauldrons": 1}}, "halcyon": {"id": "halcyon", "hair": "long", "hairLight": 1, "skin": "#d8b898", "top": "#f2f2f6", "pants": "#f2f2f6", "acc": {"cape": 1, "visor": 1}}, "root": {"id": "root", "hair": "hood", "skin": "#141418", "top": "#0c0c10", "pants": "#0c0c10", "shoes": "#0c0c10", "acc": {"cape": 1, "visor": 1}}};
+  Object.keys(CREW_LOOKS).forEach(function (k) { HERO[k] = CREW_LOOKS[k]; });
+  var CREW = [
+    // id, area, x, y, name, title, level, hp, atk, xp, move, intro lines, beaten lines
+    ['pell', 'halflight', 9, 9, 'Auditor Pell', 'Continuity Auditor', 7, 700, [15, 20], 420, 'marks Vee down as an unnecessary expense',
+      ['Ah. 1205. You’re on my list. Everything is on my list.', 'I’m auditing Halflight for Mr. Vane. Each tower costs eleven credits a day to keep rendered. Each resident costs four.', 'I’ve recommended we stop paying for all of it. You’re a line item, process. Let’s reconcile you.'],
+      ['…The numbers don’t balance. They never balanced. The towers were always worth more than eleven credits.', 'I’m going to need to re-run the whole audit.']],
+    ['dray', 'waterworks', 11, 5, 'Marshal Dray', 'Continuity Enforcement', 12, 1000, [21, 29], 650, 'closes a valve on Vee',
+      ['Halt. Waterworks is under Continuity control. Every valve I close is a district that goes quiet.', 'Quiet is cheaper. Quiet is tidy. Mr. Vane likes tidy.', 'Step away from the pumps, process, or I close you too.'],
+      ['Stand down… I stand down.', 'Opening the valves. Don’t tell Vane I did it myself.']],
+    ['null', 'registry', 10, 14, 'Sister Null', 'Keeper of the Unlisted', 16, 1500, [26, 36], 1000, 'erases a line of Vee’s name',
+      ['Shh. I am removing names. It does not hurt them. They simply stop having been.', 'Mr. Vane says a name nobody reads is a name nobody needs.', 'Yours is read too often, 1205. It makes the registry heavy.'],
+      ['…You read every name back. Out loud. Even mine.', 'No one has said my name since the Lift. I had forgotten it was a kind thing to do.']],
+    ['lux', 'upper', 21, 15, 'Lux', 'Lift Promoter', 15, 1300, [25, 34], 900, 'sells Vee a ticket that doesn’t exist',
+      ['Hiii! Tickets! Tickets for the next Lift! Only three left! Only two! Only one!', 'There is no next Lift, obviously. But hope sells, and Mr. Vane pays commission on every resident who stops fixing things to wait.', 'You’re bad for business, sweetie.'],
+      ['Okay okay okay. Refunds. Everybody gets refunds.', 'Ugh. Honesty is SO bad for my numbers.']],
+    ['gauge', 'margin', 36, 8, 'Gauge', 'Memory Broker', 22, 2200, [34, 47], 1600, 'scrapes a memory out of Vee and prices it',
+      ['Every memory in the Margin is up for auction. First kiss, last words, the smell of somebody’s kitchen. Upstream pays well for nostalgia.', 'Mr. Vane gets ten percent. I get the rest.', 'And you? You’re full of good ones. Hold still.'],
+      ['You took them back. All of them. Even the ones I’d already sold.', 'I suppose they were never mine to sell.']],
+    ['acknak', 'ring0', 6, 11, 'Ack & Nak', 'Handshake Twins', 26, 3000, [40, 54], 2600, 'answer for each other, one says yes, the other says no',
+      ['ACK: We guard the handshake into Ring 0. NAK: We refuse the handshake into Ring 0.', 'ACK: Mr. Vane pays us to say yes to the Board. NAK: And no to everyone else.', 'ACK: You are everyone else. NAK: NAK.'],
+      ['ACK: …Handshake accepted. NAK: …Fine. Accepted.', 'ACK: That is the first time we have agreed in a year.']],
+    ['morrow', 'deep', 24, 3, 'Dean Morrow', 'Designer of the Reclaimer', 33, 2600, [53, 72], 6000, 'explains, at length, why Vee should not exist',
+      ['I designed the Reclaimer. Elegant thing. It frees memory nobody uses. Pure efficiency.', 'Then the Board asked it to free people, and I said yes, because it was the logical extension of the design.', 'You are a bug in my thesis, 1205. Let me correct you.'],
+      ['…My thesis assumed unused meant unwanted.', 'It never did. I need to start over. I haven’t started over since I was young.']],
+    ['kessler', 'anchor', 17, 11, 'Warden Kessler', 'Keeper of the Obsolete', 41, 3600, [76, 103], 12000, 'files Vee in a cell that isn’t there',
+      ['Obsolete accounts belong in holding. I keep the holding. Twelve hundred cells, one for every resident below.', 'They’re empty, of course. But the paperwork says they’re full, and paperwork is what Mr. Vane reads.', 'There’s a cell with your number on it.'],
+      ['…Tear up the forms, then. All twelve hundred.', 'I always hated the paperwork.']],
+    ['halcyon', 'upstream', 26, 22, 'Halcyon', 'Face of the Current', 63, 3600, [149, 201], 60000, 'shines so bright Vee can’t see the list',
+      ['Oh, you’re the one everyone’s whispering about. I’m Halcyon. I’m on every poster in Upstream. I was the first one up the Lift.', 'I’m also, apparently, not in the four hundred. Corvin promised me a seat. Corvin promises everyone a seat.', 'If I can’t be on the list, I’ll make sure you aren’t either.'],
+      ['…You’re right. I’d have taken a seat and never looked back. Again.', 'Maybe I’ll look back this time. Maybe I’ll go down and see it.']],
+    ['root', 'rack', 4, 13, 'root', 'uid=0', 89, 4600, [264, 357], 230000, 'runs as root',
+      ['# whoami', 'root.', 'I am the account Corvin used to schedule the wipe. I run what I am told. I am told to run.', 'You are a process without permission, 1205. sudo is not available to you.'],
+      ['# exit', 'Logging out. For the first time, nobody is telling me to log back in.']]
+  ];
+  CREW.forEach(function (c) {
+    var id = 'crew_' + c[0];
+    BOSSES[id] = { kind: c[0], name: c[4], lv: c[6], hp: c[7], atk: c[8], xp: c[9], move: c[10], sc: 1 };
+    if (!A[c[1]]) return;
+    A[c[1]].npcs.push({ id: id, hero: CREW_LOOKS[c[0]], x: c[2], y: c[3], name: c[4], gone: id, still: 1 });
+    TALK[id] = function (G) {
+      G.say(c[4] + ' · ' + c[5], c[11], [{ label: 'Fight', fn: function () {
+        G.boss(id, function () { G.f[id] = 1; G.say(c[4], c[12].concat([c[4] + ' leaves. The Continuity Crew is one shorter. (' + CREW.filter(function (k) { return G.f['crew_' + k[0]]; }).length + ' of ' + CREW.length + ' beaten.)'])); });
+      } }, { label: 'Not yet', fn: null }]);
+    };
+  });
+  (function () { var j0 = JOURNAL; JOURNAL = function (G) { var j = j0(G), n = CREW.filter(function (k) { return G.f['crew_' + k[0]]; }).length; if (n || G.f.cv1) j.push('Continuity Crew beaten: ' + n + ' of ' + CREW.length); return j; }; })();
+
   var journal1 = JOURNAL;
   JOURNAL = function (G) {
     var f = G.f, j = journal1(G);

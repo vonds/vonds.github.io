@@ -154,7 +154,7 @@
     function key(x, y) { return x + ',' + y; }
     function gateOpen(x, y) { var g = AREA.gates && AREA.gates[key(x, y)]; if (!g) return false; return g.need ? !!g.need(G) : false; }
     function wagonAt() { if (!AREA.wagon) return null; var s = isLit('wagon') ? 2 : Math.min(2, F.wagon || 0); return AREA.wagon[s]; }
-    function visNpcs() { return (AREA.npcs || []).filter(function (p) { return !(COMP[p.id] && inParty(p.id)); }); }   // companions who joined have left their post
+    function visNpcs() { return (AREA.npcs || []).filter(function (p) { return !(COMP[p.id] && inParty(p.id)) && !(p.gone && F[p.gone]); }); }   // companions who joined have left their post; beaten bosses have left the city   // companions who joined have left their post
     function npcAt(x, y) { var n = null; visNpcs().forEach(function (p) { if (p.x === x && p.y === y) n = p; }); return n; }
     function blocked(x, y) {
       var t = tile(x, y);
@@ -891,7 +891,7 @@
       var sc = n <= 2 ? 3 : 2, foes = [], soft = [1, 1, .8, .62, .5, .42, .36][n];
       endTalk();
       for (var i = 0; i < n; i++) {
-        var kind = bossDef ? bossDef.kind : (i === 0 && save.lvl >= 5 && Math.random() < .035 ? 'heisenbug' : kinds[Math.floor(Math.random() * kinds.length)]), base0 = FOES[kind], slot = bossDef ? ((bossDef.kind === 'vesfork' || bossDef.kind === 'corvin') ? [76, 108] : [34, 120]) : SLOTS[i];
+        var kind = bossDef ? bossDef.kind : (i === 0 && save.lvl >= 5 && Math.random() < .035 ? 'heisenbug' : kinds[Math.floor(Math.random() * kinds.length)]), base0 = FOES[kind], slot = bossDef ? ((bossDef.kind === 'vesfork' || bossDef.kind === 'corvin' || (WD.heroes && WD.heroes[bossDef.kind])) ? [76, 108] : [34, 120]) : SLOTS[i];
         var lv = (AREA.lv || 1) + Math.floor(Math.random() * ((AREA.lvMax || AREA.lv || 1) - (AREA.lv || 1) + 1)), elite = !bossDef && lv >= 4 && Math.random() < .12;
         if (elite) lv += 2;
         var hm = 1 + .22 * (lv - 1), am = lvAtk(lv) / 7.5, xm = 1 + .3 * (lv - 1) + Math.pow(Math.max(0, lv - 50), 2) * .12;   // the endgame pays better, so the climb to 100 is a climb and not a grind
@@ -1443,7 +1443,7 @@
       order.forEach(function (f) {
         f.shake = Math.max(0, f.shake - dt * 3); f.flash = Math.max(0, f.flash - dt * 4); f.lunge = Math.max(0, (f.lunge || 0) - dt * 3);
         if (f.dead) { f.fade = Math.max(0, f.fade - dt * 1.6); if (f.fade <= 0) return; }
-        var PEOPLE = { vesfork: WD.heroes && WD.heroes.ves, corvin: WD.heroes && WD.heroes.corvin };   // the rivals are people, not bugs: their own sprites, facing Vee
+        var PEOPLE = { vesfork: WD.heroes && WD.heroes.ves, corvin: WD.heroes && WD.heroes.corvin }; if (WD.heroes && WD.heroes[f.kind] && !PEOPLE[f.kind]) PEOPLE[f.kind] = WD.heroes[f.kind];   // the rivals are people, not bugs: their own sprites, facing Vee
         var img = PEOPLE[f.kind] ? hdv(SP.hero(PEOPLE[f.kind], 'side', f.lunge > .3 ? 'point' : (Math.floor(B.t * 2) % 2 ? 'idle2' : 'idle'))) : (SP.bugHD && !(save.cfg && save.cfg.retro) ? SP.bugHD : SP.bug)(f.kind, Math.floor((B.t + f.ph) * 4)), sc = f.sc / (img.hd || 1), w = img.width * sc, h = img.height * sc;   // sc here is per drawn pixel; drawSprite takes the per-world-pixel scale   // 16-bit sprites by default; img.hd says how much finer they're drawn
         var bx = f.fx + (f.shake ? Math.sin(B.t * 80) * 3 * f.shake : 0) + f.lunge * 10, by = f.fy - h + (f.kind === 'moth' || f.kind === 'virus' ? -6 + Math.sin(B.t * 3 + f.ph) * 1.5 : 0);
         cx.fillStyle = 'rgba(0,0,0,.35)'; cx.beginPath(); cx.ellipse(f.fx + w / 2, f.fy + 1, w * .42, 3, 0, 0, 7); cx.fill();
