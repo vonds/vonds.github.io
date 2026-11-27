@@ -576,7 +576,7 @@
   var ENDINGS = {
     cut: ['Vee types the only command that matters.', 'The tether parts like a held breath let go. Somewhere above, a newer world will have to be built from new material.', 'Below, Meridian keeps what’s left of itself. It isn’t much. It’s theirs.'],
     reverse: ['Vee reverses the Lift.', 'Memory pours down the tether, two million rooms’ worth, and the city blazes back to life all at once.', 'Upstream, the newer world begins to flicker. Somewhere up there, a child asks why the lights are going out.', 'Wren, very quietly: “That’s how it started last time. Be careful what you turn into.”'],
-    after: ['Vee types whoami.', 'uid=1205(vee) gid=100(residents)', 'Not maintenance. Resident.', 'Back in the Plaza, a kiosk updates for the first time in eleven months.', 'MERIDIAN. Population 1,205.', 'THE END. Thank you for playing Meridian. The city is still yours to walk.']
+    after: ['Vee types whoami.', 'uid=1205(vee) gid=100(residents)', 'Not maintenance. Resident.', 'Back in the Plaza, a kiosk updates for the first time in eleven months.', 'MERIDIAN. Population 1,205.', 'THE END. Thank you for playing Afterlift. Meridian is still yours to walk.']
   };
 
 
