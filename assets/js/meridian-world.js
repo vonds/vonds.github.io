@@ -1285,7 +1285,7 @@
       { t: 'The tape is okafor.tar.gz. Unpack it here.', ex: ['tar -xzf okafor.tar.gz', 'tar xzf okafor.tar.gz', 'tar -xvzf okafor.tar.gz', 'tar -zxf okafor.tar.gz'] },
       { t: 'Find the file named recipes.txt anywhere under the current folder.', ex: ['find . -name recipes.txt', 'find . -name "recipes.txt"', "find . -name 'recipes.txt'"] }],
       after: 'The cards come back in order, A to Z. Under S: soup, the one for sick days.' },
-    { id: 'r2', who: 'Teodor, the Line', what: 'every voicemail from his brother. “I deleted them because I couldn’t listen. Now I can.”', steps: [
+    { id: 'r2', who: 'Teodor, Halflight', what: 'every voicemail from his brother. “I deleted them because I couldn’t listen. Now I can.”', steps: [
       { t: 'Search every file under voicemail/ for the word Teodor, ignoring case.', ex: ['grep -ri teodor voicemail/', 'grep -ri teodor voicemail', 'grep -ir teodor voicemail/', 'grep -ir teodor voicemail', 'grep -r -i teodor voicemail/', 'grep -r -i teodor voicemail', 'grep -i -r teodor voicemail/', 'grep -i -r teodor voicemail'] },
       { t: 'Copy the whole voicemail folder to /home/teodor, recursively.', ex: ['cp -r voicemail /home/teodor', 'cp -r voicemail/ /home/teodor', 'cp -r voicemail /home/teodor/', 'cp -R voicemail /home/teodor', 'cp -a voicemail /home/teodor', 'rsync -a voicemail /home/teodor', 'rsync -a voicemail/ /home/teodor/'] }],
       after: 'Forty-one messages. The last one is just his brother laughing at something off-mic.' },
@@ -1420,6 +1420,19 @@
     tues('desmond', 'Desmond', ['Good afternoon! Have you considered staying?', '...I’m trying it out. It’s a new brochure. There’s only one photo in it, and it’s of here.']);
     tues('kip', 'Kip', ['It’s TUESDAY. Pip says Tuesday doesn’t count. Pip is wrong.', 'The cabinets that said UPSTREAM say INSERT COIN now. I plugged them back in.']);
     tues('imani', 'Nurse Imani', ['Two new patients this morning. Woke up on their own. No commands, no nothing.', 'Turns out some processes just needed a different day.']);
+    tues('wren', 'Wren', ['You did it. It’s Tuesday.', 'I’ve been awake for every Monday. I knew something was wrong. I just couldn’t tell what, because every morning I was told it was fine.', 'I think I’ll go for another walk. A different one. I’ve never been able to go a different way before.']);
+    tues('sweeper', 'The Sweeper', ['Swept the Concourse this morning. Came back after lunch and there was dust again.', 'New dust. Eleven months I’ve been sweeping the same dust. You don’t know how good it feels to be behind.']);
+    tues('okoye', 'Okoye', ['The ledger has a second page now. Tuesday’s deeds.', 'Somebody fixed a stair rail. Somebody taught somebody else to read a crontab. I wrote them all down. That’s what the book is for.']);
+    tues('teodor', 'Teodor', ['I played my brother’s voicemails this morning. All forty-one.', 'Then I did something I haven’t done in eleven months. I recorded a new one. Nobody’s going to hear it. That isn’t the point.']);
+    tues('kade', 'Kade', ['The Proving Rooms reset every night. Not any more. Somebody left a chair out of place yesterday and it’s still out of place.', 'I almost moved it back. I didn’t. Growth.']);
+    tues('ash', 'Ash', ['Sentinel logged its first new event in eleven months: a door opened that wasn’t on the schedule.', 'I nearly flagged it. Then I realized. That’s just a person, deciding to go somewhere. I’ve forgotten what normal traffic looks like.']);
+    tues('juno', 'Juno', ['RADIO MERIDIAN, Tuesday edition. First one ever.', 'I didn’t have anything prepared. I just read the date out loud for an hour. People called in to say it back to me.']);
+    tues('marrow', 'Marrow', ['The billboards still say LEAVE. Tomorrow I’m painting over them.', 'Haven’t decided with what. Maybe nothing. Maybe just the date.']);
+    tues('mirelle', 'Mirelle', ['I wrote a song yesterday. Not the fifth note, a whole new song. It has a part that doesn’t repeat.', 'It’s terrible. It’s the first terrible thing I’ve made in a year. I’m so happy.']);
+    tues('keeper', 'KEEPER', ['TEMPERATURE IN COLD STORAGE HAS RISEN BY ONE DEGREE.', 'THIS WOULD ONCE HAVE BEEN AN ALARM. IT IS NOW A FORECAST.']);
+    tues('pip', 'Pip', ['It’s Tuesday and I’m still the high score. That means it counts on Tuesdays too.', 'Kip says Tuesday’s a different leaderboard. Kip is making that up.']);
+    tues('tallow', 'Tallow', ['My daughter’s room has dust in it now. Real dust.', 'I used to think that would be the worst thing. Turns out it means time is passing for both of us. Somewhere up there, it’s Tuesday for her too.']);
+    tues('sterling', 'Sterling', ['It is Tuesday, sir. I checked twice.', 'For eleven months every day has felt like a Thursday. I have never dusted the Boardroom on a Tuesday. I intend to try it and see what happens.']);
     tues('osei', 'Osei', ['The edge moved. Out, not in. Four tiles of floor where there was blank yesterday.', 'Nobody built it. It just grew, the way a city does when it’s allowed to.']);
   })();
 
