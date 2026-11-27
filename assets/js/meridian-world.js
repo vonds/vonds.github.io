@@ -435,7 +435,7 @@
   /* signs, doors, landmarks: keyed "area:x,y" */
   var SPOTS = {
     'plaza:12,6': function (G) {
-      if (G.f.ending) return G.say('Kiosk', ['MERIDIAN. Population 1,205.', 'Vee checks the number twice.']);
+      if (G.f.ending) return G.say('Kiosk', ['MERIDIAN. Population ' + (G.f.nova ? '1,206' : '1,205') + '.', G.f.nova ? 'Vee checks the number twice. It went up.' : 'Vee checks the number twice.']);
       G.say('Kiosk', ['MERIDIAN. Population 1,204. Peak 2,000,000.', 'LIFT CAPACITY: 40,000 seats. Seats remaining: 0.', 'Landmarks answering: ' + G.lights() + ' of 6.']);
     },
     'plaza:F': function (G) { G.say('', ['The fountain renders water once every eleven seconds, the way it was cached the day the Lift opened.', 'Somebody threw a coin in. It’s still in the air.']); },
@@ -1534,6 +1534,94 @@
       if (G.save.seen.waterworks) { j.push('The Waterworks: ' + ((f.p1 ? 1 : 0) + (f.p2 ? 1 : 0) + (f.p3 ? 1 : 0)) + ' of 3 pumps automated'); j.push((f.overflow ? '[x]' : '[ ]') + ' Let Marisol sleep'); }
       return j;
     };
+  })();
+
+  /* THE REGISTRY: where the city records who exists. It stopped accepting new names the day of the Lift. */
+  A.registry = {
+    name: 'The Registry', sub: 'Where Meridian keeps track of who exists. Closed to new names since the Lift.', theme: 'registry', tier: 3.8, lv: 15, lvMax: 17,
+    map: (function () {
+      var m = grid(34, 20).border();
+      m.pts([[8, 19], [9, 19]], 'E');
+      m.rect(8, 9, 2, 10, '='); m.rect(1, 9, 32, 2, '='); m.rect(16, 6, 2, 3, '=');
+      m.rect(11, 14, 5, 3, ','); m.rect(20, 14, 6, 3, ','); m.rect(2, 6, 4, 2, ',');
+      m.set(12, 8, 's'); m.set(31, 1, 'o'); m.set(2, 17, 'o'); m.set(31, 17, 'c'); m.set(1, 1, 'c');
+      return m.out();
+    })(),
+    blds: [
+      { x: 12, y: 1, w: 10, h: 5, kind: 'hall', door: 5, sign: 'REGISTRY', rise: 3 },
+      { x: 2, y: 2, w: 6, h: 3, kind: 'counter', seed: 1, sign: '0412', rise: 1 },
+      { x: 25, y: 2, w: 6, h: 3, kind: 'counter', seed: 2, sign: '0413', rise: 1 },
+      { x: 2, y: 12, w: 5, h: 4, kind: 'drawers', seed: 1, sign: 'A TO L', rise: 2 },
+      { x: 27, y: 12, w: 5, h: 4, kind: 'drawers', seed: 2, door: 2, sign: 'M TO Z', rise: 2 }
+    ],
+    exits: { '8,19': ['bastion', 8, 1], '9,19': ['bastion', 9, 1] },
+    enc: { tiles: ',', rate: .14, foes: ['spider', 'scorpion', 'bytebug', 'virus', 'beetle'], max: 5 },
+    spawn: [8, 18],
+    logs: { '31,1': 'R1', '2,17': 'R2' },
+    caches: { '31,17': { item: 'mb', n: 2 }, '1,1': { item: 'kb', n: 3 } },
+    npcs: [
+      { id: 'odalys', p: { hair: 'bun', body: 'suit', glasses: 1, skin: '#5a3824', top: '#3a3a44', gray: 1 }, x: 19, y: 7, name: 'Odalys', look: 'echo', h: 14, hair: 3, solid: 1 },
+      { id: 'kemi', p: { hair: 'long', body: 'dress', skin: '#3a2416', top: '#6a6a74' }, x: 5, y: 9, name: 'Kemi', look: 'echo', h: 13, hair: 5, solid: 1 },
+      { id: 'jonah', p: { hair: 'short', body: 'coat', skin: '#6a4a34', top: '#4a4a54', beard: 1 }, x: 4, y: 10, name: 'Jonah', look: 'echo', h: 14, hair: 1, solid: 1 }
+    ]
+  };
+  (function () {
+    var r = A.bastion.map[0].split(''); r[8] = 'E'; r[9] = 'E'; A.bastion.map[0] = r.join('');
+    A.bastion.exits['8,0'] = ['registry', 8, 18]; A.bastion.exits['9,0'] = ['registry', 9, 18];
+  })();
+  ATLAS.registry = [3, 1]; LINKS.push(['bastion', 'registry']);
+  LOGS.R1 = ['REGISTRY NOTICE, posted the day of the Lift.', 'BY ORDER OF THE BOARD: the population of Meridian is now fixed. No new accounts will be created.', 'Residents are reminded that the city is in a transitional period. Please hold.'];
+  LOGS.R2 = ['A birth certificate, never filed. Stamp: REJECTED. REASON: NO ACCOUNT TO ATTACH TO.', 'Name: Nova. Parents: Kemi and Jonah Adeyemi. Born: St. Ada’s, four months after the Lift.', 'In the margin, in pencil: She exists. I held her. — I.'];
+  BOSSES.gatekeeper = { kind: 'spider', name: 'The Gatekeeper', hp: 1300, atk: [21, 28], xp: 700, move: 'denies Vee’s access', sc: 4 };
+  GEAR.seal = { slot: 'acc', name: 'Registrar’s Seal', hp: 30, xp: .05, desc: 'A rubber stamp that says EXISTS. Odalys says it’s the most important thing she owns. She gave it to you anyway.' };
+  GEAR_FROM.push(['seal', function (G) { return !!G.f.nova; }, 'Odalys presses her seal into Vee’s hand. It says EXISTS.']);
+  TALK.kemi = function (G) {
+    var f = G.f;
+    if (f.nova) return G.say('Kemi', f.tuesday ? ['Nova said a word today. On a Tuesday. It was “no,” but we’re counting it.'] : ['uid 2001. Nova. It’s on a screen somewhere, and the screen agrees she’s real.', 'She doesn’t care, of course. She’s a baby. But one day she will, and it will be there.']);
+    f.kemi = 1;
+    G.say('Kemi', ['This is Nova. She was born four months after the Lift, at St. Ada’s. Nurse Imani delivered her.', 'According to the city, she doesn’t exist. No account. The Board closed the Registry the day they left. A fixed population, they called it.',
+      'We’ve queued at that counter every day for eight months. Number 0413. They’re still serving 0412.', 'I don’t need much. I just want her name somewhere the city can see it.']);
+  };
+  TALK.jonah = function (G) {
+    if (G.f.nova) return G.say('Jonah', ['I keep running id nova on the public terminal. Just to see it come back.', 'uid=2001(nova) gid=100(residents). I’ve memorized it. I’m going to have it engraved on something.']);
+    G.say('Jonah', ['Don’t mind me. I’m holding our place in the line. There’s no line. I’m holding it anyway.', 'If Odalys could just get into her own system. She’s been locked out of it as long as we have.']);
+  };
+  TALK.odalys = function (G) {
+    var f = G.f;
+    if (f.nova) return G.say('Odalys', ['Account 2001. The first new name in Meridian since the Lift.', 'I’ve reopened the counters. Nobody’s queuing yet. They will. People are going to want to be written down again.']);
+    if (!f.odalys) { f.odalys = 1; return G.say('Odalys', ['Registrar Odalys Ferreira. I have recorded every birth, death and change of address in Meridian for nineteen years.', 'The Board locked my terminal the morning of the Lift. NEW_ACCOUNTS=DISABLED. I’m still allowed to look. I’m not allowed to write.',
+      'There is a baby out there who does not exist on paper. I can’t stand it. It’s the only thing I can’t stand.', 'The Registrar’s console is in the hall. If you can get in, you can do what I can’t. I’ll tell you exactly what to type, if you need me to. I’ve been rehearsing.']); }
+    G.say('Odalys', [f.kemi ? 'Her name is Nova. Two million names went Upstream, and the one I want to write down is four letters long.' : 'Talk to the family by the queue first. It should be their idea, not mine.', 'The console is in the hall, up the steps.']);
+  };
+  DOORS['registry:hall'] = function (G) {
+    var f = G.f;
+    if (f.nova) { G.rest(); return G.say('Registrar’s hall', ['The console shows a single new line in the account table. Odalys has left a chair out for anyone who wants to sit and look at it.', 'Vee sits for a while. HP restored.']); }
+    if (!f.kemi || !f.odalys) return G.say('Registrar’s hall', ['A console behind a velvet rope, under a sign: REGISTRAR ONLY.', 'It isn’t your business yet. Talk to the people waiting.']);
+    G.say('Registrar’s hall', ['The Registrar’s console. Locked to the Board. But it still answers a maintenance process, because nobody thought maintenance mattered.'], [{ label: 'Make Nova an account', fn: function () {
+      G.puzzle('REGISTRY', [
+        { t: 'First, know the machine. Print everything uname can tell you.', ex: ['uname -a'] },
+        { t: 'How long has it been running without a restart?', ex: ['uptime'] },
+        { t: 'Create an account named nova, with a home folder.', ex: ['useradd -m nova', 'sudo useradd -m nova', 'adduser nova', 'sudo adduser nova'] },
+        { t: 'Give it a password, so it’s hers.', ex: ['passwd nova', 'sudo passwd nova'] },
+        { t: 'Add her to the residents group. Append, don’t replace.', ex: ['usermod -aG residents nova', 'sudo usermod -aG residents nova', 'usermod -a -G residents nova', 'sudo usermod -a -G residents nova'] }], function () {
+        G.say('', ['The console hesitates. Somewhere in the walls, a policy wakes up and reads what you just did.'], null, function () {
+          G.say('The Gatekeeper', ['NEW ACCOUNT DETECTED: nova.', 'BY ORDER OF THE BOARD, THE POPULATION OF MERIDIAN IS FIXED.', 'ACCESS DENIED. ACCESS DENIED. ACCESS DE—'], null, function () {
+            G.boss('gatekeeper', function () {
+              G.puzzle('REGISTRY', [{ t: 'The policy is gone. Check that it took. Ask the system who nova is.', ex: ['id nova', 'groups nova'] }], function () {
+                f.nova = 1; G.xp(500);
+                G.say('', ['uid=2001(nova) gid=100(residents) groups=100(residents)', 'Odalys reads it over Vee’s shoulder and has to sit down.', 'Out in the hall, Kemi is crying in the good way. Jonah is saying the number out loud, over and over: two thousand and one.', 'Vee gains 500 XP.']);
+              });
+            });
+          });
+        });
+      });
+    } }, { label: 'Not yet', fn: null }]);
+  };
+  DOORS['registry:drawers'] = function (G, b) { G.say('Card catalogue ' + b.sign, ['A thousand small drawers, one per household. The cards inside are all dated before the Lift.', G.f.nova ? 'One drawer, under A, has a new card in it. Adeyemi, Nova. The ink is still a little wet.' : 'The drawer for Adeyemi has room for one more card. It has had room for eight months.']); };
+  SPOTS['registry:12,8'] = function (G) { G.say('Sign', ['MERIDIAN REGISTRY. Births, accounts, changes of address.', G.f.nova ? 'Below it, a new line, hand-lettered: NOW ACCEPTING NEW NAMES.' : 'Below it: CLOSED TO NEW NAMES. PLEASE HOLD.']); };
+  (function () {
+    var j0 = JOURNAL;
+    JOURNAL = function (G) { var f = G.f, j = j0(G); if (G.save.seen.registry) j.push((f.nova ? '[x]' : '[ ]') + ' Give Nova a name the city can see'); return j; };
   })();
 
   /* a room of Vee's own: the nameplate fills in once Vee is a resident */
