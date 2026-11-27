@@ -173,6 +173,12 @@
       school: function (k, n) { save.school[k] += n; if (k === 'hp') save.hp += n; store(); },
       helpdesk: function (who) { helpdesk(who || 'Ines'); },
       rush: function () { rush(); },
+      drillWeak: function (who) {
+        var pool = save.known.filter(function (c) { return !mastered(c); }).sort(function (a, b) { return prac(a).n - prac(b).n || prac(a).last - prac(b).last; }).slice(0, 5);
+        if (!pool.length) return say(who || '', ['Every command Vee knows is mastered. Nothing left to drill. That is a strange and good feeling.']);
+        var steps = pool.map(function (c) { var info = cmdInfo(c), sc = info.when[Math.floor(Math.random() * info.when.length)]; return { t: '(' + c + ') ' + sc.t, ex: sc.ex, ok: { test: function (line) { var J = judge(info, sc, line); if (J.right) { var p = prac(c); p.last = save.bw; if (J.exact) p.n++; } return J.right; } } }; });
+        openPuzzle('DRILL', steps, function () { var xp = 5 * pool.length * save.lvl; store(); say(who || '', ['Drill done: ' + pool.join(', ') + '.', 'Exact answers count toward mastery. Vee gains ' + xp + ' XP.'].concat(gainXp(xp))); });
+      },
       arcade: function () { close(); setTimeout(function () { if (window.VondsPick) window.VondsPick('uptime'); }, 450); },
       readLog: function (id) { readLog(id); },
       logCount: function () { return WD.logOrder.filter(function (k) { return F[k]; }).length; },

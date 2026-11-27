@@ -1451,8 +1451,8 @@
     if (f.upTicket) wall.push('a postcard from Upstream, about rain');
     if (f.firstbug) wall.push('the empty page from the first logbook');
     if (wall.length) lines.push('On the wall: ' + wall.join('; ') + '.');
-    lines.push('Vee rests. HP restored.');
-    G.say('', lines);
+    lines.push('Vee rests. HP restored. In the corner, his own terminal blinks, waiting.');
+    G.say('', lines, [{ label: 'Drill my weakest commands', fn: function () { G.drillWeak(''); } }, { label: 'Just rest', fn: null }]);
   };
   /* Tuesday: the people who were stuck on Monday get a tomorrow */
   (function () {
