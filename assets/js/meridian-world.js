@@ -1752,6 +1752,79 @@
     };
   })();
 
+  /* THE OBSERVATORY: the sky over Meridian is a texture. Somebody has been cataloguing its stars anyway. */
+  A.observatory = {
+    name: 'The Observatory', sub: 'The sky over Meridian is a picture of a sky. Somebody is still studying it.', theme: 'dome', tier: 3.6, lv: 14, lvMax: 16,
+    map: (function () {
+      var m = grid(30, 18).border();
+      m.pts([[0, 10], [0, 11]], 'E');
+      m.rect(1, 10, 28, 2, '=');
+      m.rect(3, 13, 8, 3, ','); m.rect(19, 13, 8, 3, ','); m.rect(23, 6, 5, 2, ',');
+      m.set(8, 9, 's'); m.set(27, 3, 'o'); m.set(2, 16, 'o'); m.set(1, 1, 'c'); m.set(28, 16, 'c');
+      return m.out();
+    })(),
+    blds: [
+      { x: 10, y: 2, w: 10, h: 7, kind: 'dome', door: 5, sign: 'OBSERVATORY', rise: 4 },
+      { x: 23, y: 1, w: 3, h: 4, kind: 'mast', seed: 3, sign: 'RELAY', rise: 3 },
+      { x: 3, y: 3, w: 2, h: 2, kind: 'desk', seed: 3 }, { x: 6, y: 3, w: 2, h: 2, kind: 'desk', seed: 4 }
+    ],
+    exits: { '0,10': ['upper', 38, 10], '0,11': ['upper', 38, 11] },
+    enc: { tiles: ',', rate: .13, foes: ['moth', 'bytebug', 'spider', 'virus', 'scorpion'], max: 5 },
+    spawn: [1, 10],
+    logs: { '27,3': 'O1', '2,16': 'O2' },
+    caches: { '1,1': { item: 'kb', n: 2 }, '28,16': { item: 'mb', n: 2 } },
+    npcs: [
+      { id: 'teller', p: { hair: 'long', body: 'coat', glasses: 1, skin: '#c89a78', top: '#2a2a36', gray: 1 }, x: 13, y: 9, name: 'Dr. Teller', look: 'echo', h: 14, hair: 5, solid: 1 },
+      { id: 'iris', p: { hair: 'bun', skin: '#5a3824', top: '#6a6a7a' }, x: 22, y: 9, name: 'Iris', look: 'kid' }
+    ]
+  };
+  (function () {
+    [10, 11].forEach(function (y) { var r = A.upper.map[y].split(''); r[39] = 'E'; A.upper.map[y] = r.join(''); A.upper.exits['39,' + y] = ['observatory', 1, y]; });
+  })();
+  ATLAS.observatory = [3, 0]; LINKS.push(['upper', 'observatory']);
+  LOGS.O1 = ['ASSET SPEC. sky_final_v3.png. 8192 by 4096. Static.', 'NOTE FROM THE BOARD: dynamic sky (weather, moving stars, a moon with phases) has been moved to the Upstream tier.', 'Legacy residents will not notice the difference. Most people do not look up.'];
+  LOGS.O2 = ['Star catalogue, page 1, in Dr. Teller’s hand.', 'Star 1: a bright white pixel. Magnitude: one byte. Star 2: its neighbor, slightly dimmer, from the compression.', 'Star 11,204: a smudge near the seam. I have named it after my mother. It does not mind being a smudge. Neither did she.'];
+  BOSSES.pixel = { kind: 'bytebug', name: 'Stuck Pixel', hp: 1100, atk: [19, 25], xp: 650, move: 'burns the old sky into Vee’s eyes', sc: 4 };
+  GEAR.lens = { slot: 'acc', name: 'Teller’s Lens', crit: .05, hp: 10, desc: 'An eyepiece from the big telescope. Everything looks a little closer, including weak spots.' };
+  GEAR_FROM.push(['lens', function (G) { return !!G.f.newsky; }, 'Dr. Teller unscrews an eyepiece from the telescope and hands it over. “You’ll want to look up now.”']);
+  TALK.teller = function (G) {
+    var f = G.f;
+    if (f.newsky) return G.say('Dr. Teller', f.tuesday ? ['Tuesday’s sky had a moon in it. A crescent. The renderer decided that on its own.', 'I have never been so happy to be surprised by a computer.'] : ['The stars move now. Slowly, the way real ones do. I’ve had to throw out my whole catalogue.', 'I’ve never been happier to be wrong about eleven thousand things.']);
+    if (!f.teller) { f.teller = 1; return G.say('Dr. Teller', ['Look up. Beautiful, isn’t it? It’s a picture. sky_final_v3.png. Cached the day of the Lift.', 'The real sky, the moving one, went Upstream. The Board said nobody down here would notice. I noticed.',
+      'I’ve catalogued every star in it. 11,204. They’re compression artifacts. I know that. I catalogued them anyway. Somebody should look at the sky, even if the sky is lying.',
+      'I wrote a renderer once. A small one. It makes a sky that moves. It needs to run on the sky server, and I can’t get it there. I study stars. I don’t do servers.']); }
+    G.say('Dr. Teller', ['The console is in the dome. The script is render_sky.sh. If you can get it running, Meridian gets a sky of its own. Not Upstream’s. Ours.']);
+  };
+  TALK.iris = function (G) {
+    if (G.f.newsky) return G.say('Iris', ['There are DIFFERENT STARS TONIGHT. I’m starting over. I’ve counted forty. This is the best night of my life.']);
+    G.say('Iris', ['I counted the stars. All of them. 11,204. Dr. Teller says I got the same number as her.', 'Dad says that’s not how stars work. Dad says real stars you can never finish counting.', 'I want to never finish counting.']);
+  };
+  DOORS['observatory:dome'] = function (G) {
+    var f = G.f;
+    if (f.newsky) { G.rest(); return G.say('The dome', ['Through the slit, the sky drifts. A star Vee has never seen before slides into view, taking its time.', 'Vee watches it for a while. HP restored.']); }
+    if (!f.teller) return G.say('The dome', ['A great telescope pointed at a sky that has not changed in eleven months. Somebody has left a chair under the eyepiece.']);
+    G.say('The dome', ['The sky server console, under the telescope. render_sky.sh is waiting on Teller’s laptop.'], [{ label: 'Give Meridian a sky', fn: function () {
+      G.puzzle('NEW SKY', [
+        { t: 'Is the sky server up? Ping sky.local three times.', ex: ['ping -c 3 sky.local', 'ping -c3 sky.local'] },
+        { t: 'Copy render_sky.sh to your home folder on sky.local, as vee.', ex: ['scp render_sky.sh vee@sky.local:~', 'scp render_sky.sh vee@sky.local:', 'scp render_sky.sh vee@sky.local:~/'] },
+        { t: 'Log in to sky.local as vee.', ex: ['ssh vee@sky.local'] },
+        { t: 'Make the script executable.', ex: ['chmod +x render_sky.sh', 'chmod 755 render_sky.sh', 'chmod u+x render_sky.sh'] },
+        { t: 'Run it.', ex: ['./render_sky.sh', 'bash render_sky.sh', 'sh render_sky.sh'] }], function () {
+        G.say('', ['Above the dome, the seams in the sky begin to unstitch. Then one pixel refuses. It has been white for eleven months and it does not intend to stop.'], null, function () {
+          G.boss('pixel', function () {
+            G.puzzle('NEW SKY', [{ t: 'The stuck pixel is gone. Make the sky service start every boot, so this sky stays.', ex: ['systemctl enable sky', 'sudo systemctl enable sky', 'systemctl enable sky.service', 'sudo systemctl enable sky.service'] }], function () {
+              f.newsky = 1; G.xp(450);
+              G.say('', ['The sky over Meridian moves. Not much. A star drifts a fraction of a degree, then another.', 'Down in every district, a few people look up, the way you look up when something you stopped expecting finally happens.', 'Vee gains 450 XP.']);
+            });
+          });
+        });
+      });
+    } }, { label: 'Not yet', fn: null }]);
+  };
+  DOORS['observatory:desk'] = function (G) { G.say('', ['Star charts, by hand, hundreds of pages. Every star numbered.', G.f.newsky ? 'A new page on top, mostly blank. Heading: TONIGHT. Under it, one entry: Star 1. New.' : 'The last page ends at 11,204. Under it: THAT’S ALL OF THEM. Then, smaller: I wish it wasn’t.']); };
+  SPOTS['observatory:8,9'] = function (G) { G.say('Plaque', ['MERIDIAN OBSERVATORY. Open every night.', 'Below, scratched in: THE SKY IS A JPEG. COME LOOK ANYWAY.']); };
+  (function () { var j0 = JOURNAL; JOURNAL = function (G) { var f = G.f, j = j0(G); if (G.save.seen.observatory) j.push((f.newsky ? '[x]' : '[ ]') + ' Give Meridian a sky of its own'); return j; }; })();
+
   /* a room of Vee's own: the nameplate fills in once Vee is a resident */
   DOORS['plaza:home'] = function (G) {
     var f = G.f, s = G.save;

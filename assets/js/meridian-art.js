@@ -1352,5 +1352,58 @@
     for (var j = -12; j <= 12; j++) { cx.strokeStyle = 'rgba(60,60,70,' + (.18 - Math.abs(j) * .01) + ')'; cx.beginPath(); cx.moveTo(W / 2 + j * 12 + .5, hy); cx.lineTo(W / 2 + j * 40 + .5, H); cx.stroke(); }
   };
 
+  /* =================== THE OBSERVATORY: where someone catalogues a sky that is only a texture =================== */
+  THEMES.dome = { g0: '#0c0c12', g1: '#14141c', dot: '#24242e', road: '#16161e', edge: '#d8d8e8' };
+  var floorX6 = floorX, roadX6 = roadX, fieldX6 = fieldX, wallX6 = wallX;
+  floorX = function (px, theme, X, Y, x, y, tile) {
+    if (theme === 'dome') { px(X, Y, TS, TS, (x + y) % 2 ? '#13131a' : '#101016'); px(X, Y, TS, 1, '#1c1c26'); if (hs(x * 13 + y * 3) > .82) px(X + Math.floor(hs(x + y * 7) * 14), Y + Math.floor(hs(x * 5 + y) * 14), 1, 1, 'rgba(230,230,250,.55)'); return true; }   // slate that reflects the stars
+    return floorX6(px, theme, X, Y, x, y, tile);
+  };
+  roadX = function (px, theme, X, Y, x, y, tile) {
+    if (theme === 'dome') { px(X, Y, TS, TS, '#1a1a24'); px(X, Y + 7, TS, 2, 'rgba(220,220,240,.18)'); if (x % 3 === 0) px(X + 7, Y + 7, 2, 2, '#e8e8f8'); return true; }   // a path of small lamps, kept low for the telescope
+    return roadX6(px, theme, X, Y, x, y, tile);
+  };
+  fieldX = function (px, theme, X, Y, x, y) {
+    if (theme === 'dome') { px(X, Y, TS, TS, '#101016'); for (var c = 0; c < 4; c++) px(X + Math.floor(hs(x * 5 + c) * 14), Y + Math.floor(hs(y * 9 + c) * 14), 2, 2, 'rgba(200,200,230,' + (.2 + hs(c + x) * .3) + ')'); return true; }   // fallen star-charts, glowing faintly
+    return fieldX6(px, theme, X, Y, x, y);
+  };
+  wallX = function (px, theme, X, Y, x, y, tile) {
+    if (theme === 'dome') { px(X, Y, TS, TS, '#08080c'); px(X, Y + 6, TS, 4, '#1e1e28'); px(X, Y + 6, TS, 1, '#c8c8dc'); return true; }   // a low parapet, nothing above it but sky
+    return wallX6(px, theme, X, Y, x, y, tile);
+  };
+  var paintSky6 = paintSky;
+  paintSky = function (g, theme, w, pad) {
+    if (theme !== 'dome') return paintSky6(g, theme, w, pad);
+    var px = P(g); g.fillStyle = '#04040a'; g.fillRect(0, 0, w, pad);
+    for (var st = 0; st < w / 3; st++) px(hs(st * 3.3) * w, hs(st * 7.1) * pad, 1, 1, 'rgba(236,236,252,' + (.2 + hs(st) * .7) + ')');
+    for (var sx = 0; sx < w; sx += 128) px(sx, 0, 1, pad, 'rgba(120,120,160,.18)');   // the seams where the sky texture tiles
+    px(0, Math.floor(pad * .4), w, 1, 'rgba(120,120,160,.12)');
+  };
+  // the dome: a slit open to the fake sky, a telescope that has watched it for a year
+  function dome(g, W, Ht, Hf, b, lights) {
+    var px = P(g), base = Ht - 18, R0 = W / 2 - 2;
+    px(2, base, W - 4, 18, '#16161e'); px(2, base, W - 4, 1, '#d8d8e8'); for (var r = base + 5; r < Ht - 2; r += 5) px(2, r, W - 4, 1, '#22222c');
+    g.fillStyle = '#1e1e28'; g.beginPath(); g.arc(W / 2, base, R0, Math.PI, 0); g.fill(); g.strokeStyle = '#e8e8f6'; g.beginPath(); g.arc(W / 2, base, R0, Math.PI, 0); g.stroke();
+    for (var k = 1; k < 6; k++) { var a = Math.PI + k * Math.PI / 6; g.strokeStyle = 'rgba(200,200,220,.25)'; g.beginPath(); g.moveTo(W / 2, base); g.lineTo(W / 2 + Math.cos(a) * R0, base + Math.sin(a) * R0); g.stroke(); }
+    px(W / 2 - 4, base - R0 + 2, 8, R0 - 2, '#05050a');   // the slit
+    g.strokeStyle = '#c8c8dc'; g.lineWidth = 3; g.beginPath(); g.moveTo(W / 2, base - 6); g.lineTo(W / 2 + 10, base - R0 - 4); g.stroke(); g.lineWidth = 1;
+    if (b.sign) text(g, b.sign, 6, Ht - 12, '#e8e8f6');
+    if (b.door != null) { var dx = b.door * TS + 3; px(dx, Ht - 14, 10, 14, '#05050a'); px(dx, Ht - 14, 10, 1, '#e8e8f6'); }
+    lights.push({ x: W / 2 + 9, y: base - R0 - 5, kind: 'blink', ph: 4 });
+  }
+  PAINT.dome = dome;
+  var backdrop6 = backdrop;
+  backdrop = function (cx, theme, t, W, H, hy) {
+    if (theme !== 'dome') return backdrop6(cx, theme, t, W, H, hy);
+    var px = P(cx);
+    cx.fillStyle = '#04040a'; cx.fillRect(0, 0, W, hy);
+    for (var s2 = 0; s2 < 90; s2++) { var tw = .3 + .7 * Math.abs(Math.sin(t * (1 + s2 % 3) + s2)); px(hs(s2 * 3.1) * W, hs(s2 * 5.7) * hy, 1, 1, 'rgba(236,236,252,' + tw + ')'); }
+    for (var sx = 0; sx < W; sx += 80) px(sx, 0, 1, hy, 'rgba(120,120,160,.15)');
+    cx.fillStyle = '#0c0c14'; cx.beginPath(); cx.arc(W * .8, hy, 40, Math.PI, 0); cx.fill(); px(W * .8 + 4, hy - 56, 3, 20, '#3a3a48');
+    var fg = cx.createLinearGradient(0, hy, 0, H); fg.addColorStop(0, '#16161e'); fg.addColorStop(1, '#06060a'); cx.fillStyle = fg; cx.fillRect(0, hy, W, H - hy);
+    px(0, hy, W, 1, 'rgba(220,220,240,.5)');
+    for (var j = -14; j <= 14; j++) { cx.strokeStyle = 'rgba(200,200,230,' + (.12 - Math.abs(j) * .006) + ')'; cx.beginPath(); cx.moveTo(W / 2 + j * 10 + .5, hy); cx.lineTo(W / 2 + j * 36 + .5, H); cx.stroke(); }
+  };
+
   window.MeridianArt = { TS: TS, paintArea: paintArea, live: live, person: person, wagon: wagon, backdrop: backdrop, text: text, textW: textW, hs: hs };
 })();
