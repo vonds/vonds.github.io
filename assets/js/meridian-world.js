@@ -1042,7 +1042,7 @@
     })(),
     blds: [ { x: 24, y: 11, w: 3, h: 2, kind: 'ruin', seed: 11, rise: 2 } ],
     exits: { '43,8': ['patchwork', 1, 11], '43,9': ['patchwork', 1, 12] },
-    enc: { tiles: '.', rate: .1, foes: ['virus', 'scorpion', 'centipede', 'moth', 'spider'], max: 6 },
+    enc: { tiles: '.', rate: .1, foes: ['virus', 'scorpion', 'centipede', 'moth', 'spider', 'phantom'], max: 6 },
     spawn: [41, 8],
     logs: { '39,15': 'P3' },
     caches: { '7,15': { item: 'gb', n: 1 }, '26,4': { item: 'mb', n: 2 } },
@@ -1101,7 +1101,7 @@
       { t: 'Question 3. Copy notes.txt to your home folder on school.local.', ex: ['scp notes.txt vee@school.local:~', 'scp notes.txt vee@school.local:', 'scp notes.txt vee@school.local:~/'] }] }
   ];
   TALK.adair = function (G) {
-    var f = G.f, open = CLASSES.filter(function (c) { return !f[c.id]; });
+    var f = G.f, open = CLASSES.filter(function (c) { return !f[c.id] && (!c.need || c.need(G)); });
     var intro = !f.adair ? ['Come in, come in. Class started eleven months ago, but I’m flexible.', 'I taught adults who’d been told they were too old to start. Most of them were wrong about that.', 'Some of them took the Lift with what I taught them. That’s fine. That’s what teaching is.'] : [];
     f.adair = 1;
     if (!open.length) return G.say('Ms. Adair', intro.concat(['You’ve taken every class I have. I’m going to have to write new ones. I haven’t written anything new in a year.', 'Thank you for that.']));
@@ -1175,7 +1175,7 @@
   var journal0 = JOURNAL;
   JOURNAL = function (G) {
     var f = G.f, j = journal0(G);
-    if (f.adair) j.push('Night School: ' + CLASSES.filter(function (c) { return f[c.id]; }).length + ' of 4 classes');
+    if (f.adair) j.push('Night School: ' + CLASSES.filter(function (c) { return f[c.id]; }).length + ' of ' + CLASSES.filter(function (c) { return !c.need || c.need(G); }).length + ' classes');
     if (G.save.seen.infirmary) j.push((f.triage ? '[x]' : '[ ]') + ' St. Ada’s: ' + ((f.bed1 ? 1 : 0) + (f.bed2 ? 1 : 0) + (f.bed3 ? 1 : 0)) + ' of 3 patients');
     if (G.save.seen.margin) j.push((f.firstbug ? '[x]' : '[ ]') + ' The First Bug');
     var pc = ['P1', 'P2', 'P3'].filter(function (k) { return f[k]; }).length; if (pc) j.push('Postcards from Upstream: ' + pc + ' of 3');
@@ -1212,7 +1212,7 @@
     exits: { '19,0': ['cold', 17, 18], '20,0': ['cold', 18, 18] },
     gates: { '39,10': { to: ['ring0', 1, 9], need: function (G) { return !!G.f.rootkey; }, shut: ['A steel door set flush into the shelving. Stencilled: RING 0. AUTHORIZED PROCESSES ONLY.', 'There is no handle. There is a keyhole shaped like a #.'] },
              '39,11': { to: ['ring0', 1, 10], need: function (G) { return !!G.f.rootkey; }, shut: ['The door into Ring 0 is locked. The keyhole is shaped like a #.'] } },
-    enc: { tiles: ',', rate: .13, foes: ['moth', 'beetle', 'worm', 'bytebug', 'centipede'], max: 6 },
+    enc: { tiles: ',', rate: .13, foes: ['moth', 'phantom', 'worm', 'deadlock', 'centipede', 'phantom'], max: 6 },
     spawn: [19, 2],
     logs: { '2,2': 'T1', '37,20': 'T2' },
     caches: { '16,20': { item: 'gb', n: 1 }, '37,2': { item: 'mb', n: 3 } },
@@ -1242,7 +1242,7 @@
       { x: 34, y: 5, w: 8, h: 6, kind: 'core', door: 4, sign: '0 0 * * *', rise: 3 }
     ],
     exits: { '0,9': ['stacks', 38, 10], '0,10': ['stacks', 38, 11] },
-    enc: { tiles: ',', rate: .14, foes: ['virus', 'scorpion', 'spider', 'centipede', 'bytebug'], max: 6 },
+    enc: { tiles: ',', rate: .14, foes: ['forkbomb', 'deadlock', 'phantom', 'scorpion', 'forkbomb', 'virus'], max: 6 },
     spawn: [1, 9],
     logs: { '42,18': 'T3', '13,17': 'T4' },
     caches: { '1,18': { item: 'gb', n: 2 }, '42,1': { item: 'mb', n: 3 } },
@@ -1406,6 +1406,11 @@
   }
   SPOTS['ring0:12,3'] = function (G) { G.say('Plaque', ['RING 0. KERNEL SPACE.', 'Beneath it someone has scratched: everything above this line is a story the kernel tells.']); };
 
+  CLASSES.push({ id: 'c5', name: 'Tomorrow', stat: 'atk', amt: 4, need: function (G) { return !!G.f.tuesday; }, steps: [
+    { t: 'Tomorrow, question 1. Open your own crontab to edit it.', ex: ['crontab -e'] },
+    { t: 'Question 2. Write the line that runs /home/vee/backup.sh every day at 2 a.m.', ex: ['0 2 * * * /home/vee/backup.sh'] },
+    { t: 'Question 3. List the timers systemd is keeping.', ex: ['systemctl list-timers', 'systemctl list-timers --all'] },
+    { t: 'Question 4. And now, the important one. What day is it? Ask the system.', ex: ['date', 'date +%A', 'date "+%A"'] }] });
   /* Tuesday: the people who were stuck on Monday get a tomorrow */
   (function () {
     function tues(id, name, lines) { var t0 = TALK[id]; if (!t0) return; TALK[id] = function (G) { if (G.f.tuesday && !G.f['tue_' + id]) { G.f['tue_' + id] = 1; return G.say(name, lines); } return t0(G); }; }

@@ -511,13 +511,18 @@
       virus:    { name: 'Virus',     hp: 36, atk: [6, 10], move: 'replicates and spreads', xp: 13 },
       bytebug:  { name: 'Byte bug',  hp: 32, atk: [5, 8],  move: 'flips a bit', xp: 10 },
       centipede:{ name: 'Centipede', hp: 46, atk: [5, 9],  move: 'opens a memory leak', xp: 14 },
-      scorpion: { name: 'Scorpion',  hp: 52, atk: [7, 11], move: 'stings with a segfault', xp: 16 }
+      scorpion: { name: 'Scorpion',  hp: 52, atk: [7, 11], move: 'stings with a segfault', xp: 16 },
+      phantom:  { name: 'Phantom read', hp: 44, atk: [8, 13], move: 'reads memory it should never have seen', xp: 18 },
+      deadlock: { name: 'Deadlock',  hp: 62, atk: [6, 10], move: 'waits for Vee to go first, forever', xp: 18 },
+      forkbomb: { name: 'Fork bomb', hp: 38, atk: [9, 14], move: 'forks itself until there is no room left', xp: 19 }
     };
     var LORE = {
       beetle: 'Chews through cables. Mostly harmless alone. Never alone.', spider: 'Spins race conditions: two threads, one resource, nobody waiting their turn.',
       worm: 'Copies itself across the network. Every copy thinks it is the original.', moth: 'Named for the first bug ever found: a real moth, stuck in a relay, taped into a logbook.',
       virus: 'Needs a host. Meridian is full of empty hosts now.', bytebug: 'Flips one bit. One bit is enough to turn yes into no.',
-      centipede: 'Opens memory leaks. Takes a little more every turn and never gives it back.', scorpion: 'Stings with a segfault: reaching for memory that was never its to touch.'
+      centipede: 'Opens memory leaks. Takes a little more every turn and never gives it back.', scorpion: 'Stings with a segfault: reaching for memory that was never its to touch.',
+      phantom: 'A read that returns data from a moment that already ended. In a city of backups, there are a lot of those.', deadlock: 'Two locks, each waiting for the other to let go. Neither ever will. It has made peace with that.',
+      forkbomb: 'One process that becomes two, then four, then every slot in the table. It is not malicious. It just never learned to stop.'
     };
     // Vee's attacks are real commands. The curriculum lives in meridian-commands.js: five to start, then three to five more each level.
     var HITS = { multi2: 'Two clean hits.', multi3: 'Three quick hits.', focus: 'Bearings found. Your next hit lands double.', heal: 'Vee recovers HP.',
