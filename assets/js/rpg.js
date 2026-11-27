@@ -319,7 +319,7 @@
         COMMANDS.forEach(function (c, i) {
           var known = save.known.indexOf(c.cmd) >= 0, pn = known ? prac(c.cmd).n : 0, fresh = known && save.learnedAt[c.cmd] === save.lvl && save.lvl > 1;
           if (!known && i > save.known.length + 9) return;
-          btn(known ? '<span class="mono">' + c.cmd + '</span><em>' + (fresh ? 'New' : mastered(c.cmd) ? 'Mastered' : pn + '/5') + '</em><small>' + c.learn + '</small>' : '<span class="mono mn-dim">???</span><small class="mn-dim">Learned at a future level.</small>', function () { MN.detail = known ? i : -1; renderMenu(); });
+          btn(known ? '<span class="mono">' + c.cmd + '</span><em>' + (fresh ? 'New' : mastered(c.cmd) ? 'Mastered' : pn + '/5') + '</em><small>' + c.learn + '</small>' : '<span class="mono mn-dim">???</span><small class="mn-dim">Learned at level ' + (function () { var L = 1; while (cmdsAt(L) <= i && L < 99) L++; return L; })() + '.</small>', function () { MN.detail = known ? i : -1; renderMenu(); });
         });
         if (MN.detail >= 0) { var c = COMMANDS[MN.detail], w = c.when[0]; h = '<div class="mn-detail"><b class="mono">' + c.cmd + '</b><p>' + c.learn + '</p><p><em>Shell bonus:</em> ' + c.hit + '</p><p><em>Example:</em> ' + w.t + '<br><span class="mono">$ ' + w.ex[0] + '</span></p><p class="mn-dim">Exact answers ' + prac(c.cmd).n + ' of 5</p></div>' + h; }
       } else if (v === 'equip') {
