@@ -158,7 +158,8 @@
     function npcAt(x, y) { var n = null; visNpcs().forEach(function (p) { if (p.x === x && p.y === y) n = p; }); return n; }
     function blocked(x, y) {
       var t = tile(x, y);
-      if ('TX~pdsocFlG'.indexOf(t) >= 0 && !(t === 'G' && gateOpen(x, y))) return true;
+      if (me.boat) { if ('TXMpdsocFlG'.indexOf(t) >= 0) return true; } else
+      if ('TX~pdsocFlGMr'.indexOf(t) >= 0 && !(t === 'G' && gateOpen(x, y))) return true;
       if (npcAt(x, y)) return true;
       var w = wagonAt(); if (w && y === w[1] && (x === w[0] || x === w[0] + 1)) return true;
       return false;
@@ -170,8 +171,18 @@
       setTimeout(lifeLoad, 0);
       AREA = WD.areas[id]; AREA.id = id; MAP = stamp(AREA); paintCurrent();
       save.area = id; save.x = me.x = x; save.y = me.y = y; me.px = x * TS; me.py = y * TS; me.moving = false; me.safe = 4;
-      save.seen[id] = 1; store(); placeCam();
+      save.seen[id] = 1; me.boat = id === 'sprawl' && !!save.boat && '~r'.indexOf(tile(x, y)) >= 0 ? 1 : 0; if (!me.boat) save.boat = 0; zoneAt(); store(); placeCam();
     }
+    // out on the Sprawl, bugs are as strong as the nearest district's
+    var lastSite = null;
+    function siteHint() {   // walking up to a place on the Sprawl names it
+      if (!AREA.sites || !areaEl) return; var s = AREA.sites.filter(function (q) { return me.x >= q.x - 1 && me.x <= q.x + 2 && me.y >= q.y - 1 && me.y <= q.y + 3; })[0];
+      if (!s || s === lastSite) { if (!s) lastSite = null; return; } lastSite = s;
+      var A2 = WD.areas[s.id]; if (!A2) return; var known = save.seen[s.id] || A2.open;
+      areaEl.querySelector('b').textContent = known ? A2.name : '???'; areaEl.querySelector('span').textContent = known ? (A2.sub || '') + (A2.enc ? ' Bugs: level ' + A2.lv + (A2.lvMax && A2.lvMax !== A2.lv ? '–' + A2.lvMax : '') + '.' : '') : 'Vee hasn’t found his way in from the city yet.';
+      areaEl.classList.add('on'); clearTimeout(areaT); areaT = setTimeout(function () { areaEl.classList.remove('on'); }, 2600);
+    }
+    function zoneAt() { siteHint(); if (!AREA.zone) return; var z = AREA.zone(me.x, me.y, tile(me.x, me.y)); if (!z) return; AREA.lv = z.lv; AREA.lvMax = z.lvMax; AREA.enc.foes = z.foes; AREA.tier = z.tier; }
     function placeCam() {
       var mw = MAP[0].length * TS, mh = MAP.length * TS;
       cam.x = mw <= W ? (mw - W) / 2 : Math.max(0, Math.min(mw - W, me.px + 8 - W / 2));
@@ -610,6 +621,14 @@
       if (t === 'c' && AREA.caches[k]) return openCache(x, y);
       if (t === 's' && WD.spots[AREA.id + ':' + k]) return WD.spots[AREA.id + ':' + k](G);
       if (t === 'F' && WD.spots[AREA.id + ':F']) return WD.spots[AREA.id + ':F'](G);
+      if (AREA.id === 'sprawl' && F.packet) {   // the Packet: board anywhere, step off onto land
+        if (me.boat) {
+          if ('~r'.indexOf(tile(me.x, me.y)) < 0) { me.boat = 0; save.boat = 0; store(); return; }   // already on land: just step off
+          if ('~rTXMpdsocFlG'.indexOf(t) >= 0 || n) return say('', ['The Packet can only put Vee ashore on open land. Pull up beside a beach.']);
+          me.boat = 0; save.boat = 0; store(); return tryMove(me.dir);
+        }
+        if ('~r'.indexOf(t) >= 0 || t === ',' || t === '.' || t === '=' || t === 'f' || t === 'x') { me.boat = 1; save.boat = 1; store(); sfx && sfx('enc'); return; }
+      }
       if (t === 'p') return say('', [['The tree is mostly wireframe. You can see the numbers through it.', 'Bark, a texture. Leaves, a texture. This one still has both. For now.', 'A tag on the trunk: SPECIES 0x2F, OAK (APPROX.).'][Math.floor(hs(x * 7 + y) * 3)]]);
       if (t === 'G' && !gateOpen(x, y)) { var gd = AREA.gates[k]; return say('', (gd && gd.shut) || (AREA.id === 'plaza' ? ['The east gate is sealed. A panel reads: FIVE LANDMARKS REQUIRED.', 'Answering: ' + lights() + ' of 6.'] : ['The east gate won’t open while the keep is compromised.'])); }
     }
@@ -1326,7 +1345,7 @@
         var opts = [[n.hx, n.hy], [n.hx + 1, n.hy], [n.hx - 1, n.hy], [n.hx, n.hy + 1]], o = opts[Math.floor(Math.random() * opts.length)];
         if (Math.abs(o[0] - me.x) + Math.abs(o[1] - me.y) < 2) return;
         if (o[0] === n.x && o[1] === n.y) return;
-        var t2 = tile(o[0], o[1]); if ('TX~pdsocFlGE'.indexOf(t2) >= 0 || t2 === undefined) return;
+        var t2 = tile(o[0], o[1]); if ('TX~pdsocFlGEMr'.indexOf(t2) >= 0 || t2 === undefined) return;
         if (visNpcs().some(function (m) { return m !== n && m.x === o[0] && m.y === o[1]; })) return;
         if (AREA.exits && AREA.exits[key(o[0], o[1])]) return;
         n.x = o[0]; n.y = o[1];
@@ -1363,7 +1382,7 @@
       var x0 = Math.floor(cam.x / TS) - 1, x1 = Math.ceil((cam.x + W) / TS) + 1, y0 = Math.floor(cam.y / TS) - 1, y1 = Math.ceil((cam.y + H) / TS) + 1, mh = MAP.length, mw = MAP[0].length;
       var pulse = .45 + .4 * Math.sin(t * 4);
       Object.keys(AREA.exits || {}).forEach(function (k) {
-        var p = k.split(',').map(Number), ex = p[0], ey = p[1]; if (ex < x0 || ex > x1 || ey < y0 || ey > y1) return;
+        var p = k.split(',').map(Number), ex = p[0], ey = p[1]; if (ex < x0 || ex > x1 || ey < y0 || ey > y1) return; if (AREA.exits[k][3]) return;   // places on the Sprawl are their own marker
         var dx = ex <= 0 ? -1 : ex >= mw - 1 ? 1 : 0, dy = ey <= 0 ? -1 : ey >= mh - 1 ? 1 : 0; if (!dx && !dy) dy = 1;
         var cxp = ex * TS + 8 - cam.x - dx * 2, cyp = ey * TS + 8 - cam.y - dy * 2, bob = Math.sin(t * 5) * 1.5;
         cx.fillStyle = 'rgba(255,255,255,' + pulse + ')';
@@ -1399,7 +1418,8 @@
         ghosts.forEach(function (gh) { gh.t += 1 / 60; var a = Math.max(0, .5 * (1 - gh.t / .32)); if (!a) return; cx.save(); cx.globalAlpha = a; cx.filter = 'brightness(1.8) contrast(.8)'; drawSprite(gh.img, gh.px - 3 - cam.x, gh.py - 10 - (gh.bob ? 1 : 0) - cam.y, gh.flip); cx.restore(); });
         ghosts = ghosts.filter(function (gh) { return gh.t < .32; });
         var v = veeImg(), vx = me.px - 3 - cam.x, vy = me.py - 10 - (v.bob ? 1 : 0) - cam.y;
-        cx.fillStyle = 'rgba(0,0,0,.35)'; cx.beginPath(); cx.ellipse(me.px + 8 - cam.x, me.py + 15 - cam.y, 7, 2.5, 0, 0, 7); cx.fill();
+        if (me.boat && ART.packet) { ART.packet(cx, me.px - cam.x, me.py - cam.y, tnow, me.dir, me.moving); vy -= 4; }
+        else { cx.fillStyle = 'rgba(0,0,0,.35)'; cx.beginPath(); cx.ellipse(me.px + 8 - cam.x, me.py + 15 - cam.y, 7, 2.5, 0, 0, 7); cx.fill(); }
         drawSprite(v.img, vx, vy, v.flip);
       } });
       list.sort(function (a, b) { return a.y - b.y; }).forEach(function (o) { o.draw(); });
@@ -1508,19 +1528,21 @@
       lifeUpdate(dt); mechUpdate(dt);
       if (mode !== 'map' || talking || PZ) return;
       if (me.moving) {
-        var dashing = dashHeld && !PZ, tx = me.x * TS, ty = me.y * TS, sp = 70 * dt * (dashing ? 2.2 : 1);
+        var dashing = dashHeld && !PZ, tx = me.x * TS, ty = me.y * TS, sp = 70 * dt * (dashing ? 2.2 : 1) * (me.boat ? 2 : 1);
         me.px += Math.sign(tx - me.px) * Math.min(sp, Math.abs(tx - me.px)); me.py += Math.sign(ty - me.py) * Math.min(sp, Math.abs(ty - me.py)); me.step += dashing ? 2 : 1;
         trail.push([me.px, me.py, me.dir]); if (trail.length > 80) trail.shift();
         if (dashing) { ghostT += dt; if (ghostT > .045) { ghostT = 0; var gv = veeImg(); ghosts.push({ img: gv.img, flip: gv.flip, bob: gv.bob, px: me.px, py: me.py, t: 0 }); if (ghosts.length > 8) ghosts.shift(); } }
         if (me.px === tx && me.py === ty) {
           me.moving = false; me.steps++; save.x = me.x; save.y = me.y; if (me.steps % 6 === 0) store();
           var k = key(me.x, me.y), ex = AREA.exits && AREA.exits[k], gt = AREA.gates && AREA.gates[k];
-          if (ex) return travel(ex);
+          if (ex && ex[3] && ex[3].site && !save.seen[ex[0]] && !(WD.areas[ex[0]] && WD.areas[ex[0]].open)) { var nm = WD.areas[ex[0]] ? WD.areas[ex[0]].name : ex[0]; say('', [nm.toUpperCase() + '.', 'The gate is sealed from this side. It only opens for processes the district already knows.', 'Vee will have to find his way in from the city first.']); return; }
+          if (ex) { if (me.boat) { me.boat = 0; save.boat = 0; } return travel(ex); }
+          zoneAt();
           if (gt && gt.to && gateOpen(me.x, me.y)) return travel(gt.to);
           if (WD.steps[AREA.id]) { WD.steps[AREA.id](G, me.x, me.y); if (talking) return; }
           var enc = AREA.enc;
           if (gs('regen') && save.hp < maxHp()) save.hp = Math.min(maxHp(), save.hp + gs('regen'));
-          if (enc && enc.tiles.indexOf(tile(me.x, me.y)) >= 0 && --me.safe <= 0 && Math.random() < enc.rate * CFG.enc[save.cfg.enc] * (1 - gs('stealth')) * (raining() ? .3 : 1)) { startBattle(); return; }
+          if (enc && !me.boat && enc.tiles.indexOf(tile(me.x, me.y)) >= 0 && --me.safe <= 0 && Math.random() < enc.rate * CFG.enc[save.cfg.enc] * (1 - gs('stealth')) * (raining() ? .3 : 1)) { startBattle(); return; }
           mechStep();
         }
       }
