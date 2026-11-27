@@ -1137,7 +1137,7 @@
         else if (alive2.length && (save.hp <= 0 || Math.random() < alive2.length / (alive2.length + 2))) T = alive2[Math.floor(Math.random() * alive2.length)];
         if (B.blind > 0 && Math.random() < .5) { if (f.slow > 0) f.slow--; f.lunge = 1; log('The ' + foeName(f) + ' swings at nothing. The stars are in its eyes.'); return setTimeout(next, 700); }
         var tDef = T ? cDef(T.id) : def(), tGuard = T ? (T.guard ? .5 : 1) : (B.guard ? .5 : 1);
-        var roll = function () { return Math.max(1, Math.round(rnd(f.foe.atk[0], f.foe.atk[1]) * wind * forceOf(f) * f.soft * (f.slow > 0 ? .5 : 1) * tGuard * (B.pguard ? .5 : 1) * CFG.diff[save.cfg.diff] * 100 / (100 + (pierce ? 0 : tDef) * 2.5))); };
+        var roll = function () { return Math.max(1, Math.round(rnd(f.foe.atk[0], f.foe.atk[1]) * wind * forceOf(f) * f.soft * (f.slow > 0 ? .5 : 1) * tGuard * (B.pguard ? .5 : 1) * (1 + B.allies.length * .15) * CFG.diff[save.cfg.diff] * 100 / (100 + (pierce ? 0 : tDef) * 2.5))); };
         if (T) {
           var n2 = roll(); if (f.slow > 0) f.slow--;
           var drank2 = tr === 'drain' ? Math.min(f.max - f.hp, Math.round(n2 * .5)) : 0; if (drank2 > 0) f.hp += drank2;
