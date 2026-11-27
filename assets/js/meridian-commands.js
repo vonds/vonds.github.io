@@ -161,7 +161,7 @@ window.MeridianCommands = [
   { c: 'sort', l: 'Sorts lines.', fx: 'multi2', w: [
     ['Put the lines of names.txt in alphabetical order.', ['sort names.txt']],
     ['Sort scores.txt by number, highest first.', ['sort -nr scores.txt', 'sort -rn scores.txt']]] },
-  { c: 'uniq', l: 'Removes repeated lines that sit next to each other. Usually after sort.', fx: 'multi2', w: [
+  { c: 'uniq', k: '*', n: '\\buniq\\b|sort -u', l: 'Removes repeated lines that sit next to each other. Usually after sort.', fx: 'multi2', w: [
     ['Show each IP in ips.txt only once.', ['sort ips.txt | uniq', 'sort -u ips.txt']],
     ['Count how many times each line appears in visits.txt.', ['sort visits.txt | uniq -c']]] },
 
@@ -265,10 +265,10 @@ window.MeridianCommands = [
   { c: 'find -exec', k: 'find', n: '-exec', l: 'Runs a command on every file find turns up.', fx: 'all', w: [
     ['Delete every .tmp file under this folder, wherever it is.', ['find . -name "*.tmp" -exec rm {} \\;', "find . -name '*.tmp' -exec rm {} \\;", 'find . -name "*.tmp" -exec rm {} +', 'find . -name "*.tmp" -delete']],
     ['Make every .sh file under scripts executable.', ['find scripts -name "*.sh" -exec chmod +x {} \\;', "find scripts -name '*.sh' -exec chmod +x {} \\;", 'find scripts -name "*.sh" -exec chmod +x {} +']]] },
-  { c: 'xargs', l: 'Turns lines of input into arguments for another command.', fx: 'multi3', w: [
+  { c: 'xargs', k: '*', n: '\\bxargs\\b', l: 'Turns lines of input into arguments for another command.', fx: 'multi3', w: [
     ['Delete every file listed in junk.txt.', ['cat junk.txt | xargs rm', 'xargs rm < junk.txt']],
     ['Count the lines in every .log file find turns up.', ['find . -name "*.log" | xargs wc -l', "find . -name '*.log' | xargs wc -l"]]] },
-  { c: 'tee', l: 'Writes output to a file and to the screen at the same time.', fx: 'multi2', w: [
+  { c: 'tee', k: '*', n: '\\|\\s*(sudo\\s+)?tee\\b', l: 'Writes output to a file and to the screen at the same time.', fx: 'multi2', w: [
     ['Show the output of ls and also save it to list.txt.', ['ls | tee list.txt']],
     ['Append a line to /etc/hosts, which needs root, using tee.', ['echo "10.0.0.5 core" | sudo tee -a /etc/hosts', "echo '10.0.0.5 core' | sudo tee -a /etc/hosts"]]] },
   { c: 'sed', l: 'Edits text as it streams past: find and replace without an editor.', fx: 'heavy', w: [
