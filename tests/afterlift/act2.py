@@ -13,6 +13,7 @@ async def main():
         await pg.goto('http://localhost:8771/?p=1'); await pg.wait_for_timeout(1800)
         await pg.evaluate("window.VondsPick('afterlift')"); await pg.wait_for_timeout(3800)
         Q = "window.__quest"
+        await pg.evaluate(f"(()=>{{const F={Q}.state().save.flags; F.climbSeen=1; F.upSeen=1;}})()")   # the tether/Upstream scenes are covered by scn.py
         async def st(): return await pg.evaluate(f"(()=>{{const s={Q}.state();return {{mode:s.mode,talking:s.talking,area:s.area,x:s.me.x,y:s.me.y,pz:!!s.PZ,phase:s.B&&s.B.phase,f:s.save.flags,lit:s.save.lit,lvl:s.save.lvl,hp:s.save.hp}}}})()")
         async def opts(): return await pg.evaluate("document.querySelectorAll('.rpg-opts button').length")
         async def text(): return await pg.evaluate("document.querySelector('.rpg-msg p').textContent")
