@@ -1095,7 +1095,13 @@
     }
     var logT = 0;
     function log(text, quiet) { titleEl.textContent = text; titleEl.classList.add('on'); clearTimeout(logT); if (!quiet) logT = setTimeout(function () { titleEl.classList.remove('on'); }, 2600); }
-    function pop(text, x, y) { B.pops.push({ text: text, x: x, y: y, t: 0 }); }
+    function pop(text, x, y) {
+      B.pops.push({ text: text, x: x, y: y, t: 0 });
+      if (/^\+/.test(text)) return bfx('heal', x, y);
+      if (text !== 'MISS') bfx(x > 200 ? 'spark' : (B.src === 'shell' && !B.actor ? 'code' : B.src === 'fight' ? 'slash' : 'spark'), x, y + 18);
+      if (text !== 'MISS' && x < 200 && B.src !== 'fight') bfx('spark', x, y + 18);
+    }
+    function bfx(kind, x, y, r) { if (B) (B.fx = B.fx || []).push({ kind: kind, x: x, y: y, r: r, t: 0, life: kind === 'flash' ? .25 : kind === 'ring' ? .6 : .45 }); }
     /* level decides how a fight goes: a bug above Vee's level has thicker armor (less damage taken), hits harder, dodges, and acts faster */
     function gapOf(f) { return ((f && f.foe && f.foe.lv) || save.lvl) - save.lvl; }
     function armorOf(f) { var g = gapOf(f); return g > 0 ? Math.max(.2, 1 / (1 + g * .14)) : Math.min(1.5, 1 - g * .04); }
@@ -1109,7 +1115,7 @@
       if (so.weak > 0) n *= .5;
       if (src === 'fight' && back(B.actor ? B.actor.id : 'vee')) n *= .6;   // plain attacks from the back row are softer
       if (f.fw > 0 && src === 'fight') { n *= .12; B.fwNote = 1; }
-      var crit = B.focus || Math.random() < critC(); if (crit) { n *= 2; B.focus = false; } sfx(crit ? 'crit' : 'hit');
+      var crit = B.focus || Math.random() < critC(); if (crit) { n *= 2; B.focus = false; bfx('flash', 0, 0); bfx('ring', f.fx + 16, f.fy - 10, 40); } sfx(crit ? 'crit' : 'hit');
       if (f.exposed) n *= 1.5;
       n = Math.max(1, Math.round(n)); f.hp = Math.max(0, f.hp - n); f.shake = 1; f.flash = 1; pop(String(n), f.fx + 16, f.fy - 34);
       if (f.hp <= 0) { f.dead = true; f.fade = 1; }
@@ -1158,8 +1164,8 @@
     function bossThresholds(f) {
       var m = mechOf(f); if (!m || f.dead) return '';
       var r = f.hp / f.max, out = '';
-      if (m.phase && !f.ph2 && r <= .5) { f.ph2 = 1; f.foe = Object.assign({}, f.foe, { atk: [Math.round(f.foe.atk[0] * 1.3), Math.round(f.foe.atk[1] * 1.3)] }); f.flash = 1; out += ' The ' + foeName(f) + ' changes. Something underneath comes loose. It hits harder now.'; }
-      if (m.summon && !f.summoned && r <= .6) { f.summoned = 1; m.summon.forEach(function (k) { addFoe(k, f); }); out += ' It calls for help. More bugs answer.'; }
+      if (m.phase && !f.ph2 && r <= .5) { f.ph2 = 1; bfx('flash', 0, 0); bfx('ring', f.fx + 16, f.fy - 10, 90); bfx('ring', f.fx + 16, f.fy - 10, 60); FX.shake = .6; f.foe = Object.assign({}, f.foe, { atk: [Math.round(f.foe.atk[0] * 1.3), Math.round(f.foe.atk[1] * 1.3)] }); f.flash = 1; out += ' The ' + foeName(f) + ' changes. Something underneath comes loose. It hits harder now.'; }
+      if (m.summon && !f.summoned && r <= .6) { f.summoned = 1; bfx('ring', f.fx + 16, f.fy, 70); m.summon.forEach(function (k) { addFoe(k, f); }); out += ' It calls for help. More bugs answer.'; }
       if (m.firewall && ((!f.fw1 && r <= .75) || (!f.fw2 && r <= .35))) { if (r <= .35) f.fw2 = 1; f.fw1 = 1; f.fw = 2; out += ' FIREWALL UP: for two rounds, plain attacks barely scratch it. Shell answers and skills get through.'; }
       return out;
     }
@@ -1719,6 +1725,18 @@
         else { if (B.actor === a) { cx.strokeStyle = 'rgba(240,240,244,' + (.35 + Math.sin(B.t * 5) * .15) + ')'; cx.strokeRect(ax - 3.5, ay - 29.5, 29, 31); } drawSprite(img2, ax, ay - 25, true, 1); }
         cx.restore();
       });
+      // effects: slashes, sparks, code bursts, shockwaves
+      B.fx = (B.fx || []).filter(function (e) {
+        e.t += dt; var k = e.t / e.life; if (k >= 1) return false; var a = 1 - k;
+        cx.save();
+        if (e.kind === 'slash') { cx.strokeStyle = 'rgba(255,255,255,' + a + ')'; cx.lineWidth = 2; cx.beginPath(); cx.arc(e.x, e.y, 14 + k * 6, -2.4 + k * 1.2, -0.6 + k * 1.2); cx.stroke(); cx.strokeStyle = 'rgba(200,210,230,' + a * .5 + ')'; cx.lineWidth = 1; cx.beginPath(); cx.arc(e.x, e.y, 18 + k * 8, -2.2 + k * 1.2, -0.8 + k * 1.2); cx.stroke(); }
+        else if (e.kind === 'spark') { e.ps = e.ps || [0, 1, 2, 3, 4, 5, 6, 7].map(function (i) { var an = i / 8 * 6.28 + Math.random() * .4; return [Math.cos(an), Math.sin(an), 10 + Math.random() * 16]; }); cx.fillStyle = 'rgba(255,255,255,' + a + ')'; e.ps.forEach(function (q) { cx.fillRect(Math.round(e.x + q[0] * q[2] * k), Math.round(e.y + q[1] * q[2] * k), 2, 2); }); }
+        else if (e.kind === 'code') { cx.font = '6px "Press Start 2P", monospace'; cx.textAlign = 'center'; e.gl = e.gl || ['$', '>', '|', '#', '0', '1', '~', '/'].map(function () { return [Math.random() * 40 - 20, Math.random() * 10, '$>|#01~/'.charAt(Math.floor(Math.random() * 8))]; }); cx.fillStyle = 'rgba(236,240,255,' + a + ')'; e.gl.forEach(function (q) { cx.fillText(q[2], e.x + q[0], e.y - 30 + q[1] + k * 40); }); cx.textAlign = 'left'; }
+        else if (e.kind === 'ring') { cx.strokeStyle = 'rgba(255,255,255,' + a + ')'; cx.lineWidth = 2 * a + .5; cx.beginPath(); cx.ellipse(e.x, e.y, 8 + k * (e.r || 50), (8 + k * (e.r || 50)) * .45, 0, 0, 7); cx.stroke(); }
+        else if (e.kind === 'flash') { cx.fillStyle = 'rgba(255,255,255,' + a * .6 + ')'; cx.fillRect(0, 0, W, H); }
+        else if (e.kind === 'heal') { cx.fillStyle = 'rgba(230,240,255,' + a + ')'; for (var hq = 0; hq < 6; hq++) cx.fillRect(Math.round(e.x - 10 + hq * 4), Math.round(e.y - k * 24 - (hq % 3) * 5), 2, 2); }
+        cx.restore(); return true;
+      });
       // damage numbers
       cx.font = '8px "Press Start 2P", monospace'; cx.textAlign = 'center';
       B.pops = B.pops.filter(function (p) { p.t += dt; var x = p.x, y = p.y - p.t * 24; cx.fillStyle = 'rgba(0,0,0,.6)'; cx.fillText(p.text, x + 1, y + 1); cx.fillStyle = '#f4f4f6'; cx.fillText(p.text, x, y); return p.t < 1; });
@@ -1773,7 +1791,7 @@
     function loop(ts) {
       var dt = Math.min(.05, (ts - (last || ts)) / 1000); last = ts;
       update(dt);
-      if (mode === 'map' || mode === 'menu') { if (FX.shake > 0) { FX.shake = Math.max(0, FX.shake - dt); cx.save(); cx.translate(Math.round((Math.random() - .5) * 6), Math.round((Math.random() - .5) * 4)); drawMap(); cx.restore(); } else drawMap(); if (FX.flash > 0) { FX.flash = Math.max(0, FX.flash - dt); cx.fillStyle = 'rgba(255,255,255,' + Math.min(1, FX.flash * 2.5) + ')'; cx.fillRect(0, 0, W, H); } } else if (mode === 'atlas') drawAtlas(); else if (mode === 'swirl') drawSwirl(dt); else drawBattle(dt);
+      if (mode === 'map' || mode === 'menu') { if (FX.shake > 0) { FX.shake = Math.max(0, FX.shake - dt); cx.save(); cx.translate(Math.round((Math.random() - .5) * 6), Math.round((Math.random() - .5) * 4)); drawMap(); cx.restore(); } else drawMap(); if (FX.flash > 0) { FX.flash = Math.max(0, FX.flash - dt); cx.fillStyle = 'rgba(255,255,255,' + Math.min(1, FX.flash * 2.5) + ')'; cx.fillRect(0, 0, W, H); } } else if (mode === 'atlas') drawAtlas(); else if (mode === 'swirl') drawSwirl(dt); else if (FX.shake > 0) { FX.shake = Math.max(0, FX.shake - dt); cx.save(); cx.translate(Math.round((Math.random() - .5) * 6), Math.round((Math.random() - .5) * 4)); drawBattle(dt); cx.restore(); } else drawBattle(dt);
       raf = requestAnimationFrame(loop);
     }
 
