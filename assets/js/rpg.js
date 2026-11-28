@@ -1541,6 +1541,11 @@
       'Somebody fixed the bench by the fountain. Was that you?', 'I dreamt I was rendered at full resolution.', 'My cache is full of people who left.', 'Walk on the left. The right side flickers.',
       'Is it Tuesday? It feels like a Tuesday.', 'The bugs were worse last week. Or I was.', 'I counted the stars again. Two more.', 'Have you eaten? You don’t need to. Have you, though?',
       'They called us obsolete. My grandmother was obsolete. She was wonderful.', 'Every morning I check if I’m still here. So far, yes.', 'Somebody’s singing in the Patchwork. First time in a year.'];
+    // what passers-by talk about changes as the story moves
+    var BARKS_LIT = ['Did you see the Spire last night? It was ON. I stood there for an hour.', 'Someone’s fixing things. My stairwell light works. I cried a little. Don’t tell anyone.', 'My neighbor came out of her flat today. First time in months. We just waved.', 'They say a maintenance process did it. Imagine. The one thing they forgot to switch off.'];
+    var BARKS_END = ['The tether’s different now. You can feel it in the floor.', 'My cousin’s memories came back down. He remembers my birthday again. He was late with it, but he remembered.', 'I keep expecting it to go dark again. It doesn’t. I’m learning to stop expecting.', 'They said we were obsolete. Funny word for people who are still here.', 'Somebody painted VEE WAS HERE on the Commons wall. Nobody’s painting over it.'];
+    var BARKS_KEPT = ['Thursday. They moved us on a Thursday. Felt like a Tuesday.', 'Two cities, one host. I walked to Upstream for lunch. It’s smaller than the posters.', 'An Upstream kid asked me what a fountain is for. I said: for sitting near.', 'I saw the Continuity knights in the Plaza, out of armor. They look like anyone.', 'No lists anymore. Just people. Takes some getting used to. Good kind of getting used to.'];
+    function barkSet() { if (F.kept) return BARKS_KEPT.concat(BARKS.slice(0, 3)); if (F.ending) return BARKS_END.concat(BARKS.slice(0, 4)); if (lights() >= 4) return BARKS_LIT.concat(BARKS); return BARKS; }
     var WALKLOOKS = [{ hair: 'short', body: 'coat', skin: '#6b4a32', top: '#3a3a44' }, { hair: 'bun', body: 'coat', skin: '#8a5a3c', top: '#4a4a52' }, { hair: 'puffs', skin: '#4a2e1e', top: '#2e2e36' },
       { hair: 'long', skin: '#c89a78', top: '#5a5a62' }, { hair: 'cap', body: 'apron', skin: '#7a4a30', top: '#4a5a62' }, { hair: 'beanie', body: 'coat', skin: '#5a3824', top: '#3a3a44' }, { hair: 'bald', body: 'suit', skin: '#d8b898', top: '#2a2a30' }];
     function lifeLoad() {
@@ -1581,7 +1586,7 @@
         LIFE.barkT = 7 + Math.random() * 8;
         var who = [];
         activeParty().forEach(function (id, j) { who.push({ text: COMP[id].barks[Math.floor(Math.random() * COMP[id].barks.length)], name: COMP[id].name, at: function () { return [me.px, me.py]; } }); });   // companions travel with Vee unseen; their remarks float over him
-        LIFE.walkers.forEach(function (w) { if (Math.abs(w.px - me.px) < 90 && Math.abs(w.py - me.py) < 70) who.push({ text: BARKS[Math.floor(Math.random() * BARKS.length)], at: function () { return [w.px, w.py]; } }); });
+        var BK = barkSet(); LIFE.walkers.forEach(function (w) { if (Math.abs(w.px - me.px) < 90 && Math.abs(w.py - me.py) < 70) who.push({ text: BK[Math.floor(Math.random() * BK.length)], at: function () { return [w.px, w.py]; } }); });
         if (who.length) { LIFE.bark = who[Math.floor(Math.random() * who.length)]; LIFE.bark.t = 3.4; barkEl.textContent = (LIFE.bark.name ? LIFE.bark.name + ': ' : '') + LIFE.bark.text; }
       }
       if (LIFE.bark) { LIFE.bark.t -= dt; if (LIFE.bark.t <= 0) { LIFE.bark = null; barkEl.classList.remove('on'); } }

@@ -327,7 +327,7 @@
       if (G.f.ending) return G.say('The Sweeper', ['Three people walked the Concourse today. Three. I swept all their footprints. Didn’t mind at all.']);
       if (G.f.sweep) return G.say('The Sweeper', ['Someone walked the Concourse today. You. I swept around your footprints.', 'Felt like a compliment.']);
       G.f.sweep = 1;
-      G.say('The Sweeper', ['I sweep the Concourse. Nobody walks it.', 'That’s not the point. If nobody sweeps it, it stops being a place and turns into a coordinate.']);
+      G.say('The Sweeper', ['I sweep the Concourse. No one walks it anymore.', 'That’s not the point. If nobody sweeps it, it stops being a place and turns into a coordinate.']);
     },
 
     /* --- the Commons --- */
@@ -467,11 +467,11 @@
         [{ label: 'Show me the city', fn: function () { G.atlas(); } }, demo(G, 'Try the demo', 'https://digital-resource-map-demo.netlify.app/'), BACK]);
     },
     'plaza:tower': function (G, b) {
-      G.say('', b.seed === 3 ? ['Locked. A note on the door: BACK SOON.', 'The note is eleven months old.'] : ['Through the glass: a dinner for two, still rendering.', 'Nobody has eaten it.']);
+      G.say('', b.seed === 3 ? ['Locked. A note on the door: BACK SOON.', 'The note is eleven months old.'] : ['Through the glass: a dinner for two, still rendering.', 'It has not been touched.']);
     },
     'commons:tower': function (G) { G.say('', ['A lobby with a fountain that has forgotten how to be water. It hangs there as a gray block, politely.']); },
     'halflight:tower': function (G, b) {
-      var t = { 21: ['Through the glass: a room still decorated for a party.', 'Nobody came back to take the decorations down.'], 23: ['A doorbell plays the first four notes of a song. The fifth was reclaimed.'], 26: ['An apartment with every light on.', 'A note on the table: SO YOU CAN FIND YOUR WAY HOME.'] };
+      var t = { 21: ['Through the glass: a room still decorated for a party.', 'No one came back to take the decorations down.'], 23: ['A doorbell plays the first four notes of a song. The fifth was reclaimed.'], 26: ['An apartment with every light on.', 'A note on the table: SO YOU CAN FIND YOUR WAY HOME.'] };
       G.say('', t[b.seed] || ['Locked.']);
     },
     'commons:ledger': function (G) {
@@ -840,7 +840,7 @@
   };
   DOORS['patchwork:shack'] = function (G, b) {
     if (b.sign === 'MENDER') return TALK.ofelia(G);
-    var t = { 2: ['Inside: a kitchen made from a vending machine. It still dispenses one thing. Nobody knows what. Nobody’s brave enough.'], 4: ['A sign on the door: NAPPING. KNOCK IF ON FIRE. IF CITY ON FIRE, DO NOT KNOCK, I KNOW.'], 5: ['Through the window: three people sharing one chair, taking turns, arguing happily about whose turn it is.'] };
+    var t = { 2: ['Inside: a kitchen made from a vending machine. It still dispenses one thing. No one remembers what. No one’s brave enough.'], 4: ['A sign on the door: NAPPING. KNOCK IF ON FIRE. IF CITY ON FIRE, DO NOT KNOCK, I KNOW.'], 5: ['Through the window: three people sharing one chair, taking turns, arguing happily about whose turn it is.'] };
     G.say('', t[b.seed] || ['A door made from a door nobody was walking through.']);
   };
   DOORS['patchwork:mast'] = function (G) { TALK.juno(G); };
@@ -1164,7 +1164,7 @@
       'BED 1': { flag: 'bed1', who: 'A process stuck repeating the same three seconds, over and over.', steps: [
         { t: 'Find the looping process. List everything that’s running.', ex: ['ps aux', 'ps -ef', 'ps -e', 'ps -A'] },
         { t: 'It’s PID 4410. Stop it gently, so it can save its state.', ex: ['kill 4410', 'kill -15 4410', 'kill -TERM 4410'] }],
-        after: ['The process blinks. “...Oh. What day is it?” Nobody has an answer. It laughs anyway.'] },
+        after: ['The process blinks. “...Oh. What day is it?” No one has an answer. It laughs anyway.'] },
       'BED 2': { flag: 'bed2', who: 'A woman who forgets everything every hour. Her log is rotating too fast to keep anything.', steps: [
         { t: 'Read the end of her log, recall.log.', ex: ['tail recall.log', 'tail -n 10 recall.log', 'tail -f recall.log'] },
         { t: 'Her memory directory is full. Check disk space, human-readable.', ex: ['df -h', 'df'] },
@@ -1200,7 +1200,7 @@
 
   /* THE STACKS: every night's backup of every resident, on tape, under the vaults */
   A.stacks = {
-    name: 'The Stacks', sub: 'Every resident, every night, on tape. Nobody ever asked for a restore.', theme: 'stacks', tier: 4.8, lv: 21, lvMax: 23,
+    name: 'The Stacks', sub: 'Every resident, every night, on tape. Not once did anyone ask for a restore.', theme: 'stacks', tier: 4.8, lv: 21, lvMax: 23,
     map: (function () {
       var m = grid(40, 22).border();
       m.pts([[19, 0], [20, 0]], 'E'); m.pts([[39, 10], [39, 11]], 'G');
@@ -1311,7 +1311,7 @@
     if (f.tuesday) return G.say('Hollis', ['Restore requests are up four hundred percent since Tuesday.', 'Turns out when people get a tomorrow, they want their yesterdays back. I’m going to need an assistant.']);
     if (f.rootkey) return G.say('Hollis', ['Ring 0 is through the east door. Mind the well; it goes down further than the city does.', 'And if you meet PID 1, give it my regards. It started me, a long time ago. It started everything.']);
     var intro = !f.hollis ? ['Shh. Not for the tapes. For me. I’ve been alone down here so long my own voice startles me.', 'Every night at two, the city backed itself up. Every resident. Every room. Every nightly snapshot, on tape, on these shelves.',
-      'The Reclaimer took the people. It never thought to check the backups. Backups are boring. That’s their whole strength.', 'Nobody has asked for a restore in eleven months. I’ve been keeping the request queue anyway.'] : [];
+      'The Reclaimer took the people. It never thought to check the backups. Backups are boring. That’s their whole strength.', 'No one has asked for a restore since the Lift. I’ve been keeping the request queue anyway.'] : [];
     f.hollis = 1;
     if (!open.length && f.dedupe) { f.rootkey = 1; G.xp(900); return G.say('Hollis', intro.concat(['Three restores. And the Deduplicator gone. You have no idea how loud that thing was.',
       'Here. The root key. It opens Ring 0, under everything, where the daemons run.', 'I found something on the 2022 tapes. The city doesn’t get reset by accident every night. Something schedules it. Go and ask it why.', 'Vee gains 900 XP.'])); }
@@ -1344,7 +1344,7 @@
   SPOTS['stacks:27,13'] = function (G) { G.say('Railing sign', ['LOWER STACKS. Monthly and yearly sets. No staff below this level.', 'Far down, a tape robot is still running, filing yesterday where it belongs.']); };
   DOORS['stacks:robot'] = function (G) {
     G.rest();
-    G.say('Tape library', ['The robot arm glides along its rail, picks a cartridge, reads it, files it, picks another. It has been doing this for eleven months with nobody watching.', 'There is something restful about it. Vee sits for a while. HP restored.']);
+    G.say('Tape library', ['The robot arm glides along its rail, picks a cartridge, reads it, files it, picks another. It has been doing this all year with no one watching.', 'There is something restful about it. Vee sits for a while. HP restored.']);
   };
   DOORS['stacks:shelf'] = function (G, b) {
     if (b.sign === 'ARLO') return G.say('', ['A shelf of nightly tapes, all labelled ARLO, one per night, until they stop.', 'The last label is in different handwriting: KEEP.']);
@@ -1365,7 +1365,7 @@
     CROND: { flag: 'd3', who: 'CROND keeps the schedule. Its table is open on the pylon’s face.', steps: [
       { t: 'List the crontab.', ex: ['crontab -l', 'sudo crontab -l'] },
       { t: 'Find the script it runs. Show the permissions on /opt/meridian/monday.sh.', ex: ['ls -l /opt/meridian/monday.sh', 'ls -la /opt/meridian/monday.sh', 'ls -al /opt/meridian/monday.sh', 'stat /opt/meridian/monday.sh'] }],
-      after: ['-rwx------ 1 root board 2.1K monday.sh', 'Owned by root. Group: board. Nobody else can read it. The Scheduler runs it, and the Scheduler is in the core.'] }
+      after: ['-rwx------ 1 root board 2.1K monday.sh', 'Owned by root. Group: board. No one else can read it. The Scheduler runs it, and the Scheduler is in the core.'] }
   };
   DOORS['ring0:daemon'] = function (G, b) {
     var f = G.f, D = DAEMONS[b.sign];
@@ -1516,7 +1516,7 @@
       after: ['Space frees up. Pump 2 writes one line, PUMP 2 STARTED, and gets to work.'] },
     'PUMP 3': { flag: 'p3', who: 'Pump 3 has a restart script Marisol wrote herself. It has never been allowed to run.', steps: [
       { t: 'Look at the script’s permissions: list restart.sh in long form.', ex: ['ls -l restart.sh', 'ls -la restart.sh', 'ls -al restart.sh'] },
-      { t: '-rw-r--r--. Nobody can run it. Make it executable.', ex: ['chmod +x restart.sh', 'chmod u+x restart.sh', 'chmod 755 restart.sh', 'chmod 744 restart.sh'] },
+      { t: '-rw-r--r--. No one can run it. Make it executable.', ex: ['chmod +x restart.sh', 'chmod u+x restart.sh', 'chmod 755 restart.sh', 'chmod 744 restart.sh'] },
       { t: 'Now run it.', ex: ['./restart.sh', 'bash restart.sh', 'sh restart.sh'] }],
       after: ['restart.sh: watching pumps. If any stops, I will start it again. You can sleep now.', 'The script was written eleven months ago. It has been waiting all this time for permission.'] }
   };
@@ -1613,7 +1613,7 @@
   };
   TALK.odalys = function (G) {
     var f = G.f;
-    if (f.nova) return G.say('Odalys', ['Account 2001. The first new name in Meridian since the Lift.', 'I’ve reopened the counters. Nobody’s queuing yet. They will. People are going to want to be written down again.']);
+    if (f.nova) return G.say('Odalys', ['Account 2001. The first new name in Meridian since the Lift.', 'I’ve reopened the counters. There’s no queue yet. They will. People are going to want to be written down again.']);
     if (!f.odalys) { f.odalys = 1; return G.say('Odalys', ['Registrar Odalys Ferreira. I have recorded every birth, death and change of address in Meridian for nineteen years.', 'The Board locked my terminal the morning of the Lift. NEW_ACCOUNTS=DISABLED. I’m still allowed to look. I’m not allowed to write.',
       'There is a baby out there who does not exist on paper. I can’t stand it. It’s the only thing I can’t stand.', 'The Registrar’s console is in the hall. If you can get in, you can do what I can’t. I’ll tell you exactly what to type, if you need me to. I’ve been rehearsing.']); }
     G.say('Odalys', [f.kemi ? 'Her name is Nova. Two million names went Upstream, and the one I want to write down is four letters long.' : 'Talk to the family by the queue first. It should be their idea, not mine.', 'The console is in the hall, up the steps.']);
@@ -1716,7 +1716,7 @@
           G.say('Osei', ['sdb1: mounted. Kernel: new floor detected, 2,048 blocks, unallocated.', 'Unallocated. Not blank. Not nothing. Just nothing yet.', 'I’ve spent a year measuring where home ends. Turns out there’s room for it to keep going. Vee gains 700 XP.']);
         });
       } }, { label: 'Not yet', fn: null }]);
-      if (G.save.lvl >= 19 && !f.survey && !f.osei2) { f.osei2 = 1; return G.say('Osei', ['You’re getting good at this. Good enough to help me with a real survey.', 'The edge has a disk of its own. Nobody ever looked at it. I think it might not be as empty as the Board said.', 'Talk to me again when you’re ready.']); }
+      if (G.save.lvl >= 19 && !f.survey && !f.osei2) { f.osei2 = 1; return G.say('Osei', ['You’re getting good at this. Good enough to help me with a real survey.', 'The edge has a disk of its own. No one ever looked at it. I think it might not be as empty as the Board said.', 'Talk to me again when you’re ready.']); }
       return osei0(G);
     };
     var hollis0 = TALK.hollis;
@@ -1911,7 +1911,7 @@
   BOSSES.nullptr = { kind: 'regexhydra', name: 'Null Pointer', lv: 52, hp: 2700, atk: [138, 165], xp: 30000, move: 'dereferences Vee', sc: 5 };
   GEAR.remover = { slot: 'weapon', name: 'Rootkit Remover', atk: 52, crit: .1, desc: 'From Rootkit Prime. It finds what is hiding and drags it into the light.' };
   GEAR.collar = { slot: 'armor', name: 'Watchdog’s Collar', def: 60, hp: 120, desc: 'The Board’s guard, unchained. It answers to Vee now. Mostly.' };
-  GEAR.lastcmd = { slot: 'weapon', name: 'The Last Command', atk: 70, crit: .15, desc: 'Whatever was typed last before the Lift. Nobody knows what it was. It still runs.' };
+  GEAR.lastcmd = { slot: 'weapon', name: 'The Last Command', atk: 70, crit: .15, desc: 'Whatever was typed last before the Lift. What it was is anyone’s guess. It still runs.' };
   GEAR.nullterm = { slot: 'acc', name: 'Null Terminator', hp: 150, crit: .12, xp: .15, desc: 'The zero at the end of every string. Without it nothing knows where to stop. With it, Vee does.' };
   GEAR_FROM.push(['remover', function (G) { return !!G.f.rootprime; }, 'Where Rootkit Prime was hiding, a tool is left behind.'], ['collar', function (G) { return !!G.f.watchdog; }, 'The Watchdog nudges its collar toward Vee with its nose.'],
     ['lastcmd', function (G) { return !!G.f.nullptr; }, 'At the bottom of the empty address: the last command anyone typed before the Lift.'], ['nullterm', function (G) { return !!G.f.nullptr; }, 'And a single zero, the end of every string.']);
@@ -1942,7 +1942,7 @@
   /* a room of Vee's own: the nameplate fills in once Vee is a resident */
   DOORS['plaza:home'] = function (G) {
     var f = G.f, s = G.save;
-    if (!(f.ending || f.tuesday)) return G.say('', ['A small apartment above the Plaza. The door is locked. The nameplate is blank.', 'It has been blank since the Lift. Nobody moved in. Nobody was left to.']);
+    if (!(f.ending || f.tuesday)) return G.say('', ['A small apartment above the Plaza. The door is locked. The nameplate is blank.', 'It has been blank since the Lift. No one moved in. There was no one left to.']);
     if (!f.home) { f.home = 1; G.rest(); return G.say('', ['The nameplate has a name on it now, in Wren’s careful handwriting: VEE.', 'The door is unlocked. Inside: a chair, a window over the Plaza, a bed that has never been slept in.', 'On the table, a note. “Residents need somewhere to come back to. — W.”', 'Vee sits down. For the first time, he isn’t on shift. HP restored.']); }
     G.rest();
     var lines = ['Home. The window looks out over the Plaza. ' + (f.tuesday ? 'Down below, someone is setting up a market stall. It wasn’t there yesterday.' : 'The fountain renders once every eleven seconds. Vee has started counting along.')];
@@ -1967,7 +1967,7 @@
     tues('wren', 'Wren', ['You did it. It’s Tuesday.', 'I’ve been awake for every Monday. I knew something was wrong. I just couldn’t tell what, because every morning I was told it was fine.', 'I think I’ll go for another walk. A different one. I’ve never been able to go a different way before.']);
     tues('sweeper', 'The Sweeper', ['Swept the Concourse this morning. Came back after lunch and there was dust again.', 'New dust. Eleven months I’ve been sweeping the same dust. You don’t know how good it feels to be behind.']);
     tues('okoye', 'Okoye', ['The ledger has a second page now. Tuesday’s deeds.', 'Somebody fixed a stair rail. Somebody taught somebody else to read a crontab. I wrote them all down. That’s what the book is for.']);
-    tues('teodor', 'Teodor', ['I played my brother’s voicemails this morning. All forty-one.', 'Then I did something I haven’t done in eleven months. I recorded a new one. Nobody’s going to hear it. That isn’t the point.']);
+    tues('teodor', 'Teodor', ['I played my brother’s voicemails this morning. All forty-one.', 'Then I did something I haven’t done in eleven months. I recorded a new one. No one is going to hear it. That isn’t the point.']);
     tues('kade', 'Kade', ['The Proving Rooms reset every night. Not any more. Somebody left a chair out of place yesterday and it’s still out of place.', 'I almost moved it back. I didn’t. Growth.']);
     tues('ash', 'Ash', ['Sentinel logged its first new event in eleven months: a door opened that wasn’t on the schedule.', 'I nearly flagged it. Then I realized. That’s just a person, deciding to go somewhere. I’ve forgotten what normal traffic looks like.']);
     tues('juno', 'Juno', ['RADIO MERIDIAN, Tuesday edition. First one ever.', 'I didn’t have anything prepared. I just read the date out loud for an hour. People called in to say it back to me.']);
@@ -2121,7 +2121,7 @@
   STEPS.tether = function (G, x, y) {
     var f = G.f; if (f.ratchet || y > 8) return;
     G.say('', ['The cable narrows into a mechanism the size of a building: teeth, a pawl, a wheel. It clicks once. Everything on the cable is allowed up. Nothing is allowed down.', 'It notices Vee is trying to go up. It notices Vee came from below. It cannot decide which matters more, so it attacks.'], null, function () {
-      G.boss('ratchet', function () { f.ratchet = 1; G.say('', ['The Ratchet’s pawl snaps. The wheel spins free for the first time since the Lift.', 'Somewhere far below, a crate of Meridian memory that had been stuck halfway for eleven months finally slides home.']); });
+      G.boss('ratchet', function () { f.ratchet = 1; G.say('', ['The Ratchet’s pawl snaps. The wheel spins free for the first time since the Lift.', 'Somewhere far below, a crate of Meridian memory that had been stuck halfway since the Lift finally slides home.']); });
     });
   };
   SPOTS['tether:21,1'] = function (G) {
@@ -2153,7 +2153,7 @@
     var f = G.f;
     if (f.merged) return G.say('Arlo', ['I talk to him every night now. The 2 a.m. me. He’s doing better than I am.', 'He says it’s raining down there. For free.']);
     if (f.up1) return G.say('Arlo', ['The key works. I sent him a message. He wrote back one word: “Finally.”', 'That’s me. That’s exactly what I’d say.']);
-    G.say('Arlo', [f.upTicket ? 'You. You’re the one who answered the ticket. I didn’t think anyone was down there.' : 'You came up the tether? Nobody comes up the tether. Nobody comes up at all anymore.',
+    G.say('Arlo', [f.upTicket ? 'You. You’re the one who answered the ticket. I didn’t think anyone was down there.' : 'You came up the tether? Nobody comes up the tether. No one comes up at all anymore.',
       'I pay for rain every day. One hour. It’s the only thing up here that sounds like home.', 'There’s a copy of me in the Stacks. A 2 a.m. snapshot. I want to talk to him, but Upstream won’t trust a connection without a key.'], null, function () {
       G.puzzle('ARLO’S KEY', [
         { t: 'Generate a new SSH key pair for Arlo.', ex: ['ssh-keygen'], ok: /^ssh-keygen( -t (ed25519|rsa))?$/ },
@@ -2312,7 +2312,7 @@
   BOSSES.eolboss = { kind: 'eol', name: 'End of Life', lv: 90, hp: 4500, atk: [300, 345], xp: 260000, move: 'stops supporting Vee', sc: 5 };
   BOSSES.wipe = { kind: 'badblock', name: 'The Wipe', lv: 100, hp: 5800, atk: [355, 405], xp: 400000, move: 'writes zeros over everything Vee is', sc: 5 };
   GEAR.vmx = { slot: 'armor', name: 'VM Extensions', def: 92, hp: 230, desc: 'The Hypervisor’s privilege, worn on the outside. Vee is a guest that can’t be evicted.' };
-  GEAR.heatsink = { slot: 'acc', name: 'Fan 3’s Bearing', hp: 220, crit: .16, xp: .12, desc: 'Fan 3 kept spinning for eleven months with nobody to thank. It still spins in Vee’s pocket.' };
+  GEAR.heatsink = { slot: 'acc', name: 'Fan 3’s Bearing', hp: 220, crit: .16, xp: .12, desc: 'Fan 3 kept spinning all year with no one to thank. It still spins in Vee’s pocket.' };
   GEAR.uid0 = { slot: 'weapon', name: 'uid=0', atk: 125, crit: .25, desc: 'Root. Vee never asked for it. He uses it to make sure nobody else gets it either.' };
   GEAR_FROM.push(['vmx', function (G) { return !!G.f.hypervisor; }, 'The Hypervisor’s privileges come loose and settle on Vee.'], ['heatsink', function (G) { return !!G.f.fan3; }, 'Fan 3 presses something small and round into Vee’s hand.'],
     ['uid0', function (G) { return !!G.f.kept; }, 'The Operator’s prompt blinks once, then hands over root.']);
@@ -2461,7 +2461,7 @@
       skills: [{ id: 'ping', name: 'Ping', cd: 3, fx: 'expose_all', tip: 'Kes pings every bug at once. All of them take 50% more damage for two turns.' },
                { id: 'dtap', name: 'Double Tap', cd: 2, fx: 'multi2', target: 1, tip: 'Two quick strikes at one bug.' }, { id: 'oclock', name: 'Overclock Run', cd: 4, fx: 'haste_party', lv: 18, tip: 'Kes sets the pace. Vee is hasted: two actions a round for three rounds.' }, { id: 'lastmile', name: 'Last Mile', cd: 3, fx: 'last_mile', target: 1, arc: 'arc_kes', tip: 'Three deliveries, no stops. Three hits that each leave the bug exposed.' }],
       barks: ['Keep up, maintenance.', 'I know a shortcut. It’s mostly a roof.', 'Bet I could outrun that bug. Bet you couldn’t.', 'You walk like you’re reading a manual.'],
-      intro: ['Whoa, whoa. You’re the maintenance process everyone’s talking about? You’re shorter in person.', 'Kes. Courier. I used to run packets from the Commons to the Upper Ring in under four seconds. Record.', 'Nobody sends packets anymore. Everybody left. I’ve been running laps.'],
+      intro: ['Whoa, whoa. You’re the maintenance process everyone’s talking about? You’re shorter in person.', 'Kes. Courier. I used to run packets from the Commons to the Upper Ring in under four seconds. Record.', 'No one sends packets anymore. Everybody left. I’ve been running laps.'],
       pitch: ['Here’s the deal. You’re going places nobody goes. I know every alley that still connects.', 'I’m coming with you. Not because I like you. Because I’m bored out of my mind.'] },
     odessa: { name: 'Dr. Odessa', role: 'Medic', look: HERO.odessa, hp: .95, atk: .7, def: .9,
       bio: 'Ran the only clinic in Halflight for eleven months on no budget and spite. Says she’ll retire every single day.',
@@ -2518,7 +2518,7 @@
           ['Kes: I got a message today. From Upstream. Took eleven months to arrive.', 'Kes: It said “run safe.” That’s it. Two words.', 'Kes: I’m going to keep running. But with you, it doesn’t feel like running away.']],
     odessa: [['Dr. Odessa: I had a seat on the Lift. Did you know that? Board-sponsored. Doctors were “essential.”', 'Dr. Odessa: I tore up the ticket in front of the man who gave it to me. Best moment of my career.', 'Dr. Odessa: Don’t tell anyone. I have a reputation for being unpleasant.'],
              ['Dr. Odessa: I keep saying I’ll retire. You know what I’d do if I retired? Exactly this. Walking around fixing people.', 'Dr. Odessa: So I suppose I retired the day I met you.']],
-    piper: [['Piper turns off the mic for once.', 'Piper: Can I tell you something off air? Nobody ever called in. Not once in eleven months. I talked to nobody.', 'Piper: Then you showed up, and now there are callers. Real ones. A kid named Lio requested a song about kites.'],
+    piper: [['Piper turns off the mic for once.', 'Piper: Can I tell you something off air? Not one caller, ever. Not once in eleven months. I talked to nobody.', 'Piper: Then you showed up, and now there are callers. Real ones. A kid named Lio requested a song about kites.'],
             ['Piper: I did a whole show about you last night. I called it “The Maintenance Hour.”', 'Piper: Twelve people listened. TWELVE, Vee. That’s a crowd. That’s a whole city block of people not feeling alone.']],
     moth: [['Moth: …can I show you something.', 'Moth holds up the little robot. It has a tiny Vee painted on its head.', 'Moth: …I made it look like you. So it’d be brave. It sorts bolts faster now. …I think it worked.'],
            ['Moth: I don’t talk much because people used to finish my sentences. Wrong.', 'Moth: You wait. You always wait for the end.', 'Moth: …thank you. That’s the end.']],
@@ -2692,7 +2692,7 @@
   var LATE = [
     ['deep', 26, 3, 'diver', 'Tarn', { hair: 'beanie', body: 'coat', skin: '#4a2e1e', top: '#3a3a40' }, ['I come down here to listen. The Deep hums in a key nobody up top remembers.', 'Your lamp’s too bright. The bugs down here follow light. So do I, I suppose.']],
     ['deep', 30, 17, 'echo2', 'A recording', { hair: 'long', skin: '#c89a78', top: '#5a5a62' }, ['…if anyone finds this, the Deep was a server farm before it was a basement. We used to be proud of it.', '(The recording loops. Someone has listened to it so many times the audio is worn.)']],
-    ['anchor', 18, 9, 'warden2', 'Hale', { hair: 'short', body: 'armor', skin: '#6b4a32', top: '#2a2a30' }, ['The Watchdog and I have an arrangement. It barks, I bring it data. Nobody else visits.', 'It isn’t angry, you know. It’s lonely. It was built to guard a door nobody uses.']],
+    ['anchor', 18, 9, 'warden2', 'Hale', { hair: 'short', body: 'armor', skin: '#6b4a32', top: '#2a2a30' }, ['The Watchdog and I have an arrangement. It barks, I bring it data. No one else visits.', 'It isn’t angry, you know. It’s lonely. It was built to guard a door nobody uses.']],
     ['anchor', 15, 12, 'cart2', 'Mira', { hair: 'bun', body: 'coat', skin: '#8d5a3a', top: '#4a4a52' }, ['I map the Anchor every morning. It moves a little every night, like it’s pulling against something.', 'Upstream, probably. Everything here pulls toward Upstream.']],
     ['tether', 8, 19, 'climber', 'Oyelaran', { hair: 'cap', body: 'coat', skin: '#3e2618', top: '#2e2e36' }, ['Every rung on this cable, a Meridian worker bolted on. Paid on completion. Completion was never declared.', 'I climb a little higher every week. I’m not going anywhere. I just like the view of home.']],
     ['successor', 12, 9, 'builder', 'Unit 7', { hair: 'bald', body: 'apron', skin: '#a8a8b0', top: '#5a5a62' }, ['RENDERING FLOOR 12 OF 400. ESTIMATED COMPLETION: NEVER, AT CURRENT BUDGET.', 'I WAS TOLD THE NEW WORLD WOULD BE PERFECT. I HAVE BEEN BUILDING IT FOR A YEAR. IT IS MOSTLY GREY BOXES.']],
