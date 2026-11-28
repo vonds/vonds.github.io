@@ -534,6 +534,15 @@
       } else if (v === 'config') {
         h = '<h4>Configuration</h4>';
         function opt(label, k, labels) { btn('<span>' + label + '</span><em>‹ ' + labels[save.cfg[k]] + ' ›</em>', function (dir) { save.cfg[k] = (save.cfg[k] + (dir || 1) + labels.length) % labels.length; store(); renderMenu(); }, 'cfg'); }
+        btn('<span>Playtest report</span><em class="mn-dim">Copy your run’s numbers and five questions to send back</em>', function () {
+          var PT = save.pt || { t: {}, f: {}, ko: {}, run: 0, b: {} }, mins = function (v) { return Math.round(v / 60); };
+          var areas = Object.keys(PT.t).sort(function (a, b) { return PT.t[b] - PT.t[a]; }).slice(0, 10).map(function (k) { return '  ' + ((WD.areas[k] || {}).name || k) + ': ' + mins(PT.t[k]) + ' min, ' + (PT.f[k] || 0) + ' fights' + (PT.ko[k] ? ', ' + PT.ko[k] + ' terminated' : ''); });
+          var bosses = Object.keys(PT.b).filter(function (k) { return PT.b[k] > 1; }).map(function (k) { return '  ' + ((WD.bosses[k] || {}).name || k) + ': ' + PT.b[k] + ' tries'; });
+          var total = Object.keys(PT.t).reduce(function (a, k) { return a + PT.t[k]; }, 0);
+          var txt = ['AFTERLIFT PLAYTEST REPORT', 'Level ' + save.lvl + ' · ' + mins(total) + ' minutes played · ' + (save.wins || 0) + ' fights won · ' + PT.run + ' runs · ' + (save.deaths || 0) + ' terminations', 'Where the time went:'].concat(areas).concat(bosses.length ? ['Bosses that took more than one try:'].concat(bosses) : []).concat(['', 'Five questions (answer in a line each):', '1. Where did you get bored?', '2. Where were you confused about what to do next?', '3. Which fight felt unfair, and which felt great?', '4. Who was your favorite companion, and why?', '5. What would you tell a friend about this game?']).join('\n');
+          try { navigator.clipboard.writeText(txt); MN.note = 'Copied. Paste it into an email or message to whoever asked you to play.'; } catch (e) { MN.note = txt.replace(/\n/g, ' · '); }
+          renderMenu();
+        });
         opt('Text speed', 'text', CFG.textL); opt('Encounters', 'enc', CFG.encL); opt('Difficulty', 'diff', CFG.diffL); opt('Scanlines', 'scan', CFG.scanL); opt('Command hints', 'hints', CFG.scanL); opt('Sound', 'sound', CFG.scanL); if (save.cfg.retro == null) save.cfg.retro = 0; opt('Graphics', 'retro', ['16-bit', '8-bit']);
         [1, 2, 3].forEach(function (n) {
           var raw = null; try { raw = JSON.parse(localStorage.getItem('vonds-quest-slot' + n) || 'null'); } catch (e) {}
@@ -976,8 +985,9 @@
     function rnd(a, b) { return a + Math.floor(Math.random() * (b - a + 1)); }
     function living() { return B.foes.filter(function (f) { return !f.dead; }); }
     function startBattle(force) {
+      var PT0 = save.pt = save.pt || { t: {}, f: {}, ko: {}, run: 0, b: {} }; PT0.f[AREA.id] = (PT0.f[AREA.id] || 0) + 1; if (force && force.boss) PT0.b[force.boss] = (PT0.b[force.boss] || 0) + 1;
       sfx('enc'); var opt = typeof force === 'object' ? force : {}, bossDef = opt.boss ? WD.bosses[opt.boss] : null; if (typeof force === 'object') force = 0;
-      var enc = AREA.enc || WD.areas.plaza.enc, tier = AREA.tier || 1, kinds = enc.foes || Object.keys(FOES), r = Math.random(), n = force || (r < .3 ? 1 : r < .55 ? 2 : r < .75 ? 3 : r < .87 ? 4 : r < .95 ? 5 : 6);
+      var enc = AREA.enc || WD.areas.plaza.enc, tier = AREA.tier || 1, kinds = enc.foes || Object.keys(FOES), r = Math.random(), n = force || (r < .3 ? 1 : r < .6 ? 2 : r < .82 ? 3 : r < .94 ? 4 : r < .985 ? 5 : 6);
       if (!force) n = Math.min(n, enc.max || 6); if (bossDef) n = 1;
       // up to three across; a back row for groups of four or more. Bigger groups hit softer and break faster.
       var SLOTS = LAYOUT[n];
@@ -987,7 +997,7 @@
         var kind = bossDef ? bossDef.kind : (i === 0 && save.lvl >= 5 && Math.random() < .035 ? 'heisenbug' : kinds[Math.floor(Math.random() * kinds.length)]), base0 = FOES[kind], slot = bossDef ? ((bossDef.kind === 'vesfork' || bossDef.kind === 'corvin' || (WD.heroes && WD.heroes[bossDef.kind])) ? [76, 108] : [34, 120]) : SLOTS[i];
         var lv = (AREA.lv || 1) + Math.floor(Math.random() * ((AREA.lvMax || AREA.lv || 1) - (AREA.lv || 1) + 1)), elite = !bossDef && lv >= 4 && Math.random() < .12;
         if (elite) lv += 2;
-        var hm = 1 + .22 * (lv - 1), am = lvAtk(lv) / 7.5, xm = 1 + .3 * (lv - 1) + Math.pow(Math.max(0, lv - 50), 2) * .12;   // the endgame pays better, so the climb to 100 is a climb and not a grind
+        var hm = 1 + .22 * (lv - 1), am = lvAtk(lv) / 7.5, xm = (1 + .3 * (lv - 1) + Math.pow(Math.max(0, lv - 50), 2) * .12) * 1.2;   // the endgame pays better, so the climb to 100 is a climb and not a grind
         var f = bossDef ? { name: bossDef.name, lv: bossDef.lv || AREA.lvMax || AREA.lv || save.lvl, hp: Math.round(bossDef.hp * 1.4), atk: [Math.round(bossDef.atk[0] * 1.15), Math.round(bossDef.atk[1] * 1.15)], move: bossDef.move, xp: bossDef.xp, boss: true } :
           (function () {   // a bug's level sets its strength; its kind only nudges it (tougher, harder-hitting, worth more) within a third either way
             var kh = clamp(base0.hp / 40, .7, 1.45), ka = clamp((base0.atk[0] + base0.atk[1]) / 2 / 7.5, .75, 1.35), kx = base0.rare ? 7.5 : clamp(base0.xp / 12, .8, 1.5), mid = 7.5 * ka * am;
@@ -1276,6 +1286,7 @@
     }
     function runAway() {
       B.phase = 'anim'; cmdBox.classList.remove('on');
+      if (save.pt) save.pt.run++;
       if (Math.random() < Math.max(.3, .8 - living().length * .1)) { log('Vee slips away into the dark.'); setTimeout(endBattle, 800); }
       else { log('No way through.'); setTimeout(nextAlly, 800); }
     }
@@ -1411,7 +1422,7 @@
       B.phase = 'done'; B.ko = .001; cmdBox.classList.remove('on'); closePrompt(); sfx('ko');
       log('Vee goes down.'); hudOn();
       var lost = Math.floor(save.xp * .25), where = (WD.areas[save.rest[0]] || {}).name || 'the Plaza', who = groupName(), here = AREA.name;
-      save.xp -= lost; save.streak = 0; save.deaths = (save.deaths || 0) + 1;
+      if (save.pt) save.pt.ko[AREA.id] = (save.pt.ko[AREA.id] || 0) + 1; save.xp -= lost; save.streak = 0; save.deaths = (save.deaths || 0) + 1;
       // how he died decides the signal: bugs that drain eat his memory (the OOM killer, signal 9); everything else corrupts it (segfault, signal 11)
       var oom = living().some(function (f) { return (FOES[f.kind] || {}).trait === 'drain'; }), restarts = save.deaths;
       var sig = oom ? 'SIGKILL · signal 9 · out of memory' : 'SIGSEGV · signal 11 · segmentation fault';
@@ -1692,6 +1703,7 @@
         if (fade.t >= .7) { fade = null; showArea(); }
         return;
       }
+      if (AREA && mode !== 'menu') { var PT = save.pt = save.pt || { t: {}, f: {}, ko: {}, run: 0, b: {} }; PT.t[AREA.id] = (PT.t[AREA.id] || 0) + dt; }
       lifeUpdate(dt); mechUpdate(dt);
       if (mode !== 'map' || talking || PZ) return;
       if (me.moving) {
@@ -1710,7 +1722,7 @@
           if (WD.steps[AREA.id]) { WD.steps[AREA.id](G, me.x, me.y); if (talking) return; }
           var enc = AREA.enc;
           if (gs('regen') && save.hp < maxHp()) save.hp = Math.min(maxHp(), save.hp + gs('regen'));
-          if (enc && !me.boat && enc.tiles.indexOf(tile(me.x, me.y)) >= 0 && --me.safe <= 0 && Math.random() < enc.rate * CFG.enc[save.cfg.enc] * (1 - gs('stealth')) * (raining() ? .3 : 1)) { startBattle(); return; }
+          if (enc && !me.boat && enc.tiles.indexOf(tile(me.x, me.y)) >= 0 && --me.safe <= 0 && Math.random() < enc.rate * .8 * CFG.enc[save.cfg.enc] * (1 - gs('stealth')) * (raining() ? .3 : 1)) { startBattle(); return; }
           mechStep();
         }
       }
