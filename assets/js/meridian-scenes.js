@@ -59,3 +59,48 @@
     });
   });
 })();
+
+/* Out on the Sprawl: a wandering merchant, a rare glitch that roams the country, and records on the islands that tie back to Mara */
+(function () {
+  var WD = window.MeridianWorld; if (!WD || !WD.areas.sprawl) return;
+  var SA = WD.areas.sprawl, G2 = WD.gear;
+  G2.fieldguide = { slot: 'acc', name: 'Field Guide', hp: 80, crit: .06, desc: 'Every bug in Meridian, drawn and named in Vee’s own hand. Knowing a thing is half of beating it.' };
+  G2.compass = { slot: 'acc', name: 'Wayfarer’s Compass', hp: 60, stealth: .3, desc: 'Points away from trouble. Bugs find Vee less often while he wears it.' };
+  G2.oar = { slot: 'weapon', name: 'Packet Oar', atk: 58, crit: .05, desc: 'Ada’s spare. Carved from a decommissioned server blade. Rows nothing; hits hard.' };
+  // the merchant moves between four camps; which one depends on the day
+  var CAMPS = [[40, 22], [86, 60], [22, 56], [70, 76]], day = Math.floor(Date.now() / 86400000) % CAMPS.length, camp = CAMPS[day];
+  for (var dy = -1; dy <= 1; dy++) for (var dx = -1; dx <= 1; dx++) { var row = SA.map[camp[1] + dy]; if (row) SA.map[camp[1] + dy] = row.slice(0, camp[0] + dx) + (dx === 0 && dy === 0 ? '.' : (row.charAt(camp[0] + dx) === 'M' || row.charAt(camp[0] + dx) === '~' || row.charAt(camp[0] + dx) === 'r' ? '.' : row.charAt(camp[0] + dx))) + row.slice(camp[0] + dx + 1); }
+  SA.npcs.push({ id: 'merchant', p: { hair: 'hood', body: 'coat', skin: '#6b4a32', top: '#4a4a52' }, x: camp[0], y: camp[1], name: 'Tamsin', look: 'echo', h: 13, solid: 1, still: 1 });
+  WD.talk.merchant = function (G) {
+    var f = G.f, stock = [
+      { label: 'Antivirus x2 · 1 megabyte', cost: ['mb', 1], fn: function () { G.give('av', 2); } },
+      { label: 'Gigabyte · 3 megabytes', cost: ['mb', 3], fn: function () { G.give('gb', 1); } },
+      { label: 'Wayfarer’s Compass · 2 gigabytes', cost: ['gb', 2], once: 'compass', fn: function () { G.giveGear('compass'); } }
+    ];
+    var opts = stock.filter(function (o) { return !(o.once && G.ownsGear(o.once)); }).map(function (o) {
+      return { label: o.label, fn: function () { if (!G.spend(o.cost[0], o.cost[1])) return G.say('Tamsin', ['You’re short. I don’t do credit. Credit is how the Lift happened.']); o.fn(); G.say('Tamsin', ['Pleasure. Mind the wastes on your way out.']); } };
+    }).concat([{ label: 'Just talking', fn: function () { G.say('Tamsin', [['I move camp every day. If you can’t find me, I’m somewhere else. That’s the business model.', 'I sold umbrellas to people waiting for the Lift. Then I sold them back to people who’d stopped waiting.', 'There’s a glitch that wanders the plains out here. Pays well, if you can catch it. Nobody can.'][Math.floor(Math.random() * 3)]]); } }, { label: 'Leave', fn: null }]);
+    G.say('Tamsin', f.metTamsin ? ['Back again. What’ll it be?'] : (f.metTamsin = 1, ['A customer! On the Sprawl! Sit down before you fall down.', 'I’m Tamsin. I trade in data, and the occasional thing that fell off the Lift. What do you need?']), opts);
+  };
+  // the glitch: it roams the plains; catch it and it pays
+  WD.bosses.glitch = { kind: 'heisenbug', name: 'The Wandering Glitch', lv: 30, hp: 1400, atk: [40, 55], xp: 9000, move: 'flickers into the last place Vee looked', sc: 4 };
+  WD.bossMech = WD.bossMech || {}; WD.bossMech.glitch = { counter: 2, status: ['daze'] };
+  var gspot = null; for (var gt = 0; gt < 400 && !gspot; gt++) { var gx = 12 + Math.floor(Math.random() * 96), gy = 12 + Math.floor(Math.random() * 66), r0 = SA.map[gy]; if (r0 && ',f'.indexOf(r0.charAt(gx)) >= 0 && ',f.='.indexOf(r0.charAt(gx + 1)) >= 0 && ',f.='.indexOf(r0.charAt(gx - 1)) >= 0) gspot = [gx, gy]; }
+  gspot = gspot || [50, 50];
+  SA.npcs.push({ id: 'glitch', p: { hair: 'bald', skin: '#e8e8f0', top: '#f4f4f8', pants: '#f4f4f8', shoes: '#f4f4f8' }, x: gspot[0], y: gspot[1], name: '???', look: 'holo', flick: 1 });
+  WD.talk.glitch = function (G) {
+    G.say('', ['Something stands in the grass that the renderer can’t decide on. A person, a bug, a smear of white. It looks at Vee from three places at once.'], [{ label: 'Catch it', fn: function () {
+      G.boss('glitch', function () { G.f.glitches = (G.f.glitches || 0) + 1; G.give('gb', 2); G.say('', ['The Glitch resolves, for one frame, into a perfectly ordinary person. Then it’s gone. Two gigabytes lie in the grass where it stood.', 'Glitches caught: ' + G.f.glitches + '. It will be somewhere else next time.']); var n = SA.npcs.filter(function (q) { return q.id === 'glitch'; })[0]; if (n) n.hide = 1; });
+    } }, { label: 'Leave it be', fn: null }]);
+  };
+  // records on the islands: Mara came out here before the city opened
+  var LOGS = {
+    S1: ['A survey stake, old as the city. Tied to it, a note in Mara Quell’s handwriting:', 'Before Meridian. Day 1 of the survey. Nothing out here but sea and static. I am going to put two million people on this.', 'I’ll start with a bench.'],
+    S2: ['Carved into the lighthouse door: M.Q. + THE CITY.', 'Under it, newer: SHE CAME OUT HERE TO THINK. SO DID I. — W.'],
+    S3: ['A weatherproof box. Inside, Mara’s first sketch of the Plaza. The fountain is in it. So is a bench, circled twice, labeled: LEFT SIDE FOR WHOEVER IS WAITING.'],
+    S4: ['A buoy, still blinking, still broadcasting on a band no radio in the city listens to:', 'IF THIS IS FOUND, THE CITY IS STILL HERE. IF IT IS NOT FOUND, THE CITY IS STILL HERE. BOTH ARE TRUE. — M.']
+  };
+  var ISLE = [[8, 10], [112, 58], [10, 44], [60, 86]];
+  SA.logs = SA.logs || {};
+  ISLE.forEach(function (c, i) { var x = c[0] + 1, y = c[1]; var row = SA.map[y]; if (!row) return; SA.map[y] = row.slice(0, x) + 'o' + row.slice(x + 1); SA.logs[x + ',' + y] = 'S' + (i + 1); WD.logs['S' + (i + 1)] = LOGS['S' + (i + 1)]; });
+})();

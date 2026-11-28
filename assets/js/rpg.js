@@ -233,6 +233,7 @@
       puzzle: function (title, steps, done) { openPuzzle(title, steps, done); },
       rest: function () { save.hp = maxHp(); Object.keys(save.party.has).forEach(function (id) { if (COMP[id]) save.party.hp[id] = cMax(id); }); save.rest = [AREA.id, me.x, me.y]; store(); },
       give: function (it, n) { n = n || 1; if (ITEMS.some(function (x) { return x.id === it; })) save.items[it] = (save.items[it] || 0) + n; else save.keys[it] = (save.keys[it] || 0) + n; store(); },
+      spend: function (it, n) { n = n || 1; if ((save.items[it] || 0) < n) return false; save.items[it] -= n; store(); return true; }, items: function (it) { return save.items[it] || 0; },
       take: function (it, n) { save.keys[it] = Math.max(0, (save.keys[it] || 0) - (n || 1)); store(); },
       count: function (it) { return save.keys[it] || 0; },
       travel: function (to) { travel(to); },
@@ -1432,6 +1433,7 @@
       var lines = [allGone ? 'The Heisenbug got away. Nothing to show for it but the feeling that something was there.' : boss ? boss.name + ' is gone.' + (xp ? ' Vee gains ' + xp + ' XP.' : '') : 'The rot clears. Vee gains ' + xp + ' XP.'];
       if (!boss && AREA.id === 'commons' && F.deeds && (F.commonsWins || 0) < 3) { F.commonsWins = (F.commonsWins || 0) + 1; lines.push('Deed: fairground cleared, ' + F.commonsWins + ' of 3.'); }
       if (caught) { save.items.gb = (save.items.gb || 0) + 1; lines.push('Vee caught a Heisenbug. It leaves behind a gigabyte, still warm.'); }
+      if (!F.bestiaryDone && Object.keys(FOES).every(function (k) { return save.best[k]; })) { F.bestiaryDone = 1; if (GEAR.fieldguide) giveGear('fieldguide'); lines.push('The Bestiary is complete: every kind of bug in Meridian, met and named. Vee is given the FIELD GUIDE, an accessory for a process who has seen everything.'); }
       if (Math.random() < .35 + n * .07 + gs('drop')) {   // drops match the bugs: low-level rot leaves bits, high-level rot leaves megabytes and gigabytes
         var topLv = Math.max.apply(null, B.foes.map(function (f) { return f.foe.lv || 1; }));
         var tier0 = topLv < 8 ? 0 : topLv < 20 ? 1 : topLv < 40 ? 2 : 3, howMany = 1 + (topLv >= 30 ? 1 : 0) + (topLv >= 70 ? 1 : 0), got = {};
