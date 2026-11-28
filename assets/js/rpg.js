@@ -156,7 +156,7 @@
     function key(x, y) { return x + ',' + y; }
     function gateOpen(x, y) { var g = AREA.gates && AREA.gates[key(x, y)]; if (!g) return false; return g.need ? !!g.need(G) : false; }
     function wagonAt() { if (!AREA.wagon) return null; var s = isLit('wagon') ? 2 : Math.min(2, F.wagon || 0); return AREA.wagon[s]; }
-    function visNpcs() { return (AREA.npcs || []).filter(function (p) { return !(COMP[p.id] && inParty(p.id)) && !(p.gone && F[p.gone]); }); }   // companions who joined have left their post; beaten bosses have left the city   // companions who joined have left their post
+    function visNpcs() { return (AREA.npcs || []).filter(function (p) { return !p.hide && !(COMP[p.id] && inParty(p.id)) && !(p.gone && F[p.gone]); }); }   // companions who joined have left their post; beaten bosses have left the city   // companions who joined have left their post
     function npcAt(x, y) { var n = null; visNpcs().forEach(function (p) { if (p.x === x && p.y === y) n = p; }); return n; }
     function blocked(x, y) {
       var t = tile(x, y);
@@ -285,6 +285,15 @@
         if (SCENE.i >= steps.length) { var d = SCENE.done; SCENE = null; return d && d(); }
         var st = steps[SCENE.i++];
         if (st.say) return say(st.say[0], st.say[1], st.say[2] || null, next);
+        if (st.dyn) { var dl = st.dyn(G); return dl ? say(dl[0], dl[1], null, next) : next(); }   // lines decided when the scene gets there
+        if (st.choose) return say(st.choose[0], st.choose[1], st.choose[2].map(function (o) { return { label: o.label, fn: function () { if (o.fn) o.fn(G); if (o.stop) SCENE.i = steps.length; else if (o.then) Array.prototype.splice.apply(steps, [SCENE.i, 0].concat(o.then)); next(); } }; }));
+        if (st.leave) {   // walk off, away from Vee, and (if they were only here for the scene) gone
+          var la = actorOf(st.leave); if (!la || la === 'vee') return next();
+          var bestT = null, bd = -1; for (var ly = la.y - 6; ly <= la.y + 6; ly++) for (var lx = la.x - 6; lx <= la.x + 6; lx++) { if (blocked(lx, ly) && !(lx === la.x && ly === la.y)) continue; var dv = Math.abs(lx - me.x) + Math.abs(ly - me.y); if (dv > bd && Math.abs(lx - la.x) + Math.abs(ly - la.y) <= 7) { var pr = pathTo(la.x, la.y, lx, ly, la); if (pr) { bd = dv; bestT = [lx, ly]; } } }
+          if (!bestT) { if (la.scene) AREA.npcs = AREA.npcs.filter(function (n4) { return n4 !== la; }); return next(); }
+          SCENE.i--; steps[SCENE.i] = { walk: st.leave, to: bestT }; steps.splice(SCENE.i + 1, 0, { vanish: st.leave }); return next();
+        }
+        if (st.vanish) { var va = actorOf(st.vanish); if (va && va !== 'vee') { if (va.scene) AREA.npcs = AREA.npcs.filter(function (n5) { return n5 !== va; }); else va.hide = 1; } return setTimeout(next, 60); }
         if (st.actor) {
           var at = st.at ? [me.x + st.at[0], me.y + st.at[1]] : freeNear(me.x, me.y);
           if (st.at && (blocked(at[0], at[1]) || (at[0] === me.x && at[1] === me.y))) at = freeNear(at[0], at[1]);
@@ -343,9 +352,9 @@
     }
     function runEnding(kind) {
       F.ending = kind; store(); repaint();
-      say('', WD.endings[kind], null, function () {
-        say('', WD.endings.after, null, function () { save.lit.spire = 1; store(); repaint(); travel(['plaza', 15, 8]); });
-      });
+      scene([{ say: ['Vee', [kind === 'cut' ? 'Everything they took is up there. Everyone who’s left is down here. I choose the people.' : 'They took it a block at a time. I’m taking it back all at once.']] },
+        { flash: 1, wait: 700 }, { shake: 1.2, wait: 900 }, { say: ['', WD.endings[kind]] }, { flash: .5, wait: 400 }, { say: ['', WD.endings.after] }],
+        function () { endScene(); save.lit.spire = 1; store(); repaint(); travel(['plaza', 15, 8]); });
     }
 
     /* ---------- stats, gear and settings ---------- */
@@ -1503,7 +1512,7 @@
     function lifeLoad() {
       LIFE.walkers = []; LIFE.bark = null; barkEl.classList.remove('on');
       LIFE.drizzle = ['plaza', 'commons', 'patchwork', 'gardens', 'halflight', 'line', 'upper', 'concourse'].indexOf(AREA.id) >= 0 && Math.random() < .18;
-      (AREA.npcs || []).forEach(function (n) { if (n.hx == null) { n.hx = n.x; n.hy = n.y; } n.x = n.hx; n.y = n.hy; n.px = n.x * TS; n.py = n.y * TS; n.wt = 2 + Math.random() * 5; });
+      (AREA.npcs || []).forEach(function (n) { n.hide = 0; if (n.home) { n.hx = n.home[0]; n.hy = n.home[1]; } if (n.hx == null) { n.hx = n.x; n.hy = n.y; n.home = [n.x, n.y]; } n.x = n.hx; n.y = n.hy; n.px = n.x * TS; n.py = n.y * TS; n.wt = 2 + Math.random() * 5; });
       // passers-by: the people still living here, walking the roads. More of them once the district's landmark is lit.
       var roads = []; for (var y = 1; y < MAP.length - 1; y++) for (var x = 1; x < MAP[0].length - 1; x++) if (MAP[y][x] === '=' && MAP[y][x + 1] === '=' && MAP[y][x - 1] === '=') roads.push([x, y]);
       var n2 = Math.min(roads.length ? 2 + Math.floor(lights() / 2) : 0, 5);
@@ -1795,7 +1804,16 @@
       if (!AREA) { load(save.area, save.x, save.y); syncGear(true); }
       if (mode === 'map' && !talking) showTitle(function () {
         if (talking || mode !== 'map') return;
-        if (!save.met) { save.met = true; store(); say('', ['Meridian was built to be the most beautiful place on the network. Two million people lived here. For a while, it was everything it promised.', 'Then the people who owned it built a newer world, Upstream, and sorted every account into two lists. Current: forty thousand of them, who took the Lift. Obsolete: everyone else.', 'The Current stopped paying for this world. Nothing obsolete is maintained.', 'The rot set in. District by district, the city has been going dark. Last night, the signal at its heart went quiet.', 'You are Vee, a maintenance process nobody remembered to shut down. You know five commands so far: whoami, pwd, ls, cd and cat. Every level teaches you more.', coarse ? 'Use the pad to move, A to talk and B for the menu.' : 'Arrow keys to move. Hold Shift to dash (on a phone, tap DASH to toggle it). Enter or Z to talk. X for the menu.'], null, showArea); }
+        if (!save.met) { save.met = true; store(); scene([
+          { say: ['', ['Meridian was built to be the most beautiful place on the network. Two million people lived here. For a while, it was everything it promised.', 'Then the people who owned it built a newer world called Upstream, and sorted every account onto one of two lists.', 'CURRENT: forty thousand, who rode the Lift up. OBSOLETE: everyone else.', 'Nothing obsolete is maintained. A year later, the city is going dark one district at a time.']] },
+          { flash: .6, wait: 500 },
+          { say: ['', ['boot: maintenance process 1205 ........ ok', '$ whoami', 'maintenance']] },
+          { face: 'left' }, { wait: 300 }, { face: 'right' }, { wait: 300 }, { face: 'down' },
+          { shake: .7, wait: 700 },
+          { say: ['', ['Across the Plaza, the Spire’s signal stutters, holds, and goes out. Somewhere a kiosk quietly updates a number.']] },
+          { say: ['Vee', ['…That’s my job, then.']] },
+          { say: ['', ['You are Vee. You know five commands so far: whoami, pwd, ls, cd and cat. Every level teaches you more.', coarse ? 'Use the pad to move, A to talk and B for the menu.' : 'Arrow keys to move. Hold Shift to dash (on a phone, tap DASH to toggle it). Enter or Z to talk. X for the menu.']] }
+        ], function () { endScene(); showArea(); }); }
         else say('', ['Vee reconnects. ' + AREA.name + '. Level ' + save.lvl + '.'], null, showArea);
       });
       root.querySelector('.rpg-x').focus({ preventScroll: true });

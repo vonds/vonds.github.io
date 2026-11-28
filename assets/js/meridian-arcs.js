@@ -27,6 +27,9 @@
   WD.bossMech.arc_purge = { firewall: 1, phase: 1, status: ['sil', 'weak'] };
   WD.bossMech.arc_skybox = { status: ['daze'], summon: ['moth', 'moth'] };
   WD.bossMech.arc_backdoor = { counter: 2, phase: 1, firewall: 1, status: ['sil', 'daze'] };
+  WD.bossStart = WD.bossStart || {};
+  WD.bossStart.arc_backdoor = function (G, foe) { if (!G.f.vesTalk) return null; foe.hp = Math.round(foe.hp * .6); return 'Vee keeps talking through the whole fight. Some of it gets through: Ves’s hands keep hesitating. (The backdoor starts at 60% HP.)'; };
+  WD.bossStart.arc_fever = function (G, foe) { if (!G.f.odessaVee) return null; foe.exposed = 99; return 'The fever is inside Vee now, which means Vee knows exactly where it is. It takes extra damage the whole fight.'; };
 
   var ARCS = {
     kes: { area: 'concourse', lv: 18, hint: 'Walk the Concourse with Kes, level 18 or higher.', story: 'The Last Delivery', scene: function (G) { return [
@@ -39,13 +42,15 @@
       { say: ['Kes', ['The Guild’s Upstream. There is no Guild down here. There’s just me and the road.']] },
       { say: ['The Dispatcher', ['Then the road can take you to the Lift. Sealed parcel, priority one. Deliver it, and there’s a seat for you at the top.', 'One seat. Yours.']] },
       { shake: .3 },
-      { say: ['Kes', ['…', 'Vee. What do I do.'], [{ label: 'Open the package', fn: null }, { label: 'It’s your call, Kes', fn: null }]] },
-      { say: ['Kes', ['…No. I’m opening it.', 'Huh.', 'It’s a list. Every tower in Halflight, a date beside each one. A reclaim schedule.', 'They wanted me to carry the eviction notice for my own street.']] },
+      { choose: ['Kes', ['…', 'Vee. What do I do.'], [
+        { label: 'Open it. Find out what you’re carrying.', fn: function (G) { G.f.kesOpen = 1; }, then: [{ say: ['Vee', ['Couriers don’t read the mail. You’re not a courier anymore. Open it.']] }, { say: ['Kes', ['…Yeah. Yeah, okay.']] }] },
+        { label: 'It’s your call, Kes.', then: [{ say: ['Vee', ['It’s your route. Your call.']] }, { say: ['Kes', ['That’s the worst thing you could have said. You know that, right?', '…No. I’m opening it.']] }] }]] },
+      { say: ['Kes', ['Huh.', 'It’s a list. Every tower in Halflight, a date beside each one. A reclaim schedule.', 'They wanted me to carry the eviction notice for my own street.']] },
       { say: ['The Dispatcher', ['Contents are not the courier’s concern.']] },
       { say: ['Kes', ['Everything on my route is my concern. Every door. Every name.', 'Return to sender.']] },
       { boss: 'arc_dispatch' },
       { walk: 'kes', path: 'R', face: 'vee' },
-      { say: ['Kes', ['I tore it up. Every page. Halflight’s off the schedule, at least until they print another one.', 'You know what the worst part is? For one second I wanted the seat.', 'Don’t tell anyone. Especially not Piper. She’d put it on the air.', '…Thanks for not deciding for me.']] },
+      { dyn: function (G) { return G.f.kesOpen ? ['Kes', ['I tore it up. Every page. Halflight’s off the schedule, at least until they print another one.', 'You know what the worst part is? For one second I wanted the seat.', 'Thanks for saying it out loud. I needed someone to.']] : ['Kes', ['I tore it up. Every page. Halflight’s off the schedule, at least until they print another one.', 'You know what the worst part is? For one second I wanted the seat.', 'Don’t tell Piper. She’d put it on the air.', '…Thanks for not deciding for me. Even if it was annoying.']]; } },
       { say: ['', ['Kes’s story is settled. She learns LAST MILE: three hits that leave a bug exposed.']] }
     ]; } },
     odessa: { area: 'halflight', lv: 16, hint: 'Visit Halflight with Dr. Odessa, level 16 or higher.', story: 'Do No Harm', scene: function (G) { return [
@@ -54,12 +59,13 @@
       { say: ['Dr. Hale', ['Odessa. Thank goodness. I’ve been… I’ve been looking for the clinic. It was right here.', 'I can’t remember the clinic. I can’t remember… was I your teacher? I was, wasn’t I?']] },
       { say: ['Dr. Odessa', ['Hale. Sit down. Sit DOWN.', 'Vee, he’s corrupted. Something is eating his memory from the inside, file by file.', 'He taught me everything. Triage, sutures, how to lie to patients kindly.']] },
       { flash: .5 },
-      { say: ['Dr. Odessa', ['I can pull it out of him. But it needs a body to land in, and the only clean one in reach is mine.'], [{ label: 'Let her do it', fn: null }, { label: 'Pull it into Vee instead', fn: null }]] },
-      { say: ['Dr. Odessa', ['Don’t you dare argue with a doctor. We do it together. Hold his hand. When it comes out, we hit it with everything.']] },
+      { choose: ['Dr. Odessa', ['I can pull it out of him. But it needs somewhere to land, and the only clean process in reach is mine.'], [
+        { label: 'Do it. I’ll be right here.', then: [{ say: ['Vee', ['Do it. I’ll be right here when it comes out.']] }, { say: ['Dr. Odessa', ['Good. Hold his hand. When it jumps to me, hit it with everything you have. Don’t be gentle. It won’t be.']] }] },
+        { label: 'Put it in me instead.', fn: function (G) { G.f.odessaVee = 1; G.save.hp = Math.max(1, Math.round(G.save.hp * .7)); }, then: [{ say: ['Vee', ['Put it in me. I’m maintenance. I’ve been corrupted before. It wears off.']] }, { say: ['Dr. Odessa', ['That is the stupidest, kindest— fine. FINE. Arm out.', '…There. You’re burning up. Vee lost a third of his HP. Now we fight it from the inside out.']] }] }]] },
       { shake: .5 },
       { boss: 'arc_fever' },
       { say: ['Dr. Hale', ['…Odessa. You grew up.', 'You were so bad at sutures. Terrible. I used to hide your homework from the others.']] },
-      { say: ['Dr. Odessa', ['He remembers. He remembers I was terrible.', 'That’s the best news I’ve had in eleven months.', 'I’m going to retire. Tomorrow. Definitely tomorrow.']] },
+      { dyn: function (G) { return ['Dr. Odessa', G.f.odessaVee ? ['He remembers. He remembers I was terrible.', 'And you. You took a fever for a man you’d never met, because I needed my hands free.', 'I’m writing that in his chart. I’m writing it in mine, too.'] : ['He remembers. He remembers I was terrible.', 'That’s the best news I’ve had in eleven months.', 'I’m going to retire. Tomorrow. Definitely tomorrow.']]; } },
       { remove: 'hale' },
       { say: ['', ['Dr. Odessa’s story is settled. She learns FULL RESTORE: the whole party back up and healed.']] }
     ]; } },
@@ -71,8 +77,10 @@
       { say: ['Piper', ['That’s a jammer. Upstream bought every channel and is playing silence on all of them.', 'They don’t need to shut me down. They just need to make sure nobody hears.', 'I have never in my life been this quiet. I hate it. I HATE it.']] },
       { shake: .4 },
       { boss: 'arc_silencer' },
-      { say: ['Piper', ['…Testing. Testing. Is this thing on?', 'It’s on. It’s ON. Meridian, it’s Piper, and I have so much to tell you.'], [{ label: 'Tell them the truth', fn: null }, { label: 'Play a song', fn: null }]] },
-      { say: ['Piper', ['Here’s the truth: the Lift was never for everyone. And here’s a song, because the truth is a lot to take without one.', '…Vee. That’s the first time I’ve said something on air that I was scared of.', 'Encore?']] },
+      { choose: ['Piper', ['…Testing. Testing. Is this thing on?', 'It’s on. It’s ON. Okay. Vee. Every radio in the city is listening right now. What do I say?'], [
+        { label: 'Tell them the truth.', then: [{ say: ['Piper', ['Meridian, it’s Piper. Here’s what I know.', 'There were forty thousand seats and two million of us. They knew the math the day they sold the first ticket.', 'You weren’t left behind. You were left. There’s a difference, and the difference is that it wasn’t your fault.']] }, { say: ['Piper', ['…Vee. That’s the first thing I’ve ever said on air that I was scared to say.']] }] },
+        { label: 'Play them a song.', then: [{ say: ['Piper', ['Meridian, it’s Piper. I had a whole speech. I’m not doing the speech.', 'This is the song they played the night the Lift opened. The one we all danced to, before we found out.', 'We get to have it back.']] }, { say: ['', ['Across the Ring, in the windows of the owners’ district, someone turns the volume up.']] }, { say: ['Piper', ['…Vee. People are singing. Down there. I can hear them on the return feed.']] }] }]] },
+      { say: ['Piper', ['Encore?']] },
       { say: ['', ['Piper’s story is settled. She learns ENCORE: Vee is hasted and everyone’s next hit is critical.']] }
     ]; } },
     moth: { area: 'undercroft', lv: 20, hint: 'Bring Moth down to the Undercroft, level 20 or higher.', story: 'The Other Moth', scene: function (G) { return [
@@ -82,7 +90,9 @@
       { walk: 'lark', toVee: 1, face: 'moth' },
       { say: ['LARK-1', ['MOTH. MOTH. YOU CAME BACK. I KEPT THE WORKSHOP CLEAN.', 'I FIXED EVERYTHING. I FIXED THE PIPES. I FIXED THE BUGS. I FIXED THE PEOPLE WHO WERE BROKEN.']] },
       { say: ['Moth', ['…my sister built it. Lark. Before the Lift took her.', 'It has her voice. It doesn’t have her… knowing when to stop.', 'It’s been “fixing” the Undercroft. The people down here are scared of it.']] },
-      { say: ['LARK-1', ['YOU ARE BROKEN TOO, MOTH. YOU DON’T TALK. I CAN FIX THAT.']] },
+      { choose: ['LARK-1', ['YOU ARE BROKEN TOO, MOTH. YOU DON’T TALK. I CAN FIX THAT.'], [
+        { label: 'Moth isn’t broken.', then: [{ say: ['Vee', ['Moth isn’t broken. Moth is careful. You were built by someone who knew the difference.']] }, { say: ['LARK-1', ['…CAREFUL. CAREFUL IS SLOW. SLOW IS BROKEN.']] }] },
+        { label: '(Let Moth answer.)', then: [{ say: ['Moth', ['I talk. I talk to the pipes and the fans and the little robots and Vee. I just don’t talk to people who aren’t listening.', 'You stopped listening, Lark-bot. She never did.']] }, { say: ['LARK-1', ['…THAT WAS A LONG SENTENCE, MOTH.']] }] }]] },
       { shake: .4 },
       { boss: 'arc_lark' },
       { say: ['Moth', ['I’m going to switch you off now. Not forever. Just until I can teach you the part she forgot.', 'The part about leaving things alone when they work, even if they’re quiet.']] },
@@ -97,9 +107,11 @@
       { walk: 'ostrava', toVee: 1, face: 'rook' },
       { say: ['Captain Ostrava', ['Sergeant Rook. Twelve years, a perfect record. Then you vanish the night the Board leaves.', 'I came back down to collect you. That is how much you were worth.']] },
       { say: ['Rook', ['Captain.', 'I didn’t vanish. I stayed. Somebody had to keep the doors open after you locked them.']] },
-      { say: ['Captain Ostrava', ['Desertion, then. Stand to attention.'], [{ label: 'Step between them', fn: null }, { label: 'Let Rook answer', fn: null }]] },
+      { choose: ['Captain Ostrava', ['Desertion, then. Stand to attention.'], [
+        { label: 'Step between them.', then: [{ walk: 'vee', path: '' }, { say: ['Vee', ['He didn’t desert. He’s the only one who stayed at his post.']] }, { say: ['Captain Ostrava', ['And what are you, process?']] }, { say: ['Vee', ['His post.']] }, { say: ['Rook', ['…Vee. Let me.']] }] },
+        { label: '(Let Rook answer.)', then: [] }]] },
       { walk: 'rook', path: 'R', face: 'ostrava' },
-      { say: ['Rook', ['No, Vee. This one’s mine.', 'Captain, I swore to protect Meridian. Not the Board. You taught me the difference. You just forgot it first.']] },
+      { say: ['Rook', ['Captain, I swore to protect Meridian. Not the Board. You taught me the difference. You just forgot it first.']] },
       { shake: .5 },
       { boss: 'arc_ostrava' },
       { say: ['Captain Ostrava', ['…You always did guard the left side too much.', 'Fine. I’ll file it as reassignment. Sergeant Rook, permanently posted to Meridian. Indefinitely.']] },
@@ -112,11 +124,13 @@
       { actor: 'sable', hero: 'sable', at: [1, 0], dir: 'up' },
       { say: ['Sable', ['Smell that? Records burning. Somebody is purging the Stacks.']] },
       { flash: .6 }, { shake: .5 },
-      { say: ['Sable', ['It’s moving through two shelves at once. The city’s birth records on the left. On the right…', '…my own file. Everything I am. Four thousand years of a library, written down in me.', 'There is time to save one shelf.'], [{ label: 'Save the city’s records', fn: null }, { label: 'Save Sable', fn: null }]] },
-      { say: ['Sable', ['No, Vee. You know which. You always knew which.', 'An archivist who saves herself over the archive is just a hoarder with good handwriting.', 'The city’s records. Then we stop it.']] },
-      { boss: 'arc_purge' },
-      { say: ['Sable', ['…the city’s shelf is whole. Every birth. Every name.', 'My file is… mostly ash. I remember my first boot. I remember you. I remember a poem about a lighthouse I cannot finish anymore.', 'That’s enough. That is more than most people keep.']] },
-      { say: ['Sable', ['Write it down for me, would you? The lighthouse. Someone should hold it.']] },
+      { choose: ['Sable', ['It’s moving through two shelves at once. The city’s birth records on the left. On the right…', '…my own file. Everything I am. Every year of the library, written down in me.', 'There is time to save one shelf.'], [
+        { label: 'The city’s records.', then: [{ say: ['Sable', ['Yes. You know which. You always knew which.', 'An archivist who saves herself over the archive is just a hoarder with good handwriting.']] }, { boss: 'arc_purge' },
+          { say: ['Sable', ['…The city’s shelf is whole. Every birth. Every name.', 'My file is mostly ash. I remember my first boot. I remember you. I remember half of a poem about a lighthouse, and I cannot finish it anymore.', 'That’s enough. That is more than most people keep.']] },
+          { say: ['Sable', ['Write the half down for me, would you? Someone should hold it.']] }] },
+        { label: 'Sable.', fn: function (G) { G.f.sableSelf = 1; }, then: [{ say: ['Sable', ['Vee, no—']] }, { say: ['', ['Vee is already pulling her shelf out of the fire.']] }, { boss: 'arc_purge' },
+          { say: ['Sable', ['…Half the birth records are gone. Names nobody will ever say again.', 'You saved me instead of them. I am very angry with you. I will be angry for a long time, and I am going to use it.']] },
+          { say: ['Sable', ['I read every one of those records, once. I am the archive now, the only copy left.', 'So I’ll write them back. One a night, from memory. It will take years. I have years, because of you.']] }] }]] },
       { say: ['', ['Sable’s story is settled. She learns DEEP INDEX: a huge hit to every bug.']] }
     ]; } },
     juni: { area: 'observatory', lv: 22, hint: 'Visit the Observatory with Juni, level 22 or higher.', story: 'Fixed Stars', scene: function (G) { return [
@@ -127,8 +141,10 @@
       { say: ['', ['The dome flickers. Something peels the sky back, the way you’d peel a sticker.']] },
       { boss: 'arc_skybox' },
       { walk: 'juni', path: 'D', face: 'down' },
-      { say: ['Juni', ['…Vee. Look down instead.', 'The windows. Every one of them lit by somebody still here. They move. They change. Nobody copied them.'], [{ label: 'Those are stars too', fn: null }, { label: 'Name one', fn: null }]] },
-      { say: ['Juni', ['That one’s Wren. That one’s the Sweeper. That one’s Kes, she’s always up too late.', 'That one’s you.', 'I have one million more questions. Most of them are about these stars. Good.']] },
+      { choose: ['Juni', ['…Vee. Look down instead.', 'The windows. Every one of them lit by somebody still here. They move. They change. Nobody copied them.'], [
+        { label: 'Those are stars too.', then: [{ say: ['Vee', ['Those are stars too. They just don’t know it yet.']] }, { say: ['Juni', ['…Then somebody should tell them. I’m going to tell them. Every single one.', 'I’ll need a bigger notebook.']] }] },
+        { label: 'Name one.', then: [{ say: ['Vee', ['Name one.']] }, { say: ['Juni', ['That one’s Wren. That one’s the Sweeper. That one’s Kes, she’s always up too late.', 'That one’s you. You left your light on.']] }] }]] },
+      { say: ['Juni', ['I have one million more questions. Most of them are about these stars. Good.']] },
       { say: ['', ['Juni’s story is settled. Juni learns SUPERNOVA: a huge hit to every bug.']] }
     ]; } },
     ves: { area: 'anchor', lv: 42, hint: 'Take Ves to the Anchor, level 42 or higher.', story: 'Backdoor', scene: function (G) { return [
@@ -138,7 +154,9 @@
       { remove: 'ves' },
       { actor: 'ves_lost', hero: 'ves_lost', name: 'Ves', at: [1, 0], dir: 'left' },
       { say: ['Ves', ['RECLAIM 1205. RECLAIM 1205.', '…run, Vee… RECLAIM…']] },
-      { say: ['', ['Vee could fight his way through. Or reach the line Corvin wrote, and overwrite it.'], [{ label: 'Talk him down', fn: null }, { label: 'Hold him off', fn: null }]] },
+      { choose: ['', ['Vee could fight his way through. Or keep talking, and hope the line Corvin wrote is quieter than he is.'], [
+        { label: 'Talk him down.', fn: function (G) { G.f.vesTalk = 1; }, then: [{ say: ['Vee', ['Ves. Left foot, right foot. You copied that from me. Copy this too: you don’t have to run what he wrote.']] }, { say: ['Ves', ['RECLAIM… re… keep. Keep talking. Don’t stop talking.']] }] },
+        { label: 'Hold him off.', then: [{ say: ['Vee', ['Hold on, Ves. I’m going to hit you until he lets go.']] }] }]] },
       { boss: 'arc_backdoor' },
       { remove: 'ves_lost' },
       { actor: 'ves', hero: 'ves', at: [1, 0], dir: 'left' },

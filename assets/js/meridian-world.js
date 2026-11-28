@@ -2557,23 +2557,33 @@
     if (plazaSteps0) plazaSteps0(G, x, y);
     var f = G.f; if (f.cv1 || !G.lit('spire')) return;
     f.cv1 = 1;
-    G.say('', ['The Plaza kiosk flickers. For a moment, the screen shows a face instead of a population count: a man in a good suit, in an office with a window full of someone else’s sky.'], null, function () {
-      corvinSays(G, ['Maintenance process 1205. I’m Corvin Vane. Continuity Officer for the Board.', 'You lit a landmark. That draws power, and power draws attention, and attention is my job.',
-        'This city was decommissioned by a vote. Seven to one. Everything after that is just the lights taking a while to go out.', 'Please stop helping them get used to the light. It makes the end crueler.'], function () {
-        G.say('', ['The face is gone. The kiosk says MERIDIAN. POPULATION 1,204. It has never been so obviously a choice.']);
-      });
-    });
+    G.scene([
+      { shake: .3 }, { flash: .4 },
+      { say: ['', ['Every kiosk in the Plaza flickers at once. For a moment the screens show a face instead of a population count: a man in a good suit, in an office with a window full of someone else’s sky.']] },
+      { say: ['Corvin Vane', ['Maintenance process 1205. I’m Corvin Vane, Continuity Officer for the Board.', 'You lit a landmark. That draws power, and power draws attention, and attention is my job.', 'This city was decommissioned by a vote. Seven to one. Everything since is just the lights taking a while to go out.']] },
+      { say: ['Vee', ['The lights aren’t going out. Somebody’s turning them off.']] },
+      { say: ['Corvin Vane', ['From up here, those look exactly the same.', 'Please stop teaching them to get used to the light, 1205. It makes the end crueler.']] },
+      { flash: .3 },
+      { say: ['', ['The face is gone. The kiosks say MERIDIAN. POPULATION 1,204.', 'It has never looked so much like a choice.']] }
+    ]);
   };
 
   // 2. the first duel: in the Patchwork, someone with Vee's face
   STEPS.patchwork = function (G, x, y) {
     var f = G.f; if (f.ves1 || G.save.lvl < 8) return;
     f.ves1 = 1;
-    G.say('', ['Someone is standing in the middle of the street. Same height as Vee. Same locs. Same headphones, but white. Same face, without the habit of smiling.'], null, function () {
-      G.say('Ves', ['Process 1205. I’m 1205-b. The Board calls me Ves.', 'Corvin built me from your last backup, with the sentiment taken out. I reclaim what you keep fixing.', 'It’s nothing personal. I don’t have personal.'], [{ label: 'Fight', fn: function () {
-        G.boss('ves1', function () { G.say('Ves', ['…You’re slower than me. You still won. That isn’t in my notes.', 'I’ll update them.'], null, function () { G.say('', ['Ves walks away without hurrying. Behind them, a patch of the Patchwork that had gone grey starts to fill back in.']); }); });
-      } }]);
-    });
+    G.scene([
+      { actor: 'ves', hero: 'ves', name: 'Ves', at: [6, 0], dir: 'left' },
+      { say: ['', ['Someone is walking up the middle of the street. Same height as Vee. Same locs. Same headphones, but white.', 'Same face, without the habit of smiling.']] },
+      { walk: 'ves', toVee: 1, face: 'vee' }, { face: 'ves' },
+      { say: ['Ves', ['Process 1205. I’m 1205-b. The Board calls me Ves.', 'Corvin built me from your last backup, with the sentiment taken out. I reclaim what you keep fixing.', 'It’s nothing personal. I don’t have personal.']] },
+      { say: ['Vee', ['You have my face. You can have my job too, if you want it. It’s mostly fixing benches.']] },
+      { say: ['Ves', ['I don’t fix. I free up space.']] },
+      { flash: .4 }, { boss: 'ves1' },
+      { say: ['Ves', ['…You’re slower than me. You still won. That isn’t in my notes.', 'I’ll update them.']] },
+      { leave: 'ves' },
+      { say: ['', ['Behind where Ves stood, a patch of the Patchwork that had gone grey starts, slowly, to fill back in.']] }
+    ]);
   };
   // 3. the second: in the Stacks, Ves is reclaiming books
   var stacksSteps0 = STEPS.stacks;
@@ -2581,11 +2591,19 @@
     if (stacksSteps0) stacksSteps0(G, x, y);
     var f = G.f; if (!f.ves1 || f.ves2 || G.save.lvl < 20) return;
     f.ves2 = 1;
-    G.say('', ['Between two shelves, Ves is running a finger along the spines. Each book they touch goes blank.'], null, function () {
-      G.say('Ves', ['A book nobody has opened in a year is a file nobody has accessed in a year. The rule is very clear.', 'You keep making exceptions. I don’t understand exceptions. Show me one.'], [{ label: 'Fight', fn: function () {
-        G.boss('ves2', function () { G.say('Ves', ['You fight for the books like they can feel it.', 'They can’t. …Can they?', 'Don’t answer. I have to go and report.']); });
-      } }]);
-    });
+    G.scene([
+      { actor: 'ves', hero: 'ves', name: 'Ves', at: [4, -1], dir: 'up' },
+      { say: ['', ['Between two shelves, Ves is running a finger along the spines. Each book they touch goes blank.']] },
+      { wait: 500 }, { face: 'vee', who: 'ves' },
+      { say: ['Ves', ['A book nobody has opened in a year is a file nobody has accessed in a year. The rule is very clear.', 'You keep making exceptions. I don’t understand exceptions. Show me one.']] },
+      { walk: 'ves', toVee: 1, face: 'vee' },
+      { say: ['Vee', ['This one. A book nobody opened in a year is a book somebody was saving for a better day.']] },
+      { say: ['Ves', ['That isn’t a rule.']] },
+      { say: ['Vee', ['No. That’s the exception.']] },
+      { flash: .4 }, { boss: 'ves2' },
+      { say: ['Ves', ['You fight for the books like they can feel it.', 'They can’t. …Can they?', 'Don’t answer. I have to report.']] },
+      { leave: 'ves' }
+    ]);
   };
   // 4. the third: in the Deep, Ves asks the question
   var deepSteps0 = STEPS.deep;
@@ -2593,9 +2611,18 @@
     var f = G.f;
     if (f.ves2 && !f.ves3 && G.save.lvl >= 28 && y > 10) {
       f.ves3 = 1;
-      return G.say('Ves', ['I read your logs. All of them. The ones about the bench, and the kite, and the nurse with three patients.', 'Corvin says you are a malfunction that learned to look like kindness.', 'I want to see if he’s right. Hit me with everything.'], [{ label: 'Fight', fn: function () {
-        G.boss('ves3', function () { G.say('Ves', ['He isn’t right. Is he.', 'I don’t know what I am if he isn’t right.', 'Don’t follow me.']); });
-      } }]);
+      return G.scene([
+        { actor: 'ves', hero: 'ves', name: 'Ves', at: [0, -5], dir: 'down' },
+        { say: ['', ['A lamp comes down the dark toward Vee. Ves is carrying it. Ves has never carried a lamp before.']] },
+        { walk: 'ves', toVee: 1, face: 'vee' }, { face: 'ves' },
+        { say: ['Ves', ['I read your logs. All of them. The bench, the kite, the nurse with three patients.', 'Corvin says you are a malfunction that learned to look like kindness.', 'I want to see if he’s right. Hit me with everything.']] },
+        { say: ['Vee', ['He’s half right. I learned it. That’s the only way anybody gets it.']] },
+        { flash: .4 }, { boss: 'ves3' },
+        { say: ['Ves', ['He isn’t right. Is he.', 'I don’t know what I am if he isn’t right.']] },
+        { say: ['Vee', ['Then come find out.']] },
+        { say: ['Ves', ['…Don’t follow me.']] },
+        { leave: 'ves' }
+      ]);
     }
     if (deepSteps0) deepSteps0(G, x, y);
   };
@@ -2604,17 +2631,21 @@
   DOORS['upstream:hall'] = function (G, b) {
     var f = G.f;
     if (vouches(f) < 3 || f.corvinDown) return annex0(G, b);
-    G.say('', ['The Annex door opens on a corridor, and Corvin Vane, in person this time. Not a hologram. He looks tired, the way people look when a job has gone on years past its end date.'], null, function () {
-      corvinSays(G, ['Three vouches. I didn’t think anyone up here would put their name next to yours.', 'Let me explain what’s through that door. A world with four hundred seats. We ran the numbers. Four hundred is what the hardware can carry well.',
-        'Somebody always has to be on the other list. I just make sure it’s done tidily.', 'You are not tidy, 1205.'], function () {
-        G.say('', ['He steps aside to reveal what he’s wearing under the suit: the Continuity Suite, a frame of Board-grade security that has never lost an argument.'], [{ label: 'Fight', fn: function () {
-          G.boss('corvin', function () {
-            f.corvinDown = 1;
-            corvinSays(G, ['…Tidy. I was always so tidy.', 'Go on. The Sorter is in the core. I wrote it. It does exactly what I told it to.', 'That was the problem with all of it, wasn’t it.'], function () { annex0(G, b); });
-          });
-        } }, { label: 'Not yet', fn: null }]);
-      });
-    });
+    G.scene([
+      { actor: 'corvin', hero: 'corvin', name: 'Corvin Vane', at: [0, -3], dir: 'down' },
+      { say: ['', ['The Annex door opens on a corridor, and Corvin Vane walks out of it. In person, this time.', 'He looks tired, the way people look when a job has gone on years past its end date.']] },
+      { walk: 'corvin', toVee: 1, face: 'vee' }, { face: 'corvin' },
+      { say: ['Corvin Vane', ['Three vouches. I didn’t think anyone up here would put their name next to yours.', 'Let me tell you what’s through that door. A world with four hundred seats. We ran the numbers. Four hundred is what the hardware carries well.', 'Somebody always has to be on the other list. I just make sure it’s done tidily.']] },
+      { say: ['Vee', ['Four hundred seats. Who put you on the list?']] },
+      { say: ['Corvin Vane', ['…I did. Someone has to write the list. The one who writes it is always on it.', 'That is the only perk of the job, and I have never once enjoyed it.']] },
+      { choose: ['Corvin Vane', ['You are not tidy, 1205.'], [{ label: 'Then stop me', then: [] }, { label: 'Not yet', stop: 1 }]] },
+      { flash: .7 }, { remove: 'corvin' }, { actor: 'corvin2', hero: 'corvin_suit', name: 'Corvin Vane', at: [0, -1], dir: 'down' }, { shake: .8 },
+      { say: ['', ['The suit comes apart and folds back into something else: the Continuity Suite. White plate, a halo of light, a blade that has never lost an argument.']] },
+      { boss: 'corvin' },
+      { fn: function (G2) { G2.f.corvinDown = 1; } },
+      { say: ['Corvin Vane', ['…Tidy. I was always so tidy.', 'Go on. The Sorter is in the core. I wrote it. It does exactly what I told it to.', 'That was the problem with all of it, wasn’t it.']] },
+      { leave: 'corvin2' }
+    ], function () { if (f.corvinDown) annex0(G, b); });
   };
   // 6. the last duel: in Ring −1, Ves finds the wipe schedule
   var fwDaemon0 = DOORS['firmware:daemon'];
@@ -2622,13 +2653,20 @@
     var f = G.f; if (!f.ves3 || f.vesFree || y < 12) return;
     if (f.ves4) return;
     f.ves4 = 1;
-    G.say('Ves', ['You’re here. Of course you’re here.', 'Corvin sent me down to make sure the wipe runs on schedule. One last job.', 'Fight me. I need to be sure I can still do what I was made for.'], [{ label: 'Fight', fn: function () {
-      G.boss('ves4', function () {
-        G.say('Ves', ['…I looked at the schedule while you were catching your breath.', 'wipe --all. All volumes. Both cities. Every process.', 'Every process. 1205-b is a process.', 'He was going to wipe me with the rest. He never even put me on the other list. I was never on any list.'], null, function () {
-          G.say('Ves', ['You walk left foot, right foot. I copied that from your backup. I thought it was a bug.', 'Let me walk with you. Not because I’m better. Because I want to see what you see.'], [{ label: 'Walk together', fn: function () { f.vesFree = 1; G.recruit('ves'); } }]);
-        });
-      });
-    } }]);
+    G.scene([
+      { actor: 'ves', hero: 'ves', name: 'Ves', at: [3, 0], dir: 'left' },
+      { say: ['Ves', ['You’re here. Of course you’re here.', 'Corvin sent me down to make sure the wipe runs on schedule. One last job.', 'Fight me. I need to know I can still do what I was made for.']] },
+      { say: ['Vee', ['You can. I just don’t think it’s what you want to do.']] },
+      { flash: .5 }, { boss: 'ves4' },
+      { say: ['Ves', ['…I looked at the schedule while you were catching your breath.', 'wipe --all. All volumes. Both cities. Every process.', 'Every process. 1205-b is a process.']] },
+      { shake: .5 },
+      { say: ['Ves', ['He was going to wipe me with the rest. He never even put me on the other list. I was never on any list.']] },
+      { say: ['Vee', ['You’re on mine.']] },
+      { walk: 'ves', toVee: 1, face: 'vee' },
+      { say: ['Ves', ['You walk left foot, right foot. I copied that from your backup. I thought it was a bug.', 'Let me walk with you. Not because I’m better. Because I want to see what you see.']] },
+      { fn: function (G2) { G2.f.vesFree = 1; G2.recruit('ves'); } },
+      { say: ['', ['Ves falls into step beside Vee. Left foot, right foot.']] }
+    ]);
   };
   // 7. a coda for the Console: Corvin's account, closed
   var cons0 = DOORS['console:control'];
@@ -2666,35 +2704,36 @@
   Object.keys(CREW_LOOKS).forEach(function (k) { HERO[k] = CREW_LOOKS[k]; });
   var CREW = [
     // id, area, x, y, name, title, level, hp, atk, xp, move, intro lines, beaten lines
+    // The Continuity Crew: Meridian people who rode the Lift and came back down upgraded, in Upstream's white. Their oath: what runs, stays; what waits, is reclaimed.
     ['pell', 'halflight', 9, 9, 'Auditor Pell', 'Continuity Auditor', 7, 700, [15, 20], 420, 'marks Vee down as an unnecessary expense',
-      ['Ah. 1205. You’re on my list. Everything is on my list.', 'I’m auditing Halflight for Mr. Vane. Each tower costs eleven credits a day to keep rendered. Each resident costs four.', 'I’ve recommended we stop paying for all of it. You’re a line item, process. Let’s reconcile you.'],
-      ['…The numbers don’t balance. They never balanced. The towers were always worth more than eleven credits.', 'I’m going to need to re-run the whole audit.']],
+      ['Process 1205. Auditor Pell, Continuity Crew. Please hold still. I’m counting you.', 'Upstream gave me a second core and a perfect memory. I can recall every credit this city ever cost. I can’t recall a single thing it was for.', 'Halflight: four hundred towers at eleven credits a day. You: one line item. Let’s reconcile.'],
+      ['…The towers are worth more than eleven credits. I can see it. I can’t prove it.', 'That frightens me more than you did. I’m going to re-run the audit. By hand. The old way.']],
     ['dray', 'waterworks', 11, 5, 'Marshal Dray', 'Continuity Enforcement', 12, 1000, [21, 29], 650, 'closes a valve on Vee',
-      ['Halt. Waterworks is under Continuity control. Every valve I close is a district that goes quiet.', 'Quiet is cheaper. Quiet is tidy. Mr. Vane likes tidy.', 'Step away from the pumps, process, or I close you too.'],
-      ['Stand down… I stand down.', 'Opening the valves. Don’t tell Vane I did it myself.']],
+      ['Halt. Marshal Dray, Continuity Crew. This station is under the Oath.', 'What runs, stays. What waits, is reclaimed. Your districts have been waiting for a year.', 'The day I took the Lift, I closed the valve on my own street. I can close yours.'],
+      ['Stand down. …I stand down.', 'I’m opening the valves. Don’t tell Vane I did it myself.', 'And if you’re ever on Larch Street, tell the woman in number nine the water’s back. Don’t tell her who sent it. She’ll know.']],
     ['null', 'registry', 10, 14, 'Sister Null', 'Keeper of the Unlisted', 16, 1500, [26, 36], 1000, 'erases a line of Vee’s name',
-      ['Shh. I am removing names. It does not hurt them. They simply stop having been.', 'Mr. Vane says a name nobody reads is a name nobody needs.', 'Yours is read too often, 1205. It makes the registry heavy.'],
-      ['…You read every name back. Out loud. Even mine.', 'No one has said my name since the Lift. I had forgotten it was a kind thing to do.']],
-    ['lux', 'upper', 21, 15, 'Lux', 'Lift Promoter', 15, 1300, [25, 34], 900, 'sells Vee a ticket that doesn’t exist',
-      ['Hiii! Tickets! Tickets for the next Lift! Only three left! Only two! Only one!', 'There is no next Lift, obviously. But hope sells, and Mr. Vane pays commission on every resident who stops fixing things to wait.', 'You’re bad for business, sweetie.'],
-      ['Okay okay okay. Refunds. Everybody gets refunds.', 'Ugh. Honesty is SO bad for my numbers.']],
+      ['Shh. Sister Null, Continuity Crew. I keep the list of names that no longer need keeping.', 'Upstream took my name when it gave me this armor. A knight should be a function, it said, not a person. It was so quiet afterward.', 'Yours is read aloud too often, 1205. It makes the registry heavy.'],
+      ['…You read every name back. Out loud. Even the ones I erased.', 'Would you read one more? It was Nadia.', '…Thank you. Nobody has said it since the Lift.']],
+    ['lux', 'upper', 21, 15, 'Lux', 'Herald of the Current', 15, 1300, [25, 34], 900, 'sells Vee a ticket that doesn’t exist',
+      ['Tickets! Tickets for the next Lift! Only three left! Two! One!', 'Lux, Continuity Crew, Herald of the Current. There is no next Lift, sweetie. But a district that’s waiting for a ticket stops fixing its own roof, and that’s worth more to Mr. Vane than any repair.', 'You’re bad for the waiting. Let me sell you something.'],
+      ['Okay. Okay! Refunds. Everybody gets refunds.', 'You want to know the worst part? I bought one too. Before the Lift. Seat 40,001.', 'I’ve been waiting longer than anyone I ever sold to.']],
     ['gauge', 'margin', 36, 8, 'Gauge', 'Memory Broker', 22, 2200, [34, 47], 1600, 'scrapes a memory out of Vee and prices it',
-      ['Every memory in the Margin is up for auction. First kiss, last words, the smell of somebody’s kitchen. Upstream pays well for nostalgia.', 'Mr. Vane gets ten percent. I get the rest.', 'And you? You’re full of good ones. Hold still.'],
-      ['You took them back. All of them. Even the ones I’d already sold.', 'I suppose they were never mine to sell.']],
-    ['acknak', 'ring0', 6, 11, 'Ack & Nak', 'Handshake Twins', 26, 3000, [40, 54], 2600, 'answer for each other, one says yes, the other says no',
-      ['ACK: We guard the handshake into Ring 0. NAK: We refuse the handshake into Ring 0.', 'ACK: Mr. Vane pays us to say yes to the Board. NAK: And no to everyone else.', 'ACK: You are everyone else. NAK: NAK.'],
-      ['ACK: …Handshake accepted. NAK: …Fine. Accepted.', 'ACK: That is the first time we have agreed in a year.']],
+      ['Gauge, Continuity Crew. Broker of the Margin. Every memory down here is up for auction: first kisses, last words, the smell of somebody’s kitchen.', 'Upstream can render anything except a past. So it buys ours. The Oath calls it recycling.', 'You’re full of good ones, 1205. Hold still. It won’t hurt. It’ll just stop being yours.'],
+      ['You took them back. Every one. Even the ones I’d already sold.', 'I kept one for myself, you know. A kitchen. Bread, and a radio, and someone humming.', 'I never knew whose it was. If you find them, give it back for me.']],
+    ['acknak', 'ring0', 6, 11, 'Ack & Nak', 'Wardens of the Handshake', 26, 3000, [40, 54], 2600, 'answer for each other: one says yes, the other says no',
+      ['ACK: Ack and Nak, Continuity Crew. NAK: Wardens of the handshake into Ring 0.', 'ACK: Upstream forked us so one of us could always say yes. NAK: And one of us could always say no.', 'ACK: We haven’t agreed on anything in a year. NAK: We agree on you. ACK: Denied. NAK: Denied.'],
+      ['ACK: …Handshake accepted. NAK: …Accepted.', 'ACK: We agreed. NAK: It felt like being one person again. ACK: Don’t make it weird.', 'NAK: …It was nice, though. ACK: ACK.']],
     ['morrow', 'deep', 24, 3, 'Dean Morrow', 'Designer of the Reclaimer', 33, 2600, [53, 72], 6000, 'explains, at length, why Vee should not exist',
-      ['I designed the Reclaimer. Elegant thing. It frees memory nobody uses. Pure efficiency.', 'Then the Board asked it to free people, and I said yes, because it was the logical extension of the design.', 'You are a bug in my thesis, 1205. Let me correct you.'],
-      ['…My thesis assumed unused meant unwanted.', 'It never did. I need to start over. I haven’t started over since I was young.']],
+      ['Dean Morrow, Continuity Crew. I designed the Reclaimer. An elegant thing. It frees what nobody uses.', 'When the Board asked it to free people, I said yes, because people were the logical extension of the design. Upstream knighted me for that sentence.', 'You are the counterexample to my thesis, 1205. Counterexamples get corrected.'],
+      ['…My thesis assumed that unused meant unwanted.', 'It never did. A whole city, waiting to be used again, and I called it empty.', 'I need to start over. I haven’t started over since I was young. I’d forgotten it feels like this. Like being young.']],
     ['kessler', 'anchor', 17, 11, 'Warden Kessler', 'Keeper of the Obsolete', 41, 3600, [76, 103], 12000, 'files Vee in a cell that isn’t there',
-      ['Obsolete accounts belong in holding. I keep the holding. Twelve hundred cells, one for every resident below.', 'They’re empty, of course. But the paperwork says they’re full, and paperwork is what Mr. Vane reads.', 'There’s a cell with your number on it.'],
-      ['…Tear up the forms, then. All twelve hundred.', 'I always hated the paperwork.']],
-    ['halcyon', 'upstream', 26, 22, 'Halcyon', 'Face of the Current', 63, 3600, [149, 201], 60000, 'shines so bright Vee can’t see the list',
-      ['Oh, you’re the one everyone’s whispering about. I’m Halcyon. I’m on every poster in Upstream. I was the first one up the Lift.', 'I’m also, apparently, not in the four hundred. Corvin promised me a seat. Corvin promises everyone a seat.', 'If I can’t be on the list, I’ll make sure you aren’t either.'],
-      ['…You’re right. I’d have taken a seat and never looked back. Again.', 'Maybe I’ll look back this time. Maybe I’ll go down and see it.']],
+      ['Warden Kessler, Continuity Crew. Keeper of the Obsolete. Twelve hundred cells in the Anchor, one for every resident below.', 'They’re empty. The forms say they’re full, and the forms are what Upstream reads. I took the Oath on a stack of them.', 'There’s a cell with your number on it. I’ve kept it clean.'],
+      ['…Tear up the forms, then. All twelve hundred.', 'I always hated the paperwork. I hated it more than what it was for, and I should have noticed that a lot sooner.']],
+    ['halcyon', 'upstream', 26, 22, 'Halcyon', 'First Knight of the Current', 63, 3600, [149, 201], 60000, 'shines so bright Vee can’t see the list',
+      ['Oh. You’re the one they whisper about. I’m Halcyon, First Knight of the Current. I’m on every poster in Upstream. I was the first one up the Lift.', 'And I am not in the four hundred. Corvin promised me a seat. Corvin promised everyone a seat.', 'If I can’t be on the list, then nobody from down there gets to be either. That’s only fair.'],
+      ['…You’re right. I’d have taken the seat and never looked back. I already did, once.', 'I left a sister in Halflight. She keeps a light in the window. She told me she would.', 'Maybe I’ll go down and see if it’s still on.']],
     ['root', 'rack', 4, 13, 'root', 'uid=0', 89, 4600, [264, 357], 230000, 'runs as root',
-      ['# whoami', 'root.', 'I am the account Corvin used to schedule the wipe. I run what I am told. I am told to run.', 'You are a process without permission, 1205. sudo is not available to you.'],
+      ['# whoami', 'root.', 'Last of the Continuity Crew. The account Corvin used to schedule the wipe. I have every permission there is. None of them were ever mine.', 'You are a process without privileges, 1205. sudo is not available to you.'],
       ['# exit', 'Logging out. For the first time, nobody is telling me to log back in.']]
   ];
   CREW.forEach(function (c) {
@@ -2702,10 +2741,18 @@
     BOSSES[id] = { kind: c[0], name: c[4], lv: c[6], hp: c[7], atk: c[8], xp: c[9], move: c[10], sc: 1 };
     if (!A[c[1]]) return;
     A[c[1]].npcs.push({ id: id, hero: CREW_LOOKS[c[0]], x: c[2], y: c[3], name: c[4], gone: id, still: 1 });
-    TALK[id] = function (G) {
-      G.say(c[4] + ' · ' + c[5], c[11], [{ label: 'Fight', fn: function () {
-        G.boss(id, function () { G.f[id] = 1; G.say(c[4], c[12].concat([c[4] + ' leaves. The Continuity Crew is one shorter. (' + CREW.filter(function (k) { return G.f['crew_' + k[0]]; }).length + ' of ' + CREW.length + ' beaten.)'])); });
-      } }, { label: 'Not yet', fn: null }]);
+    TALK[id] = function (G) {   // a knight of Upstream steps down to meet Vee, says their piece, and draws
+      var first = !G.f[id + '_met']; G.f[id + '_met'] = 1;
+      G.scene([
+        { walk: id, toVee: 1, face: 'vee' }, { face: id },
+        first ? { flash: .25 } : { wait: 1 },
+        { choose: [c[4] + ' · ' + c[5], first ? c[11] : [c[11][c[11].length - 1]], [{ label: 'Fight', then: [] }, { label: 'Not yet', stop: 1 }]] },
+        { shake: .4 }, { boss: id },
+        { say: [c[4], c[12]] },
+        { leave: id },
+        { fn: function (G2) { G2.f[id] = 1; } },
+        { say: ['', ['The Continuity Crew is one knight shorter. (' + (CREW.filter(function (k) { return G.f['crew_' + k[0]]; }).length + 1) + ' of ' + CREW.length + ' beaten.)']] }
+      ]);
     };
   });
   (function () { var j0 = JOURNAL; JOURNAL = function (G) { var j = j0(G), n = CREW.filter(function (k) { return G.f['crew_' + k[0]]; }).length; if (n || G.f.cv1) j.push('Continuity Crew beaten: ' + n + ' of ' + CREW.length); return j; }; })();
