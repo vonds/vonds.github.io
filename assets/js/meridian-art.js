@@ -70,7 +70,7 @@
       }
       if (t === '=') { if (!roadX(px, theme, X, Y, x, y, tile)) paintRoad(px, theme, X, Y, x, y, tile); }
       else if (t === ',') { if (!fieldX(px, theme, X, Y, x, y)) paintField(px, theme, X, Y, x, y); }
-      else if (t === 'T') { if (!wallX(px, theme, X, Y, x, y, tile)) paintWall(px, theme, X, Y, x, y, tile); }
+      else if (t === 'T' || t === 'h') { if (!wallX(px, theme, X, Y, x, y, tile)) paintWall(px, theme, X, Y, x, y, tile); }   // a hidden passage looks exactly like the wall around it
       else if (t === 'p') { if (theme === 'upper') paintTopiary(px, g, X, Y, x, y); else paintTree(g, px, X, Y, x, y, ov); }
       else if (t === 'E') { if (theme !== 'sprawl') px(X, Y, TS, TS, T.road); }
       else if (t === 'D') { for (var s = 0; s < 5; s++) { px(X + 1, Y + s * 3 + 1, TS - 2, 2, s % 2 ? '#2a2a34' : '#3c3c48'); px(X + 1, Y + s * 3 + 1, TS - 2, 1, '#6a6a76'); } px(X, Y, 1, TS, '#8a8a96'); px(X + TS - 1, Y, 1, TS, '#3a3a46'); }
@@ -576,8 +576,32 @@
     }
     return true;
   }
+  // dungeons: solid black rock, a lit wall face wherever rock meets floor, and a floor with its own character
+  THEMES.vault = { g0: '#141419', g1: '#1c1c22', dot: '#26262e', road: '#18181e', edge: '#8a8a96' };
+  function paintVault(px, theme, X, Y, x, y, tile) {
+    var t = tile(x, y), kind = theme.slice(6), rock = t === 'T' || t === 'h', r = function (k) { return hs(x * 13 + y * 29 + k * 3.1); };
+    if (rock) {
+      px(X, Y, TS, TS, '#050507');
+      var below = tile(x, y + 1); if (below !== 'T' && below !== 'h' && below !== '~') {   // the wall face, seen from the room
+        px(X, Y + 4, TS, 12, kind === 'c' ? '#2a3038' : kind === 'r' ? '#1e1e26' : '#24242c'); px(X, Y + 4, TS, 1, kind === 'c' ? '#aab8c4' : '#6a6a76');
+        for (var bz = 8; bz < TS; bz += 4) px(X, Y + bz, TS, 1, '#16161c'); for (var bv = 0; bv < 3; bv++) px(X + ((y + bv) % 2 ? 4 : 10), Y + 5 + bv * 4, 1, 3, '#16161c');
+        if (kind === 'r' && r(1) > .5) for (var ld = 0; ld < 3; ld++) px(X + 3 + ld * 4, Y + 7 + Math.floor(r(ld + 2) * 6), 1, 1, r(ld + 5) > .5 ? '#e8e8f0' : '#6a6a78');
+        if (kind === 'w') px(X, Y + 14, TS, 2, '#2a3440');
+      }
+      if (tile(x, y - 1) !== 'T' && tile(x, y - 1) !== 'h' && tile(x, y - 1) !== '~') px(X, Y, TS, 1, '#3a3a46');
+      return true;
+    }
+    px(X, Y, TS, TS, '#16161b'); px(X, Y, TS, 1, '#1e1e25'); px(X, Y, 1, TS, '#1e1e25'); px(X + 1, Y + 1, 1, 1, '#2a2a33');
+    if (kind === 'w' && r(2) > .55) { px(X + 2 + Math.floor(r(3) * 6), Y + 4 + Math.floor(r(4) * 6), 7, 3, '#1a2028'); px(X + 4 + Math.floor(r(3) * 6), Y + 5 + Math.floor(r(4) * 6), 3, 1, '#3a4656'); }
+    if (kind === 'p' && r(2) > .6) { var lx = X + Math.floor(r(5) * 10), ly = Y + Math.floor(r(6) * 10); px(lx, ly, 5, 4, '#a8a8b2'); px(lx, ly, 5, 1, '#d8d8e0'); px(lx + 1, ly + 2, 3, 1, '#6a6a76'); }
+    if (kind === 'r') { if ((x + y) % 4 === 0) px(X + 7, Y, 2, TS, '#1c1c24'); if (r(7) > .85) px(X + 7, Y + Math.floor(r(8) * 14), 2, 2, '#9a9aa6'); }
+    if (kind === 'c') for (var f2 = 0; f2 < 4; f2++) px(X + Math.floor(r(f2 + 9) * 15), Y + Math.floor(r(f2 + 14) * 15), 1, 1, f2 % 2 ? 'rgba(220,236,250,.4)' : 'rgba(220,236,250,.15)');
+    if (tile(x, y) === ',') for (var g3 = 0; g3 < 3; g3++) px(X + Math.floor(r(g3 + 20) * 14), Y + Math.floor(r(g3 + 24) * 14), 2, 1, '#22222a');
+    return true;
+  }
   var floorX = function (px, theme, X, Y, x, y, tile) {
     if (theme === 'sprawl') return paintSprawl(px, X, Y, x, y, tile);
+    if (theme.indexOf('vault_') === 0) return paintVault(px, theme, X, Y, x, y, tile);
     if (theme === 'line') {
       px(X, Y, TS, TS, '#101015'); px(X, Y, TS, 1, '#1c1c24'); px(X, Y + 8, TS, 1, '#1c1c24'); px(X, Y, 1, TS, '#1c1c24'); px(X + 8, Y, 1, TS, '#18181f');
       if (tile(x, y + 1) === '~' || tile(x, y - 1) === '~') { var edge = tile(x, y + 1) === '~' ? Y + TS - 4 : Y; px(X, edge, TS, 4, '#2a2a32'); for (var s = 0; s < TS; s += 4) px(X + s, edge + 1, 2, 2, '#d8d8e0'); }
@@ -603,14 +627,14 @@
     return false;
   }
   var roadX = function (px, theme, X, Y, x, y, tile) {
-    if (theme === 'sprawl') return true;
+    if (theme === 'sprawl' || theme.indexOf('vault_') === 0) return true;
     if (theme === 'patch') { px(X, Y, TS, TS, '#1f1c19'); for (var p = 0; p < TS; p += 4) { px(X, Y + p, TS, 1, '#0c0b0a'); px(X + ((x * 5 + p) % 12), Y + p + 1, 1, 1, '#5a5550'); } return true; }   // boardwalk
     if (theme === 'upper') { px(X, Y, TS, TS, '#24242c'); px(X, Y, TS, 1, '#34343e'); px(X, Y, 1, TS, '#34343e'); if (tile(x, y - 1) !== '=' && tile(x, y - 1) !== 'G') px(X, Y, TS, 1, '#e8e8f0'); if (tile(x, y + 1) !== '=' && tile(x, y + 1) !== 'G') px(X, Y + TS - 1, TS, 1, '#a8a8b4'); return true; }
     if (theme === 'line' || theme === 'cold') { px(X, Y, TS, TS, '#16161c'); for (var g = 0; g < TS; g += 2) px(X + g, Y, 1, TS, '#22222a'); px(X, Y, 1, TS, '#8a8a96'); px(X + TS - 1, Y, 1, TS, '#4a4a56'); return true; }
     return false;
   }
   var fieldX = function (px, theme, X, Y, x, y) {
-    if (theme === 'sprawl') return true;
+    if (theme === 'sprawl' || theme.indexOf('vault_') === 0) return true;
     if (theme === 'patch') { for (var j = 0; j < 4; j++) { var bx = X + Math.floor(hs(x * 5 + j) * 11), by = Y + Math.floor(hs(y * 7 + j * 3) * 11), w = 3 + Math.floor(hs(x + y + j) * 4); px(bx, by, w, 3, ['#2a2725', '#3a3633', '#1c1a18', '#4a4540'][j]); px(bx, by, w, 1, '#5a554f'); } return true; }   // salvage heaps
     if (theme === 'upper') { px(X, Y, TS, TS, x % 2 ? '#1d2124' : '#191c1f'); px(X, Y, 1, TS, 'rgba(255,255,255,.03)'); return true; }   // striped lawn
     if (theme === 'cold') { for (var d = 0; d < 3; d++) { var dy = Y + 3 + d * 5; for (var i = 0; i < TS; i++) px(X + i, dy + Math.round(Math.sin((i + x * 16) / 4 + d) * 1), 1, 1, 'rgba(220,236,250,' + (.12 + d * .06) + ')'); } return true; }   // frost drifts
@@ -631,6 +655,7 @@
     return false;
   }
   var wallX = function (px, theme, X, Y, x, y, tile) {
+    if (theme.indexOf('vault_') === 0) return paintVault(px, theme, X, Y, x, y, tile);
     if (theme === 'line') { px(X, Y, TS, TS, '#1e1e26'); for (var r = 0; r < TS; r += 4) px(X, Y + r, TS, 1, '#121218'); for (var c = 0; c < TS; c += 8) px(X + c + ((Math.floor(Y / 4)) % 2 ? 4 : 0), Y, 1, TS, '#121218'); px(X, Y + 10, TS, 2, '#d0d0da'); return true; }
     if (theme === 'patch') { var h = 10 + Math.floor(hs(x * 3 + y) * 6); px(X, Y, TS, TS, '#0a0909'); px(X, Y + TS - h, TS, h, ['#2a2725', '#22201e', '#33302d'][x % 3]); for (var k = X + 1; k < X + TS; k += 3) px(k, Y + TS - h, 1, h, '#151312'); px(X, Y + TS - h, TS, 1, '#6a655f'); if (hs(x + y * 5) > .7) px(X + 4, Y + TS - h + 3, 2, 2, '#8a857f'); return true; }
     if (theme === 'upper') { px(X, Y, TS, TS, '#c8c8d0'); px(X, Y, TS, 3, '#2a3034'); for (var l = 0; l < TS; l += 3) px(X + l, Y, 2, 2, '#3c454a'); px(X, Y + 3, TS, 1, '#ffffff'); px(X, Y + TS - 2, TS, 2, '#8a8a94'); px(X + TS - 1, Y + 3, 1, TS - 3, '#a0a0aa'); return true; }
@@ -898,7 +923,7 @@
   /* ---------- the sky beyond the walls ---------- */
   function paintSky(g, theme, w, pad) {
     var px = P(g);
-    var under = theme === 'undercroft' || theme === 'line' || theme === 'cold' || theme === 'clinic';
+    var under = theme === 'undercroft' || theme === 'line' || theme === 'cold' || theme === 'clinic' || theme.indexOf('vault_') === 0;
     if (theme === 'margin') { g.fillStyle = '#ececf0'; g.fillRect(0, 0, w, pad); return; }
     var sk = g.createLinearGradient(0, 0, 0, pad); sk.addColorStop(0, '#020203'); sk.addColorStop(1, under ? '#0a0a0d' : '#14141b'); g.fillStyle = sk; g.fillRect(0, 0, w, pad);
     if (under) {   // underground: a ceiling of pipes and cable

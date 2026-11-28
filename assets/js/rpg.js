@@ -331,7 +331,7 @@
     function openCache(x, y) {
       var k = AREA.id + ':' + key(x, y), c = AREA.caches[key(x, y)];
       if (save.opened[k]) return say('', ['An empty data cache. Someone got here first. You did.']);
-      save.opened[k] = 1; G.give(c.item, c.n);
+      save.opened[k] = 1; G.give(c.item, c.n); if (c.relic && !ownsGear(c.relic)) giveGear(c.relic);
       var it = ITEMS.filter(function (i) { return i.id === c.item; })[0];
       say('', [c.text || ('A sealed data cache. Inside: ' + (c.n > 1 ? c.n + ' ' : 'a ') + (it ? it.name.toLowerCase() + (c.n > 1 ? 's' : '') : c.item) + '.')]);
     }

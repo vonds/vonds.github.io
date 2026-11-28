@@ -140,7 +140,7 @@
     a.sprawlGate = [best[0], best[1]];
     for (var j = 0; j < 2; j++) for (var i = 0; i < 2; i++) exits[(s.x + i) + ',' + (s.y + j)] = [id, best[2], best[3], { site: id }];
   }
-  ALL.forEach(function (s) { if (s.custom) { for (var j = 0; j < 2; j++) for (var i = 0; i < 2; i++) exits[(s.x + i) + ',' + (s.y + j)] = [s.id, s.to[0], s.to[1], { site: s.id }]; } else gateFor(s.id, s); });
+  ALL.forEach(function (s) { if (s.custom) { for (var j = 0; j < 2; j++) for (var i = 0; i < 2; i++) exits[(s.x + i) + ',' + (s.y + j)] = [s.id, s.to[0], s.to[1], { site: s.id }]; var da = A[s.id]; if (da && da.dungeonExit) da.exits[da.dungeonExit[0] + ',' + da.dungeonExit[1]] = ['sprawl', s.x, s.y + 2]; } else gateFor(s.id, s); });
 
   /* ---------- talking out in the country ---------- */
   WD.talk.ada = function (G) {
