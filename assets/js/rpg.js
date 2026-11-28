@@ -229,7 +229,7 @@
       f: F, save: save,
       recruit: function (id) { recruit(id); }, inParty: function (id) { return inParty(id); },
       say: function (who, lines, choices, done) { say(who, lines, choices, done); },
-      boss: function (id, onWin) { FX.shake = .5; FX.flash = .35; held = null; setTimeout(function () { startBattle({ boss: id, onWin: onWin }); }, 550); },
+      boss: function (id, onWin) { FX.shake = .5; held = null; startBattle({ boss: id, onWin: onWin }); },
       puzzle: function (title, steps, done) { openPuzzle(title, steps, done); },
       rest: function () { save.hp = maxHp(); Object.keys(save.party.has).forEach(function (id) { if (COMP[id]) save.party.hp[id] = cMax(id); }); save.rest = [AREA.id, me.x, me.y]; store(); },
       give: function (it, n) { n = n || 1; if (ITEMS.some(function (x) { return x.id === it; })) save.items[it] = (save.items[it] || 0) + n; else save.keys[it] = (save.keys[it] || 0) + n; store(); },

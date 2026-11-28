@@ -181,3 +181,25 @@
     };
   });
 })();
+
+/* the epilogue: Thursday, on the new host. What became of everyone, shaped by what Vee did with them. */
+(function () {
+  var WD = window.MeridianWorld; if (!WD) return;
+  WD.epilogue = function (G) {
+    var f = G.f, has = function (id) { return G.save.party && G.save.party.has && G.save.party.has[id]; }, L = [];
+    L.push('Thursday. The new host hums in rack 9. Two cities sit side by side on it, close enough to walk between.');
+    if (has('kes')) L.push(f.arc_kes ? (f.kesOpen ? 'Kes runs the Halflight route again, twelve runs a day. She reads every envelope out loud before she delivers it. Nobody has ever asked her to stop.' : 'Kes runs the Halflight route again. She still won’t tell anyone what she almost chose that day. She delivers like someone who knows exactly what she’s carrying.') : 'Kes runs packets between the two cities. They’re so close now that she’s bored. She complains about it constantly, and happily.');
+    if (has('odessa')) L.push(f.arc_odessa ? (f.odessaVee ? 'Dr. Odessa keeps a chart on the clinic wall for a patient called Vee. Under ALLERGIES she has written: SELF-SACRIFICE. Dr. Hale reviews her sutures every morning, and is never satisfied.' : 'Dr. Hale works the clinic’s front desk now. He corrects Dr. Odessa’s sutures in front of patients. She has never been happier to be wrong.') : 'Dr. Odessa runs the clinic. She retires every day at five, and is back at five past.');
+    if (has('piper')) L.push(f.arc_piper ? 'Piper is on the air every night. Every show ends the same way: “It’s Piper, you’re still here, and so am I.” Both cities listen.' : 'Piper broadcasts to both cities now. She has twice as many listeners and four times as much to say.');
+    if (has('moth')) L.push(f.arc_moth ? 'Moth rebuilt LARK-1, slowly, with the part her sister forgot. It says one thing a day. Moth says one back. Neither of them is in a hurry.' : 'Moth fixes the things nobody else notices are broken, and talks to them while she does it.');
+    if (has('rook')) L.push(f.arc_rook ? 'Rook stands at the Bastion gate, guarding the right side. Captain Ostrava visits twice a year to inspect him. She never finds anything wrong, and never says so.' : 'Rook still opens the Bastion gate every morning, for whoever is still here. Everyone is still here.');
+    if (has('sable')) L.push(f.arc_sable ? (f.sableSelf ? 'Every night, Sable writes one lost birth record back from memory. She is on record three hundred and twelve. She expects to finish in nine years, and is not angry anymore.' : 'The Stacks are whole. Above Sable’s desk, half a poem about a lighthouse is pinned to the shelf. Visitors keep offering endings. She keeps every one.') : 'Sable is cataloguing the new host. She says it smells like fresh paper. It doesn’t smell like anything. She insists.');
+    if (has('juni')) L.push(f.arc_juni ? 'Juni’s star catalogue has two cities in it now: every lit window, named, with notes. She has questions about all of them.' : 'Juni has found the edge of the new sky. She is choosing not to mention it.');
+    if (has('ves')) L.push(f.arc_ves ? (f.vesTalk ? 'Ves still carries Corvin’s line, commented out. Some nights Ves reads it, the way you’d read an old letter. Then goes to sleep.' : 'Ves walks left foot, right foot, and has started to whistle. Ves says it’s a bug. Nobody is fixing it.') : 'Ves walks the city with Vee’s face and a different smile. People have stopped mixing them up.');
+    var crew = ['pell', 'dray', 'null', 'lux', 'gauge', 'acknak', 'morrow', 'kessler', 'halcyon', 'root'].filter(function (k) { return f['crew_' + k]; }).length;
+    if (crew) L.push(crew === 10 ? 'All ten of the Continuity Crew came back down, one by one, out of the white. Nadia reads the Registry aloud on Sundays. Halcyon’s sister still keeps a light on, and now someone comes home to it.' : crew + ' of the Continuity Crew came back down for good. The rest are still Upstream, waiting for someone to take the oath back. Someone will.');
+    if (f.corvinDown) L.push('On the new host, an account called c.vane logs in once. It doesn’t write a list. It sits on a bench in the Plaza, on the right side, and watches the fountain render.');
+    L.push('Wren stops keeping the calendar. Lio keeps the left side of the bench free, out of habit. Some days, Vee sits there.');
+    return L;
+  };
+})();

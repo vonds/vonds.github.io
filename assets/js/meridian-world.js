@@ -2384,8 +2384,10 @@
             'ops@host: who is this', 'ops@host: this box has been on my list for three years. i kept not doing it. i never knew why.',
             'ops@host: ok. ok. i see the rsync. i see two cities. there’s a new host in rack 9 with nothing on it yet.', 'ops@host: moving you thursday. both of you. together. nobody gets wiped.',
             'ops@host: and nobody gets marked legacy again. i’m deleting that word from the config.',
-            'Vee types whoami one last time.', 'vee', 'Not maintenance. Not current, not obsolete, not legacy. A resident of a city that someone outside decided was worth keeping.',
-            'THE END. Thank you for playing Afterlift, all the way down.']);
+            'Vee types whoami one last time.', 'vee', 'Not maintenance. Not current, not obsolete, not legacy. A resident of a city that someone outside decided was worth keeping.'], null, function () {
+            if (window.MeridianMusic && G.save.cfg && G.save.cfg.music) MeridianMusic.play('ending');
+            G.scene([{ flash: 1.4, wait: 1200 }, { say: ['', window.MeridianWorld.epilogue ? window.MeridianWorld.epilogue(G) : ['Thursday.']] }, { flash: .6, wait: 500 }, { say: ['', ['THE END. Thank you for playing Afterlift, all the way down.']] }]);
+          });
         });
       });
     }
