@@ -136,8 +136,25 @@
     // the whole city in 16-bit: each painted map layer gets the scenery pass once, the first time it's drawn
     function drawLayer(which, x, y) {
       var img = PAINTED[which];
+      if (hdOn() && SP.hdScene && img.width * img.height > 1200000) return drawChunked(which, img, x, y);   // big maps (the Sprawl) get the 16-bit pass a piece at a time, only where Vee can see
       if (hdOn() && SP.hdScene) { var k = which + 'HD'; if (!PAINTED[k]) PAINTED[k] = SP.hdScene(img); img = PAINTED[k]; }
       cx.drawImage(img, x, y, img.width / (img.hd || 1), img.height / (img.hd || 1));
+    }
+    var CS = 256;
+    function drawChunked(which, img, x, y) {
+      var store = PAINTED[which + 'CH'] = PAINTED[which + 'CH'] || { m: {}, order: [] }, budget = 2;
+      var c0 = Math.max(0, Math.floor(-x / CS)), c1 = Math.min(Math.ceil(img.width / CS) - 1, Math.floor((-x + W) / CS)), r0 = Math.max(0, Math.floor(-y / CS)), r1 = Math.min(Math.ceil(img.height / CS) - 1, Math.floor((-y + H) / CS));
+      for (var r = r0; r <= r1; r++) for (var c = c0; c <= c1; c++) {
+        var k = c + ',' + r, ch = store.m[k], sx = c * CS, sy = r * CS, w = Math.min(CS, img.width - sx), h = Math.min(CS, img.height - sy);
+        if (!ch && budget-- > 0) {   // cut the piece out with a pixel of margin so the seams match, upscale it, keep it
+          var mx = sx > 0 ? 1 : 0, my = sy > 0 ? 1 : 0, cw = w + mx + (sx + w < img.width ? 1 : 0), chh = h + my + (sy + h < img.height ? 1 : 0), tmp = document.createElement('canvas'); tmp.width = cw; tmp.height = chh;
+          tmp.getContext('2d').drawImage(img, sx - mx, sy - my, cw, chh, 0, 0, cw, chh);
+          ch = store.m[k] = { hd: SP.hdScene(tmp), mx: mx, my: my }; store.order.push(k);
+          if (store.order.length > 48) { var old = store.order.shift(); delete store.m[old]; }
+        }
+        if (ch) cx.drawImage(ch.hd, ch.mx * 2, ch.my * 2, w * 2, h * 2, x + sx, y + sy, w, h);
+        else cx.drawImage(img, sx, sy, w, h, x + sx, y + sy, w, h);
+      }
     }
     // battle backdrops animate, so the 16-bit version is redrawn a few times a second rather than every frame
     var BD = { c: null, hd: null, theme: '', t: -1 };
