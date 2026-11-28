@@ -173,7 +173,7 @@
       setTimeout(lifeLoad, 0);
       AREA = WD.areas[id]; AREA.id = id; MAP = stamp(AREA); paintCurrent();
       save.area = id; save.x = me.x = x; save.y = me.y = y; me.px = x * TS; me.py = y * TS; me.moving = false; me.safe = 4;
-      save.seen[id] = 1; me.boat = id === 'sprawl' && !!save.boat && '~r'.indexOf(tile(x, y)) >= 0 ? 1 : 0; if (!me.boat) save.boat = 0; zoneAt(); store(); placeCam();
+      save.seen[id] = 1; music(); me.boat = id === 'sprawl' && !!save.boat && '~r'.indexOf(tile(x, y)) >= 0 ? 1 : 0; if (!me.boat) save.boat = 0; zoneAt(); store(); placeCam();
     }
     // out on the Sprawl, bugs are as strong as the nearest district's
     var lastSite = null;
@@ -184,6 +184,9 @@
       areaEl.querySelector('b').textContent = known ? A2.name : '???'; areaEl.querySelector('span').textContent = known ? (A2.sub || '') + (A2.enc ? ' Bugs: level ' + A2.lv + (A2.lvMax && A2.lvMax !== A2.lv ? '–' + A2.lvMax : '') + '.' : '') : 'Vee hasn’t found his way in from the city yet.';
       areaEl.classList.add('on'); clearTimeout(areaT); areaT = setTimeout(function () { areaEl.classList.remove('on'); }, 2600);
     }
+    // the soundtrack follows Vee: the city, the open country, dungeons, the deep places, Upstream
+    function trackFor(a) { if (!a) return 'city'; if (a.id === 'sprawl') return 'sprawl'; if (a.dungeon) return 'dungeon'; if (['upstream', 'successor', 'tether'].indexOf(a.id) >= 0) return 'upstream'; if (['deep', 'firmware', 'rack', 'console', 'ring0', 'unalloc', 'stacks'].indexOf(a.id) >= 0) return 'deep'; return 'city'; }
+    function music() { var M = window.MeridianMusic; if (!M) return; if (save.cfg.music == null) save.cfg.music = 1; M.enable(!!save.cfg.music); if (save.cfg.music && !B) M.play(trackFor(AREA)); }
     function zoneAt() { siteHint(); if (!AREA.zone) return; var z = AREA.zone(me.x, me.y, tile(me.x, me.y)); if (!z) return; AREA.lv = z.lv; AREA.lvMax = z.lvMax; AREA.enc.foes = z.foes; AREA.tier = z.tier; }
     function placeCam() {
       var mw = MAP[0].length * TS, mh = MAP.length * TS;
@@ -352,6 +355,7 @@
     }
     function runEnding(kind) {
       F.ending = kind; store(); repaint();
+      if (window.MeridianMusic && save.cfg.music) MeridianMusic.play('ending');
       scene([{ say: ['Vee', [kind === 'cut' ? 'Everything they took is up there. Everyone who’s left is down here. I choose the people.' : 'They took it a block at a time. I’m taking it back all at once.']] },
         { flash: 1, wait: 700 }, { shake: 1.2, wait: 900 }, { say: ['', WD.endings[kind]] }, { flash: .5, wait: 400 }, { say: ['', WD.endings.after] }],
         function () { endScene(); save.lit.spire = 1; store(); repaint(); travel(['plaza', 15, 8]); });
@@ -542,7 +546,7 @@
         h = '<h4>Journal</h4>' + (jr.length ? jr.map(function (x) { return '<p>' + x + '</p>'; }).join('') : '<p class="mn-dim">Nothing yet. Talk to people. Everybody here wants something, and most of it is reasonable.</p>');
       } else if (v === 'config') {
         h = '<h4>Configuration</h4>';
-        function opt(label, k, labels) { btn('<span>' + label + '</span><em>‹ ' + labels[save.cfg[k]] + ' ›</em>', function (dir) { save.cfg[k] = (save.cfg[k] + (dir || 1) + labels.length) % labels.length; store(); renderMenu(); }, 'cfg'); }
+        function opt(label, k, labels) { btn('<span>' + label + '</span><em>‹ ' + labels[save.cfg[k]] + ' ›</em>', function (dir) { save.cfg[k] = ((save.cfg[k] || 0) + (dir || 1) + labels.length) % labels.length; store(); if (k === 'music') music(); renderMenu(); }, 'cfg'); }
         btn('<span>Playtest report</span><em class="mn-dim">Copy your run’s numbers and five questions to send back</em>', function () {
           var PT = save.pt || { t: {}, f: {}, ko: {}, run: 0, b: {} }, mins = function (v) { return Math.round(v / 60); };
           var areas = Object.keys(PT.t).sort(function (a, b) { return PT.t[b] - PT.t[a]; }).slice(0, 10).map(function (k) { return '  ' + ((WD.areas[k] || {}).name || k) + ': ' + mins(PT.t[k]) + ' min, ' + (PT.f[k] || 0) + ' fights' + (PT.ko[k] ? ', ' + PT.ko[k] + ' terminated' : ''); });
@@ -552,7 +556,7 @@
           try { navigator.clipboard.writeText(txt); MN.note = 'Copied. Paste it into an email or message to whoever asked you to play.'; } catch (e) { MN.note = txt.replace(/\n/g, ' · '); }
           renderMenu();
         });
-        opt('Text speed', 'text', CFG.textL); opt('Encounters', 'enc', CFG.encL); opt('Difficulty', 'diff', CFG.diffL); opt('Scanlines', 'scan', CFG.scanL); opt('Command hints', 'hints', CFG.scanL); opt('Sound', 'sound', CFG.scanL); if (save.cfg.retro == null) save.cfg.retro = 0; opt('Graphics', 'retro', ['16-bit', '8-bit']);
+        opt('Music', 'music', CFG.scanL); opt('Text speed', 'text', CFG.textL); opt('Encounters', 'enc', CFG.encL); opt('Difficulty', 'diff', CFG.diffL); opt('Scanlines', 'scan', CFG.scanL); opt('Command hints', 'hints', CFG.scanL); opt('Sound', 'sound', CFG.scanL); if (save.cfg.retro == null) save.cfg.retro = 0; opt('Graphics', 'retro', ['16-bit', '8-bit']);
         [1, 2, 3].forEach(function (n) {
           var raw = null; try { raw = JSON.parse(localStorage.getItem('vonds-quest-slot' + n) || 'null'); } catch (e) {}
           var desc = raw ? 'Lv ' + raw.lvl + ' · ' + ((WD.areas[raw.area] || {}).name || raw.area) + ' · ' + new Date(raw.savedAt || 0).toLocaleDateString() : 'empty';
@@ -994,6 +998,7 @@
     function rnd(a, b) { return a + Math.floor(Math.random() * (b - a + 1)); }
     function living() { return B.foes.filter(function (f) { return !f.dead; }); }
     function startBattle(force) {
+      if (window.MeridianMusic && save.cfg.music) MeridianMusic.play(force && force.boss ? 'boss' : 'battle');
       var PT0 = save.pt = save.pt || { t: {}, f: {}, ko: {}, run: 0, b: {} }; PT0.f[AREA.id] = (PT0.f[AREA.id] || 0) + 1; if (force && force.boss) PT0.b[force.boss] = (PT0.b[force.boss] || 0) + 1;
       sfx('enc'); var opt = typeof force === 'object' ? force : {}, bossDef = opt.boss ? WD.bosses[opt.boss] : null; if (typeof force === 'object') force = 0;
       var enc = AREA.enc || WD.areas.plaza.enc, tier = AREA.tier || 1, kinds = enc.foes || Object.keys(FOES), r = Math.random(), n = force || (r < .3 ? 1 : r < .6 ? 2 : r < .82 ? 3 : r < .94 ? 4 : r < .985 ? 5 : 6);
@@ -1465,7 +1470,7 @@
       }, 1300);
     }
     function saveAllies() { if (B && B.allies) B.allies.forEach(function (a) { save.party.hp[a.id] = Math.max(1, a.hp); }); }
-    function endBattle() { saveAllies(); store(); B = null; closePrompt(); hud.classList.remove('on'); cmdBox.classList.remove('on'); titleEl.classList.remove('on'); mode = 'map'; me.safe = 5; }
+    function endBattle() { saveAllies(); store(); B = null; music(); closePrompt(); hud.classList.remove('on'); cmdBox.classList.remove('on'); titleEl.classList.remove('on'); mode = 'map'; me.safe = 5; }
 
     /* ---------- loop and drawing ---------- */
     var mode = 'map', raf = 0, last = 0, swirlT = 0, keys = {}, held = null, dashHeld = false, ghosts = [], ghostT = 0, trail = [];   // trail: where Vee has been, so companions can follow in his footsteps   // dash: hold Shift or DASH to run, leaving afterimages
@@ -1819,6 +1824,7 @@
       root.querySelector('.rpg-x').focus({ preventScroll: true });
     }
     function close() {
+      if (window.MeridianMusic) MeridianMusic.stop();
       root.classList.remove('show'); document.body.style.overflow = ''; held = null;
       setTimeout(function () { if (!root.classList.contains('show')) { root.classList.remove('open'); cancelAnimationFrame(raf); } }, 400);
       if (opener && opener.focus) opener.focus({ preventScroll: true });
