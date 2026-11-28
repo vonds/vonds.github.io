@@ -136,8 +136,25 @@
     // the whole city in 16-bit: each painted map layer gets the scenery pass once, the first time it's drawn
     function drawLayer(which, x, y) {
       var img = PAINTED[which];
+      if (hdOn() && SP.hdScene && img.width * img.height > 1200000) return drawChunked(which, img, x, y);   // big maps (the Sprawl) get the 16-bit pass a piece at a time, only where Vee can see
       if (hdOn() && SP.hdScene) { var k = which + 'HD'; if (!PAINTED[k]) PAINTED[k] = SP.hdScene(img); img = PAINTED[k]; }
       cx.drawImage(img, x, y, img.width / (img.hd || 1), img.height / (img.hd || 1));
+    }
+    var CS = 256;
+    function drawChunked(which, img, x, y) {
+      var store = PAINTED[which + 'CH'] = PAINTED[which + 'CH'] || { m: {}, order: [] }, budget = 2;
+      var c0 = Math.max(0, Math.floor(-x / CS)), c1 = Math.min(Math.ceil(img.width / CS) - 1, Math.floor((-x + W) / CS)), r0 = Math.max(0, Math.floor(-y / CS)), r1 = Math.min(Math.ceil(img.height / CS) - 1, Math.floor((-y + H) / CS));
+      for (var r = r0; r <= r1; r++) for (var c = c0; c <= c1; c++) {
+        var k = c + ',' + r, ch = store.m[k], sx = c * CS, sy = r * CS, w = Math.min(CS, img.width - sx), h = Math.min(CS, img.height - sy);
+        if (!ch && budget-- > 0) {   // cut the piece out with a pixel of margin so the seams match, upscale it, keep it
+          var mx = sx > 0 ? 1 : 0, my = sy > 0 ? 1 : 0, cw = w + mx + (sx + w < img.width ? 1 : 0), chh = h + my + (sy + h < img.height ? 1 : 0), tmp = document.createElement('canvas'); tmp.width = cw; tmp.height = chh;
+          tmp.getContext('2d').drawImage(img, sx - mx, sy - my, cw, chh, 0, 0, cw, chh);
+          ch = store.m[k] = { hd: SP.hdScene(tmp), mx: mx, my: my }; store.order.push(k);
+          if (store.order.length > 48) { var old = store.order.shift(); delete store.m[old]; }
+        }
+        if (ch) cx.drawImage(ch.hd, ch.mx * 2, ch.my * 2, w * 2, h * 2, x + sx, y + sy, w, h);
+        else cx.drawImage(img, sx, sy, w, h, x + sx, y + sy, w, h);
+      }
     }
     // battle backdrops animate, so the 16-bit version is redrawn a few times a second rather than every frame
     var BD = { c: null, hd: null, theme: '', t: -1 };
@@ -173,7 +190,7 @@
       setTimeout(lifeLoad, 0);
       AREA = WD.areas[id]; AREA.id = id; MAP = stamp(AREA); paintCurrent();
       save.area = id; save.x = me.x = x; save.y = me.y = y; me.px = x * TS; me.py = y * TS; me.moving = false; me.safe = 4;
-      save.seen[id] = 1; me.boat = id === 'sprawl' && !!save.boat && '~r'.indexOf(tile(x, y)) >= 0 ? 1 : 0; if (!me.boat) save.boat = 0; zoneAt(); store(); placeCam();
+      save.seen[id] = 1; music(); me.boat = id === 'sprawl' && !!save.boat && '~r'.indexOf(tile(x, y)) >= 0 ? 1 : 0; if (!me.boat) save.boat = 0; zoneAt(); store(); placeCam();
     }
     // out on the Sprawl, bugs are as strong as the nearest district's
     var lastSite = null;
@@ -184,6 +201,17 @@
       areaEl.querySelector('b').textContent = known ? A2.name : '???'; areaEl.querySelector('span').textContent = known ? (A2.sub || '') + (A2.enc ? ' Bugs: level ' + A2.lv + (A2.lvMax && A2.lvMax !== A2.lv ? '–' + A2.lvMax : '') + '.' : '') : 'Vee hasn’t found his way in from the city yet.';
       areaEl.classList.add('on'); clearTimeout(areaT); areaT = setTimeout(function () { areaEl.classList.remove('on'); }, 2600);
     }
+    // the soundtrack follows Vee: the city, the open country, dungeons, the deep places, Upstream
+    // the fight happens where Vee is standing: the Sprawl by its terrain, everywhere else by its own place
+    var BG_AREA = { deep: 1, anchor: 1, upstream: 1, successor: 1, unalloc: 1, rack: 1, tether: 1, firmware: 1, console: 1, plaza: 1, commons: 1 };
+    function bgFor() {
+      if (!AREA) return 'plaza';
+      if (AREA.id === 'sprawl') { var tt2 = tile(me.x, me.y), near = function (c) { for (var dy = -2; dy <= 2; dy++) for (var dx = -2; dx <= 2; dx++) if (tile(me.x + dx, me.y + dy) === c) return true; return false; };
+        return 'sprawl:' + (tt2 === 'f' ? 'forest' : tt2 === 'x' ? 'wastes' : near('~') || near('r') ? 'shore' : near('M') ? 'ridge' : tt2 === '=' ? 'road' : 'plains'); }
+      return BG_AREA[AREA.id] ? AREA.id : AREA.theme;
+    }
+    function trackFor(a) { if (!a) return 'city'; if (a.id === 'sprawl') return 'sprawl'; if (a.dungeon) return 'dungeon'; if (['upstream', 'successor', 'tether'].indexOf(a.id) >= 0) return 'upstream'; if (['deep', 'firmware', 'rack', 'console', 'ring0', 'unalloc', 'stacks'].indexOf(a.id) >= 0) return 'deep'; return 'city'; }
+    function music() { var M = window.MeridianMusic; if (!M) return; if (save.cfg.music == null) save.cfg.music = 1; M.enable(!!save.cfg.music); if (save.cfg.music && !B) M.play(trackFor(AREA)); }
     function zoneAt() { siteHint(); if (!AREA.zone) return; var z = AREA.zone(me.x, me.y, tile(me.x, me.y)); if (!z) return; AREA.lv = z.lv; AREA.lvMax = z.lvMax; AREA.enc.foes = z.foes; AREA.tier = z.tier; }
     function placeCam() {
       var mw = MAP[0].length * TS, mh = MAP.length * TS;
@@ -226,10 +254,11 @@
       f: F, save: save,
       recruit: function (id) { recruit(id); }, inParty: function (id) { return inParty(id); },
       say: function (who, lines, choices, done) { say(who, lines, choices, done); },
-      boss: function (id, onWin) { FX.shake = .5; FX.flash = .35; held = null; setTimeout(function () { startBattle({ boss: id, onWin: onWin }); }, 550); },
+      boss: function (id, onWin) { FX.shake = .5; held = null; startBattle({ boss: id, onWin: onWin }); },
       puzzle: function (title, steps, done) { openPuzzle(title, steps, done); },
       rest: function () { save.hp = maxHp(); Object.keys(save.party.has).forEach(function (id) { if (COMP[id]) save.party.hp[id] = cMax(id); }); save.rest = [AREA.id, me.x, me.y]; store(); },
       give: function (it, n) { n = n || 1; if (ITEMS.some(function (x) { return x.id === it; })) save.items[it] = (save.items[it] || 0) + n; else save.keys[it] = (save.keys[it] || 0) + n; store(); },
+      spend: function (it, n) { n = n || 1; if ((save.items[it] || 0) < n) return false; save.items[it] -= n; store(); return true; }, items: function (it) { return save.items[it] || 0; },
       take: function (it, n) { save.keys[it] = Math.max(0, (save.keys[it] || 0) - (n || 1)); store(); },
       count: function (it) { return save.keys[it] || 0; },
       travel: function (to) { travel(to); },
@@ -352,6 +381,7 @@
     }
     function runEnding(kind) {
       F.ending = kind; store(); repaint();
+      if (window.MeridianMusic && save.cfg.music) MeridianMusic.play('ending');
       scene([{ say: ['Vee', [kind === 'cut' ? 'Everything they took is up there. Everyone who’s left is down here. I choose the people.' : 'They took it a block at a time. I’m taking it back all at once.']] },
         { flash: 1, wait: 700 }, { shake: 1.2, wait: 900 }, { say: ['', WD.endings[kind]] }, { flash: .5, wait: 400 }, { say: ['', WD.endings.after] }],
         function () { endScene(); save.lit.spire = 1; store(); repaint(); travel(['plaza', 15, 8]); });
@@ -542,7 +572,7 @@
         h = '<h4>Journal</h4>' + (jr.length ? jr.map(function (x) { return '<p>' + x + '</p>'; }).join('') : '<p class="mn-dim">Nothing yet. Talk to people. Everybody here wants something, and most of it is reasonable.</p>');
       } else if (v === 'config') {
         h = '<h4>Configuration</h4>';
-        function opt(label, k, labels) { btn('<span>' + label + '</span><em>‹ ' + labels[save.cfg[k]] + ' ›</em>', function (dir) { save.cfg[k] = (save.cfg[k] + (dir || 1) + labels.length) % labels.length; store(); renderMenu(); }, 'cfg'); }
+        function opt(label, k, labels) { btn('<span>' + label + '</span><em>‹ ' + labels[save.cfg[k]] + ' ›</em>', function (dir) { save.cfg[k] = ((save.cfg[k] || 0) + (dir || 1) + labels.length) % labels.length; store(); if (k === 'music') music(); renderMenu(); }, 'cfg'); }
         btn('<span>Playtest report</span><em class="mn-dim">Copy your run’s numbers and five questions to send back</em>', function () {
           var PT = save.pt || { t: {}, f: {}, ko: {}, run: 0, b: {} }, mins = function (v) { return Math.round(v / 60); };
           var areas = Object.keys(PT.t).sort(function (a, b) { return PT.t[b] - PT.t[a]; }).slice(0, 10).map(function (k) { return '  ' + ((WD.areas[k] || {}).name || k) + ': ' + mins(PT.t[k]) + ' min, ' + (PT.f[k] || 0) + ' fights' + (PT.ko[k] ? ', ' + PT.ko[k] + ' terminated' : ''); });
@@ -552,7 +582,7 @@
           try { navigator.clipboard.writeText(txt); MN.note = 'Copied. Paste it into an email or message to whoever asked you to play.'; } catch (e) { MN.note = txt.replace(/\n/g, ' · '); }
           renderMenu();
         });
-        opt('Text speed', 'text', CFG.textL); opt('Encounters', 'enc', CFG.encL); opt('Difficulty', 'diff', CFG.diffL); opt('Scanlines', 'scan', CFG.scanL); opt('Command hints', 'hints', CFG.scanL); opt('Sound', 'sound', CFG.scanL); if (save.cfg.retro == null) save.cfg.retro = 0; opt('Graphics', 'retro', ['16-bit', '8-bit']);
+        opt('Music', 'music', CFG.scanL); opt('Text speed', 'text', CFG.textL); opt('Encounters', 'enc', CFG.encL); opt('Difficulty', 'diff', CFG.diffL); opt('Scanlines', 'scan', CFG.scanL); opt('Command hints', 'hints', CFG.scanL); opt('Sound', 'sound', CFG.scanL); if (save.cfg.retro == null) save.cfg.retro = 0; opt('Graphics', 'retro', ['16-bit', '8-bit']);
         [1, 2, 3].forEach(function (n) {
           var raw = null; try { raw = JSON.parse(localStorage.getItem('vonds-quest-slot' + n) || 'null'); } catch (e) {}
           var desc = raw ? 'Lv ' + raw.lvl + ' · ' + ((WD.areas[raw.area] || {}).name || raw.area) + ' · ' + new Date(raw.savedAt || 0).toLocaleDateString() : 'empty';
@@ -583,7 +613,7 @@
     function pickSide() {
       var v = VIEWS[MN.side][0];
       if (v === 'close') return closeMenu();
-      if (v === 'map') { closeMenu(); mode = 'atlas'; return; }
+      if (v === 'map') { closeMenu(); mode = save.seen.sprawl ? 'world' : 'atlas'; return; }
       MN.slot = null; MN.detail = -1; MN.confirm = false; MN.sel = 0;
       renderMenu(); if (MN.btns && MN.btns.length) { MN.focus = 'main'; renderMenu(); }
     }
@@ -990,10 +1020,11 @@
     }
     function norm(t) { return String(t).trim().replace(/\s+/g, ' ').replace(/[“”]/g, '"').replace(/[‘’]/g, "'"); }
 
-    var B = null;   // the battle in progress
+    var B = null, orderEl = null;   // the battle in progress
     function rnd(a, b) { return a + Math.floor(Math.random() * (b - a + 1)); }
     function living() { return B.foes.filter(function (f) { return !f.dead; }); }
     function startBattle(force) {
+      if (window.MeridianMusic && save.cfg.music) MeridianMusic.play(force && force.boss ? 'boss' : 'battle');
       var PT0 = save.pt = save.pt || { t: {}, f: {}, ko: {}, run: 0, b: {} }; PT0.f[AREA.id] = (PT0.f[AREA.id] || 0) + 1; if (force && force.boss) PT0.b[force.boss] = (PT0.b[force.boss] || 0) + 1;
       sfx('enc'); var opt = typeof force === 'object' ? force : {}, bossDef = opt.boss ? WD.bosses[opt.boss] : null; if (typeof force === 'object') force = 0;
       var enc = AREA.enc || WD.areas.plaza.enc, tier = AREA.tier || 1, kinds = enc.foes || Object.keys(FOES), r = Math.random(), n = force || (r < .3 ? 1 : r < .6 ? 2 : r < .82 ? 3 : r < .94 ? 4 : r < .985 ? 5 : 6);
@@ -1020,7 +1051,7 @@
           get scenario() { return this.sc0.t; }, fx: slot[0], fy: slot[1], ph: Math.random() * 6, exposed: 0, slow: 0, leak: 0 });
       }
       var allies = activeParty().map(function (id, j) { return { id: id, hp: Math.max(1, cHp(id)), max: cMax(id), cd: {}, down: false, guard: 0, lunge: 0, hurt: 0, slot: j }; });
-      B = { allies: allies, ai: 0, actor: null, corrupt: 0, regen: 0, blind: 0, taunt: 0, pguard: 0, allyFocus: 0, foes: foes, focus: false, phase: 'intro', t: 0, vx: 0, pops: [], menu: 'main', sel: 0, cast: 0, target: 0, pending: null, boss: bossDef, bossId: opt.boss || null, onWin: opt.onWin, theme: AREA.theme, vs: {}, src: 'shell' };
+      B = { allies: allies, ai: 0, actor: null, corrupt: 0, regen: 0, blind: 0, taunt: 0, pguard: 0, allyFocus: 0, foes: foes, focus: false, phase: 'intro', t: 0, vx: 0, pops: [], menu: 'main', sel: 0, cast: 0, target: 0, pending: null, boss: bossDef, bossId: opt.boss || null, onWin: opt.onWin, theme: AREA.theme, bg: bgFor(), vs: {}, src: 'shell' };
       B.allies.forEach(function (a) { a.st = {}; });
       var hook = opt.boss && WD.bossStart && WD.bossStart[opt.boss], hookMsg = hook ? hook(G, foes[0]) : null; if (hookMsg) setTimeout(function () { log(hookMsg); }, 1300);
       // companions have something to say when something big shows up
@@ -1049,6 +1080,12 @@
         foesBox.appendChild(e);
       });
       partyBox.classList.toggle('crit', save.hp > 0 && save.hp <= maxHp() * .25);
+      if (!orderEl) { orderEl = document.createElement('div'); orderEl.className = 'rpg-order'; hud.appendChild(orderEl); }
+      orderEl.innerHTML = (B.round ? orderNow() : []).slice(0, 9).map(function (o) {
+        var nm = o.vee ? 'VEE' : o.ally ? COMP[o.ally.id].name.replace(/^Dr\. /, '').toUpperCase() : o.foe.foe.name.split(' ').pop().toUpperCase().slice(0, 7);
+        var on = (o.vee === 1 && B.phase === 'menu' && !B.actor && !B.hasted) || (o.vee === 2 && B.phase === 'menu' && !B.actor && B.hasted) || (o.ally && B.actor === o.ally);
+        return '<i class="' + (o.foe ? 'foe' : 'pc') + (on ? ' on' : '') + '">' + nm + '</i>';
+      }).join('');
       var allyRows = (B.allies || []).map(function (a) { return '<div class="rpg-row' + (a.down ? ' down' : '') + (B.actor === a ? ' turn' : '') + '"><span>' + COMP[a.id].name + (back(a.id) ? ' <i class="st">BK</i>' : '') + stTags(a.st) + '</span><span>' + (a.down ? 'DOWN' : 'HP <b>' + a.hp + '</b>/' + a.max) + '</span></div>'; }).join('');
       partyBox.classList.toggle('team', !!(B.allies && B.allies.length));
       partyBox.innerHTML = (B.corrupt ? '<div class="rpg-row sm"><span>CORRUPTED ' + B.corrupt + '</span></div>' : '') + '<div class="rpg-row' + (save.hp <= 0 ? ' down' : '') + (B.phase === 'menu' && !B.actor ? ' turn' : '') + '"><span>Vee' + (back('vee') ? ' <i class="st">BK</i>' : '') + stTags(B.vs) + '</span><span>HP <b>' + save.hp + '</b>/' + maxHp() + '</span></div><div class="rpg-row sm"><span>Lv ' + save.lvl + '</span><span>' + save.known.length + (save.known.length === 1 ? ' command' : ' commands') + '</span><span>' + (B.focus ? 'Weak spot marked' : save.streak > 1 ? 'Streak x' + save.streak : '') + '</span></div>' + allyRows;
@@ -1084,7 +1121,13 @@
     }
     var logT = 0;
     function log(text, quiet) { titleEl.textContent = text; titleEl.classList.add('on'); clearTimeout(logT); if (!quiet) logT = setTimeout(function () { titleEl.classList.remove('on'); }, 2600); }
-    function pop(text, x, y) { B.pops.push({ text: text, x: x, y: y, t: 0 }); }
+    function pop(text, x, y) {
+      B.pops.push({ text: text, x: x, y: y, t: 0 });
+      if (/^\+/.test(text)) return bfx('heal', x, y);
+      if (text !== 'MISS') bfx(x > 200 ? 'spark' : (B.src === 'shell' && !B.actor ? 'code' : B.src === 'fight' ? 'slash' : 'spark'), x, y + 18);
+      if (text !== 'MISS' && x < 200 && B.src !== 'fight') bfx('spark', x, y + 18);
+    }
+    function bfx(kind, x, y, r) { if (B) (B.fx = B.fx || []).push({ kind: kind, x: x, y: y, r: r, t: 0, life: kind === 'flash' ? .25 : kind === 'ring' ? .6 : .45 }); }
     /* level decides how a fight goes: a bug above Vee's level has thicker armor (less damage taken), hits harder, dodges, and acts faster */
     function gapOf(f) { return ((f && f.foe && f.foe.lv) || save.lvl) - save.lvl; }
     function armorOf(f) { var g = gapOf(f); return g > 0 ? Math.max(.2, 1 / (1 + g * .14)) : Math.min(1.5, 1 - g * .04); }
@@ -1098,7 +1141,7 @@
       if (so.weak > 0) n *= .5;
       if (src === 'fight' && back(B.actor ? B.actor.id : 'vee')) n *= .6;   // plain attacks from the back row are softer
       if (f.fw > 0 && src === 'fight') { n *= .12; B.fwNote = 1; }
-      var crit = B.focus || Math.random() < critC(); if (crit) { n *= 2; B.focus = false; } sfx(crit ? 'crit' : 'hit');
+      var crit = B.focus || Math.random() < critC(); if (crit) { n *= 2; B.focus = false; bfx('flash', 0, 0); bfx('ring', f.fx + 16, f.fy - 10, 40); } sfx(crit ? 'crit' : 'hit');
       if (f.exposed) n *= 1.5;
       n = Math.max(1, Math.round(n)); f.hp = Math.max(0, f.hp - n); f.shake = 1; f.flash = 1; pop(String(n), f.fx + 16, f.fy - 34);
       if (f.hp <= 0) { f.dead = true; f.fade = 1; }
@@ -1147,8 +1190,8 @@
     function bossThresholds(f) {
       var m = mechOf(f); if (!m || f.dead) return '';
       var r = f.hp / f.max, out = '';
-      if (m.phase && !f.ph2 && r <= .5) { f.ph2 = 1; f.foe = Object.assign({}, f.foe, { atk: [Math.round(f.foe.atk[0] * 1.3), Math.round(f.foe.atk[1] * 1.3)] }); f.flash = 1; out += ' The ' + foeName(f) + ' changes. Something underneath comes loose. It hits harder now.'; }
-      if (m.summon && !f.summoned && r <= .6) { f.summoned = 1; m.summon.forEach(function (k) { addFoe(k, f); }); out += ' It calls for help. More bugs answer.'; }
+      if (m.phase && !f.ph2 && r <= .5) { f.ph2 = 1; bfx('flash', 0, 0); bfx('ring', f.fx + 16, f.fy - 10, 90); bfx('ring', f.fx + 16, f.fy - 10, 60); FX.shake = .6; f.foe = Object.assign({}, f.foe, { atk: [Math.round(f.foe.atk[0] * 1.3), Math.round(f.foe.atk[1] * 1.3)] }); f.flash = 1; out += ' The ' + foeName(f) + ' changes. Something underneath comes loose. It hits harder now.'; }
+      if (m.summon && !f.summoned && r <= .6) { f.summoned = 1; bfx('ring', f.fx + 16, f.fy, 70); m.summon.forEach(function (k) { addFoe(k, f); }); out += ' It calls for help. More bugs answer.'; }
       if (m.firewall && ((!f.fw1 && r <= .75) || (!f.fw2 && r <= .35))) { if (r <= .35) f.fw2 = 1; f.fw1 = 1; f.fw = 2; out += ' FIREWALL UP: for two rounds, plain attacks barely scratch it. Shell answers and skills get through.'; }
       return out;
     }
@@ -1300,14 +1343,23 @@
       else { log('No way through.'); setTimeout(nextAlly, 800); }
     }
     // each bug still standing takes its turn
-    function foesTurn() {
+    // speed decides who moves first each round: bugs far above Vee's level, quick ones and bosses can strike before he does
+    function spdVee() { return 10 + (B.vs.haste > 0 ? 6 : 0) - (B.vs.slow > 0 ? 6 : 0); }
+    function spdFoe(f) { var tr = (FOES[f.kind] || {}).trait; return 8 + Math.max(-4, gapOf(f)) * 1.3 + (tr === 'twice' ? 3 : 0) + (f.foe.boss ? 2 : 0) - (f.slow > 0 ? 5 : 0) + (f.ph2 ? 2 : 0) + (f.jit || 0); }
+    function orderNow() {   // the turn strip: who acts this round, in order
+      var fast = living().filter(function (f) { return f.actedRound !== B.round && spdFoe(f) > spdVee(); }), rest = living().filter(function (f) { return fast.indexOf(f) < 0 && f.actedRound !== B.round; });
+      var o = fast.map(function (f) { return { foe: f }; }); if (save.hp > 0) { o.push({ vee: 1 }); if (B.vs.haste > 0) o.push({ vee: 2 }); }
+      B.allies.forEach(function (a) { if (!a.down) o.push({ ally: a }); }); rest.forEach(function (f) { o.push({ foe: f }); }); return o;
+    }
+    function foesTurn(only, cb) {
       if (!B) return;
-      var queue = living().slice(), i = 0;
+      var queue = (only || living()).filter(function (f) { return f.actedRound !== B.round; }), i = 0;
       (function next() {
         if (!B) return;
-        if (i >= queue.length) return myTurn();
+        if (i >= queue.length) return cb ? cb() : myTurn();
         var f = queue[i++];
         if (f.dead) return next();
+        f.actedRound = B.round; hudOn();
         if (f.leak > 0) { f.leak--; var lk = 6 + save.lvl; f.hp = Math.max(0, f.hp - lk); pop(String(lk), f.fx + 16, f.fy - 34); if (f.hp <= 0) { f.dead = true; f.fade = 1; hudOn(); if (!living().length) return setTimeout(win, 600); return setTimeout(next, 500); } }
         if (f.exposed > 0) f.exposed--;
         if (f.stun > 0) { f.stun--; log('The ' + foeName(f) + ' strains against its permissions.'); return setTimeout(next, 650); }
@@ -1372,6 +1424,14 @@
       Object.keys(B.vs).forEach(function (k) { if (B.vs[k] > 0) B.vs[k]--; });
       B.foes.forEach(function (f) { if (f.fw > 0) f.fw--; f.counter = 0; });
       if (tickMsg) log(tickMsg.trim(), true);
+      B.foes.forEach(function (f) { f.jit = Math.random() * 3; });
+      var fast = living().filter(function (f) { return spdFoe(f) > spdVee(); });
+      if (fast.length && save.hp > 0) { hudOn(); log(fast.length === 1 ? 'The ' + foeName(fast[0]) + ' is faster. It moves first.' : 'The bugs are faster. They move first.', true); return setTimeout(function () { foesTurn(fast, function () { if (!B) return; vTurn(dazed, slowed); }); }, 700); }
+      vTurn(dazed, slowed);
+    }
+    function vTurn(dazed, slowed) {
+      if (!B) return;
+      if (!living().length) return win();
       if (save.hp > 0 && (dazed || slowed)) { hudOn(); log(dazed ? 'Vee is dazed. He loses his turn.' : 'Vee is slowed. He loses this round.'); return setTimeout(nextAlly, 900); }
       if (save.hp <= 0) { hudOn(); log('Vee is down. The party fights on.'); return setTimeout(nextAlly, 700); }
       B.phase = 'menu';
@@ -1398,6 +1458,7 @@
       var lines = [allGone ? 'The Heisenbug got away. Nothing to show for it but the feeling that something was there.' : boss ? boss.name + ' is gone.' + (xp ? ' Vee gains ' + xp + ' XP.' : '') : 'The rot clears. Vee gains ' + xp + ' XP.'];
       if (!boss && AREA.id === 'commons' && F.deeds && (F.commonsWins || 0) < 3) { F.commonsWins = (F.commonsWins || 0) + 1; lines.push('Deed: fairground cleared, ' + F.commonsWins + ' of 3.'); }
       if (caught) { save.items.gb = (save.items.gb || 0) + 1; lines.push('Vee caught a Heisenbug. It leaves behind a gigabyte, still warm.'); }
+      if (!F.bestiaryDone && Object.keys(FOES).every(function (k) { return save.best[k]; })) { F.bestiaryDone = 1; if (GEAR.fieldguide) giveGear('fieldguide'); lines.push('The Bestiary is complete: every kind of bug in Meridian, met and named. Vee is given the FIELD GUIDE, an accessory for a process who has seen everything.'); }
       if (Math.random() < .35 + n * .07 + gs('drop')) {   // drops match the bugs: low-level rot leaves bits, high-level rot leaves megabytes and gigabytes
         var topLv = Math.max.apply(null, B.foes.map(function (f) { return f.foe.lv || 1; }));
         var tier0 = topLv < 8 ? 0 : topLv < 20 ? 1 : topLv < 40 ? 2 : 3, howMany = 1 + (topLv >= 30 ? 1 : 0) + (topLv >= 70 ? 1 : 0), got = {};
@@ -1465,7 +1526,7 @@
       }, 1300);
     }
     function saveAllies() { if (B && B.allies) B.allies.forEach(function (a) { save.party.hp[a.id] = Math.max(1, a.hp); }); }
-    function endBattle() { saveAllies(); store(); B = null; closePrompt(); hud.classList.remove('on'); cmdBox.classList.remove('on'); titleEl.classList.remove('on'); mode = 'map'; me.safe = 5; }
+    function endBattle() { saveAllies(); store(); B = null; music(); closePrompt(); hud.classList.remove('on'); cmdBox.classList.remove('on'); titleEl.classList.remove('on'); mode = 'map'; me.safe = 5; }
 
     /* ---------- loop and drawing ---------- */
     var mode = 'map', raf = 0, last = 0, swirlT = 0, keys = {}, held = null, dashHeld = false, ghosts = [], ghostT = 0, trail = [];   // trail: where Vee has been, so companions can follow in his footsteps   // dash: hold Shift or DASH to run, leaving afterimages
@@ -1507,6 +1568,11 @@
       'Somebody fixed the bench by the fountain. Was that you?', 'I dreamt I was rendered at full resolution.', 'My cache is full of people who left.', 'Walk on the left. The right side flickers.',
       'Is it Tuesday? It feels like a Tuesday.', 'The bugs were worse last week. Or I was.', 'I counted the stars again. Two more.', 'Have you eaten? You don’t need to. Have you, though?',
       'They called us obsolete. My grandmother was obsolete. She was wonderful.', 'Every morning I check if I’m still here. So far, yes.', 'Somebody’s singing in the Patchwork. First time in a year.'];
+    // what passers-by talk about changes as the story moves
+    var BARKS_LIT = ['Did you see the Spire last night? It was ON. I stood there for an hour.', 'Someone’s fixing things. My stairwell light works. I cried a little. Don’t tell anyone.', 'My neighbor came out of her flat today. First time in months. We just waved.', 'They say a maintenance process did it. Imagine. The one thing they forgot to switch off.'];
+    var BARKS_END = ['The tether’s different now. You can feel it in the floor.', 'My cousin’s memories came back down. He remembers my birthday again. He was late with it, but he remembered.', 'I keep expecting it to go dark again. It doesn’t. I’m learning to stop expecting.', 'They said we were obsolete. Funny word for people who are still here.', 'Somebody painted VEE WAS HERE on the Commons wall. Nobody’s painting over it.'];
+    var BARKS_KEPT = ['Thursday. They moved us on a Thursday. Felt like a Tuesday.', 'Two cities, one host. I walked to Upstream for lunch. It’s smaller than the posters.', 'An Upstream kid asked me what a fountain is for. I said: for sitting near.', 'I saw the Continuity knights in the Plaza, out of armor. They look like anyone.', 'No lists anymore. Just people. Takes some getting used to. Good kind of getting used to.'];
+    function barkSet() { if (F.kept) return BARKS_KEPT.concat(BARKS.slice(0, 3)); if (F.ending) return BARKS_END.concat(BARKS.slice(0, 4)); if (lights() >= 4) return BARKS_LIT.concat(BARKS); return BARKS; }
     var WALKLOOKS = [{ hair: 'short', body: 'coat', skin: '#6b4a32', top: '#3a3a44' }, { hair: 'bun', body: 'coat', skin: '#8a5a3c', top: '#4a4a52' }, { hair: 'puffs', skin: '#4a2e1e', top: '#2e2e36' },
       { hair: 'long', skin: '#c89a78', top: '#5a5a62' }, { hair: 'cap', body: 'apron', skin: '#7a4a30', top: '#4a5a62' }, { hair: 'beanie', body: 'coat', skin: '#5a3824', top: '#3a3a44' }, { hair: 'bald', body: 'suit', skin: '#d8b898', top: '#2a2a30' }];
     function lifeLoad() {
@@ -1547,7 +1613,7 @@
         LIFE.barkT = 7 + Math.random() * 8;
         var who = [];
         activeParty().forEach(function (id, j) { who.push({ text: COMP[id].barks[Math.floor(Math.random() * COMP[id].barks.length)], name: COMP[id].name, at: function () { return [me.px, me.py]; } }); });   // companions travel with Vee unseen; their remarks float over him
-        LIFE.walkers.forEach(function (w) { if (Math.abs(w.px - me.px) < 90 && Math.abs(w.py - me.py) < 70) who.push({ text: BARKS[Math.floor(Math.random() * BARKS.length)], at: function () { return [w.px, w.py]; } }); });
+        var BK = barkSet(); LIFE.walkers.forEach(function (w) { if (Math.abs(w.px - me.px) < 90 && Math.abs(w.py - me.py) < 70) who.push({ text: BK[Math.floor(Math.random() * BK.length)], at: function () { return [w.px, w.py]; } }); });
         if (who.length) { LIFE.bark = who[Math.floor(Math.random() * who.length)]; LIFE.bark.t = 3.4; barkEl.textContent = (LIFE.bark.name ? LIFE.bark.name + ': ' : '') + LIFE.bark.text; }
       }
       if (LIFE.bark) { LIFE.bark.t -= dt; if (LIFE.bark.t <= 0) { LIFE.bark = null; barkEl.classList.remove('on'); } }
@@ -1621,6 +1687,38 @@
       if (fade) { var a = fade.t < .35 ? fade.t / .35 : Math.max(0, 1 - (fade.t - .35) / .35); cx.fillStyle = 'rgba(0,0,0,' + Math.min(1, a) + ')'; cx.fillRect(0, 0, W, H); }
     }
     // the Archive's map of the city
+    // the world map: the whole Sprawl at a glance, with every place Vee knows, the dungeons, and where the stories are waiting
+    var WORLDIMG = null;
+    function drawWorld() {
+      var tnow = performance.now() / 1000, SA = WD.areas.sprawl, m = SA.map, mw = m[0].length, mh = m.length;
+      if (!WORLDIMG) {
+        WORLDIMG = document.createElement('canvas'); WORLDIMG.width = mw * 2; WORLDIMG.height = mh * 2; var g = WORLDIMG.getContext('2d');
+        var COL = { '~': '#07070a', r: '#2c3242', ',': '#34363e', f: '#24272d', M: '#9a9aa8', x: '#1a1a1f', '=': '#70707c', '.': '#46464f', E: '#46464f', c: '#34363e' };
+        for (var y = 0; y < mh; y++) for (var x = 0; x < mw; x++) { var ch = m[y].charAt(x); g.fillStyle = COL[ch] || '#34363e'; g.fillRect(x * 2, y * 2, 2, 2); if (ch === 'M') { g.fillStyle = '#d8d8e2'; g.fillRect(x * 2, y * 2, 1, 1); } if (ch === 'x' && (x + y) % 2) { g.fillStyle = '#2a2a32'; g.fillRect(x * 2, y * 2, 1, 1); } if (ch === '~' && (x * 7 + y * 3) % 11 === 0) { g.fillStyle = '#12131a'; g.fillRect(x * 2, y * 2, 2, 1); } }
+      }
+      cx.fillStyle = '#030304'; cx.fillRect(0, 0, W, H);
+      var sc = Math.min((W - 10) / mw, (H - 16) / mh), ox = Math.round((W - mw * sc) / 2), oy = Math.round(H - mh * sc - 3);
+      cx.imageSmoothingEnabled = false; cx.drawImage(WORLDIMG, ox, oy, Math.round(mw * sc), Math.round(mh * sc));
+      function at(x, y) { return [Math.round(ox + x * sc), Math.round(oy + y * sc)]; }
+      var party = activeParty();
+      (WD.sprawlAll || []).forEach(function (st) {
+        var A2 = WD.areas[st.id]; if (!A2) return; var p = at(st.x + 1, st.y + 1), seen = save.seen[st.id], dg = A2.dungeon, done = dg && F['dg_' + st.id];
+        if (dg) { cx.fillStyle = done ? '#ffffff' : '#9a9aa6'; cx.fillRect(p[0] - 1, p[1] - 3, 3, 1); cx.fillRect(p[0] - 2, p[1] - 2, 5, 3); cx.fillRect(p[0] - 1, p[1] + 1, 3, 1); if (!done) { cx.fillStyle = '#030304'; cx.fillRect(p[0], p[1] - 1, 1, 1); } }
+        else { cx.fillStyle = seen ? '#ffffff' : '#5a5a66'; cx.fillRect(p[0] - 2, p[1] - 2, 4, 4); cx.fillStyle = '#030304'; if (!seen) cx.fillRect(p[0] - 1, p[1] - 1, 2, 2); }
+        if (seen && (sc > 2.2 || dg)) ART.text(cx, (A2.name || st.id).replace(/^The /, '').toUpperCase().slice(0, 12), p[0] + 4, p[1] - 2, dg ? '#c8c8d4' : '#8a8a96');
+        // a companion whose story is ready here gets a blinking star
+        var ready = party.some(function (id) { var arc = WD.arcs && WD.arcs[id]; return arc && arc.area === st.id && !F['arc_' + id] && save.lvl >= arc.lv; });
+        if (ready && Math.floor(tnow * 3) % 2) { cx.fillStyle = '#ffffff'; cx.fillRect(p[0] - 1, p[1] - 7, 3, 1); cx.fillRect(p[0], p[1] - 8, 1, 3); }
+      });
+      var hereSite = AREA.id === 'sprawl' ? null : (WD.sprawlAll || []).filter(function (q) { return q.id === AREA.id; })[0];
+      var vp = AREA.id === 'sprawl' ? at(me.x + .5, me.y + .5) : hereSite ? at(hereSite.x + 1, hereSite.y + 1) : null;
+      if (vp && Math.floor(tnow * 4) % 2) { cx.strokeStyle = '#ffffff'; cx.strokeRect(vp[0] - 3.5, vp[1] - 3.5, 7, 7); }
+      ART.text(cx, 'THE SPRAWL', 6, 4, '#ffffff', 2);
+      var known = (WD.sprawlAll || []).filter(function (q) { return save.seen[q.id]; }).length;
+      ART.text(cx, known + ' OF ' + (WD.sprawlAll || []).length + ' PLACES FOUND', W - 6 - ART.textW(known + ' OF ' + (WD.sprawlAll || []).length + ' PLACES FOUND'), 4, '#c0c0cc');
+      ART.text(cx, 'A: CITY MAP  B: CLOSE', W - 6 - ART.textW('A: CITY MAP  B: CLOSE'), 12, Math.floor(tnow * 2) % 2 ? '#8a8a96' : '#5a5a66');
+      drawScan();
+    }
     function drawAtlas() {
       var tnow = performance.now() / 1000;
       cx.fillStyle = '#050507'; cx.fillRect(0, 0, W, H);
@@ -1645,7 +1743,7 @@
     function allyPos(a) { var vx0 = 250 - (B ? B.vx : 0) * 34 + (back(a.id) ? 14 : 0); return a.slot === 0 ? [vx0 + 30, 104 - 20] : [vx0 + 30, 104 + 18]; }
     function drawBattle(dt) {
       var tt = performance.now() / 1000, hy = 64 + BOFF;
-      drawBackdrop((B && B.theme) || (AREA && AREA.theme) || 'plaza', tt, hy);
+      drawBackdrop((B && B.bg) || (B && B.theme) || (AREA && AREA.theme) || 'plaza', tt, hy);
       if (!B) return;
       cx.save(); cx.translate(0, BOFF);
       B.t += dt; B.vx = Math.max(0, B.vx - dt * 2.5); B.hurt = Math.max(0, (B.hurt || 0) - dt * 3); B.cast = Math.max(0, B.cast - dt * 2);
@@ -1690,6 +1788,18 @@
         cx.save(); if (a.down) { cx.globalAlpha = .35; cx.translate(ax + 2, ay); cx.rotate(-Math.PI / 2); cx.drawImage(img2, -2, -22, 22, 26); }
         else { if (B.actor === a) { cx.strokeStyle = 'rgba(240,240,244,' + (.35 + Math.sin(B.t * 5) * .15) + ')'; cx.strokeRect(ax - 3.5, ay - 29.5, 29, 31); } drawSprite(img2, ax, ay - 25, true, 1); }
         cx.restore();
+      });
+      // effects: slashes, sparks, code bursts, shockwaves
+      B.fx = (B.fx || []).filter(function (e) {
+        e.t += dt; var k = e.t / e.life; if (k >= 1) return false; var a = 1 - k;
+        cx.save();
+        if (e.kind === 'slash') { cx.strokeStyle = 'rgba(255,255,255,' + a + ')'; cx.lineWidth = 2; cx.beginPath(); cx.arc(e.x, e.y, 14 + k * 6, -2.4 + k * 1.2, -0.6 + k * 1.2); cx.stroke(); cx.strokeStyle = 'rgba(200,210,230,' + a * .5 + ')'; cx.lineWidth = 1; cx.beginPath(); cx.arc(e.x, e.y, 18 + k * 8, -2.2 + k * 1.2, -0.8 + k * 1.2); cx.stroke(); }
+        else if (e.kind === 'spark') { e.ps = e.ps || [0, 1, 2, 3, 4, 5, 6, 7].map(function (i) { var an = i / 8 * 6.28 + Math.random() * .4; return [Math.cos(an), Math.sin(an), 10 + Math.random() * 16]; }); cx.fillStyle = 'rgba(255,255,255,' + a + ')'; e.ps.forEach(function (q) { cx.fillRect(Math.round(e.x + q[0] * q[2] * k), Math.round(e.y + q[1] * q[2] * k), 2, 2); }); }
+        else if (e.kind === 'code') { cx.font = '6px "Press Start 2P", monospace'; cx.textAlign = 'center'; e.gl = e.gl || ['$', '>', '|', '#', '0', '1', '~', '/'].map(function () { return [Math.random() * 40 - 20, Math.random() * 10, '$>|#01~/'.charAt(Math.floor(Math.random() * 8))]; }); cx.fillStyle = 'rgba(236,240,255,' + a + ')'; e.gl.forEach(function (q) { cx.fillText(q[2], e.x + q[0], e.y - 30 + q[1] + k * 40); }); cx.textAlign = 'left'; }
+        else if (e.kind === 'ring') { cx.strokeStyle = 'rgba(255,255,255,' + a + ')'; cx.lineWidth = 2 * a + .5; cx.beginPath(); cx.ellipse(e.x, e.y, 8 + k * (e.r || 50), (8 + k * (e.r || 50)) * .45, 0, 0, 7); cx.stroke(); }
+        else if (e.kind === 'flash') { cx.fillStyle = 'rgba(255,255,255,' + a * .6 + ')'; cx.fillRect(0, 0, W, H); }
+        else if (e.kind === 'heal') { cx.fillStyle = 'rgba(230,240,255,' + a + ')'; for (var hq = 0; hq < 6; hq++) cx.fillRect(Math.round(e.x - 10 + hq * 4), Math.round(e.y - k * 24 - (hq % 3) * 5), 2, 2); }
+        cx.restore(); return true;
       });
       // damage numbers
       cx.font = '8px "Press Start 2P", monospace'; cx.textAlign = 'center';
@@ -1745,7 +1855,7 @@
     function loop(ts) {
       var dt = Math.min(.05, (ts - (last || ts)) / 1000); last = ts;
       update(dt);
-      if (mode === 'map' || mode === 'menu') { if (FX.shake > 0) { FX.shake = Math.max(0, FX.shake - dt); cx.save(); cx.translate(Math.round((Math.random() - .5) * 6), Math.round((Math.random() - .5) * 4)); drawMap(); cx.restore(); } else drawMap(); if (FX.flash > 0) { FX.flash = Math.max(0, FX.flash - dt); cx.fillStyle = 'rgba(255,255,255,' + Math.min(1, FX.flash * 2.5) + ')'; cx.fillRect(0, 0, W, H); } } else if (mode === 'atlas') drawAtlas(); else if (mode === 'swirl') drawSwirl(dt); else drawBattle(dt);
+      if (mode === 'map' || mode === 'menu') { if (FX.shake > 0) { FX.shake = Math.max(0, FX.shake - dt); cx.save(); cx.translate(Math.round((Math.random() - .5) * 6), Math.round((Math.random() - .5) * 4)); drawMap(); cx.restore(); } else drawMap(); if (FX.flash > 0) { FX.flash = Math.max(0, FX.flash - dt); cx.fillStyle = 'rgba(255,255,255,' + Math.min(1, FX.flash * 2.5) + ')'; cx.fillRect(0, 0, W, H); } } else if (mode === 'atlas') drawAtlas(); else if (mode === 'world') drawWorld(); else if (mode === 'swirl') drawSwirl(dt); else if (FX.shake > 0) { FX.shake = Math.max(0, FX.shake - dt); cx.save(); cx.translate(Math.round((Math.random() - .5) * 6), Math.round((Math.random() - .5) * 4)); drawBattle(dt); cx.restore(); } else drawBattle(dt);
       raf = requestAnimationFrame(loop);
     }
 
@@ -1772,6 +1882,7 @@
       }
       if (mode === 'menu') return menuKey(k);
       if (mode === 'atlas') { mode = 'map'; return; }
+      if (mode === 'world') { mode = k === 'a' ? 'atlas' : 'map'; return; }
       if (fade || PZ) return;
       if (mode === 'map') { if (k === 'a') interact(); else if (k === 'b') openMenu(); else held = k; }
     }
@@ -1819,6 +1930,7 @@
       root.querySelector('.rpg-x').focus({ preventScroll: true });
     }
     function close() {
+      if (window.MeridianMusic) MeridianMusic.stop();
       root.classList.remove('show'); document.body.style.overflow = ''; held = null;
       setTimeout(function () { if (!root.classList.contains('show')) { root.classList.remove('open'); cancelAnimationFrame(raf); } }, 400);
       if (opener && opener.focus) opener.focus({ preventScroll: true });
