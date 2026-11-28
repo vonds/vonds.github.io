@@ -202,6 +202,14 @@
       areaEl.classList.add('on'); clearTimeout(areaT); areaT = setTimeout(function () { areaEl.classList.remove('on'); }, 2600);
     }
     // the soundtrack follows Vee: the city, the open country, dungeons, the deep places, Upstream
+    // the fight happens where Vee is standing: the Sprawl by its terrain, everywhere else by its own place
+    var BG_AREA = { deep: 1, anchor: 1, upstream: 1, successor: 1, unalloc: 1, rack: 1, tether: 1, firmware: 1, console: 1, plaza: 1, commons: 1 };
+    function bgFor() {
+      if (!AREA) return 'plaza';
+      if (AREA.id === 'sprawl') { var tt2 = tile(me.x, me.y), near = function (c) { for (var dy = -2; dy <= 2; dy++) for (var dx = -2; dx <= 2; dx++) if (tile(me.x + dx, me.y + dy) === c) return true; return false; };
+        return 'sprawl:' + (tt2 === 'f' ? 'forest' : tt2 === 'x' ? 'wastes' : near('~') || near('r') ? 'shore' : near('M') ? 'ridge' : tt2 === '=' ? 'road' : 'plains'); }
+      return BG_AREA[AREA.id] ? AREA.id : AREA.theme;
+    }
     function trackFor(a) { if (!a) return 'city'; if (a.id === 'sprawl') return 'sprawl'; if (a.dungeon) return 'dungeon'; if (['upstream', 'successor', 'tether'].indexOf(a.id) >= 0) return 'upstream'; if (['deep', 'firmware', 'rack', 'console', 'ring0', 'unalloc', 'stacks'].indexOf(a.id) >= 0) return 'deep'; return 'city'; }
     function music() { var M = window.MeridianMusic; if (!M) return; if (save.cfg.music == null) save.cfg.music = 1; M.enable(!!save.cfg.music); if (save.cfg.music && !B) M.play(trackFor(AREA)); }
     function zoneAt() { siteHint(); if (!AREA.zone) return; var z = AREA.zone(me.x, me.y, tile(me.x, me.y)); if (!z) return; AREA.lv = z.lv; AREA.lvMax = z.lvMax; AREA.enc.foes = z.foes; AREA.tier = z.tier; }
@@ -1043,7 +1051,7 @@
           get scenario() { return this.sc0.t; }, fx: slot[0], fy: slot[1], ph: Math.random() * 6, exposed: 0, slow: 0, leak: 0 });
       }
       var allies = activeParty().map(function (id, j) { return { id: id, hp: Math.max(1, cHp(id)), max: cMax(id), cd: {}, down: false, guard: 0, lunge: 0, hurt: 0, slot: j }; });
-      B = { allies: allies, ai: 0, actor: null, corrupt: 0, regen: 0, blind: 0, taunt: 0, pguard: 0, allyFocus: 0, foes: foes, focus: false, phase: 'intro', t: 0, vx: 0, pops: [], menu: 'main', sel: 0, cast: 0, target: 0, pending: null, boss: bossDef, bossId: opt.boss || null, onWin: opt.onWin, theme: AREA.theme, vs: {}, src: 'shell' };
+      B = { allies: allies, ai: 0, actor: null, corrupt: 0, regen: 0, blind: 0, taunt: 0, pguard: 0, allyFocus: 0, foes: foes, focus: false, phase: 'intro', t: 0, vx: 0, pops: [], menu: 'main', sel: 0, cast: 0, target: 0, pending: null, boss: bossDef, bossId: opt.boss || null, onWin: opt.onWin, theme: AREA.theme, bg: bgFor(), vs: {}, src: 'shell' };
       B.allies.forEach(function (a) { a.st = {}; });
       var hook = opt.boss && WD.bossStart && WD.bossStart[opt.boss], hookMsg = hook ? hook(G, foes[0]) : null; if (hookMsg) setTimeout(function () { log(hookMsg); }, 1300);
       // companions have something to say when something big shows up
@@ -1735,7 +1743,7 @@
     function allyPos(a) { var vx0 = 250 - (B ? B.vx : 0) * 34 + (back(a.id) ? 14 : 0); return a.slot === 0 ? [vx0 + 30, 104 - 20] : [vx0 + 30, 104 + 18]; }
     function drawBattle(dt) {
       var tt = performance.now() / 1000, hy = 64 + BOFF;
-      drawBackdrop((B && B.theme) || (AREA && AREA.theme) || 'plaza', tt, hy);
+      drawBackdrop((B && B.bg) || (B && B.theme) || (AREA && AREA.theme) || 'plaza', tt, hy);
       if (!B) return;
       cx.save(); cx.translate(0, BOFF);
       B.t += dt; B.vx = Math.max(0, B.vx - dt * 2.5); B.hurt = Math.max(0, (B.hurt || 0) - dt * 3); B.cast = Math.max(0, B.cast - dt * 2);
