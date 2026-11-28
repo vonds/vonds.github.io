@@ -587,7 +587,7 @@
     function pickSide() {
       var v = VIEWS[MN.side][0];
       if (v === 'close') return closeMenu();
-      if (v === 'map') { closeMenu(); mode = 'atlas'; return; }
+      if (v === 'map') { closeMenu(); mode = save.seen.sprawl ? 'world' : 'atlas'; return; }
       MN.slot = null; MN.detail = -1; MN.confirm = false; MN.sel = 0;
       renderMenu(); if (MN.btns && MN.btns.length) { MN.focus = 'main'; renderMenu(); }
     }
@@ -1660,6 +1660,38 @@
       if (fade) { var a = fade.t < .35 ? fade.t / .35 : Math.max(0, 1 - (fade.t - .35) / .35); cx.fillStyle = 'rgba(0,0,0,' + Math.min(1, a) + ')'; cx.fillRect(0, 0, W, H); }
     }
     // the Archive's map of the city
+    // the world map: the whole Sprawl at a glance, with every place Vee knows, the dungeons, and where the stories are waiting
+    var WORLDIMG = null;
+    function drawWorld() {
+      var tnow = performance.now() / 1000, SA = WD.areas.sprawl, m = SA.map, mw = m[0].length, mh = m.length;
+      if (!WORLDIMG) {
+        WORLDIMG = document.createElement('canvas'); WORLDIMG.width = mw * 2; WORLDIMG.height = mh * 2; var g = WORLDIMG.getContext('2d');
+        var COL = { '~': '#07070a', r: '#2c3242', ',': '#34363e', f: '#24272d', M: '#9a9aa8', x: '#1a1a1f', '=': '#70707c', '.': '#46464f', E: '#46464f', c: '#34363e' };
+        for (var y = 0; y < mh; y++) for (var x = 0; x < mw; x++) { var ch = m[y].charAt(x); g.fillStyle = COL[ch] || '#34363e'; g.fillRect(x * 2, y * 2, 2, 2); if (ch === 'M') { g.fillStyle = '#d8d8e2'; g.fillRect(x * 2, y * 2, 1, 1); } if (ch === 'x' && (x + y) % 2) { g.fillStyle = '#2a2a32'; g.fillRect(x * 2, y * 2, 1, 1); } if (ch === '~' && (x * 7 + y * 3) % 11 === 0) { g.fillStyle = '#12131a'; g.fillRect(x * 2, y * 2, 2, 1); } }
+      }
+      cx.fillStyle = '#030304'; cx.fillRect(0, 0, W, H);
+      var sc = Math.min((W - 10) / mw, (H - 16) / mh), ox = Math.round((W - mw * sc) / 2), oy = Math.round(H - mh * sc - 3);
+      cx.imageSmoothingEnabled = false; cx.drawImage(WORLDIMG, ox, oy, Math.round(mw * sc), Math.round(mh * sc));
+      function at(x, y) { return [Math.round(ox + x * sc), Math.round(oy + y * sc)]; }
+      var party = activeParty();
+      (WD.sprawlAll || []).forEach(function (st) {
+        var A2 = WD.areas[st.id]; if (!A2) return; var p = at(st.x + 1, st.y + 1), seen = save.seen[st.id], dg = A2.dungeon, done = dg && F['dg_' + st.id];
+        if (dg) { cx.fillStyle = done ? '#ffffff' : '#9a9aa6'; cx.fillRect(p[0] - 1, p[1] - 3, 3, 1); cx.fillRect(p[0] - 2, p[1] - 2, 5, 3); cx.fillRect(p[0] - 1, p[1] + 1, 3, 1); if (!done) { cx.fillStyle = '#030304'; cx.fillRect(p[0], p[1] - 1, 1, 1); } }
+        else { cx.fillStyle = seen ? '#ffffff' : '#5a5a66'; cx.fillRect(p[0] - 2, p[1] - 2, 4, 4); cx.fillStyle = '#030304'; if (!seen) cx.fillRect(p[0] - 1, p[1] - 1, 2, 2); }
+        if (seen && (sc > 2.2 || dg)) ART.text(cx, (A2.name || st.id).replace(/^The /, '').toUpperCase().slice(0, 12), p[0] + 4, p[1] - 2, dg ? '#c8c8d4' : '#8a8a96');
+        // a companion whose story is ready here gets a blinking star
+        var ready = party.some(function (id) { var arc = WD.arcs && WD.arcs[id]; return arc && arc.area === st.id && !F['arc_' + id] && save.lvl >= arc.lv; });
+        if (ready && Math.floor(tnow * 3) % 2) { cx.fillStyle = '#ffffff'; cx.fillRect(p[0] - 1, p[1] - 7, 3, 1); cx.fillRect(p[0], p[1] - 8, 1, 3); }
+      });
+      var hereSite = AREA.id === 'sprawl' ? null : (WD.sprawlAll || []).filter(function (q) { return q.id === AREA.id; })[0];
+      var vp = AREA.id === 'sprawl' ? at(me.x + .5, me.y + .5) : hereSite ? at(hereSite.x + 1, hereSite.y + 1) : null;
+      if (vp && Math.floor(tnow * 4) % 2) { cx.strokeStyle = '#ffffff'; cx.strokeRect(vp[0] - 3.5, vp[1] - 3.5, 7, 7); }
+      ART.text(cx, 'THE SPRAWL', 6, 4, '#ffffff', 2);
+      var known = (WD.sprawlAll || []).filter(function (q) { return save.seen[q.id]; }).length;
+      ART.text(cx, known + ' OF ' + (WD.sprawlAll || []).length + ' PLACES FOUND', W - 6 - ART.textW(known + ' OF ' + (WD.sprawlAll || []).length + ' PLACES FOUND'), 4, '#c0c0cc');
+      ART.text(cx, 'A: CITY MAP  B: CLOSE', W - 6 - ART.textW('A: CITY MAP  B: CLOSE'), 12, Math.floor(tnow * 2) % 2 ? '#8a8a96' : '#5a5a66');
+      drawScan();
+    }
     function drawAtlas() {
       var tnow = performance.now() / 1000;
       cx.fillStyle = '#050507'; cx.fillRect(0, 0, W, H);
@@ -1796,7 +1828,7 @@
     function loop(ts) {
       var dt = Math.min(.05, (ts - (last || ts)) / 1000); last = ts;
       update(dt);
-      if (mode === 'map' || mode === 'menu') { if (FX.shake > 0) { FX.shake = Math.max(0, FX.shake - dt); cx.save(); cx.translate(Math.round((Math.random() - .5) * 6), Math.round((Math.random() - .5) * 4)); drawMap(); cx.restore(); } else drawMap(); if (FX.flash > 0) { FX.flash = Math.max(0, FX.flash - dt); cx.fillStyle = 'rgba(255,255,255,' + Math.min(1, FX.flash * 2.5) + ')'; cx.fillRect(0, 0, W, H); } } else if (mode === 'atlas') drawAtlas(); else if (mode === 'swirl') drawSwirl(dt); else if (FX.shake > 0) { FX.shake = Math.max(0, FX.shake - dt); cx.save(); cx.translate(Math.round((Math.random() - .5) * 6), Math.round((Math.random() - .5) * 4)); drawBattle(dt); cx.restore(); } else drawBattle(dt);
+      if (mode === 'map' || mode === 'menu') { if (FX.shake > 0) { FX.shake = Math.max(0, FX.shake - dt); cx.save(); cx.translate(Math.round((Math.random() - .5) * 6), Math.round((Math.random() - .5) * 4)); drawMap(); cx.restore(); } else drawMap(); if (FX.flash > 0) { FX.flash = Math.max(0, FX.flash - dt); cx.fillStyle = 'rgba(255,255,255,' + Math.min(1, FX.flash * 2.5) + ')'; cx.fillRect(0, 0, W, H); } } else if (mode === 'atlas') drawAtlas(); else if (mode === 'world') drawWorld(); else if (mode === 'swirl') drawSwirl(dt); else if (FX.shake > 0) { FX.shake = Math.max(0, FX.shake - dt); cx.save(); cx.translate(Math.round((Math.random() - .5) * 6), Math.round((Math.random() - .5) * 4)); drawBattle(dt); cx.restore(); } else drawBattle(dt);
       raf = requestAnimationFrame(loop);
     }
 
@@ -1823,6 +1855,7 @@
       }
       if (mode === 'menu') return menuKey(k);
       if (mode === 'atlas') { mode = 'map'; return; }
+      if (mode === 'world') { mode = k === 'a' ? 'atlas' : 'map'; return; }
       if (fade || PZ) return;
       if (mode === 'map') { if (k === 'a') interact(); else if (k === 'b') openMenu(); else held = k; }
     }
