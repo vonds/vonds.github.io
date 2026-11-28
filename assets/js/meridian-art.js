@@ -70,9 +70,9 @@
       }
       if (t === '=') { if (!roadX(px, theme, X, Y, x, y, tile)) paintRoad(px, theme, X, Y, x, y, tile); }
       else if (t === ',') { if (!fieldX(px, theme, X, Y, x, y)) paintField(px, theme, X, Y, x, y); }
-      else if (t === 'T') { if (!wallX(px, theme, X, Y, x, y, tile)) paintWall(px, theme, X, Y, x, y, tile); }
+      else if (t === 'T' || t === 'h') { if (!wallX(px, theme, X, Y, x, y, tile)) paintWall(px, theme, X, Y, x, y, tile); }   // a hidden passage looks exactly like the wall around it
       else if (t === 'p') { if (theme === 'upper') paintTopiary(px, g, X, Y, x, y); else paintTree(g, px, X, Y, x, y, ov); }
-      else if (t === 'E') { px(X, Y, TS, TS, T.road); }
+      else if (t === 'E') { if (theme !== 'sprawl') px(X, Y, TS, TS, T.road); }
       else if (t === 'D') { for (var s = 0; s < 5; s++) { px(X + 1, Y + s * 3 + 1, TS - 2, 2, s % 2 ? '#2a2a34' : '#3c3c48'); px(X + 1, Y + s * 3 + 1, TS - 2, 1, '#6a6a76'); } px(X, Y, 1, TS, '#8a8a96'); px(X + TS - 1, Y, 1, TS, '#3a3a46'); }
       else if (t === 'G') { px(X, Y, TS, TS, '#0c0c11'); px(X + 1, Y, 2, TS, '#3a3a46'); px(X + 13, Y, 2, TS, '#3a3a46'); px(X + 1, Y, 1, TS, '#9a9aa6'); }
       else if (t === 'F') { /* the fountain is painted whole below */ }
@@ -530,7 +530,78 @@
   THEMES.upper = { g0: '#17171d', g1: '#22222a', dot: '#2e2e38', road: '#202028', edge: '#e8e8f0' };
   THEMES.cold = { g0: '#0b0d10', g1: '#151a1f', dot: '#26303a', road: '#13171c', edge: '#aab8c4' };
 
+  THEMES.sprawl = { g0: '#0f1013', g1: '#17181c', dot: '#22232a', road: '#15151a', edge: '#8a8a96' };
+  function paintSprawl(px, X, Y, x, y, tile) {   // the open country, one tile at a time
+    var t = tile(x, y), r = function (k) { return hs(x * 31 + y * 17 + k * 7.3); };
+    function land(c) { return '~r'.indexOf(c) < 0; }
+    if (t === ',' || t === 'c' || t === 'f' || t === 'x' || t === 'M') {   // static plains under everything
+      px(X, Y, TS, TS, '#1a1b20');
+      for (var i = 0; i < 6; i++) px(X + Math.floor(r(i) * 15), Y + Math.floor(r(i + 9) * 14), 1, 2, i % 3 ? '#2c2f37' : '#454a54');
+      if (r(30) > .93) px(X + Math.floor(r(31) * 14), Y + Math.floor(r(32) * 14), 1, 1, '#b8bcc8');
+    }
+    if (t === 'f') {   // circuit forest: dark canopies on traces, a node lit here and there
+      for (var k = 0; k < 3; k++) {
+        var bx = X + [1, 8, 4][k] + Math.floor(r(k + 40) * 3), by = Y + [1, 3, 8][k] + Math.floor(r(k + 44) * 2);
+        px(bx + 3, by + 6, 1, 3, '#3a3a44');
+        px(bx + 1, by, 5, 1, '#3a3f48'); px(bx, by + 1, 7, 4, '#2c3038'); px(bx + 1, by + 5, 5, 1, '#22252b');
+        px(bx + 1, by + 1, 2, 1, '#5a626e'); px(bx + 1, by + 2, 1, 1, '#464d58');
+        if (r(k + 50) > .6) px(bx + 4, by + 2, 1, 1, '#c8d0da');
+      }
+    } else if (t === 'M') {   // a server ridge: lit on the left, racks of LEDs down its face
+      var hgt = 12 + Math.floor(r(60) * 4), base = Y + TS - 1;
+      for (var row = 0; row < hgt; row++) { var half = Math.floor(row * 8 / hgt) + 1, yy = base - hgt + row; px(X + 8 - half, yy, half, 1, row < 2 ? '#f0f0f6' : '#7a7a88'); px(X + 8, yy, half, 1, row < 2 ? '#a8a8b4' : '#3a3a44'); }
+      px(X + 7, base - hgt, 2, 1, '#e8e8f0');
+      for (var l = 0; l < 3; l++) px(X + 4 + Math.floor(r(l + 70) * 8), base - 2 - Math.floor(r(l + 74) * (hgt - 5)), 1, 1, r(l + 78) > .5 ? '#e8e8f0' : '#6a6a76');
+      px(X + 1, base, 14, 1, '#08080a');
+    } else if (t === 'x') {   // corrupted wastes: the ground glitches into blocks
+      px(X, Y, TS, TS, '#0a0a0c');
+      for (var j = 0; j < 5; j++) px(X + Math.floor(r(j + 80) * 12), Y + Math.floor(r(j + 85) * 13), 2 + Math.floor(r(j + 90) * 4), 1 + Math.floor(r(j + 95) * 2), ['#26262e', '#383842', '#1a1a1f', '#4c4c58', '#202026'][j]);
+      if (r(99) > .7) px(X, Y + Math.floor(r(98) * 15), TS, 1, 'rgba(160,160,176,.25)');
+    } else if (t === '=') {   // a road through the country
+      px(X, Y, TS, TS, '#2a2a32'); px(X, Y, TS, 1, '#363640'); px(X, Y + TS - 1, TS, 1, '#202026'); for (var dd = 2; dd < TS; dd += 5) px(X + 7, Y + dd, 2, 2, '#4a4a56');
+      if (tile(x, y - 1) === '~' || tile(x, y + 1) === '~' || tile(x, y - 1) === 'r' || tile(x, y + 1) === 'r' || tile(x - 1, y) === '~' || tile(x + 1, y) === '~' || tile(x - 1, y) === 'r' || tile(x + 1, y) === 'r') {   // a bridge
+        px(X, Y, TS, TS, '#24242c'); for (var pl = 0; pl < TS; pl += 3) px(X, Y + pl, TS, 1, '#30303a'); px(X, Y, 1, TS, '#9a9aa6'); px(X + TS - 1, Y, 1, TS, '#4a4a56');
+      }
+    } else if (t === '.' || t === 'E') {
+      px(X, Y, TS, TS, '#222228'); px(X, Y, TS, 1, '#2e2e36'); px(X, Y, 1, TS, '#2e2e36'); if (r(5) > .8) px(X + 5, Y + 6, 4, 3, '#28282f');
+    } else if (t === 'r') {   // a stream of data, banked
+      px(X, Y, TS, TS, '#0a0c10'); for (var b = 0; b < 4; b++) px(X + 2 + b * 3, Y + Math.floor(r(b + 110) * 10), 1, 4, '#1c222a');
+      if (land(tile(x - 1, y))) px(X, Y, 1, TS, '#5a5e68'); if (land(tile(x + 1, y))) px(X + TS - 1, Y, 1, TS, '#3a3e48');
+    }
+    if (t !== '~' && t !== 'r') {   // shoreline where land meets the sea
+      if (tile(x, y + 1) === '~') { px(X, Y + TS - 2, TS, 2, '#2a2c33'); px(X, Y + TS - 1, TS, 1, '#6a6e7a'); }
+      if (tile(x, y - 1) === '~') px(X, Y, TS, 1, '#4a4e58');
+      if (tile(x - 1, y) === '~') px(X, Y, 1, TS, '#4a4e58');
+      if (tile(x + 1, y) === '~') px(X + TS - 1, Y, 1, TS, '#4a4e58');
+    }
+    return true;
+  }
+  // dungeons: solid black rock, a lit wall face wherever rock meets floor, and a floor with its own character
+  THEMES.vault = { g0: '#141419', g1: '#1c1c22', dot: '#26262e', road: '#18181e', edge: '#8a8a96' };
+  function paintVault(px, theme, X, Y, x, y, tile) {
+    var t = tile(x, y), kind = theme.slice(6), rock = t === 'T' || t === 'h', r = function (k) { return hs(x * 13 + y * 29 + k * 3.1); };
+    if (rock) {
+      px(X, Y, TS, TS, '#050507');
+      var below = tile(x, y + 1); if (below !== 'T' && below !== 'h' && below !== '~') {   // the wall face, seen from the room
+        px(X, Y + 4, TS, 12, kind === 'c' ? '#2a3038' : kind === 'r' ? '#1e1e26' : '#24242c'); px(X, Y + 4, TS, 1, kind === 'c' ? '#aab8c4' : '#6a6a76');
+        for (var bz = 8; bz < TS; bz += 4) px(X, Y + bz, TS, 1, '#16161c'); for (var bv = 0; bv < 3; bv++) px(X + ((y + bv) % 2 ? 4 : 10), Y + 5 + bv * 4, 1, 3, '#16161c');
+        if (kind === 'r' && r(1) > .5) for (var ld = 0; ld < 3; ld++) px(X + 3 + ld * 4, Y + 7 + Math.floor(r(ld + 2) * 6), 1, 1, r(ld + 5) > .5 ? '#e8e8f0' : '#6a6a78');
+        if (kind === 'w') px(X, Y + 14, TS, 2, '#2a3440');
+      }
+      if (tile(x, y - 1) !== 'T' && tile(x, y - 1) !== 'h' && tile(x, y - 1) !== '~') px(X, Y, TS, 1, '#3a3a46');
+      return true;
+    }
+    px(X, Y, TS, TS, '#16161b'); px(X, Y, TS, 1, '#1e1e25'); px(X, Y, 1, TS, '#1e1e25'); px(X + 1, Y + 1, 1, 1, '#2a2a33');
+    if (kind === 'w' && r(2) > .55) { px(X + 2 + Math.floor(r(3) * 6), Y + 4 + Math.floor(r(4) * 6), 7, 3, '#1a2028'); px(X + 4 + Math.floor(r(3) * 6), Y + 5 + Math.floor(r(4) * 6), 3, 1, '#3a4656'); }
+    if (kind === 'p' && r(2) > .6) { var lx = X + Math.floor(r(5) * 10), ly = Y + Math.floor(r(6) * 10); px(lx, ly, 5, 4, '#a8a8b2'); px(lx, ly, 5, 1, '#d8d8e0'); px(lx + 1, ly + 2, 3, 1, '#6a6a76'); }
+    if (kind === 'r') { if ((x + y) % 4 === 0) px(X + 7, Y, 2, TS, '#1c1c24'); if (r(7) > .85) px(X + 7, Y + Math.floor(r(8) * 14), 2, 2, '#9a9aa6'); }
+    if (kind === 'c') for (var f2 = 0; f2 < 4; f2++) px(X + Math.floor(r(f2 + 9) * 15), Y + Math.floor(r(f2 + 14) * 15), 1, 1, f2 % 2 ? 'rgba(220,236,250,.4)' : 'rgba(220,236,250,.15)');
+    if (tile(x, y) === ',') for (var g3 = 0; g3 < 3; g3++) px(X + Math.floor(r(g3 + 20) * 14), Y + Math.floor(r(g3 + 24) * 14), 2, 1, '#22222a');
+    return true;
+  }
   var floorX = function (px, theme, X, Y, x, y, tile) {
+    if (theme === 'sprawl') return paintSprawl(px, X, Y, x, y, tile);
+    if (theme.indexOf('vault_') === 0) return paintVault(px, theme, X, Y, x, y, tile);
     if (theme === 'line') {
       px(X, Y, TS, TS, '#101015'); px(X, Y, TS, 1, '#1c1c24'); px(X, Y + 8, TS, 1, '#1c1c24'); px(X, Y, 1, TS, '#1c1c24'); px(X + 8, Y, 1, TS, '#18181f');
       if (tile(x, y + 1) === '~' || tile(x, y - 1) === '~') { var edge = tile(x, y + 1) === '~' ? Y + TS - 4 : Y; px(X, edge, TS, 4, '#2a2a32'); for (var s = 0; s < TS; s += 4) px(X + s, edge + 1, 2, 2, '#d8d8e0'); }
@@ -556,18 +627,25 @@
     return false;
   }
   var roadX = function (px, theme, X, Y, x, y, tile) {
+    if (theme === 'sprawl' || theme.indexOf('vault_') === 0) return true;
     if (theme === 'patch') { px(X, Y, TS, TS, '#1f1c19'); for (var p = 0; p < TS; p += 4) { px(X, Y + p, TS, 1, '#0c0b0a'); px(X + ((x * 5 + p) % 12), Y + p + 1, 1, 1, '#5a5550'); } return true; }   // boardwalk
     if (theme === 'upper') { px(X, Y, TS, TS, '#24242c'); px(X, Y, TS, 1, '#34343e'); px(X, Y, 1, TS, '#34343e'); if (tile(x, y - 1) !== '=' && tile(x, y - 1) !== 'G') px(X, Y, TS, 1, '#e8e8f0'); if (tile(x, y + 1) !== '=' && tile(x, y + 1) !== 'G') px(X, Y + TS - 1, TS, 1, '#a8a8b4'); return true; }
     if (theme === 'line' || theme === 'cold') { px(X, Y, TS, TS, '#16161c'); for (var g = 0; g < TS; g += 2) px(X + g, Y, 1, TS, '#22222a'); px(X, Y, 1, TS, '#8a8a96'); px(X + TS - 1, Y, 1, TS, '#4a4a56'); return true; }
     return false;
   }
   var fieldX = function (px, theme, X, Y, x, y) {
+    if (theme === 'sprawl' || theme.indexOf('vault_') === 0) return true;
     if (theme === 'patch') { for (var j = 0; j < 4; j++) { var bx = X + Math.floor(hs(x * 5 + j) * 11), by = Y + Math.floor(hs(y * 7 + j * 3) * 11), w = 3 + Math.floor(hs(x + y + j) * 4); px(bx, by, w, 3, ['#2a2725', '#3a3633', '#1c1a18', '#4a4540'][j]); px(bx, by, w, 1, '#5a554f'); } return true; }   // salvage heaps
     if (theme === 'upper') { px(X, Y, TS, TS, x % 2 ? '#1d2124' : '#191c1f'); px(X, Y, 1, TS, 'rgba(255,255,255,.03)'); return true; }   // striped lawn
     if (theme === 'cold') { for (var d = 0; d < 3; d++) { var dy = Y + 3 + d * 5; for (var i = 0; i < TS; i++) px(X + i, dy + Math.round(Math.sin((i + x * 16) / 4 + d) * 1), 1, 1, 'rgba(220,236,250,' + (.12 + d * .06) + ')'); } return true; }   // frost drifts
     return false;
   }
   var voidX = function (px, theme, X, Y, x, y, tile) {
+    if (theme === 'sprawl') {   // the data sea: dark swell, rows of faint current
+      px(X, Y, TS, TS, '#060709'); for (var w2 = (y % 2) * 2; w2 < TS; w2 += 4) px(X + Math.floor(hs(x * 5 + y + w2) * 8), Y + w2, 5, 1, '#0f1116');
+      if (tile(x, y - 1) !== '~' && tile(x, y - 1) !== 'r') px(X, Y, TS, 2, '#1a1c22');
+      return true;
+    }
     if (theme === 'line') {   // the tracks
       px(X, Y, TS, TS, '#08080a'); for (var s = 1; s < TS; s += 4) px(X + s, Y, 2, TS, '#121216');
       if (tile(x, y - 1) !== '~') { px(X, Y + 4, TS, 2, '#6a6a76'); px(X, Y + 4, TS, 1, '#d0d0da'); }
@@ -577,6 +655,7 @@
     return false;
   }
   var wallX = function (px, theme, X, Y, x, y, tile) {
+    if (theme.indexOf('vault_') === 0) return paintVault(px, theme, X, Y, x, y, tile);
     if (theme === 'line') { px(X, Y, TS, TS, '#1e1e26'); for (var r = 0; r < TS; r += 4) px(X, Y + r, TS, 1, '#121218'); for (var c = 0; c < TS; c += 8) px(X + c + ((Math.floor(Y / 4)) % 2 ? 4 : 0), Y, 1, TS, '#121218'); px(X, Y + 10, TS, 2, '#d0d0da'); return true; }
     if (theme === 'patch') { var h = 10 + Math.floor(hs(x * 3 + y) * 6); px(X, Y, TS, TS, '#0a0909'); px(X, Y + TS - h, TS, h, ['#2a2725', '#22201e', '#33302d'][x % 3]); for (var k = X + 1; k < X + TS; k += 3) px(k, Y + TS - h, 1, h, '#151312'); px(X, Y + TS - h, TS, 1, '#6a655f'); if (hs(x + y * 5) > .7) px(X + 4, Y + TS - h + 3, 2, 2, '#8a857f'); return true; }
     if (theme === 'upper') { px(X, Y, TS, TS, '#c8c8d0'); px(X, Y, TS, 3, '#2a3034'); for (var l = 0; l < TS; l += 3) px(X + l, Y, 2, 2, '#3c454a'); px(X, Y + 3, TS, 1, '#ffffff'); px(X, Y + TS - 2, TS, 2, '#8a8a94'); px(X + TS - 1, Y + 3, 1, TS - 3, '#a0a0aa'); return true; }
@@ -844,7 +923,7 @@
   /* ---------- the sky beyond the walls ---------- */
   function paintSky(g, theme, w, pad) {
     var px = P(g);
-    var under = theme === 'undercroft' || theme === 'line' || theme === 'cold' || theme === 'clinic';
+    var under = theme === 'undercroft' || theme === 'line' || theme === 'cold' || theme === 'clinic' || theme.indexOf('vault_') === 0;
     if (theme === 'margin') { g.fillStyle = '#ececf0'; g.fillRect(0, 0, w, pad); return; }
     var sk = g.createLinearGradient(0, 0, 0, pad); sk.addColorStop(0, '#020203'); sk.addColorStop(1, under ? '#0a0a0d' : '#14141b'); g.fillStyle = sk; g.fillRect(0, 0, w, pad);
     if (under) {   // underground: a ceiling of pipes and cable
@@ -866,6 +945,96 @@
     px(w * .8, 4, 1, pad - 4, 'rgba(236,236,246,.25)');
   }
 
+  /* ---------- markers for places out on the Sprawl ---------- */
+  function siteIcon(g0, o0, s, litFn) {   // drawn at double detail on a scratch canvas, then set down half again as big as its two tiles
+    var SC = s.kind === 'tether' ? 1 : 1.5, cw = 48, chh = 200, cv = mk(cw, chh), co = mk(cw, chh), g = cv.getContext('2d'), o = co.getContext('2d');
+    var ox = s.x * TS + 16 - cw * SC / 2, oy = s.y * TS + 30 - 170 * SC;
+    siteDraw(g, o, { x: 0, y: 0, kind: s.kind, tall: s.tall, glow: s.glow, seed: s.x * 7 + s.y * 13 }, 8, 140);
+    g0.imageSmoothingEnabled = false; o0.imageSmoothingEnabled = false;
+    g0.drawImage(cv, 0, 0, cw, chh, Math.round(ox), Math.round(oy), Math.round(cw * SC), Math.round(chh * SC));
+    o0.drawImage(co, 0, 0, cw, chh, Math.round(ox), Math.round(oy), Math.round(cw * SC), Math.round(chh * SC));
+  }
+  function siteDraw(g, o, s, DX, DY) {
+    var px0 = P(g), po0 = P(o), px = function (x, y, w, h, c) { px0(x + DX, y + DY, w, h, c); }, po = function (x, y, w, h, c) { po0(x + DX, y + DY, w, h, c); }, X = 0, Y = 0, rnd = R(s.seed || 1), kind = s.kind || 'city'; rnd = R(s.x * 7 + s.y), kind = s.kind || 'city';
+    g.fillStyle = 'rgba(0,0,0,.45)'; g.beginPath(); g.ellipse(DX + 16, DY + 29, 16, 4, 0, 0, 7); g.fill();
+    if (kind === 'tether') {   // the tether: a cable of light from the sea to the sky
+      px(X + 6, Y + 14, 20, 16, '#1c1c24'); px(X + 6, Y + 14, 20, 2, '#8a8a96'); px(X + 10, Y + 18, 12, 10, '#0c0c10');
+      for (var ty = -140; ty < 18; ty += 2) { po(X + 15, Y + ty, 2, 2, ty % 6 ? '#c8c8d2' : '#ffffff'); }
+      po(X + 13, Y - 140, 6, 2, '#ffffff');
+      return;
+    }
+    if (kind === 'chip') {   // firmware: a die in the sea, pins glinting
+      px(X + 4, Y + 8, 24, 20, '#1a1a20'); px(X + 4, Y + 8, 24, 2, '#6a6a76'); px(X + 8, Y + 12, 16, 12, '#2a2a32'); px(X + 10, Y + 14, 4, 4, '#e8e8f0');
+      for (var pn = 0; pn < 6; pn++) { px(X + 5 + pn * 4, Y + 6, 2, 2, '#9a9aa6'); px(X + 5 + pn * 4, Y + 28, 2, 2, '#9a9aa6'); }
+      return;
+    }
+    if (kind === 'cave') {   // a dungeon mouth in the hillside
+      px(X, Y + 10, 32, 20, '#2a2a32'); for (var cr = 0; cr < 10; cr++) px(X + cr * 1.6, Y + 10 - cr, 32 - cr * 3.2, 1, cr < 2 ? '#8a8a96' : '#3a3a44');
+      px(X + 9, Y + 14, 14, 16, '#030304'); px(X + 11, Y + 12, 10, 2, '#030304'); px(X + 9, Y + 14, 1, 16, '#6a6a76');
+      if (s.glow) px(X + 15, Y + 20, 2, 2, '#ffffff');
+      return;
+    }
+    if (kind === 'ruin') {   // broken columns and a doorway
+      [[1, 18], [7, 24], [24, 20], [29, 14]].forEach(function (c) { px(X + c[0], Y + 30 - c[1], 3, c[1], '#5a5a66'); px(X + c[0], Y + 30 - c[1], 1, c[1], '#9a9aa6'); });
+      px(X + 11, Y + 8, 11, 22, '#3a3a44'); px(X + 11, Y + 8, 11, 2, '#c8c8d2'); px(X + 14, Y + 14, 5, 16, '#050506');
+      return;
+    }
+    if (kind === 'tower') {   // a lone tower
+      px(X + 10, Y - 14, 12, 44, '#2a2a32'); px(X + 10, Y - 14, 2, 44, '#7a7a86'); px(X + 8, Y - 16, 16, 3, '#9a9aa6');
+      for (var tw = 0; tw < 7; tw++) if (rnd() > .4) px(X + 14 + (tw % 2) * 4, Y - 10 + tw * 5, 2, 2, '#d8d8e0');
+      px(X + 14, Y + 22, 4, 8, '#050506'); po(X + 15, Y - 20, 2, 4, '#ffffff');
+      return;
+    }
+    // a district: a little skyline behind a wall, its windows lit
+    var n = 4 + Math.floor(rnd() * 2);
+    for (var i = 0; i < n; i++) {
+      var bw = 5 + Math.floor(rnd() * 4), bh = 10 + Math.floor(rnd() * 16) + (s.tall || 0), bx = X + 1 + Math.floor(i * 30 / n), by = Y + 26 - bh;
+      px(bx, by, bw, bh, ['#3c3c48', '#4a4a58', '#33333e'][i % 3]); px(bx, by, 1, bh, '#8a8a98'); px(bx, by, bw, 1, '#c8c8d4'); px(bx + bw - 1, by, 1, bh, '#26262e');
+      for (var wy = by + 3; wy < Y + 24; wy += 3) for (var wx = bx + 2; wx < bx + bw - 1; wx += 2) if (rnd() > .5) px(wx, wy, 1, 1, rnd() > .3 ? '#f4f4fa' : '#8a8a96');
+    }
+    px(X - 1, Y + 24, 34, 6, '#5a5a66'); px(X - 1, Y + 24, 34, 1, '#e0e0ea'); px(X - 1, Y + 29, 34, 1, '#2a2a32'); for (var cz = 0; cz < 34; cz += 4) { px(X - 1 + cz, Y + 22, 2, 2, '#5a5a66'); px(X - 1 + cz, Y + 22, 2, 1, '#c8c8d4'); }
+    px(X + 13, Y + 25, 6, 5, '#0a0a0e'); px(X + 13, Y + 25, 6, 1, '#d8d8e0');
+  }
+  // the Packet: a white hover-skiff that rides the data sea on a field of light
+  function packet(c, X, Y, t, dir, moving, layer) {
+    var bob = Math.round(Math.sin(t * 4) * 1), side = dir === 'left' || dir === 'right', fl = Math.floor(t * 24) % 2, pulse = .5 + .5 * Math.sin(t * 6);
+    c.save(); c.translate(Math.round(X + 8), Math.round(Y + bob + 16)); c.scale(1.5, 1.5); c.translate(0, -16);   // half again Vee's width: he rides in it, not on it
+    if (dir === 'left') c.scale(-1, 1);
+    if (layer === 'front') {   // the hull in front of Vee: hides his legs, glass over his chest
+      if (side) { px2(-12, 10, 25, 4, '#d8d8e2'); px2(-12, 10, 25, 1, '#ffffff'); px2(-12, 13, 25, 1, '#8a8a98'); px2(-10, 11, 21, 1, '#2a2a34'); for (var l2 = -9; l2 < 10; l2 += 3) px2(l2, 11, 1, 1, l2 % 2 ? '#ffffff' : '#6a6a78'); px2(4, 4, 6, 6, 'rgba(12,14,22,.55)'); px2(9, 5, 1, 5, 'rgba(12,14,22,.7)'); px2(5, 4, 3, 1, 'rgba(200,214,240,.8)'); }
+      else { px2(-9, 11, 18, 4, '#d8d8e2'); px2(-9, 11, 18, 1, '#ffffff'); px2(-9, 14, 18, 1, '#8a8a98'); if (dir !== 'up') { px2(-6, 6, 12, 5, 'rgba(12,14,22,.45)'); px2(-5, 6, 4, 1, 'rgba(200,214,240,.8)'); px2(-8, 12, 3, 2, '#ffffff'); px2(5, 12, 3, 2, '#ffffff'); } }
+      c.restore(); return;
+    }
+    function px2(x, y, w, h, col) { c.fillStyle = col; c.fillRect(x, y, w, h); }
+    function px(x, y, w, h, col) { c.fillStyle = col; c.fillRect(x, y, w, h); }
+    // the hover field: a glow on the water and rings rippling out from under the hull
+    c.fillStyle = 'rgba(210,224,255,' + (.16 + .1 * pulse) + ')'; c.beginPath(); c.ellipse(0, 18 - bob, side ? 20 : 15, 3.5, 0, 0, 7); c.fill();
+    for (var r = 0; r < 2; r++) { var rp = (t * .9 + r * .5) % 1; c.strokeStyle = 'rgba(230,238,255,' + (.35 * (1 - rp)) + ')'; c.lineWidth = 1; c.beginPath(); c.ellipse(0, 18 - bob, (side ? 14 : 10) + rp * 12, 2 + rp * 2, 0, 0, 7); c.stroke(); }
+    if (side) {   // long and low, nose forward, twin engines at the stern
+      if (moving) for (var w = 0; w < 7; w++) { var ph = (t * 2.6 + w / 7) % 1; px(-20 - ph * 26, 11 + (w % 3) - bob * 0, 3 - Math.floor(ph * 2), 1, 'rgba(236,242,255,' + (.7 * (1 - ph)) + ')'); }
+      px(-17, 14, 30, 2, '#14141a'); px(-15, 16, 24, 1, '#0a0a0e');                                       // keel
+      px(-18, 9, 31, 5, '#d8d8e2'); px(-18, 9, 31, 1, '#ffffff'); px(-18, 13, 31, 1, '#8a8a98');           // hull
+      px(13, 10, 3, 3, '#d8d8e2'); px(16, 11, 2, 2, '#c8c8d4'); px(18, 12, 1, 1, '#9a9aa8'); px(13, 10, 3, 1, '#ffffff');   // the nose
+      px(-6, 10, 1, 3, '#7a7a88'); px(4, 10, 1, 3, '#7a7a88');                                             // panel seams
+      px(-14, 11, 24, 1, '#2a2a34'); for (var l = -13; l < 10; l += 3) px(l, 11, 1, 1, l % 2 ? '#ffffff' : '#6a6a78');   // a running light strip
+      px(-6, 5, 14, 4, '#0c0c12'); px(-4, 4, 10, 1, '#0c0c12'); px(-5, 5, 3, 1, '#9aa4bc'); px(6, 6, 2, 2, '#3a4458');   // canopy glass, catching the light
+      px(-19, 3, 4, 7, '#c8c8d4'); px(-19, 2, 2, 1, '#ffffff'); px(-18, 4, 1, 5, '#ffffff'); px(-16, 5, 1, 3, fl ? '#ffffff' : '#6a6a78');   // tail fin
+      px(-22, 9, 5, 4, '#3a3a46'); px(-22, 9, 5, 1, '#9a9aa8');                                            // engine pods
+      px(-24, 10, 2, 2, '#ffffff'); px(-26 - fl, 10, 2 + fl, 2, 'rgba(236,242,255,' + (.6 + .3 * pulse) + ')'); px(-29 - fl * 2, 10, 3, 2, 'rgba(200,214,255,.3)');   // thrust
+      px(18, 12, 3, 1, 'rgba(255,255,255,' + (.4 + .4 * pulse) + ')');                                      // headlight
+    } else {      // seen from the front or back: a broad hull between two outrigger pods
+      var front = dir !== 'up';
+      if (moving) for (var w2 = 0; w2 < 6; w2++) { var ph2 = (t * 2.6 + w2 / 6) % 1, sx = w2 % 2 ? -10 : 10; px(sx - 1, front ? 4 - ph2 * 14 : 19 + ph2 * 12, 2, 2, 'rgba(236,242,255,' + (.6 * (1 - ph2)) + ')'); }
+      px(-9, 9, 18, 6, '#d8d8e2'); px(-9, 9, 18, 1, '#ffffff'); px(-9, 14, 18, 1, '#8a8a98'); px(-7, 15, 14, 2, '#14141a');   // hull
+      px(-14, 10, 5, 5, '#c8c8d4'); px(9, 10, 5, 5, '#c8c8d4'); px(-14, 10, 5, 1, '#ffffff'); px(9, 10, 5, 1, '#ffffff');       // outrigger pods
+      px(-13, 15, 3, 1, 'rgba(236,242,255,' + (.5 + .4 * pulse) + ')'); px(10, 15, 3, 1, 'rgba(236,242,255,' + (.5 + .4 * pulse) + ')');   // hover pads
+      px(-11, 12, 2, 1, '#2a2a34'); px(9, 12, 2, 1, '#2a2a34'); px(-12, 10, 1, 5, '#6a6a78'); px(11, 10, 1, 5, '#6a6a78');
+      if (front) { px(-5, 5, 10, 4, '#0c0c12'); px(-4, 5, 3, 1, '#9aa4bc'); px(-8, 11, 3, 2, '#ffffff'); px(5, 11, 3, 2, '#ffffff'); px(-1, 12, 2, 1, '#6a6a78'); }   // canopy and headlights
+      else { px(-3, 3, 6, 6, '#c8c8d4'); px(-3, 3, 6, 1, '#ffffff'); px(-1, 4, 2, 4, fl ? '#ffffff' : '#7a7a88'); px(-8, 11, 4, 3, '#3a3a46'); px(4, 11, 4, 3, '#3a3a46'); px(-7, 12, 2, 1 + fl, '#ffffff'); px(5, 12, 2, 1 + fl, '#ffffff'); }   // fin and thrusters
+    }
+    c.restore();
+  }
+
   /* ---------- paint a whole district ---------- */
   function paintArea(area, map, litFn) {
     var W = map[0].length, H = map.length, need = 0;
@@ -875,6 +1044,7 @@
     paintSky(g, area.theme, W * TS, pad);
     g.translate(0, pad); o.translate(0, pad);
     var fpos = paintGround(g, map, area.theme, W, H, o);
+    (area.sites || []).forEach(function (s2) { siteIcon(g, o, s2, litFn); });
     (area.blds || []).forEach(function (b) {
       if (!b.w || !PAINT[b.kind]) return;
       var Wp = b.w * TS, Hf = b.h * TS, rise = (b.rise || 0) * TS, Ht = Hf + rise, c = mk(Wp, Ht), cg = c.getContext('2d'), L = [];
@@ -905,6 +1075,8 @@
         else if (tl === 'c') { if (st.opened(x, y)) { px(X + 2, Y + 5, 12, 4, '#0a0a0e'); px(X + 2, Y + 5, 12, 1, '#3a3a46'); } else { px(X + 7, Y + 7, 2, 3, 'rgba(255,255,255,' + (.5 + .5 * Math.sin(t * 4 + x)) + ')'); } }
         else if (tl === 'E') { var ph = (t * 1.5 + x * .3 + y * .3) % 1; px(X + 4, Y + 4 + Math.floor(ph * 8), 8, 1, 'rgba(236,236,244,' + (.35 * (1 - ph)) + ')'); }
         else if (tl === 'G') { var open = st.gateOpen(x, y); for (var fb = 0; fb < 3; fb++) px(X + 4 + fb * 3, Y, 1, TS, 'rgba(230,230,240,' + (open ? .08 : .25 + .3 * Math.abs(Math.sin(t * 3 + fb))) + ')'); if (!open) px(X + 3, Y + Math.floor((t * 20) % 15), 10, 1, 'rgba(255,255,255,.5)'); }
+        else if (tl === '~' && th === 'sprawl') { var gph = hs(x * 3 + y * 7); if (gph > .6) { var gp = (t * .5 + gph * 3) % 1; px(X + Math.floor(gp * 12), Y + 4 + Math.floor(gph * 8), 3, 1, 'rgba(200,210,230,' + (.22 * Math.sin(gp * Math.PI)) + ')'); } }
+        else if (tl === 'r' && th === 'sprawl') { for (var rb = 0; rb < 3; rb++) { var rp = (t * 1.4 + rb / 3 + x * .1) % 1; px(X + 3 + rb * 4, Y + Math.floor(rp * 15), 1, 2, 'rgba(220,230,250,' + (.6 * (1 - rp)) + ')'); } }
         else if (tl === '~' && th === 'undercroft') { px(X + ((Math.floor(t * 10) + x * 5) % 16), Y + 6 + (x % 3), 4, 1, 'rgba(200,200,220,.25)'); }
         else if (tl === '~' && th === 'gardens') { if (hs(x + y * 3 + Math.floor(t * 2)) > .7) px(X + Math.floor(hs(x * 7 + Math.floor(t)) * 12), Y + 8, 4, 1, 'rgba(200,210,224,.2)'); }
         else if (tl === '=' && (th === 'plaza' || th === 'commons' || th === 'halflight') && (x + y) % 5 === 0) { var u = (t * .7 + x * .13) % 1; if (tile(x + 1, y) === '=' || tile(x - 1, y) === '=') px(X + Math.floor(u * 14), Y + 7, 3, 2, 'rgba(245,245,250,.6)'); else px(X + 7, Y + Math.floor(u * 14), 2, 3, 'rgba(245,245,250,.6)'); }
@@ -979,13 +1151,15 @@
     var SP = window.VondsSprite;
     if (SP && SP.person) {
       // a person, drawn like Vee: the same face, body and outline, with their own hair and clothes
-      var img = o.hero && SP.hero ? SP.hero(o.hero, 'front', 0) : SP.person(o.p || {}); if (SP.hd && window.__afterliftHD) img = SP.hd(img);   // people get the same 16-bit pass as Vee; heroes have their own sprites
+      var wk = o.__walk || (SP.walk ? SP.walk(o.hero || SP.personHero(o.p), o.dir || 'down', -1) : { img: SP.person(o.p || {}) });   // everyone has a front, back and side, like Vee
+      var img = wk.img; if (SP.hd && window.__afterliftHD) img = SP.hd(img);   // and the same 16-bit pass
       var kid = o.look === 'kid', sc = kid ? .74 : 1, w = 22 * sc, h = 27 * sc;
       var alpha = o.look === 'warden' || o.solid ? 1 : (o.fade != null ? o.fade : .82);
       if (o.flick && Math.random() < .08) alpha *= .3;
-      var bob = Math.floor(t * 1.4 + (o.x || 0)) % 6 === 0 ? 1 : 0;   // a breath now and then
+      var bob = wk.bob != null && o.__walk && o.__walk.moving ? -wk.bob : Math.floor(t * 1.4 + (o.x || 0)) % 6 === 0 ? 1 : 0;   // a step's bounce, or a breath now and then
       c.save(); c.imageSmoothingEnabled = false; c.globalAlpha = alpha;
-      c.drawImage(img, Math.round(X + 8 - w / 2), Math.round(Y + 16 - h + bob), Math.round(w), Math.round(h));
+      if (wk.flip) { c.translate(Math.round(X + 8 + w / 2), 0); c.scale(-1, 1); c.drawImage(img, 0, Math.round(Y + 16 - h + bob), Math.round(w), Math.round(h)); }
+      else c.drawImage(img, Math.round(X + 8 - w / 2), Math.round(Y + 16 - h + bob), Math.round(w), Math.round(h));
       c.restore();
       if (o.look === 'holo') {   // a hologram: brighter, scanned, standing on its pad
         c.fillStyle = 'rgba(230,230,246,' + (.12 + .06 * Math.sin(t * 4)) + ')'; c.fillRect(Math.round(X + 8 - w / 2), Math.round(Y + 16 - h), Math.round(w), Math.round(h));
@@ -1406,5 +1580,5 @@
     for (var j = -14; j <= 14; j++) { cx.strokeStyle = 'rgba(200,200,230,' + (.12 - Math.abs(j) * .006) + ')'; cx.beginPath(); cx.moveTo(W / 2 + j * 10 + .5, hy); cx.lineTo(W / 2 + j * 36 + .5, H); cx.stroke(); }
   };
 
-  window.MeridianArt = { TS: TS, paintArea: paintArea, live: live, person: person, wagon: wagon, backdrop: backdrop, text: text, textW: textW, hs: hs };
+  window.MeridianArt = { TS: TS, paintArea: paintArea, live: live, packet: packet, person: person, wagon: wagon, backdrop: backdrop, text: text, textW: textW, hs: hs };
 })();

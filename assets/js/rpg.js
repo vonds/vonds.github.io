@@ -71,8 +71,10 @@
       { id: 'byte', name: 'Byte', heal: 35, tip: 'Eight bits. Restores 35 HP or 14% of max HP.' },
       { id: 'kb', short: 'KB', name: 'Kilobyte', heal: 70, tip: 'A thousand bytes. Restores 70 HP or 28% of max HP.' },
       { id: 'mb', short: 'MB', name: 'Megabyte', heal: 140, tip: 'A million bytes. Restores 140 HP or 55% of max HP.' },
-      { id: 'gb', short: 'GB', name: 'Gigabyte', heal: 9999, tip: 'A billion bytes. Restores all HP.' }
+      { id: 'gb', short: 'GB', name: 'Gigabyte', heal: 9999, tip: 'A billion bytes. Restores all HP.' },
+      { id: 'av', short: 'AV', name: 'Antivirus', heal: 0, cure: 1, tip: 'Scrubs one process clean: cures poison, silence, slow, daze and weakness.' }
     ];
+    if (save.items && save.items.av == null) save.items.av = 2;
     if (!save.items) save.items = { bit: 3, byte: 1 };
     if (!save.party) save.party = { has: {}, active: [], hp: {} };   // companions: who has joined, who's walking with Vee (two at most), their HP
     if (save.coffee) { save.items.bit = (save.items.bit || 0) + save.coffee; } delete save.coffee;   // older saves
@@ -154,11 +156,12 @@
     function key(x, y) { return x + ',' + y; }
     function gateOpen(x, y) { var g = AREA.gates && AREA.gates[key(x, y)]; if (!g) return false; return g.need ? !!g.need(G) : false; }
     function wagonAt() { if (!AREA.wagon) return null; var s = isLit('wagon') ? 2 : Math.min(2, F.wagon || 0); return AREA.wagon[s]; }
-    function visNpcs() { return (AREA.npcs || []).filter(function (p) { return !(COMP[p.id] && inParty(p.id)); }); }   // companions who joined have left their post
+    function visNpcs() { return (AREA.npcs || []).filter(function (p) { return !p.hide && !(COMP[p.id] && inParty(p.id)) && !(p.gone && F[p.gone]); }); }   // companions who joined have left their post; beaten bosses have left the city   // companions who joined have left their post
     function npcAt(x, y) { var n = null; visNpcs().forEach(function (p) { if (p.x === x && p.y === y) n = p; }); return n; }
     function blocked(x, y) {
       var t = tile(x, y);
-      if ('TX~pdsocFlG'.indexOf(t) >= 0 && !(t === 'G' && gateOpen(x, y))) return true;
+      if (me.boat) { if ('TXMpdsocFlG'.indexOf(t) >= 0) return true; } else
+      if ('TX~pdsocFlGMr'.indexOf(t) >= 0 && !(t === 'G' && gateOpen(x, y))) return true;
       if (npcAt(x, y)) return true;
       var w = wagonAt(); if (w && y === w[1] && (x === w[0] || x === w[0] + 1)) return true;
       return false;
@@ -170,8 +173,18 @@
       setTimeout(lifeLoad, 0);
       AREA = WD.areas[id]; AREA.id = id; MAP = stamp(AREA); paintCurrent();
       save.area = id; save.x = me.x = x; save.y = me.y = y; me.px = x * TS; me.py = y * TS; me.moving = false; me.safe = 4;
-      save.seen[id] = 1; store(); placeCam();
+      save.seen[id] = 1; me.boat = id === 'sprawl' && !!save.boat && '~r'.indexOf(tile(x, y)) >= 0 ? 1 : 0; if (!me.boat) save.boat = 0; zoneAt(); store(); placeCam();
     }
+    // out on the Sprawl, bugs are as strong as the nearest district's
+    var lastSite = null;
+    function siteHint() {   // walking up to a place on the Sprawl names it
+      if (!AREA.sites || !areaEl) return; var s = AREA.sites.filter(function (q) { return me.x >= q.x - 1 && me.x <= q.x + 2 && me.y >= q.y - 1 && me.y <= q.y + 3; })[0];
+      if (!s || s === lastSite) { if (!s) lastSite = null; return; } lastSite = s;
+      var A2 = WD.areas[s.id]; if (!A2) return; var known = save.seen[s.id] || A2.open;
+      areaEl.querySelector('b').textContent = known ? A2.name : '???'; areaEl.querySelector('span').textContent = known ? (A2.sub || '') + (A2.enc ? ' Bugs: level ' + A2.lv + (A2.lvMax && A2.lvMax !== A2.lv ? '–' + A2.lvMax : '') + '.' : '') : 'Vee hasn’t found his way in from the city yet.';
+      areaEl.classList.add('on'); clearTimeout(areaT); areaT = setTimeout(function () { areaEl.classList.remove('on'); }, 2600);
+    }
+    function zoneAt() { siteHint(); if (!AREA.zone) return; var z = AREA.zone(me.x, me.y, tile(me.x, me.y)); if (!z) return; AREA.lv = z.lv; AREA.lvMax = z.lvMax; AREA.enc.foes = z.foes; AREA.tier = z.tier; }
     function placeCam() {
       var mw = MAP[0].length * TS, mh = MAP.length * TS;
       cam.x = mw <= W ? (mw - W) / 2 : Math.max(0, Math.min(mw - W, me.px + 8 - W / 2));
@@ -213,7 +226,7 @@
       f: F, save: save,
       recruit: function (id) { recruit(id); }, inParty: function (id) { return inParty(id); },
       say: function (who, lines, choices, done) { say(who, lines, choices, done); },
-      boss: function (id, onWin) { startBattle({ boss: id, onWin: onWin }); },
+      boss: function (id, onWin) { FX.shake = .5; FX.flash = .35; held = null; setTimeout(function () { startBattle({ boss: id, onWin: onWin }); }, 550); },
       puzzle: function (title, steps, done) { openPuzzle(title, steps, done); },
       rest: function () { save.hp = maxHp(); Object.keys(save.party.has).forEach(function (id) { if (COMP[id]) save.party.hp[id] = cMax(id); }); save.rest = [AREA.id, me.x, me.y]; store(); },
       give: function (it, n) { n = n || 1; if (ITEMS.some(function (x) { return x.id === it; })) save.items[it] = (save.items[it] || 0) + n; else save.keys[it] = (save.keys[it] || 0) + n; store(); },
@@ -234,14 +247,91 @@
       readLog: function (id) { readLog(id); },
       logCount: function () { return WD.logOrder.filter(function (k) { return F[k]; }).length; },
       has: function (it) { return (save.keys[it] || 0) > 0; },
-      light: function (id) { save.lit[id] = 1; store(); repaint(); },
+      light: function (id) { save.lit[id] = 1; store(); repaint(); FX.flash = 1; FX.shake = .6; sfx('enc'); },
       lit: isLit, lights: lights,
       atlas: function () { mode = 'atlas'; areaEl.classList.remove('on'); },
       link: function (url) { window.open(url, '_blank', 'noopener'); },
       note: function (t) { log(t); },
       xp: function (n) { var l = gainXp(n); if (l.length) afterTalk.push.apply(afterTalk, l); },
-      ending: function (kind) { runEnding(kind); }
+      ending: function (kind) { runEnding(kind); },
+      scene: function (steps, done) { scene(steps, function () { endScene(); if (done) done(); }); },
+      pos: function () { return [me.x, me.y]; }, area: function () { return AREA.id; }, party: function () { return activeParty(); }
     };
+    /* ---------- staged scenes: people walk in, turn, react; the camera shakes; the screen flashes ---------- */
+    var SCENE = null, FX = { shake: 0, flash: 0 };
+    function actorOf(id) { if (id === 'vee') return 'vee'; var L = AREA.npcs || []; return L.filter(function (n) { return n.id === 'sc_' + id; })[0] || L.filter(function (n) { return n.id === id && visNpcs().indexOf(n) >= 0; })[0] || null; }
+    function freeNear(x, y, avoid) {
+      var opts = [[0, 1], [1, 0], [-1, 0], [0, -1], [1, 1], [-1, 1], [1, -1], [-1, -1], [0, 2], [2, 0], [-2, 0], [0, -2]];
+      for (var i = 0; i < opts.length; i++) { var nx = x + opts[i][0], ny = y + opts[i][1]; if (!blocked(nx, ny) && !(nx === me.x && ny === me.y) && !(avoid && avoid[nx + ',' + ny])) return [nx, ny]; }
+      return [x, y];
+    }
+    function pathTo(fx, fy, tx, ty, self) {   // shortest walkable route, ignoring the walker itself
+      var seen = {}, q = [[fx, fy, '']]; seen[fx + ',' + fy] = 1;
+      while (q.length) {
+        var p = q.shift(); if (p[0] === tx && p[1] === ty) return p[2];
+        if (p[2].length > 40) continue;
+        [['R', 1, 0], ['L', -1, 0], ['D', 0, 1], ['U', 0, -1]].forEach(function (d) {
+          var nx = p[0] + d[1], ny = p[1] + d[2], k = nx + ',' + ny; if (seen[k]) return; seen[k] = 1;
+          var n2 = npcAt(nx, ny); if (!(nx === tx && ny === ty) && (('TX~pdsocFlGMr'.indexOf(tile(nx, ny)) >= 0) || (n2 && n2 !== self) || (self !== 'vee' && nx === me.x && ny === me.y))) return;
+          q.push([nx, ny, p[2] + d[0]]);
+        });
+      }
+      return '';
+    }
+    function scene(steps, done) {
+      SCENE = { steps: steps, i: 0, done: done }; held = null;
+      (function next() {
+        if (!SCENE) return;
+        if (SCENE.i >= steps.length) { var d = SCENE.done; SCENE = null; return d && d(); }
+        var st = steps[SCENE.i++];
+        if (st.say) return say(st.say[0], st.say[1], st.say[2] || null, next);
+        if (st.dyn) { var dl = st.dyn(G); return dl ? say(dl[0], dl[1], null, next) : next(); }   // lines decided when the scene gets there
+        if (st.choose) return say(st.choose[0], st.choose[1], st.choose[2].map(function (o) { return { label: o.label, fn: function () { if (o.fn) o.fn(G); if (o.stop) SCENE.i = steps.length; else if (o.then) Array.prototype.splice.apply(steps, [SCENE.i, 0].concat(o.then)); next(); } }; }));
+        if (st.leave) {   // walk off, away from Vee, and (if they were only here for the scene) gone
+          var la = actorOf(st.leave); if (!la || la === 'vee') return next();
+          var bestT = null, bd = -1; for (var ly = la.y - 6; ly <= la.y + 6; ly++) for (var lx = la.x - 6; lx <= la.x + 6; lx++) { if (blocked(lx, ly) && !(lx === la.x && ly === la.y)) continue; var dv = Math.abs(lx - me.x) + Math.abs(ly - me.y); if (dv > bd && Math.abs(lx - la.x) + Math.abs(ly - la.y) <= 7) { var pr = pathTo(la.x, la.y, lx, ly, la); if (pr) { bd = dv; bestT = [lx, ly]; } } }
+          if (!bestT) { if (la.scene) AREA.npcs = AREA.npcs.filter(function (n4) { return n4 !== la; }); return next(); }
+          SCENE.i--; steps[SCENE.i] = { walk: st.leave, to: bestT }; steps.splice(SCENE.i + 1, 0, { vanish: st.leave }); return next();
+        }
+        if (st.vanish) { var va = actorOf(st.vanish); if (va && va !== 'vee') { if (va.scene) AREA.npcs = AREA.npcs.filter(function (n5) { return n5 !== va; }); else va.hide = 1; } return setTimeout(next, 60); }
+        if (st.actor) {
+          var at = st.at ? [me.x + st.at[0], me.y + st.at[1]] : freeNear(me.x, me.y);
+          if (st.at && (blocked(at[0], at[1]) || (at[0] === me.x && at[1] === me.y))) at = freeNear(at[0], at[1]);
+          var hero = typeof st.hero === 'string' ? (COMP[st.hero] ? COMP[st.hero].look : WD.heroes[st.hero]) : st.hero;
+          var n = { id: 'sc_' + st.actor, hero: hero, p: st.p, x: at[0], y: at[1], hx: at[0], hy: at[1], px: at[0] * TS, py: at[1] * TS, name: st.name || '', look: 'echo', solid: 1, still: 1, dir: st.dir || 'down', spd: 64, scene: 1 };
+          AREA.npcs = (AREA.npcs || []).concat([n]); return setTimeout(next, st.wait || 120);
+        }
+        if (st.walk) {
+          var a = actorOf(st.walk); if (!a) return next();
+          var route = st.path || '';
+          if (st.to) { var tx = st.to[0], ty = st.to[1]; if (st.rel) { tx += me.x; ty += me.y; } route = a === 'vee' ? pathTo(me.x, me.y, tx, ty, 'vee') : pathTo(a.x, a.y, tx, ty, a); }
+          if (st.toVee) { var tgt = freeNear(me.x, me.y); route = pathTo(a.x, a.y, tgt[0], tgt[1], a); }
+          var k = 0;
+          (function stepOne() {
+            if (!SCENE) return;
+            if (k >= route.length) { if (st.face) faceTo(a, st.face); return setTimeout(next, 80); }
+            var c = route.charAt(k++), v = { U: [0, -1], D: [0, 1], L: [-1, 0], R: [1, 0] }[c], dir = { U: 'up', D: 'down', L: 'left', R: 'right' }[c];
+            if (a === 'vee') { me.dir = dir; me.x += v[0]; me.y += v[1]; me.moving = true; }
+            else { a.dir = dir; a.x += v[0]; a.y += v[1]; a.hx = a.x; a.hy = a.y; }
+            (function wait() { if (!SCENE) return; var arrived = a === 'vee' ? !me.moving : (a.px === a.x * TS && a.py === a.y * TS); if (arrived) stepOne(); else setTimeout(wait, 30); })();
+          })();
+          return;
+        }
+        if (st.face) { faceTo(actorOf(st.who || 'vee'), st.face); return setTimeout(next, st.wait || 150); }
+        if (st.remove) { AREA.npcs = (AREA.npcs || []).filter(function (n2) { return n2.id !== 'sc_' + st.remove; }); return setTimeout(next, 100); }
+        if (st.shake) { FX.shake = st.shake; sfx('hurt'); return setTimeout(next, st.wait || 400); }
+        if (st.flash) { FX.flash = st.flash; return setTimeout(next, st.wait || 300); }
+        if (st.wait) return setTimeout(next, st.wait);
+        if (st.fn) { var r = st.fn(G, next); if (r !== 'async') next(); return; }
+        if (st.boss) { var cleanup = function () { AREA.npcs = (AREA.npcs || []).filter(function (n3) { return !n3.scene || st.keep; }); }; return startBattle({ boss: st.boss, onWin: function () { setTimeout(next, 600); } }); }
+        next();
+      })();
+    }
+    function faceTo(a, d) {
+      if (!a) return; if (typeof d === 'string' && d.length > 1 && 'updownleftright'.indexOf(d) < 0) { var b = actorOf(d); if (b) { var bx = b === 'vee' ? me.x : b.x, by = b === 'vee' ? me.y : b.y, ax = a === 'vee' ? me.x : a.x, ay = a === 'vee' ? me.y : a.y; d = Math.abs(bx - ax) >= Math.abs(by - ay) ? (bx > ax ? 'right' : 'left') : (by > ay ? 'down' : 'up'); } }
+      if (a === 'vee') me.dir = d; else { a.dir = d; a.faceLock = d; }
+    }
+    function endScene() { AREA.npcs = (AREA.npcs || []).filter(function (n) { return !n.scene; }); }
     function readLog(id) {
       var first = !F[id]; F[id] = 1; store();
       var n = WD.logOrder.filter(function (k) { return F[k]; }).length, mara = WD.logOrder.indexOf(id) >= 0;
@@ -250,7 +340,7 @@
     function openCache(x, y) {
       var k = AREA.id + ':' + key(x, y), c = AREA.caches[key(x, y)];
       if (save.opened[k]) return say('', ['An empty data cache. Someone got here first. You did.']);
-      save.opened[k] = 1; G.give(c.item, c.n);
+      save.opened[k] = 1; G.give(c.item, c.n); if (c.relic && !ownsGear(c.relic)) giveGear(c.relic);
       var it = ITEMS.filter(function (i) { return i.id === c.item; })[0];
       say('', [c.text || ('A sealed data cache. Inside: ' + (c.n > 1 ? c.n + ' ' : 'a ') + (it ? it.name.toLowerCase() + (c.n > 1 ? 's' : '') : c.item) + '.')]);
     }
@@ -262,9 +352,9 @@
     }
     function runEnding(kind) {
       F.ending = kind; store(); repaint();
-      say('', WD.endings[kind], null, function () {
-        say('', WD.endings.after, null, function () { save.lit.spire = 1; store(); repaint(); travel(['plaza', 15, 8]); });
-      });
+      scene([{ say: ['Vee', [kind === 'cut' ? 'Everything they took is up there. Everyone who’s left is down here. I choose the people.' : 'They took it a block at a time. I’m taking it back all at once.']] },
+        { flash: 1, wait: 700 }, { shake: 1.2, wait: 900 }, { say: ['', WD.endings[kind]] }, { flash: .5, wait: 400 }, { say: ['', WD.endings.after] }],
+        function () { endScene(); save.lit.spire = 1; store(); repaint(); travel(['plaza', 15, 8]); });
     }
 
     /* ---------- stats, gear and settings ---------- */
@@ -342,20 +432,22 @@
         else if (MN.slot && COMP[MN.slot]) {
           var cid = MN.slot, C = COMP[cid], on = act.indexOf(cid) >= 0;
           var bw = (save.party.bond || {})[cid] || 0;
-          h = '<div class="mn-card"><div class="mn-portrait" data-hero="' + cid + '"></div><div><h4>' + C.name + ' <span class="mn-dim">' + C.role + ' · Level ' + cLv() + '</span></h4></div></div><p class="mn-dim">' + C.bio + '</p><p class="mn-dim">Fights won together: ' + bw + (bw < 20 ? ' · they open up at ' + (bw < 8 ? 8 : 20) : '') + '</p>' +
+          h = '<div class="mn-card"><div class="mn-portrait" data-hero="' + cid + '"></div><div><h4>' + C.name + ' <span class="mn-dim">' + C.role + ' · Level ' + cLv() + '</span></h4></div></div><p class="mn-dim">' + C.bio + '</p>' + (C.arcHint ? '<p class="mn-dim">Their story: <b>' + C.story + '</b> · ' + (F['arc_' + cid] ? 'settled.' : C.arcHint) + '</p>' : '') + '<p class="mn-dim">Fights won together: ' + bw + (bw < 20 ? ' · they open up at ' + (bw < 8 ? 8 : 20) : '') + '</p>' +
             '<div class="mn-row"><span>HP</span>' + bar(cHp(cid), cMax(cid)) + '<em>' + cHp(cid) + ' / ' + cMax(cid) + '</em></div>' +
             '<div class="mn-stats"><div><span>ATK</span><b>' + cAtk(cid) + '</b></div><div><span>DEF</span><b>' + cDef(cid) + '</b></div></div>' +
-            C.skills.map(function (k) { return '<p><b>' + k.name + '</b> <span class="mn-dim">every ' + k.cd + ' turns</span><br><small>' + k.tip + '</small></p>'; }).join('');
+            C.skills.map(function (k) { var lk = skillLock(k); return '<p' + (lk ? ' class="mn-dim"' : '') + '><b>' + k.name + '</b> <span class="mn-dim">' + (lk ? lk : 'every ' + k.cd + ' turns') + '</span><br><small>' + k.tip + '</small></p>'; }).join('');
           btn('<span>' + (on ? 'Send to standby' : 'Bring into the party') + '</span><em class="mn-dim">' + act.length + ' of 2 in the party</em>', function () {
             if (on) save.party.active = act.filter(function (x) { return x !== cid; });
             else if (act.length >= 2) { MN.note = 'The party is full. Send someone to standby first.'; return renderMenu(); }
             else save.party.active = act.concat([cid]);
             store(); renderMenu();
           });
+          btn('<span>Row: ' + (save.rows && save.rows[cid] === 'back' ? 'Back' : 'Front') + '</span><em class="mn-dim">Back row: takes a third less, plain attacks hit softer</em>', function () { save.rows = save.rows || {}; save.rows[cid] = save.rows[cid] === 'back' ? 'front' : 'back'; store(); renderMenu(); });
           if (WD.talk[cid]) btn('<span>Talk</span><em class="mn-dim">Hear what ' + C.name + ' has to say</em>', function () { closeMenu(); WD.talk[cid](G); });
           btn('<span>Back</span>', function () { MN.slot = null; MN.sel = 0; renderMenu(); });
         } else {
           h = '<h4>Party · ' + act.length + ' of 2</h4>';
+          btn('<span>Vee <em class="mn-dim">Row: ' + (save.rows && save.rows.vee === 'back' ? 'Back' : 'Front') + '</em></span><em class="mn-dim">Switch row</em>', function () { save.rows = save.rows || {}; save.rows.vee = save.rows.vee === 'back' ? 'front' : 'back'; store(); renderMenu(); });
           ids.forEach(function (cid) {
             var on = act.indexOf(cid) >= 0;
             btn('<span>' + COMP[cid].name + ' <em class="mn-dim">' + COMP[cid].role + '</em></span><em>' + (on ? 'IN PARTY · ' : 'standby · ') + cHp(cid) + '/' + cMax(cid) + '</em>', function () { MN.slot = cid; MN.sel = 0; renderMenu(); });
@@ -383,6 +475,7 @@
         ITEMS.forEach(function (it) {
           var n = save.items[it.id] || 0; if (!n) return;
           btn('<span>' + it.name + '</span><em>x' + n + '</em><small>' + it.tip + '</small>', function () {
+            if (it.cure) { MN.note = 'Antivirus only matters in a fight. Statuses wear off when a battle ends.'; return renderMenu(); }
             if (save.hp >= maxHp()) { MN.note = 'HP is already full.'; return renderMenu(); }
             save.items[it.id]--; var hh = Math.min(maxHp() - save.hp, healOf(it)); save.hp += hh; MN.note = 'Vee absorbs a ' + it.name.toLowerCase() + '. +' + hh + ' HP.'; store(); renderMenu();
           });
@@ -450,6 +543,15 @@
       } else if (v === 'config') {
         h = '<h4>Configuration</h4>';
         function opt(label, k, labels) { btn('<span>' + label + '</span><em>‹ ' + labels[save.cfg[k]] + ' ›</em>', function (dir) { save.cfg[k] = (save.cfg[k] + (dir || 1) + labels.length) % labels.length; store(); renderMenu(); }, 'cfg'); }
+        btn('<span>Playtest report</span><em class="mn-dim">Copy your run’s numbers and five questions to send back</em>', function () {
+          var PT = save.pt || { t: {}, f: {}, ko: {}, run: 0, b: {} }, mins = function (v) { return Math.round(v / 60); };
+          var areas = Object.keys(PT.t).sort(function (a, b) { return PT.t[b] - PT.t[a]; }).slice(0, 10).map(function (k) { return '  ' + ((WD.areas[k] || {}).name || k) + ': ' + mins(PT.t[k]) + ' min, ' + (PT.f[k] || 0) + ' fights' + (PT.ko[k] ? ', ' + PT.ko[k] + ' terminated' : ''); });
+          var bosses = Object.keys(PT.b).filter(function (k) { return PT.b[k] > 1; }).map(function (k) { return '  ' + ((WD.bosses[k] || {}).name || k) + ': ' + PT.b[k] + ' tries'; });
+          var total = Object.keys(PT.t).reduce(function (a, k) { return a + PT.t[k]; }, 0);
+          var txt = ['AFTERLIFT PLAYTEST REPORT', 'Level ' + save.lvl + ' · ' + mins(total) + ' minutes played · ' + (save.wins || 0) + ' fights won · ' + PT.run + ' runs · ' + (save.deaths || 0) + ' terminations', 'Where the time went:'].concat(areas).concat(bosses.length ? ['Bosses that took more than one try:'].concat(bosses) : []).concat(['', 'Five questions (answer in a line each):', '1. Where did you get bored?', '2. Where were you confused about what to do next?', '3. Which fight felt unfair, and which felt great?', '4. Who was your favorite companion, and why?', '5. What would you tell a friend about this game?']).join('\n');
+          try { navigator.clipboard.writeText(txt); MN.note = 'Copied. Paste it into an email or message to whoever asked you to play.'; } catch (e) { MN.note = txt.replace(/\n/g, ' · '); }
+          renderMenu();
+        });
         opt('Text speed', 'text', CFG.textL); opt('Encounters', 'enc', CFG.encL); opt('Difficulty', 'diff', CFG.diffL); opt('Scanlines', 'scan', CFG.scanL); opt('Command hints', 'hints', CFG.scanL); opt('Sound', 'sound', CFG.scanL); if (save.cfg.retro == null) save.cfg.retro = 0; opt('Graphics', 'retro', ['16-bit', '8-bit']);
         [1, 2, 3].forEach(function (n) {
           var raw = null; try { raw = JSON.parse(localStorage.getItem('vonds-quest-slot' + n) || 'null'); } catch (e) {}
@@ -584,7 +686,8 @@
     /* ---------- interacting ---------- */
     function facing() { var d = { up: [0, -1], down: [0, 1], left: [-1, 0], right: [1, 0] }[me.dir]; return [me.x + d[0], me.y + d[1]]; }
     function interact() {
-      var f = facing(), x = f[0], y = f[1], t = tile(x, y), k = key(x, y), n = npcAt(x, y), w = wagonAt();
+      if (SCENE) return;
+      var f = facing(), x = f[0], y = f[1], t = tile(x, y), k = key(x, y), n = npcAt(x, y), w = wagonAt(); if (n) LIFE.facing = n;   // whoever Vee talks to turns to look at him
       if (n) {
         var r0 = WD.talk[n.id] ? WD.talk[n.id](G) : null, ap0 = activeParty().filter(function (id) { return id !== n.id; });
         if (ap0.length && !COMP[n.id] && Math.random() < .3) {   // the people Vee walks with have opinions about the people he talks to
@@ -610,6 +713,14 @@
       if (t === 'c' && AREA.caches[k]) return openCache(x, y);
       if (t === 's' && WD.spots[AREA.id + ':' + k]) return WD.spots[AREA.id + ':' + k](G);
       if (t === 'F' && WD.spots[AREA.id + ':F']) return WD.spots[AREA.id + ':F'](G);
+      if (AREA.id === 'sprawl' && F.packet) {   // the Packet: board anywhere, step off onto land
+        if (me.boat) {
+          if ('~r'.indexOf(tile(me.x, me.y)) < 0) { me.boat = 0; save.boat = 0; store(); return; }   // already on land: just step off
+          if ('~rTXMpdsocFlG'.indexOf(t) >= 0 || n) return say('', ['The Packet can only put Vee ashore on open land. Pull up beside a beach.']);
+          me.boat = 0; save.boat = 0; store(); return tryMove(me.dir);
+        }
+        if ('~r'.indexOf(t) >= 0 || t === ',' || t === '.' || t === '=' || t === 'f' || t === 'x') { me.boat = 1; save.boat = 1; store(); sfx && sfx('enc'); return; }
+      }
       if (t === 'p') return say('', [['The tree is mostly wireframe. You can see the numbers through it.', 'Bark, a texture. Leaves, a texture. This one still has both. For now.', 'A tag on the trunk: SPECIES 0x2F, OAK (APPROX.).'][Math.floor(hs(x * 7 + y) * 3)]]);
       if (t === 'G' && !gateOpen(x, y)) { var gd = AREA.gates[k]; return say('', (gd && gd.shut) || (AREA.id === 'plaza' ? ['The east gate is sealed. A panel reads: FIVE LANDMARKS REQUIRED.', 'Answering: ' + lights() + ' of 6.'] : ['The east gate won’t open while the keep is compromised.'])); }
     }
@@ -883,18 +994,19 @@
     function rnd(a, b) { return a + Math.floor(Math.random() * (b - a + 1)); }
     function living() { return B.foes.filter(function (f) { return !f.dead; }); }
     function startBattle(force) {
+      var PT0 = save.pt = save.pt || { t: {}, f: {}, ko: {}, run: 0, b: {} }; PT0.f[AREA.id] = (PT0.f[AREA.id] || 0) + 1; if (force && force.boss) PT0.b[force.boss] = (PT0.b[force.boss] || 0) + 1;
       sfx('enc'); var opt = typeof force === 'object' ? force : {}, bossDef = opt.boss ? WD.bosses[opt.boss] : null; if (typeof force === 'object') force = 0;
-      var enc = AREA.enc || WD.areas.plaza.enc, tier = AREA.tier || 1, kinds = enc.foes || Object.keys(FOES), r = Math.random(), n = force || (r < .3 ? 1 : r < .55 ? 2 : r < .75 ? 3 : r < .87 ? 4 : r < .95 ? 5 : 6);
+      var enc = AREA.enc || WD.areas.plaza.enc, tier = AREA.tier || 1, kinds = enc.foes || Object.keys(FOES), r = Math.random(), n = force || (r < .3 ? 1 : r < .6 ? 2 : r < .82 ? 3 : r < .94 ? 4 : r < .985 ? 5 : 6);
       if (!force) n = Math.min(n, enc.max || 6); if (bossDef) n = 1;
       // up to three across; a back row for groups of four or more. Bigger groups hit softer and break faster.
       var SLOTS = LAYOUT[n];
       var sc = n <= 2 ? 3 : 2, foes = [], soft = [1, 1, .8, .62, .5, .42, .36][n];
       endTalk();
       for (var i = 0; i < n; i++) {
-        var kind = bossDef ? bossDef.kind : (i === 0 && save.lvl >= 5 && Math.random() < .035 ? 'heisenbug' : kinds[Math.floor(Math.random() * kinds.length)]), base0 = FOES[kind], slot = bossDef ? ((bossDef.kind === 'vesfork' || bossDef.kind === 'corvin') ? [76, 108] : [34, 120]) : SLOTS[i];
+        var kind = bossDef ? bossDef.kind : (i === 0 && save.lvl >= 5 && Math.random() < .035 ? 'heisenbug' : kinds[Math.floor(Math.random() * kinds.length)]), base0 = FOES[kind], slot = bossDef ? ((bossDef.kind === 'vesfork' || bossDef.kind === 'corvin' || (WD.heroes && WD.heroes[bossDef.kind])) ? [76, 108] : [34, 120]) : SLOTS[i];
         var lv = (AREA.lv || 1) + Math.floor(Math.random() * ((AREA.lvMax || AREA.lv || 1) - (AREA.lv || 1) + 1)), elite = !bossDef && lv >= 4 && Math.random() < .12;
         if (elite) lv += 2;
-        var hm = 1 + .22 * (lv - 1), am = lvAtk(lv) / 7.5, xm = 1 + .3 * (lv - 1) + Math.pow(Math.max(0, lv - 50), 2) * .12;   // the endgame pays better, so the climb to 100 is a climb and not a grind
+        var hm = 1 + .22 * (lv - 1), am = lvAtk(lv) / 7.5, xm = (1 + .3 * (lv - 1) + Math.pow(Math.max(0, lv - 50), 2) * .12) * 1.2;   // the endgame pays better, so the climb to 100 is a climb and not a grind
         var f = bossDef ? { name: bossDef.name, lv: bossDef.lv || AREA.lvMax || AREA.lv || save.lvl, hp: Math.round(bossDef.hp * 1.4), atk: [Math.round(bossDef.atk[0] * 1.15), Math.round(bossDef.atk[1] * 1.15)], move: bossDef.move, xp: bossDef.xp, boss: true } :
           (function () {   // a bug's level sets its strength; its kind only nudges it (tougher, harder-hitting, worth more) within a third either way
             var kh = clamp(base0.hp / 40, .7, 1.45), ka = clamp((base0.atk[0] + base0.atk[1]) / 2 / 7.5, .75, 1.35), kx = base0.rare ? 7.5 : clamp(base0.xp / 12, .8, 1.5), mid = 7.5 * ka * am;
@@ -908,7 +1020,8 @@
           get scenario() { return this.sc0.t; }, fx: slot[0], fy: slot[1], ph: Math.random() * 6, exposed: 0, slow: 0, leak: 0 });
       }
       var allies = activeParty().map(function (id, j) { return { id: id, hp: Math.max(1, cHp(id)), max: cMax(id), cd: {}, down: false, guard: 0, lunge: 0, hurt: 0, slot: j }; });
-      B = { allies: allies, ai: 0, actor: null, corrupt: 0, regen: 0, blind: 0, taunt: 0, pguard: 0, allyFocus: 0, foes: foes, focus: false, phase: 'intro', t: 0, vx: 0, pops: [], menu: 'main', sel: 0, cast: 0, target: 0, pending: null, boss: bossDef, onWin: opt.onWin, theme: AREA.theme };
+      B = { allies: allies, ai: 0, actor: null, corrupt: 0, regen: 0, blind: 0, taunt: 0, pguard: 0, allyFocus: 0, foes: foes, focus: false, phase: 'intro', t: 0, vx: 0, pops: [], menu: 'main', sel: 0, cast: 0, target: 0, pending: null, boss: bossDef, bossId: opt.boss || null, onWin: opt.onWin, theme: AREA.theme, vs: {}, src: 'shell' };
+      B.allies.forEach(function (a) { a.st = {}; });
       var hook = opt.boss && WD.bossStart && WD.bossStart[opt.boss], hookMsg = hook ? hook(G, foes[0]) : null; if (hookMsg) setTimeout(function () { log(hookMsg); }, 1300);
       // companions have something to say when something big shows up
       var BOSSLINE = { kes: 'Kes: Big one. I’ll go left, you go… also left. Just go.', odessa: 'Dr. Odessa: Try not to get hit. I mean it this time.', piper: 'Piper: Folks, you are NOT going to believe the size of this thing.',
@@ -936,20 +1049,20 @@
         foesBox.appendChild(e);
       });
       partyBox.classList.toggle('crit', save.hp > 0 && save.hp <= maxHp() * .25);
-      var allyRows = (B.allies || []).map(function (a) { return '<div class="rpg-row' + (a.down ? ' down' : '') + (B.actor === a ? ' turn' : '') + '"><span>' + COMP[a.id].name + '</span><span>' + (a.down ? 'DOWN' : 'HP <b>' + a.hp + '</b>/' + a.max) + '</span></div>'; }).join('');
+      var allyRows = (B.allies || []).map(function (a) { return '<div class="rpg-row' + (a.down ? ' down' : '') + (B.actor === a ? ' turn' : '') + '"><span>' + COMP[a.id].name + (back(a.id) ? ' <i class="st">BK</i>' : '') + stTags(a.st) + '</span><span>' + (a.down ? 'DOWN' : 'HP <b>' + a.hp + '</b>/' + a.max) + '</span></div>'; }).join('');
       partyBox.classList.toggle('team', !!(B.allies && B.allies.length));
-      partyBox.innerHTML = (B.corrupt ? '<div class="rpg-row sm"><span>CORRUPTED ' + B.corrupt + '</span></div>' : '') + '<div class="rpg-row' + (save.hp <= 0 ? ' down' : '') + (B.phase === 'menu' && !B.actor ? ' turn' : '') + '"><span>Vee</span><span>HP <b>' + save.hp + '</b>/' + maxHp() + '</span></div><div class="rpg-row sm"><span>Lv ' + save.lvl + '</span><span>' + save.known.length + (save.known.length === 1 ? ' command' : ' commands') + '</span><span>' + (B.focus ? 'Weak spot marked' : save.streak > 1 ? 'Streak x' + save.streak : '') + '</span></div>' + allyRows;
+      partyBox.innerHTML = (B.corrupt ? '<div class="rpg-row sm"><span>CORRUPTED ' + B.corrupt + '</span></div>' : '') + '<div class="rpg-row' + (save.hp <= 0 ? ' down' : '') + (B.phase === 'menu' && !B.actor ? ' turn' : '') + '"><span>Vee' + (back('vee') ? ' <i class="st">BK</i>' : '') + stTags(B.vs) + '</span><span>HP <b>' + save.hp + '</b>/' + maxHp() + '</span></div><div class="rpg-row sm"><span>Lv ' + save.lvl + '</span><span>' + save.known.length + (save.known.length === 1 ? ' command' : ' commands') + '</span><span>' + (B.focus ? 'Weak spot marked' : save.streak > 1 ? 'Streak x' + save.streak : '') + '</span></div>' + allyRows;
     }
     function menu(which) {
       B.menu = which; B.sel = 0; cmdBox.innerHTML = '';
       var A0 = B.actor, C0 = A0 && COMP[A0.id];
       var list = which === 'ally' ? [{ label: 'Attack', tip: C0.name + ' attacks one bug.', fn: function () { chooseTarget('ally:attack'); } }].concat(C0.skills.map(function (k, j) {
-          var cd = A0.cd[k.id] || 0; return { label: k.name, right: cd ? cd + 't' : '', off: cd > 0, tip: k.tip + (cd ? ' Ready in ' + cd + (cd === 1 ? ' turn.' : ' turns.') : ''), fn: function () { if (k.target) chooseTarget('ally:skill:' + j); else allyAct('ally:skill:' + j, B.foes.indexOf(living()[0])); } };
+          var cd = A0.cd[k.id] || 0, silent = A0.st && A0.st.sil > 0, lock = skillLock(k); return { label: k.name, right: lock ? 'LOCK' : silent ? 'SIL' : cd ? cd + 't' : '', off: cd > 0 || silent || !!lock, tip: (lock ? lock + ' ' : '') + (silent ? 'Silenced. ' : '') + k.tip + (cd ? ' Ready in ' + cd + (cd === 1 ? ' turn.' : ' turns.') : ''), fn: function () { if (k.target) chooseTarget('ally:skill:' + j); else allyAct('ally:skill:' + j, B.foes.indexOf(living()[0])); } };
         })).concat([{ label: 'Guard', tip: C0.name + ' braces and takes half damage this round.', fn: function () { allyAct('ally:guard', 0); } }])
         : which === 'itemTarget' ? [{ label: 'Vee', right: save.hp + '/' + maxHp(), off: save.hp <= 0, tip: 'Give the data to Vee.', fn: function () { item(B.itemPick); } }].concat(B.allies.map(function (a) { return { label: COMP[a.id].name, right: a.down ? 'DOWN' : a.hp + '/' + a.max, off: a.down, tip: 'Give the data to ' + COMP[a.id].name + '.', fn: function () { item(B.itemPick, a); } }; })).concat([{ label: 'Back', tip: '', fn: function () { menu('items'); } }])
         : which === 'main' ? [
           { label: 'Fight', tip: 'A plain attack at Vee’s regular strength.', fn: function () { chooseTarget('fight'); } },
-          { label: 'Shell', tip: (save.wins || 0) < 3 ? 'Try this first. Each bug brings a problem; type the command that solves it for a much stronger attack.' : 'Open a shell and type the command that solves a bug’s problem. Right: a bonus attack. Wrong: half power.', fn: function () { chooseTarget('cmd'); } },
+          { label: 'Shell', off: B.vs.sil > 0, right: B.vs.sil > 0 ? 'SIL' : '', tip: B.vs.sil > 0 ? 'Silenced: the shell won’t open. Use an Antivirus, or wait it out.' : (save.wins || 0) < 3 ? 'Try this first. Each bug brings a problem; type the command that solves it for a much stronger attack.' : 'Open a shell and type the command that solves a bug’s problem. Right: a bonus attack. Wrong: half power.', fn: function () { chooseTarget('cmd'); } },
           { label: 'Item', tip: 'Bits, bytes and bigger: data that restores HP.', fn: function () { menu('items'); } },
           B.boss ? { label: 'Run', off: true, tip: 'There is no running from this one.', fn: runAway } : { label: 'Run', tip: 'Slip away into the dark.', fn: runAway }]
         : ITEMS.filter(function (it) { return save.items[it.id] > 0; }).map(function (it) { return { label: (innerWidth < 640 && it.short) || it.name, right: 'x' + save.items[it.id], tip: it.tip, fn: function () { if (B.allies.some(function (a) { return !a.down; })) { B.itemPick = it.id; menu('itemTarget'); } else item(it.id); } }; })
@@ -981,13 +1094,64 @@
       var g = gapOf(f);
       if (g > 0 && Math.random() < Math.min(.35, g * .035)) { pop('MISS', f.fx + 16, f.fy - 34); f.shake = .4; return ' It dodges.'; }
       n *= armorOf(f);
+      var who = B.actor || 'vee', so = stOf(who) || {}, src = B.src || 'shell';
+      if (so.weak > 0) n *= .5;
+      if (src === 'fight' && back(B.actor ? B.actor.id : 'vee')) n *= .6;   // plain attacks from the back row are softer
+      if (f.fw > 0 && src === 'fight') { n *= .12; B.fwNote = 1; }
       var crit = B.focus || Math.random() < critC(); if (crit) { n *= 2; B.focus = false; } sfx(crit ? 'crit' : 'hit');
       if (f.exposed) n *= 1.5;
       n = Math.max(1, Math.round(n)); f.hp = Math.max(0, f.hp - n); f.shake = 1; f.flash = 1; pop(String(n), f.fx + 16, f.fy - 34);
       if (f.hp <= 0) { f.dead = true; f.fade = 1; }
-      return crit ? ' Critical.' : '';
+      var tail = (crit ? ' Critical.' : '') + (B.fwNote ? ' The firewall eats most of it.' : ''); B.fwNote = 0;
+      if (f.counter && src === 'fight' && !f.dead) {   // it was waiting for exactly that
+        var cd2 = Math.max(1, Math.round(rnd(f.foe.atk[0], f.foe.atk[1]) * 1.2 * 100 / (100 + (B.actor ? cDef(B.actor.id) : def()) * 2.5)));
+        if (B.actor) { B.actor.hp = Math.max(0, B.actor.hp - cd2); B.actor.hurt = 1; if (B.actor.hp <= 0) B.actor.down = true; var cp = allyPos(B.actor); pop(String(cd2), cp[0] + 10, cp[1] - 30); }
+        else { save.hp = Math.max(save.hp > 1 ? 1 : 0, save.hp - cd2); B.hurt = 1; pop(String(cd2), 258, 70); }
+        f.lunge = 1; tail += ' COUNTER: it strikes back for ' + cd2 + '.';
+      }
+      return tail + bossThresholds(f);
     }
     function base() { return rnd(9, 14) + atk(); }
+    /* ---------- status effects, rows and boss mechanics ---------- */
+    var ST = { psn: 'POISON', sil: 'SILENCE', slow: 'SLOW', haste: 'HASTE', daze: 'DAZE', weak: 'WEAK' };
+    var ST_SAY = { psn: 'is poisoned: a little HP leaks out every turn', sil: 'is silenced: no Shell commands, no skills', slow: 'is slowed: only acts every other round', haste: 'is hasted: two actions a round', daze: 'is dazed and loses a turn', weak: 'is weakened: hits land for half' };
+    function stOf(who) { return who === 'vee' ? B.vs : who.st; }
+    function stName(who) { return who === 'vee' ? 'Vee' : COMP[who.id].name; }
+    function inflict(who, k, n, quiet) { var o = stOf(who); if (!o) return ''; if (k !== 'haste' && gs('stealth') > .25 && Math.random() < .3) return ''; o[k] = Math.max(o[k] || 0, n); return quiet ? '' : ' ' + stName(who) + ' ' + ST_SAY[k] + '.'; }
+    function stTags(o) { return Object.keys(o || {}).filter(function (k) { return o[k] > 0; }).map(function (k) { return ' <i class="st st-' + k + '">' + ST[k].slice(0, 3) + '</i>'; }).join(''); }
+    function rowOf(id) { return (save.rows && save.rows[id]) || 'front'; }
+    function back(id) { return rowOf(id) === 'back'; }
+    // what a boss does besides hit hard. counter: punishes plain attacks in its stance. firewall: only Shell answers get through. phase: meaner at half HP. summon: calls bugs in. status: what its hits leave behind.
+    var BOSS_MECH = {
+      eraser: { status: ['weak'] }, moth: { status: ['daze'], summon: ['moth', 'moth'] }, panic: { counter: 3, status: ['daze'] }, rootkit: { firewall: 1, status: ['psn'] },
+      reclaimer: { phase: 1, counter: 3, status: ['weak', 'slow'] }, quorum: { summon: ['virus', 'virus'], status: ['sil'] }, bitrot: { status: ['psn', 'weak'], phase: 1 },
+      firstbug: { firewall: 1, summon: ['moth', 'moth'], phase: 1 }, dedupe: { counter: 3, status: ['sil'] }, zombie: { phase: 1, status: ['psn'] }, scheduler: { counter: 2, status: ['slow'], phase: 1 },
+      overflow: { status: ['psn'], firewall: 1 }, gatekeeper: { firewall: 1, counter: 4 }, pixel: { status: ['daze'] }, rootprime: { firewall: 1, phase: 1, status: ['psn', 'sil'] },
+      watchdog: { counter: 2, phase: 1, status: ['slow'] }, nullptr: { summon: ['regexhydra', 'regexhydra'], status: ['sil', 'daze'], phase: 1 }, ratchet: { counter: 3, status: ['weak'] },
+      concierge: { status: ['sil', 'psn'], firewall: 1 }, sorter: { phase: 1, counter: 3, status: ['slow'] }, hypervisor: { firewall: 1, summon: ['firmrot', 'firmrot'], phase: 1 },
+      eolboss: { counter: 2, status: ['slow', 'weak'], phase: 1 }, wipe: { firewall: 1, phase: 1, status: ['psn', 'sil', 'daze'] },
+      ves1: { counter: 3 }, ves2: { counter: 3, status: ['sil'] }, ves3: { counter: 2, phase: 1, status: ['sil'] }, ves4: { counter: 2, phase: 1, firewall: 1, status: ['sil', 'weak'] }, corvin: { firewall: 1, phase: 1, summon: ['trojan', 'trojan'], status: ['weak', 'sil'] },
+      crew_pell: { status: ['weak'] }, crew_dray: { counter: 3 }, crew_null: { status: ['sil'], firewall: 1 }, crew_lux: { counter: 3, status: ['daze'] }, crew_gauge: { summon: ['bytebug', 'bytebug'], status: ['slow'] },
+      crew_acknak: { counter: 2, status: ['daze'] }, crew_morrow: { status: ['sil', 'psn'], phase: 1 }, crew_kessler: { firewall: 1, counter: 3, phase: 1 }, crew_halcyon: { phase: 1, status: ['weak', 'slow'], summon: ['trojan', 'trojan'] }, crew_root: { firewall: 1, counter: 2, phase: 1, status: ['psn', 'sil', 'daze'] }
+    };
+    function skillLock(k) { if (k.lv && save.lvl < k.lv) return 'Unlocks at level ' + k.lv + '.'; if (k.arc && !F[k.arc]) return 'Unlocks when their story is settled.'; return ''; }
+    function mechOf(f) { var m = f && f.foe && f.foe.boss && B.bossId ? BOSS_MECH[B.bossId] || (WD.bossMech && WD.bossMech[B.bossId]) : null; return m || null; }
+    function addFoe(kind, nearF) {
+      if (!FOES[kind] || living().length >= 5) return;
+      var lvl = (nearF && nearF.foe.lv) ? Math.max(1, nearF.foe.lv - 2) : save.lvl, base0 = FOES[kind], hm = 1 + .22 * (lvl - 1);
+      var kid = { kind: kind, foe: { name: base0.name, lv: lvl, hp: Math.round(base0.hp * hm), atk: [Math.round(base0.atk[0] * lvAtk(lvl) / 7.5), Math.round(base0.atk[1] * lvAtk(lvl) / 7.5)], move: base0.move, xp: Math.round(base0.xp * (1 + .3 * (lvl - 1))) }, hp: 0, max: 0, soft: .8, stun: 0, shake: 0, flash: 1, dead: false, fade: 0, sc: 2, fx: 0, fy: 0, ph: Math.random() * 6, exposed: 0, slow: 0, leak: 0 };
+      kid.hp = kid.max = kid.foe.hp; setProblem(kid); Object.defineProperty(kid, 'scenario', { get: function () { return this.sc0.t; } }); B.foes.push(kid);
+      var lv2 = living(), lay = LAYOUT[lv2.length]; lv2.forEach(function (o, k) { if (o.foe.boss) return; o.fx = lay[k][0]; o.fy = lay[k][1]; if (lv2.length > 2) o.sc = 2; });
+    }
+    // after any hit on a boss: phases, summons and firewalls trip at HP thresholds
+    function bossThresholds(f) {
+      var m = mechOf(f); if (!m || f.dead) return '';
+      var r = f.hp / f.max, out = '';
+      if (m.phase && !f.ph2 && r <= .5) { f.ph2 = 1; f.foe = Object.assign({}, f.foe, { atk: [Math.round(f.foe.atk[0] * 1.3), Math.round(f.foe.atk[1] * 1.3)] }); f.flash = 1; out += ' The ' + foeName(f) + ' changes. Something underneath comes loose. It hits harder now.'; }
+      if (m.summon && !f.summoned && r <= .6) { f.summoned = 1; m.summon.forEach(function (k) { addFoe(k, f); }); out += ' It calls for help. More bugs answer.'; }
+      if (m.firewall && ((!f.fw1 && r <= .75) || (!f.fw2 && r <= .35))) { if (r <= .35) f.fw2 = 1; f.fw1 = 1; f.fw = 2; out += ' FIREWALL UP: for two rounds, plain attacks barely scratch it. Shell answers and skills get through.'; }
+      return out;
+    }
     // pick a bug; hovering shows the problem it carries
     function showScenario() { var f = B.foes[B.target]; if (f) log(f.foe.name + ': ' + f.scenario, true); }
     function chooseTarget(kind) {
@@ -998,7 +1162,7 @@
     function confirmTarget() { var kind = B.pending; B.pending = null; if (kind.indexOf('ally:') === 0) return allyAct(kind, B.target); if (kind === 'fight') doFight(B.target); else openPrompt(B.target); }
     function cancelTarget() { B.pending = null; closePrompt(); B.phase = 'menu'; menu(B.actor ? 'ally' : 'main'); hudOn(); }
     function doFight(ti) {
-      var f = B.foes[ti]; B.phase = 'anim'; B.vx = 1;
+      var f = B.foes[ti]; B.phase = 'anim'; B.vx = 1; B.src = 'fight';
       log('Vee strikes the ' + foeName(f) + '.' + hitFoe(f, base()));
       after();
     }
@@ -1026,6 +1190,7 @@
     }
     function closePrompt() { termBox.classList.remove('on'); termIn.blur(); }
     function submitCmd(raw) {
+      if (B) B.src = 'shell';
       var f = B.foes[B.target], info = cmdInfo(f.cmd), J = judge(info, f.sc0, raw), typed = J.first, exact = J.exact, p = prac(f.cmd);
       closePrompt(); B.phase = 'anim'; B.cast = 1;
       if (J.right) {
@@ -1060,20 +1225,29 @@
       }
       after();
     }
-    function after() { hudOn(); setTimeout(!living().length ? win : nextAlly, 900); }
+    function after() {
+      hudOn(); B.src = 'shell';
+      if (living().length && B.vs.haste > 0 && !B.hasted && save.hp > 0) { B.hasted = 1; return setTimeout(function () { if (!B) return; B.phase = 'menu'; menu('main'); hudOn(); log('HASTE: Vee moves again before anyone else can.', true); }, 900); }
+      setTimeout(!living().length ? win : nextAlly, 900);
+    }
     // each companion still standing takes a turn after Vee: attack, one of two skills, or guard
     function nextAlly() {
       if (!B) return;
       if (!living().length) return win();
       while (B.ai < B.allies.length && B.allies[B.ai].down) B.ai++;
       if (B.ai >= B.allies.length) { B.actor = null; return foesTurn(); }
-      B.actor = B.allies[B.ai]; B.phase = 'menu'; menu('ally'); hudOn();
+      B.actor = B.allies[B.ai];
+      var ast = B.actor.st || {};
+      if (ast.daze > 0) { ast.daze--; log(COMP[B.actor.id].name + ' is dazed and can’t act.'); return afterAlly(); }
+      if (ast.slow > 0 && (B.round || 0) % 2) { log(COMP[B.actor.id].name + ' is slowed and misses this round.'); return afterAlly(); }
+      B.phase = 'menu'; menu('ally'); hudOn();
     }
     function afterAlly() { if (!B) return; B.ai++; B.actor = null; hudOn(); setTimeout(!living().length ? win : nextAlly, 800); }
     function allyHit(a, f, n) { var keep = B.focus; B.focus = B.allyFocus > 0; if (B.allyFocus > 0) B.allyFocus--; var r = hitFoe(f, n); B.focus = keep; return r; }
     function allyAct(kind, ti) {
       var a = B.actor, C = COMP[a.id], f = B.foes[ti], nm = C.name, base2 = rnd(9, 14) + cAtk(a.id), parts = kind.split(':');
       B.phase = 'anim'; cmdBox.classList.remove('on'); a.lunge = 1;
+      B.src = parts[1] === 'attack' ? 'fight' : 'skill';
       if (parts[1] === 'attack') { log(nm + ' strikes the ' + foeName(f) + '.' + allyHit(a, f, base2)); return afterAlly(); }
       if (parts[1] === 'guard') { a.guard = 1; log(nm + ' braces.'); return afterAlly(); }
       var k = C.skills[+parts[2]]; a.cd[k.id] = k.cd + 1; var msg2 = nm + ': ' + k.name + '.', fx = k.fx, ex = '';
@@ -1095,17 +1269,33 @@
       else if (fx === 'heavy_slow') { ex = allyHit(a, f, base2 * 1.5); if (!f.dead) f.slow = 2; }
       else if (fx === 'regen') { B.regen = 3; msg2 += ' Rain falls on the party.'; }
       else if (fx === 'execute') { if (f.hp < f.max * .3 && !f.foe.boss) { f.hp = 0; f.dead = true; f.fade = 1; pop('KILL', f.fx + 16, f.fy - 34); msg2 += ' The ' + foeName(f) + ' ends.'; } else ex = allyHit(a, f, base2 * 1.4); }
+      else if (fx === 'haste_party') { inflict('vee', 'haste', 3, 1); msg2 += ' Vee is hasted: two actions a round for three rounds.'; }
+      else if (fx === 'cure_all') { Object.keys(B.vs).forEach(function (k2) { if (k2 !== 'haste') B.vs[k2] = 0; }); B.corrupt = 0; B.allies.forEach(function (o) { if (o.st) Object.keys(o.st).forEach(function (k2) { if (k2 !== 'haste') o.st[k2] = 0; }); if (!o.down) o.hp = Math.min(o.max, o.hp + Math.round(o.max * .15)); }); if (save.hp > 0) save.hp = Math.min(maxHp(), save.hp + Math.round(maxHp() * .15)); msg2 += ' Every status on the party is scrubbed, and everyone heals a little.'; }
+      else if (fx === 'stun_all') { living().forEach(function (g) { if (!g.foe.boss) g.stun = 1; else { g.wound = 0; g.charged = 0; g.counter = 0; } }); msg2 += ' Every bug reels. Bosses lose whatever they were winding up.'; }
+      else if (fx === 'poison_foe') { f.leak = 5; ex = allyHit(a, f, base2 * .8); msg2 += ' The ' + foeName(f) + ' starts leaking HP every turn.'; }
+      else if (fx === 'break_fw') { f.fw = 0; f.counter = 0; f.exposed = 3; ex = allyHit(a, f, base2 * 1.2); msg2 += ' Its defenses come apart: no firewall, no counter, exposed.'; }
+      else if (fx === 'aegis') { B.aegis = 3; msg2 += ' The party takes half damage for three rounds.'; }
+      else if (fx === 'stand') { B.taunt = 3; B.tauntBy = a; a.guard = 1; a.hp = Math.min(a.max, a.hp + Math.round(a.max * .5)); msg2 += ' ' + nm + ' plants, heals, and dares them all.'; }
+      else if (fx === 'encore') { inflict('vee', 'haste', 3, 1); B.focus = true; B.allyFocus = B.allies.length; msg2 += ' Haste and a critical for everyone. The crowd goes wild.'; }
+      else if (fx === 'mass_revive') { if (save.hp <= 0) save.hp = Math.round(maxHp() * .6); else save.hp = Math.min(maxHp(), save.hp + Math.round(maxHp() * .6)); B.allies.forEach(function (o) { if (o.down) { o.down = false; o.hp = Math.round(o.max * .6); } else o.hp = Math.min(o.max, o.hp + Math.round(o.max * .6)); }); msg2 += ' Everyone is back up, and whole.'; }
+      else if (fx === 'nova') { living().forEach(function (g) { allyHit(a, g, base2 * 2.2); }); msg2 += ' Light fills the whole field.'; }
+      else if (fx === 'nebula') { B.blind = 3; living().forEach(function (g) { g.leak = Math.max(g.leak || 0, 3); }); msg2 += ' The bugs are lost in a cloud of stars, and it burns.'; }
+      else if (fx === 'drain_hit') { ex = allyHit(a, f, base2 * 1.6); var dh = Math.round(maxHp() * .2); if (save.hp > 0) { save.hp = Math.min(maxHp(), save.hp + dh); pop('+' + dh, 258, 70); } msg2 += ' Ves pulls the stolen cycles back to Vee.'; }
+      else if (fx === 'graceful') { if (f.hp < f.max * .4) { var gd = f.foe.boss ? Math.round(f.max * .2) : f.hp; f.hp = Math.max(0, f.hp - gd); pop(String(gd), f.fx + 16, f.fy - 34); if (f.hp <= 0) { f.dead = true; f.fade = 1; } msg2 += ' SIGTERM: asked politely, and it listens.'; } else ex = allyHit(a, f, base2 * 1.5); }
+      else if (fx === 'last_mile') { for (var lm = 0; lm < 3; lm++) { var tg2 = f.dead ? living()[0] : f; if (tg2) { tg2.exposed = 2; ex += allyHit(a, tg2, base2 * .8); } } }
       log(msg2 + ex); afterAlly();
     }
     function item(which, ally) {
       B.phase = 'anim'; cmdBox.classList.remove('on');
       var it = ITEMS.filter(function (x) { return x.id === which; })[0];
+      if (it && it.cure && save.items[which] > 0) { save.items[which]--; var tgt = ally || 'vee', o2 = stOf(tgt); Object.keys(o2).forEach(function (k) { if (k !== 'haste') o2[k] = 0; }); log(stName(tgt) + ' runs the antivirus. Clean.'); store(); hudOn(); return setTimeout(nextAlly, 700); }
       if (ally && it && save.items[which] > 0) { save.items[which]--; var pct0 = { bit: .06, byte: .14, kb: .28, mb: .55, gb: 1 }[it.id] || .1, ha = Math.min(ally.max - ally.hp, Math.max(it.heal, Math.round(ally.max * pct0))); ally.hp += ha; var ap3 = allyPos(ally); pop('+' + ha, ap3[0] + 10, ap3[1] - 30); log('Vee passes a ' + it.name.toLowerCase() + ' to ' + COMP[ally.id].name + '. +' + ha + ' HP.'); store(); }
       else if (it && save.items[which] > 0) { save.items[which]--; var h = Math.min(maxHp() - save.hp, healOf(it)); save.hp += h; pop('+' + h, 258, 70); log('Vee absorbs a ' + it.name.toLowerCase() + ' of clean data. +' + h + ' HP.'); store(); }
       hudOn(); setTimeout(nextAlly, 700);
     }
     function runAway() {
       B.phase = 'anim'; cmdBox.classList.remove('on');
+      if (save.pt) save.pt.run++;
       if (Math.random() < Math.max(.3, .8 - living().length * .1)) { log('Vee slips away into the dark.'); setTimeout(endBattle, 800); }
       else { log('No way through.'); setTimeout(nextAlly, 800); }
     }
@@ -1130,6 +1320,8 @@
           log('The ' + foeName(f) + ' splits. Now there are two of it, each with half the HP.'); hudOn(); return setTimeout(next, 800);
         }
         if (f.kind === 'heisenbug' && Math.random() < .45) { f.dead = true; f.fade = 1; f.foe = Object.assign({}, f.foe, { xp: 0 }); f.gone = 1; log('You look straight at the Heisenbug, and it is no longer there. It was never quite there.'); hudOn(); if (!living().length) return setTimeout(win, 600); return setTimeout(next, 650); }
+        var mm = mechOf(f);
+        if (mm && mm.counter && !f.wound && (B.round || 0) % mm.counter === 1 && !f.counter) { f.counter = 1; log('The ' + foeName(f) + ' drops into a counter stance. Plain attacks will be punished this round. Shell, skills, items, or guard.'); return setTimeout(next, 1000); }
         if (B.boss && !f.wound && (B.round || 0) % 3 === 2 && !f.charged) { f.wound = 1; f.charged = 1; log('The ' + foeName(f) + ' gathers itself. Its next attack will hit twice as hard. Guard, Bulwark, or stun it.'); return setTimeout(next, 900); }   // bosses telegraph their big hits
         if ((B.round || 0) % 3 !== 2) f.charged = 0;
         if (tr === 'wind' && !f.wound && Math.random() < .35) { f.wound = 1; log('The ' + foeName(f) + ' holds perfectly still, waiting. Its next hit will land twice as hard. Stun it, or brace.'); return setTimeout(next, 800); }
@@ -1139,14 +1331,16 @@
         if (B.taunt > 0 && B.tauntBy && !B.tauntBy.down) T = B.tauntBy;
         else if (alive2.length && (save.hp <= 0 || Math.random() < alive2.length / (alive2.length + 2))) T = alive2[Math.floor(Math.random() * alive2.length)];
         if (B.blind > 0 && Math.random() < .5) { if (f.slow > 0) f.slow--; f.lunge = 1; log('The ' + foeName(f) + ' swings at nothing. The stars are in its eyes.'); return setTimeout(next, 700); }
-        var tDef = T ? cDef(T.id) : def(), tGuard = T ? (T.guard ? .5 : 1) : (B.guard ? .5 : 1);
+        var tDef = T ? cDef(T.id) : def(), tGuard = (T ? (T.guard ? .5 : 1) : (B.guard ? .5 : 1)) * (back(T ? T.id : 'vee') ? .65 : 1) * (B.aegis > 0 ? .5 : 1);
+        var stPool = mm ? mm.status : (f.foe.lv >= 6 && !f.foe.boss ? [['psn', 'sil', 'slow', 'daze', 'weak'][Math.floor(hs(f.kind.length * 7 + f.kind.charCodeAt(0)) * 5)]] : null), stChance = mm ? .3 : .1, stHit = '';
+        if (stPool && Math.random() < stChance) stHit = inflict(T || 'vee', stPool[Math.floor(Math.random() * stPool.length)], 3);
         var roll = function () { return Math.max(1, Math.round(rnd(f.foe.atk[0], f.foe.atk[1]) * wind * forceOf(f) * f.soft * (f.slow > 0 ? .5 : 1) * tGuard * (B.pguard ? .5 : 1) * (1 + B.allies.length * .15) * CFG.diff[save.cfg.diff] * 100 / (100 + (pierce ? 0 : tDef) * 2.5))); };
         if (T) {
           var n2 = roll(); if (f.slow > 0) f.slow--;
           var drank2 = tr === 'drain' ? Math.min(f.max - f.hp, Math.round(n2 * .5)) : 0; if (drank2 > 0) f.hp += drank2;
           T.hp = Math.max(0, T.hp - n2); T.hurt = 1; f.lunge = 1; sfx('hurt'); var ap = allyPos(T); pop(String(n2), ap[0] + 10, ap[1] - 30);
           var nm2 = COMP[T.id].name; if (T.hp <= 0) T.down = true;
-          log('The ' + foeName(f) + ' ' + (pierce ? 'reads straight through ' + nm2 + '’s guard' : f.foe.move.replace(/\bVee\b/g, nm2).replace(/\bhim\b/g, 'them').replace(/\bhis\b/g, 'their')) + '. ' + n2 + ' damage to ' + nm2 + '.' + (T.down ? ' ' + nm2 + ' goes down.' : '') + (drank2 > 0 ? ' It drinks ' + drank2 + ' HP.' : ''));
+          log('The ' + foeName(f) + ' ' + (pierce ? 'reads straight through ' + nm2 + '’s guard' : f.foe.move.replace(/\bVee\b/g, nm2).replace(/\bhim\b/g, 'them').replace(/\bhis\b/g, 'their')) + '. ' + n2 + ' damage to ' + nm2 + '.' + (T.down ? ' ' + nm2 + ' goes down.' : '') + stHit + (drank2 > 0 ? ' It drinks ' + drank2 + ' HP.' : ''));
           hudOn(); if (save.hp <= 0 && !B.allies.some(function (a) { return !a.down; })) return setTimeout(lose, 900);
           return setTimeout(next, 800);
         }
@@ -1154,7 +1348,7 @@
         var drank = tr === 'drain' ? Math.min(f.max - f.hp, Math.round((n + again) * .5)) : 0; if (drank > 0) f.hp += drank;
         if (tr === 'drain' && !B.corrupt && Math.random() < .5) B.corrupt = 3;   // draining bugs leave corruption behind
         save.hp = Math.max(0, save.hp - n - again); pop(String(n + again), 258, 70); B.hurt = 1; f.lunge = 1; sfx('hurt');
-        log('The ' + foeName(f) + ' ' + (pierce ? 'reads straight through Vee’s armor' : f.foe.move) + '. ' + n + ' damage.' + (wind > 1 ? ' It had been waiting for that.' : '') + (again ? (tr === 'twice' ? ' And again: ' + again + '.' : ' It is faster than Vee: it strikes again for ' + again + '.') : '') + (drank > 0 ? ' It drinks ' + drank + ' HP from the wound.' : '')); hudOn();
+        log('The ' + foeName(f) + ' ' + (pierce ? 'reads straight through Vee’s armor' : f.foe.move) + '. ' + n + ' damage.' + stHit + (wind > 1 ? ' It had been waiting for that.' : '') + (again ? (tr === 'twice' ? ' And again: ' + again + '.' : ' It is faster than Vee: it strikes again for ' + again + '.') : '') + (drank > 0 ? ' It drinks ' + drank + ' HP from the wound.' : '')); hudOn();
         if (B.corrupt === 3 && tr === 'drain') log(titleEl.textContent + ' Vee is corrupted: he’ll lose a little HP each turn.', true);
         if (save.hp <= 0 && gs('revive') && !B.revived) { B.revived = 1; save.hp = Math.round(maxHp() * .3); setTimeout(function () { log('The Watchdog Timer catches Vee mid-fall and restarts him. ' + save.hp + ' HP.'); }, 500); }
         if (save.hp <= 0 && !B.allies.some(function (a) { return !a.down; })) return setTimeout(lose, 900);
@@ -1166,9 +1360,19 @@
     function myTurn() {
       if (!B) return; B.guard = 0; B.pguard = 0; B.ai = 0; B.actor = null; B.round = (B.round || 0) + 1;
       B.allies.forEach(function (a) { a.guard = 0; Object.keys(a.cd).forEach(function (k) { if (a.cd[k] > 0) a.cd[k]--; }); });
-      if (B.taunt > 0) B.taunt--; if (B.blind > 0) B.blind--;
+      if (B.taunt > 0) B.taunt--; if (B.blind > 0) B.blind--; if (B.aegis > 0) B.aegis--;
       if (B.regen > 0) { B.regen--; if (save.hp > 0) save.hp = Math.min(maxHp(), save.hp + Math.round(maxHp() * .08)); B.allies.forEach(function (a) { if (!a.down) a.hp = Math.min(a.max, a.hp + Math.round(a.max * .08)); }); }
       if (B.corrupt > 0 && save.hp > 1) { B.corrupt--; var cr = Math.min(save.hp - 1, Math.max(1, Math.round(maxHp() * .04))); save.hp -= cr; pop(String(cr), 258, 70); log('Corruption eats ' + cr + ' HP.', true); }
+      B.hasted = 0;
+      // statuses tick: poison leaks, everything else wears off
+      var tickMsg = '';
+      if (B.vs.psn > 0 && save.hp > 1) { var pd = Math.min(save.hp - 1, Math.max(2, Math.round(maxHp() * .06))); save.hp -= pd; pop(String(pd), 258, 70); tickMsg += ' Poison: Vee loses ' + pd + ' HP.'; }
+      B.allies.forEach(function (a) { if (a.st && a.st.psn > 0 && !a.down) { var pa = Math.max(2, Math.round(a.max * .06)); a.hp = Math.max(1, a.hp - pa); tickMsg += ' ' + COMP[a.id].name + ' loses ' + pa + ' to poison.'; } if (a.st) Object.keys(a.st).forEach(function (k) { if (k !== 'daze' && a.st[k] > 0) a.st[k]--; }); });
+      var dazed = B.vs.daze > 0, slowed = B.vs.slow > 0 && B.round % 2 === 0;
+      Object.keys(B.vs).forEach(function (k) { if (B.vs[k] > 0) B.vs[k]--; });
+      B.foes.forEach(function (f) { if (f.fw > 0) f.fw--; f.counter = 0; });
+      if (tickMsg) log(tickMsg.trim(), true);
+      if (save.hp > 0 && (dazed || slowed)) { hudOn(); log(dazed ? 'Vee is dazed. He loses his turn.' : 'Vee is slowed. He loses this round.'); return setTimeout(nextAlly, 900); }
       if (save.hp <= 0) { hudOn(); log('Vee is down. The party fights on.'); return setTimeout(nextAlly, 700); }
       B.phase = 'menu';
       if (B.boss) B.foes.forEach(setProblem);   // a boss brings a new problem every turn
@@ -1223,10 +1427,11 @@
       setTimeout(function () { say('', lines, null, function () { endBattle(); if (onWin) setTimeout(onWin, 80); else if (bondNow) setTimeout(function () { say(bondNow[0], bondNow[1]); }, 120); }); }, 600);
     }
     function lose() {
+      if (SCENE) { SCENE = null; endScene(); }
       B.phase = 'done'; B.ko = .001; cmdBox.classList.remove('on'); closePrompt(); sfx('ko');
       log('Vee goes down.'); hudOn();
       var lost = Math.floor(save.xp * .25), where = (WD.areas[save.rest[0]] || {}).name || 'the Plaza', who = groupName(), here = AREA.name;
-      save.xp -= lost; save.streak = 0; save.deaths = (save.deaths || 0) + 1;
+      if (save.pt) save.pt.ko[AREA.id] = (save.pt.ko[AREA.id] || 0) + 1; save.xp -= lost; save.streak = 0; save.deaths = (save.deaths || 0) + 1;
       // how he died decides the signal: bugs that drain eat his memory (the OOM killer, signal 9); everything else corrupts it (segfault, signal 11)
       var oom = living().some(function (f) { return (FOES[f.kind] || {}).trait === 'drain'; }), restarts = save.deaths;
       var sig = oom ? 'SIGKILL · signal 9 · out of memory' : 'SIGSEGV · signal 11 · segmentation fault';
@@ -1307,7 +1512,7 @@
     function lifeLoad() {
       LIFE.walkers = []; LIFE.bark = null; barkEl.classList.remove('on');
       LIFE.drizzle = ['plaza', 'commons', 'patchwork', 'gardens', 'halflight', 'line', 'upper', 'concourse'].indexOf(AREA.id) >= 0 && Math.random() < .18;
-      (AREA.npcs || []).forEach(function (n) { if (n.hx == null) { n.hx = n.x; n.hy = n.y; } n.x = n.hx; n.y = n.hy; n.px = n.x * TS; n.py = n.y * TS; n.wt = 2 + Math.random() * 5; });
+      (AREA.npcs || []).forEach(function (n) { n.hide = 0; if (n.home) { n.hx = n.home[0]; n.hy = n.home[1]; } if (n.hx == null) { n.hx = n.x; n.hy = n.y; n.home = [n.x, n.y]; } n.x = n.hx; n.y = n.hy; n.px = n.x * TS; n.py = n.y * TS; n.wt = 2 + Math.random() * 5; });
       // passers-by: the people still living here, walking the roads. More of them once the district's landmark is lit.
       var roads = []; for (var y = 1; y < MAP.length - 1; y++) for (var x = 1; x < MAP[0].length - 1; x++) if (MAP[y][x] === '=' && MAP[y][x + 1] === '=' && MAP[y][x - 1] === '=') roads.push([x, y]);
       var n2 = Math.min(roads.length ? 2 + Math.floor(lights() / 2) : 0, 5);
@@ -1318,13 +1523,15 @@
       // people at their posts shuffle a step now and then, never far from home, never into Vee's way
       visNpcs().forEach(function (n) {
         if (n.hx == null) { n.hx = n.x; n.hy = n.y; n.px = n.x * TS; n.py = n.y * TS; n.wt = 3; }
-        n.px += Math.sign(n.x * TS - n.px) * Math.min(30 * dt, Math.abs(n.x * TS - n.px)); n.py += Math.sign(n.y * TS - n.py) * Math.min(30 * dt, Math.abs(n.y * TS - n.py));
+        var mdx = n.x * TS - n.px, mdy = n.y * TS - n.py; n.moving = !!(mdx || mdy);
+        if (n.moving) { n.faceLock = null; n.dir = Math.abs(mdx) >= Math.abs(mdy) ? (mdx > 0 ? 'right' : 'left') : (mdy > 0 ? 'down' : 'up'); n.wstep = (n.wstep || 0) + dt; } else if (n.faceLock) n.dir = n.faceLock; else if (n.dir !== 'down' && (n.wt || 0) < 1.2) n.dir = 'down';   // walks the way it goes, then turns back to face the street
+        n.px += Math.sign(mdx) * Math.min((n.spd || 30) * dt, Math.abs(mdx)); n.py += Math.sign(mdy) * Math.min((n.spd || 30) * dt, Math.abs(mdy));
         if (n.look === 'warden' || n.solid || n.still || n.look === 'drone') return;
         n.wt -= dt; if (n.wt > 0) return; n.wt = 3 + Math.random() * 6;
         var opts = [[n.hx, n.hy], [n.hx + 1, n.hy], [n.hx - 1, n.hy], [n.hx, n.hy + 1]], o = opts[Math.floor(Math.random() * opts.length)];
         if (Math.abs(o[0] - me.x) + Math.abs(o[1] - me.y) < 2) return;
         if (o[0] === n.x && o[1] === n.y) return;
-        var t2 = tile(o[0], o[1]); if ('TX~pdsocFlGE'.indexOf(t2) >= 0 || t2 === undefined) return;
+        var t2 = tile(o[0], o[1]); if ('TX~pdsocFlGEMr'.indexOf(t2) >= 0 || t2 === undefined) return;
         if (visNpcs().some(function (m) { return m !== n && m.x === o[0] && m.y === o[1]; })) return;
         if (AREA.exits && AREA.exits[key(o[0], o[1])]) return;
         n.x = o[0]; n.y = o[1];
@@ -1347,9 +1554,9 @@
     }
     function lifeDraw(list) {
       LIFE.walkers.forEach(function (w) { list.push({ y: w.py / TS, draw: function () {
-        var img = hdv(SP.person(w.look)), bob = Math.floor(w.step * 6) % 2;
-        cx.save(); cx.globalAlpha = w.alpha; cx.fillStyle = 'rgba(0,0,0,.25)'; cx.beginPath(); cx.ellipse(w.px + 8 - cam.x, w.py + 15 - cam.y, 5, 1.6, 0, 0, 7); cx.fill();
-        cx.drawImage(img, Math.round(w.px - 3 - cam.x), Math.round(w.py - 11 - bob - cam.y), 22, 27); cx.restore();
+        var wk = SP.walk ? SP.walk(SP.personHero(w.look), w.dir > 0 ? 'right' : 'left', Math.floor(w.step * 8) % 4) : { img: SP.person(w.look) }, img = hdv(wk.img);   // passers-by walk like Vee: side-on, a full run cycle
+        cx.save(); cx.globalAlpha = w.alpha; cx.fillStyle = 'rgba(0,0,0,.25)'; cx.beginPath(); cx.ellipse(w.px + 8 - cam.x, w.py + 15 - cam.y, 5, 1.6, 0, 0, 7); cx.fill(); cx.restore();
+        cx.save(); cx.globalAlpha = w.alpha; drawSprite(img, w.px - 3 - cam.x, w.py - 11 - cam.y, wk.flip, 1); cx.restore();
       } }); });
     }
     function barkPlace() {
@@ -1361,7 +1568,7 @@
       var x0 = Math.floor(cam.x / TS) - 1, x1 = Math.ceil((cam.x + W) / TS) + 1, y0 = Math.floor(cam.y / TS) - 1, y1 = Math.ceil((cam.y + H) / TS) + 1, mh = MAP.length, mw = MAP[0].length;
       var pulse = .45 + .4 * Math.sin(t * 4);
       Object.keys(AREA.exits || {}).forEach(function (k) {
-        var p = k.split(',').map(Number), ex = p[0], ey = p[1]; if (ex < x0 || ex > x1 || ey < y0 || ey > y1) return;
+        var p = k.split(',').map(Number), ex = p[0], ey = p[1]; if (ex < x0 || ex > x1 || ey < y0 || ey > y1) return; if (AREA.exits[k][3]) return;   // places on the Sprawl are their own marker
         var dx = ex <= 0 ? -1 : ex >= mw - 1 ? 1 : 0, dy = ey <= 0 ? -1 : ey >= mh - 1 ? 1 : 0; if (!dx && !dy) dy = 1;
         var cxp = ex * TS + 8 - cam.x - dx * 2, cyp = ey * TS + 8 - cam.y - dy * 2, bob = Math.sin(t * 5) * 1.5;
         cx.fillStyle = 'rgba(255,255,255,' + pulse + ')';
@@ -1387,7 +1594,9 @@
         gateOpen: gateOpen, isLit: isLit, signal: lights() === 6 || !!F.ending, tether: F.ending === 'cut' ? 'cut' : F.ending === 'reverse' ? 'down' : 'up', fpos: PAINTED.fpos, radio: !!F.radio, mara: !!F.mara };
       ART.live(cx, AREA, MAP, tnow, cam, st, 'under');
       // people, the wagon and Vee, nearest drawn last
-      var list = visNpcs().map(function (n) { var nx = n.px != null ? n.px : n.x * TS, ny = n.py != null ? n.py : n.y * TS; return { y: ny / TS, draw: function () { ART.person(cx, nx - cam.x, ny - cam.y, n, tnow); } }; });
+      var list = visNpcs().map(function (n) { var nx = n.px != null ? n.px : n.x * TS, ny = n.py != null ? n.py : n.y * TS; return { y: ny / TS, draw: function () {
+        if (SP.walk && n.look !== 'drone') { var sp = n.hero || SP.personHero(n.p), d = n.dir || 'down'; if (talking && LIFE.facing === n) d = me.y < n.y ? 'up' : me.y > n.y ? 'down' : me.x < n.x ? 'left' : 'right'; n.__walk = SP.walk(sp, d, n.moving ? Math.floor((n.wstep || 0) * 8) % 4 : -1); n.__walk.moving = n.moving; }
+        ART.person(cx, nx - cam.x, ny - cam.y, n, tnow); } }; });
       lifeDraw(list);
       var w = wagonAt(); if (w) list.push({ y: w[1], draw: function () { ART.wagon(cx, w[0] * TS - cam.x, w[1] * TS - cam.y, tnow); } });
       list.push({ y: me.py / TS + .01, draw: function () {
@@ -1395,8 +1604,10 @@
         ghosts.forEach(function (gh) { gh.t += 1 / 60; var a = Math.max(0, .5 * (1 - gh.t / .32)); if (!a) return; cx.save(); cx.globalAlpha = a; cx.filter = 'brightness(1.8) contrast(.8)'; drawSprite(gh.img, gh.px - 3 - cam.x, gh.py - 10 - (gh.bob ? 1 : 0) - cam.y, gh.flip); cx.restore(); });
         ghosts = ghosts.filter(function (gh) { return gh.t < .32; });
         var v = veeImg(), vx = me.px - 3 - cam.x, vy = me.py - 10 - (v.bob ? 1 : 0) - cam.y;
-        cx.fillStyle = 'rgba(0,0,0,.35)'; cx.beginPath(); cx.ellipse(me.px + 8 - cam.x, me.py + 15 - cam.y, 7, 2.5, 0, 0, 7); cx.fill();
+        if (me.boat && ART.packet) { ART.packet(cx, me.px - cam.x, me.py - cam.y, tnow, me.dir, me.moving, 'back'); vy -= 9 + Math.round(Math.sin(tnow * 4)); }
+        else { cx.fillStyle = 'rgba(0,0,0,.35)'; cx.beginPath(); cx.ellipse(me.px + 8 - cam.x, me.py + 15 - cam.y, 7, 2.5, 0, 0, 7); cx.fill(); }
         drawSprite(v.img, vx, vy, v.flip);
+        if (me.boat && ART.packet) ART.packet(cx, me.px - cam.x, me.py - cam.y, tnow, me.dir, me.moving, 'front');
       } });
       list.sort(function (a, b) { return a.y - b.y; }).forEach(function (o) { o.draw(); });
       barkPlace();
@@ -1431,7 +1642,7 @@
       var lmT = 'LANDMARKS ' + lights() + ' OF 6'; ART.text(cx, lmT, W - 8 - ART.textW(lmT), 22, '#c0c0cc'); ART.text(cx, 'PRESS ANY KEY', W - 8 - ART.textW('PRESS ANY KEY'), 32, Math.floor(tnow * 2) % 2 ? '#ffffff' : '#6a6a76');
       drawScan();
     }
-    function allyPos(a) { var vx0 = 250 - (B ? B.vx : 0) * 34; return a.slot === 0 ? [vx0 + 30, 104 - 20] : [vx0 + 30, 104 + 18]; }
+    function allyPos(a) { var vx0 = 250 - (B ? B.vx : 0) * 34 + (back(a.id) ? 14 : 0); return a.slot === 0 ? [vx0 + 30, 104 - 20] : [vx0 + 30, 104 + 18]; }
     function drawBattle(dt) {
       var tt = performance.now() / 1000, hy = 64 + BOFF;
       drawBackdrop((B && B.theme) || (AREA && AREA.theme) || 'plaza', tt, hy);
@@ -1443,7 +1654,7 @@
       order.forEach(function (f) {
         f.shake = Math.max(0, f.shake - dt * 3); f.flash = Math.max(0, f.flash - dt * 4); f.lunge = Math.max(0, (f.lunge || 0) - dt * 3);
         if (f.dead) { f.fade = Math.max(0, f.fade - dt * 1.6); if (f.fade <= 0) return; }
-        var PEOPLE = { vesfork: WD.heroes && WD.heroes.ves, corvin: WD.heroes && WD.heroes.corvin };   // the rivals are people, not bugs: their own sprites, facing Vee
+        var PEOPLE = { vesfork: WD.heroes && WD.heroes.ves, corvin: WD.heroes && (WD.heroes.corvin_suit || WD.heroes.corvin) }; /* Corvin fights in the Continuity Suite */ if (WD.heroes && WD.heroes[f.kind] && !PEOPLE[f.kind]) PEOPLE[f.kind] = WD.heroes[f.kind];   // the rivals are people, not bugs: their own sprites, facing Vee
         var img = PEOPLE[f.kind] ? hdv(SP.hero(PEOPLE[f.kind], 'side', f.lunge > .3 ? 'point' : (Math.floor(B.t * 2) % 2 ? 'idle2' : 'idle'))) : (SP.bugHD && !(save.cfg && save.cfg.retro) ? SP.bugHD : SP.bug)(f.kind, Math.floor((B.t + f.ph) * 4)), sc = f.sc / (img.hd || 1), w = img.width * sc, h = img.height * sc;   // sc here is per drawn pixel; drawSprite takes the per-world-pixel scale   // 16-bit sprites by default; img.hd says how much finer they're drawn
         var bx = f.fx + (f.shake ? Math.sin(B.t * 80) * 3 * f.shake : 0) + f.lunge * 10, by = f.fy - h + (f.kind === 'moth' || f.kind === 'virus' ? -6 + Math.sin(B.t * 3 + f.ph) * 1.5 : 0);
         cx.fillStyle = 'rgba(0,0,0,.35)'; cx.beginPath(); cx.ellipse(f.fx + w / 2, f.fy + 1, w * .42, 3, 0, 0, 7); cx.fill();
@@ -1460,7 +1671,7 @@
       });
       // Vee, on the right, facing left: smaller than the bugs
       var crit = save.hp > 0 && save.hp <= maxHp() * .25;
-      var pose = B.cast > .3 ? 'point' : (B.hurt > .3 ? 'fall' : crit ? (Math.floor(B.t * 2.2) % 2 ? 'kneel2' : 'kneel') : 'idle'), vx = 250 - B.vx * 34 + (B.hurt ? Math.sin(B.t * 70) * 2 : 0), vfy = 104;
+      var pose = B.cast > .3 ? 'point' : (B.hurt > .3 ? 'fall' : crit ? (Math.floor(B.t * 2.2) % 2 ? 'kneel2' : 'kneel') : 'idle'), vx = 250 - B.vx * 34 + (back('vee') ? 14 : 0) + (B.hurt ? Math.sin(B.t * 70) * 2 : 0), vfy = 104;
       if (B.ko) {   // knocked out: he topples and lies still
         B.ko = Math.min(1, B.ko + dt * 2.4);
         var spr = SP.frame('fall'), ang = -Math.PI / 2 * B.ko;
@@ -1501,26 +1712,30 @@
         if (fade.t >= .7) { fade = null; showArea(); }
         return;
       }
+      if (AREA && mode !== 'menu') { var PT = save.pt = save.pt || { t: {}, f: {}, ko: {}, run: 0, b: {} }; PT.t[AREA.id] = (PT.t[AREA.id] || 0) + dt; }
       lifeUpdate(dt); mechUpdate(dt);
       if (mode !== 'map' || talking || PZ) return;
       if (me.moving) {
-        var dashing = dashHeld && !PZ, tx = me.x * TS, ty = me.y * TS, sp = 70 * dt * (dashing ? 2.2 : 1);
+        var dashing = dashHeld && !PZ, tx = me.x * TS, ty = me.y * TS, sp = 70 * dt * (dashing ? 2.2 : 1) * (me.boat ? 2 : 1);
         me.px += Math.sign(tx - me.px) * Math.min(sp, Math.abs(tx - me.px)); me.py += Math.sign(ty - me.py) * Math.min(sp, Math.abs(ty - me.py)); me.step += dashing ? 2 : 1;
         trail.push([me.px, me.py, me.dir]); if (trail.length > 80) trail.shift();
         if (dashing) { ghostT += dt; if (ghostT > .045) { ghostT = 0; var gv = veeImg(); ghosts.push({ img: gv.img, flip: gv.flip, bob: gv.bob, px: me.px, py: me.py, t: 0 }); if (ghosts.length > 8) ghosts.shift(); } }
         if (me.px === tx && me.py === ty) {
           me.moving = false; me.steps++; save.x = me.x; save.y = me.y; if (me.steps % 6 === 0) store();
+          if (SCENE) return;
           var k = key(me.x, me.y), ex = AREA.exits && AREA.exits[k], gt = AREA.gates && AREA.gates[k];
-          if (ex) return travel(ex);
+          if (ex && ex[3] && ex[3].site && !save.seen[ex[0]] && !(WD.areas[ex[0]] && WD.areas[ex[0]].open)) { var nm = WD.areas[ex[0]] ? WD.areas[ex[0]].name : ex[0]; say('', [nm.toUpperCase() + '.', 'The gate is sealed from this side. It only opens for processes the district already knows.', 'Vee will have to find his way in from the city first.']); return; }
+          if (ex) { if (me.boat) { me.boat = 0; save.boat = 0; } return travel(ex); }
+          zoneAt();
           if (gt && gt.to && gateOpen(me.x, me.y)) return travel(gt.to);
           if (WD.steps[AREA.id]) { WD.steps[AREA.id](G, me.x, me.y); if (talking) return; }
           var enc = AREA.enc;
           if (gs('regen') && save.hp < maxHp()) save.hp = Math.min(maxHp(), save.hp + gs('regen'));
-          if (enc && enc.tiles.indexOf(tile(me.x, me.y)) >= 0 && --me.safe <= 0 && Math.random() < enc.rate * CFG.enc[save.cfg.enc] * (1 - gs('stealth')) * (raining() ? .3 : 1)) { startBattle(); return; }
+          if (enc && !me.boat && enc.tiles.indexOf(tile(me.x, me.y)) >= 0 && --me.safe <= 0 && Math.random() < enc.rate * .8 * CFG.enc[save.cfg.enc] * (1 - gs('stealth')) * (raining() ? .3 : 1)) { startBattle(); return; }
           mechStep();
         }
       }
-      if (!me.moving && held) tryMove(held);
+      if (!me.moving && held && !SCENE) tryMove(held);
     }
     function tryMove(d) {
       me.dir = d; var v = { up: [0, -1], down: [0, 1], left: [-1, 0], right: [1, 0] }[d], nx = me.x + v[0], ny = me.y + v[1];
@@ -1530,7 +1745,7 @@
     function loop(ts) {
       var dt = Math.min(.05, (ts - (last || ts)) / 1000); last = ts;
       update(dt);
-      if (mode === 'map' || mode === 'menu') drawMap(); else if (mode === 'atlas') drawAtlas(); else if (mode === 'swirl') drawSwirl(dt); else drawBattle(dt);
+      if (mode === 'map' || mode === 'menu') { if (FX.shake > 0) { FX.shake = Math.max(0, FX.shake - dt); cx.save(); cx.translate(Math.round((Math.random() - .5) * 6), Math.round((Math.random() - .5) * 4)); drawMap(); cx.restore(); } else drawMap(); if (FX.flash > 0) { FX.flash = Math.max(0, FX.flash - dt); cx.fillStyle = 'rgba(255,255,255,' + Math.min(1, FX.flash * 2.5) + ')'; cx.fillRect(0, 0, W, H); } } else if (mode === 'atlas') drawAtlas(); else if (mode === 'swirl') drawSwirl(dt); else drawBattle(dt);
       raf = requestAnimationFrame(loop);
     }
 
@@ -1589,7 +1804,16 @@
       if (!AREA) { load(save.area, save.x, save.y); syncGear(true); }
       if (mode === 'map' && !talking) showTitle(function () {
         if (talking || mode !== 'map') return;
-        if (!save.met) { save.met = true; store(); say('', ['Meridian was built to be the most beautiful place on the network. Two million people lived here. For a while, it was everything it promised.', 'Then the people who owned it built a newer world, Upstream, and sorted every account into two lists. Current: forty thousand of them, who took the Lift. Obsolete: everyone else.', 'The Current stopped paying for this world. Nothing obsolete is maintained.', 'The rot set in. District by district, the city has been going dark. Last night, the signal at its heart went quiet.', 'You are Vee, a maintenance process nobody remembered to shut down. You know five commands so far: whoami, pwd, ls, cd and cat. Every level teaches you more.', coarse ? 'Use the pad to move, A to talk and B for the menu.' : 'Arrow keys to move. Hold Shift to dash (on a phone, tap DASH to toggle it). Enter or Z to talk. X for the menu.'], null, showArea); }
+        if (!save.met) { save.met = true; store(); scene([
+          { say: ['', ['Meridian was built to be the most beautiful place on the network. Two million people lived here. For a while, it was everything it promised.', 'Then the people who owned it built a newer world called Upstream, and sorted every account onto one of two lists.', 'CURRENT: forty thousand, who rode the Lift up. OBSOLETE: everyone else.', 'Nothing obsolete is maintained. A year later, the city is going dark one district at a time.']] },
+          { flash: .6, wait: 500 },
+          { say: ['', ['boot: maintenance process 1205 ........ ok', '$ whoami', 'maintenance']] },
+          { face: 'left' }, { wait: 300 }, { face: 'right' }, { wait: 300 }, { face: 'down' },
+          { shake: .7, wait: 700 },
+          { say: ['', ['Across the Plaza, the Spire’s signal stutters, holds, and goes out. Somewhere a kiosk quietly updates a number.']] },
+          { say: ['Vee', ['…That’s my job, then.']] },
+          { say: ['', ['You are Vee. You know five commands so far: whoami, pwd, ls, cd and cat. Every level teaches you more.', coarse ? 'Use the pad to move, A to talk and B for the menu.' : 'Arrow keys to move. Hold Shift to dash (on a phone, tap DASH to toggle it). Enter or Z to talk. X for the menu.']] }
+        ], function () { endScene(); showArea(); }); }
         else say('', ['Vee reconnects. ' + AREA.name + '. Level ' + save.lvl + '.'], null, showArea);
       });
       root.querySelector('.rpg-x').focus({ preventScroll: true });
@@ -1599,7 +1823,7 @@
       setTimeout(function () { if (!root.classList.contains('show')) { root.classList.remove('open'); cancelAnimationFrame(raf); } }, 400);
       if (opener && opener.focus) opener.focus({ preventScroll: true });
     }
-    window.__quest = { battle: function (n) { startBattle(n); }, boss: function (id) { startBattle({ boss: id }); }, go: function (id, x, y) { if (!AREA) load(id, x, y); else travel([id, x, y]); }, state: function () { return { mode: mode, B: B, me: me, talking: !!talking, save: save, area: AREA && AREA.id, PZ: PZ, map: MAP }; }, press: press, release: release, advance: advance, interact: function () { interact(); }, face: function (d) { me.dir = d; }, puzzle: function (v) { submitPuzzle(v); } };
+    window.__quest = { battle: function (n) { startBattle(n); }, boss: function (id) { startBattle({ boss: id }); }, go: function (id, x, y) { if (!AREA) load(id, x, y); else travel([id, x, y]); }, state: function () { return { mode: mode, B: B, me: me, talking: !!talking, save: save, area: AREA && AREA.id, PZ: PZ, map: MAP, scene: SCENE && SCENE.i, fade: !!fade, held: held, sceneOn: !!SCENE, actors: (AREA && AREA.npcs || []).filter(function (n) { return n.scene; }).map(function (n) { return [n.id, n.x, n.y, Math.round(n.px), Math.round(n.py)]; }) }; }, press: press, release: release, advance: advance, interact: function () { interact(); }, face: function (d) { me.dir = d; }, puzzle: function (v) { submitPuzzle(v); } };
     return { open: open, close: close };
   })();
 })();

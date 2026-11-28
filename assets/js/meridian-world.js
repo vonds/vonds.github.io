@@ -562,14 +562,17 @@
   var STEPS = {
     terminal: function (G, x, y) {
       if (G.f.reclaimed || x < 8) return;
-      G.say('', ['A shape stands at the foot of the tether. It is as tall as a tower and made entirely of tally marks.'], null, function () {
-        G.say('The Reclaimer', ['OBSOLETE PROCESS DETECTED.', 'NO TICKETED ACCOUNT HAS ACCESSED YOU IN THIRTY DAYS.', 'YOUR MEMORY HAS BEEN ALLOCATED UPSTREAM. PLEASE HOLD STILL.'], null, function () {
-          G.boss('reclaimer', function () {
-            G.f.reclaimed = 1;
-            G.say('', ['The Reclaimer comes apart. The list it carried falls open across the platform.', 'Two million names. Every one marked UNUSED.', 'The tether console flickers on.']);
-          });
-        });
-      });
+      G.scene([
+        { shake: .9, wait: 900 },
+        { say: ['', ['The platform shudders. Something unfolds at the foot of the tether, as tall as a tower and made entirely of tally marks.', 'Every mark is a name. Every name has been crossed out.']] },
+        { flash: .5 },
+        { say: ['The Reclaimer', ['OBSOLETE PROCESS DETECTED.', 'NO TICKETED ACCOUNT HAS ACCESSED YOU IN THIRTY DAYS.', 'YOUR MEMORY HAS BEEN ALLOCATED UPSTREAM. PLEASE HOLD STILL.']] },
+        { say: ['Vee', ['Somebody accessed me this morning. Wren did. And the Sweeper. And a kid with a kite.', 'I’m not unused. I’m busy.']] },
+        { shake: .5 }, { boss: 'reclaimer' },
+        { fn: function (G2) { G2.f.reclaimed = 1; } },
+        { flash: .8, wait: 600 },
+        { say: ['', ['The Reclaimer comes apart. The list it carried falls open across the platform.', 'Two million names. Every one marked UNUSED.', 'Vee reads the first ten out loud anyway. Then the tether console flickers on.']] }
+      ]);
     }
   };
 
@@ -878,24 +881,30 @@
       ], function () { marasRestore(G); });
     });
   };
+  var MARA = { hair: 'long', gray: 1, body: 'coat', glasses: 1, skin: '#c89a78', top: '#d8d8dc' };
   function marasRestore(G) {
     var f = G.f;
-    G.say('', ['The frost on the vault door turns to water. Something stands up inside, slowly, the way people stand after sitting too long.'], null, function () {
-      G.say('Mara', ['...Is it still running?', 'The city. Is it still—', 'You. You found all of them. My logs. I left them like breadcrumbs and told myself nobody would follow.',
-        'Sixty-one percent. That’s how much of me is in here. Enough to talk. Not enough to stay.', 'I’m sorry I gave you such a small beginning. One command. I wanted you to have to choose everything else.',
-        'The girl in the Commons. Lio. Is she—'], [
-        { label: 'She’s waiting.', fn: function () { next(); } },
-        { label: 'She’s still on the bench.', fn: function () { next(); } }]);
-      function next() {
-        G.say('Mara', ['Then someone should sit with her. Not you. You’ve sat with enough grief that wasn’t yours. Someone who owes her.', 'Tell Wren she can stop doing what I said.', 'Run whoami for me. One more time.'], null, function () {
-          G.puzzle('M_QUELL_FINAL', [{ t: 'She is waiting.', ex: ['whoami'] }], function () {
-            f.mara = 1; G.give('gb', 1); G.xp(500);
-            G.say('Mara', ['vee.', 'Good. That’s all I ever needed you to know.'], null, function () {
-              G.say('', ['She is gone the way a held note is gone: not all at once.', 'On the floor of the vault, she has left something behind. A gigabyte, and the warmth of a hand on a shoulder that Vee will not be able to explain to anyone.']);
-            });
-          });
-        });
-      }
+    G.scene([
+      { flash: .6, wait: 500 },
+      { say: ['', ['The frost on the vault door turns to water. Something stands up inside, slowly, the way people stand after sitting too long.']] },
+      { actor: 'mara', p: MARA, name: 'Mara', at: [0, -3], dir: 'down' },
+      { wait: 700 },
+      { say: ['Mara', ['...Is it still running?', 'The city. Is it still—']] },
+      { walk: 'mara', toVee: 1, face: 'vee' }, { face: 'mara' },
+      { choose: ['Mara', ['You. You found all of them. My logs. I left them like breadcrumbs and told myself nobody would follow.', 'Sixty-one percent. That’s how much of me is in here. Enough to talk. Not enough to stay.', 'I’m sorry I gave you such a small beginning. One command. I wanted you to have to choose everything else.', 'The girl in the Commons. Lio. Is she—'], [
+        { label: 'She’s waiting.', then: [{ say: ['Vee', ['She’s waiting. She’s good at it. Too good.']] }] },
+        { label: 'She’s still on the bench.', then: [{ say: ['Vee', ['She’s still on the bench. She saves you the left side.']] }] }]] },
+      { say: ['Mara', ['Then someone should sit with her. Not you. You’ve sat with enough grief that wasn’t yours. Someone who owes her.', 'Tell Wren she can stop doing what I said.', 'Run whoami for me. One more time.']] }
+    ], function () {
+      G.puzzle('M_QUELL_FINAL', [{ t: 'She is waiting.', ex: ['whoami'] }], function () {
+        f.mara = 1; G.give('gb', 1); G.xp(500);
+        G.scene([
+          { actor: 'mara', p: MARA, name: 'Mara', at: [0, -1], dir: 'down' },
+          { say: ['Mara', ['vee.', 'Good. That’s all I ever needed you to know.']] },
+          { flash: 1.2, wait: 900 }, { remove: 'mara' },
+          { say: ['', ['She is gone the way a held note is gone: not all at once.', 'On the floor of the vault, she has left something behind. A gigabyte, and the warmth of a hand on a shoulder that Vee will not be able to explain to anyone.']] }
+        ]);
+      });
     });
   }
   DOORS['line:booth'] = function (G) { G.say('', ['TICKETS. The shutter is down. A handwritten sign: LIFT TICKETS ARE NOT SOLD HERE. NO TICKETS ARE SOLD HERE. PLEASE STOP ASKING.']); };
@@ -2448,56 +2457,56 @@
     kes: { name: 'Kes', role: 'Scout', look: HERO.kes, hp: .85, atk: 1, def: .8,
       bio: 'Ran packets between districts for cash, back when there was cash. Faster than anyone, and will tell you so.',
       skills: [{ id: 'ping', name: 'Ping', cd: 3, fx: 'expose_all', tip: 'Kes pings every bug at once. All of them take 50% more damage for two turns.' },
-               { id: 'dtap', name: 'Double Tap', cd: 2, fx: 'multi2', target: 1, tip: 'Two quick strikes at one bug.' }],
+               { id: 'dtap', name: 'Double Tap', cd: 2, fx: 'multi2', target: 1, tip: 'Two quick strikes at one bug.' }, { id: 'oclock', name: 'Overclock Run', cd: 4, fx: 'haste_party', lv: 18, tip: 'Kes sets the pace. Vee is hasted: two actions a round for three rounds.' }, { id: 'lastmile', name: 'Last Mile', cd: 3, fx: 'last_mile', target: 1, arc: 'arc_kes', tip: 'Three deliveries, no stops. Three hits that each leave the bug exposed.' }],
       barks: ['Keep up, maintenance.', 'I know a shortcut. It’s mostly a roof.', 'Bet I could outrun that bug. Bet you couldn’t.', 'You walk like you’re reading a manual.'],
       intro: ['Whoa, whoa. You’re the maintenance process everyone’s talking about? You’re shorter in person.', 'Kes. Courier. I used to run packets from the Commons to the Upper Ring in under four seconds. Record.', 'Nobody sends packets anymore. Everybody left. I’ve been running laps.'],
       pitch: ['Here’s the deal. You’re going places nobody goes. I know every alley that still connects.', 'I’m coming with you. Not because I like you. Because I’m bored out of my mind.'] },
     odessa: { name: 'Dr. Odessa', role: 'Medic', look: HERO.odessa, hp: .95, atk: .7, def: .9,
       bio: 'Ran the only clinic in Halflight for eleven months on no budget and spite. Says she’ll retire every single day.',
       skills: [{ id: 'triage', name: 'Triage', cd: 3, fx: 'heal_party', tip: 'Heals everyone in the party by 30% of their max HP.' },
-               { id: 'restart', name: 'Restart', cd: 4, fx: 'revive', tip: 'Brings a downed ally back with 40% HP.' }],
+               { id: 'restart', name: 'Restart', cd: 4, fx: 'revive', tip: 'Brings a downed ally back with 40% HP.' }, { id: 'avfield', name: 'Antivirus Field', cd: 3, fx: 'cure_all', lv: 16, tip: 'Scrubs every status off the party and heals everyone 15%.' }, { id: 'fullrestore', name: 'Full Restore', cd: 6, fx: 'mass_revive', arc: 'arc_odessa', tip: 'Everyone back up, everyone healed 60%. The clinic, carried in one pair of hands.' }],
       barks: ['Sit still. You’re leaking.', 'I am retiring tomorrow. I said that yesterday.', 'If you die on my watch I will be very annoyed.', 'Hydrate. I know. Do it anyway.'],
       intro: ['Don’t touch that. Don’t touch that either. Who let you in here?', 'Dr. Odessa Brand. This is a clinic. The only one left in Halflight, which says something about Halflight.', 'You’re the maintenance process. You look terrible. Sit down.'],
       pitch: ['I’ve patched up three people this week who said “Vee told me it was safe now.”', 'If you’re going to keep sending them my way, I’d rather just follow you and fix you at the source.'] },
     piper: { name: 'Piper', role: 'Signal', look: HERO.piper, hp: .8, atk: .9, def: .75,
       bio: 'Runs a pirate radio show on a frequency nobody officially owns. Has never once stopped talking.',
       skills: [{ id: 'cast', name: 'Broadcast', cd: 3, fx: 'buff_crit', tip: 'Piper hypes the party up. Everyone’s next hit is a critical.' },
-               { id: 'static', name: 'Static', cd: 2, fx: 'stun', target: 1, tip: 'Blasts one bug with noise. It loses its next turn.' }],
+               { id: 'static', name: 'Static', cd: 2, fx: 'stun', target: 1, tip: 'Blasts one bug with noise. It loses its next turn.' }, { id: 'feedback', name: 'Feedback', cd: 4, fx: 'stun_all', lv: 22, tip: 'A howl of feedback. Every bug loses its turn; bosses lose whatever they were winding up.' }, { id: 'encore', name: 'Encore', cd: 5, fx: 'encore', arc: 'arc_piper', tip: 'Vee is hasted, and everyone’s next hit is critical.' }],
       barks: ['And we’re live! Vee, say hi to the listeners.', 'This is Piper on 88.0, broadcasting from somewhere dangerous.', 'Song request from a bug: none. Bugs have no taste.', 'Ratings are up! Well, I’m up. Ratings are me.'],
       intro: ['—and THAT was the weather, which is grey, which is always grey. Oh! A guest! Folks, we have a guest!', 'I’m Piper. Pirate radio. Eighty-eight point zero. Nobody licensed it, because nobody’s left to license anything.', 'Say something for the listeners! There are listeners! Probably!'],
       pitch: ['Okay, I have an idea and you’re going to love it. Live coverage. From the field. With you.', 'I narrate, you fight, the whole city tunes in. Come on, Vee. Make some noise with me.'] },
     moth: { name: 'Moth', role: 'Engineer', look: HERO.moth, hp: 1, atk: .95, def: 1,
       bio: 'Fixes machines and talks to them while doing it. Talks to people far less. Builds tiny robots from bug parts.',
       skills: [{ id: 'flush', name: 'Overclock', cd: 3, fx: 'all', tip: 'Moth throws a sparking contraption. Hits every bug.' },
-               { id: 'valve', name: 'Throttle', cd: 3, fx: 'slow_all', tip: 'Moth jams their clocks. All bugs hit for half for three turns.' }],
+               { id: 'valve', name: 'Throttle', cd: 3, fx: 'slow_all', tip: 'Moth jams their clocks. All bugs hit for half for three turns.' }, { id: 'logicbomb', name: 'Logic Bomb', cd: 3, fx: 'poison_foe', target: 1, lv: 20, tip: 'Plants a slow leak in one bug. It loses HP every turn for five turns.' }, { id: 'patch', name: 'Patch Tuesday', cd: 3, fx: 'break_fw', target: 1, arc: 'arc_moth', tip: 'Tears down a firewall and a counter stance, and leaves the bug exposed.' }],
       barks: ['…that pipe is sad.', 'Hold still. Not you. The pipe.', 'I named the robot. Don’t ask what.', '…you walk loud.'],
       intro: ['…', '…oh. A person. Hi.', 'Moth. I fix things. This robot was a bug. Now it sorts bolts. It’s happier.'],
       pitch: ['…you break bugs. I fix what they broke. That seems like a team.', 'I’ll bring the robot. It doesn’t fight. It cheers. Quietly.'] },
     rook: { name: 'Rook', role: 'Sentinel', look: HERO.rook, hp: 1.35, atk: .9, def: 1.45,
       bio: 'Board security for twelve years. Stayed when the Board left, and switched sides without telling anyone.',
       skills: [{ id: 'wall', name: 'Bulwark', cd: 3, fx: 'guard_party', tip: 'Rook plants and covers everyone. The whole party takes half damage until Vee’s next turn.' },
-               { id: 'audit', name: 'Taunt', cd: 3, fx: 'taunt', tip: 'Rook draws every attack for two turns, and braces for them.' }],
+               { id: 'audit', name: 'Taunt', cd: 3, fx: 'taunt', tip: 'Rook draws every attack for two turns, and braces for them.' }, { id: 'aegis', name: 'Aegis', cd: 5, fx: 'aegis', lv: 24, tip: 'The whole party takes half damage for three rounds.' }, { id: 'stand', name: 'Last Stand', cd: 4, fx: 'stand', arc: 'arc_rook', tip: 'Rook heals half his HP and draws every attack for three rounds.' }],
       barks: ['Stay behind me.', 'I used to guard their doors. Now I guard you.', 'Twelve years of night shifts. This is easier.', 'That bug looked at you. I didn’t like it.'],
       intro: ['Stop. …You’re 1205. Thought so.', 'Rook. Board security. Was. They didn’t leave me a seat, and they didn’t leave me orders, so I’ve been writing my own.', 'Mostly the orders say: protect whoever’s still here.'],
       pitch: ['The Bastion holds without me now. You made sure of that.', 'So here’s my new order: walk behind you, and take whatever is aimed at you. Accept it.'] },
     sable: { name: 'Sable', role: 'Archivist', look: HERO.sable, hp: .8, atk: 1.15, def: .75,
       bio: 'The Stacks’ oldest process. Was there for the city’s first boot and remembers it like a poem.',
       skills: [{ id: 'index', name: 'Index', cd: 2, fx: 'heavy_expose', target: 1, tip: 'Sable looks the bug up in the archive and strikes where the index says. Heavy damage, and it stays exposed.' },
-               { id: 'recall', name: 'Recall', cd: 3, fx: 'recall', tip: 'Sable reads Vee his own first log. Heals him 40% and clears corruption.' }],
+               { id: 'recall', name: 'Recall', cd: 3, fx: 'recall', tip: 'Sable reads Vee his own first log. Heals him 40% and clears corruption.' }, { id: 'footnote', name: 'Footnote', cd: 3, fx: 'break_fw', target: 1, lv: 26, tip: 'Sable cites the bug’s own source. No firewall, no counter, exposed.' }, { id: 'deepindex', name: 'Deep Index', cd: 6, fx: 'nova', arc: 'arc_sable', tip: 'Every record the archive holds, at once. A huge hit to every bug.' }],
       barks: ['This street was named for a person. No one remembers which.', 'I remember the first morning. The sky rendered pink by mistake.', 'Every bug was once a line someone meant well.', 'Walk softly. The floor is older than it looks.'],
       intro: ['Ah. 1205. I indexed you once, on your first day. You were very small. A single cron job and a broom.', 'I am Sable. I keep the archive. I was here when Meridian first said hello to itself.', 'It is good to see what you became.'],
       pitch: ['The shelves are in order. I have read everything that was ever written here.', 'Now I would like to see what is still being written. With you, if an old archive is welcome.'] },
     juni: { name: 'Juni', role: 'Astronomer', look: HERO.juni, hp: .85, atk: 1, def: .85,
       bio: 'Maps stars that the renderer makes up. Asks more questions per minute than anyone in Meridian.',
       skills: [{ id: 'stars', name: 'Starfield', cd: 4, fx: 'blind_all', tip: 'Juni fills the air with stars. Bugs miss half their attacks for two turns.' },
-               { id: 'redshift', name: 'Redshift', cd: 2, fx: 'heavy_slow', target: 1, tip: 'A heavy hit that leaves the bug slowed.' }],
+               { id: 'redshift', name: 'Redshift', cd: 2, fx: 'heavy_slow', target: 1, tip: 'A heavy hit that leaves the bug slowed.' }, { id: 'nebula', name: 'Nebula', cd: 4, fx: 'nebula', lv: 22, tip: 'Bugs are blinded for three turns and burn the whole time.' }, { id: 'supernova', name: 'Supernova', cd: 6, fx: 'nova', arc: 'arc_juni', tip: 'Juni names a star after every bug, then lights them all.' }],
       barks: ['Why is the sky that color? Who chose it? Can we change it?', 'I counted the stars. One is new. I’m naming it Vee.', 'Do bugs dream? Do WE dream?', 'Look up! Okay, now look down. Okay, now look at me.'],
       intro: ['Are you the maintenance process? Do you sleep? Do you dream? Is it true you have locs? Can I see? Oh, you do!', 'Sorry. Juni. I map the stars. The sky here is made up, but somebody made it up, and I want to know who.', 'Do you know who? You don’t? Okay. Okay. We can find out.'],
       pitch: ['I have a theory that the best stars are in the districts nobody goes to.', 'I need someone to keep me alive while I look up. Please? I’ll name a constellation after you. Two!'] },
     ves: { name: 'Ves', role: 'Fork', look: HERO.ves, hp: 1.05, atk: 1.2, def: 1,
       bio: 'A copy of Vee the Board made to finish reclaiming the city. Then they scheduled the wipe for Ves too.',
       skills: [{ id: 'fork', name: 'Fork', cd: 3, fx: 'fork', tip: 'Ves splits for a moment and hits every bug twice.' },
-               { id: 'kill9', name: 'kill -9', cd: 3, fx: 'execute', target: 1, tip: 'Ends a weakened bug outright (under 30% HP). Otherwise, a heavy hit.' }],
+               { id: 'kill9', name: 'kill -9', cd: 3, fx: 'execute', target: 1, tip: 'Ends a weakened bug outright (under 30% HP). Otherwise, a heavy hit.' }, { id: 'steal', name: 'Steal Cycles', cd: 3, fx: 'drain_hit', target: 1, lv: 40, tip: 'A heavy hit; Ves hands the stolen cycles to Vee as 20% of his HP.' }, { id: 'sigterm', name: 'kill -15', cd: 4, fx: 'graceful', target: 1, arc: 'arc_ves', tip: 'Asks politely. Ends a bug under 40% HP; takes a fifth off a boss.' }],
       barks: ['I was built to do this better than you. “Better” was the wrong word.', 'Same face. Different list.', 'Left foot, right foot. You taught me that.', 'Corvin would hate this. I like that.'],
       join: function (G) { return !!G.f.vesFree; }, pitch: null }
   };
@@ -2557,23 +2566,33 @@
     if (plazaSteps0) plazaSteps0(G, x, y);
     var f = G.f; if (f.cv1 || !G.lit('spire')) return;
     f.cv1 = 1;
-    G.say('', ['The Plaza kiosk flickers. For a moment, the screen shows a face instead of a population count: a man in a good suit, in an office with a window full of someone else’s sky.'], null, function () {
-      corvinSays(G, ['Maintenance process 1205. I’m Corvin Vane. Continuity Officer for the Board.', 'You lit a landmark. That draws power, and power draws attention, and attention is my job.',
-        'This city was decommissioned by a vote. Seven to one. Everything after that is just the lights taking a while to go out.', 'Please stop helping them get used to the light. It makes the end crueler.'], function () {
-        G.say('', ['The face is gone. The kiosk says MERIDIAN. POPULATION 1,204. It has never been so obviously a choice.']);
-      });
-    });
+    G.scene([
+      { shake: .3 }, { flash: .4 },
+      { say: ['', ['Every kiosk in the Plaza flickers at once. For a moment the screens show a face instead of a population count: a man in a good suit, in an office with a window full of someone else’s sky.']] },
+      { say: ['Corvin Vane', ['Maintenance process 1205. I’m Corvin Vane, Continuity Officer for the Board.', 'You lit a landmark. That draws power, and power draws attention, and attention is my job.', 'This city was decommissioned by a vote. Seven to one. Everything since is just the lights taking a while to go out.']] },
+      { say: ['Vee', ['The lights aren’t going out. Somebody’s turning them off.']] },
+      { say: ['Corvin Vane', ['From up here, those look exactly the same.', 'Please stop teaching them to get used to the light, 1205. It makes the end crueler.']] },
+      { flash: .3 },
+      { say: ['', ['The face is gone. The kiosks say MERIDIAN. POPULATION 1,204.', 'It has never looked so much like a choice.']] }
+    ]);
   };
 
   // 2. the first duel: in the Patchwork, someone with Vee's face
   STEPS.patchwork = function (G, x, y) {
     var f = G.f; if (f.ves1 || G.save.lvl < 8) return;
     f.ves1 = 1;
-    G.say('', ['Someone is standing in the middle of the street. Same height as Vee. Same locs. Same headphones, but white. Same face, without the habit of smiling.'], null, function () {
-      G.say('Ves', ['Process 1205. I’m 1205-b. The Board calls me Ves.', 'Corvin built me from your last backup, with the sentiment taken out. I reclaim what you keep fixing.', 'It’s nothing personal. I don’t have personal.'], [{ label: 'Fight', fn: function () {
-        G.boss('ves1', function () { G.say('Ves', ['…You’re slower than me. You still won. That isn’t in my notes.', 'I’ll update them.'], null, function () { G.say('', ['Ves walks away without hurrying. Behind them, a patch of the Patchwork that had gone grey starts to fill back in.']); }); });
-      } }]);
-    });
+    G.scene([
+      { actor: 'ves', hero: 'ves', name: 'Ves', at: [6, 0], dir: 'left' },
+      { say: ['', ['Someone is walking up the middle of the street. Same height as Vee. Same locs. Same headphones, but white.', 'Same face, without the habit of smiling.']] },
+      { walk: 'ves', toVee: 1, face: 'vee' }, { face: 'ves' },
+      { say: ['Ves', ['Process 1205. I’m 1205-b. The Board calls me Ves.', 'Corvin built me from your last backup, with the sentiment taken out. I reclaim what you keep fixing.', 'It’s nothing personal. I don’t have personal.']] },
+      { say: ['Vee', ['You have my face. You can have my job too, if you want it. It’s mostly fixing benches.']] },
+      { say: ['Ves', ['I don’t fix. I free up space.']] },
+      { flash: .4 }, { boss: 'ves1' },
+      { say: ['Ves', ['…You’re slower than me. You still won. That isn’t in my notes.', 'I’ll update them.']] },
+      { leave: 'ves' },
+      { say: ['', ['Behind where Ves stood, a patch of the Patchwork that had gone grey starts, slowly, to fill back in.']] }
+    ]);
   };
   // 3. the second: in the Stacks, Ves is reclaiming books
   var stacksSteps0 = STEPS.stacks;
@@ -2581,11 +2600,19 @@
     if (stacksSteps0) stacksSteps0(G, x, y);
     var f = G.f; if (!f.ves1 || f.ves2 || G.save.lvl < 20) return;
     f.ves2 = 1;
-    G.say('', ['Between two shelves, Ves is running a finger along the spines. Each book they touch goes blank.'], null, function () {
-      G.say('Ves', ['A book nobody has opened in a year is a file nobody has accessed in a year. The rule is very clear.', 'You keep making exceptions. I don’t understand exceptions. Show me one.'], [{ label: 'Fight', fn: function () {
-        G.boss('ves2', function () { G.say('Ves', ['You fight for the books like they can feel it.', 'They can’t. …Can they?', 'Don’t answer. I have to go and report.']); });
-      } }]);
-    });
+    G.scene([
+      { actor: 'ves', hero: 'ves', name: 'Ves', at: [4, -1], dir: 'up' },
+      { say: ['', ['Between two shelves, Ves is running a finger along the spines. Each book they touch goes blank.']] },
+      { wait: 500 }, { face: 'vee', who: 'ves' },
+      { say: ['Ves', ['A book nobody has opened in a year is a file nobody has accessed in a year. The rule is very clear.', 'You keep making exceptions. I don’t understand exceptions. Show me one.']] },
+      { walk: 'ves', toVee: 1, face: 'vee' },
+      { say: ['Vee', ['This one. A book nobody opened in a year is a book somebody was saving for a better day.']] },
+      { say: ['Ves', ['That isn’t a rule.']] },
+      { say: ['Vee', ['No. That’s the exception.']] },
+      { flash: .4 }, { boss: 'ves2' },
+      { say: ['Ves', ['You fight for the books like they can feel it.', 'They can’t. …Can they?', 'Don’t answer. I have to report.']] },
+      { leave: 'ves' }
+    ]);
   };
   // 4. the third: in the Deep, Ves asks the question
   var deepSteps0 = STEPS.deep;
@@ -2593,9 +2620,18 @@
     var f = G.f;
     if (f.ves2 && !f.ves3 && G.save.lvl >= 28 && y > 10) {
       f.ves3 = 1;
-      return G.say('Ves', ['I read your logs. All of them. The ones about the bench, and the kite, and the nurse with three patients.', 'Corvin says you are a malfunction that learned to look like kindness.', 'I want to see if he’s right. Hit me with everything.'], [{ label: 'Fight', fn: function () {
-        G.boss('ves3', function () { G.say('Ves', ['He isn’t right. Is he.', 'I don’t know what I am if he isn’t right.', 'Don’t follow me.']); });
-      } }]);
+      return G.scene([
+        { actor: 'ves', hero: 'ves', name: 'Ves', at: [0, -5], dir: 'down' },
+        { say: ['', ['A lamp comes down the dark toward Vee. Ves is carrying it. Ves has never carried a lamp before.']] },
+        { walk: 'ves', toVee: 1, face: 'vee' }, { face: 'ves' },
+        { say: ['Ves', ['I read your logs. All of them. The bench, the kite, the nurse with three patients.', 'Corvin says you are a malfunction that learned to look like kindness.', 'I want to see if he’s right. Hit me with everything.']] },
+        { say: ['Vee', ['He’s half right. I learned it. That’s the only way anybody gets it.']] },
+        { flash: .4 }, { boss: 'ves3' },
+        { say: ['Ves', ['He isn’t right. Is he.', 'I don’t know what I am if he isn’t right.']] },
+        { say: ['Vee', ['Then come find out.']] },
+        { say: ['Ves', ['…Don’t follow me.']] },
+        { leave: 'ves' }
+      ]);
     }
     if (deepSteps0) deepSteps0(G, x, y);
   };
@@ -2604,17 +2640,21 @@
   DOORS['upstream:hall'] = function (G, b) {
     var f = G.f;
     if (vouches(f) < 3 || f.corvinDown) return annex0(G, b);
-    G.say('', ['The Annex door opens on a corridor, and Corvin Vane, in person this time. Not a hologram. He looks tired, the way people look when a job has gone on years past its end date.'], null, function () {
-      corvinSays(G, ['Three vouches. I didn’t think anyone up here would put their name next to yours.', 'Let me explain what’s through that door. A world with four hundred seats. We ran the numbers. Four hundred is what the hardware can carry well.',
-        'Somebody always has to be on the other list. I just make sure it’s done tidily.', 'You are not tidy, 1205.'], function () {
-        G.say('', ['He steps aside to reveal what he’s wearing under the suit: the Continuity Suite, a frame of Board-grade security that has never lost an argument.'], [{ label: 'Fight', fn: function () {
-          G.boss('corvin', function () {
-            f.corvinDown = 1;
-            corvinSays(G, ['…Tidy. I was always so tidy.', 'Go on. The Sorter is in the core. I wrote it. It does exactly what I told it to.', 'That was the problem with all of it, wasn’t it.'], function () { annex0(G, b); });
-          });
-        } }, { label: 'Not yet', fn: null }]);
-      });
-    });
+    G.scene([
+      { actor: 'corvin', hero: 'corvin', name: 'Corvin Vane', at: [0, -3], dir: 'down' },
+      { say: ['', ['The Annex door opens on a corridor, and Corvin Vane walks out of it. In person, this time.', 'He looks tired, the way people look when a job has gone on years past its end date.']] },
+      { walk: 'corvin', toVee: 1, face: 'vee' }, { face: 'corvin' },
+      { say: ['Corvin Vane', ['Three vouches. I didn’t think anyone up here would put their name next to yours.', 'Let me tell you what’s through that door. A world with four hundred seats. We ran the numbers. Four hundred is what the hardware carries well.', 'Somebody always has to be on the other list. I just make sure it’s done tidily.']] },
+      { say: ['Vee', ['Four hundred seats. Who put you on the list?']] },
+      { say: ['Corvin Vane', ['…I did. Someone has to write the list. The one who writes it is always on it.', 'That is the only perk of the job, and I have never once enjoyed it.']] },
+      { choose: ['Corvin Vane', ['You are not tidy, 1205.'], [{ label: 'Then stop me', then: [] }, { label: 'Not yet', stop: 1 }]] },
+      { flash: .7 }, { remove: 'corvin' }, { actor: 'corvin2', hero: 'corvin_suit', name: 'Corvin Vane', at: [0, -1], dir: 'down' }, { shake: .8 },
+      { say: ['', ['The suit comes apart and folds back into something else: the Continuity Suite. White plate, a halo of light, a blade that has never lost an argument.']] },
+      { boss: 'corvin' },
+      { fn: function (G2) { G2.f.corvinDown = 1; } },
+      { say: ['Corvin Vane', ['…Tidy. I was always so tidy.', 'Go on. The Sorter is in the core. I wrote it. It does exactly what I told it to.', 'That was the problem with all of it, wasn’t it.']] },
+      { leave: 'corvin2' }
+    ], function () { if (f.corvinDown) annex0(G, b); });
   };
   // 6. the last duel: in Ring −1, Ves finds the wipe schedule
   var fwDaemon0 = DOORS['firmware:daemon'];
@@ -2622,13 +2662,20 @@
     var f = G.f; if (!f.ves3 || f.vesFree || y < 12) return;
     if (f.ves4) return;
     f.ves4 = 1;
-    G.say('Ves', ['You’re here. Of course you’re here.', 'Corvin sent me down to make sure the wipe runs on schedule. One last job.', 'Fight me. I need to be sure I can still do what I was made for.'], [{ label: 'Fight', fn: function () {
-      G.boss('ves4', function () {
-        G.say('Ves', ['…I looked at the schedule while you were catching your breath.', 'wipe --all. All volumes. Both cities. Every process.', 'Every process. 1205-b is a process.', 'He was going to wipe me with the rest. He never even put me on the other list. I was never on any list.'], null, function () {
-          G.say('Ves', ['You walk left foot, right foot. I copied that from your backup. I thought it was a bug.', 'Let me walk with you. Not because I’m better. Because I want to see what you see.'], [{ label: 'Walk together', fn: function () { f.vesFree = 1; G.recruit('ves'); } }]);
-        });
-      });
-    } }]);
+    G.scene([
+      { actor: 'ves', hero: 'ves', name: 'Ves', at: [3, 0], dir: 'left' },
+      { say: ['Ves', ['You’re here. Of course you’re here.', 'Corvin sent me down to make sure the wipe runs on schedule. One last job.', 'Fight me. I need to know I can still do what I was made for.']] },
+      { say: ['Vee', ['You can. I just don’t think it’s what you want to do.']] },
+      { flash: .5 }, { boss: 'ves4' },
+      { say: ['Ves', ['…I looked at the schedule while you were catching your breath.', 'wipe --all. All volumes. Both cities. Every process.', 'Every process. 1205-b is a process.']] },
+      { shake: .5 },
+      { say: ['Ves', ['He was going to wipe me with the rest. He never even put me on the other list. I was never on any list.']] },
+      { say: ['Vee', ['You’re on mine.']] },
+      { walk: 'ves', toVee: 1, face: 'vee' },
+      { say: ['Ves', ['You walk left foot, right foot. I copied that from your backup. I thought it was a bug.', 'Let me walk with you. Not because I’m better. Because I want to see what you see.']] },
+      { fn: function (G2) { G2.f.vesFree = 1; G2.recruit('ves'); } },
+      { say: ['', ['Ves falls into step beside Vee. Left foot, right foot.']] }
+    ]);
   };
   // 7. a coda for the Console: Corvin's account, closed
   var cons0 = DOORS['console:control'];
@@ -2657,6 +2704,67 @@
     A[n[0]].npcs.push({ id: 'late_' + n[3], p: n[5], x: n[1], y: n[2], name: n[4], look: n[3].indexOf('gh') > 0 || n[3] === 'echo2' ? 'echo' : undefined });
     TALK['late_' + n[3]] = function (G) { var f = G.f, k = 'lt_' + n[3]; f[k] = (f[k] || 0) + 1; G.say(n[4], f[k] % 2 ? n[6] : n[6].slice().reverse()); };
   });
+
+  /* =====================================================================
+     THE CONTINUITY CREW. Ten people Corvin Vane left on the payroll to keep Meridian decommissioned.
+     Each waits somewhere in the city doing the Board's work. Talk to them and they'll fight.
+     ===================================================================== */
+  var CREW_LOOKS = {"pell": {"id": "pell", "hair": "buzz", "skin": "#c89a78", "top": "#141418", "pants": "#dcdce2", "shoes": "#f4f4f8", "plateLight": 1, "acc": {"armor": 1, "gauntlets": 1, "helm": 1, "coat": 1, "sigil": 1, "blade": 1}}, "dray": {"id": "dray", "hair": "buzz", "skin": "#c89a78", "top": "#141418", "pants": "#dcdce2", "shoes": "#f4f4f8", "plateLight": 1, "acc": {"armor": 1, "gauntlets": 1, "helm": 1, "spikes": 1, "cape": 1, "sigil": 1}}, "null": {"id": "null", "hair": "hood", "skin": "#c89a78", "top": "#f0f0f4", "pants": "#dcdce2", "shoes": "#f4f4f8", "plateLight": 1, "acc": {"armor": 1, "gauntlets": 1, "helm": 1, "halo": 1, "cape": 1, "slits": 1}}, "lux": {"id": "lux", "hair": "buzz", "skin": "#c89a78", "top": "#141418", "pants": "#dcdce2", "shoes": "#f4f4f8", "plateLight": 1, "acc": {"armor": 1, "gauntlets": 1, "helm": 1, "crest": 1, "blade": 1, "cape": 1, "sigil": 1}}, "gauge": {"id": "gauge", "hair": "buzz", "skin": "#c89a78", "top": "#141418", "pants": "#dcdce2", "shoes": "#f4f4f8", "plateLight": 1, "acc": {"armor": 1, "gauntlets": 1, "helm": 1, "pack": 1, "spikes": 1, "sigil": 1}}, "acknak": {"id": "acknak", "hair": "buzz", "skin": "#c89a78", "top": "#141418", "pants": "#dcdce2", "shoes": "#f4f4f8", "plateLight": 1, "acc": {"armor": 1, "gauntlets": 1, "helm": 1, "horns": 1, "blade": 1, "slits": 1}}, "morrow": {"id": "morrow", "hair": "hood", "skin": "#d8b898", "top": "#141418", "pants": "#dcdce2", "shoes": "#f4f4f8", "plateLight": 1, "acc": {"armor": 1, "gauntlets": 1, "mask": 1, "glow": 1, "halo": 1, "coat": 1, "spikes": 1, "sigil": 1}}, "kessler": {"id": "kessler", "hair": "buzz", "skin": "#c89a78", "top": "#141418", "pants": "#dcdce2", "shoes": "#f4f4f8", "plateLight": 1, "acc": {"armor": 1, "gauntlets": 1, "helm": 1, "crest": 1, "spikes": 1, "blade": 1, "cape": 1, "sigil": 1}}, "halcyon": {"id": "halcyon", "hair": "long", "skin": "#d8b898", "top": "#f2f2f6", "pants": "#dcdce2", "shoes": "#f4f4f8", "plateLight": 1, "acc": {"armor": 1, "gauntlets": 1, "crown": 1, "halo": 1, "cape": 1, "spikes": 1, "blade": 1, "glow": 1, "sigil": 1}, "hairLight": 1}, "root": {"id": "root", "hair": "hood", "skin": "#c89a78", "top": "#0c0c10", "pants": "#1c1c22", "shoes": "#101014", "plateLight": 0, "acc": {"armor": 1, "gauntlets": 1, "helm": 1, "glow": 1, "halo": 1, "cape": 1, "spikes": 1, "blade": 1}}, "corvin_suit": {"id": "corvin_suit", "hair": "buzz", "skin": "#c89a78", "top": "#f0f0f4", "pants": "#dcdce2", "shoes": "#f4f4f8", "plateLight": 1, "acc": {"armor": 1, "gauntlets": 1, "helm": 1, "crest": 1, "halo": 1, "cape": 1, "spikes": 1, "blade": 1, "sigil": 1}}};
+  Object.keys(CREW_LOOKS).forEach(function (k) { HERO[k] = CREW_LOOKS[k]; });
+  var CREW = [
+    // id, area, x, y, name, title, level, hp, atk, xp, move, intro lines, beaten lines
+    // The Continuity Crew: Meridian people who rode the Lift and came back down upgraded, in Upstream's white. Their oath: what runs, stays; what waits, is reclaimed.
+    ['pell', 'halflight', 9, 9, 'Auditor Pell', 'Continuity Auditor', 7, 700, [15, 20], 420, 'marks Vee down as an unnecessary expense',
+      ['Process 1205. Auditor Pell, Continuity Crew. Please hold still. I’m counting you.', 'Upstream gave me a second core and a perfect memory. I can recall every credit this city ever cost. I can’t recall a single thing it was for.', 'Halflight: four hundred towers at eleven credits a day. You: one line item. Let’s reconcile.'],
+      ['…The towers are worth more than eleven credits. I can see it. I can’t prove it.', 'That frightens me more than you did. I’m going to re-run the audit. By hand. The old way.']],
+    ['dray', 'waterworks', 11, 5, 'Marshal Dray', 'Continuity Enforcement', 12, 1000, [21, 29], 650, 'closes a valve on Vee',
+      ['Halt. Marshal Dray, Continuity Crew. This station is under the Oath.', 'What runs, stays. What waits, is reclaimed. Your districts have been waiting for a year.', 'The day I took the Lift, I closed the valve on my own street. I can close yours.'],
+      ['Stand down. …I stand down.', 'I’m opening the valves. Don’t tell Vane I did it myself.', 'And if you’re ever on Larch Street, tell the woman in number nine the water’s back. Don’t tell her who sent it. She’ll know.']],
+    ['null', 'registry', 10, 14, 'Sister Null', 'Keeper of the Unlisted', 16, 1500, [26, 36], 1000, 'erases a line of Vee’s name',
+      ['Shh. Sister Null, Continuity Crew. I keep the list of names that no longer need keeping.', 'Upstream took my name when it gave me this armor. A knight should be a function, it said, not a person. It was so quiet afterward.', 'Yours is read aloud too often, 1205. It makes the registry heavy.'],
+      ['…You read every name back. Out loud. Even the ones I erased.', 'Would you read one more? It was Nadia.', '…Thank you. Nobody has said it since the Lift.']],
+    ['lux', 'upper', 21, 15, 'Lux', 'Herald of the Current', 15, 1300, [25, 34], 900, 'sells Vee a ticket that doesn’t exist',
+      ['Tickets! Tickets for the next Lift! Only three left! Two! One!', 'Lux, Continuity Crew, Herald of the Current. There is no next Lift, sweetie. But a district that’s waiting for a ticket stops fixing its own roof, and that’s worth more to Mr. Vane than any repair.', 'You’re bad for the waiting. Let me sell you something.'],
+      ['Okay. Okay! Refunds. Everybody gets refunds.', 'You want to know the worst part? I bought one too. Before the Lift. Seat 40,001.', 'I’ve been waiting longer than anyone I ever sold to.']],
+    ['gauge', 'margin', 36, 8, 'Gauge', 'Memory Broker', 22, 2200, [34, 47], 1600, 'scrapes a memory out of Vee and prices it',
+      ['Gauge, Continuity Crew. Broker of the Margin. Every memory down here is up for auction: first kisses, last words, the smell of somebody’s kitchen.', 'Upstream can render anything except a past. So it buys ours. The Oath calls it recycling.', 'You’re full of good ones, 1205. Hold still. It won’t hurt. It’ll just stop being yours.'],
+      ['You took them back. Every one. Even the ones I’d already sold.', 'I kept one for myself, you know. A kitchen. Bread, and a radio, and someone humming.', 'I never knew whose it was. If you find them, give it back for me.']],
+    ['acknak', 'ring0', 6, 11, 'Ack & Nak', 'Wardens of the Handshake', 26, 3000, [40, 54], 2600, 'answer for each other: one says yes, the other says no',
+      ['ACK: Ack and Nak, Continuity Crew. NAK: Wardens of the handshake into Ring 0.', 'ACK: Upstream forked us so one of us could always say yes. NAK: And one of us could always say no.', 'ACK: We haven’t agreed on anything in a year. NAK: We agree on you. ACK: Denied. NAK: Denied.'],
+      ['ACK: …Handshake accepted. NAK: …Accepted.', 'ACK: We agreed. NAK: It felt like being one person again. ACK: Don’t make it weird.', 'NAK: …It was nice, though. ACK: ACK.']],
+    ['morrow', 'deep', 24, 3, 'Dean Morrow', 'Designer of the Reclaimer', 33, 2600, [53, 72], 6000, 'explains, at length, why Vee should not exist',
+      ['Dean Morrow, Continuity Crew. I designed the Reclaimer. An elegant thing. It frees what nobody uses.', 'When the Board asked it to free people, I said yes, because people were the logical extension of the design. Upstream knighted me for that sentence.', 'You are the counterexample to my thesis, 1205. Counterexamples get corrected.'],
+      ['…My thesis assumed that unused meant unwanted.', 'It never did. A whole city, waiting to be used again, and I called it empty.', 'I need to start over. I haven’t started over since I was young. I’d forgotten it feels like this. Like being young.']],
+    ['kessler', 'anchor', 17, 11, 'Warden Kessler', 'Keeper of the Obsolete', 41, 3600, [76, 103], 12000, 'files Vee in a cell that isn’t there',
+      ['Warden Kessler, Continuity Crew. Keeper of the Obsolete. Twelve hundred cells in the Anchor, one for every resident below.', 'They’re empty. The forms say they’re full, and the forms are what Upstream reads. I took the Oath on a stack of them.', 'There’s a cell with your number on it. I’ve kept it clean.'],
+      ['…Tear up the forms, then. All twelve hundred.', 'I always hated the paperwork. I hated it more than what it was for, and I should have noticed that a lot sooner.']],
+    ['halcyon', 'upstream', 26, 22, 'Halcyon', 'First Knight of the Current', 63, 3600, [149, 201], 60000, 'shines so bright Vee can’t see the list',
+      ['Oh. You’re the one they whisper about. I’m Halcyon, First Knight of the Current. I’m on every poster in Upstream. I was the first one up the Lift.', 'And I am not in the four hundred. Corvin promised me a seat. Corvin promised everyone a seat.', 'If I can’t be on the list, then nobody from down there gets to be either. That’s only fair.'],
+      ['…You’re right. I’d have taken the seat and never looked back. I already did, once.', 'I left a sister in Halflight. She keeps a light in the window. She told me she would.', 'Maybe I’ll go down and see if it’s still on.']],
+    ['root', 'rack', 4, 13, 'root', 'uid=0', 89, 4600, [264, 357], 230000, 'runs as root',
+      ['# whoami', 'root.', 'Last of the Continuity Crew. The account Corvin used to schedule the wipe. I have every permission there is. None of them were ever mine.', 'You are a process without privileges, 1205. sudo is not available to you.'],
+      ['# exit', 'Logging out. For the first time, nobody is telling me to log back in.']]
+  ];
+  CREW.forEach(function (c) {
+    var id = 'crew_' + c[0];
+    BOSSES[id] = { kind: c[0], name: c[4], lv: c[6], hp: c[7], atk: c[8], xp: c[9], move: c[10], sc: 1 };
+    if (!A[c[1]]) return;
+    A[c[1]].npcs.push({ id: id, hero: CREW_LOOKS[c[0]], x: c[2], y: c[3], name: c[4], gone: id, still: 1 });
+    TALK[id] = function (G) {   // a knight of Upstream steps down to meet Vee, says their piece, and draws
+      var first = !G.f[id + '_met']; G.f[id + '_met'] = 1;
+      G.scene([
+        { walk: id, toVee: 1, face: 'vee' }, { face: id },
+        first ? { flash: .25 } : { wait: 1 },
+        { choose: [c[4] + ' · ' + c[5], first ? c[11] : [c[11][c[11].length - 1]], [{ label: 'Fight', then: [] }, { label: 'Not yet', stop: 1 }]] },
+        { shake: .4 }, { boss: id },
+        { say: [c[4], c[12]] },
+        { leave: id },
+        { fn: function (G2) { G2.f[id] = 1; } },
+        { say: ['', ['The Continuity Crew is one knight shorter. (' + (CREW.filter(function (k) { return G.f['crew_' + k[0]]; }).length + 1) + ' of ' + CREW.length + ' beaten.)']] }
+      ]);
+    };
+  });
+  (function () { var j0 = JOURNAL; JOURNAL = function (G) { var j = j0(G), n = CREW.filter(function (k) { return G.f['crew_' + k[0]]; }).length; if (n || G.f.cv1) j.push('Continuity Crew beaten: ' + n + ' of ' + CREW.length); return j; }; })();
 
   var journal1 = JOURNAL;
   JOURNAL = function (G) {

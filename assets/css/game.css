@@ -360,3 +360,6 @@
 .rpg-term .chips.full button{text-align:left;padding:8px 10px;font-size:9px;white-space:normal}
 .rpg-pad .d.on{background:linear-gradient(180deg,#e8e8ee,#a8a8b0);color:#111}
 @media (hover:none),(pointer:coarse),(max-width:760px){ .rpg-msg{font-size:9px} .rpg-term{font-size:9px} .rpg-cmd button,.rpg-foes button,.rpg-party{font-size:9px} }
+/* battle statuses and rows */
+.rpg-row i.st{font-style:normal;font-size:.62em;padding:1px 3px;margin-left:3px;border:1px solid #8a8a96;color:#e8e8f0;vertical-align:middle;letter-spacing:0}
+.rpg-row i.st-psn{background:#2a2a32}.rpg-row i.st-sil{background:#000;border-color:#fff}.rpg-row i.st-haste{background:#e8e8f0;color:#000}.rpg-row i.st-daze{border-style:dashed}.rpg-row i.st-weak{color:#9a9aa6}.rpg-row i.st-slow{border-style:dotted}

@@ -123,7 +123,11 @@
     p.H = 'rgb(40,40,44)'; p.h = 'rgb(76,76,82)'; p.E = 'rgb(8,8,8)'; p.W = 'rgb(242,242,242)';
     p.D = 'rgb(14,14,16)'; p.d = 'rgb(54,54,58)';   // headphones: black band and cups
     if (L.hairLight) { p.H = 'rgb(200,200,206)'; p.h = 'rgb(232,232,238)'; }
+    if (L.hairGray) { p.H = 'rgb(150,150,156)'; p.h = 'rgb(196,196,202)'; }
     if (L.phonesLight) { p.D = 'rgb(226,226,232)'; p.d = 'rgb(160,160,168)'; }
+    if (L.plateLight) { p.V = 'rgb(252,252,255)'; p.M = 'rgb(206,206,214)'; p.m = 'rgb(140,140,150)'; p.v = 'rgb(52,52,58)'; }   // war plate: polished white
+    else { p.V = 'rgb(168,168,178)'; p.M = 'rgb(84,84,94)'; p.m = 'rgb(44,44,52)'; p.v = 'rgb(16,16,20)'; }   // or gunmetal
+    p.Z = 'rgb(255,255,255)';   // the glow in the eye slits
     if (L.sil) { for (var s2 in p) p[s2] = 'rgb(10,10,11)'; p.W = 'rgb(242,242,242)'; }
     return p;
   }
@@ -1375,7 +1379,7 @@
     /* ---------- heroes: companions and rivals, drawn the way Vee is (front, back and side), each with their own silhouette ---------- */
     var heroCache = {};
     function heroLook(sp, suffix) {
-      return { name: 'hero-' + sp.id + (suffix || ''), skin: sp.skin, hairc: '#141414', top: sp.top, pants: sp.pants || '#2b2b30', shoes: sp.shoes || '#d8d8dc', hairLight: sp.hairLight, phonesLight: sp.acc && sp.acc.phonesLight };
+      return { name: 'hero-' + sp.id + (suffix || ''), skin: sp.skin, hairc: '#141414', top: sp.top, pants: sp.pants || '#2b2b30', shoes: sp.shoes || '#d8d8dc', hairLight: sp.hairLight, hairGray: sp.hairGray, phonesLight: sp.acc && sp.acc.phonesLight, plateLight: sp.plateLight };
     }
     function heroGrid(sp, back) {
       var g = [], hair = sp.hair, a = sp.acc || {};
@@ -1410,8 +1414,16 @@
       if (hair === 'long') for (var y6 = 4; y6 <= 17; y6++) { both(3, y6, y6 % 3 ? 'H' : 'h'); both(4, y6, 'H'); if (back) for (var x6 = 5; x6 <= 16; x6++) if (y6 >= 13) set(x6, y6, (x6 + y6) % 3 ? 'H' : 'h'); }
       if (hair === 'pony') { if (back) for (var y7 = 4; y7 <= 15; y7++) { set(10, y7, y7 % 2 ? 'H' : 'h'); set(11, y7, 'H'); } else for (var y8 = 3; y8 <= 13; y8++) { set(19, y8 + 1, y8 % 2 ? 'H' : 'h'); set(18, y8, 'H'); } set(back ? 10 : 18, 3, 'W'); }
       if (hair === 'hood') { for (var h1 = 1; h1 <= 14; h1++) { both(3, h1, 'O'); both(4, h1, h1 > 2 ? 'O' : '.'); } for (var h2 = 4; h2 <= 17; h2++) { set(h2, 1, 'O'); set(h2, 2, 'O'); } both(5, 3, 'O'); both(6, 3, 'o'); }
+      if (hair === 'puffs') [[3, 0], [4, 0], [2, 1], [3, 1], [4, 1], [5, 1], [2, 2], [3, 2], [4, 2], [5, 2], [3, 3], [4, 3]].forEach(function (q) { both(q[0], q[1], (q[0] + q[1]) % 3 ? 'H' : 'h'); });
+      if (hair === 'bald') { for (var bz = 0; bz < 6; bz++) for (var bzx = 0; bzx < 22; bzx++) if (g[bz][bzx] === 'H' || g[bz][bzx] === 'h') g[bz][bzx] = bz < 2 ? '.' : (back || bz > 2 ? 'S' : 'R'); for (var bz2 = 4; bz2 <= 7; bz2++) both(5, bz2, 'S'); }
+      if (hair === 'bun') { for (var u1 = 9; u1 <= 12; u1++) { set(u1, 0, 'H'); set(u1, 1, u1 === 10 ? 'h' : 'H'); } set(10, -1, 'H'); set(8, 1, 'H'); set(13, 1, 'H'); }
+      if (hair === 'cap') { for (var u2 = 5; u2 <= 16; u2++) { set(u2, 1, 'N'); set(u2, 2, 'N'); set(u2, 3, 'N'); set(u2, 4, back ? 'N' : 'n'); } for (var u3 = 3; u3 <= 18; u3++) if (!back) set(u3, 5, 'D'); set(10, 2, 'W'); set(11, 2, 'W'); }
       if (hair === 'beanie') for (var c1 = 0; c1 <= 4; c1++) for (var c2 = 0; c2 < 22; c2++) if (g[c1][c2] !== '.' && !face(g[c1][c2]) || (c1 >= 1 && c2 >= 5 && c2 <= 16)) set(c2, c1, c1 === 4 ? 'n' : 'N');
       // what they wear
+      if (a.beard && !back) for (var bd = 10; bd <= 13; bd++) for (var bdx = 6; bdx <= 15; bdx++) if ('SERK'.indexOf(get(bdx, bd)) >= 0 && (bd > 10 || bdx < 8 || bdx > 13)) set(bdx, bd, (bdx + bd) % 4 ? 'H' : 'h');
+      if (a.apron) for (var ap = 15; ap <= 21; ap++) for (var apx = 8; apx <= 13; apx++) set(apx, ap, back ? (ap === 15 && (apx === 8 || apx === 13) ? 'W' : get(apx, ap)) : apx === 8 || apx === 13 ? 'G' : 'W');
+      if (a.dress) for (var dr = 19; dr <= 21; dr++) for (var drx = 5 - (dr - 19); drx <= 16 + (dr - 19); drx++) set(drx, dr, dr === 21 ? 'X' : (drx + dr) % 4 ? 'T' : 'x');
+      if (a.suit && !back) { set(10, 13, 'W'); set(11, 13, 'W'); set(10, 14, 'W'); set(11, 14, 'X'); set(11, 15, 'X'); set(11, 16, 'X'); set(9, 14, 'x'); set(12, 14, 'x'); }
       if (a.cape) for (var k1 = 13; k1 <= 23; k1++) { both(2, k1, k1 === 23 ? 'X' : 'x'); both(3, k1, 'X'); if (back) for (var k2 = 4; k2 <= 17; k2++) set(k2, k1, k1 === 23 ? 'X' : ((k2 + k1) % 5 ? 'X' : 'x')); }
       if (a.coat) for (var m1 = 19; m1 <= 21; m1++) for (var m2 = 6; m2 <= 15; m2++) set(m2, m1, m1 === 21 ? 'X' : (m2 === 10 || m2 === 11) && !back ? 'x' : 'T');
       if (a.pauldrons) { for (var q1 = 2; q1 <= 7; q1++) { both(q1, 13, 'W'); both(q1, 14, 'A'); if (q1 > 2) both(q1, 15, 'a'); } }
@@ -1425,6 +1437,42 @@
         if (a.scar) { set(14, 8, 'K'); set(15, 9, 'K'); set(14, 10, 'K'); }
         if (a.armband) { set(4, 16, 'W'); set(5, 16, 'W'); set(6, 16, 'W'); }
       } else if (a.goggles) for (var g2 = 6; g2 <= 15; g2++) set(g2, 3, 'D');
+      // war gear for the dangerous ones: plate, pauldrons, helms, masks, glowing eye slits, blades. Pauldrons and spikes go on after the arms (g.post)
+      var post = g.post = []; function late(x, y, ch) { post.push([x, y, ch]); } function lateBoth(x, y, ch) { late(x, y, ch); late(21 - x, y, ch); }
+      if (a.armor) {
+        for (var ay = 13; ay <= 19; ay++) for (var ax = 6; ax <= 15; ax++) set(ax, ay, ay === 13 ? 'V' : ay === 19 ? 'v' : (ax === 6 || ax === 15) ? 'v' : ax === 7 && ay <= 16 ? 'V' : 'M');
+        if (!back) { [[8, 15], [9, 16], [10, 17], [11, 17], [12, 16], [13, 15]].forEach(function (q) { set(q[0], q[1], 'm'); }); set(10, 14, a.glow ? 'Z' : 'V'); set(11, 14, a.glow ? 'Z' : 'V'); set(10, 15, 'v'); set(11, 15, 'v'); set(10, 19, 'V'); set(11, 19, 'V'); }
+        else for (var sy = 14; sy <= 18; sy++) { set(10, sy, 'm'); set(11, sy, 'V'); }
+        [[3, 12, 'V'], [4, 12, 'V'], [5, 12, 'V'], [6, 12, 'V'], [2, 13, 'v'], [3, 13, 'V'], [4, 13, 'M'], [5, 13, 'M'], [6, 13, 'M'], [2, 14, 'v'], [3, 14, 'M'], [4, 14, 'M'], [5, 14, 'm'], [6, 14, 'm'], [3, 15, 'v'], [4, 15, 'm'], [5, 15, 'v']].forEach(function (q) { lateBoth(q[0], q[1], q[2]); });   // big rounded pauldrons
+        if (a.coat) for (var ty = 20; ty <= 22; ty++) for (var tx = 6; tx <= 15; tx++) if (tx !== 10 && tx !== 11 || back) set(tx, ty, ty === 22 ? 'v' : tx % 3 ? 'M' : 'm');   // plated tassets
+      }
+      if (a.spikes) [[3, 11, 'V'], [3, 10, 'Z'], [5, 11, 'V'], [5, 10, 'V'], [5, 9, 'Z'], [2, 12, 'V'], [1, 11, 'Z']].forEach(function (q) { lateBoth(q[0], q[1], q[2]); });
+      if (a.helm) {   // a sleek full-face shell: polished white dome, one black visor band, a sculpted jaw with vents
+        for (var hy = 1; hy <= 13; hy++) for (var hx = 4; hx <= 17; hx++) if (g[hy][hx] !== 'O' && g[hy][hx] !== 'o') set(hx, hy, '.');
+        var HW = [[7, 14], [6, 15], [5, 16], [5, 16], [5, 16], [5, 16], [5, 16], [5, 16], [5, 16], [6, 15], [6, 15], [7, 14], [8, 13]];
+        HW.forEach(function (r, i) { var y = i + 1; for (var x = r[0]; x <= r[1]; x++) {
+          var ch = 'M'; if (x === r[0] || x === r[1]) ch = 'm'; if (y <= 4 && x >= 7 && x <= 9 && x > r[0]) ch = 'V'; if (y === 1 && x > 7 && x < 14) ch = 'V';
+          if (!back) {
+            if (y === 7 || y === 8) ch = x === r[0] ? 'm' : 'v';   // the visor band
+            if (y === 9 && (x === 7 || x === 14)) ch = 'v';
+            if (y >= 10 && (x === 7 || x === 14)) ch = 'v';   // cheek seams
+            if (y === 11 && x >= 9 && x <= 12) ch = x % 2 ? 'v' : 'm';   // breather
+            if (y === 12 && x >= 9 && x <= 12) ch = 'm';
+            if (y === 10 && x >= 8 && x <= 13) ch = 'V';
+          } else { if (y === 8) ch = 'v'; if (y >= 9 && (x === 10 || x === 11)) ch = 'm'; }
+          set(x, y, ch); } });
+        if (!back) { if (a.slits || a.glow) [[7, 7], [8, 8], [9, 8], [14, 7], [13, 8], [12, 8]].forEach(function (q) { set(q[0], q[1], 'Z'); }); else { set(7, 7, 'Z'); set(8, 7, 'G'); } }   // angry glow, or a cold glint off the visor
+        if (a.crest) for (var cy = 0; cy <= 2; cy++) { set(10, cy, 'V'); set(11, cy, cy < 1 ? 'Z' : 'M'); }
+        for (var nk = 8; nk <= 13; nk++) set(nk, 13, 'v');   // black undersuit at the neck
+      }
+      if (a.horns) [[4, 4, 'M'], [3, 3, 'M'], [3, 2, 'V'], [2, 1, 'V'], [2, 0, 'Z'], [4, 3, 'm'], [5, 4, 'm']].forEach(function (q) { both(q[0], q[1], q[2]); });
+      if (a.crown) { for (var cr = 6; cr <= 15; cr++) set(cr, 2, cr % 2 ? 'V' : 'M'); [6, 8, 10, 11, 13, 15].forEach(function (q) { set(q, 1, 'V'); }); [6, 10, 11, 15].forEach(function (q) { set(q, 0, 'Z'); }); }
+      if (!back && a.mask && !a.helm) for (var my = 10; my <= 13; my++) for (var mx = 6; mx <= 15; mx++) { if (my === 13 && (mx < 8 || mx > 13)) continue; set(mx, my, my === 10 ? 'v' : my === 13 ? 'm' : (my === 12 && (mx === 8 || mx === 10 || mx === 11 || mx === 13)) ? 'v' : mx === 7 && my === 11 ? 'V' : 'M'); }
+      if (!back && a.glow && !a.helm) { for (var gx = 6; gx <= 15; gx++) set(gx, 7, 'v'); [[7, 8], [8, 8], [13, 8], [14, 8]].forEach(function (q) { set(q[0], q[1], 'Z'); }); set(9, 8, 'v'); set(12, 8, 'v'); set(6, 8, 'v'); set(15, 8, 'v'); }
+      if (a.sigil && a.armor) { if (!back) { [[10, 14], [11, 14], [9, 15], [10, 15], [11, 15], [12, 15], [8, 16], [9, 16], [12, 16], [13, 16], [10, 17], [11, 17], [10, 18], [11, 18]].forEach(function (q) { set(q[0], q[1], 'Z'); }); set(10, 16, 'v'); set(11, 16, 'v'); }   // the Upstream arrow, burned bright into the breastplate
+        for (var tb = 20; tb <= 23; tb++) for (var tbx = 9; tbx <= 12; tbx++) set(tbx, tb, tbx === 9 || tbx === 12 ? 'G' : tb === 23 ? 'G' : 'W'); }   // and a white tabard falling between the legs
+      if (a.halo) for (var hy2 = 0; hy2 <= 12; hy2++) for (var hx2 = 0; hx2 < 22; hx2++) { var ex = (hx2 - 10.5) / 10, ey = (hy2 - 5.5) / 6.4, rr = ex * ex + ey * ey; if (rr <= 1 && rr >= .72 && get(hx2, hy2) === '.') set(hx2, hy2, hy2 < 4 ? 'Z' : 'G'); }   // a saint's ring behind the head
+      if (a.blade) { var bxp = back ? 1 : 19; for (var by = 2; by <= 16; by++) { set(bxp, by, by <= 3 ? 'Z' : 'V'); set(bxp + 1, by, by <= 2 ? '.' : 'M'); } for (var gq = bxp - 2; gq <= bxp + 2; gq++) set(gq, 17, gq === bxp - 2 || gq === bxp + 2 ? 'V' : 'm'); set(bxp, 18, 'v'); set(bxp, 19, 'v'); set(bxp, 20, 'M'); }
       if (a.phones) { for (var p1 = 6; p1 <= 15; p1++) set(p1, 1, 'D'); for (var p2 = 5; p2 <= 9; p2++) { both(3, p2, 'D'); both(4, p2, p2 === 6 || p2 === 7 ? 'd' : 'D'); } }
       return g;
     }
@@ -1436,11 +1484,13 @@
         var tp = x.getImageData(10, 16, 1, 1).data, sh = 'rgb(' + tp[0] + ',' + tp[1] + ',' + tp[2] + ')', shD = 'rgb(' + (tp[0] * .8 | 0) + ',' + (tp[1] * .8 | 0) + ',' + (tp[2] * .8 | 0) + ')', E2 = 'rgb(14,14,16)';
         [[4, 5, 6, 1], [17, 16, 15, -1]].forEach(function (A, side) {
           var swing = step ? ((step === 1) === (side === 1) ? -1 : 1) : 0;
-          for (var y3 = 14; y3 <= 18 + Math.max(0, swing); y3++) { var hand = y3 >= 17 + swing; x.fillStyle = E2; x.fillRect(A[0], y3, 1, 1); x.fillStyle = hand ? (back ? shD : pal.R) : shD; x.fillRect(A[1], y3, 1, 1); x.fillStyle = hand ? (back ? shD : pal.R) : sh; x.fillRect(A[2], y3, 1, 1); }
+          var ac = sp.acc || {}, plate = ac.armor ? pal.m : null, plateL = ac.armor ? pal.V : null, gl = ac.gauntlets;
+          for (var y3 = 14; y3 <= 18 + Math.max(0, swing); y3++) { var hand = y3 >= 17 + swing; x.fillStyle = E2; x.fillRect(A[0], y3, 1, 1); x.fillStyle = hand ? (gl ? 'rgb(30,30,34)' : back ? shD : pal.R) : (plate || shD); x.fillRect(A[1], y3, 1, 1); x.fillStyle = hand ? (gl ? (y3 === 17 + swing ? 'rgb(236,236,240)' : 'rgb(30,30,34)') : back ? shD : pal.R) : (y3 === 14 && plateL ? plateL : plate || sh); x.fillRect(A[2], y3, 1, 1); }
           x.fillStyle = E2; x.fillRect(A[1], 19 + Math.max(0, swing), 2, 1);
         });
       }
       if (step) stepLegs(x, pal, back ? (step === 1 ? 2 : 1) : step);
+      (g.post || []).forEach(function (q) { if (q[0] >= 0 && q[0] < 22 && q[1] >= 0) { x.fillStyle = pal[q[2]]; x.fillRect(q[0], q[1], 1, 1); } });
       var d = x.getImageData(0, 0, 22, 26).data, pts = [];
       for (var yy = 0; yy < 26; yy++) for (var xx = 0; xx < 22; xx++) {
         if (d[(yy * 22 + xx) * 4 + 3]) continue;
@@ -1455,11 +1505,20 @@
       L.scarf = !!a.scarf; L.pack = !!a.pack; L.phones = !!a.phones; L.round = !!a.glasses;
       L.pre = function (px, pose) {
         if (hair === 'afro') for (var y = 0; y <= 9; y++) for (var x = 1; x <= 13; x++) { var dx = (x - 7.5) / 6.8, dy = (y - 4) / 5.2; if (dx * dx + dy * dy <= 1) px(x, y, (x * 3 + y * 5) % 7 ? 'H' : 'h'); }
+        if (a.halo) for (var hy3 = -1; hy3 <= 12; hy3++) for (var hx3 = 0; hx3 <= 19; hx3++) { var ex3 = (hx3 - 9) / 9.4, ey3 = (hy3 - 5) / 6.6, r3 = ex3 * ex3 + ey3 * ey3; if (r3 <= 1 && r3 >= .74) px(hx3, hy3, hy3 < 3 ? 'Z' : 'G'); }   // drawn first, so the head sits in front of it
         if (a.cape) for (var y2 = 12; y2 <= 23; y2++) for (var x2 = 3 - Math.round((y2 - 12) * pose.sway * .15); x2 <= 8; x2++) px(x2, y2, x2 === 8 || y2 === 23 ? 'X' : (x2 + y2) % 5 ? 'X' : 'x');
       };
       L.extra = function (px, pose, HEAD0) {
-        if (hair === 'buzz' || hair === 'mohawk' || hair === 'slick') HEAD0.rows.forEach(function (row, i) { for (var x = 0; x < 20; x++) if (row.charAt(x) === 'H') { var top = hair === 'slick' ? i <= 4 : i <= 2; px(x, HEAD0.r + i, top ? (hair === 'slick' && i === 2 ? 'h' : 'h') : (x <= 4 ? 'K' : 'S')); } });
+        if (hair === 'buzz' || hair === 'mohawk' || hair === 'slick' || hair === 'cap') HEAD0.rows.forEach(function (row, i) { for (var x = 0; x < 20; x++) if (row.charAt(x) === 'H') { var top = hair === 'slick' ? i <= 4 : i <= 2; px(x, HEAD0.r + i, top ? (hair === 'slick' && i === 2 ? 'h' : 'h') : (x <= 4 ? 'K' : 'S')); } });
+        if (hair === 'bun') for (var bx = 5; bx <= 8; bx++) { px(bx, -1, 'H'); px(bx, 0, 'H'); }
+        if (hair === 'cap') { for (var cx2 = 4; cx2 <= 12; cx2++) { px(cx2, 1, 'N'); px(cx2, 2, 'N'); px(cx2, 3, 'n'); } for (var cb = 10; cb <= 16; cb++) px(cb, 4, 'D'); }
         if (hair === 'mohawk') for (var y = -1; y <= 3; y++) for (var x2 = 6; x2 <= 11; x2++) if (y >= 0 || (x2 >= 7 && x2 <= 10)) px(x2, y, (x2 + y) % 3 ? 'H' : 'h');
+        if (hair === 'puffs') [[4, 0], [5, 0], [4, 1], [5, 1], [6, 1], [3, 2], [4, 2], [5, 2], [9, 0], [10, 0], [9, 1], [10, 1]].forEach(function (q) { px(q[0], q[1], 'H'); });
+        if (hair === 'bald') HEAD0.rows.forEach(function (row, i) { for (var x = 0; x < 20; x++) if (row.charAt(x) === 'H' || row.charAt(x) === 'h') px(x, HEAD0.r + i, i <= 1 ? 'R' : x <= 4 ? 'K' : 'S'); });
+        if (a.beard) for (var bd2 = 9; bd2 <= 11; bd2++) for (var bx2 = 10; bx2 <= 15; bx2++) if (bd2 > 9 || bx2 < 12) px(bx2, bd2, (bx2 + bd2) % 3 ? 'H' : 'h');
+        if (a.apron) for (var ap2 = 14; ap2 <= 20; ap2++) { px(13, ap2, 'W'); px(14, ap2, ap2 > 15 ? 'W' : null); }
+        if (a.dress) for (var dr2 = 18; dr2 <= 20; dr2++) for (var dx2 = 6 - (dr2 - 18); dx2 <= 14 + (dr2 - 18); dx2++) px(dx2, dr2, dr2 === 20 ? 'X' : (dx2 + dr2) % 4 ? 'T' : 'x');
+        if (a.suit) { px(13, 13, 'W'); px(13, 14, 'X'); px(13, 15, 'X'); }
         if (a.visor) { for (var v = 11; v <= 16; v++) px(v, 7, 'G'); px(14, 8, 'W'); px(15, 8, 'G'); }
         if (a.goggles) { for (var g2 = 9; g2 <= 14; g2++) px(g2, 3, 'D'); px(13, 4, 'G'); px(14, 4, 'G'); }
         if (a.scar) { px(14, 9, 'K'); px(15, 10, 'K'); }
@@ -1467,6 +1526,19 @@
         if (a.pauldrons) { for (var q = 7; q <= 13; q++) px(q, 13, 'W'); for (var q2 = 7; q2 <= 12; q2++) px(q2, 14, 'A'); }
         if (a.coat) for (var y3 = 19; y3 <= 21; y3++) for (var x3 = 7; x3 <= 12; x3++) px(x3, y3, y3 === 21 ? 'X' : 'T');
         if (a.belt) for (var b = 7; b <= 13; b++) px(b, 18, 'D');
+        if (a.armor) { for (var ay2 = 13; ay2 <= 18; ay2++) for (var ax2 = 8; ax2 <= 13; ax2++) px(ax2, ay2, ay2 === 13 ? 'V' : ay2 === 18 ? 'v' : ax2 === 8 ? 'm' : ax2 === 13 ? 'V' : 'M'); px(12, 15, a.glow ? 'Z' : 'V'); px(11, 16, 'm'); px(12, 17, 'm');
+          [[7, 12, 'V'], [8, 12, 'V'], [9, 12, 'V'], [10, 12, 'V'], [6, 13, 'v'], [7, 13, 'V'], [8, 13, 'M'], [9, 13, 'M'], [10, 13, 'M'], [11, 13, 'm'], [6, 14, 'v'], [7, 14, 'M'], [8, 14, 'm'], [9, 14, 'm'], [10, 14, 'v'], [7, 15, 'v'], [8, 15, 'v']].forEach(function (q) { px(q[0], q[1], q[2]); });
+          if (a.coat) for (var ty2 = 19; ty2 <= 21; ty2++) for (var tx2 = 7; tx2 <= 12; tx2++) px(tx2, ty2, ty2 === 21 ? 'v' : tx2 % 2 ? 'M' : 'm'); }
+        if (a.spikes) [[7, 11, 'V'], [7, 10, 'Z'], [9, 11, 'V'], [9, 10, 'V'], [9, 9, 'Z'], [6, 12, 'V'], [5, 11, 'Z']].forEach(function (q) { px(q[0], q[1], q[2]); });
+        if (a.helm) { HEAD0.rows.forEach(function (row, i) { for (var x = 0; x < 20; x++) if (row.charAt(x) !== '.') { var y = HEAD0.r + i, ch = i <= 1 ? 'V' : x <= 5 ? 'm' : 'M'; if (i <= 3 && x >= 7 && x <= 10) ch = 'V'; if ((y === 6 || y === 7) && x >= 10) ch = 'v'; if (y === 9 && x >= 12) ch = 'V'; if (y === 10 && x >= 13 && x % 2) ch = 'v'; if (x === 9 && y >= 8) ch = 'v'; px(x, y, ch); } });
+          if (a.slits || a.glow) { px(14, 7, 'Z'); px(15, 7, 'Z'); px(13, 6, 'Z'); } else px(15, 6, 'Z');
+          if (a.crest) for (var cs = -1; cs <= 1; cs++) { px(7, cs, 'V'); px(8, cs, cs < 0 ? 'Z' : 'M'); } }
+        if (a.horns) [[6, 1, 'M'], [5, 0, 'M'], [5, -1, 'V'], [4, -2, 'Z'], [10, 1, 'M'], [11, 0, 'V'], [12, -1, 'Z']].forEach(function (q) { px(q[0], q[1], q[2]); });
+        if (a.crown) { for (var cr2 = 4; cr2 <= 12; cr2++) px(cr2, 1, cr2 % 2 ? 'V' : 'M'); [4, 6, 8, 10, 12].forEach(function (q) { px(q, 0, 'V'); }); [4, 8, 12].forEach(function (q) { px(q, -1, 'Z'); }); }
+        if (a.mask && !a.helm) for (var my2 = 9; my2 <= 12; my2++) for (var mx2 = 11; mx2 <= 16; mx2++) { if (my2 === 12 && mx2 > 15) continue; px(mx2, my2, my2 === 9 ? 'v' : (my2 === 11 && mx2 % 2) ? 'v' : 'M'); }
+        if (a.glow && !a.helm) { for (var gs = 11; gs <= 16; gs++) px(gs, 6, 'v'); px(13, 7, 'v'); px(14, 7, 'Z'); px(15, 7, 'Z'); px(16, 7, 'v'); }
+        if (a.sigil && a.armor) { [[12, 14], [11, 15], [12, 15], [12, 16]].forEach(function (q) { px(q[0], q[1], 'Z'); }); for (var tb2 = 19; tb2 <= 22; tb2++) { px(11, tb2, 'W'); px(12, tb2, tb2 === 22 ? 'G' : 'W'); } }
+        if (a.blade) { for (var bl = 1; bl <= 15; bl++) { px(18, bl, bl <= 2 ? 'Z' : 'V'); px(19, bl, bl <= 1 ? null : 'M'); } for (var gd = 16; gd <= 20; gd++) px(gd, 16, gd === 16 || gd === 20 ? 'V' : 'm'); px(18, 17, 'v'); px(18, 18, 'v'); px(18, 19, 'M'); }
       };
       return L;
     }
@@ -1475,7 +1547,23 @@
       var c = view === 'side' ? frame(arg || 'idle', heroSideLook(sp)) : heroPaint(sp, heroGrid(sp, view === 'back'), view === 'back', arg || 0);
       return (heroCache[k] = c);
     }
-    if (window.VondsSprite) { window.VondsSprite.front = function (blink, step) { return frontImg(false, blink, step); }; window.VondsSprite.back = function (step) { return backImg(false, step); }; window.VondsSprite.person = personImg; window.VondsSprite.hero = heroImg; }
+    // townsfolk get the same body as Vee and the crew: front, back and side, with walk cycles in every direction
+    var phCache = {};
+    function personHero(o) {
+      o = o || {}; var key = JSON.stringify(o); if (phCache[key]) return phCache[key];
+      var HAIR = { short: 'short', bald: 'bald', bun: 'bun', puffs: 'puffs', long: 'long', cap: 'cap', beanie: 'beanie', hood: 'hood' }, b = o.body, acc = {};
+      if (o.glasses) acc.glasses = 1; if (o.beard) acc.beard = 1; if (o.phones) acc.phones = 1;
+      if (b === 'apron') acc.apron = 1; if (b === 'coat') acc.coat = 1; if (b === 'dress') acc.dress = 1; if (b === 'suit') acc.suit = 1; if (b === 'armor') { acc.pauldrons = 1; acc.belt = 1; }
+      var sp = { id: 'p' + Object.keys(phCache).length, hair: HAIR[o.hair] || 'short', skin: o.skin || '#7a4a30', top: o.top || '#5a5a62', pants: b === 'scrubs' ? (o.top || '#5a5a62') : (o.pants || '#2b2b30'), shoes: o.shoes || '#d8d8dc', hairGray: !!o.gray, acc: acc };
+      return (phCache[key] = sp);
+    }
+    // which frame a walker shows: dir is up/down/left/right, walk is -1 standing or 0..3 through the cycle
+    function walkImg(sp, dir, walk) {
+      if (dir === 'left' || dir === 'right') return { img: heroImg(sp, 'side', walk >= 0 ? 'run' + walk : 'idle'), flip: dir === 'left', bob: 0 };
+      var step = walk < 0 ? 0 : [1, 0, 2, 0][walk];
+      return { img: heroImg(sp, dir === 'up' ? 'back' : 'front', step), flip: false, bob: walk < 0 ? 0 : walk % 2 };
+    }
+    if (window.VondsSprite) { window.VondsSprite.front = function (blink, step) { return frontImg(false, blink, step); }; window.VondsSprite.back = function (step) { return backImg(false, step); }; window.VondsSprite.person = personImg; window.VondsSprite.hero = heroImg; window.VondsSprite.personHero = personHero; window.VondsSprite.walk = walkImg; }
     function render(pose, dark) {
       var u = S * R; cx2.setTransform(1, 0, 0, 1, 0, 0); cx2.clearRect(0, 0, cv2.width, cv2.height); cx2.imageSmoothingEnabled = false;
       if (pose === 'pant0' || pose === 'pant1') { cx2.drawImage(pantImg(!dark, pose === 'pant1' ? 1 : 0), OX * u, OY * u, 22 * u, 26 * u); return; }
