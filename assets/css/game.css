@@ -363,3 +363,7 @@
 /* battle statuses and rows */
 .rpg-row i.st{font-style:normal;font-size:.62em;padding:1px 3px;margin-left:3px;border:1px solid #8a8a96;color:#e8e8f0;vertical-align:middle;letter-spacing:0}
 .rpg-row i.st-psn{background:#2a2a32}.rpg-row i.st-sil{background:#000;border-color:#fff}.rpg-row i.st-haste{background:#e8e8f0;color:#000}.rpg-row i.st-daze{border-style:dashed}.rpg-row i.st-weak{color:#9a9aa6}.rpg-row i.st-slow{border-style:dotted}
+/* the turn strip: who moves this round, in order */
+.rpg-order{position:absolute;left:0;right:0;top:-26px;display:flex;gap:4px;justify-content:center;pointer-events:none;font-size:.7em;letter-spacing:.04em}
+.rpg-order i{font-style:normal;padding:2px 4px;border:1px solid #5a5a66;background:rgba(10,10,14,.85);color:#c8c8d0}
+.rpg-order i.foe{color:#8a8a96;border-style:dashed}.rpg-order i.on{background:#e8e8f0;color:#000;border-color:#fff}

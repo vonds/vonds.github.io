@@ -994,7 +994,7 @@
     }
     function norm(t) { return String(t).trim().replace(/\s+/g, ' ').replace(/[“”]/g, '"').replace(/[‘’]/g, "'"); }
 
-    var B = null;   // the battle in progress
+    var B = null, orderEl = null;   // the battle in progress
     function rnd(a, b) { return a + Math.floor(Math.random() * (b - a + 1)); }
     function living() { return B.foes.filter(function (f) { return !f.dead; }); }
     function startBattle(force) {
@@ -1054,6 +1054,12 @@
         foesBox.appendChild(e);
       });
       partyBox.classList.toggle('crit', save.hp > 0 && save.hp <= maxHp() * .25);
+      if (!orderEl) { orderEl = document.createElement('div'); orderEl.className = 'rpg-order'; hud.appendChild(orderEl); }
+      orderEl.innerHTML = (B.round ? orderNow() : []).slice(0, 9).map(function (o) {
+        var nm = o.vee ? 'VEE' : o.ally ? COMP[o.ally.id].name.replace(/^Dr\. /, '').toUpperCase() : o.foe.foe.name.split(' ').pop().toUpperCase().slice(0, 7);
+        var on = (o.vee === 1 && B.phase === 'menu' && !B.actor && !B.hasted) || (o.vee === 2 && B.phase === 'menu' && !B.actor && B.hasted) || (o.ally && B.actor === o.ally);
+        return '<i class="' + (o.foe ? 'foe' : 'pc') + (on ? ' on' : '') + '">' + nm + '</i>';
+      }).join('');
       var allyRows = (B.allies || []).map(function (a) { return '<div class="rpg-row' + (a.down ? ' down' : '') + (B.actor === a ? ' turn' : '') + '"><span>' + COMP[a.id].name + (back(a.id) ? ' <i class="st">BK</i>' : '') + stTags(a.st) + '</span><span>' + (a.down ? 'DOWN' : 'HP <b>' + a.hp + '</b>/' + a.max) + '</span></div>'; }).join('');
       partyBox.classList.toggle('team', !!(B.allies && B.allies.length));
       partyBox.innerHTML = (B.corrupt ? '<div class="rpg-row sm"><span>CORRUPTED ' + B.corrupt + '</span></div>' : '') + '<div class="rpg-row' + (save.hp <= 0 ? ' down' : '') + (B.phase === 'menu' && !B.actor ? ' turn' : '') + '"><span>Vee' + (back('vee') ? ' <i class="st">BK</i>' : '') + stTags(B.vs) + '</span><span>HP <b>' + save.hp + '</b>/' + maxHp() + '</span></div><div class="rpg-row sm"><span>Lv ' + save.lvl + '</span><span>' + save.known.length + (save.known.length === 1 ? ' command' : ' commands') + '</span><span>' + (B.focus ? 'Weak spot marked' : save.streak > 1 ? 'Streak x' + save.streak : '') + '</span></div>' + allyRows;
@@ -1305,14 +1311,23 @@
       else { log('No way through.'); setTimeout(nextAlly, 800); }
     }
     // each bug still standing takes its turn
-    function foesTurn() {
+    // speed decides who moves first each round: bugs far above Vee's level, quick ones and bosses can strike before he does
+    function spdVee() { return 10 + (B.vs.haste > 0 ? 6 : 0) - (B.vs.slow > 0 ? 6 : 0); }
+    function spdFoe(f) { var tr = (FOES[f.kind] || {}).trait; return 8 + Math.max(-4, gapOf(f)) * 1.3 + (tr === 'twice' ? 3 : 0) + (f.foe.boss ? 2 : 0) - (f.slow > 0 ? 5 : 0) + (f.ph2 ? 2 : 0) + (f.jit || 0); }
+    function orderNow() {   // the turn strip: who acts this round, in order
+      var fast = living().filter(function (f) { return f.actedRound !== B.round && spdFoe(f) > spdVee(); }), rest = living().filter(function (f) { return fast.indexOf(f) < 0 && f.actedRound !== B.round; });
+      var o = fast.map(function (f) { return { foe: f }; }); if (save.hp > 0) { o.push({ vee: 1 }); if (B.vs.haste > 0) o.push({ vee: 2 }); }
+      B.allies.forEach(function (a) { if (!a.down) o.push({ ally: a }); }); rest.forEach(function (f) { o.push({ foe: f }); }); return o;
+    }
+    function foesTurn(only, cb) {
       if (!B) return;
-      var queue = living().slice(), i = 0;
+      var queue = (only || living()).filter(function (f) { return f.actedRound !== B.round; }), i = 0;
       (function next() {
         if (!B) return;
-        if (i >= queue.length) return myTurn();
+        if (i >= queue.length) return cb ? cb() : myTurn();
         var f = queue[i++];
         if (f.dead) return next();
+        f.actedRound = B.round; hudOn();
         if (f.leak > 0) { f.leak--; var lk = 6 + save.lvl; f.hp = Math.max(0, f.hp - lk); pop(String(lk), f.fx + 16, f.fy - 34); if (f.hp <= 0) { f.dead = true; f.fade = 1; hudOn(); if (!living().length) return setTimeout(win, 600); return setTimeout(next, 500); } }
         if (f.exposed > 0) f.exposed--;
         if (f.stun > 0) { f.stun--; log('The ' + foeName(f) + ' strains against its permissions.'); return setTimeout(next, 650); }
@@ -1377,6 +1392,14 @@
       Object.keys(B.vs).forEach(function (k) { if (B.vs[k] > 0) B.vs[k]--; });
       B.foes.forEach(function (f) { if (f.fw > 0) f.fw--; f.counter = 0; });
       if (tickMsg) log(tickMsg.trim(), true);
+      B.foes.forEach(function (f) { f.jit = Math.random() * 3; });
+      var fast = living().filter(function (f) { return spdFoe(f) > spdVee(); });
+      if (fast.length && save.hp > 0) { hudOn(); log(fast.length === 1 ? 'The ' + foeName(fast[0]) + ' is faster. It moves first.' : 'The bugs are faster. They move first.', true); return setTimeout(function () { foesTurn(fast, function () { if (!B) return; vTurn(dazed, slowed); }); }, 700); }
+      vTurn(dazed, slowed);
+    }
+    function vTurn(dazed, slowed) {
+      if (!B) return;
+      if (!living().length) return win();
       if (save.hp > 0 && (dazed || slowed)) { hudOn(); log(dazed ? 'Vee is dazed. He loses his turn.' : 'Vee is slowed. He loses this round.'); return setTimeout(nextAlly, 900); }
       if (save.hp <= 0) { hudOn(); log('Vee is down. The party fights on.'); return setTimeout(nextAlly, 700); }
       B.phase = 'menu';
