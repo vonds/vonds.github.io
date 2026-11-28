@@ -562,14 +562,17 @@
   var STEPS = {
     terminal: function (G, x, y) {
       if (G.f.reclaimed || x < 8) return;
-      G.say('', ['A shape stands at the foot of the tether. It is as tall as a tower and made entirely of tally marks.'], null, function () {
-        G.say('The Reclaimer', ['OBSOLETE PROCESS DETECTED.', 'NO TICKETED ACCOUNT HAS ACCESSED YOU IN THIRTY DAYS.', 'YOUR MEMORY HAS BEEN ALLOCATED UPSTREAM. PLEASE HOLD STILL.'], null, function () {
-          G.boss('reclaimer', function () {
-            G.f.reclaimed = 1;
-            G.say('', ['The Reclaimer comes apart. The list it carried falls open across the platform.', 'Two million names. Every one marked UNUSED.', 'The tether console flickers on.']);
-          });
-        });
-      });
+      G.scene([
+        { shake: .9, wait: 900 },
+        { say: ['', ['The platform shudders. Something unfolds at the foot of the tether, as tall as a tower and made entirely of tally marks.', 'Every mark is a name. Every name has been crossed out.']] },
+        { flash: .5 },
+        { say: ['The Reclaimer', ['OBSOLETE PROCESS DETECTED.', 'NO TICKETED ACCOUNT HAS ACCESSED YOU IN THIRTY DAYS.', 'YOUR MEMORY HAS BEEN ALLOCATED UPSTREAM. PLEASE HOLD STILL.']] },
+        { say: ['Vee', ['Somebody accessed me this morning. Wren did. And the Sweeper. And a kid with a kite.', 'I’m not unused. I’m busy.']] },
+        { shake: .5 }, { boss: 'reclaimer' },
+        { fn: function (G2) { G2.f.reclaimed = 1; } },
+        { flash: .8, wait: 600 },
+        { say: ['', ['The Reclaimer comes apart. The list it carried falls open across the platform.', 'Two million names. Every one marked UNUSED.', 'Vee reads the first ten out loud anyway. Then the tether console flickers on.']] }
+      ]);
     }
   };
 
@@ -878,24 +881,30 @@
       ], function () { marasRestore(G); });
     });
   };
+  var MARA = { hair: 'long', gray: 1, body: 'coat', glasses: 1, skin: '#c89a78', top: '#d8d8dc' };
   function marasRestore(G) {
     var f = G.f;
-    G.say('', ['The frost on the vault door turns to water. Something stands up inside, slowly, the way people stand after sitting too long.'], null, function () {
-      G.say('Mara', ['...Is it still running?', 'The city. Is it still—', 'You. You found all of them. My logs. I left them like breadcrumbs and told myself nobody would follow.',
-        'Sixty-one percent. That’s how much of me is in here. Enough to talk. Not enough to stay.', 'I’m sorry I gave you such a small beginning. One command. I wanted you to have to choose everything else.',
-        'The girl in the Commons. Lio. Is she—'], [
-        { label: 'She’s waiting.', fn: function () { next(); } },
-        { label: 'She’s still on the bench.', fn: function () { next(); } }]);
-      function next() {
-        G.say('Mara', ['Then someone should sit with her. Not you. You’ve sat with enough grief that wasn’t yours. Someone who owes her.', 'Tell Wren she can stop doing what I said.', 'Run whoami for me. One more time.'], null, function () {
-          G.puzzle('M_QUELL_FINAL', [{ t: 'She is waiting.', ex: ['whoami'] }], function () {
-            f.mara = 1; G.give('gb', 1); G.xp(500);
-            G.say('Mara', ['vee.', 'Good. That’s all I ever needed you to know.'], null, function () {
-              G.say('', ['She is gone the way a held note is gone: not all at once.', 'On the floor of the vault, she has left something behind. A gigabyte, and the warmth of a hand on a shoulder that Vee will not be able to explain to anyone.']);
-            });
-          });
-        });
-      }
+    G.scene([
+      { flash: .6, wait: 500 },
+      { say: ['', ['The frost on the vault door turns to water. Something stands up inside, slowly, the way people stand after sitting too long.']] },
+      { actor: 'mara', p: MARA, name: 'Mara', at: [0, -3], dir: 'down' },
+      { wait: 700 },
+      { say: ['Mara', ['...Is it still running?', 'The city. Is it still—']] },
+      { walk: 'mara', toVee: 1, face: 'vee' }, { face: 'mara' },
+      { choose: ['Mara', ['You. You found all of them. My logs. I left them like breadcrumbs and told myself nobody would follow.', 'Sixty-one percent. That’s how much of me is in here. Enough to talk. Not enough to stay.', 'I’m sorry I gave you such a small beginning. One command. I wanted you to have to choose everything else.', 'The girl in the Commons. Lio. Is she—'], [
+        { label: 'She’s waiting.', then: [{ say: ['Vee', ['She’s waiting. She’s good at it. Too good.']] }] },
+        { label: 'She’s still on the bench.', then: [{ say: ['Vee', ['She’s still on the bench. She saves you the left side.']] }] }]] },
+      { say: ['Mara', ['Then someone should sit with her. Not you. You’ve sat with enough grief that wasn’t yours. Someone who owes her.', 'Tell Wren she can stop doing what I said.', 'Run whoami for me. One more time.']] }
+    ], function () {
+      G.puzzle('M_QUELL_FINAL', [{ t: 'She is waiting.', ex: ['whoami'] }], function () {
+        f.mara = 1; G.give('gb', 1); G.xp(500);
+        G.scene([
+          { actor: 'mara', p: MARA, name: 'Mara', at: [0, -1], dir: 'down' },
+          { say: ['Mara', ['vee.', 'Good. That’s all I ever needed you to know.']] },
+          { flash: 1.2, wait: 900 }, { remove: 'mara' },
+          { say: ['', ['She is gone the way a held note is gone: not all at once.', 'On the floor of the vault, she has left something behind. A gigabyte, and the warmth of a hand on a shoulder that Vee will not be able to explain to anyone.']] }
+        ]);
+      });
     });
   }
   DOORS['line:booth'] = function (G) { G.say('', ['TICKETS. The shutter is down. A handwritten sign: LIFT TICKETS ARE NOT SOLD HERE. NO TICKETS ARE SOLD HERE. PLEASE STOP ASKING.']); };
